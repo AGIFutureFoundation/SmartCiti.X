@@ -7,14 +7,14 @@
  "stamps": {
   "finishes": "b8c0693f81600d3c",
   "sims": "987a9d4812b4c73b",
-  "lessons": "4bcdaf6ad1eb2b47",
+  "lessons": "91141a08c6f69b25",
   "halls": "3807e54afe6abfe6",
-  "completion": "473fb2c77fee4215",
+  "completion": "a245569086421e20",
   "manifest": "169fa4e75499d00e",
-  "build_3d": "2f33c60a89a7b8c5",
+  "build_3d": "31d81aa3a09d1129",
   "hall_signoff": "e67ba161ef70d996",
   "roadmap": "edb0a399213e9e56",
-  "completion_fixture": "a588c87fc8602365",
+  "completion_fixture": "dda7bfd3b70db30c",
   "self": "8a4ceed33db622e1"
  },
  "stamped_paths": {
@@ -58,19 +58,19 @@
  },
  "placard_rule": {
   "hangs_when": {
-   "line": 10831,
+   "line": 10950,
    "read": "if (rc.ppe.length) { const plac = label(rc.ppe.join(' · '), ..., { kind: 'placard', items: rc.ppe })"
   },
   "rc_is": {
-   "line": 10785,
+   "line": 10904,
    "read": "const rc = condOf(h.slug, r.strand);"
   },
   "condOf": {
-   "line": 14480,
+   "line": 14600,
    "read": "return D.condOver[hallSlug]?.[strand], else D.baseCond[strand]"
   },
   "condOver": {
-   "line": 459,
+   "line": 574,
    "read": "'condOver': {sl: {st: c for st, c in h['conditions'].items() if c['hazards']} for sl, h in finishes_reg['halls'].items() if any(...)}"
   },
   "rule": "a room gets a door placard iff its merged condition record (hall conditions[strand] when that strand carries a hazard, else base_conditions[strand]) lists at least one PPE item; the placard shows that list"
@@ -1738,7 +1738,54 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "pipefitters-safety-first-walk",
+     "title": "Plumbers & Pipefitters: find out what the room is held to",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": null
   },
   "carpenters": {
@@ -6830,7 +6877,58 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "elevator-tools-first-walk",
+     "title": "Elevator Constructors: know the kit before you touch it",
+     "steps": 4,
+     "rooms_walked": [
+      "tools"
+     ],
+     "placard_steps_in": [
+      "tools"
+     ],
+     "hazard_rooms_of_hall": [
+      "materials"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "materials"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "tools",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "tools",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "tools",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "crib",
+       "where": "tools",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "teamsters": {
@@ -9458,7 +9556,54 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "drywall-layout-first-walk",
+     "title": "Drywall Finishers: trust a line only as far as it is proved",
+     "steps": 4,
+     "rooms_walked": [
+      "layout"
+     ],
+     "placard_steps_in": [
+      "layout"
+     ],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "layout",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "layout",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "layout",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "layout",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": null
   },
   "flooring": {
@@ -9759,7 +9904,54 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "flooring-inspection-first-walk",
+     "title": "Floor Coverers: ask what a pass would actually mean",
+     "steps": 4,
+     "rooms_walked": [
+      "inspection"
+     ],
+     "placard_steps_in": [
+      "inspection"
+     ],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "inspection",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "inspection",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "inspection",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "inspection",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": null
   },
   "grounds": {
@@ -10082,7 +10274,54 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "grounds-coordination-first-walk",
+     "title": "Grounds & Landscape: hand the shift over properly",
+     "steps": 3,
+     "rooms_walked": [
+      "coordination"
+     ],
+     "placard_steps_in": [],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "machines",
+      "materials"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "machines",
+      "materials"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 1,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "coordination",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "advisor",
+       "where": "coordination",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "door",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "line-workers": {
@@ -10772,7 +11011,46 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "solar-documentation-first-walk",
+     "title": "Solar Installers: find out where the record goes",
+     "steps": 3,
+     "rooms_walked": [
+      "documentation"
+     ],
+     "placard_steps_in": [],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 1,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "documentation",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "advisor",
+       "where": "documentation",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "documentation",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": null
   },
   "wind": {
@@ -11119,7 +11397,61 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "wind-safety-first-walk",
+     "title": "Wind Turbine Technicians: find out what the room is held to",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [
+      "safety",
+      "procedure",
+      "machines"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "machines"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "demolition": {
@@ -12593,7 +12925,54 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "fire-sprinkler-tools-first-walk",
+     "title": "Fire Sprinkler Fitters: know the kit before you touch it",
+     "steps": 4,
+     "rooms_walked": [
+      "tools"
+     ],
+     "placard_steps_in": [
+      "tools"
+     ],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "tools",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "tools",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "tools",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "crib",
+       "where": "tools",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": null
   },
   "hazmat": {
@@ -15298,7 +15677,58 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "divers-layout-first-walk",
+     "title": "Commercial Divers: trust a line only as far as it is proved",
+     "steps": 4,
+     "rooms_walked": [
+      "layout"
+     ],
+     "placard_steps_in": [
+      "layout"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "layout",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "layout",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "layout",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "layout",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "blasters": {
@@ -15626,7 +16056,60 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "blasters-inspection-first-walk",
+     "title": "Drillers & Blasters: ask what a pass would actually mean",
+     "steps": 4,
+     "rooms_walked": [
+      "inspection"
+     ],
+     "placard_steps_in": [
+      "inspection"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "materials"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "materials"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "inspection",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "inspection",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "inspection",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "inspection",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "miners": {
@@ -15949,7 +16432,54 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "miners-coordination-first-walk",
+     "title": "Underground Miners: hand the shift over properly",
+     "steps": 3,
+     "rooms_walked": [
+      "coordination"
+     ],
+     "placard_steps_in": [],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "machines",
+      "materials"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "machines",
+      "materials"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 1,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "coordination",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "advisor",
+       "where": "coordination",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "door",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "smelter": {
@@ -16288,7 +16818,54 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "smelter-documentation-first-walk",
+     "title": "Smelter Operators: find out where the record goes",
+     "steps": 3,
+     "rooms_walked": [
+      "documentation"
+     ],
+     "placard_steps_in": [],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "machines",
+      "materials"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "machines",
+      "materials"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 1,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "documentation",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "advisor",
+       "where": "documentation",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "documentation",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "foundry": {
@@ -17368,7 +17945,54 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "toolmakers-safety-first-walk",
+     "title": "Tool & Die Makers: find out what the room is held to",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": null
   },
   "fabricators": {
@@ -18074,7 +18698,58 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "platers-tools-first-walk",
+     "title": "Platers & Coaters: know the kit before you touch it",
+     "steps": 4,
+     "rooms_walked": [
+      "tools"
+     ],
+     "placard_steps_in": [
+      "tools"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "tools",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "tools",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "tools",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "crib",
+       "where": "tools",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "substation": {
@@ -18403,7 +19078,60 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "substation-layout-first-walk",
+     "title": "Substation Technicians: trust a line only as far as it is proved",
+     "steps": 4,
+     "rooms_walked": [
+      "layout"
+     ],
+     "placard_steps_in": [
+      "layout"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "troubleshooting"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "troubleshooting"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "layout",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "layout",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "layout",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "layout",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "cable-splicers": {
@@ -18732,7 +19460,60 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "cable-splicers-inspection-first-walk",
+     "title": "Cable Splicers: ask what a pass would actually mean",
+     "steps": 4,
+     "rooms_walked": [
+      "inspection"
+     ],
+     "placard_steps_in": [
+      "inspection"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "troubleshooting"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "troubleshooting"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "inspection",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "inspection",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "inspection",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "inspection",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "meter-techs": {
@@ -19033,7 +19814,46 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "meter-techs-coordination-first-walk",
+     "title": "Meter Technicians: hand the shift over properly",
+     "steps": 3,
+     "rooms_walked": [
+      "coordination"
+     ],
+     "placard_steps_in": [],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 1,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "coordination",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "advisor",
+       "where": "coordination",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "door",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": null
   },
   "gas-distrib": {
@@ -19352,7 +20172,50 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "gas-distrib-documentation-first-walk",
+     "title": "Gas Distribution Fitters: find out where the record goes",
+     "steps": 3,
+     "rooms_walked": [
+      "documentation"
+     ],
+     "placard_steps_in": [],
+     "hazard_rooms_of_hall": [
+      "procedure"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 1,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "documentation",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "advisor",
+       "where": "documentation",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "documentation",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "water-distrib": {
@@ -19693,7 +20556,60 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "water-distrib-safety-first-walk",
+     "title": "Water Distribution Fitters: find out what the room is held to",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "machines"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "machines"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "wastewater": {
@@ -20022,7 +20938,60 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "wastewater-tools-first-walk",
+     "title": "Wastewater Operators: know the kit before you touch it",
+     "steps": 4,
+     "rooms_walked": [
+      "tools"
+     ],
+     "placard_steps_in": [
+      "tools"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "machines"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "machines"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "tools",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "tools",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "tools",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "crib",
+       "where": "tools",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "nuclear": {
@@ -20361,7 +21330,60 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "nuclear-layout-first-walk",
+     "title": "Nuclear Plant Trades: trust a line only as far as it is proved",
+     "steps": 4,
+     "rooms_walked": [
+      "layout"
+     ],
+     "placard_steps_in": [
+      "layout"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "inspection"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "inspection"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "layout",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "layout",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "layout",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "layout",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "hydro": {
@@ -20686,7 +21708,60 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "hydro-inspection-first-walk",
+     "title": "Hydro Plant Trades: ask what a pass would actually mean",
+     "steps": 4,
+     "rooms_walked": [
+      "inspection"
+     ],
+     "placard_steps_in": [
+      "inspection"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "machines"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "machines"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "inspection",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "inspection",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "inspection",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "inspection",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "geothermal": {
@@ -21015,7 +22090,52 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "geothermal-coordination-first-walk",
+     "title": "Geothermal Technicians: hand the shift over properly",
+     "steps": 3,
+     "rooms_walked": [
+      "coordination"
+     ],
+     "placard_steps_in": [],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "machines"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "machines"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 1,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "coordination",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "advisor",
+       "where": "coordination",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "door",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "battery-storage": {
@@ -21329,7 +22449,50 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "battery-storage-documentation-first-walk",
+     "title": "Battery Storage Technicians: find out where the record goes",
+     "steps": 3,
+     "rooms_walked": [
+      "documentation"
+     ],
+     "placard_steps_in": [],
+     "hazard_rooms_of_hall": [
+      "procedure"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 1,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "documentation",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "advisor",
+       "where": "documentation",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "documentation",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "ev-charging": {
@@ -21630,7 +22793,54 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "ev-charging-safety-first-walk",
+     "title": "EV Charging Installers: find out what the room is held to",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": null
   },
   "hydrogen": {
@@ -21956,7 +23166,58 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "hydrogen-tools-first-walk",
+     "title": "Hydrogen Systems Trades: know the kit before you touch it",
+     "steps": 4,
+     "rooms_walked": [
+      "tools"
+     ],
+     "placard_steps_in": [
+      "tools"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "tools",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "tools",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "tools",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "crib",
+       "where": "tools",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "transmission": {
@@ -22285,7 +23546,60 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "transmission-layout-first-walk",
+     "title": "Transmission Linemen: trust a line only as far as it is proved",
+     "steps": 4,
+     "rooms_walked": [
+      "layout"
+     ],
+     "placard_steps_in": [
+      "layout"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "troubleshooting"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "troubleshooting"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "layout",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "layout",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "layout",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "layout",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "district-energy": {
@@ -22586,7 +23900,54 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "district-energy-inspection-first-walk",
+     "title": "District Energy Operators: ask what a pass would actually mean",
+     "steps": 4,
+     "rooms_walked": [
+      "inspection"
+     ],
+     "placard_steps_in": [
+      "inspection"
+     ],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "inspection",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "inspection",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "inspection",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "inspection",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": null
   },
   "masonry-restore": {
@@ -23986,7 +25347,46 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "terrazzo-coordination-first-walk",
+     "title": "Terrazzo Workers: hand the shift over properly",
+     "steps": 3,
+     "rooms_walked": [
+      "coordination"
+     ],
+     "placard_steps_in": [],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 1,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "coordination",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "advisor",
+       "where": "coordination",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "door",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": null
   },
   "tilesetters": {
@@ -26055,7 +27455,46 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "acoustic-documentation-first-walk",
+     "title": "Acoustic Specialists: find out where the record goes",
+     "steps": 3,
+     "rooms_walked": [
+      "documentation"
+     ],
+     "placard_steps_in": [],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 1,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "documentation",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "advisor",
+       "where": "documentation",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "documentation",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": null
   },
   "cladding": {
@@ -27485,7 +28924,54 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "concrete-pump-safety-first-walk",
+     "title": "Concrete Pump Operators: find out what the room is held to",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": null
   },
   "post-tension": {
@@ -27786,7 +29272,54 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "post-tension-tools-first-walk",
+     "title": "Post-Tension Technicians: know the kit before you touch it",
+     "steps": 4,
+     "rooms_walked": [
+      "tools"
+     ],
+     "placard_steps_in": [
+      "tools"
+     ],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "tools",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "tools",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "tools",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "crib",
+       "where": "tools",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": null
   },
   "precast": {
@@ -28093,7 +29626,58 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "precast-layout-first-walk",
+     "title": "Precast Erectors: trust a line only as far as it is proved",
+     "steps": 4,
+     "rooms_walked": [
+      "layout"
+     ],
+     "placard_steps_in": [
+      "layout"
+     ],
+     "hazard_rooms_of_hall": [
+      "materials"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "materials"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "layout",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "layout",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "layout",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "layout",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "steel-erectors": {
@@ -29513,7 +31097,54 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "bas-controls-inspection-first-walk",
+     "title": "Building Automation Techs: ask what a pass would actually mean",
+     "steps": 4,
+     "rooms_walked": [
+      "inspection"
+     ],
+     "placard_steps_in": [
+      "inspection"
+     ],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "inspection",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "inspection",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "inspection",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "inspection",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": null
   },
   "fire-alarm": {
@@ -29814,7 +31445,46 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "fire-alarm-coordination-first-walk",
+     "title": "Fire Alarm Technicians: hand the shift over properly",
+     "steps": 3,
+     "rooms_walked": [
+      "coordination"
+     ],
+     "placard_steps_in": [],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 1,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "coordination",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "advisor",
+       "where": "coordination",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "door",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": null
   },
   "security-sys": {
@@ -30115,7 +31785,46 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "security-sys-documentation-first-walk",
+     "title": "Security Systems Installers: find out where the record goes",
+     "steps": 3,
+     "rooms_walked": [
+      "documentation"
+     ],
+     "placard_steps_in": [],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 1,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "documentation",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "advisor",
+       "where": "documentation",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "documentation",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": null
   },
   "network-cabling": {
@@ -30416,7 +32125,54 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "network-cabling-safety-first-walk",
+     "title": "Structured Cabling Techs: find out what the room is held to",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": null
   },
   "fiber-splicers": {
@@ -31057,7 +32813,54 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "data-center-tools-first-walk",
+     "title": "Data Centre Technicians: know the kit before you touch it",
+     "steps": 4,
+     "rooms_walked": [
+      "tools"
+     ],
+     "placard_steps_in": [
+      "tools"
+     ],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "tools",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "tools",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "tools",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "crib",
+       "where": "tools",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": null
   },
   "instrumentation": {
@@ -31358,7 +33161,54 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "instrumentation-layout-first-walk",
+     "title": "Instrumentation Technicians: trust a line only as far as it is proved",
+     "steps": 4,
+     "rooms_walked": [
+      "layout"
+     ],
+     "placard_steps_in": [
+      "layout"
+     ],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "layout",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "layout",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "layout",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "layout",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": null
   },
   "plc-techs": {
@@ -31687,7 +33537,60 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "plc-techs-inspection-first-walk",
+     "title": "PLC & Controls Technicians: ask what a pass would actually mean",
+     "steps": 4,
+     "rooms_walked": [
+      "inspection"
+     ],
+     "placard_steps_in": [
+      "inspection"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "troubleshooting"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "troubleshooting"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "inspection",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "inspection",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "inspection",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "inspection",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "robotics": {
@@ -31988,7 +33891,46 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "robotics-coordination-first-walk",
+     "title": "Industrial Robotics Techs: hand the shift over properly",
+     "steps": 3,
+     "rooms_walked": [
+      "coordination"
+     ],
+     "placard_steps_in": [],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 1,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "coordination",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "advisor",
+       "where": "coordination",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "door",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": null
   },
   "automation-int": {
@@ -32289,7 +34231,46 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "automation-int-documentation-first-walk",
+     "title": "Automation Integrators: find out where the record goes",
+     "steps": 3,
+     "rooms_walked": [
+      "documentation"
+     ],
+     "placard_steps_in": [],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 1,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "documentation",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "advisor",
+       "where": "documentation",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "documentation",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": null
   },
   "cleanroom": {
@@ -32618,7 +34599,60 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "cleanroom-safety-first-walk",
+     "title": "Cleanroom Trades: find out what the room is held to",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "inspection"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "inspection"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "medical-gas": {
@@ -32944,7 +34978,58 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "medical-gas-tools-first-walk",
+     "title": "Medical Gas Installers: know the kit before you touch it",
+     "steps": 4,
+     "rooms_walked": [
+      "tools"
+     ],
+     "placard_steps_in": [
+      "tools"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "tools",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "tools",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "tools",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "crib",
+       "where": "tools",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "rail-track": {
@@ -33279,7 +35364,62 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "rail-track-layout-first-walk",
+     "title": "Rail Track Workers: trust a line only as far as it is proved",
+     "steps": 4,
+     "rooms_walked": [
+      "layout"
+     ],
+     "placard_steps_in": [
+      "layout"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "machines",
+      "materials"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "machines",
+      "materials"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "layout",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "layout",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "layout",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "layout",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "rail-signals": {
@@ -33580,7 +35720,54 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "rail-signals-inspection-first-walk",
+     "title": "Rail Signal Technicians: ask what a pass would actually mean",
+     "steps": 4,
+     "rooms_walked": [
+      "inspection"
+     ],
+     "placard_steps_in": [
+      "inspection"
+     ],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "inspection",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "inspection",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "inspection",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "inspection",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": null
   },
   "catenary": {
@@ -33881,7 +36068,46 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "catenary-coordination-first-walk",
+     "title": "Overhead Catenary Linemen: hand the shift over properly",
+     "steps": 3,
+     "rooms_walked": [
+      "coordination"
+     ],
+     "placard_steps_in": [],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 1,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "coordination",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "advisor",
+       "where": "coordination",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "door",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": null
   },
   "transit-vehicle": {
@@ -34206,7 +36432,52 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "transit-vehicle-documentation-first-walk",
+     "title": "Transit Vehicle Technicians: find out where the record goes",
+     "steps": 3,
+     "rooms_walked": [
+      "documentation"
+     ],
+     "placard_steps_in": [],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "machines"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "machines"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 1,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "documentation",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "advisor",
+       "where": "documentation",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "documentation",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "aviation-ground": {
@@ -34507,7 +36778,54 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "aviation-ground-safety-first-walk",
+     "title": "Aviation Ground Support: find out what the room is held to",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": null
   },
   "airfield": {
@@ -34808,7 +37126,54 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "airfield-tools-first-walk",
+     "title": "Airfield Trades: know the kit before you touch it",
+     "steps": 4,
+     "rooms_walked": [
+      "tools"
+     ],
+     "placard_steps_in": [
+      "tools"
+     ],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "tools",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "tools",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "tools",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "crib",
+       "where": "tools",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": null
   },
   "port-crane": {
@@ -35866,7 +38231,54 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "fleet-diesel-layout-first-walk",
+     "title": "Fleet Diesel Technicians: trust a line only as far as it is proved",
+     "steps": 4,
+     "rooms_walked": [
+      "layout"
+     ],
+     "placard_steps_in": [
+      "layout"
+     ],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "layout",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "layout",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "layout",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "layout",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": null
   },
   "bridge-inspect": {
@@ -36167,7 +38579,54 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "bridge-inspect-inspection-first-walk",
+     "title": "Bridge Inspection Crews: ask what a pass would actually mean",
+     "steps": 4,
+     "rooms_walked": [
+      "inspection"
+     ],
+     "placard_steps_in": [
+      "inspection"
+     ],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "inspection",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "inspection",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "inspection",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "inspection",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": null
   },
   "asbestos": {
@@ -36508,7 +38967,52 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "asbestos-coordination-first-walk",
+     "title": "Asbestos Abatement Workers: hand the shift over properly",
+     "steps": 3,
+     "rooms_walked": [
+      "coordination"
+     ],
+     "placard_steps_in": [],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "machines"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "machines"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 1,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "coordination",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "advisor",
+       "where": "coordination",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "door",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "lead-abatement": {
@@ -36827,7 +39331,50 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "lead-abatement-documentation-first-walk",
+     "title": "Lead Abatement Workers: find out where the record goes",
+     "steps": 3,
+     "rooms_walked": [
+      "documentation"
+     ],
+     "placard_steps_in": [],
+     "hazard_rooms_of_hall": [
+      "procedure"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 1,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "documentation",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "advisor",
+       "where": "documentation",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "documentation",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "mold-remediation": {
@@ -37146,7 +39693,58 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "mold-remediation-safety-first-walk",
+     "title": "Mould Remediation Techs: find out what the room is held to",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "spill-response": {
@@ -37470,7 +40068,58 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "spill-response-tools-first-walk",
+     "title": "Spill Response Technicians: know the kit before you touch it",
+     "steps": 4,
+     "rooms_walked": [
+      "tools"
+     ],
+     "placard_steps_in": [
+      "tools"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "tools",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "tools",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "tools",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "crib",
+       "where": "tools",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "confined-space": {
@@ -37799,7 +40448,60 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "confined-space-layout-first-walk",
+     "title": "Confined Space Rescue: trust a line only as far as it is proved",
+     "steps": 4,
+     "rooms_walked": [
+      "layout"
+     ],
+     "placard_steps_in": [
+      "layout"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "machines"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "machines"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "layout",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "layout",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "layout",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "layout",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "high-angle": {
@@ -38128,7 +40830,60 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "high-angle-inspection-first-walk",
+     "title": "High-Angle Rescue: ask what a pass would actually mean",
+     "steps": 4,
+     "rooms_walked": [
+      "inspection"
+     ],
+     "placard_steps_in": [
+      "inspection"
+     ],
+     "hazard_rooms_of_hall": [
+      "safety",
+      "procedure"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "safety",
+      "procedure"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "inspection",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "inspection",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "inspection",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "inspection",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "site-safety": {
@@ -38829,7 +41584,52 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "industrial-clean-coordination-first-walk",
+     "title": "Industrial Cleaning Crews: hand the shift over properly",
+     "steps": 3,
+     "rooms_walked": [
+      "coordination"
+     ],
+     "placard_steps_in": [],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "machines"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "machines"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 1,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "coordination",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "advisor",
+       "where": "coordination",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "door",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": false
   },
   "survey-drone": {
@@ -39130,7 +41930,46 @@
      "why": "a sign-off is the hall's fact, made by a named practitioner on a date in halls.json; a learner's record has no field for it"
     }
    },
-   "lessons": [],
+   "lessons": [
+    {
+     "lesson": "survey-drone-documentation-first-walk",
+     "title": "Aerial Survey Operators: find out where the record goes",
+     "steps": 3,
+     "rooms_walked": [
+      "documentation"
+     ],
+     "placard_steps_in": [],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 1,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "documentation",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "advisor",
+       "where": "documentation",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "documentation",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    }
+   ],
    "lesson_covers_every_hazard_room": null
   }
  },
@@ -39147,10 +41986,10 @@
   "rooms_with_placard": 888,
   "halls_signed_off": 0,
   "halls_with_signoff_problems": 0,
-  "halls_with_a_lesson": 51,
-  "halls_with_hazards_and_a_lesson": 31,
+  "halls_with_a_lesson": 111,
+  "halls_with_hazards_and_a_lesson": 63,
   "halls_with_a_lesson_covering_every_hazard_room": 5,
-  "lessons": 56,
+  "lessons": 116,
   "lessons_with_a_hazard_room_walked_without_placard_step": 0,
   "halls_with_a_seat": 45,
   "seat_bindings": 79,
@@ -39159,11 +41998,11 @@
   "seats_with_an_informational_axis": 11,
   "seats_with_scalar_threshold": 0,
   "items_by_ledger_class": {
-   "evidenceable": 225,
-   "self-reported": 87,
+   "evidenceable": 345,
+   "self-reported": 187,
    "not-recordable": 1355
   },
-  "items": 1667
+  "items": 1887
  },
  "verifier": {
   "run": "node compliance/verify.mjs <record.json>",

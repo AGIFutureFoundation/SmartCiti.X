@@ -1,0 +1,10 @@
+{
+ "campus-green-crane-up": {
+  "commit": "57f497245b0dbc9cf88504d4988fb2779b4469db",
+  "encoded": "2026-09-28T06:15Z",
+  "frames": 168,
+  "h264_crf": 24,
+  "source": "archive",
+  "vp9_crf": 34
+ }
+}

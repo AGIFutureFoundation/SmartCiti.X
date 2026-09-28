@@ -20,6 +20,7 @@ HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+from seo import apply_seo  # noqa: E402  head tags only
 from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 from groundtruth import GROUND_TRUTH_JS  # noqa: E402
 
@@ -255,6 +256,8 @@ DATA = json.dumps({
 }, ensure_ascii=False, separators=(',', ':'))
 
 NAV = nav_html('web/trade_craft_geomap.html', nav_labels('en'))
+from questkit import QUEST_CSS, quest_js, page_hooks  # noqa: E402  quests: egg hooks only
+QUEST_TAIL = '<style>' + QUEST_CSS + '</style>\n' + page_hooks('web/trade_craft_geomap.html') + quest_js('page:web/trade_craft_geomap.html')
 
 page = '''<!doctype html>
 <html lang="en">
@@ -1098,7 +1101,7 @@ window.__geomap = () => ({
   status: statusEl.textContent,
 });
 </script>
-</body>
+__QUEST_TAIL__</body>
 </html>
 '''
 
@@ -1108,7 +1111,7 @@ out = HERE / 'trade_craft_geomap.html'
 _n_hub = sum(1 for c in geo['campuses'].values() if c['provenance'] == 'AUTHORED')
 _n_flag = len(geo['campuses']) - _n_hub
 assert _n_hub > 0 and _n_flag > 0
-page = page.replace('__SITENAV_CSS__', NAV_CSS).replace('__SITENAV__', NAV)
+page = page.replace('__SITENAV_CSS__', NAV_CSS).replace('__SITENAV__', NAV).replace('__QUEST_TAIL__', QUEST_TAIL)
 page = (page.replace('__N_FLAGSHIP__', str(_n_flag)).replace('__N_HUB__', str(_n_hub))
         .replace('__N_POSES__', str(spatial['counts']['total']))
         .replace('__N_CLAIMED__', str(len(_spatial_claimed)))
@@ -1122,4 +1125,6 @@ assert '__GEOPOSE_HONESTY__' not in page, 'the geopose honesty token went unrepl
 assert '__SITE_ROWS__' not in page and '__RESTORATION_NOT_AFFILIATED__' not in page, \
     'a restoration panel token went unreplaced'
 assert '__GROUND_TRUTH_JS__' not in page, 'the ground-truth module token went unreplaced'
+page = apply_seo(page, 'web/trade_craft_geomap.html', 'SmartCiti.X : Trade Craft Academy \u2014 network geomap',
+    'The network geomap: every campus, anchor and city frame on a WGS84 globe, with provenance in every popup and no basemap tiles unless you ask.', 'page')
 emit(out, page.replace('__DATA__', DATA), f"{len(network['features'])} features on the geomap")

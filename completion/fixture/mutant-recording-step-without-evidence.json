@@ -1965,6 +1965,1746 @@
      "evidence": null
     }
    ]
+  },
+  {
+   "lesson": "pipefitters-safety-first-walk",
+   "hall": "pipefitters",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "elevator-tools-first-walk",
+   "hall": "elevator",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "crib",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "drywall-layout-first-walk",
+   "hall": "drywall",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "flooring-inspection-first-walk",
+   "hall": "flooring",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "grounds-coordination-first-walk",
+   "hall": "grounds",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "solar-documentation-first-walk",
+   "hall": "solar",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "wind-safety-first-walk",
+   "hall": "wind",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "fire-sprinkler-tools-first-walk",
+   "hall": "fire-sprinkler",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "crib",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "divers-layout-first-walk",
+   "hall": "divers",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "blasters-inspection-first-walk",
+   "hall": "blasters",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "miners-coordination-first-walk",
+   "hall": "miners",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "smelter-documentation-first-walk",
+   "hall": "smelter",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "toolmakers-safety-first-walk",
+   "hall": "toolmakers",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "platers-tools-first-walk",
+   "hall": "platers",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "crib",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "substation-layout-first-walk",
+   "hall": "substation",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "cable-splicers-inspection-first-walk",
+   "hall": "cable-splicers",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "meter-techs-coordination-first-walk",
+   "hall": "meter-techs",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "gas-distrib-documentation-first-walk",
+   "hall": "gas-distrib",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "water-distrib-safety-first-walk",
+   "hall": "water-distrib",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "wastewater-tools-first-walk",
+   "hall": "wastewater",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "crib",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "nuclear-layout-first-walk",
+   "hall": "nuclear",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "hydro-inspection-first-walk",
+   "hall": "hydro",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "geothermal-coordination-first-walk",
+   "hall": "geothermal",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "battery-storage-documentation-first-walk",
+   "hall": "battery-storage",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "ev-charging-safety-first-walk",
+   "hall": "ev-charging",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "hydrogen-tools-first-walk",
+   "hall": "hydrogen",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "crib",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "transmission-layout-first-walk",
+   "hall": "transmission",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "district-energy-inspection-first-walk",
+   "hall": "district-energy",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "terrazzo-coordination-first-walk",
+   "hall": "terrazzo",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "acoustic-documentation-first-walk",
+   "hall": "acoustic",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "concrete-pump-safety-first-walk",
+   "hall": "concrete-pump",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "post-tension-tools-first-walk",
+   "hall": "post-tension",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "crib",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "precast-layout-first-walk",
+   "hall": "precast",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "bas-controls-inspection-first-walk",
+   "hall": "bas-controls",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "fire-alarm-coordination-first-walk",
+   "hall": "fire-alarm",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "security-sys-documentation-first-walk",
+   "hall": "security-sys",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "network-cabling-safety-first-walk",
+   "hall": "network-cabling",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "data-center-tools-first-walk",
+   "hall": "data-center",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "crib",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "instrumentation-layout-first-walk",
+   "hall": "instrumentation",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "plc-techs-inspection-first-walk",
+   "hall": "plc-techs",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "robotics-coordination-first-walk",
+   "hall": "robotics",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "automation-int-documentation-first-walk",
+   "hall": "automation-int",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "cleanroom-safety-first-walk",
+   "hall": "cleanroom",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "medical-gas-tools-first-walk",
+   "hall": "medical-gas",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "crib",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "rail-track-layout-first-walk",
+   "hall": "rail-track",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "rail-signals-inspection-first-walk",
+   "hall": "rail-signals",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "catenary-coordination-first-walk",
+   "hall": "catenary",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "transit-vehicle-documentation-first-walk",
+   "hall": "transit-vehicle",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "aviation-ground-safety-first-walk",
+   "hall": "aviation-ground",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "airfield-tools-first-walk",
+   "hall": "airfield",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "crib",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "fleet-diesel-layout-first-walk",
+   "hall": "fleet-diesel",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "bridge-inspect-inspection-first-walk",
+   "hall": "bridge-inspect",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "asbestos-coordination-first-walk",
+   "hall": "asbestos",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "lead-abatement-documentation-first-walk",
+   "hall": "lead-abatement",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "mold-remediation-safety-first-walk",
+   "hall": "mold-remediation",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "spill-response-tools-first-walk",
+   "hall": "spill-response",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "crib",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "confined-space-layout-first-walk",
+   "hall": "confined-space",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "high-angle-inspection-first-walk",
+   "hall": "high-angle",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "industrial-clean-coordination-first-walk",
+   "hall": "industrial-clean",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "survey-drone-documentation-first-walk",
+   "hall": "survey-drone",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
   }
  ],
  "sims": {
@@ -2002,6 +3742,6 @@
  "digest": {
   "alg": "SHA-256",
   "over": "canonical JSON of every top-level field except digest, with identity.signature forced to null: keys sorted recursively, no whitespace, UTF-8",
-  "hex": "a13f8d8b3b4d7dab9605710881d4ce0ee029925bad4abe29dae8ea8170554599"
+  "hex": "b16c0e64a5e856d461d5edb837184a45840f2c51482e4b52203a3a7769f6935e"
  }
 }

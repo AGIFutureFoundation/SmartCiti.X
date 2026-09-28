@@ -264,7 +264,25 @@
   "map.aria.plan": "Plan du réseau : {n} salles syndicales regroupées en huit districts sur {c} campus construits",
   "map.aria.floor": "Plan d’étage de la salle {name} : {n} pièces",
   "map.aria.hall": "{name} — district {district}, grille {ref}",
-  "map.page_title": "Plan du réseau"
+  "map.page_title": "Plan du réseau",
+  "nav.group.play": "Jouer",
+  "nav.page.quests": "Quêtes et salle d’arcade",
+  "nav.page.wilds": "Les grands espaces",
+  "nav.page.schools": "Parcours scolaires",
+  "campus3d.questlog": "Journal des quêtes",
+  "campus3d.play": "Les quêtes, trésors et easter eggs sont du jeu : ils n’entrent jamais dans un relevé d’achèvement et ne certifient rien.",
+  "campus3d.locked": "Verrouillée. Termine d’abord ces leçons :",
+  "campus3d.open": "Déverrouillée. Chaque leçon demandée est faite sur cet appareil.",
+  "campus3d.treasure": "Trésor trouvé",
+  "campus3d.egg": "Easter egg trouvé",
+  "campus3d.hooks": "Le moteur de quêtes n’est pas encore relié à cette page ; les trouvailles ne sont listées que pour cette visite.",
+  "seo.desc.landing": "Pourquoi la Trade Craft Academy existe : un système de formation adaptatif aux métiers, dans une ville virtuelle de chantiers à parcourir.",
+  "seo.desc.map": "Le plan du réseau : chaque salle syndicale dessinée par district, avec des effectifs de salles et de modules lus dans le registre.",
+  "seo.desc.languages": "Les langues dans lesquelles l'académie est proposée, chacune avec l'état de traduction que consigne son propre catalogue.",
+  "landing.video.pause": "Mettre en pause la vidéo de fond",
+  "landing.video.play": "Lire la vidéo de fond",
+  "landing.video.caption": "Arrière-plan : une orbite au-dessus du campus de Treasure Island, enregistrée depuis la page 3D de cette version.",
+  "nav.page.design": "Kit graphique"
  },
  "districts": {
   "structural": {

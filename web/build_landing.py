@@ -6,6 +6,8 @@ import sys
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+from seo import apply_seo  # noqa: E402  head tags only
+from herovideo import hero_video_html, hero_video_control, HERO_VIDEO_CSS, HERO_VIDEO_JS  # noqa: E402
 from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 
 
@@ -180,6 +182,13 @@ footer a{display:inline-block;padding-block:3px}
 
 NAV = nav_html('web/trade_craft_landing.html', nav_labels('en'))
 
+# The landing hero sits inside the page's column, so its footage is a framed
+# panel rather than full-bleed; the padding keeps text off the panel's edge.
+HERO_LANDING_CSS = (
+    'header.hero[data-hero-host]{padding-inline:clamp(16px,4vw,40px);border-radius:16px;'
+    'margin-block-start:16px;border:1px solid var(--rule)}'
+    '.hv-btn{border-color:var(--rule)}.hv-btn:focus-visible{outline:2px solid var(--mark);outline-offset:2px}')
+
 BODY = f"""
 {NAV}<div class="wrap">
   <nav class="top">
@@ -194,12 +203,14 @@ BODY = f"""
     </div>
   </nav>
 
-  <header class="hero">
+  <header class="hero" data-hero-host>{hero_video_html('web/trade_craft_landing.html')}
     <p class="eyebrow">{S('landing.hero.eyebrow')}</p>
     <h1>{S('landing.hero.title')}</h1>
     <p class="lede">{S('landing.hero.lede')}</p>
     <p class="lede lede-2">{S('landing.hero.lede2')}</p>
     <div class="markrule herorule"></div>
+    {hero_video_control({'pause': S('landing.video.pause'), 'play': S('landing.video.play'),
+                         'caption': S('landing.video.caption')})}
   </header>
 
   <div class="facts">
@@ -390,7 +401,10 @@ page = ('<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Trade
         '<!-- Self-hosted: nothing on this page is fetched from another '
         'origin at run time. See web/fetch_fonts.py. -->\n'
         '<link rel="stylesheet" href="vendor/fonts/fonts.css">\n'
-        f'<style>{CSS}</style>\n<style>{NAV_CSS}</style>\n{BODY}')
+        f'<style>{CSS}</style>\n<style>{NAV_CSS}</style>\n'
+        f'<style>{HERO_VIDEO_CSS}{HERO_LANDING_CSS}</style>\n{BODY}{HERO_VIDEO_JS}\n')
 # Written beside this script, not into the working directory: run from the
 # tree root it left a second, identical copy of the page there (defect 13's shape).
+page = apply_seo(page, 'web/trade_craft_landing.html', 'Why the trades \u2014 SmartCiti.X : Trade Craft Academy',
+    S('seo.desc.landing'), 'page')
 emit(HERE / 'trade_craft_landing.html', page)

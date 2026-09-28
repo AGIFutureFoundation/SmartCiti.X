@@ -50,6 +50,7 @@ import sys
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+from seo import apply_seo  # noqa: E402  head tags only
 
 
 def _root():
@@ -481,6 +482,9 @@ return {{ recoverAddress: recoverAddress }};
 </html>
 '''
 
+page = apply_seo(page, 'web/trade_craft_verify.html', 'SmartCiti.X : Trade Craft Academy \u2014 verify a record',
+    'Check a learner\'s exported training record against its own rules, and read plainly what such a record proves and what it does not.', 'page',
+    canonical_link=False, jsonld=False)
 emit(HERE / 'trade_craft_verify.html', page,
      f'{len(KINDS)} record kinds, {len(ALL_FILES)} registries embedded, cores carried from '
      + ', '.join(c[0] for c in CORES) + f', {NAV_STATE} the site nav, uploads nothing')

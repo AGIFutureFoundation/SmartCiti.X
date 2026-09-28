@@ -3,6 +3,7 @@ import markdown, re, pathlib, sys
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+from seo import apply_seo  # noqa: E402  head tags only
 from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 
 
@@ -106,6 +107,8 @@ gauge = """<svg viewBox="0 0 220 130" class="gauge" role="img" aria-label="Dial 
 </svg>"""
 
 NAV = nav_html('web/smartcitix_trade_craft_academy.html', nav_labels('en'))
+from questkit import QUEST_CSS, quest_js, page_hooks  # noqa: E402  quests: egg hooks only
+QUEST_TAIL = '<style>' + QUEST_CSS + '</style>\n' + page_hooks('web/smartcitix_trade_craft_academy.html') + quest_js('page:web/smartcitix_trade_craft_academy.html')
 
 page = f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Adaptive Stack Protocol</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C1113'/%3E%3Cpath d='M7 21 L16 7 L25 21 Z' fill='none' stroke='%23E8A33D' stroke-width='2.6' stroke-linejoin='round'/%3E%3Cpath d='M11 21 h10' stroke='%2341C4D4' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
@@ -205,9 +208,11 @@ blockquote {{ margin:0 0 16px; padding:2px 0 2px 16px; border-left:3px solid var
 <nav class="mods" aria-label="Modules">{nav}</nav>
 {body}
 </div>
-"""
+{QUEST_TAIL}"""
 out = HERE / "smartcitix_trade_craft_academy.html"
 # The same staleness guard the wiki and the dashboard carry: the spec
 # page is a mirror, and a mirror that lags its source is a second truth.
+page = apply_seo(page, 'web/smartcitix_trade_craft_academy.html', 'Adaptive Stack Protocol \u2014 SmartCiti.X : Trade Craft Academy',
+    'The Adaptive Stack Protocol specification behind the academy, rendered from the repository\'s own spec document.', 'page')
 emit(out, page, f"spec v{SPEC_VERSION}")
 print("ok", len(page), "bytes;", "h2 ids:", list(slugs))

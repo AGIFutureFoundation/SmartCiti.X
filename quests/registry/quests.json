@@ -1,0 +1,4698 @@
+{
+ "pack": "quests",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "source_stamp": "ab999c9c4e995979",
+ "reads": [
+  "lessons/registry/lessons.json",
+  "pack/registry/halls.json",
+  "sims/registry/sims.json",
+  "tools/registry/toolcribs.json"
+ ],
+ "honesty": "Quests, games, treasures, easter eggs and badges are play: they are kept on this device only, they are never evidence of anything, and they never enter a completion record.",
+ "counts": {
+  "main": 7,
+  "side": 144,
+  "game": 4,
+  "treasure": 20,
+  "egg": 31
+ },
+ "halls_with_side_quests": [
+  "acoustic",
+  "airfield",
+  "asbestos",
+  "automation-int",
+  "aviation-ground",
+  "bas-controls",
+  "battery-storage",
+  "blasters",
+  "boilermakers",
+  "bricklayers",
+  "bridge-inspect",
+  "cable-splicers",
+  "carpenters",
+  "catenary",
+  "cement-masons",
+  "cladding",
+  "cleanroom",
+  "concrete-pump",
+  "confined-space",
+  "crane-ops",
+  "curtainwall",
+  "data-center",
+  "decking",
+  "demolition",
+  "district-energy",
+  "divers",
+  "drywall",
+  "electricians",
+  "elevator",
+  "ev-charging",
+  "fabricators",
+  "fiber-splicers",
+  "fire-alarm",
+  "fire-sprinkler",
+  "firestop",
+  "fleet-diesel",
+  "flooring",
+  "foundry",
+  "gas-distrib",
+  "geothermal",
+  "glaziers",
+  "grounds",
+  "hazmat",
+  "heavy-equip",
+  "high-angle",
+  "hvacr",
+  "hydro",
+  "hydrogen",
+  "industrial-clean",
+  "instrumentation",
+  "insulators",
+  "ironworkers",
+  "laborers",
+  "lathers",
+  "lead-abatement",
+  "line-workers",
+  "machinists",
+  "marine-pipe",
+  "marine-terminal",
+  "masonry-restore",
+  "medical-gas",
+  "meter-techs",
+  "millwrights",
+  "miners",
+  "mold-remediation",
+  "network-cabling",
+  "nuclear",
+  "operating-eng",
+  "painters",
+  "piling",
+  "pipefitters",
+  "pipeline",
+  "plasterers",
+  "platers",
+  "plc-techs",
+  "port-crane",
+  "post-tension",
+  "precast",
+  "rail-signals",
+  "rail-track",
+  "refractory",
+  "riggers",
+  "robotics",
+  "roofers",
+  "scaffold",
+  "security-sys",
+  "sheetmetal",
+  "shipfitters",
+  "shoring",
+  "site-safety",
+  "smelter",
+  "solar",
+  "spill-response",
+  "steel-erectors",
+  "stone-carvers",
+  "substation",
+  "survey-drone",
+  "surveyors",
+  "tank-erectors",
+  "teamsters",
+  "terrazzo",
+  "tilesetters",
+  "toolmakers",
+  "transit-vehicle",
+  "transmission",
+  "wastewater",
+  "water-distrib",
+  "waterproofers",
+  "welders",
+  "wind",
+  "window-glazing"
+ ],
+ "quests": [
+  {
+   "id": "game-signal-caller",
+   "kind": "game",
+   "title": "Signal caller",
+   "world": "page:web/trade_craft_quests.html",
+   "requires": {
+    "lessons": [
+     "riggers-first-card",
+     "decking-walk-the-path-first"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Give the signal the lift card calls, in order, before the clock runs out; finish on STOP.",
+   "reward": {
+    "badge": "badge-game-signal-caller",
+    "label": "Signal caller player"
+   },
+   "provenance": "AUTHORED",
+   "place": "rigging-signals",
+   "unlock_text": "To unlock: walk \"Call the first lift before anybody touches the hook\", \"Walk where the bundle will fly before it flies\"."
+  },
+  {
+   "id": "game-load-chart",
+   "kind": "game",
+   "title": "Chart or refuse",
+   "world": "page:web/trade_craft_quests.html",
+   "requires": {
+    "lessons": [
+     "crane-ops-read-the-chart"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Judge each pick against the chart line at its radius: hook it or refuse it.",
+   "reward": {
+    "badge": "badge-game-load-chart",
+    "label": "Chart or refuse player"
+   },
+   "provenance": "AUTHORED",
+   "place": "load-chart",
+   "unlock_text": "To unlock: walk \"Refuse the pick the chart refuses\"."
+  },
+  {
+   "id": "game-trench-grade",
+   "kind": "game",
+   "title": "Cut to grade",
+   "world": "page:web/trade_craft_quests.html",
+   "requires": {
+    "lessons": [
+     "operating-eng-locate-first",
+     "shoring-read-the-ground-again"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Take each trench cell to its marked depth, stop the flagged cell shallow, dump in the spoil zone.",
+   "reward": {
+    "badge": "badge-game-trench-grade",
+    "label": "Cut to grade player"
+   },
+   "provenance": "AUTHORED",
+   "place": "excavator-trench",
+   "unlock_text": "To unlock: walk \"Prove what is under the ground before the bucket moves\", \"Read the ground again after the rain\"."
+  },
+  {
+   "id": "game-crib-match",
+   "kind": "game",
+   "title": "Crib match",
+   "world": "page:web/trade_craft_quests.html",
+   "requires": {
+    "lessons": [
+     "lathers-frame-for-the-next-trade",
+     "restore-point-the-joint"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Read what a tool is for and pick it off the crib wall.",
+   "reward": {
+    "badge": "badge-game-crib-match",
+    "label": "Crib match player"
+   },
+   "provenance": "AUTHORED",
+   "place": "envelope",
+   "unlock_text": "To unlock: walk \"Frame it for whoever comes next\", \"Cut a joint without wrecking the brick\"."
+  },
+  {
+   "id": "main-report-in",
+   "kind": "main",
+   "title": "Report in at the quest board",
+   "world": "page:web/trade_craft_quests.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Open the quest board and press \"Report in\".",
+   "reward": {
+    "badge": "badge-main-report-in",
+    "label": "Reported in"
+   },
+   "provenance": "AUTHORED",
+   "place": "quest-board",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "main-first-card",
+   "kind": "main",
+   "title": "Call the first card",
+   "world": "page:web/trade_craft_quests.html",
+   "requires": {
+    "lessons": [
+     "riggers-first-card"
+    ],
+    "halls": [],
+    "quests": [
+     "main-report-in"
+    ]
+   },
+   "hint": "Walk the riggers' first lesson, then come back to the board.",
+   "reward": {
+    "badge": "badge-main-first-card",
+    "label": "First card called"
+   },
+   "provenance": "AUTHORED",
+   "unlock_text": "To unlock: walk \"Call the first lift before anybody touches the hook\"; finish \"Report in at the quest board\"."
+  },
+  {
+   "id": "main-call-the-lift",
+   "kind": "main",
+   "title": "Call the lift",
+   "world": "page:web/trade_craft_quests.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "main-first-card",
+     "game-signal-caller"
+    ]
+   },
+   "hint": "Win a round of Signal caller in the arcade.",
+   "reward": {
+    "badge": "badge-main-call-the-lift",
+    "label": "Lift called"
+   },
+   "provenance": "AUTHORED",
+   "unlock_text": "To unlock: finish \"Call the first card\", \"Signal caller\"."
+  },
+  {
+   "id": "main-read-the-chart",
+   "kind": "main",
+   "title": "Read the chart before the pick",
+   "world": "page:web/trade_craft_quests.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "main-call-the-lift",
+     "game-load-chart"
+    ]
+   },
+   "hint": "Win a round of Chart or refuse in the arcade.",
+   "reward": {
+    "badge": "badge-main-read-the-chart",
+    "label": "Chart read"
+   },
+   "provenance": "AUTHORED",
+   "unlock_text": "To unlock: finish \"Call the lift\", \"Chart or refuse\"."
+  },
+  {
+   "id": "main-dig-safe",
+   "kind": "main",
+   "title": "Dig to grade, miss the utility",
+   "world": "page:web/trade_craft_quests.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "main-read-the-chart",
+     "game-trench-grade"
+    ]
+   },
+   "hint": "Win a round of Cut to grade in the arcade.",
+   "reward": {
+    "badge": "badge-main-dig-safe",
+    "label": "Dug to grade"
+   },
+   "provenance": "AUTHORED",
+   "unlock_text": "To unlock: finish \"Read the chart before the pick\", \"Cut to grade\"."
+  },
+  {
+   "id": "main-crew-chief",
+   "kind": "main",
+   "title": "Crew of three trades",
+   "world": "page:web/trade_craft_quests.html",
+   "requires": {
+    "lessons": [],
+    "halls": [
+     "riggers",
+     "crane-ops",
+     "operating-eng"
+    ],
+    "quests": [
+     "main-dig-safe"
+    ]
+   },
+   "hint": "Finish a lesson in the riggers', crane operators' and operating engineers' halls.",
+   "reward": {
+    "badge": "badge-main-crew-chief",
+    "label": "Crew of three"
+   },
+   "provenance": "AUTHORED",
+   "unlock_text": "To unlock: finish a lesson in Riggers & Signalpersons, Crane Operators, Operating Engineers; finish \"Dig to grade, miss the utility\"."
+  },
+  {
+   "id": "side-hall-acoustic",
+   "kind": "side",
+   "title": "Report to Acoustic Specialists",
+   "world": "hall:acoustic",
+   "requires": {
+    "lessons": [
+     "acoustic-documentation-first-walk"
+    ],
+    "halls": [
+     "acoustic"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Records and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-acoustic",
+    "label": "Acoustic Specialists regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Records",
+   "unlock_text": "To unlock: walk \"Acoustic Specialists: find out where the record goes\"; finish a lesson in Acoustic Specialists."
+  },
+  {
+   "id": "side-hall-airfield",
+   "kind": "side",
+   "title": "Report to Airfield Trades",
+   "world": "hall:airfield",
+   "requires": {
+    "lessons": [
+     "airfield-tools-first-walk"
+    ],
+    "halls": [
+     "airfield"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Tool Crib and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-airfield",
+    "label": "Airfield Trades regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Tool Crib",
+   "unlock_text": "To unlock: walk \"Airfield Trades: know the kit before you touch it\"; finish a lesson in Airfield Trades."
+  },
+  {
+   "id": "side-hall-asbestos",
+   "kind": "side",
+   "title": "Report to Asbestos Abatement Workers",
+   "world": "hall:asbestos",
+   "requires": {
+    "lessons": [
+     "asbestos-coordination-first-walk"
+    ],
+    "halls": [
+     "asbestos"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Briefing Room and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-asbestos",
+    "label": "Asbestos Abatement Workers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Briefing Room",
+   "unlock_text": "To unlock: walk \"Asbestos Abatement Workers: hand the shift over properly\"; finish a lesson in Asbestos Abatement Workers."
+  },
+  {
+   "id": "side-hall-automation-int",
+   "kind": "side",
+   "title": "Report to Automation Integrators",
+   "world": "hall:automation-int",
+   "requires": {
+    "lessons": [
+     "automation-int-documentation-first-walk"
+    ],
+    "halls": [
+     "automation-int"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Records and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-automation-int",
+    "label": "Automation Integrators regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Records",
+   "unlock_text": "To unlock: walk \"Automation Integrators: find out where the record goes\"; finish a lesson in Automation Integrators."
+  },
+  {
+   "id": "side-hall-aviation-ground",
+   "kind": "side",
+   "title": "Report to Aviation Ground Support",
+   "world": "hall:aviation-ground",
+   "requires": {
+    "lessons": [
+     "aviation-ground-safety-first-walk"
+    ],
+    "halls": [
+     "aviation-ground"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Induction & PPE and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-aviation-ground",
+    "label": "Aviation Ground Support regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Induction & PPE",
+   "unlock_text": "To unlock: walk \"Aviation Ground Support: find out what the room is held to\"; finish a lesson in Aviation Ground Support."
+  },
+  {
+   "id": "side-hall-bas-controls",
+   "kind": "side",
+   "title": "Report to Building Automation Techs",
+   "world": "hall:bas-controls",
+   "requires": {
+    "lessons": [
+     "bas-controls-inspection-first-walk"
+    ],
+    "halls": [
+     "bas-controls"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Inspection Bench and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-bas-controls",
+    "label": "Building Automation Techs regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "To unlock: walk \"Building Automation Techs: ask what a pass would actually mean\"; finish a lesson in Building Automation Techs."
+  },
+  {
+   "id": "side-hall-battery-storage",
+   "kind": "side",
+   "title": "Report to Battery Storage Technicians",
+   "world": "hall:battery-storage",
+   "requires": {
+    "lessons": [
+     "battery-storage-documentation-first-walk"
+    ],
+    "halls": [
+     "battery-storage"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Records and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-battery-storage",
+    "label": "Battery Storage Technicians regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Records",
+   "unlock_text": "To unlock: walk \"Battery Storage Technicians: find out where the record goes\"; finish a lesson in Battery Storage Technicians."
+  },
+  {
+   "id": "side-hall-blasters",
+   "kind": "side",
+   "title": "Report to Drillers & Blasters",
+   "world": "hall:blasters",
+   "requires": {
+    "lessons": [
+     "blasters-inspection-first-walk"
+    ],
+    "halls": [
+     "blasters"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Inspection Bench and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-blasters",
+    "label": "Drillers & Blasters regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "To unlock: walk \"Drillers & Blasters: ask what a pass would actually mean\"; finish a lesson in Drillers & Blasters."
+  },
+  {
+   "id": "side-hall-boilermakers",
+   "kind": "side",
+   "title": "Report to Boilermakers",
+   "world": "hall:boilermakers",
+   "requires": {
+    "lessons": [
+     "boilermakers-get-them-out"
+    ],
+    "halls": [
+     "boilermakers"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Practice Bays and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-boilermakers",
+    "label": "Boilermakers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "To unlock: walk \"Put somebody inside a vessel and get them back out\"; finish a lesson in Boilermakers."
+  },
+  {
+   "id": "side-hall-bricklayers",
+   "kind": "side",
+   "title": "Report to Bricklayers & Allied Craft",
+   "world": "hall:bricklayers",
+   "requires": {
+    "lessons": [
+     "bricklayers-gear-that-stays-on",
+     "bricklayers-grout-the-lift"
+    ],
+    "halls": [
+     "bricklayers"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Induction & PPE and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-bricklayers",
+    "label": "Bricklayers & Allied Craft regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Induction & PPE",
+   "unlock_text": "To unlock: walk \"Wear it for the last ten minutes too\", \"Pour a lift you cannot see inside\"; finish a lesson in Bricklayers & Allied Craft."
+  },
+  {
+   "id": "side-hall-bridge-inspect",
+   "kind": "side",
+   "title": "Report to Bridge Inspection Crews",
+   "world": "hall:bridge-inspect",
+   "requires": {
+    "lessons": [
+     "bridge-inspect-inspection-first-walk"
+    ],
+    "halls": [
+     "bridge-inspect"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Inspection Bench and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-bridge-inspect",
+    "label": "Bridge Inspection Crews regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "To unlock: walk \"Bridge Inspection Crews: ask what a pass would actually mean\"; finish a lesson in Bridge Inspection Crews."
+  },
+  {
+   "id": "side-hall-cable-splicers",
+   "kind": "side",
+   "title": "Report to Cable Splicers",
+   "world": "hall:cable-splicers",
+   "requires": {
+    "lessons": [
+     "cable-splicers-inspection-first-walk"
+    ],
+    "halls": [
+     "cable-splicers"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Inspection Bench and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-cable-splicers",
+    "label": "Cable Splicers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "To unlock: walk \"Cable Splicers: ask what a pass would actually mean\"; finish a lesson in Cable Splicers."
+  },
+  {
+   "id": "side-hall-carpenters",
+   "kind": "side",
+   "title": "Report to Carpenters",
+   "world": "hall:carpenters",
+   "requires": {
+    "lessons": [
+     "carpenters-return-it-the-same"
+    ],
+    "halls": [
+     "carpenters"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Tool Crib and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-carpenters",
+    "label": "Carpenters regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Tool Crib",
+   "unlock_text": "To unlock: walk \"Return it in the state you would want to find it\"; finish a lesson in Carpenters."
+  },
+  {
+   "id": "side-hall-catenary",
+   "kind": "side",
+   "title": "Report to Overhead Catenary Linemen",
+   "world": "hall:catenary",
+   "requires": {
+    "lessons": [
+     "catenary-coordination-first-walk"
+    ],
+    "halls": [
+     "catenary"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Briefing Room and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-catenary",
+    "label": "Overhead Catenary Linemen regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Briefing Room",
+   "unlock_text": "To unlock: walk \"Overhead Catenary Linemen: hand the shift over properly\"; finish a lesson in Overhead Catenary Linemen."
+  },
+  {
+   "id": "side-hall-cement-masons",
+   "kind": "side",
+   "title": "Report to Cement Masons",
+   "world": "hall:cement-masons",
+   "requires": {
+    "lessons": [
+     "cement-masons-mind-the-weather"
+    ],
+    "halls": [
+     "cement-masons"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Materials Store and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-cement-masons",
+    "label": "Cement Masons regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Materials Store",
+   "unlock_text": "To unlock: walk \"Protect a pour from the day it was poured in\"; finish a lesson in Cement Masons."
+  },
+  {
+   "id": "side-hall-cladding",
+   "kind": "side",
+   "title": "Report to Rainscreen Cladding Fitters",
+   "world": "hall:cladding",
+   "requires": {
+    "lessons": [
+     "cladding-check-the-plank-you-stand-on"
+    ],
+    "halls": [
+     "cladding"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Inspection Bench and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-cladding",
+    "label": "Rainscreen Cladding Fitters regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "To unlock: walk \"Check the plank you are about to stand on\"; finish a lesson in Rainscreen Cladding Fitters."
+  },
+  {
+   "id": "side-hall-cleanroom",
+   "kind": "side",
+   "title": "Report to Cleanroom Trades",
+   "world": "hall:cleanroom",
+   "requires": {
+    "lessons": [
+     "cleanroom-safety-first-walk"
+    ],
+    "halls": [
+     "cleanroom"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Induction & PPE and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-cleanroom",
+    "label": "Cleanroom Trades regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Induction & PPE",
+   "unlock_text": "To unlock: walk \"Cleanroom Trades: find out what the room is held to\"; finish a lesson in Cleanroom Trades."
+  },
+  {
+   "id": "side-hall-concrete-pump",
+   "kind": "side",
+   "title": "Report to Concrete Pump Operators",
+   "world": "hall:concrete-pump",
+   "requires": {
+    "lessons": [
+     "concrete-pump-safety-first-walk"
+    ],
+    "halls": [
+     "concrete-pump"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Induction & PPE and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-concrete-pump",
+    "label": "Concrete Pump Operators regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Induction & PPE",
+   "unlock_text": "To unlock: walk \"Concrete Pump Operators: find out what the room is held to\"; finish a lesson in Concrete Pump Operators."
+  },
+  {
+   "id": "side-hall-confined-space",
+   "kind": "side",
+   "title": "Report to Confined Space Rescue",
+   "world": "hall:confined-space",
+   "requires": {
+    "lessons": [
+     "confined-space-layout-first-walk"
+    ],
+    "halls": [
+     "confined-space"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Layout Floor and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-confined-space",
+    "label": "Confined Space Rescue regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Layout Floor",
+   "unlock_text": "To unlock: walk \"Confined Space Rescue: trust a line only as far as it is proved\"; finish a lesson in Confined Space Rescue."
+  },
+  {
+   "id": "side-hall-crane-ops",
+   "kind": "side",
+   "title": "Report to Crane Operators",
+   "world": "hall:crane-ops",
+   "requires": {
+    "lessons": [
+     "crane-ops-read-the-chart"
+    ],
+    "halls": [
+     "crane-ops"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Equipment Bay and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-crane-ops",
+    "label": "Crane Operators regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "To unlock: walk \"Refuse the pick the chart refuses\"; finish a lesson in Crane Operators."
+  },
+  {
+   "id": "side-hall-curtainwall",
+   "kind": "side",
+   "title": "Report to Curtain Wall Erectors",
+   "world": "hall:curtainwall",
+   "requires": {
+    "lessons": [
+     "curtainwall-fuss-about-the-sills"
+    ],
+    "halls": [
+     "curtainwall"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Briefing Room and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-curtainwall",
+    "label": "Curtain Wall Erectors regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Briefing Room",
+   "unlock_text": "To unlock: walk \"Make the fuss about the sills early\"; finish a lesson in Curtain Wall Erectors."
+  },
+  {
+   "id": "side-hall-data-center",
+   "kind": "side",
+   "title": "Report to Data Centre Technicians",
+   "world": "hall:data-center",
+   "requires": {
+    "lessons": [
+     "data-center-tools-first-walk"
+    ],
+    "halls": [
+     "data-center"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Tool Crib and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-data-center",
+    "label": "Data Centre Technicians regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Tool Crib",
+   "unlock_text": "To unlock: walk \"Data Centre Technicians: know the kit before you touch it\"; finish a lesson in Data Centre Technicians."
+  },
+  {
+   "id": "side-hall-decking",
+   "kind": "side",
+   "title": "Report to Metal Deck Installers",
+   "world": "hall:decking",
+   "requires": {
+    "lessons": [
+     "decking-walk-the-path-first"
+    ],
+    "halls": [
+     "decking"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Practice Bays and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-decking",
+    "label": "Metal Deck Installers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "To unlock: walk \"Walk where the bundle will fly before it flies\"; finish a lesson in Metal Deck Installers."
+  },
+  {
+   "id": "side-hall-demolition",
+   "kind": "side",
+   "title": "Report to Demolition Workers",
+   "world": "hall:demolition",
+   "requires": {
+    "lessons": [
+     "demolition-stand-back"
+    ],
+    "halls": [
+     "demolition"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Induction & PPE and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-demolition",
+    "label": "Demolition Workers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Induction & PPE",
+   "unlock_text": "To unlock: walk \"Know where not to stand\"; finish a lesson in Demolition Workers."
+  },
+  {
+   "id": "side-hall-district-energy",
+   "kind": "side",
+   "title": "Report to District Energy Operators",
+   "world": "hall:district-energy",
+   "requires": {
+    "lessons": [
+     "district-energy-inspection-first-walk"
+    ],
+    "halls": [
+     "district-energy"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Inspection Bench and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-district-energy",
+    "label": "District Energy Operators regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "To unlock: walk \"District Energy Operators: ask what a pass would actually mean\"; finish a lesson in District Energy Operators."
+  },
+  {
+   "id": "side-hall-divers",
+   "kind": "side",
+   "title": "Report to Commercial Divers",
+   "world": "hall:divers",
+   "requires": {
+    "lessons": [
+     "divers-layout-first-walk"
+    ],
+    "halls": [
+     "divers"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Layout Floor and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-divers",
+    "label": "Commercial Divers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Layout Floor",
+   "unlock_text": "To unlock: walk \"Commercial Divers: trust a line only as far as it is proved\"; finish a lesson in Commercial Divers."
+  },
+  {
+   "id": "side-hall-drywall",
+   "kind": "side",
+   "title": "Report to Drywall Finishers",
+   "world": "hall:drywall",
+   "requires": {
+    "lessons": [
+     "drywall-layout-first-walk"
+    ],
+    "halls": [
+     "drywall"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Layout Floor and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-drywall",
+    "label": "Drywall Finishers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Layout Floor",
+   "unlock_text": "To unlock: walk \"Drywall Finishers: trust a line only as far as it is proved\"; finish a lesson in Drywall Finishers."
+  },
+  {
+   "id": "side-hall-electricians",
+   "kind": "side",
+   "title": "Report to Electrical Workers",
+   "world": "hall:electricians",
+   "requires": {
+    "lessons": [
+     "electricians-clip-in-first"
+    ],
+    "halls": [
+     "electricians"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Equipment Bay and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-electricians",
+    "label": "Electrical Workers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "To unlock: walk \"Clip in before the basket moves\"; finish a lesson in Electrical Workers."
+  },
+  {
+   "id": "side-hall-elevator",
+   "kind": "side",
+   "title": "Report to Elevator Constructors",
+   "world": "hall:elevator",
+   "requires": {
+    "lessons": [
+     "elevator-tools-first-walk"
+    ],
+    "halls": [
+     "elevator"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Tool Crib and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-elevator",
+    "label": "Elevator Constructors regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Tool Crib",
+   "unlock_text": "To unlock: walk \"Elevator Constructors: know the kit before you touch it\"; finish a lesson in Elevator Constructors."
+  },
+  {
+   "id": "side-hall-ev-charging",
+   "kind": "side",
+   "title": "Report to EV Charging Installers",
+   "world": "hall:ev-charging",
+   "requires": {
+    "lessons": [
+     "ev-charging-safety-first-walk"
+    ],
+    "halls": [
+     "ev-charging"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Induction & PPE and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-ev-charging",
+    "label": "EV Charging Installers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Induction & PPE",
+   "unlock_text": "To unlock: walk \"EV Charging Installers: find out what the room is held to\"; finish a lesson in EV Charging Installers."
+  },
+  {
+   "id": "side-hall-fabricators",
+   "kind": "side",
+   "title": "Report to Structural Fabricators",
+   "world": "hall:fabricators",
+   "requires": {
+    "lessons": [
+     "fabricators-lay-it-out-then-prove-it"
+    ],
+    "halls": [
+     "fabricators"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Layout Floor and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-fabricators",
+    "label": "Structural Fabricators regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Layout Floor",
+   "unlock_text": "To unlock: walk \"Lay it out, then prove the line before you cut\"; finish a lesson in Structural Fabricators."
+  },
+  {
+   "id": "side-hall-fiber-splicers",
+   "kind": "side",
+   "title": "Report to Fiber Splicers",
+   "world": "hall:fiber-splicers",
+   "requires": {
+    "lessons": [
+     "fiber-splicers-keep-the-trace"
+    ],
+    "halls": [
+     "fiber-splicers"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Records and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-fiber-splicers",
+    "label": "Fiber Splicers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Records",
+   "unlock_text": "To unlock: walk \"Keep the trace that proves the splice\"; finish a lesson in Fiber Splicers."
+  },
+  {
+   "id": "side-hall-fire-alarm",
+   "kind": "side",
+   "title": "Report to Fire Alarm Technicians",
+   "world": "hall:fire-alarm",
+   "requires": {
+    "lessons": [
+     "fire-alarm-coordination-first-walk"
+    ],
+    "halls": [
+     "fire-alarm"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Briefing Room and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-fire-alarm",
+    "label": "Fire Alarm Technicians regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Briefing Room",
+   "unlock_text": "To unlock: walk \"Fire Alarm Technicians: hand the shift over properly\"; finish a lesson in Fire Alarm Technicians."
+  },
+  {
+   "id": "side-hall-fire-sprinkler",
+   "kind": "side",
+   "title": "Report to Fire Sprinkler Fitters",
+   "world": "hall:fire-sprinkler",
+   "requires": {
+    "lessons": [
+     "fire-sprinkler-tools-first-walk"
+    ],
+    "halls": [
+     "fire-sprinkler"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Tool Crib and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-fire-sprinkler",
+    "label": "Fire Sprinkler Fitters regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Tool Crib",
+   "unlock_text": "To unlock: walk \"Fire Sprinkler Fitters: know the kit before you touch it\"; finish a lesson in Fire Sprinkler Fitters."
+  },
+  {
+   "id": "side-hall-firestop",
+   "kind": "side",
+   "title": "Report to Firestop Installers",
+   "world": "hall:firestop",
+   "requires": {
+    "lessons": [
+     "firestop-write-down-what-you-sealed"
+    ],
+    "halls": [
+     "firestop"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Records and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-firestop",
+    "label": "Firestop Installers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Records",
+   "unlock_text": "To unlock: walk \"Write down what you sealed and with what\"; finish a lesson in Firestop Installers."
+  },
+  {
+   "id": "side-hall-fleet-diesel",
+   "kind": "side",
+   "title": "Report to Fleet Diesel Technicians",
+   "world": "hall:fleet-diesel",
+   "requires": {
+    "lessons": [
+     "fleet-diesel-layout-first-walk"
+    ],
+    "halls": [
+     "fleet-diesel"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Layout Floor and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-fleet-diesel",
+    "label": "Fleet Diesel Technicians regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Layout Floor",
+   "unlock_text": "To unlock: walk \"Fleet Diesel Technicians: trust a line only as far as it is proved\"; finish a lesson in Fleet Diesel Technicians."
+  },
+  {
+   "id": "side-hall-flooring",
+   "kind": "side",
+   "title": "Report to Floor Coverers",
+   "world": "hall:flooring",
+   "requires": {
+    "lessons": [
+     "flooring-inspection-first-walk"
+    ],
+    "halls": [
+     "flooring"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Inspection Bench and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-flooring",
+    "label": "Floor Coverers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "To unlock: walk \"Floor Coverers: ask what a pass would actually mean\"; finish a lesson in Floor Coverers."
+  },
+  {
+   "id": "side-hall-foundry",
+   "kind": "side",
+   "title": "Report to Foundry Workers",
+   "world": "hall:foundry",
+   "requires": {
+    "lessons": [
+     "foundry-clear-the-runway-first"
+    ],
+    "halls": [
+     "foundry"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Materials Store and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-foundry",
+    "label": "Foundry Workers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Materials Store",
+   "unlock_text": "To unlock: walk \"Clear the runway before the ladle moves\"; finish a lesson in Foundry Workers."
+  },
+  {
+   "id": "side-hall-gas-distrib",
+   "kind": "side",
+   "title": "Report to Gas Distribution Fitters",
+   "world": "hall:gas-distrib",
+   "requires": {
+    "lessons": [
+     "gas-distrib-documentation-first-walk"
+    ],
+    "halls": [
+     "gas-distrib"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Records and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-gas-distrib",
+    "label": "Gas Distribution Fitters regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Records",
+   "unlock_text": "To unlock: walk \"Gas Distribution Fitters: find out where the record goes\"; finish a lesson in Gas Distribution Fitters."
+  },
+  {
+   "id": "side-hall-geothermal",
+   "kind": "side",
+   "title": "Report to Geothermal Technicians",
+   "world": "hall:geothermal",
+   "requires": {
+    "lessons": [
+     "geothermal-coordination-first-walk"
+    ],
+    "halls": [
+     "geothermal"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Briefing Room and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-geothermal",
+    "label": "Geothermal Technicians regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Briefing Room",
+   "unlock_text": "To unlock: walk \"Geothermal Technicians: hand the shift over properly\"; finish a lesson in Geothermal Technicians."
+  },
+  {
+   "id": "side-hall-glaziers",
+   "kind": "side",
+   "title": "Report to Glaziers",
+   "world": "hall:glaziers",
+   "requires": {
+    "lessons": [
+     "glaziers-watch-the-line"
+    ],
+    "halls": [
+     "glaziers"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Inspection Bench and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-glaziers",
+    "label": "Glaziers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "To unlock: walk \"Keep the boom out of the zone\"; finish a lesson in Glaziers."
+  },
+  {
+   "id": "side-hall-grounds",
+   "kind": "side",
+   "title": "Report to Grounds & Landscape",
+   "world": "hall:grounds",
+   "requires": {
+    "lessons": [
+     "grounds-coordination-first-walk"
+    ],
+    "halls": [
+     "grounds"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Briefing Room and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-grounds",
+    "label": "Grounds & Landscape regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Briefing Room",
+   "unlock_text": "To unlock: walk \"Grounds & Landscape: hand the shift over properly\"; finish a lesson in Grounds & Landscape."
+  },
+  {
+   "id": "side-hall-hazmat",
+   "kind": "side",
+   "title": "Report to Hazmat & Environmental",
+   "world": "hall:hazmat",
+   "requires": {
+    "lessons": [
+     "hazmat-wash-and-decon"
+    ],
+    "halls": [
+     "hazmat"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Induction & PPE and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-hazmat",
+    "label": "Hazmat & Environmental regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Induction & PPE",
+   "unlock_text": "To unlock: walk \"Come out cleaner than what you washed\"; finish a lesson in Hazmat & Environmental."
+  },
+  {
+   "id": "side-hall-heavy-equip",
+   "kind": "side",
+   "title": "Report to Heavy Equipment Technicians",
+   "world": "hall:heavy-equip",
+   "requires": {
+    "lessons": [
+     "heavy-equip-listen-to-the-dash"
+    ],
+    "halls": [
+     "heavy-equip"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Diagnostic Bench and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-heavy-equip",
+    "label": "Heavy Equipment Technicians regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Diagnostic Bench",
+   "unlock_text": "To unlock: walk \"Listen to the dash before you replace anything\"; finish a lesson in Heavy Equipment Technicians."
+  },
+  {
+   "id": "side-hall-high-angle",
+   "kind": "side",
+   "title": "Report to High-Angle Rescue",
+   "world": "hall:high-angle",
+   "requires": {
+    "lessons": [
+     "high-angle-inspection-first-walk"
+    ],
+    "halls": [
+     "high-angle"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Inspection Bench and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-high-angle",
+    "label": "High-Angle Rescue regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "To unlock: walk \"High-Angle Rescue: ask what a pass would actually mean\"; finish a lesson in High-Angle Rescue."
+  },
+  {
+   "id": "side-hall-hvacr",
+   "kind": "side",
+   "title": "Report to HVAC/R Technicians",
+   "world": "hall:hvacr",
+   "requires": {
+    "lessons": [
+     "hvacr-prove-the-sequence"
+    ],
+    "halls": [
+     "hvacr"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Inspection Bench and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-hvacr",
+    "label": "HVAC/R Technicians regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "To unlock: walk \"Prove the system does what the sequence says\"; finish a lesson in HVAC/R Technicians."
+  },
+  {
+   "id": "side-hall-hydro",
+   "kind": "side",
+   "title": "Report to Hydro Plant Trades",
+   "world": "hall:hydro",
+   "requires": {
+    "lessons": [
+     "hydro-inspection-first-walk"
+    ],
+    "halls": [
+     "hydro"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Inspection Bench and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-hydro",
+    "label": "Hydro Plant Trades regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "To unlock: walk \"Hydro Plant Trades: ask what a pass would actually mean\"; finish a lesson in Hydro Plant Trades."
+  },
+  {
+   "id": "side-hall-hydrogen",
+   "kind": "side",
+   "title": "Report to Hydrogen Systems Trades",
+   "world": "hall:hydrogen",
+   "requires": {
+    "lessons": [
+     "hydrogen-tools-first-walk"
+    ],
+    "halls": [
+     "hydrogen"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Tool Crib and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-hydrogen",
+    "label": "Hydrogen Systems Trades regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Tool Crib",
+   "unlock_text": "To unlock: walk \"Hydrogen Systems Trades: know the kit before you touch it\"; finish a lesson in Hydrogen Systems Trades."
+  },
+  {
+   "id": "side-hall-industrial-clean",
+   "kind": "side",
+   "title": "Report to Industrial Cleaning Crews",
+   "world": "hall:industrial-clean",
+   "requires": {
+    "lessons": [
+     "industrial-clean-coordination-first-walk"
+    ],
+    "halls": [
+     "industrial-clean"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Briefing Room and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-industrial-clean",
+    "label": "Industrial Cleaning Crews regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Briefing Room",
+   "unlock_text": "To unlock: walk \"Industrial Cleaning Crews: hand the shift over properly\"; finish a lesson in Industrial Cleaning Crews."
+  },
+  {
+   "id": "side-hall-instrumentation",
+   "kind": "side",
+   "title": "Report to Instrumentation Technicians",
+   "world": "hall:instrumentation",
+   "requires": {
+    "lessons": [
+     "instrumentation-layout-first-walk"
+    ],
+    "halls": [
+     "instrumentation"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Layout Floor and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-instrumentation",
+    "label": "Instrumentation Technicians regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Layout Floor",
+   "unlock_text": "To unlock: walk \"Instrumentation Technicians: trust a line only as far as it is proved\"; finish a lesson in Instrumentation Technicians."
+  },
+  {
+   "id": "side-hall-insulators",
+   "kind": "side",
+   "title": "Report to Heat & Frost Insulators",
+   "world": "hall:insulators",
+   "requires": {
+    "lessons": [
+     "insulators-stay-inside-the-rails"
+    ],
+    "halls": [
+     "insulators"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Materials Store and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-insulators",
+    "label": "Heat & Frost Insulators regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Materials Store",
+   "unlock_text": "To unlock: walk \"Stay inside the rails while you reach\"; finish a lesson in Heat & Frost Insulators."
+  },
+  {
+   "id": "side-hall-ironworkers",
+   "kind": "side",
+   "title": "Report to Ironworkers",
+   "world": "hall:ironworkers",
+   "requires": {
+    "lessons": [
+     "ironworkers-plan-out-loud"
+    ],
+    "halls": [
+     "ironworkers"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Briefing Room and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-ironworkers",
+    "label": "Ironworkers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Briefing Room",
+   "unlock_text": "To unlock: walk \"Say the plan out loud, then change it properly\"; finish a lesson in Ironworkers."
+  },
+  {
+   "id": "side-hall-laborers",
+   "kind": "side",
+   "title": "Report to Laborers",
+   "world": "hall:laborers",
+   "requires": {
+    "lessons": [
+     "laborers-stand-where-the-cab-can-see"
+    ],
+    "halls": [
+     "laborers"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Induction & PPE and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-laborers",
+    "label": "Laborers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Induction & PPE",
+   "unlock_text": "To unlock: walk \"Stand where the cab can see you\"; finish a lesson in Laborers."
+  },
+  {
+   "id": "side-hall-lathers",
+   "kind": "side",
+   "title": "Report to Lathers & Metal Framers",
+   "world": "hall:lathers",
+   "requires": {
+    "lessons": [
+     "lathers-frame-for-the-next-trade"
+    ],
+    "halls": [
+     "lathers"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Practice Bays and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-lathers",
+    "label": "Lathers & Metal Framers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "To unlock: walk \"Frame it for whoever comes next\"; finish a lesson in Lathers & Metal Framers."
+  },
+  {
+   "id": "side-hall-lead-abatement",
+   "kind": "side",
+   "title": "Report to Lead Abatement Workers",
+   "world": "hall:lead-abatement",
+   "requires": {
+    "lessons": [
+     "lead-abatement-documentation-first-walk"
+    ],
+    "halls": [
+     "lead-abatement"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Records and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-lead-abatement",
+    "label": "Lead Abatement Workers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Records",
+   "unlock_text": "To unlock: walk \"Lead Abatement Workers: find out where the record goes\"; finish a lesson in Lead Abatement Workers."
+  },
+  {
+   "id": "side-hall-line-workers",
+   "kind": "side",
+   "title": "Report to Utility Line Workers",
+   "world": "hall:line-workers",
+   "requires": {
+    "lessons": [
+     "line-workers-find-the-fault"
+    ],
+    "halls": [
+     "line-workers"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Diagnostic Bench and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-line-workers",
+    "label": "Utility Line Workers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Diagnostic Bench",
+   "unlock_text": "To unlock: walk \"Find the fault instead of replacing things\"; finish a lesson in Utility Line Workers."
+  },
+  {
+   "id": "side-hall-machinists",
+   "kind": "side",
+   "title": "Report to Machinists",
+   "world": "hall:machinists",
+   "requires": {
+    "lessons": [
+     "machinists-move-the-job-without-marking-it"
+    ],
+    "halls": [
+     "machinists"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Inspection Bench and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-machinists",
+    "label": "Machinists regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "To unlock: walk \"Move the job across the shop without marking it\"; finish a lesson in Machinists."
+  },
+  {
+   "id": "side-hall-marine-pipe",
+   "kind": "side",
+   "title": "Report to Marine Pipefitters",
+   "world": "hall:marine-pipe",
+   "requires": {
+    "lessons": [
+     "marine-pipe-know-when-to-come-out"
+    ],
+    "halls": [
+     "marine-pipe"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Practice Bays and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-marine-pipe",
+    "label": "Marine Pipefitters regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "To unlock: walk \"Know when to come out of the compartment\"; finish a lesson in Marine Pipefitters."
+  },
+  {
+   "id": "side-hall-marine-terminal",
+   "kind": "side",
+   "title": "Report to Marine Terminal Operators",
+   "world": "hall:marine-terminal",
+   "requires": {
+    "lessons": [
+     "marine-terminal-brief-the-lane"
+    ],
+    "halls": [
+     "marine-terminal"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Briefing Room and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-marine-terminal",
+    "label": "Marine Terminal Operators regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Briefing Room",
+   "unlock_text": "To unlock: walk \"Brief the lane before the first box moves\"; finish a lesson in Marine Terminal Operators."
+  },
+  {
+   "id": "side-hall-masonry-restore",
+   "kind": "side",
+   "title": "Report to Masonry Restoration",
+   "world": "hall:masonry-restore",
+   "requires": {
+    "lessons": [
+     "restore-point-the-joint",
+     "restore-write-it-down"
+    ],
+    "halls": [
+     "masonry-restore"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Tool Crib and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-masonry-restore",
+    "label": "Masonry Restoration regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Tool Crib",
+   "unlock_text": "To unlock: walk \"Cut a joint without wrecking the brick\", \"Leave a record the next century can read\"; finish a lesson in Masonry Restoration."
+  },
+  {
+   "id": "side-hall-medical-gas",
+   "kind": "side",
+   "title": "Report to Medical Gas Installers",
+   "world": "hall:medical-gas",
+   "requires": {
+    "lessons": [
+     "medical-gas-tools-first-walk"
+    ],
+    "halls": [
+     "medical-gas"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Tool Crib and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-medical-gas",
+    "label": "Medical Gas Installers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Tool Crib",
+   "unlock_text": "To unlock: walk \"Medical Gas Installers: know the kit before you touch it\"; finish a lesson in Medical Gas Installers."
+  },
+  {
+   "id": "side-hall-meter-techs",
+   "kind": "side",
+   "title": "Report to Meter Technicians",
+   "world": "hall:meter-techs",
+   "requires": {
+    "lessons": [
+     "meter-techs-coordination-first-walk"
+    ],
+    "halls": [
+     "meter-techs"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Briefing Room and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-meter-techs",
+    "label": "Meter Technicians regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Briefing Room",
+   "unlock_text": "To unlock: walk \"Meter Technicians: hand the shift over properly\"; finish a lesson in Meter Technicians."
+  },
+  {
+   "id": "side-hall-millwrights",
+   "kind": "side",
+   "title": "Report to Millwrights",
+   "world": "hall:millwrights",
+   "requires": {
+    "lessons": [
+     "millwrights-shop-move"
+    ],
+    "halls": [
+     "millwrights"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Equipment Bay and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-millwrights",
+    "label": "Millwrights regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "To unlock: walk \"Move something precise across a shop floor\"; finish a lesson in Millwrights."
+  },
+  {
+   "id": "side-hall-miners",
+   "kind": "side",
+   "title": "Report to Underground Miners",
+   "world": "hall:miners",
+   "requires": {
+    "lessons": [
+     "miners-coordination-first-walk"
+    ],
+    "halls": [
+     "miners"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Briefing Room and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-miners",
+    "label": "Underground Miners regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Briefing Room",
+   "unlock_text": "To unlock: walk \"Underground Miners: hand the shift over properly\"; finish a lesson in Underground Miners."
+  },
+  {
+   "id": "side-hall-mold-remediation",
+   "kind": "side",
+   "title": "Report to Mould Remediation Techs",
+   "world": "hall:mold-remediation",
+   "requires": {
+    "lessons": [
+     "mold-remediation-safety-first-walk"
+    ],
+    "halls": [
+     "mold-remediation"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Induction & PPE and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-mold-remediation",
+    "label": "Mould Remediation Techs regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Induction & PPE",
+   "unlock_text": "To unlock: walk \"Mould Remediation Techs: find out what the room is held to\"; finish a lesson in Mould Remediation Techs."
+  },
+  {
+   "id": "side-hall-network-cabling",
+   "kind": "side",
+   "title": "Report to Structured Cabling Techs",
+   "world": "hall:network-cabling",
+   "requires": {
+    "lessons": [
+     "network-cabling-safety-first-walk"
+    ],
+    "halls": [
+     "network-cabling"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Induction & PPE and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-network-cabling",
+    "label": "Structured Cabling Techs regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Induction & PPE",
+   "unlock_text": "To unlock: walk \"Structured Cabling Techs: find out what the room is held to\"; finish a lesson in Structured Cabling Techs."
+  },
+  {
+   "id": "side-hall-nuclear",
+   "kind": "side",
+   "title": "Report to Nuclear Plant Trades",
+   "world": "hall:nuclear",
+   "requires": {
+    "lessons": [
+     "nuclear-layout-first-walk"
+    ],
+    "halls": [
+     "nuclear"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Layout Floor and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-nuclear",
+    "label": "Nuclear Plant Trades regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Layout Floor",
+   "unlock_text": "To unlock: walk \"Nuclear Plant Trades: trust a line only as far as it is proved\"; finish a lesson in Nuclear Plant Trades."
+  },
+  {
+   "id": "side-hall-operating-eng",
+   "kind": "side",
+   "title": "Report to Operating Engineers",
+   "world": "hall:operating-eng",
+   "requires": {
+    "lessons": [
+     "operating-eng-locate-first"
+    ],
+    "halls": [
+     "operating-eng"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Layout Floor and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-operating-eng",
+    "label": "Operating Engineers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Layout Floor",
+   "unlock_text": "To unlock: walk \"Prove what is under the ground before the bucket moves\"; finish a lesson in Operating Engineers."
+  },
+  {
+   "id": "side-hall-painters",
+   "kind": "side",
+   "title": "Report to Painters & Allied Trades",
+   "world": "hall:painters",
+   "requires": {
+    "lessons": [
+     "painters-contain-it",
+     "painters-lay-the-coat"
+    ],
+    "halls": [
+     "painters"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Induction & PPE and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-painters",
+    "label": "Painters & Allied Trades regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Induction & PPE",
+   "unlock_text": "To unlock: walk \"Catch what you wash off\", \"Lay a coat that is actually there\"; finish a lesson in Painters & Allied Trades."
+  },
+  {
+   "id": "side-hall-piling",
+   "kind": "side",
+   "title": "Report to Piling Crews",
+   "world": "hall:piling",
+   "requires": {
+    "lessons": [
+     "piling-stand-the-rig-on-something"
+    ],
+    "halls": [
+     "piling"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Equipment Bay and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-piling",
+    "label": "Piling Crews regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "To unlock: walk \"Stand the rig on ground that will hold it\"; finish a lesson in Piling Crews."
+  },
+  {
+   "id": "side-hall-pipefitters",
+   "kind": "side",
+   "title": "Report to Plumbers & Pipefitters",
+   "world": "hall:pipefitters",
+   "requires": {
+    "lessons": [
+     "pipefitters-safety-first-walk"
+    ],
+    "halls": [
+     "pipefitters"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Induction & PPE and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-pipefitters",
+    "label": "Plumbers & Pipefitters regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Induction & PPE",
+   "unlock_text": "To unlock: walk \"Plumbers & Pipefitters: find out what the room is held to\"; finish a lesson in Plumbers & Pipefitters."
+  },
+  {
+   "id": "side-hall-pipeline",
+   "kind": "side",
+   "title": "Report to Pipeline Trades",
+   "world": "hall:pipeline",
+   "requires": {
+    "lessons": [
+     "pipeline-close-the-permit-properly"
+    ],
+    "halls": [
+     "pipeline"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Inspection Bench and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-pipeline",
+    "label": "Pipeline Trades regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "To unlock: walk \"Close the permit the way it was opened\"; finish a lesson in Pipeline Trades."
+  },
+  {
+   "id": "side-hall-plasterers",
+   "kind": "side",
+   "title": "Report to Plasterers",
+   "world": "hall:plasterers",
+   "requires": {
+    "lessons": [
+     "plasterers-pin-every-brace"
+    ],
+    "halls": [
+     "plasterers"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Practice Bays and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-plasterers",
+    "label": "Plasterers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "To unlock: walk \"Pin every brace before the first hawk goes up\"; finish a lesson in Plasterers."
+  },
+  {
+   "id": "side-hall-platers",
+   "kind": "side",
+   "title": "Report to Platers & Coaters",
+   "world": "hall:platers",
+   "requires": {
+    "lessons": [
+     "platers-tools-first-walk"
+    ],
+    "halls": [
+     "platers"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Tool Crib and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-platers",
+    "label": "Platers & Coaters regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Tool Crib",
+   "unlock_text": "To unlock: walk \"Platers & Coaters: know the kit before you touch it\"; finish a lesson in Platers & Coaters."
+  },
+  {
+   "id": "side-hall-plc-techs",
+   "kind": "side",
+   "title": "Report to PLC & Controls Technicians",
+   "world": "hall:plc-techs",
+   "requires": {
+    "lessons": [
+     "plc-techs-inspection-first-walk"
+    ],
+    "halls": [
+     "plc-techs"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Inspection Bench and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-plc-techs",
+    "label": "PLC & Controls Technicians regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "To unlock: walk \"PLC & Controls Technicians: ask what a pass would actually mean\"; finish a lesson in PLC & Controls Technicians."
+  },
+  {
+   "id": "side-hall-port-crane",
+   "kind": "side",
+   "title": "Report to Port Crane Technicians",
+   "world": "hall:port-crane",
+   "requires": {
+    "lessons": [
+     "port-crane-read-the-rope"
+    ],
+    "halls": [
+     "port-crane"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Equipment Bay and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-port-crane",
+    "label": "Port Crane Technicians regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "To unlock: walk \"Read the rope before the box goes up\"; finish a lesson in Port Crane Technicians."
+  },
+  {
+   "id": "side-hall-post-tension",
+   "kind": "side",
+   "title": "Report to Post-Tension Technicians",
+   "world": "hall:post-tension",
+   "requires": {
+    "lessons": [
+     "post-tension-tools-first-walk"
+    ],
+    "halls": [
+     "post-tension"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Tool Crib and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-post-tension",
+    "label": "Post-Tension Technicians regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Tool Crib",
+   "unlock_text": "To unlock: walk \"Post-Tension Technicians: know the kit before you touch it\"; finish a lesson in Post-Tension Technicians."
+  },
+  {
+   "id": "side-hall-precast",
+   "kind": "side",
+   "title": "Report to Precast Erectors",
+   "world": "hall:precast",
+   "requires": {
+    "lessons": [
+     "precast-layout-first-walk"
+    ],
+    "halls": [
+     "precast"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Layout Floor and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-precast",
+    "label": "Precast Erectors regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Layout Floor",
+   "unlock_text": "To unlock: walk \"Precast Erectors: trust a line only as far as it is proved\"; finish a lesson in Precast Erectors."
+  },
+  {
+   "id": "side-hall-rail-signals",
+   "kind": "side",
+   "title": "Report to Rail Signal Technicians",
+   "world": "hall:rail-signals",
+   "requires": {
+    "lessons": [
+     "rail-signals-inspection-first-walk"
+    ],
+    "halls": [
+     "rail-signals"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Inspection Bench and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-rail-signals",
+    "label": "Rail Signal Technicians regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "To unlock: walk \"Rail Signal Technicians: ask what a pass would actually mean\"; finish a lesson in Rail Signal Technicians."
+  },
+  {
+   "id": "side-hall-rail-track",
+   "kind": "side",
+   "title": "Report to Rail Track Workers",
+   "world": "hall:rail-track",
+   "requires": {
+    "lessons": [
+     "rail-track-layout-first-walk"
+    ],
+    "halls": [
+     "rail-track"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Layout Floor and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-rail-track",
+    "label": "Rail Track Workers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Layout Floor",
+   "unlock_text": "To unlock: walk \"Rail Track Workers: trust a line only as far as it is proved\"; finish a lesson in Rail Track Workers."
+  },
+  {
+   "id": "side-hall-refractory",
+   "kind": "side",
+   "title": "Report to Refractory Masons",
+   "world": "hall:refractory",
+   "requires": {
+    "lessons": [
+     "refractory-dry-it-slowly"
+    ],
+    "halls": [
+     "refractory"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Practice Bays and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-refractory",
+    "label": "Refractory Masons regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "To unlock: walk \"Take the lining up to heat slowly enough\"; finish a lesson in Refractory Masons."
+  },
+  {
+   "id": "side-hall-riggers",
+   "kind": "side",
+   "title": "Report to Riggers & Signalpersons",
+   "world": "hall:riggers",
+   "requires": {
+    "lessons": [
+     "riggers-first-card",
+     "riggers-carry-under-control"
+    ],
+    "halls": [
+     "riggers"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Briefing Room and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-riggers",
+    "label": "Riggers & Signalpersons regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Briefing Room",
+   "unlock_text": "To unlock: walk \"Call the first lift before anybody touches the hook\", \"Carry a load that is not fighting you\"; finish a lesson in Riggers & Signalpersons."
+  },
+  {
+   "id": "side-hall-robotics",
+   "kind": "side",
+   "title": "Report to Industrial Robotics Techs",
+   "world": "hall:robotics",
+   "requires": {
+    "lessons": [
+     "robotics-coordination-first-walk"
+    ],
+    "halls": [
+     "robotics"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Briefing Room and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-robotics",
+    "label": "Industrial Robotics Techs regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Briefing Room",
+   "unlock_text": "To unlock: walk \"Industrial Robotics Techs: hand the shift over properly\"; finish a lesson in Industrial Robotics Techs."
+  },
+  {
+   "id": "side-hall-roofers",
+   "kind": "side",
+   "title": "Report to Roofers & Waterproofers",
+   "world": "hall:roofers",
+   "requires": {
+    "lessons": [
+     "roofers-mind-the-edge-and-the-skylight"
+    ],
+    "halls": [
+     "roofers"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Induction & PPE and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-roofers",
+    "label": "Roofers & Waterproofers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Induction & PPE",
+   "unlock_text": "To unlock: walk \"Mind the edge, and the skylight nobody mentioned\"; finish a lesson in Roofers & Waterproofers."
+  },
+  {
+   "id": "side-hall-scaffold",
+   "kind": "side",
+   "title": "Report to Scaffold Erectors",
+   "world": "hall:scaffold",
+   "requires": {
+    "lessons": [
+     "scaffold-read-the-tag",
+     "scaffold-build-in-order"
+    ],
+    "halls": [
+     "scaffold"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Induction & PPE and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-scaffold",
+    "label": "Scaffold Erectors regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Induction & PPE",
+   "unlock_text": "To unlock: walk \"Believe the tag or believe nothing\", \"Build the bay in the order that keeps you off the ground\"; finish a lesson in Scaffold Erectors."
+  },
+  {
+   "id": "side-hall-security-sys",
+   "kind": "side",
+   "title": "Report to Security Systems Installers",
+   "world": "hall:security-sys",
+   "requires": {
+    "lessons": [
+     "security-sys-documentation-first-walk"
+    ],
+    "halls": [
+     "security-sys"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Records and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-security-sys",
+    "label": "Security Systems Installers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Records",
+   "unlock_text": "To unlock: walk \"Security Systems Installers: find out where the record goes\"; finish a lesson in Security Systems Installers."
+  },
+  {
+   "id": "side-hall-sheetmetal",
+   "kind": "side",
+   "title": "Report to Sheet Metal Workers",
+   "world": "hall:sheetmetal",
+   "requires": {
+    "lessons": [
+     "sheetmetal-name-the-kit-before-you-climb"
+    ],
+    "halls": [
+     "sheetmetal"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Tool Crib and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-sheetmetal",
+    "label": "Sheet Metal Workers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Tool Crib",
+   "unlock_text": "To unlock: walk \"Name the kit before you take it up\"; finish a lesson in Sheet Metal Workers."
+  },
+  {
+   "id": "side-hall-shipfitters",
+   "kind": "side",
+   "title": "Report to Shipfitters",
+   "world": "hall:shipfitters",
+   "requires": {
+    "lessons": [
+     "shipfitters-say-what-you-cannot-see"
+    ],
+    "halls": [
+     "shipfitters"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Practice Bays and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-shipfitters",
+    "label": "Shipfitters regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "To unlock: walk \"Say what you cannot see from the hood\"; finish a lesson in Shipfitters."
+  },
+  {
+   "id": "side-hall-shoring",
+   "kind": "side",
+   "title": "Report to Shoring & Underpinning",
+   "world": "hall:shoring",
+   "requires": {
+    "lessons": [
+     "shoring-read-the-ground-again"
+    ],
+    "halls": [
+     "shoring"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Layout Floor and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-shoring",
+    "label": "Shoring & Underpinning regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Layout Floor",
+   "unlock_text": "To unlock: walk \"Read the ground again after the rain\"; finish a lesson in Shoring & Underpinning."
+  },
+  {
+   "id": "side-hall-site-safety",
+   "kind": "side",
+   "title": "Report to Site Safety Coordinators",
+   "world": "hall:site-safety",
+   "requires": {
+    "lessons": [
+     "site-safety-make-it-normal"
+    ],
+    "halls": [
+     "site-safety"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Classroom and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-site-safety",
+    "label": "Site Safety Coordinators regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Classroom",
+   "unlock_text": "To unlock: walk \"Make stopping the job an ordinary thing to do\"; finish a lesson in Site Safety Coordinators."
+  },
+  {
+   "id": "side-hall-smelter",
+   "kind": "side",
+   "title": "Report to Smelter Operators",
+   "world": "hall:smelter",
+   "requires": {
+    "lessons": [
+     "smelter-documentation-first-walk"
+    ],
+    "halls": [
+     "smelter"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Records and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-smelter",
+    "label": "Smelter Operators regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Records",
+   "unlock_text": "To unlock: walk \"Smelter Operators: find out where the record goes\"; finish a lesson in Smelter Operators."
+  },
+  {
+   "id": "side-hall-solar",
+   "kind": "side",
+   "title": "Report to Solar Installers",
+   "world": "hall:solar",
+   "requires": {
+    "lessons": [
+     "solar-documentation-first-walk"
+    ],
+    "halls": [
+     "solar"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Records and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-solar",
+    "label": "Solar Installers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Records",
+   "unlock_text": "To unlock: walk \"Solar Installers: find out where the record goes\"; finish a lesson in Solar Installers."
+  },
+  {
+   "id": "side-hall-spill-response",
+   "kind": "side",
+   "title": "Report to Spill Response Technicians",
+   "world": "hall:spill-response",
+   "requires": {
+    "lessons": [
+     "spill-response-tools-first-walk"
+    ],
+    "halls": [
+     "spill-response"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Tool Crib and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-spill-response",
+    "label": "Spill Response Technicians regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Tool Crib",
+   "unlock_text": "To unlock: walk \"Spill Response Technicians: know the kit before you touch it\"; finish a lesson in Spill Response Technicians."
+  },
+  {
+   "id": "side-hall-steel-erectors",
+   "kind": "side",
+   "title": "Report to Steel Erectors",
+   "world": "hall:steel-erectors",
+   "requires": {
+    "lessons": [
+     "steel-erectors-land-it-on-the-bolts"
+    ],
+    "halls": [
+     "steel-erectors"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Practice Bays and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-steel-erectors",
+    "label": "Steel Erectors regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "To unlock: walk \"Land the piece where the bolts can go in\"; finish a lesson in Steel Erectors."
+  },
+  {
+   "id": "side-hall-stone-carvers",
+   "kind": "side",
+   "title": "Report to Stone Carvers",
+   "world": "hall:stone-carvers",
+   "requires": {
+    "lessons": [
+     "stone-carvers-hang-it-safely"
+    ],
+    "halls": [
+     "stone-carvers"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Materials Store and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-stone-carvers",
+    "label": "Stone Carvers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Materials Store",
+   "unlock_text": "To unlock: walk \"Hang stone on something that will hold it\"; finish a lesson in Stone Carvers."
+  },
+  {
+   "id": "side-hall-substation",
+   "kind": "side",
+   "title": "Report to Substation Technicians",
+   "world": "hall:substation",
+   "requires": {
+    "lessons": [
+     "substation-layout-first-walk"
+    ],
+    "halls": [
+     "substation"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Layout Floor and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-substation",
+    "label": "Substation Technicians regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Layout Floor",
+   "unlock_text": "To unlock: walk \"Substation Technicians: trust a line only as far as it is proved\"; finish a lesson in Substation Technicians."
+  },
+  {
+   "id": "side-hall-survey-drone",
+   "kind": "side",
+   "title": "Report to Aerial Survey Operators",
+   "world": "hall:survey-drone",
+   "requires": {
+    "lessons": [
+     "survey-drone-documentation-first-walk"
+    ],
+    "halls": [
+     "survey-drone"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Records and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-survey-drone",
+    "label": "Aerial Survey Operators regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Records",
+   "unlock_text": "To unlock: walk \"Aerial Survey Operators: find out where the record goes\"; finish a lesson in Aerial Survey Operators."
+  },
+  {
+   "id": "side-hall-surveyors",
+   "kind": "side",
+   "title": "Report to Construction Surveyors",
+   "world": "hall:surveyors",
+   "requires": {
+    "lessons": [
+     "surveyors-trust-the-control"
+    ],
+    "halls": [
+     "surveyors"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Layout Floor and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-surveyors",
+    "label": "Construction Surveyors regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Layout Floor",
+   "unlock_text": "To unlock: walk \"Work from control, not from something near it\"; finish a lesson in Construction Surveyors."
+  },
+  {
+   "id": "side-hall-tank-erectors",
+   "kind": "side",
+   "title": "Report to Tank Erectors",
+   "world": "hall:tank-erectors",
+   "requires": {
+    "lessons": [
+     "tank-erectors-isolate-before-testing"
+    ],
+    "halls": [
+     "tank-erectors"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Induction & PPE and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-tank-erectors",
+    "label": "Tank Erectors regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Induction & PPE",
+   "unlock_text": "To unlock: walk \"Isolate the shell before anybody tests the air\"; finish a lesson in Tank Erectors."
+  },
+  {
+   "id": "side-hall-teamsters",
+   "kind": "side",
+   "title": "Report to Teamsters",
+   "world": "hall:teamsters",
+   "requires": {
+    "lessons": [
+     "teamsters-check-the-truck-before-the-load"
+    ],
+    "halls": [
+     "teamsters"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Equipment Bay and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-teamsters",
+    "label": "Teamsters regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "To unlock: walk \"Check the truck before you check the load\"; finish a lesson in Teamsters."
+  },
+  {
+   "id": "side-hall-terrazzo",
+   "kind": "side",
+   "title": "Report to Terrazzo Workers",
+   "world": "hall:terrazzo",
+   "requires": {
+    "lessons": [
+     "terrazzo-coordination-first-walk"
+    ],
+    "halls": [
+     "terrazzo"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Briefing Room and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-terrazzo",
+    "label": "Terrazzo Workers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Briefing Room",
+   "unlock_text": "To unlock: walk \"Terrazzo Workers: hand the shift over properly\"; finish a lesson in Terrazzo Workers."
+  },
+  {
+   "id": "side-hall-tilesetters",
+   "kind": "side",
+   "title": "Report to Tile Setters",
+   "world": "hall:tilesetters",
+   "requires": {
+    "lessons": [
+     "tilesetters-start-underneath"
+    ],
+    "halls": [
+     "tilesetters"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Practice Bays and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-tilesetters",
+    "label": "Tile Setters regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "To unlock: walk \"Fix the substrate you are about to hide\"; finish a lesson in Tile Setters."
+  },
+  {
+   "id": "side-hall-toolmakers",
+   "kind": "side",
+   "title": "Report to Tool & Die Makers",
+   "world": "hall:toolmakers",
+   "requires": {
+    "lessons": [
+     "toolmakers-safety-first-walk"
+    ],
+    "halls": [
+     "toolmakers"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Induction & PPE and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-toolmakers",
+    "label": "Tool & Die Makers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Induction & PPE",
+   "unlock_text": "To unlock: walk \"Tool & Die Makers: find out what the room is held to\"; finish a lesson in Tool & Die Makers."
+  },
+  {
+   "id": "side-hall-transit-vehicle",
+   "kind": "side",
+   "title": "Report to Transit Vehicle Technicians",
+   "world": "hall:transit-vehicle",
+   "requires": {
+    "lessons": [
+     "transit-vehicle-documentation-first-walk"
+    ],
+    "halls": [
+     "transit-vehicle"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Records and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-transit-vehicle",
+    "label": "Transit Vehicle Technicians regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Records",
+   "unlock_text": "To unlock: walk \"Transit Vehicle Technicians: find out where the record goes\"; finish a lesson in Transit Vehicle Technicians."
+  },
+  {
+   "id": "side-hall-transmission",
+   "kind": "side",
+   "title": "Report to Transmission Linemen",
+   "world": "hall:transmission",
+   "requires": {
+    "lessons": [
+     "transmission-layout-first-walk"
+    ],
+    "halls": [
+     "transmission"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Layout Floor and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-transmission",
+    "label": "Transmission Linemen regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Layout Floor",
+   "unlock_text": "To unlock: walk \"Transmission Linemen: trust a line only as far as it is proved\"; finish a lesson in Transmission Linemen."
+  },
+  {
+   "id": "side-hall-wastewater",
+   "kind": "side",
+   "title": "Report to Wastewater Operators",
+   "world": "hall:wastewater",
+   "requires": {
+    "lessons": [
+     "wastewater-tools-first-walk"
+    ],
+    "halls": [
+     "wastewater"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Tool Crib and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-wastewater",
+    "label": "Wastewater Operators regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Tool Crib",
+   "unlock_text": "To unlock: walk \"Wastewater Operators: know the kit before you touch it\"; finish a lesson in Wastewater Operators."
+  },
+  {
+   "id": "side-hall-water-distrib",
+   "kind": "side",
+   "title": "Report to Water Distribution Fitters",
+   "world": "hall:water-distrib",
+   "requires": {
+    "lessons": [
+     "water-distrib-safety-first-walk"
+    ],
+    "halls": [
+     "water-distrib"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Induction & PPE and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-water-distrib",
+    "label": "Water Distribution Fitters regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Induction & PPE",
+   "unlock_text": "To unlock: walk \"Water Distribution Fitters: find out what the room is held to\"; finish a lesson in Water Distribution Fitters."
+  },
+  {
+   "id": "side-hall-waterproofers",
+   "kind": "side",
+   "title": "Report to Below-Grade Waterproofers",
+   "world": "hall:waterproofers",
+   "requires": {
+    "lessons": [
+     "waterproofers-flash-it-right"
+    ],
+    "halls": [
+     "waterproofers"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Practice Bays and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-waterproofers",
+    "label": "Below-Grade Waterproofers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "To unlock: walk \"Give the water somewhere to go\"; finish a lesson in Below-Grade Waterproofers."
+  },
+  {
+   "id": "side-hall-welders",
+   "kind": "side",
+   "title": "Report to Welding Trades",
+   "world": "hall:welders",
+   "requires": {
+    "lessons": [
+     "welders-the-watch"
+    ],
+    "halls": [
+     "welders"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Induction & PPE and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-welders",
+    "label": "Welding Trades regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Induction & PPE",
+   "unlock_text": "To unlock: walk \"Stand the watch that outlasts the arc\"; finish a lesson in Welding Trades."
+  },
+  {
+   "id": "side-hall-wind",
+   "kind": "side",
+   "title": "Report to Wind Turbine Technicians",
+   "world": "hall:wind",
+   "requires": {
+    "lessons": [
+     "wind-safety-first-walk"
+    ],
+    "halls": [
+     "wind"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Induction & PPE and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-wind",
+    "label": "Wind Turbine Technicians regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Induction & PPE",
+   "unlock_text": "To unlock: walk \"Wind Turbine Technicians: find out what the room is held to\"; finish a lesson in Wind Turbine Technicians."
+  },
+  {
+   "id": "side-hall-window-glazing",
+   "kind": "side",
+   "title": "Report to Architectural Glaziers",
+   "world": "hall:window-glazing",
+   "requires": {
+    "lessons": [
+     "window-glazing-let-the-ground-judge-it"
+    ],
+    "halls": [
+     "window-glazing"
+    ],
+    "quests": []
+   },
+   "hint": "Walk to the Equipment Bay and report in once the hall's lessons are walked.",
+   "reward": {
+    "badge": "badge-side-hall-window-glazing",
+    "label": "Architectural Glaziers regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "To unlock: walk \"Let the ground judge the clearance, not the basket\"; finish a lesson in Architectural Glaziers."
+  },
+  {
+   "id": "side-seat-airless-sprayer",
+   "kind": "side",
+   "title": "Crew the Airless Paint Sprayer Finish seat",
+   "world": "campus",
+   "requires": {
+    "lessons": [
+     "painters-lay-the-coat"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Every lesson that puts you in the Airless Paint Sprayer Finish seat, walked.",
+   "reward": {
+    "badge": "badge-side-seat-airless-sprayer",
+    "label": "Airless Paint Sprayer Finish crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "airless-sprayer",
+   "unlock_text": "To unlock: walk \"Lay a coat that is actually there\"."
+  },
+  {
+   "id": "side-seat-boom-lift",
+   "kind": "side",
+   "title": "Crew the Boom Lift Basket Work seat",
+   "world": "campus",
+   "requires": {
+    "lessons": [
+     "electricians-clip-in-first",
+     "insulators-stay-inside-the-rails",
+     "window-glazing-let-the-ground-judge-it"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Every lesson that puts you in the Boom Lift Basket Work seat, walked.",
+   "reward": {
+    "badge": "badge-side-seat-boom-lift",
+    "label": "Boom Lift Basket Work crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "boom-lift",
+   "unlock_text": "To unlock: walk \"Clip in before the basket moves\", \"Stay inside the rails while you reach\", \"Let the ground judge the clearance, not the basket\"."
+  },
+  {
+   "id": "side-seat-crane-lift",
+   "kind": "side",
+   "title": "Crew the Tower Crane Lift seat",
+   "world": "campus",
+   "requires": {
+    "lessons": [
+     "riggers-carry-under-control",
+     "steel-erectors-land-it-on-the-bolts",
+     "port-crane-read-the-rope",
+     "piling-stand-the-rig-on-something"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Every lesson that puts you in the Tower Crane Lift seat, walked.",
+   "reward": {
+    "badge": "badge-side-seat-crane-lift",
+    "label": "Tower Crane Lift crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "crane-lift",
+   "unlock_text": "To unlock: walk \"Carry a load that is not fighting you\", \"Land the piece where the bolts can go in\", \"Read the rope before the box goes up\", \"Stand the rig on ground that will hold it\"."
+  },
+  {
+   "id": "side-seat-excavator-trench",
+   "kind": "side",
+   "title": "Crew the Excavator Trench Cut seat",
+   "world": "campus",
+   "requires": {
+    "lessons": [
+     "operating-eng-locate-first",
+     "shoring-read-the-ground-again"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Every lesson that puts you in the Excavator Trench Cut seat, walked.",
+   "reward": {
+    "badge": "badge-side-seat-excavator-trench",
+    "label": "Excavator Trench Cut crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "excavator-trench",
+   "unlock_text": "To unlock: walk \"Prove what is under the ground before the bucket moves\", \"Read the ground again after the rain\"."
+  },
+  {
+   "id": "side-seat-forklift-run",
+   "kind": "side",
+   "title": "Crew the Forklift Yard Run seat",
+   "world": "campus",
+   "requires": {
+    "lessons": [
+     "teamsters-check-the-truck-before-the-load",
+     "heavy-equip-listen-to-the-dash",
+     "marine-terminal-brief-the-lane"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Every lesson that puts you in the Forklift Yard Run seat, walked.",
+   "reward": {
+    "badge": "badge-side-seat-forklift-run",
+    "label": "Forklift Yard Run crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "forklift-run",
+   "unlock_text": "To unlock: walk \"Check the truck before you check the load\", \"Listen to the dash before you replace anything\", \"Brief the lane before the first box moves\"."
+  },
+  {
+   "id": "side-seat-load-chart",
+   "kind": "side",
+   "title": "Crew the Load Chart Judgment seat",
+   "world": "campus",
+   "requires": {
+    "lessons": [
+     "crane-ops-read-the-chart"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Every lesson that puts you in the Load Chart Judgment seat, walked.",
+   "reward": {
+    "badge": "badge-side-seat-load-chart",
+    "label": "Load Chart Judgment crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "load-chart",
+   "unlock_text": "To unlock: walk \"Refuse the pick the chart refuses\"."
+  },
+  {
+   "id": "side-seat-overhead-crane",
+   "kind": "side",
+   "title": "Crew the Overhead Crane Shop Move seat",
+   "world": "campus",
+   "requires": {
+    "lessons": [
+     "millwrights-shop-move",
+     "machinists-move-the-job-without-marking-it",
+     "foundry-clear-the-runway-first"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Every lesson that puts you in the Overhead Crane Shop Move seat, walked.",
+   "reward": {
+    "badge": "badge-side-seat-overhead-crane",
+    "label": "Overhead Crane Shop Move crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "overhead-crane",
+   "unlock_text": "To unlock: walk \"Move something precise across a shop floor\", \"Move the job across the shop without marking it\", \"Clear the runway before the ladle moves\"."
+  },
+  {
+   "id": "side-seat-pressure-washer",
+   "kind": "side",
+   "title": "Crew the Pressure Washer Surface Clean seat",
+   "world": "campus",
+   "requires": {
+    "lessons": [
+     "painters-contain-it",
+     "hazmat-wash-and-decon"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Every lesson that puts you in the Pressure Washer Surface Clean seat, walked.",
+   "reward": {
+    "badge": "badge-side-seat-pressure-washer",
+    "label": "Pressure Washer Surface Clean crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "pressure-washer",
+   "unlock_text": "To unlock: walk \"Catch what you wash off\", \"Come out cleaner than what you washed\"."
+  },
+  {
+   "id": "side-seat-rigging-signals",
+   "kind": "side",
+   "title": "Crew the Rigging Signal Call seat",
+   "world": "campus",
+   "requires": {
+    "lessons": [
+     "riggers-first-card",
+     "decking-walk-the-path-first"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Every lesson that puts you in the Rigging Signal Call seat, walked.",
+   "reward": {
+    "badge": "badge-side-seat-rigging-signals",
+    "label": "Rigging Signal Call crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "rigging-signals",
+   "unlock_text": "To unlock: walk \"Call the first lift before anybody touches the hook\", \"Walk where the bundle will fly before it flies\"."
+  },
+  {
+   "id": "side-seat-scaffold-bay",
+   "kind": "side",
+   "title": "Crew the Scaffold Bay Build seat",
+   "world": "campus",
+   "requires": {
+    "lessons": [
+     "scaffold-build-in-order",
+     "roofers-mind-the-edge-and-the-skylight",
+     "plasterers-pin-every-brace",
+     "cladding-check-the-plank-you-stand-on",
+     "curtainwall-fuss-about-the-sills"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Every lesson that puts you in the Scaffold Bay Build seat, walked.",
+   "reward": {
+    "badge": "badge-side-seat-scaffold-bay",
+    "label": "Scaffold Bay Build crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "scaffold-bay",
+   "unlock_text": "To unlock: walk \"Build the bay in the order that keeps you off the ground\", \"Mind the edge, and the skylight nobody mentioned\", \"Pin every brace before the first hawk goes up\", \"Check the plank you are about to stand on\", \"Make the fuss about the sills early\"."
+  },
+  {
+   "id": "side-seat-weld-bead",
+   "kind": "side",
+   "title": "Crew the Weld Bead Run seat",
+   "world": "campus",
+   "requires": {
+    "lessons": [
+     "shipfitters-say-what-you-cannot-see",
+     "tank-erectors-isolate-before-testing",
+     "fabricators-lay-it-out-then-prove-it",
+     "pipeline-close-the-permit-properly",
+     "marine-pipe-know-when-to-come-out"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Every lesson that puts you in the Weld Bead Run seat, walked.",
+   "reward": {
+    "badge": "badge-side-seat-weld-bead",
+    "label": "Weld Bead Run crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "weld-bead",
+   "unlock_text": "To unlock: walk \"Say what you cannot see from the hood\", \"Isolate the shell before anybody tests the air\", \"Lay it out, then prove the line before you cut\", \"Close the permit the way it was opened\", \"Know when to come out of the compartment\"."
+  },
+  {
+   "id": "side-crib-control",
+   "kind": "side",
+   "title": "Sign out the control crib",
+   "world": "campus",
+   "requires": {
+    "lessons": [
+     "surveyors-trust-the-control",
+     "spill-response-tools-first-walk"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Every lesson that sends you to the control tool crib, walked.",
+   "reward": {
+    "badge": "badge-side-crib-control",
+    "label": "control crib regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "control",
+   "unlock_text": "To unlock: walk \"Work from control, not from something near it\", \"Spill Response Technicians: know the kit before you touch it\"."
+  },
+  {
+   "id": "side-crib-earthworks",
+   "kind": "side",
+   "title": "Sign out the earthworks crib",
+   "world": "campus",
+   "requires": {
+    "lessons": [
+     "post-tension-tools-first-walk"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Every lesson that sends you to the earthworks tool crib, walked.",
+   "reward": {
+    "badge": "badge-side-crib-earthworks",
+    "label": "earthworks crib regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "earthworks",
+   "unlock_text": "To unlock: walk \"Post-Tension Technicians: know the kit before you touch it\"."
+  },
+  {
+   "id": "side-crib-energy",
+   "kind": "side",
+   "title": "Sign out the energy crib",
+   "world": "campus",
+   "requires": {
+    "lessons": [
+     "line-workers-find-the-fault",
+     "wastewater-tools-first-walk",
+     "hydrogen-tools-first-walk"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Every lesson that sends you to the energy tool crib, walked.",
+   "reward": {
+    "badge": "badge-side-crib-energy",
+    "label": "energy crib regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "energy",
+   "unlock_text": "To unlock: walk \"Find the fault instead of replacing things\", \"Wastewater Operators: know the kit before you touch it\", \"Hydrogen Systems Trades: know the kit before you touch it\"."
+  },
+  {
+   "id": "side-crib-envelope",
+   "kind": "side",
+   "title": "Sign out the envelope crib",
+   "world": "campus",
+   "requires": {
+    "lessons": [
+     "lathers-frame-for-the-next-trade",
+     "restore-point-the-joint",
+     "carpenters-return-it-the-same",
+     "cement-masons-mind-the-weather",
+     "tilesetters-start-underneath",
+     "insulators-stay-inside-the-rails"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Every lesson that sends you to the envelope tool crib, walked.",
+   "reward": {
+    "badge": "badge-side-crib-envelope",
+    "label": "envelope crib regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "envelope",
+   "unlock_text": "To unlock: walk \"Frame it for whoever comes next\", \"Cut a joint without wrecking the brick\", \"Return it in the state you would want to find it\", \"Protect a pour from the day it was poured in\", \"Fix the substrate you are about to hide\", \"Stay inside the rails while you reach\"."
+  },
+  {
+   "id": "side-crib-industry",
+   "kind": "side",
+   "title": "Sign out the industry crib",
+   "world": "campus",
+   "requires": {
+    "lessons": [
+     "refractory-dry-it-slowly",
+     "platers-tools-first-walk",
+     "foundry-clear-the-runway-first"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Every lesson that sends you to the industry tool crib, walked.",
+   "reward": {
+    "badge": "badge-side-crib-industry",
+    "label": "industry crib regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "industry",
+   "unlock_text": "To unlock: walk \"Take the lining up to heat slowly enough\", \"Platers & Coaters: know the kit before you touch it\", \"Clear the runway before the ladle moves\"."
+  },
+  {
+   "id": "side-crib-systems",
+   "kind": "side",
+   "title": "Sign out the systems crib",
+   "world": "campus",
+   "requires": {
+    "lessons": [
+     "hvacr-prove-the-sequence",
+     "elevator-tools-first-walk",
+     "fire-sprinkler-tools-first-walk",
+     "data-center-tools-first-walk",
+     "medical-gas-tools-first-walk",
+     "sheetmetal-name-the-kit-before-you-climb"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Every lesson that sends you to the systems tool crib, walked.",
+   "reward": {
+    "badge": "badge-side-crib-systems",
+    "label": "systems crib regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "systems",
+   "unlock_text": "To unlock: walk \"Prove the system does what the sequence says\", \"Elevator Constructors: know the kit before you touch it\", \"Fire Sprinkler Fitters: know the kit before you touch it\", \"Data Centre Technicians: know the kit before you touch it\", \"Medical Gas Installers: know the kit before you touch it\", \"Name the kit before you take it up\"."
+  },
+  {
+   "id": "side-crib-transport",
+   "kind": "side",
+   "title": "Sign out the transport crib",
+   "world": "campus",
+   "requires": {
+    "lessons": [
+     "airfield-tools-first-walk"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Every lesson that sends you to the transport tool crib, walked.",
+   "reward": {
+    "badge": "badge-side-crib-transport",
+    "label": "transport crib regular"
+   },
+   "provenance": "AUTHORED",
+   "place": "transport",
+   "unlock_text": "To unlock: walk \"Airfield Trades: know the kit before you touch it\"."
+  },
+  {
+   "id": "treasure-wilds-mountain-trailhead",
+   "kind": "treasure",
+   "title": "Sign the trailhead book: High Country",
+   "world": "wilds:mountain",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Every trail in High Country starts at the trailhead. Find its book.",
+   "reward": {
+    "badge": "badge-treasure-wilds-mountain-trailhead",
+    "label": "High Country walker"
+   },
+   "provenance": "AUTHORED",
+   "place": "trailhead",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "side-wilds-m-adit-portal",
+   "kind": "side",
+   "title": "Adit portal and ground support",
+   "world": "wilds:mountain",
+   "requires": {
+    "lessons": [
+     "shoring-read-the-ground-again"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A mine adit driven into the hillside: ground support, ventilation and a portal that has to stay open.",
+   "reward": {
+    "badge": "badge-side-wilds-m-adit-portal",
+    "label": "Adit portal and ground support crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "m-adit-portal",
+   "unlock_text": "To unlock: walk \"Read the ground again after the rain\"."
+  },
+  {
+   "id": "side-wilds-m-hv-corridor",
+   "kind": "side",
+   "title": "High-voltage line corridor",
+   "world": "wilds:mountain",
+   "requires": {
+    "lessons": [
+     "line-workers-find-the-fault"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A transmission line crossing the valley on lattice towers; stringing, clearances and fault finding.",
+   "reward": {
+    "badge": "badge-side-wilds-m-hv-corridor",
+    "label": "High-voltage line corridor crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "m-hv-corridor",
+   "unlock_text": "To unlock: walk \"Find the fault instead of replacing things\"."
+  },
+  {
+   "id": "side-wilds-m-rockfall-netting",
+   "kind": "side",
+   "title": "Rockfall netting on a road cut",
+   "world": "wilds:mountain",
+   "requires": {
+    "lessons": [
+     "riggers-first-card"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Mesh and anchors hung on a cut slope above the road; rope access and lifted panels.",
+   "reward": {
+    "badge": "badge-side-wilds-m-rockfall-netting",
+    "label": "Rockfall netting on a road cut crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "m-rockfall-netting",
+   "unlock_text": "To unlock: walk \"Call the first lift before anybody touches the hook\"."
+  },
+  {
+   "id": "side-wilds-m-snow-road",
+   "kind": "side",
+   "title": "Snow-road grading on the pass",
+   "world": "wilds:mountain",
+   "requires": {
+    "lessons": [
+     "teamsters-check-the-truck-before-the-load",
+     "heavy-equip-listen-to-the-dash"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Graders and plough trucks keeping a mountain road open; machines checked before they climb.",
+   "reward": {
+    "badge": "badge-side-wilds-m-snow-road",
+    "label": "Snow-road grading on the pass crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "m-snow-road",
+   "unlock_text": "To unlock: walk \"Check the truck before you check the load\", \"Listen to the dash before you replace anything\"."
+  },
+  {
+   "id": "side-wilds-m-wind-ridge",
+   "kind": "side",
+   "title": "Ridge-top turbine pad",
+   "world": "wilds:mountain",
+   "requires": {
+    "lessons": [
+     "crane-ops-read-the-chart"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A crane pad on a ridge for a wind turbine; the lift chart decides what goes up in the wind.",
+   "reward": {
+    "badge": "badge-side-wilds-m-wind-ridge",
+    "label": "Ridge-top turbine pad crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "m-wind-ridge",
+   "unlock_text": "To unlock: walk \"Refuse the pick the chart refuses\"."
+  },
+  {
+   "id": "side-wilds-m-survey-control",
+   "kind": "side",
+   "title": "Survey control on the high ground",
+   "world": "wilds:mountain",
+   "requires": {
+    "lessons": [
+     "surveyors-trust-the-control"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A control point and a drone landing square; everything below is laid out from here.",
+   "reward": {
+    "badge": "badge-side-wilds-m-survey-control",
+    "label": "Survey control on the high ground crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "m-survey-control",
+   "unlock_text": "To unlock: walk \"Work from control, not from something near it\"."
+  },
+  {
+   "id": "treasure-wilds-forest-trailhead",
+   "kind": "treasure",
+   "title": "Sign the trailhead book: Deep Timber",
+   "world": "wilds:forest",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Every trail in Deep Timber starts at the trailhead. Find its book.",
+   "reward": {
+    "badge": "badge-treasure-wilds-forest-trailhead",
+    "label": "Deep Timber walker"
+   },
+   "provenance": "AUTHORED",
+   "place": "trailhead",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "side-wilds-f-line-clearance",
+   "kind": "side",
+   "title": "Utility line clearance",
+   "world": "wilds:forest",
+   "requires": {
+    "lessons": [
+     "line-workers-find-the-fault"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A distribution line through the timber: the right-of-way cut back and the line walked for faults.",
+   "reward": {
+    "badge": "badge-side-wilds-f-line-clearance",
+    "label": "Utility line clearance crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "f-line-clearance",
+   "unlock_text": "To unlock: walk \"Find the fault instead of replacing things\"."
+  },
+  {
+   "id": "side-wilds-f-trail-bridge",
+   "kind": "side",
+   "title": "Trail bridge crew",
+   "world": "wilds:forest",
+   "requires": {
+    "lessons": [
+     "carpenters-return-it-the-same"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A timber footbridge over a creek; carpenters framing, labourers packing material in.",
+   "reward": {
+    "badge": "badge-side-wilds-f-trail-bridge",
+    "label": "Trail bridge crew crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "f-trail-bridge",
+   "unlock_text": "To unlock: walk \"Return it in the state you would want to find it\"."
+  },
+  {
+   "id": "side-wilds-f-fuel-break",
+   "kind": "side",
+   "title": "Wildfire fuel break",
+   "world": "wilds:forest",
+   "requires": {
+    "lessons": [
+     "laborers-stand-where-the-cab-can-see"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A strip thinned and cleared along a ridge; machines and hand crews working the same ground.",
+   "reward": {
+    "badge": "badge-side-wilds-f-fuel-break",
+    "label": "Wildfire fuel break crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "f-fuel-break",
+   "unlock_text": "To unlock: walk \"Stand where the cab can see you\"."
+  },
+  {
+   "id": "side-wilds-f-timber-frame",
+   "kind": "side",
+   "title": "Timber-frame shelter raising",
+   "world": "wilds:forest",
+   "requires": {
+    "lessons": [
+     "riggers-first-card"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A post-and-beam shelter raised in a clearing; bents lifted and pinned.",
+   "reward": {
+    "badge": "badge-side-wilds-f-timber-frame",
+    "label": "Timber-frame shelter raising crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "f-timber-frame",
+   "unlock_text": "To unlock: walk \"Call the first lift before anybody touches the hook\"."
+  },
+  {
+   "id": "side-wilds-f-fire-lookout",
+   "kind": "side",
+   "title": "Fire lookout tower",
+   "world": "wilds:forest",
+   "requires": {
+    "lessons": [
+     "scaffold-read-the-tag",
+     "steel-erectors-land-it-on-the-bolts"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A steel lookout on the highest knoll; the frame erected and the access scaffold tagged.",
+   "reward": {
+    "badge": "badge-side-wilds-f-fire-lookout",
+    "label": "Fire lookout tower crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "f-fire-lookout",
+   "unlock_text": "To unlock: walk \"Believe the tag or believe nothing\", \"Land the piece where the bolts can go in\"."
+  },
+  {
+   "id": "treasure-wilds-canyon-trailhead",
+   "kind": "treasure",
+   "title": "Sign the trailhead book: Red Rock Canyon",
+   "world": "wilds:canyon",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Every trail in Red Rock Canyon starts at the trailhead. Find its book.",
+   "reward": {
+    "badge": "badge-treasure-wilds-canyon-trailhead",
+    "label": "Red Rock Canyon walker"
+   },
+   "provenance": "AUTHORED",
+   "place": "trailhead",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "side-wilds-c-pipeline-crossing",
+   "kind": "side",
+   "title": "Pipeline river crossing",
+   "world": "wilds:canyon",
+   "requires": {
+    "lessons": [
+     "pipeline-close-the-permit-properly"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A pipeline crossing the canyon; tie-in digs on each side and a permit closed the way it opened.",
+   "reward": {
+    "badge": "badge-side-wilds-c-pipeline-crossing",
+    "label": "Pipeline river crossing crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "c-pipeline-crossing",
+   "unlock_text": "To unlock: walk \"Close the permit the way it was opened\"."
+  },
+  {
+   "id": "side-wilds-c-valve-vault",
+   "kind": "side",
+   "title": "Valve vault rescue drill",
+   "world": "wilds:canyon",
+   "requires": {
+    "lessons": [
+     "boilermakers-get-them-out"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A buried valve vault on the mesa used for a confined-space entry and retrieval drill.",
+   "reward": {
+    "badge": "badge-side-wilds-c-valve-vault",
+    "label": "Valve vault rescue drill crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "c-valve-vault",
+   "unlock_text": "To unlock: walk \"Put somebody inside a vessel and get them back out\"."
+  },
+  {
+   "id": "side-wilds-c-quarry-bench",
+   "kind": "side",
+   "title": "Quarry bench and blast pattern",
+   "world": "wilds:canyon",
+   "requires": {
+    "lessons": [
+     "demolition-stand-back"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A stepped quarry face with a drill pattern marked out; everybody knows where not to stand.",
+   "reward": {
+    "badge": "badge-side-wilds-c-quarry-bench",
+    "label": "Quarry bench and blast pattern crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "c-quarry-bench",
+   "unlock_text": "To unlock: walk \"Know where not to stand\"."
+  },
+  {
+   "id": "side-inspect-sequencer-eval",
+   "kind": "side",
+   "title": "Inspect the sequencer eval",
+   "world": "page:web/trade_craft_quests.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Open the eval drawer on the quest board and read what the simulation does not prove.",
+   "reward": {
+    "badge": "badge-side-inspect-sequencer-eval",
+    "label": "Eval inspector"
+   },
+   "provenance": "AUTHORED",
+   "place": "eval-drawer",
+   "band": "9-10",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-compliance-placard",
+   "kind": "treasure",
+   "title": "Read the compliance placard",
+   "world": "page:web/trade_craft_quests.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A placard hangs by the badge shelf. Read it.",
+   "reward": {
+    "badge": "badge-treasure-compliance-placard",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "compliance-placard",
+   "band": "6-8",
+   "riddle": "Before the lift, the wall speaks: what the bundle asks, and what a record can show.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-venue-room",
+   "kind": "treasure",
+   "title": "The measured room",
+   "world": "page:web/trade_craft_quests.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Somewhere on the board is a room that was measured, not drawn.",
+   "reward": {
+    "badge": "badge-treasure-venue-room",
+    "label": "Room measurer"
+   },
+   "provenance": "AUTHORED",
+   "place": "venue-clue",
+   "band": "6-8",
+   "riddle": "Floors counted from a scan, clear heights from triangles: find the room.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-sbom-manifest",
+   "kind": "treasure",
+   "title": "The parts manifest",
+   "world": "page:web/trade_craft_quests.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Every piece this bundle ships is on a list. Find the list.",
+   "reward": {
+    "badge": "badge-treasure-sbom-manifest",
+    "label": "Manifest reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "sbom-manifest",
+   "band": "11-12",
+   "riddle": "Count the parts before you trust the machine.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-quests-konami",
+   "kind": "egg",
+   "title": "The old code",
+   "world": "page:web/trade_craft_quests.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Some keys remember an older arcade.",
+   "reward": {
+    "badge": "badge-egg-quests-konami",
+    "label": "Old-code keeper"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "konami",
+   "riddle": "Up, up, down, down, left, right, left, right, B, A.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-quests-hardhat",
+   "kind": "egg",
+   "title": "Hard hat on",
+   "world": "page:web/trade_craft_quests.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type what goes on before anything else.",
+   "reward": {
+    "badge": "badge-egg-quests-hardhat",
+    "label": "Hard hat"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "typed:hardhat",
+   "riddle": "It goes on first and comes off last. Type it.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-home-knock",
+   "kind": "egg",
+   "title": "Knock three times",
+   "world": "page:index.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Knock on the page's heading three times.",
+   "reward": {
+    "badge": "badge-egg-home-knock",
+    "label": "Knocker: home"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "clicks:3",
+   "target": "h1",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-home-word",
+   "kind": "egg",
+   "title": "The word",
+   "world": "page:index.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type the word the halls stand together in.",
+   "reward": {
+    "badge": "badge-egg-home-word",
+    "label": "Word finder: home"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "typed:union",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-home-cache",
+   "kind": "treasure",
+   "title": "A hidden cache",
+   "world": "page:index.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A small mark sits at the foot of the page. Look closely.",
+   "reward": {
+    "badge": "badge-treasure-home-cache",
+    "label": "Cache finder: home"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-map-knock",
+   "kind": "egg",
+   "title": "Knock three times",
+   "world": "page:web/trade_craft_map.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Knock on the page's heading three times.",
+   "reward": {
+    "badge": "badge-egg-map-knock",
+    "label": "Knocker: map"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "clicks:3",
+   "target": "h1",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-map-word",
+   "kind": "egg",
+   "title": "The word",
+   "world": "page:web/trade_craft_map.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type what points north.",
+   "reward": {
+    "badge": "badge-egg-map-word",
+    "label": "Word finder: map"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "typed:compass",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-map-cache",
+   "kind": "treasure",
+   "title": "A hidden cache",
+   "world": "page:web/trade_craft_map.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A small mark sits at the foot of the page. Look closely.",
+   "reward": {
+    "badge": "badge-treasure-map-cache",
+    "label": "Cache finder: map"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-interactive-knock",
+   "kind": "egg",
+   "title": "Knock three times",
+   "world": "page:web/trade_craft_interactive.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Knock on the page's heading three times.",
+   "reward": {
+    "badge": "badge-egg-interactive-knock",
+    "label": "Knocker: interactive"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "clicks:3",
+   "target": "h1",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-interactive-word",
+   "kind": "egg",
+   "title": "The word",
+   "world": "page:web/trade_craft_interactive.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type what eight halls share.",
+   "reward": {
+    "badge": "badge-egg-interactive-word",
+    "label": "Word finder: interactive"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "typed:district",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-interactive-cache",
+   "kind": "treasure",
+   "title": "A hidden cache",
+   "world": "page:web/trade_craft_interactive.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A small mark sits at the foot of the page. Look closely.",
+   "reward": {
+    "badge": "badge-treasure-interactive-cache",
+    "label": "Cache finder: interactive"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-geomap-knock",
+   "kind": "egg",
+   "title": "Knock three times",
+   "world": "page:web/trade_craft_geomap.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Knock on the page's heading three times.",
+   "reward": {
+    "badge": "badge-egg-geomap-knock",
+    "label": "Knocker: geomap"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "clicks:3",
+   "target": "h1",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-geomap-word",
+   "kind": "egg",
+   "title": "The word",
+   "world": "page:web/trade_craft_geomap.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type what a surveyor does, in the find box or anywhere.",
+   "reward": {
+    "badge": "badge-egg-geomap-word",
+    "label": "Word finder: geomap"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "typed:survey",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-geomap-cache",
+   "kind": "treasure",
+   "title": "A hidden cache",
+   "world": "page:web/trade_craft_geomap.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A small mark sits at the foot of the page. Look closely.",
+   "reward": {
+    "badge": "badge-treasure-geomap-cache",
+    "label": "Cache finder: geomap"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-spaces-knock",
+   "kind": "egg",
+   "title": "Knock three times",
+   "world": "page:web/trade_craft_spaces.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Knock on the page's heading three times.",
+   "reward": {
+    "badge": "badge-egg-spaces-knock",
+    "label": "Knocker: spaces"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "clicks:3",
+   "target": "h1",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-spaces-word",
+   "kind": "egg",
+   "title": "The word",
+   "world": "page:web/trade_craft_spaces.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type the plan before the build.",
+   "reward": {
+    "badge": "badge-egg-spaces-word",
+    "label": "Word finder: spaces"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "typed:blueprint",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-spaces-cache",
+   "kind": "treasure",
+   "title": "A hidden cache",
+   "world": "page:web/trade_craft_spaces.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A small mark sits at the foot of the page. Look closely.",
+   "reward": {
+    "badge": "badge-treasure-spaces-cache",
+    "label": "Cache finder: spaces"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-worksites-knock",
+   "kind": "egg",
+   "title": "Knock three times",
+   "world": "page:web/trade_craft_worksites.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Knock on the page's heading three times.",
+   "reward": {
+    "badge": "badge-egg-worksites-knock",
+    "label": "Knocker: worksites"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "clicks:3",
+   "target": "h1",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-worksites-word",
+   "kind": "egg",
+   "title": "The word",
+   "world": "page:web/trade_craft_worksites.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type the talk before the shift.",
+   "reward": {
+    "badge": "badge-egg-worksites-word",
+    "label": "Word finder: worksites"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "typed:toolbox",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-worksites-cache",
+   "kind": "treasure",
+   "title": "A hidden cache",
+   "world": "page:web/trade_craft_worksites.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A small mark sits at the foot of the page. Look closely.",
+   "reward": {
+    "badge": "badge-treasure-worksites-cache",
+    "label": "Cache finder: worksites"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-contribute-knock",
+   "kind": "egg",
+   "title": "Knock three times",
+   "world": "page:web/trade_craft_contribute.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Knock on the page's heading three times.",
+   "reward": {
+    "badge": "badge-egg-contribute-knock",
+    "label": "Knocker: contribute"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "clicks:3",
+   "target": "h1",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-contribute-word",
+   "kind": "egg",
+   "title": "The word",
+   "world": "page:web/trade_craft_contribute.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type who learns beside a journeyworker.",
+   "reward": {
+    "badge": "badge-egg-contribute-word",
+    "label": "Word finder: contribute"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "typed:apprentice",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-contribute-cache",
+   "kind": "treasure",
+   "title": "A hidden cache",
+   "world": "page:web/trade_craft_contribute.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A small mark sits at the foot of the page. Look closely.",
+   "reward": {
+    "badge": "badge-treasure-contribute-cache",
+    "label": "Cache finder: contribute"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-dashboard-knock",
+   "kind": "egg",
+   "title": "Knock three times",
+   "world": "page:web/trade_craft_dashboard.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Knock on the page's heading three times.",
+   "reward": {
+    "badge": "badge-egg-dashboard-knock",
+    "label": "Knocker: dashboard"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "clicks:3",
+   "target": "h1",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-dashboard-word",
+   "kind": "egg",
+   "title": "The word",
+   "world": "page:web/trade_craft_dashboard.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type what a dial reads from.",
+   "reward": {
+    "badge": "badge-egg-dashboard-word",
+    "label": "Word finder: dashboard"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "typed:gauge",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-dashboard-cache",
+   "kind": "treasure",
+   "title": "A hidden cache",
+   "world": "page:web/trade_craft_dashboard.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A small mark sits at the foot of the page. Look closely.",
+   "reward": {
+    "badge": "badge-treasure-dashboard-cache",
+    "label": "Cache finder: dashboard"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-fabric-knock",
+   "kind": "egg",
+   "title": "Knock three times",
+   "world": "page:web/trade_craft_fabric.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Knock on the page's heading three times.",
+   "reward": {
+    "badge": "badge-egg-fabric-knock",
+    "label": "Knocker: fabric"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "clicks:3",
+   "target": "h1",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-fabric-word",
+   "kind": "egg",
+   "title": "The word",
+   "world": "page:web/trade_craft_fabric.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type what threads do.",
+   "reward": {
+    "badge": "badge-egg-fabric-word",
+    "label": "Word finder: fabric"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "typed:weave",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-fabric-cache",
+   "kind": "treasure",
+   "title": "A hidden cache",
+   "world": "page:web/trade_craft_fabric.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A small mark sits at the foot of the page. Look closely.",
+   "reward": {
+    "badge": "badge-treasure-fabric-cache",
+    "label": "Cache finder: fabric"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-ladder-knock",
+   "kind": "egg",
+   "title": "Knock three times",
+   "world": "page:web/trade_craft_ladder.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Knock on the page's heading three times.",
+   "reward": {
+    "badge": "badge-egg-ladder-knock",
+    "label": "Knocker: ladder"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "clicks:3",
+   "target": "h1",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-ladder-word",
+   "kind": "egg",
+   "title": "The word",
+   "world": "page:web/trade_craft_ladder.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type what you climb one at a time.",
+   "reward": {
+    "badge": "badge-egg-ladder-word",
+    "label": "Word finder: ladder"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "typed:rung",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-ladder-cache",
+   "kind": "treasure",
+   "title": "A hidden cache",
+   "world": "page:web/trade_craft_ladder.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A small mark sits at the foot of the page. Look closely.",
+   "reward": {
+    "badge": "badge-treasure-ladder-cache",
+    "label": "Cache finder: ladder"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-languages-knock",
+   "kind": "egg",
+   "title": "Knock three times",
+   "world": "page:web/trade_craft_languages.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Knock on the page's heading three times.",
+   "reward": {
+    "badge": "badge-egg-languages-knock",
+    "label": "Knocker: languages"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "clicks:3",
+   "target": "h1",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-languages-word",
+   "kind": "egg",
+   "title": "The word",
+   "world": "page:web/trade_craft_languages.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type a greeting.",
+   "reward": {
+    "badge": "badge-egg-languages-word",
+    "label": "Word finder: languages"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "typed:hello",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-languages-cache",
+   "kind": "treasure",
+   "title": "A hidden cache",
+   "world": "page:web/trade_craft_languages.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A small mark sits at the foot of the page. Look closely.",
+   "reward": {
+    "badge": "badge-treasure-languages-cache",
+    "label": "Cache finder: languages"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-spec-knock",
+   "kind": "egg",
+   "title": "Knock three times",
+   "world": "page:web/smartcitix_trade_craft_academy.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Knock on the page's heading three times.",
+   "reward": {
+    "badge": "badge-egg-spec-knock",
+    "label": "Knocker: spec"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "clicks:3",
+   "target": "h1",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-spec-word",
+   "kind": "egg",
+   "title": "The word",
+   "world": "page:web/smartcitix_trade_craft_academy.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type what a true wall is.",
+   "reward": {
+    "badge": "badge-egg-spec-word",
+    "label": "Word finder: spec"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "typed:plumb",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-spec-cache",
+   "kind": "treasure",
+   "title": "A hidden cache",
+   "world": "page:web/smartcitix_trade_craft_academy.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A small mark sits at the foot of the page. Look closely.",
+   "reward": {
+    "badge": "badge-treasure-spec-cache",
+    "label": "Cache finder: spec"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-quests-knock",
+   "kind": "egg",
+   "title": "Knock three times",
+   "world": "page:web/trade_craft_quests.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Knock on the page's heading three times.",
+   "reward": {
+    "badge": "badge-egg-quests-knock",
+    "label": "Knocker: quests"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "clicks:3",
+   "target": "h1",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-quests-word",
+   "kind": "egg",
+   "title": "The word",
+   "world": "page:web/trade_craft_quests.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type where the games are.",
+   "reward": {
+    "badge": "badge-egg-quests-word",
+    "label": "Word finder: quests"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "typed:arcade",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-quests-cache",
+   "kind": "treasure",
+   "title": "A hidden cache",
+   "world": "page:web/trade_craft_quests.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A small mark sits at the foot of the page. Look closely.",
+   "reward": {
+    "badge": "badge-treasure-quests-cache",
+    "label": "Cache finder: quests"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-console-knock",
+   "kind": "egg",
+   "title": "Knock three times",
+   "world": "page:console/trade_craft_console.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Knock on the page's heading three times.",
+   "reward": {
+    "badge": "badge-egg-console-knock",
+    "label": "Knocker: console"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "clicks:3",
+   "target": "h1",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-console-word",
+   "kind": "egg",
+   "title": "The word",
+   "world": "page:console/trade_craft_console.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type who voices the system.",
+   "reward": {
+    "badge": "badge-egg-console-word",
+    "label": "Word finder: console"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "typed:mentor",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-console-cache",
+   "kind": "treasure",
+   "title": "A hidden cache",
+   "world": "page:console/trade_craft_console.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A small mark sits at the foot of the page. Look closely.",
+   "reward": {
+    "badge": "badge-treasure-console-cache",
+    "label": "Cache finder: console"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-home-konami",
+   "kind": "egg",
+   "title": "The old code at the front door",
+   "world": "page:index.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Some keys remember an older arcade.",
+   "reward": {
+    "badge": "badge-egg-home-konami",
+    "label": "Front-door code"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "konami",
+   "riddle": "Up, up, down, down, left, right, left, right, B, A.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "main-cartographer",
+   "kind": "main",
+   "title": "Every cache on the map",
+   "world": "page:web/trade_craft_quests.html",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-home-cache",
+     "treasure-map-cache",
+     "treasure-interactive-cache",
+     "treasure-geomap-cache",
+     "treasure-spaces-cache",
+     "treasure-worksites-cache",
+     "treasure-contribute-cache",
+     "treasure-dashboard-cache",
+     "treasure-fabric-cache",
+     "treasure-ladder-cache",
+     "treasure-languages-cache",
+     "treasure-spec-cache",
+     "treasure-quests-cache",
+     "treasure-console-cache"
+    ]
+   },
+   "hint": "Find the hidden cache at the foot of every page.",
+   "reward": {
+    "badge": "badge-main-cartographer",
+    "label": "Cartographer"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "unlock_text": "To unlock: finish \"A hidden cache\", \"A hidden cache\", \"A hidden cache\", \"A hidden cache\", \"A hidden cache\", \"A hidden cache\", \"A hidden cache\", \"A hidden cache\", \"A hidden cache\", \"A hidden cache\", \"A hidden cache\", \"A hidden cache\", \"A hidden cache\", \"A hidden cache\"."
+  }
+ ]
+}

@@ -5,6 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C1113'/%3E%3Cpath d='M7 21 L16 7 L25 21 Z' fill='none' stroke='%23E8A33D' stroke-width='2.6' stroke-linejoin='round'/%3E%3Cpath d='M11 21 h10' stroke='%2341C4D4' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
 <title>SmartCiti.X : Trade Craft Academy — training ladder</title>
+<meta name="description" content="The training ladder: every trade&#x27;s skills by strand and tier, and which rungs a lesson or simulator seat stands on.">
+<link rel="canonical" href="trade_craft_ladder.html">
+<meta name="theme-color" content="#0D1316" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F4F6F5" media="(prefers-color-scheme: light)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SmartCiti.X : Trade Craft Academy">
+<meta property="og:title" content="SmartCiti.X : Trade Craft Academy — training ladder">
+<meta property="og:description" content="The training ladder: every trade&#x27;s skills by strand and tier, and which rungs a lesson or simulator seat stands on.">
+<meta property="og:url" content="https://agifuturefoundation.github.io/SmartCiti.X/web/trade_craft_ladder.html">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://agifuturefoundation.github.io/SmartCiti.X/wiki/img/process-front-door.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="800">
+<meta property="og:image:alt" content="The SmartCiti.X Trade Craft Academy front door: the site header, the hero with its two calls to action and the key figures panel.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SmartCiti.X : Trade Craft Academy — training ladder">
+<meta name="twitter:description" content="The training ladder: every trade&#x27;s skills by strand and tier, and which rungs a lesson or simulator seat stands on.">
+<meta name="twitter:image" content="https://agifuturefoundation.github.io/SmartCiti.X/wiki/img/process-front-door.png">
+<meta name="twitter:image:alt" content="The SmartCiti.X Trade Craft Academy front door: the site header, the hero with its two calls to action and the key figures panel.">
 <style>
 :root{
   --plate:#12181B; --panel:#182023; --sunk:#0C1113; --ink:#E8EDEC; --muted:#93A3A6;
@@ -105,11 +124,12 @@ footer.page a{margin-inline-end:10px}
 <a class="sitenav-home" href="../index.html">Front door</a>
 <details class="sitenav-menu" data-sitenav-menu><summary>Site pages</summary>
 <div class="sitenav-groups">
-<div class="sitenav-group"><span class="sitenav-g">Learn</span><ul><li><a href="trade_craft_lessons.html">Lessons</a></li><li><a href="trade_craft_ladder.html" aria-current="page">Ladder</a></li><li><a href="trade_craft_3d.html">Walk the campus</a></li></ul></div>
+<div class="sitenav-group"><span class="sitenav-g">Learn</span><ul><li><a href="trade_craft_lessons.html">Lessons</a></li><li><a href="trade_craft_ladder.html" aria-current="page">Ladder</a></li><li><a href="trade_craft_3d.html">Walk the campus</a></li><li><a href="trade_craft_schools.html">School pathways</a></li></ul></div>
+<div class="sitenav-group"><span class="sitenav-g">Play</span><ul><li><a href="trade_craft_quests.html">Quests and arcade</a></li><li><a href="trade_craft_wilds.html">The wilds</a></li></ul></div>
 <div class="sitenav-group"><span class="sitenav-g">Maps</span><ul><li><a href="trade_craft_map.html">Layered map</a></li><li><a href="trade_craft_interactive.html">Interactive map</a></li><li><a href="trade_craft_geomap.html">Geomap</a></li><li><a href="trade_craft_fabric.html">Spatial fabric</a></li></ul></div>
 <div class="sitenav-group"><span class="sitenav-g">Records</span><ul><li><a href="trade_craft_progress.html">Progress</a></li><li><a href="trade_craft_verify.html">Verify a record</a></li><li><a href="trade_craft_contribute.html">Contribute</a></li></ul></div>
 <div class="sitenav-group"><span class="sitenav-g">Sites</span><ul><li><a href="trade_craft_spaces.html">Spaces</a></li><li><a href="trade_craft_worksites.html">Work sites</a></li></ul></div>
-<div class="sitenav-group"><span class="sitenav-g">About</span><ul><li><a href="trade_craft_landing.html">Overview</a></li><li><a href="trade_craft_dashboard.html">Dashboard</a></li><li><a href="trade_craft_languages.html">Languages</a></li><li><a href="trade_craft_signin.html">Sign in</a></li><li><a href="smartcitix_trade_craft_academy.html">Academy spec</a></li></ul></div>
+<div class="sitenav-group"><span class="sitenav-g">About</span><ul><li><a href="trade_craft_landing.html">Overview</a></li><li><a href="trade_craft_dashboard.html">Dashboard</a></li><li><a href="trade_craft_languages.html">Languages</a></li><li><a href="trade_craft_signin.html">Sign in</a></li><li><a href="smartcitix_trade_craft_academy.html">Academy spec</a></li><li><a href="trade_craft_design.html">Design kit</a></li></ul></div>
 </div></details>
 </div>
 </nav>
@@ -524,5 +544,273 @@ sel.addEventListener('change', () => {
 });
 render(sel.value);
 </script>
+<style>
+.tc-toast{position:fixed;inset-inline:16px;inset-block-end:16px;max-inline-size:36rem;margin-inline:auto;padding:.7rem 1rem;
+  border-radius:10px;background:var(--ink,#1b1f24);color:var(--paper,#fff);font:inherit;font-size:.92rem;line-height:1.4;
+  box-shadow:0 6px 24px rgba(0,0,0,.25);opacity:0;transform:translateY(8px);transition:opacity .2s,transform .2s;
+  pointer-events:none;z-index:9999}
+.tc-toast.on{opacity:1;transform:none}
+.tc-hooks{display:flex;justify-content:flex-end;padding:0 16px 8px}
+.tc-cache{appearance:none;border:0;background:none;color:inherit;opacity:.18;font-size:.7rem;line-height:1;
+  padding:.4rem;cursor:pointer;min-inline-size:24px;min-block-size:24px}
+.tc-cache:hover,.tc-cache:focus-visible{opacity:.9}
+@media (prefers-reduced-motion:reduce){.tc-toast{transition:none}}
+</style>
+<div class="tc-hooks"><span hidden data-tc-egg="egg-ladder-knock" data-tc-trigger="clicks:3" data-tc-target="h1"></span><span hidden data-tc-egg="egg-ladder-word" data-tc-trigger="typed:rung"></span><button type="button" class="tc-cache" data-tc-egg="treasure-ladder-cache" aria-label="A small mark sits at the foot of the page. Look closely.">&#x25C6;</button></div>
+<script data-tc-quests>
+(function () {
+"use strict";
+/* QUEST_CORE:BEGIN - the pure quest core. No DOM, no storage, no clock: the
+   page glue hands it what it read and what time it is. Carried byte-for-byte
+   into every page that carries quests; quests/test.mjs holds it identical.
+   The evidence functions below are a verbatim copy of the ones in
+   web/build_progress.py's COMPLETION_JS, so a lesson counts here from exactly
+   the evidence the progress page counts; quests/test.mjs holds the copy. */
+const QUEST_STORE = 'tc-quests';
+const QUEST_KINDS_FINDABLE = ['treasure', 'egg'];
+const QUEST_KONAMI = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+const EVIDENCED_KINDS = ['sim', 'station', 'crib'];
+/* the reference a step of an episode kind carries, as lessons.json spells it;
+   a training episode must equal every one of these AND the lesson's hall */
+const REF_FIELDS = { walkaround: ['sim', 'point'], advisor: ['advisor', 'topic', 'answer_kind'],
+  crew: ['crew', 'role', 'topic', 'answer_kind', 'seat', 'muster'] };
+/* an episode kind whose recorded fields do not cover the step's reference can
+   never mark a step done; the missing fields are named, not skipped */
+function unmatchableKinds(episodeKinds) {
+  const out = {};
+  for (const k of Object.keys(REF_FIELDS)) {
+    const fields = episodeKinds && episodeKinds[k] && Array.isArray(episodeKinds[k].fields) ? episodeKinds[k].fields : [];
+    const missing = REF_FIELDS[k].filter((f) => !fields.includes(f));
+    if (!fields.includes('hall')) missing.push('hall');
+    if (missing.length) out[k] = missing;
+  }
+  return out;
+}
+/* the app stamps t as new Date().toISOString() (web/build_3d.py, recordEpisode);
+   an episode whose t is not a string that parses to a finite time is no match */
+function episodeTimeOk(ep) { return typeof ep.t === 'string' && isFinite(Date.parse(ep.t)); }
+function episodeEvidence(step, hall, training, meta, skipped) {
+  if (!(step.kind in REF_FIELDS) || !Array.isArray(training)) return null;
+  if (step.kind in unmatchableKinds(meta.episode_kinds)) return null;
+  for (const ep of training) {
+    if (!ep || typeof ep !== 'object' || ep.kind !== step.kind || ep.hall !== hall) continue;
+    if (!episodeTimeOk(ep)) { if (skipped) skipped.add(ep); continue; }
+    if (ep.actor !== undefined && ep.actor !== meta.human_actor) continue;
+    if (!REF_FIELDS[step.kind].every((f) => step[f] !== undefined && ep[f] === step[f])) continue;
+    const ev = { episode: step.kind, t: ep.t, hall };
+    for (const f of REF_FIELDS[step.kind]) ev[f] = step[f];
+    return ev;
+  }
+  return null;
+}
+
+function stepEvidence(step, prog, hall, training, meta, skipped) {
+  if (step.kind in REF_FIELDS) return episodeEvidence(step, hall, training, meta, skipped);
+  const sims = (prog && typeof prog.sims === 'object' && prog.sims) ? prog.sims : {};
+  const tools = (prog && typeof prog.tools === 'object' && prog.tools) ? prog.tools : {};
+  const stations = (prog && Array.isArray(prog.stations)) ? prog.stations : [];
+  if (step.kind === 'sim') {
+    const rec = Object.prototype.hasOwnProperty.call(sims, step.sim) ? sims[step.sim] : null;
+    if (!rec || typeof rec !== 'object') return null;
+    /* the app keeps one record per seat; a record that names scenarios is
+       held to the scenario the step names, one that does not is held to the seat */
+    let src = rec;
+    if (rec.scenarios && typeof rec.scenarios === 'object') {
+      if (!Object.prototype.hasOwnProperty.call(rec.scenarios, step.scenario)) return null;
+      src = rec.scenarios[step.scenario];
+      if (!src || typeof src !== 'object') return null;
+    }
+    if (src.passed !== true) return null;
+    return { sim: step.sim, scenario: step.scenario,
+      score: typeof src.score === 'number' ? src.score : null, passed: true };
+  }
+  if (step.kind === 'station') {
+    return stations.includes(step.station) ? { station: step.station } : null;
+  }
+  if (step.kind === 'crib') {
+    const rec = Object.prototype.hasOwnProperty.call(tools, step.crib) ? tools[step.crib] : null;
+    if (!rec || typeof rec !== 'object' || rec.passed !== true) return null;
+    return { crib: step.crib, passed: true };
+  }
+  /* walk and placard record nothing anywhere; walkaround, advisor and crew
+     write episodes to the training log, which is not the record this is
+     built from, and the seat-level walkaround tally names no point */
+  return null;
+}
+
+/* A lesson counts as done for play when every step of it that this device CAN
+   record carries evidence under the progress page's own rule, and there is at
+   least one such step. Silent kinds (records null and not device-marked: walk,
+   placard) and episode kinds whose fields cannot match (unmatchableKinds) are
+   recorded by nothing, so no lesson could ever count if they were required;
+   this is the line the progress page's continue point draws, not its
+   "complete", and it never enters any record. */
+function questLessonsDone(prog, training, D) {
+  if (!D || !D.lessons || !D.meta || !D.meta.step_kinds || !D.meta.episode_kinds) throw new Error('quests: lesson data missing');
+  const unmatch = unmatchableKinds(D.meta.episode_kinds);
+  const sk = D.meta.step_kinds;
+  const silent = Object.keys(sk).filter((k) => sk[k].records === null && !EVIDENCED_KINDS.includes(k));
+  const p = (prog && typeof prog === 'object' && !Array.isArray(prog)) ? prog : {};
+  const t = Array.isArray(training) ? training : null;
+  const out = new Set();
+  for (const id of Object.keys(D.lessons)) {
+    const L = D.lessons[id];
+    const rec = L.steps.filter((s) => !silent.includes(s.kind) && !(s.kind in unmatch));
+    if (!rec.length) continue;
+    if (rec.every((s) => stepEvidence(s, p, L.hall, t, D.meta, null) !== null)) out.add(id);
+  }
+  return out;
+}
+function questEmptyState() { return { found: {}, done: {}, badges: [] }; }
+function questParseState(raw) {
+  const st = questEmptyState();
+  let v = null;
+  try { v = raw ? JSON.parse(raw) : null; } catch (e) { v = null; }
+  if (!v || typeof v !== 'object' || Array.isArray(v)) return st;
+  for (const k of ['found', 'done']) {
+    if (v[k] && typeof v[k] === 'object' && !Array.isArray(v[k])) {
+      for (const id of Object.keys(v[k])) if (typeof v[k][id] === 'string') st[k][id] = v[k][id];
+    }
+  }
+  if (Array.isArray(v.badges)) st.badges = v.badges.filter((b) => typeof b === 'string');
+  return st;
+}
+function questCheck(q, st, lessonsDone, T) {
+  if (!q || !q.requires) throw new Error('quests: no such quest');
+  const missing = [];
+  for (const id of q.requires.lessons) if (!lessonsDone.has(id)) missing.push({ kind: 'lesson', id, title: T.lessons[id] });
+  for (const h of q.requires.halls) {
+    let any = false;
+    for (const l of lessonsDone) if (T.lesson_hall[l] === h) any = true;
+    if (!any) missing.push({ kind: 'hall', id: h, title: T.halls[h] });
+  }
+  for (const id of q.requires.quests) if (!(id in st.done) && !(id in st.found)) missing.push({ kind: 'quest', id, title: T.quests[id] });
+  return { ok: missing.length === 0, missing };
+}
+/* records a find (treasure/egg) or a completion (everything else); returns a
+   new state and whether anything changed. Never records a locked entry. */
+function questRecord(st, q, iso, check) {
+  if (!check.ok) return { state: st, changed: false };
+  const slot = QUEST_KINDS_FINDABLE.includes(q.kind) ? 'found' : 'done';
+  if (q.id in st[slot]) return { state: st, changed: false };
+  const next = { found: { ...st.found }, done: { ...st.done }, badges: st.badges.slice() };
+  next[slot][q.id] = iso;
+  if (!next.badges.includes(q.reward.badge)) next.badges.push(q.reward.badge);
+  return { state: next, changed: true };
+}
+/* one keystroke into a rolling buffer; returns the triggers it completes */
+function questKeys(buf, key, words) {
+  const b = buf.concat([key]).slice(-24);
+  const hits = [];
+  const tail = b.slice(-QUEST_KONAMI.length).map((k) => (k.length === 1 ? k.toLowerCase() : k));
+  if (tail.length === QUEST_KONAMI.length && tail.every((k, i) => k === QUEST_KONAMI[i])) hits.push('konami');
+  const typed = b.filter((k) => k.length === 1).join('').toLowerCase();
+  for (const w of words) if (typed.endsWith(w)) hits.push('typed:' + w);
+  return { buf: b, hits };
+}
+/* QUEST_CORE:END */
+const QD = {"honesty":"Quests, games, treasures, easter eggs and badges are play: they are kept on this device only, they are never evidence of anything, and they never enter a completion record.","keys":{"progress":"tc-progress","training":"tc-training"},"lessons_href":"trade_craft_lessons.html","quests_href":"trade_craft_quests.html","lessons":{},"meta":{"step_kinds":{"walk":{"act":"walk to a room of this hall","records":null,"stage":"class","reads":"web/interiors.py","why_no_episode":"arriving somewhere is not an achievement, and a bundle that logged footsteps would be counting attendance while claiming to teach"},"placard":{"act":"read the door placard of a room and take on what it requires","records":null,"stage":"class","reads":"surfaces/registry/finishes.json","why_no_episode":"the placard states the room condition record; reading a record changes nothing and is nobody's score"},"station":{"act":"take a training station at its bench","records":null,"stage":"class","reads":"stations/registry/stations.json","why_no_episode":"a station mark lands in the device-local progress record the halls already keep; the training log holds simulator, advisor, crew and walkaround episodes and this pack adds no fifth kind to it"},"crib":{"act":"run the district crib check at the pegboard","records":null,"stage":"class","reads":"tools/registry/toolcribs.json","why_no_episode":"the crib check is graded deterministically against the crib record and kept with the progress record, not as a training episode"},"walkaround":{"act":"walk one pre-shift point of a seat and mark it","records":"walkaround","stage":"floor","reads":"sims/registry/sims.json","why_no_episode":null},"sim":{"act":"run one seat on the scenario its campus owns","records":"sim","stage":"floor","reads":"sims/registry/sims.json","why_no_episode":null},"advisor":{"act":"ask the advisor who stands in this room one of its fixed topics","records":"advisor","stage":"class","reads":"agents/registry/advisors.json","why_no_episode":null},"crew":{"act":"ask one role of the standing crew one of its fixed topics while the seat runs","records":"crew","stage":"floor","reads":"agents/registry/crews.json","why_no_episode":null}},"episode_kinds":{"sim":{"fields":["t","kind","campus","hall","sim","scenario","controls","actor","operator","outcome"],"actor":"one of ACTORS: `human` or `scripted-reference`","operator":"{level, seed, scenario, steps, dt} - present ONLY when actor is scripted-reference: the closed level name, the integer seed of its fixed-seed generator, the scenario id, the number of control steps the run took, and the fixed step length when the run was headless (steps x dt is then its deterministic sim time - the `time` axis itself is wall-clock and informational) or null when a learner watched it at real time; absent on a human episode","outcome_shape":{"passed":"bool","rows":"[{axis, value, ok}] - the rubric rows","trace":"[{t, gauges}] - OPTIONAL, present only when TRACE is on: ~1 Hz samples of the sim's own gauges() readout across the run, capped at TRACE['max_samples']"},"granularity":"episode-level by default: the scenario and control scheme a run was attempted under, and how it ended. With TRACE on, also a coarse (~1 Hz) gauge trace across the run - still not a per-tick physics or joint trajectory; see TRACE below","what":"one completed simulator run"},"advisor":{"fields":["t","kind","campus","hall","advisor","topic","answer_kind"],"outcome_shape":null,"granularity":"one exchange: which fixed topic was asked and whether the answer was read from a record or written in the advisor registry","what":"one advisor question asked and answered"},"crew":{"fields":["t","kind","campus","hall","crew","role","topic","answer_kind"],"outcome_shape":null,"granularity":"one exchange with one role of one crew: which crew was standing, which role was asked, which fixed topic, and whether the answer was read from a record or written in the crews registry","what":"one crew role asked one question while its seat was running"},"walkaround":{"fields":["t","kind","campus","hall","sim","point"],"outcome_shape":null,"granularity":"one point marked - not a score, the same habit the sim registry already declares is not a gate","what":"one pre-shift walkaround point checked"}},"human_actor":"human"},"titles":{"lessons":{},"lesson_hall":{},"halls":{},"quests":{}},"quests":[{"id":"egg-ladder-knock","kind":"egg","title":"Knock three times","world":"page:web/trade_craft_ladder.html","requires":{"lessons":[],"halls":[],"quests":[]},"unlock_text":"Open to everyone.","hint":"Knock on the page's heading three times.","reward":{"badge":"badge-egg-ladder-knock","label":"Knocker: ladder"},"band":"K-5","trigger":"clicks:3","target":"h1"},{"id":"egg-ladder-word","kind":"egg","title":"The word","world":"page:web/trade_craft_ladder.html","requires":{"lessons":[],"halls":[],"quests":[]},"unlock_text":"Open to everyone.","hint":"Type what you climb one at a time.","reward":{"badge":"badge-egg-ladder-word","label":"Word finder: ladder"},"band":"K-5","trigger":"typed:rung"},{"id":"treasure-ladder-cache","kind":"treasure","title":"A hidden cache","world":"page:web/trade_craft_ladder.html","requires":{"lessons":[],"halls":[],"quests":[]},"unlock_text":"Open to everyone.","hint":"A small mark sits at the foot of the page. Look closely.","reward":{"badge":"badge-treasure-ladder-cache","label":"Cache finder: ladder"},"band":"K-5"}]};
+
+const QW = window;
+const Q_BY = {};
+for (const q of QD.quests) Q_BY[q.id] = q;
+const Q_ON = { found: [], done: [], locked: [] };
+function qRead(k) { try { return QW.localStorage.getItem(k); } catch (e) { return null; } }
+function qJSON(raw) { try { return raw ? JSON.parse(raw) : null; } catch (e) { return null; } }
+function qState() { return questParseState(qRead(QUEST_STORE)); }
+function qSave(st) { try { QW.localStorage.setItem(QUEST_STORE, JSON.stringify(st)); return true; } catch (e) { return false; } }
+function qLessonsDone() { return questLessonsDone(qJSON(qRead(QD.keys.progress)), qJSON(qRead(QD.keys.training)), QD); }
+function qEmit(ev, x) { for (const fn of Q_ON[ev]) { try { fn(x); } catch (e) { /* a listener's fault is its own */ } } }
+function qEntry(id) { const q = Q_BY[id]; if (!q) throw new Error('quests: ' + id + ' is not carried on this page'); return q; }
+function qCheck(id) { return questCheck(qEntry(id), qState(), qLessonsDone(), QD.titles); }
+function qToast(msg) {
+  let t = document.querySelector('[data-tc-toast]');
+  if (!t) { t = document.createElement('div'); t.className = 'tc-toast'; t.setAttribute('data-tc-toast', ''); t.setAttribute('role', 'status'); t.setAttribute('aria-live', 'polite'); document.body.appendChild(t); }
+  t.textContent = msg; t.classList.add('on');
+  clearTimeout(qToast.h); qToast.h = setTimeout(() => t.classList.remove('on'), 5200);
+}
+function qRecord(id, findable) {
+  const q = qEntry(id);
+  if (findable !== QUEST_KINDS_FINDABLE.includes(q.kind)) throw new Error('quests: ' + id + ' is a ' + q.kind);
+  const c = qCheck(id);
+  if (!c.ok) { qToast('Locked: ' + q.title + '. ' + q.unlock_text); qEmit('locked', { id, check: c }); return c; }
+  const r = questRecord(qState(), q, new Date().toISOString(), c);
+  if (r.changed) {
+    qSave(r.state);
+    qToast((findable ? 'Found: ' : 'Done: ') + q.title + ' - badge "' + q.reward.label + '". ' + QD.honesty);
+    qEmit(findable ? 'found' : 'done', { id, quest: q });
+    qRender();
+  }
+  return { ok: true };
+}
+function qRender() {
+  for (const el of document.querySelectorAll('[data-tc-questlog]')) {
+    if (typeof QW.TCQuestsRender === 'function') { QW.TCQuestsRender(el, QW.TCQuests); continue; }
+    const st = qState(); const ld = qLessonsDone();
+    const ul = document.createElement('ul'); ul.className = 'tc-log';
+    for (const q of QD.quests) {
+      const got = (q.id in st.done) || (q.id in st.found);
+      const c = questCheck(q, st, ld, QD.titles);
+      const li = document.createElement('li');
+      li.dataset.state = got ? 'got' : (c.ok ? 'open' : 'locked');
+      li.textContent = (got ? '✓ ' : (c.ok ? '○ ' : '■ ')) + q.title + ' - ' + (got ? q.reward.label : (c.ok ? q.hint : q.unlock_text));
+      ul.appendChild(li);
+    }
+    el.replaceChildren(ul);
+  }
+}
+QW.TCQuests = {
+  data: QD,
+  state: qState,
+  lessonsDone: qLessonsDone,
+  check: qCheck,
+  complete: (id) => qRecord(id, false),
+  find: (id) => qRecord(id, true),
+  on: (ev, fn) => { if (!(ev in Q_ON)) throw new Error('quests: no event ' + ev); Q_ON[ev].push(fn); },
+  render: qRender,
+  toast: qToast,
+};
+function qBind() {
+  const words = [];
+  const keyed = {};
+  for (const el of document.querySelectorAll('[data-tc-egg]')) {
+    const id = el.getAttribute('data-tc-egg');
+    const trig = el.getAttribute('data-tc-trigger');
+    if (!trig) {
+      el.addEventListener('click', () => qRecord(id, true));
+      el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); qRecord(id, true); } });
+    } else if (trig === 'konami' || trig.startsWith('typed:')) {
+      if (trig.startsWith('typed:')) words.push(trig.slice(6));
+      (keyed[trig] = keyed[trig] || []).push(id);
+    } else if (trig.startsWith('clicks:')) {
+      const n = Number(trig.slice(7));
+      const target = document.querySelector(el.getAttribute('data-tc-target') || '');
+      if (!target || !(n > 0)) continue;
+      let count = 0; let last = 0;
+      target.addEventListener('click', () => {
+        const now = performance.now();
+        count = (now - last < 1500) ? count + 1 : 1; last = now;
+        if (count >= n) { count = 0; qRecord(id, true); }
+      });
+    }
+  }
+  let buf = [];
+  if (Object.keys(keyed).length) {
+    document.addEventListener('keydown', (e) => {
+      if (typeof e.key !== 'string') return;
+      const r = questKeys(buf, e.key, words); buf = r.buf;
+      for (const h of r.hits) for (const id of (keyed[h] || [])) qRecord(id, true);
+    });
+  }
+  for (const el of document.querySelectorAll('[data-tc-quest]')) {
+    const id = el.getAttribute('data-tc-quest');
+    el.addEventListener('click', () => qRecord(id, false));
+  }
+  qRender();
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', qBind); else qBind();
+})();
+</script>
+<script type="application/ld+json" data-seo-jsonld>{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://agifuturefoundation.github.io/SmartCiti.X/web/trade_craft_ladder.html","url":"https://agifuturefoundation.github.io/SmartCiti.X/web/trade_craft_ladder.html","name":"SmartCiti.X : Trade Craft Academy — training ladder","description":"The training ladder: every trade's skills by strand and tier, and which rungs a lesson or simulator seat stands on.","inLanguage":"en","isPartOf":{"@id":"https://agifuturefoundation.github.io/SmartCiti.X/#website"}},{"@type":"WebSite","@id":"https://agifuturefoundation.github.io/SmartCiti.X/#website","url":"https://agifuturefoundation.github.io/SmartCiti.X/","name":"SmartCiti.X : Trade Craft Academy","inLanguage":"en"}]}</script>
 </body>
 </html>

@@ -1,8 +1,8 @@
 # The lessons
 
 A reason to go to a particular room in a particular hall and do something there.
-**56 lessons**, **256 steps** in 8 kinds,
-standing in 56 rooms of 51 of the
+**116 lessons**, **476 steps** in 8 kinds,
+standing in 116 rooms of 111 of the
 111 halls — and not one of them certifies anybody.
 
 ## What a lesson does not mean
@@ -11,11 +11,11 @@ No lesson here certifies anybody, qualifies anybody or permits anybody to do any
 
 A lesson unlocks nothing. No step is locked behind another, the ladder is guidance about a sensible order rather than a permission system, and the assessment gate that schools/ declares stays exactly where it is: an unaided verification run that no lesson, station hour or simulator seat substitutes for.
 
-This is a set deliberately spread thin: 56 lessons across 51 halls, one in every one of the 45 halls a simulator seat is bound to, out of 111 halls and 1,221 rooms. It demonstrates the shape a lesson takes in this bundle. It is not a curriculum, it does not cover a trade, and no hall is finished because one of its rooms now has a lesson standing in it.
+This is a set deliberately spread thin: 116 lessons across 111 of 111 halls, one in every one of the 45 halls a simulator seat is bound to and one composed first walk in every hall without a seat that the rule could walk honestly (0 refused), out of 1,221 rooms. It demonstrates the shape a lesson takes in this bundle. It is not a curriculum, it does not cover a trade, and no hall is finished because one of its rooms now has a lesson standing in it.
 
 ## What a lesson is
 
-AUTHORED: every lesson, every step order and every sentence in this pack was written here, by us. Nothing is generated, nothing is fetched and no model runs behind any of it.
+AUTHORED: every sentence in this pack was written here, by us. 56 lessons were written by hand, one hall at a time, step by step; the other 60 are composed by one rule in lessons/build.py from 6 arcs written here, one per room an advisor stands in, so their step order, title and why are marked DERIVED and carry authoring "rule" - the rule reads the hall name and focus from the roster and adds no fact of its own. Nothing is fetched and no model runs behind any of it.
 
 This pack holds no second copy of anything. Hall names, room labels, station names, seat names, scenario names, advisor names, crew role names and topic wordings are all read at build time from the registries that own them, and the test re-reads them the same way. A step that could not resolve its ids did not become a lesson with a footnote; it failed the build.
 
@@ -26,17 +26,17 @@ four stages: a lesson is the class and floor halves of the existing loop made wa
 
 | Kind | What it is | Stage | Records | Steps | Reads |
 |---|---|---|---|---|---|
-| **walk** | walk to a room of this hall | class | — | 58 | `web/interiors.py` |
-| **placard** | read the door placard of a room and take on what it requires | class | — | 29 | `surfaces/registry/finishes.json` |
+| **walk** | walk to a room of this hall | class | — | 118 | `web/interiors.py` |
+| **placard** | read the door placard of a room and take on what it requires | class | — | 69 | `surfaces/registry/finishes.json` |
 | **station** | take a training station at its bench | class | — | 12 | `stations/registry/stations.json` |
-| **crib** | run the district crib check at the pegboard | class | — | 12 | `tools/registry/toolcribs.json` |
+| **crib** | run the district crib check at the pegboard | class | — | 22 | `tools/registry/toolcribs.json` |
 | **walkaround** | walk one pre-shift point of a seat and mark it | floor | `walkaround` | 42 | `sims/registry/sims.json` |
 | **sim** | run one seat on the scenario its campus owns | floor | `sim` | 31 | `sims/registry/sims.json` |
-| **advisor** | ask the advisor who stands in this room one of its fixed topics | class | `advisor` | 49 | `agents/registry/advisors.json` |
+| **advisor** | ask the advisor who stands in this room one of its fixed topics | class | `advisor` | 159 | `agents/registry/advisors.json` |
 | **crew** | ask one role of the standing crew one of its fixed topics while the seat runs | floor | `crew` | 23 | `agents/registry/crews.json` |
 
-145 of the 256 steps write an episode to the
-device-local training log; the other 111 write nothing at all.
+255 of the 476 steps write an episode to the
+device-local training log; the other 221 write nothing at all.
 The recording ones use 4 episode kinds `training/`
 already had and add 0 of their own. The 4
 kinds that stay silent each say why:
@@ -53,24 +53,24 @@ Finishing a lesson changes no score and is read by no grader. Four of the eight 
 Breadth over the trades rather than depth in one: the ceiling is declared, computed and failed against, and all 11 strands must be stood in or the build stops.
 
 All 11 of the 11 strands are stood in,
-across 3 campuses and 51 halls, and no
-hall holds more than 3.57% of the set against a
+across 3 campuses and 111 halls, and no
+hall holds more than 1.72% of the set against a
 ceiling of 10%.
 
 The steps reach 12 of 25 training stations,
 11 of 11 seats, 16 of
 33 scenarios, 34 of
 55 pre-shift walkaround points,
-20 advisor topics over 7 advisors,
+21 advisor topics over 8 advisors,
 19 crew roles over 6 crews and
-5 district tool cribs. Every one of those resolves against the
+7 district tool cribs. Every one of those resolves against the
 registry that owns it, at build time, or the lesson does not exist.
 
 ## The ladder
 
-40 edges over 56 lessons.
-17 lessons need nothing before them, and the longest chain is
-5 deep (17 at depth 1, 21 at depth 2, 12 at depth 3, 3 at depth 4, 3 at depth 5). The graph is acyclic and the build
+40 edges over 116 lessons.
+77 lessons need nothing before them, and the longest chain is
+5 deep (77 at depth 1, 21 at depth 2, 12 at depth 3, 3 at depth 4, 3 at depth 5). The graph is acyclic and the build
 checks that it is.
 
 ```mermaid
@@ -125,7 +125,7 @@ flowchart LR
 
 **Enforcement:** none. The ladder is a sensible order, not a permission system: no lesson is locked behind another and the page contract forbids the page from locking one.
 
-## The 56 lessons, one by one
+## The 116 lessons, one by one
 
 Each lesson carries its own limit sentence, and the page contract puts that
 sentence beside the lesson rather than behind a disclosure control:
@@ -189,6 +189,66 @@ the `limits` sentence renders with the lesson, not behind a disclosure control, 
 | **Name the kit before you take it up** | Sheet Metal Workers | Tool Crib | tools | fundamentals | 5 | Finishing this is not a sheet metal qualification and issues nothing real; the crib is a teaching prop, the basket is schematic, and no employer or hall has signed anything on the strength of it. |
 | **Move the job across the shop without marking it** | Machinists | Inspection Bench | inspection | applied | 4 | Finishing this is not overhead crane authorisation and no fit has been measured; the load here is schematic, the tolerances are drawn, and no shop or inspector has accepted anything from it. |
 | **Clear the runway before the ladle moves** | Foundry Workers | Materials Store | materials | applied | 6 | Finishing this is not overhead crane authorisation and not foundry floor standing; nothing here is molten, the frame weighs nothing, and no employer or jurisdiction issues anything on the strength of it. |
+| **Plumbers & Pipefitters: find out what the room is held to** | Plumbers & Pipefitters | Induction & PPE | safety | fundamentals | 4 | Finishing this is not safety training, not an induction and not a permit to enter any real workspace; it is a walk through a schematic room and two scripted answers, and no hall, employer or authority has signed anything on the strength of it. |
+| **Elevator Constructors: know the kit before you touch it** | Elevator Constructors | Tool Crib | tools | fundamentals | 4 | Finishing this is not tool training and permits you to use nothing; the check is scored against a record, not against your hands, and no employer or hall accepts it as evidence of anything. |
+| **Drywall Finishers: trust a line only as far as it is proved** | Drywall Finishers | Layout Floor | layout | fundamentals | 4 | Finishing this is not setting-out training and qualifies nobody to mark anything; the floor here is schematic, no real reference has been proved by it, and nobody who does this work has reviewed these lines yet. |
+| **Floor Coverers: ask what a pass would actually mean** | Floor Coverers | Inspection Bench | inspection | fundamentals | 4 | Finishing this is not an inspection and not an acceptance of anybody's work; nothing here is a sign-off, no grader reads it, and the halls this trade belongs to have not reviewed a line of it. |
+| **Grounds & Landscape: hand the shift over properly** | Grounds & Landscape | Briefing Room | coordination | fundamentals | 3 | Finishing this is not supervisor training and gives nobody the standing to run a crew; it is one scripted exchange in a schematic room, and no hall or employer has reviewed it. |
+| **Solar Installers: find out where the record goes** | Solar Installers | Records | documentation | fundamentals | 3 | Finishing this is not permit or records training and issues no document of any kind; your progress stays on this device, nothing here certifies anybody, and no hall has reviewed a word of it. |
+| **Wind Turbine Technicians: find out what the room is held to** | Wind Turbine Technicians | Induction & PPE | safety | fundamentals | 4 | Finishing this is not safety training, not an induction and not a permit to enter any real workspace; it is a walk through a schematic room and two scripted answers, and no hall, employer or authority has signed anything on the strength of it. |
+| **Fire Sprinkler Fitters: know the kit before you touch it** | Fire Sprinkler Fitters | Tool Crib | tools | fundamentals | 4 | Finishing this is not tool training and permits you to use nothing; the check is scored against a record, not against your hands, and no employer or hall accepts it as evidence of anything. |
+| **Commercial Divers: trust a line only as far as it is proved** | Commercial Divers | Layout Floor | layout | fundamentals | 4 | Finishing this is not setting-out training and qualifies nobody to mark anything; the floor here is schematic, no real reference has been proved by it, and nobody who does this work has reviewed these lines yet. |
+| **Drillers & Blasters: ask what a pass would actually mean** | Drillers & Blasters | Inspection Bench | inspection | fundamentals | 4 | Finishing this is not an inspection and not an acceptance of anybody's work; nothing here is a sign-off, no grader reads it, and the halls this trade belongs to have not reviewed a line of it. |
+| **Underground Miners: hand the shift over properly** | Underground Miners | Briefing Room | coordination | fundamentals | 3 | Finishing this is not supervisor training and gives nobody the standing to run a crew; it is one scripted exchange in a schematic room, and no hall or employer has reviewed it. |
+| **Smelter Operators: find out where the record goes** | Smelter Operators | Records | documentation | fundamentals | 3 | Finishing this is not permit or records training and issues no document of any kind; your progress stays on this device, nothing here certifies anybody, and no hall has reviewed a word of it. |
+| **Tool & Die Makers: find out what the room is held to** | Tool & Die Makers | Induction & PPE | safety | fundamentals | 4 | Finishing this is not safety training, not an induction and not a permit to enter any real workspace; it is a walk through a schematic room and two scripted answers, and no hall, employer or authority has signed anything on the strength of it. |
+| **Platers & Coaters: know the kit before you touch it** | Platers & Coaters | Tool Crib | tools | fundamentals | 4 | Finishing this is not tool training and permits you to use nothing; the check is scored against a record, not against your hands, and no employer or hall accepts it as evidence of anything. |
+| **Substation Technicians: trust a line only as far as it is proved** | Substation Technicians | Layout Floor | layout | fundamentals | 4 | Finishing this is not setting-out training and qualifies nobody to mark anything; the floor here is schematic, no real reference has been proved by it, and nobody who does this work has reviewed these lines yet. |
+| **Cable Splicers: ask what a pass would actually mean** | Cable Splicers | Inspection Bench | inspection | fundamentals | 4 | Finishing this is not an inspection and not an acceptance of anybody's work; nothing here is a sign-off, no grader reads it, and the halls this trade belongs to have not reviewed a line of it. |
+| **Meter Technicians: hand the shift over properly** | Meter Technicians | Briefing Room | coordination | fundamentals | 3 | Finishing this is not supervisor training and gives nobody the standing to run a crew; it is one scripted exchange in a schematic room, and no hall or employer has reviewed it. |
+| **Gas Distribution Fitters: find out where the record goes** | Gas Distribution Fitters | Records | documentation | fundamentals | 3 | Finishing this is not permit or records training and issues no document of any kind; your progress stays on this device, nothing here certifies anybody, and no hall has reviewed a word of it. |
+| **Water Distribution Fitters: find out what the room is held to** | Water Distribution Fitters | Induction & PPE | safety | fundamentals | 4 | Finishing this is not safety training, not an induction and not a permit to enter any real workspace; it is a walk through a schematic room and two scripted answers, and no hall, employer or authority has signed anything on the strength of it. |
+| **Wastewater Operators: know the kit before you touch it** | Wastewater Operators | Tool Crib | tools | fundamentals | 4 | Finishing this is not tool training and permits you to use nothing; the check is scored against a record, not against your hands, and no employer or hall accepts it as evidence of anything. |
+| **Nuclear Plant Trades: trust a line only as far as it is proved** | Nuclear Plant Trades | Layout Floor | layout | fundamentals | 4 | Finishing this is not setting-out training and qualifies nobody to mark anything; the floor here is schematic, no real reference has been proved by it, and nobody who does this work has reviewed these lines yet. |
+| **Hydro Plant Trades: ask what a pass would actually mean** | Hydro Plant Trades | Inspection Bench | inspection | fundamentals | 4 | Finishing this is not an inspection and not an acceptance of anybody's work; nothing here is a sign-off, no grader reads it, and the halls this trade belongs to have not reviewed a line of it. |
+| **Geothermal Technicians: hand the shift over properly** | Geothermal Technicians | Briefing Room | coordination | fundamentals | 3 | Finishing this is not supervisor training and gives nobody the standing to run a crew; it is one scripted exchange in a schematic room, and no hall or employer has reviewed it. |
+| **Battery Storage Technicians: find out where the record goes** | Battery Storage Technicians | Records | documentation | fundamentals | 3 | Finishing this is not permit or records training and issues no document of any kind; your progress stays on this device, nothing here certifies anybody, and no hall has reviewed a word of it. |
+| **EV Charging Installers: find out what the room is held to** | EV Charging Installers | Induction & PPE | safety | fundamentals | 4 | Finishing this is not safety training, not an induction and not a permit to enter any real workspace; it is a walk through a schematic room and two scripted answers, and no hall, employer or authority has signed anything on the strength of it. |
+| **Hydrogen Systems Trades: know the kit before you touch it** | Hydrogen Systems Trades | Tool Crib | tools | fundamentals | 4 | Finishing this is not tool training and permits you to use nothing; the check is scored against a record, not against your hands, and no employer or hall accepts it as evidence of anything. |
+| **Transmission Linemen: trust a line only as far as it is proved** | Transmission Linemen | Layout Floor | layout | fundamentals | 4 | Finishing this is not setting-out training and qualifies nobody to mark anything; the floor here is schematic, no real reference has been proved by it, and nobody who does this work has reviewed these lines yet. |
+| **District Energy Operators: ask what a pass would actually mean** | District Energy Operators | Inspection Bench | inspection | fundamentals | 4 | Finishing this is not an inspection and not an acceptance of anybody's work; nothing here is a sign-off, no grader reads it, and the halls this trade belongs to have not reviewed a line of it. |
+| **Terrazzo Workers: hand the shift over properly** | Terrazzo Workers | Briefing Room | coordination | fundamentals | 3 | Finishing this is not supervisor training and gives nobody the standing to run a crew; it is one scripted exchange in a schematic room, and no hall or employer has reviewed it. |
+| **Acoustic Specialists: find out where the record goes** | Acoustic Specialists | Records | documentation | fundamentals | 3 | Finishing this is not permit or records training and issues no document of any kind; your progress stays on this device, nothing here certifies anybody, and no hall has reviewed a word of it. |
+| **Concrete Pump Operators: find out what the room is held to** | Concrete Pump Operators | Induction & PPE | safety | fundamentals | 4 | Finishing this is not safety training, not an induction and not a permit to enter any real workspace; it is a walk through a schematic room and two scripted answers, and no hall, employer or authority has signed anything on the strength of it. |
+| **Post-Tension Technicians: know the kit before you touch it** | Post-Tension Technicians | Tool Crib | tools | fundamentals | 4 | Finishing this is not tool training and permits you to use nothing; the check is scored against a record, not against your hands, and no employer or hall accepts it as evidence of anything. |
+| **Precast Erectors: trust a line only as far as it is proved** | Precast Erectors | Layout Floor | layout | fundamentals | 4 | Finishing this is not setting-out training and qualifies nobody to mark anything; the floor here is schematic, no real reference has been proved by it, and nobody who does this work has reviewed these lines yet. |
+| **Building Automation Techs: ask what a pass would actually mean** | Building Automation Techs | Inspection Bench | inspection | fundamentals | 4 | Finishing this is not an inspection and not an acceptance of anybody's work; nothing here is a sign-off, no grader reads it, and the halls this trade belongs to have not reviewed a line of it. |
+| **Fire Alarm Technicians: hand the shift over properly** | Fire Alarm Technicians | Briefing Room | coordination | fundamentals | 3 | Finishing this is not supervisor training and gives nobody the standing to run a crew; it is one scripted exchange in a schematic room, and no hall or employer has reviewed it. |
+| **Security Systems Installers: find out where the record goes** | Security Systems Installers | Records | documentation | fundamentals | 3 | Finishing this is not permit or records training and issues no document of any kind; your progress stays on this device, nothing here certifies anybody, and no hall has reviewed a word of it. |
+| **Structured Cabling Techs: find out what the room is held to** | Structured Cabling Techs | Induction & PPE | safety | fundamentals | 4 | Finishing this is not safety training, not an induction and not a permit to enter any real workspace; it is a walk through a schematic room and two scripted answers, and no hall, employer or authority has signed anything on the strength of it. |
+| **Data Centre Technicians: know the kit before you touch it** | Data Centre Technicians | Tool Crib | tools | fundamentals | 4 | Finishing this is not tool training and permits you to use nothing; the check is scored against a record, not against your hands, and no employer or hall accepts it as evidence of anything. |
+| **Instrumentation Technicians: trust a line only as far as it is proved** | Instrumentation Technicians | Layout Floor | layout | fundamentals | 4 | Finishing this is not setting-out training and qualifies nobody to mark anything; the floor here is schematic, no real reference has been proved by it, and nobody who does this work has reviewed these lines yet. |
+| **PLC & Controls Technicians: ask what a pass would actually mean** | PLC & Controls Technicians | Inspection Bench | inspection | fundamentals | 4 | Finishing this is not an inspection and not an acceptance of anybody's work; nothing here is a sign-off, no grader reads it, and the halls this trade belongs to have not reviewed a line of it. |
+| **Industrial Robotics Techs: hand the shift over properly** | Industrial Robotics Techs | Briefing Room | coordination | fundamentals | 3 | Finishing this is not supervisor training and gives nobody the standing to run a crew; it is one scripted exchange in a schematic room, and no hall or employer has reviewed it. |
+| **Automation Integrators: find out where the record goes** | Automation Integrators | Records | documentation | fundamentals | 3 | Finishing this is not permit or records training and issues no document of any kind; your progress stays on this device, nothing here certifies anybody, and no hall has reviewed a word of it. |
+| **Cleanroom Trades: find out what the room is held to** | Cleanroom Trades | Induction & PPE | safety | fundamentals | 4 | Finishing this is not safety training, not an induction and not a permit to enter any real workspace; it is a walk through a schematic room and two scripted answers, and no hall, employer or authority has signed anything on the strength of it. |
+| **Medical Gas Installers: know the kit before you touch it** | Medical Gas Installers | Tool Crib | tools | fundamentals | 4 | Finishing this is not tool training and permits you to use nothing; the check is scored against a record, not against your hands, and no employer or hall accepts it as evidence of anything. |
+| **Rail Track Workers: trust a line only as far as it is proved** | Rail Track Workers | Layout Floor | layout | fundamentals | 4 | Finishing this is not setting-out training and qualifies nobody to mark anything; the floor here is schematic, no real reference has been proved by it, and nobody who does this work has reviewed these lines yet. |
+| **Rail Signal Technicians: ask what a pass would actually mean** | Rail Signal Technicians | Inspection Bench | inspection | fundamentals | 4 | Finishing this is not an inspection and not an acceptance of anybody's work; nothing here is a sign-off, no grader reads it, and the halls this trade belongs to have not reviewed a line of it. |
+| **Overhead Catenary Linemen: hand the shift over properly** | Overhead Catenary Linemen | Briefing Room | coordination | fundamentals | 3 | Finishing this is not supervisor training and gives nobody the standing to run a crew; it is one scripted exchange in a schematic room, and no hall or employer has reviewed it. |
+| **Transit Vehicle Technicians: find out where the record goes** | Transit Vehicle Technicians | Records | documentation | fundamentals | 3 | Finishing this is not permit or records training and issues no document of any kind; your progress stays on this device, nothing here certifies anybody, and no hall has reviewed a word of it. |
+| **Aviation Ground Support: find out what the room is held to** | Aviation Ground Support | Induction & PPE | safety | fundamentals | 4 | Finishing this is not safety training, not an induction and not a permit to enter any real workspace; it is a walk through a schematic room and two scripted answers, and no hall, employer or authority has signed anything on the strength of it. |
+| **Airfield Trades: know the kit before you touch it** | Airfield Trades | Tool Crib | tools | fundamentals | 4 | Finishing this is not tool training and permits you to use nothing; the check is scored against a record, not against your hands, and no employer or hall accepts it as evidence of anything. |
+| **Fleet Diesel Technicians: trust a line only as far as it is proved** | Fleet Diesel Technicians | Layout Floor | layout | fundamentals | 4 | Finishing this is not setting-out training and qualifies nobody to mark anything; the floor here is schematic, no real reference has been proved by it, and nobody who does this work has reviewed these lines yet. |
+| **Bridge Inspection Crews: ask what a pass would actually mean** | Bridge Inspection Crews | Inspection Bench | inspection | fundamentals | 4 | Finishing this is not an inspection and not an acceptance of anybody's work; nothing here is a sign-off, no grader reads it, and the halls this trade belongs to have not reviewed a line of it. |
+| **Asbestos Abatement Workers: hand the shift over properly** | Asbestos Abatement Workers | Briefing Room | coordination | fundamentals | 3 | Finishing this is not supervisor training and gives nobody the standing to run a crew; it is one scripted exchange in a schematic room, and no hall or employer has reviewed it. |
+| **Lead Abatement Workers: find out where the record goes** | Lead Abatement Workers | Records | documentation | fundamentals | 3 | Finishing this is not permit or records training and issues no document of any kind; your progress stays on this device, nothing here certifies anybody, and no hall has reviewed a word of it. |
+| **Mould Remediation Techs: find out what the room is held to** | Mould Remediation Techs | Induction & PPE | safety | fundamentals | 4 | Finishing this is not safety training, not an induction and not a permit to enter any real workspace; it is a walk through a schematic room and two scripted answers, and no hall, employer or authority has signed anything on the strength of it. |
+| **Spill Response Technicians: know the kit before you touch it** | Spill Response Technicians | Tool Crib | tools | fundamentals | 4 | Finishing this is not tool training and permits you to use nothing; the check is scored against a record, not against your hands, and no employer or hall accepts it as evidence of anything. |
+| **Confined Space Rescue: trust a line only as far as it is proved** | Confined Space Rescue | Layout Floor | layout | fundamentals | 4 | Finishing this is not setting-out training and qualifies nobody to mark anything; the floor here is schematic, no real reference has been proved by it, and nobody who does this work has reviewed these lines yet. |
+| **High-Angle Rescue: ask what a pass would actually mean** | High-Angle Rescue | Inspection Bench | inspection | fundamentals | 4 | Finishing this is not an inspection and not an acceptance of anybody's work; nothing here is a sign-off, no grader reads it, and the halls this trade belongs to have not reviewed a line of it. |
+| **Industrial Cleaning Crews: hand the shift over properly** | Industrial Cleaning Crews | Briefing Room | coordination | fundamentals | 3 | Finishing this is not supervisor training and gives nobody the standing to run a crew; it is one scripted exchange in a schematic room, and no hall or employer has reviewed it. |
+| **Aerial Survey Operators: find out where the record goes** | Aerial Survey Operators | Records | documentation | fundamentals | 3 | Finishing this is not permit or records training and issues no document of any kind; your progress stays on this device, nothing here certifies anybody, and no hall has reviewed a word of it. |
 
 ## What a lesson is not
 
@@ -196,7 +256,7 @@ the `limits` sentence renders with the lesson, not behind a disclosure control, 
 - **Not a gate.** a lesson unlocks nothing. No step is locked behind another, the ladder is guidance about a sensible order rather than a permission system, and the assessment gate that schools/ declares stays exactly where it is: an unaided verification run that no lesson, station hour or simulator seat substitutes for.
 - **Not reviewed.** unverified general practice. These lessons were written to be argued with, corrected and replaced by journey-level practitioners from the halls they name - the same standing the module pack, the recovered stations and the simulator seats already carry, and for the same reason: nobody who does this work for a living has reviewed a line of it yet.
 - **Not a code ruling.** nothing here cites a standard, a code or an authority, and nothing here speaks for one. Where a step says what a crew would do, that is unverified general practice and not an instruction from anybody with the standing to give one.
-- **Not a curriculum.** this is a set deliberately spread thin: 56 lessons across 51 halls, one in every one of the 45 halls a simulator seat is bound to, out of 111 halls and 1,221 rooms. It demonstrates the shape a lesson takes in this bundle. It is not a curriculum, it does not cover a trade, and no hall is finished because one of its rooms now has a lesson standing in it.
+- **Not a curriculum.** this is a set deliberately spread thin: 116 lessons across 111 of 111 halls, one in every one of the 45 halls a simulator seat is bound to and one composed first walk in every hall without a seat that the rule could walk honestly (0 refused), out of 1,221 rooms. It demonstrates the shape a lesson takes in this bundle. It is not a curriculum, it does not cover a trade, and no hall is finished because one of its rooms now has a lesson standing in it.
 
 ---
 

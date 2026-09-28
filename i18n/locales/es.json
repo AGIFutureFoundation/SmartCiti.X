@@ -264,7 +264,25 @@
   "map.aria.plan": "Plano de la red: {n} salas gremiales agrupadas en ocho distritos en {c} campus construidos",
   "map.aria.floor": "Plano de planta de la sala {name}: {n} habitaciones",
   "map.aria.hall": "{name} — distrito {district}, cuadrícula {ref}",
-  "map.page_title": "Plano de la red"
+  "map.page_title": "Plano de la red",
+  "nav.group.play": "Jugar",
+  "nav.page.quests": "Misiones y arcade",
+  "nav.page.wilds": "Tierras salvajes",
+  "nav.page.schools": "Itinerarios escolares",
+  "campus3d.questlog": "Diario de misiones",
+  "campus3d.play": "Las misiones, los tesoros y los huevos de pascua son juego: nunca entran en un registro de finalización y no certifican nada.",
+  "campus3d.locked": "Bloqueada. Termina primero estas lecciones:",
+  "campus3d.open": "Desbloqueada. Todas las lecciones que pide están hechas en este dispositivo.",
+  "campus3d.treasure": "Tesoro encontrado",
+  "campus3d.egg": "Huevo de pascua encontrado",
+  "campus3d.hooks": "El motor de misiones aún no está conectado a esta página, así que los hallazgos se listan solo para esta visita.",
+  "seo.desc.landing": "Por qué existe Trade Craft Academy: un sistema de formación adaptativa para los oficios, en una ciudad virtual de obras que se puede recorrer.",
+  "seo.desc.map": "El plano de la red: cada sala sindical dibujada por distrito, con recuentos de salas y módulos leídos del registro, no escritos a mano.",
+  "seo.desc.languages": "Los idiomas en que se ofrece la academia, cada uno con el estado de traducción que registra su propio catálogo.",
+  "landing.video.pause": "Pausar el vídeo de fondo",
+  "landing.video.play": "Reproducir el vídeo de fondo",
+  "landing.video.caption": "Fondo: una órbita sobre el campus de Treasure Island, grabada desde la página 3D de esta compilación.",
+  "nav.page.design": "Kit de diseño"
  },
  "districts": {
   "structural": {

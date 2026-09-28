@@ -42,6 +42,11 @@ GROUPS = [
         ('web/trade_craft_lessons.html', 'nav.page.lessons'),
         ('web/trade_craft_ladder.html', 'nav.page.ladder'),
         ('web/trade_craft_3d.html', 'nav.page.campus'),
+        ('web/trade_craft_schools.html', 'nav.page.schools'),
+    ]),
+    ('nav.group.play', [
+        ('web/trade_craft_quests.html', 'nav.page.quests'),
+        ('web/trade_craft_wilds.html', 'nav.page.wilds'),
     ]),
     ('nav.group.maps', [
         ('web/trade_craft_map.html', 'nav.page.map'),
@@ -64,6 +69,7 @@ GROUPS = [
         ('web/trade_craft_languages.html', 'nav.page.languages'),
         ('web/trade_craft_signin.html', 'nav.page.signin'),
         ('web/smartcitix_trade_craft_academy.html', 'nav.page.spec'),
+        ('web/trade_craft_design.html', 'nav.page.design'),
     ]),
 ]
 

@@ -548,6 +548,11 @@ def lesson_html(lid, L, pos, of, cstep0, nxt):
             f'<span class="room">{E(need(L, "room_label", w))}</span>'
             f'<span class="chip">{E(need(L, "strand", w))}</span>'
             f'<span class="chip">{E(need(L, "tier", w))}</span>'
+            # how the lesson was authored rides on its face, not only in the
+            # provenance chips further down: a composed first walk is not
+            # passed off as one somebody wrote for this hall by hand
+            f'<span class="chip auth" data-authoring="{E(need(L, "authoring", w))}">'
+            f'{"composed by rule" if need(L, "authoring", w) == "rule" else "written by hand"}</span>'
             f'<span class="chip">{E(CAMPUS_NAME[campus])}</span>'
             f'<a class="ladderlink" href="trade_craft_ladder.html?hall={E(hall)}">'
             f'its rung on this trade\'s ladder</a>'

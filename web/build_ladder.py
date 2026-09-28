@@ -57,6 +57,7 @@ import sys
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+from seo import apply_seo  # noqa: E402  head tags only
 from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 
 
@@ -822,6 +823,8 @@ render(sel.value);
 '''
 
 NAV = nav_html('web/trade_craft_ladder.html', nav_labels('en'))
+from questkit import QUEST_CSS, quest_js, page_hooks  # noqa: E402  quests: egg hooks only
+QUEST_TAIL = '<style>' + QUEST_CSS + '</style>\n' + page_hooks('web/trade_craft_ladder.html') + quest_js('page:web/trade_craft_ladder.html')
 
 page = f'''<!doctype html>
 <html lang="en">
@@ -1081,11 +1084,13 @@ const DATA = {PAYLOAD};
 </script>
 <script>
 {SCRIPT}</script>
-</body>
+{QUEST_TAIL}</body>
 </html>
 '''
 
 out = HERE / 'trade_craft_ladder.html'
+page = apply_seo(page, 'web/trade_craft_ladder.html', 'SmartCiti.X : Trade Craft Academy \u2014 training ladder',
+    'The training ladder: every trade\'s skills by strand and tier, and which rungs a lesson or simulator seat stands on.', 'page')
 emit(out, page,
      f'{F(N_HALLS)} halls, {F(N_CELLS)} cells, {F(N_EDGES)} prerequisite edges, '
      f'{F(N_SIMS)} seats on {F(N_COVERED_CELLS)} cells, certifies nobody')

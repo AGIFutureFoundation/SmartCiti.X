@@ -2685,4 +2685,99 @@ ok('a person\'s hand is palm, four-finger mitt and thumb - with a gauntlet cuff 
     used.length >= 40 && off.length === 0);
 }
 
+/* --------------------------------- side quests, treasures and eggs --- */
+// The quest layer (QUEST3D_JS) is play laid over the campus. Each check
+// below holds one promise it makes, on the source and on the built page.
+{
+  const qjs = strip(src.slice(src.indexOf('QUEST3D_JS = r"""'), src.indexOf('"""', src.indexOf('QUEST3D_JS = r"""') + 20)));
+  const dataJson = JSON.parse(built.slice(built.indexOf('<script id="data" type="application/json">') + 42,
+    built.indexOf('</script>', built.indexOf('<script id="data" type="application/json">'))));
+  const Q3 = dataJson.quest3d;
+  const qreg = JSON.parse(readFileSync(new URL('../quests/registry/quests.json', import.meta.url), 'utf8'));
+  const byId = Object.fromEntries(qreg.quests.map((q) => [q.id, q]));
+  const lessons = JSON.parse(readFileSync(new URL('../lessons/registry/lessons.json', import.meta.url), 'utf8')).lessons;
+  // markers: every hall side quest and every seat side quest the registry
+  // carries stands in the page, gated by the registry's OWN lesson ids
+  const regHall = qreg.quests.filter((q) => q.kind === 'side' && q.world.startsWith('hall:'));
+  const regSeat = qreg.quests.filter((q) => q.kind === 'side' && q.world === 'campus' && q.id.startsWith('side-seat-'));
+  ok(`quest markers: all ${regHall.length} hall side quests and ${regSeat.length} seat side quests in quests/registry stand in the page with the registry's own lesson gates, every lesson id real`,
+    regHall.length >= 40 && regSeat.length >= 5
+    && regHall.every((q) => { const h = Q3.hall[q.world.slice(5)];
+      return h && h.id === q.id && JSON.stringify(h.lessons) === JSON.stringify(q.requires.lessons)
+        && dataJson.roomDefs[h.strand].label === q.place; })
+    && regSeat.every((q) => Q3.seat[q.place] && Q3.seat[q.place].id === q.id
+      && JSON.stringify(Q3.seat[q.place].lessons) === JSON.stringify(q.requires.lessons))
+    && [...Object.values(Q3.hall), ...Object.values(Q3.seat)].every((v) => v.lessons.length && v.lessons.every((l) => lessons[l]))
+    && /if \(view === 'hall' && Q3\.hall\[slug\]\)/.test(qjs) && /for \(const st of yardSeatsAt\)/.test(qjs)
+    && /yardSeatsAt\.push\(\{ id, x: yg\.position\.x \+ sx, z: yg\.position\.z \+ sz \}\)/.test(fnCode('buildTrainingYard')));
+  // a marker is LOCKED unless the engine says otherwise - fail closed
+  ok('a quest marker is locked unless TCQuests.check() says ok: no engine means locked, and a locked marker lists the lessons it waits on',
+    /return api \? api\.check\(id\) : \{ ok: false, missing: null \}/.test(qjs)
+    && /if \(it\.kind === 'marker'\) return questCheck\(it\.id\)\.ok \? QCOL\.open : QCOL\.locked/.test(qjs)
+    && /t\('campus3d\.locked'\)/.test(qjs) && /if \(c\.ok\) \{\s*const api = qApi\(\); if \(api\) api\.complete\(q\.id\)/.test(qjs));
+  // pooled: one InstancedMesh, no per-instance mesh, no shadow, no label
+  ok('treasures, markers, egg gems and meteors are ONE pooled InstancedMesh: no THREE.Mesh, no label(), no shadow, one geometry and one material, capacity bounded',
+    (qjs.match(/new THREE\.InstancedMesh\(/g) ?? []).length === 1
+    && !/new THREE\.Mesh\(|new THREE\.Sprite\(|\blabel\(/.test(qjs)
+    && /QPOOL\.castShadow = false; QPOOL\.receiveShadow = false;/.test(qjs)
+    && (qjs.match(/new THREE\.\w+Geometry\(/g) ?? []).length === 1
+    && (qjs.match(/new THREE\.Mesh\w*Material\(/g) ?? []).length === 1
+    && /const QCAP = 64;/.test(qjs) && /Math\.min\(QCAP, all\.length\)/.test(qjs)
+    && /scene\.add\(QPOOL\);/.test(qjs) && !/hallGroup\.add\(QPOOL\)/.test(qjs));
+  // treasures read real compliance placards; greens quote modules verbatim
+  const comp = JSON.parse(readFileSync(new URL('../compliance/registry/compliance.json', import.meta.url), 'utf8'));
+  const evals = JSON.parse(readFileSync(new URL('../evals/registry/evals.json', import.meta.url), 'utf8'));
+  const venue = JSON.parse(readFileSync(new URL('../venue/registry/venue.json', import.meta.url), 'utf8'));
+  const greens = Object.values(Q3.green);
+  ok(`every hall treasure reads a HUNG placard from compliance/registry byte for byte (${Object.keys(Q3.treasure).length}); every campus green quotes the eval's limit sentence, the venue's counts or the ledger's is_not verbatim`,
+    Object.keys(Q3.treasure).length === regHall.length
+    && Object.entries(Q3.treasure).every(([sg, tr]) => comp.halls[sg].rooms[tr.strand].placard.hung
+      && JSON.stringify(comp.halls[sg].rooms[tr.strand].placard.items) === JSON.stringify(tr.items))
+    && Object.keys(Q3.green).length === Object.keys(dataJson.campuses).length
+    && greens.some((g) => g.mod === 'evals' && g.text === evals.limit.sentence)
+    && greens.some((g) => g.mod === 'venue' && g.text.includes(`contents_meshes ${venue.counts.contents_meshes}`)
+      && g.text.includes(`floor_plates ${venue.counts.floor_plates}`) && g.text.includes(venue.honesty.a_box_is_not_a_room.split('. ')[0]))
+    && greens.some((g) => g.mod === 'compliance' && comp.honesty.is_not.every((x) => g.text.includes(x))));
+  // eggs: at least five, each wired, each resolving to the registry or
+  // listed as pending (never sent to the engine while pending)
+  const eggIds = Object.values(Q3.eggs);
+  const findable = [...eggIds, ...Object.values(Q3.treasure).map((x) => x.id), ...greens.map((x) => x.id)];
+  const resolved = findable.filter((id) => byId[id]);
+  ok(`${eggIds.length} easter eggs, each with its trigger in the page; each egg and treasure id resolves in quests/registry (${resolved.length}/${findable.length}) with a findable kind, or is listed pending and kept from the engine`,
+    eggIds.length >= 5 && new Set(eggIds).size === eggIds.length
+    && eggIds.every((id) => /^egg-[a-z0-9-]+$/.test(id))
+    && /questEgg\('konami'/.test(qjs) && /questEgg\('typed'/.test(qjs) && /questEgg\('placard'/.test(qjs)
+    && /questEgg\('night'/.test(qjs) && /id: Q3\.eggs\.partition, kind: 'egg'/.test(qjs) && /Q3\.eggs\.advisor/.test(qjs)
+    && /questAdvisorEgg\(aid, topicId\);/.test(fn('openAdvisor')) && /questPhase\(id\);/.test(fn('setPhase'))
+    && findable.every((id) => byId[id] ? ['treasure', 'egg'].includes(byId[id].kind) : Q3.pending.includes(id))
+    && Q3.pending.every((id) => !byId[id])
+    && /if \(api && !qPending\.has\(id\)\) api\.find\(id\);/.test(qjs));
+  // quest_js("campus") comes AFTER the main module, once
+  const mainEnd = built.indexOf('</script>', built.indexOf('<script type="module">'));
+  const coreAt = built.indexOf('QUEST_CORE:BEGIN');
+  ok('quest_js("campus") is carried once, AFTER the page\'s own main module script and before </body>',
+    coreAt > mainEnd && (built.match(/QUEST_CORE:BEGIN/g) ?? []).length === 1
+    && built.indexOf('QW.TCQuests = {') > mainEnd && coreAt < built.lastIndexOf('</body>')
+    && /_head \+ '<\/script>\\n' \+ quest_js\('campus'\) \+ '\\n<\/body>' \+ _tail/.test(src));
+  // the HUD quest-log button has an accessible name and opens data-tc-questlog
+  const qb = built.match(/<button id="questBtn" class="barbtn" aria-label="([^"]+)">/);
+  ok('the HUD quest-log button has an accessible name from the catalog, re-read per locale, and opens a [data-tc-questlog] the engine renders',
+    qb && qb[1] === JSON.parse(readFileSync(new URL('../i18n/locales/en.json', import.meta.url), 'utf8')).strings['campus3d.questlog']
+    && /questLogEl\.setAttribute\('data-tc-questlog', ''\)/.test(qjs)
+    && /if \(api\) api\.render\(\);/.test(qjs)
+    && /getElementById\('questBtn'\)\.setAttribute\('aria-label', t\('campus3d\.questlog'\)\)/.test(qjs)
+    && /getElementById\('questBtn'\)\.addEventListener\('click', openQuestLog\)/.test(qjs));
+  // play, said plainly, in every panel the layer opens, in all 8 locales
+  const locs = ['ar', 'de', 'en', 'es', 'fr', 'hi', 'pt', 'zh'].map((l) =>
+    JSON.parse(readFileSync(new URL(`../i18n/locales/${l}.json`, import.meta.url), 'utf8')).strings);
+  ok('every quest panel says once that quests and treasures are play and never a completion record; the campus3d.* keys are real translations in all 8 locales',
+    /\+ '<p class="src">' \+ qEsc\(t\('campus3d\.play'\)\) \+ '<\/p>'/.test(qjs)
+    && ['campus3d.questlog', 'campus3d.play', 'campus3d.locked', 'campus3d.open', 'campus3d.treasure', 'campus3d.egg', 'campus3d.hooks']
+      .every((k) => locs.every((L) => typeof L[k] === 'string' && L[k].length)
+        && locs.filter((L) => L[k] === locs[2][k]).length === 1)
+    && /never enter a completion record/.test(locs[2]['campus3d.play'])
+    && /if \(\(view === 'hall' \|\| view === 'campus'\) && questPick\(ray\)\) return;/.test(fnCode('pickWith'))
+    && /questStep\(dt\);/.test(code));
+}
+
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);

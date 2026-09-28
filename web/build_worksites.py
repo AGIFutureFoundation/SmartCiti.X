@@ -21,6 +21,7 @@ import sys
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+from seo import apply_seo  # noqa: E402  head tags only
 from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 
 ROOT = HERE.parent
@@ -222,6 +223,8 @@ embedded = json.dumps(reg, indent=1, sort_keys=True).replace('</', '<\\/')
 places = ' · '.join(f'{k}: <b data-fig-place="{esc(k)}">{v}</b>' for k, v in c['places_by_kind'].items())
 
 NAV = nav_html('web/trade_craft_worksites.html', nav_labels('en'))
+from questkit import QUEST_CSS, quest_js, page_hooks  # noqa: E402  quests: egg hooks only
+QUEST_TAIL = '<style>' + QUEST_CSS + '</style>\n' + page_hooks('web/trade_craft_worksites.html') + quest_js('page:web/trade_craft_worksites.html')
 
 page = f'''<!doctype html>
 <html lang="en">
@@ -318,9 +321,11 @@ code{{font:13px "IBM Plex Mono",monospace;color:var(--steel)}}
 {sections}
 <footer class="serves">Registry: <code>worksites/registry/worksites.json</code> · stamp <code data-stamp>{esc(reg["source_stamp"])}</code> · authored <code data-authored-stamp>{esc(reg["authored_stamp"])}</code> · embedded verbatim below.</footer>
 <script type="application/json" id="worksites-registry">{embedded}</script>
-</div></body>
+</div>{QUEST_TAIL}</body>
 </html>
 '''
 
 out = HERE / 'trade_craft_worksites.html'
+page = apply_seo(page, 'web/trade_craft_worksites.html', 'SmartCiti.X : Trade Craft Academy \u2014 work sites',
+    'Work sites drawn from the worksites registry: each site plan with its numbered hand-offs between roles, step by step.', 'page')
 emit(out, page, f'{c["sites"]} sites | {c["handoffs"]} hand-offs | stamp {reg["source_stamp"]}')

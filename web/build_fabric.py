@@ -58,6 +58,7 @@ import urllib.parse
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+from seo import apply_seo  # noqa: E402  head tags only
 from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 
 
@@ -994,6 +995,8 @@ const som = document.getElementById('som');
 '''
 
 NAV = nav_html('web/trade_craft_fabric.html', nav_labels('en'))
+from questkit import QUEST_CSS, quest_js, page_hooks  # noqa: E402  quests: egg hooks only
+QUEST_TAIL = '<style>' + QUEST_CSS + '</style>\n' + page_hooks('web/trade_craft_fabric.html') + quest_js('page:web/trade_craft_fabric.html')
 
 page = f'''<!doctype html>
 <html lang="en">
@@ -1162,11 +1165,13 @@ const DATA = {PAYLOAD};
 </script>
 <script>
 {SCRIPT}</script>
-</body>
+{QUEST_TAIL}</body>
 </html>
 '''
 
 out = HERE / PAGE_NAME
+page = apply_seo(page, 'web/trade_craft_fabric.html', 'SmartCiti.X : Trade Craft Academy \u2014 spatial fabric',
+    'The spatial fabric: how the academy\'s places are anchored and addressed, drawn from its spatial registries.', 'page')
 emit(out, page,
      f'{F(N_POSES)} poses, {F(N_BRANCHES)} SOM branches with {F(N_NODES)} nodes, '
      f'{F(N_SERVICES)} services, {F(N_DOORS_DECLARED)} doors declared; loads in this page, '

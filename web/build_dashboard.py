@@ -38,6 +38,7 @@ ROOT = _pack_root()
 sys.path.insert(0, str(ROOT / 'web'))
 from mapdata import HUES  # noqa: E402
 from staleness import emit  # noqa: E402
+from seo import apply_seo  # noqa: E402  head tags only
 from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 manifest = json.load(open(ROOT / 'pack/manifest.json'))
 L = manifest['ledger']
@@ -171,6 +172,8 @@ spatial_tiles = ''.join(
     f'<div class="fig"><b>{v}</b><span>{lbl}</span></div>' for v, lbl in SPATIAL_STATS)
 
 NAV = nav_html('web/trade_craft_dashboard.html', nav_labels('en'))
+from questkit import QUEST_CSS, quest_js, page_hooks  # noqa: E402  quests: egg hooks only
+QUEST_TAIL = '<style>' + QUEST_CSS + '</style>\n' + page_hooks('web/trade_craft_dashboard.html') + quest_js('page:web/trade_craft_dashboard.html')
 
 page = f'''<!doctype html>
 <html lang="en">
@@ -309,9 +312,11 @@ document.querySelectorAll('[data-dl]').forEach((b) => b.addEventListener('click'
   <a href="trade_craft_geomap.html">network geomap</a> ·
   <a href="../wiki/Home.md">wiki</a>
 </footer>
-</div></body>
+</div>{QUEST_TAIL}</body>
 </html>
 '''
 
 out = HERE / 'trade_craft_dashboard.html'
+page = apply_seo(page, 'web/trade_craft_dashboard.html', 'SmartCiti.X : Trade Craft Academy \u2014 network dashboard',
+    'The network dashboard: every platform figure read from its own registry, with the provenance tiers shown side by side.', 'page')
 emit(out, page, f"{len(built)}/{target} built, {len(cand)} candidates")

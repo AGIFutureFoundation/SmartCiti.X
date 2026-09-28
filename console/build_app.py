@@ -1059,9 +1059,14 @@ _counts = {'__N_HALLS__': str(len(_slice['unions'])),
            '__N_SKILLS__': str(len(_slice['skills'])),
            '__N_MODULES__': f"{_slice['ledger']['total_modules']:,}",
            '__PACK_VERSION__': str(_slice['pack_version'])}
+import sys as _qsys  # quests: egg hooks only
+_qsys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / 'web'))
+from questkit import QUEST_CSS, quest_js, page_hooks  # noqa: E402
+QUEST_TAIL = '<style>' + QUEST_CSS + '</style>\n' + page_hooks('console/trade_craft_console.html') + quest_js('page:console/trade_craft_console.html')
 page = (HTML_HEAD + BODY
         + f"<!-- control-plane-source-stamp: {STAMP} -->\n"
-        + "<script type=\"module\">\n" + app + "\n</script>\n")
+        + "<script type=\"module\">\n" + app + "\n</script>\n"
+        + QUEST_TAIL)
 for _k, _v in _counts.items():
     page = page.replace(_k, _v)
 assert '__N_' not in page, 'a count token went unreplaced'

@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design kit - Trade Craft Academy</title>
+<meta name="description" content="The design kit's tokens and templates, in dark and light, each with the call that renders it.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C1113'/%3E%3Cpath d='M7 21 L16 7 L25 21 Z' fill='none' stroke='%23E8A33D' stroke-width='2.6' stroke-linejoin='round'/%3E%3Cpath d='M11 21 h10' stroke='%2341C4D4' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="vendor/fonts/fonts.css">
+<style>.sitenav{--sn-ink:var(--ink,CanvasText);--sn-bg:var(--panel,var(--surface,Canvas));--sn-rule:var(--rule,var(--line,GrayText));--sn-mute:var(--muted,var(--ink,CanvasText));--sn-mark:var(--mark,var(--accent,LinkText));position:relative;z-index:40;font:500 13.5px/1.35 "IBM Plex Sans",system-ui,sans-serif;color:var(--sn-ink);background:var(--sn-bg);border-block-end:1px solid var(--sn-rule);padding-block:6px;padding-inline:16px;box-sizing:border-box;max-width:100%;overflow-wrap:anywhere}.sitenav *{box-sizing:border-box}.sitenav a{color:inherit;text-decoration:none;border-radius:6px;padding-block:4px;padding-inline:7px;display:inline-block}.sitenav a:hover{background:color-mix(in srgb,currentColor 11%,transparent)}.sitenav a:focus-visible,.sitenav summary:focus-visible{outline:2px solid var(--sn-mark);outline-offset:2px}.sitenav-row{display:flex;align-items:center;gap:6px 12px;min-width:0}.sitenav-home{font-weight:700;color:var(--sn-ink)!important;white-space:nowrap;border:1px solid var(--sn-rule);border-inline-start:3px solid var(--sn-mark)}.sitenav-menu{flex:1 1 auto;min-width:0}.sitenav-menu>summary{display:none}.sitenav-menu::details-content{content-visibility:visible;display:contents}@supports not selector(::details-content){.sitenav-menu>summary{display:inline-flex}}.sitenav-groups{display:flex;flex-wrap:wrap;align-items:center;gap:2px 0}.sitenav-group{display:flex;flex-wrap:wrap;align-items:center;gap:0 1px;min-width:0;padding-inline:8px;border-inline-start:1px solid var(--sn-rule)}.sitenav-group:first-child{border-inline-start:0}.sitenav-g{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--sn-mute);margin-inline-end:3px}.sitenav ul,.sitenav ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:0 1px}.sitenav [aria-current="page"]{font-weight:700;color:var(--sn-ink);background:color-mix(in srgb,currentColor 10%,transparent);box-shadow:inset 0 -3px 0 var(--sn-mark)}.sitenav-loop{margin-block-start:6px!important;padding-block-start:6px!important;border-block-start:1px solid var(--sn-rule);counter-reset:step;align-items:center;gap:4px 6px!important}.sitenav-loop li{counter-increment:step;color:var(--sn-mute);display:flex;align-items:center}.sitenav-loop li::before{content:counter(step);display:inline-grid;place-items:center;inline-size:1.5em;block-size:1.5em;border-radius:50%;font-size:11px;font-weight:700;border:1px solid var(--sn-rule);margin-inline-end:2px}.sitenav-loop a{color:var(--sn-ink)}.sitenav-loop [aria-current="step"]{font-weight:700;color:var(--sn-ink);background:color-mix(in srgb,currentColor 10%,transparent);box-shadow:inset 0 -3px 0 var(--sn-mark)}@media(max-width:720px){.sitenav{padding-inline:12px}.sitenav-row{justify-content:space-between}.sitenav-menu{flex:0 1 auto}.sitenav-menu::details-content{display:block;content-visibility:hidden}.sitenav-menu[open]::details-content{content-visibility:visible}.sitenav-menu>summary{display:inline-flex;align-items:center;gap:6px;cursor:pointer;list-style:none;padding-block:5px;padding-inline:10px;border:1px solid var(--sn-rule);border-radius:6px;font-weight:600;white-space:nowrap}.sitenav-menu>summary::-webkit-details-marker{display:none}.sitenav-menu>summary::after{content:"";inline-size:.45em;block-size:.45em;border-inline-end:2px solid currentColor;border-block-end:2px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform .15s}.sitenav-menu[open]>summary::after{transform:translateY(2px) rotate(-135deg)}.sitenav-menu[open]>.sitenav-groups{position:absolute;inset-inline:0;top:100%;display:grid;gap:0;background:var(--sn-bg);border-block-end:1px solid var(--sn-rule);box-shadow:0 12px 24px -12px rgba(0,0,0,.45);padding-block:4px 10px;padding-inline:12px}.sitenav-group{padding-inline:0;padding-block:6px;border-inline-start:0;border-block-start:1px solid var(--sn-rule)}.sitenav-group:first-child{border-block-start:0}.sitenav-g{flex:0 0 100%;margin-block-end:2px}.sitenav-loop{font-size:12.5px}}@media (prefers-reduced-motion:reduce){.sitenav *{transition:none!important}}</style>
+<style>:root{--dk-t-xs:0.8rem;--dk-t-sm:0.9rem;--dk-t-md:1rem;--dk-t-lg:1.25rem;--dk-t-xl:1.563rem;--dk-t-2xl:1.953rem;--dk-t-3xl:clamp(1.953rem, 1.4rem + 2.4vw, 2.441rem);--dk-t-4xl:clamp(2.2rem, 1.3rem + 4vw, 3.815rem);--dk-s-1:4px;--dk-s-2:8px;--dk-s-3:12px;--dk-s-4:16px;--dk-s-5:24px;--dk-s-6:32px;--dk-s-7:48px;--dk-s-8:64px;--dk-s-9:96px;--dk-r-sm:4px;--dk-r-md:8px;--dk-r-lg:14px;--dk-r-pill:999px;--dk-e-1:0 1px 2px rgb(0 0 0 / .18), 0 1px 1px rgb(0 0 0 / .12);--dk-e-2:0 4px 12px rgb(0 0 0 / .18), 0 2px 4px rgb(0 0 0 / .12);--dk-e-3:0 16px 40px rgb(0 0 0 / .28), 0 4px 10px rgb(0 0 0 / .14);--dk-f-display:'Barlow Condensed', 'Archivo', system-ui, sans-serif;--dk-f-body:'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;--dk-f-mono:'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;--dk-plate:#12181B;--dk-panel:#182023;--dk-raised:#1F292D;--dk-line:#2B383C;--dk-ink:#E8EDEC;--dk-muted:#93A3A6;--dk-amber:#E8A33D;--dk-steel:#41C4D4;--dk-amber-ink:#12181B;--dk-link:#41C4D4;--dk-warn:#E8A33D;--dk-ok:#6FCF97;}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--dk-plate:#F4F6F6;--dk-panel:#FFFFFF;--dk-raised:#EAEFEF;--dk-line:#D3DCDD;--dk-ink:#12181B;--dk-muted:#4E5C5F;--dk-amber:#8F5500;--dk-steel:#0B6B78;--dk-amber-ink:#FFFFFF;--dk-link:#0B6B78;--dk-warn:#8F5500;--dk-ok:#1E7A45;}}
+[data-theme="dark"]{--dk-plate:#12181B;--dk-panel:#182023;--dk-raised:#1F292D;--dk-line:#2B383C;--dk-ink:#E8EDEC;--dk-muted:#93A3A6;--dk-amber:#E8A33D;--dk-steel:#41C4D4;--dk-amber-ink:#12181B;--dk-link:#41C4D4;--dk-warn:#E8A33D;--dk-ok:#6FCF97;color-scheme:dark}
+[data-theme="light"]{--dk-plate:#F4F6F6;--dk-panel:#FFFFFF;--dk-raised:#EAEFEF;--dk-line:#D3DCDD;--dk-ink:#12181B;--dk-muted:#4E5C5F;--dk-amber:#8F5500;--dk-steel:#0B6B78;--dk-amber-ink:#FFFFFF;--dk-link:#0B6B78;--dk-warn:#8F5500;--dk-ok:#1E7A45;color-scheme:light}
+.dk{font-family:var(--dk-f-body);color:var(--dk-ink);background:var(--dk-plate);line-height:1.55;font-size:var(--dk-t-md)}
+.dk *{box-sizing:border-box}
+.dk h2,.dk h3{font-family:var(--dk-f-display);letter-spacing:.01em;line-height:1.1;margin:0 0 var(--dk-s-3)}
+.dk p{margin:0 0 var(--dk-s-3)}
+.dk a{color:var(--dk-link)}
+.dk :focus-visible{outline:3px solid var(--dk-steel);outline-offset:2px;border-radius:var(--dk-r-sm)}
+.dk-icon{inline-size:1.25em;block-size:1.25em;flex:none;vertical-align:-.2em}
+.dk-wrap{max-inline-size:1120px;margin-inline:auto;padding-inline:var(--dk-s-4)}
+.dk-eyebrow{font:600 var(--dk-t-xs)/1 var(--dk-f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dk-amber);margin:0 0 var(--dk-s-3)}
+.dk-btn{display:inline-flex;align-items:center;gap:var(--dk-s-2);padding:var(--dk-s-3) var(--dk-s-5);border-radius:var(--dk-r-md);font:600 var(--dk-t-md)/1.1 var(--dk-f-body);text-decoration:none;border:1px solid transparent;min-block-size:44px;cursor:pointer}
+.dk-btn-primary{background:var(--dk-amber);color:var(--dk-amber-ink)}
+.dk-btn-primary:hover{filter:brightness(1.08)}
+.dk-btn-ghost{background:transparent;color:var(--dk-ink);border-color:var(--dk-line)}
+.dk-btn-ghost:hover{border-color:var(--dk-steel)}
+.dk .dk-btn-primary{color:var(--dk-amber-ink)}
+.dk .dk-btn-ghost{color:var(--dk-ink)}
+/* hero */
+.dk-hero{position:relative;isolation:isolate;overflow:hidden;min-block-size:min(78vh,640px);display:grid;align-items:end;background:var(--dk-panel);border-radius:var(--dk-r-lg)}
+.dk-hero-media,.dk-hero-media video,.dk-hero-media img{position:absolute;inset:0;inline-size:100%;block-size:100%;object-fit:cover;z-index:-2}
+.dk-hero-scrim{position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgb(18 24 27 / .15) 0%,rgb(18 24 27 / .55) 55%,rgb(18 24 27 / .92) 100%),linear-gradient(90deg,rgb(18 24 27 / .7),transparent 70%)}
+.dk-hero-body{padding:var(--dk-s-8) var(--dk-s-6) var(--dk-s-7);max-inline-size:720px;color:#E8EDEC}
+.dk-hero-body .dk-eyebrow{color:#E8A33D}
+.dk-hero-title{font:700 var(--dk-t-4xl)/1.02 var(--dk-f-display);margin:0 0 var(--dk-s-4);letter-spacing:.005em}
+.dk-hero-lede{font-size:var(--dk-t-lg);color:#C9D3D2;max-inline-size:56ch}
+.dk-hero .dk-btn-ghost{color:#E8EDEC;border-color:rgb(232 237 236 / .45)}
+.dk-actions{display:flex;flex-wrap:wrap;gap:var(--dk-s-3);margin-block-start:var(--dk-s-5)}
+.dk-hero-pause{position:absolute;inset-block-start:var(--dk-s-4);inset-inline-end:var(--dk-s-4);display:inline-flex;align-items:center;gap:var(--dk-s-2);padding:var(--dk-s-2) var(--dk-s-3);border-radius:var(--dk-r-pill);background:rgb(18 24 27 / .66);color:#E8EDEC;border:1px solid rgb(232 237 236 / .3);font:500 var(--dk-t-xs)/1 var(--dk-f-body);min-block-size:36px;cursor:pointer}
+.dk-hero-pause .dk-i-play{display:none}
+.dk-hero-pause[aria-pressed="true"] .dk-i-play{display:inline}
+.dk-hero-pause[aria-pressed="true"] .dk-i-pause{display:none}
+.dk-hero-credit{position:absolute;inset-block-end:var(--dk-s-2);inset-inline-end:var(--dk-s-4);font:500 .7rem/1 var(--dk-f-mono);color:rgb(232 237 236 / .7);letter-spacing:.06em}
+/* feature grid */
+.dk-grid{display:grid;gap:var(--dk-s-4);grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}
+.dk-feature{padding:var(--dk-s-5);background:var(--dk-panel);border:1px solid var(--dk-line);border-radius:var(--dk-r-lg)}
+.dk-feature-icon{display:inline-grid;place-items:center;inline-size:44px;block-size:44px;border-radius:var(--dk-r-md);background:color-mix(in srgb,var(--dk-steel) 16%,transparent);color:var(--dk-steel);margin-block-end:var(--dk-s-4)}
+.dk-feature h3{font-size:var(--dk-t-xl)}
+.dk-feature p{color:var(--dk-muted);margin:0}
+/* stat band */
+.dk-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));background:var(--dk-panel);border-block:1px solid var(--dk-line)}
+.dk-stat{padding:var(--dk-s-5) var(--dk-s-5);border-inline-start:1px solid var(--dk-line)}
+.dk-stat:first-child{border-inline-start:0}
+.dk-stat-v{font:700 var(--dk-t-3xl)/1 var(--dk-f-display);color:var(--dk-amber);display:block}
+.dk-stat-l{display:block;margin-block-start:var(--dk-s-2);font-weight:600}
+.dk-stat-src{display:block;margin-block-start:var(--dk-s-1);font:var(--dk-t-xs)/1.3 var(--dk-f-mono);color:var(--dk-muted)}
+/* split */
+.dk-split{display:grid;gap:var(--dk-s-6);align-items:center;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))}
+.dk-split-media{border-radius:var(--dk-r-lg);overflow:hidden;box-shadow:var(--dk-e-2);background:var(--dk-raised);aspect-ratio:16/9}
+.dk-split-media video,.dk-split-media img{inline-size:100%;block-size:100%;object-fit:cover;display:block}
+.dk-split-rev .dk-split-media{order:2}
+.dk-split h2{font-size:var(--dk-t-2xl)}
+.dk-split p{color:var(--dk-muted)}
+/* timeline */
+.dk-steps{list-style:none;margin:0;padding:0;counter-reset:dk-step;display:grid;gap:var(--dk-s-4)}
+.dk-step{position:relative;padding-inline-start:var(--dk-s-8);counter-increment:dk-step}
+.dk-step::before{content:counter(dk-step);position:absolute;inset-inline-start:0;inset-block-start:0;inline-size:40px;block-size:40px;border-radius:50%;display:grid;place-items:center;font:700 var(--dk-t-lg)/1 var(--dk-f-display);background:var(--dk-raised);color:var(--dk-amber);border:2px solid var(--dk-amber)}
+.dk-step:not(:last-child)::after{content:"";position:absolute;inset-inline-start:19px;inset-block-start:44px;inset-block-end:calc(-1 * var(--dk-s-4) + 4px);border-inline-start:2px dashed var(--dk-line)}
+.dk-step h3{font-size:var(--dk-t-lg);margin-block-end:var(--dk-s-1)}
+.dk-step p{color:var(--dk-muted);margin:0}
+/* CTA band */
+.dk-cta{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--dk-s-5);padding:var(--dk-s-7) var(--dk-s-6);border-radius:var(--dk-r-lg);background:linear-gradient(120deg,var(--dk-panel),var(--dk-raised));border:1px solid var(--dk-line);box-shadow:var(--dk-e-1)}
+.dk-cta h2{font-size:var(--dk-t-2xl);margin:0 0 var(--dk-s-2)}
+.dk-cta p{color:var(--dk-muted);margin:0;max-inline-size:60ch}
+/* callout / limit box */
+.dk-callout{display:flex;gap:var(--dk-s-3);padding:var(--dk-s-4) var(--dk-s-5);border-radius:var(--dk-r-md);background:var(--dk-panel);border:1px solid var(--dk-line);border-inline-start:4px solid var(--dk-steel)}
+.dk-callout-limit{border-inline-start-color:var(--dk-amber)}
+.dk-callout .dk-icon{color:var(--dk-steel);margin-block-start:.15em}
+.dk-callout-limit .dk-icon{color:var(--dk-amber)}
+.dk-callout strong{display:block;margin-block-end:var(--dk-s-1)}
+.dk-callout p{margin:0;color:var(--dk-muted)}
+/* card */
+.dk-card{display:flex;flex-direction:column;gap:var(--dk-s-2);padding:var(--dk-s-5);background:var(--dk-panel);border:1px solid var(--dk-line);border-radius:var(--dk-r-lg);box-shadow:var(--dk-e-1);text-decoration:none;color:inherit;transition:box-shadow .2s,transform .2s,border-color .2s}
+a.dk-card:hover{box-shadow:var(--dk-e-3);transform:translateY(-2px);border-color:var(--dk-steel)}
+.dk-card-head{display:flex;align-items:center;justify-content:space-between;gap:var(--dk-s-2);color:var(--dk-steel)}
+.dk-card h3{font-size:var(--dk-t-xl);margin:0;color:var(--dk-ink)}
+.dk-card p{margin:0;color:var(--dk-muted)}
+.dk-card-go{margin-block-start:auto;display:inline-flex;align-items:center;gap:var(--dk-s-1);font-weight:600;color:var(--dk-link)}
+/* badge */
+.dk-badge{display:inline-flex;align-items:center;gap:var(--dk-s-1);padding:2px var(--dk-s-2);border-radius:var(--dk-r-pill);font:600 var(--dk-t-xs)/1.5 var(--dk-f-mono);letter-spacing:.06em;text-transform:uppercase;border:1px solid currentColor}
+.dk-badge-steel{color:var(--dk-steel)}
+.dk-badge-amber{color:var(--dk-amber)}
+.dk-badge-muted{color:var(--dk-muted)}
+.dk-badge-ok{color:var(--dk-ok)}
+/* breadcrumb */
+.dk-crumbs ol{list-style:none;display:flex;flex-wrap:wrap;gap:var(--dk-s-1);margin:0;padding:0;font-size:var(--dk-t-sm);color:var(--dk-muted)}
+.dk-crumbs li{display:inline-flex;align-items:center;gap:var(--dk-s-1)}
+.dk-crumbs li+li::before{content:"/";color:var(--dk-line);margin-inline-end:var(--dk-s-1)}
+.dk-crumbs [aria-current]{color:var(--dk-ink);font-weight:600}
+/* footer */
+.dk-footer{padding:var(--dk-s-7) var(--dk-s-5) var(--dk-s-5);background:var(--dk-panel);border-block-start:1px solid var(--dk-line);border-radius:var(--dk-r-lg)}
+.dk-footer-cols{display:grid;gap:var(--dk-s-5);grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr))}
+.dk-footer h3{font:600 var(--dk-t-xs)/1 var(--dk-f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dk-muted);margin-block-end:var(--dk-s-3)}
+.dk-footer ul{list-style:none;margin:0;padding:0;display:grid;gap:var(--dk-s-2)}
+.dk-footer a{color:var(--dk-ink);text-decoration:none}
+.dk-footer a:hover{color:var(--dk-steel);text-decoration:underline}
+.dk-footer-note{margin-block-start:var(--dk-s-6);padding-block-start:var(--dk-s-4);border-block-start:1px solid var(--dk-line);font-size:var(--dk-t-sm);color:var(--dk-muted)}
+@media (prefers-reduced-motion: reduce){.dk-card,a.dk-card:hover{transition:none;transform:none}}
+
+body{margin:0;background:var(--dk-plate);color:var(--dk-ink);font-family:var(--dk-f-body)}
+main{max-inline-size:1240px;margin-inline:auto;padding:var(--dk-s-5) var(--dk-s-4) var(--dk-s-9)}
+.g-intro h1{font:700 var(--dk-t-4xl)/1.05 var(--dk-f-display);margin:var(--dk-s-4) 0 var(--dk-s-3)}
+.g-intro p{color:var(--dk-muted);max-inline-size:70ch}
+.g-toc{display:flex;flex-wrap:wrap;gap:var(--dk-s-2);list-style:none;padding:0;margin:var(--dk-s-5) 0}
+.g-toc a{display:inline-block;padding:var(--dk-s-1) var(--dk-s-3);border:1px solid var(--dk-line);border-radius:var(--dk-r-pill);text-decoration:none;color:var(--dk-ink);font-size:var(--dk-t-sm)}
+.g-sec{margin-block-start:var(--dk-s-8)}
+.g-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--dk-s-3);border-block-end:1px solid var(--dk-line);padding-block-end:var(--dk-s-2)}
+.g-head h2{font:700 var(--dk-t-2xl)/1.1 var(--dk-f-display);margin:0}
+.g-fn{font:var(--dk-t-sm) var(--dk-f-mono);color:var(--dk-steel)}
+.g-why{color:var(--dk-muted);max-inline-size:75ch}
+.g-pair{display:grid;gap:var(--dk-s-4);grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr))}
+.g-frame{position:relative;padding:var(--dk-s-6) var(--dk-s-4) var(--dk-s-4);border:1px solid var(--dk-line);border-radius:var(--dk-r-lg);min-inline-size:0;overflow:hidden}
+.g-tag{position:absolute;inset-block-start:var(--dk-s-2);inset-inline-start:var(--dk-s-3);font:600 .7rem/1 var(--dk-f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dk-muted)}
+.g-code{margin-block-start:var(--dk-s-3)}
+.g-code summary{cursor:pointer;color:var(--dk-link);font-weight:600;min-block-size:32px}
+.g-code pre{overflow-x:auto;background:var(--dk-panel);border:1px solid var(--dk-line);border-radius:var(--dk-r-md);padding:var(--dk-s-4);font:var(--dk-t-sm)/1.5 var(--dk-f-mono);max-block-size:420px}
+.g-swatches,.g-ratios,.g-scale,.g-space,.g-elev,.g-radii,.g-icons{list-style:none;margin:0;padding:0}
+.g-swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:var(--dk-s-2)}
+.g-swatches li{display:grid;grid-template-columns:28px 1fr;column-gap:var(--dk-s-2);font-size:var(--dk-t-xs);align-items:center}
+.g-swatches li span:last-child{grid-column:2;color:var(--dk-muted);font-family:var(--dk-f-mono)}
+.g-sw{grid-row:span 2;inline-size:28px;block-size:28px;border-radius:var(--dk-r-sm);border:1px solid var(--dk-line)}
+.g-sub{font:600 var(--dk-t-sm)/1 var(--dk-f-body);margin:var(--dk-s-5) 0 var(--dk-s-2)}
+.g-ratios{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:var(--dk-s-1) var(--dk-s-3);font-size:var(--dk-t-xs)}
+.g-ratios li{display:flex;justify-content:space-between;gap:var(--dk-s-2);border-block-end:1px dotted var(--dk-line)}
+.g-scale li{margin-block:var(--dk-s-2);font-family:var(--dk-f-display);overflow-wrap:anywhere}
+.g-scale code,.g-space code,.g-elev code,.g-radii code{font:var(--dk-t-xs) var(--dk-f-mono);color:var(--dk-muted);margin-inline-end:var(--dk-s-2)}
+.g-space li{display:flex;align-items:center;gap:var(--dk-s-2);margin-block:var(--dk-s-1);font-size:var(--dk-t-xs)}
+.g-bar{display:inline-block;block-size:10px;background:var(--dk-amber);border-radius:2px}
+.g-elev,.g-radii{display:flex;flex-wrap:wrap;gap:var(--dk-s-5)}
+.g-elev li,.g-radii li{inline-size:130px;block-size:72px;display:grid;place-items:center;background:var(--dk-panel);border:1px solid var(--dk-line);border-radius:var(--dk-r-md)}
+.g-icons{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:var(--dk-s-3)}
+.g-icons li{display:flex;align-items:center;gap:var(--dk-s-2);font:var(--dk-t-xs) var(--dk-f-mono);color:var(--dk-muted)}
+.g-icons .dk-icon{color:var(--dk-steel);inline-size:24px;block-size:24px}
+.g-tokens{display:grid;gap:var(--dk-s-4);grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr))}
+</style>
+</head>
+<body class="dk">
+<nav class="sitenav" data-sitenav aria-label="Site pages">
+<div class="sitenav-row">
+<a class="sitenav-home" href="../index.html">Front door</a>
+<details class="sitenav-menu" data-sitenav-menu><summary>Site pages</summary>
+<div class="sitenav-groups">
+<div class="sitenav-group"><span class="sitenav-g">Learn</span><ul><li><a href="trade_craft_lessons.html">Lessons</a></li><li><a href="trade_craft_ladder.html">Ladder</a></li><li><a href="trade_craft_3d.html">Walk the campus</a></li><li><a href="trade_craft_schools.html">School pathways</a></li></ul></div>
+<div class="sitenav-group"><span class="sitenav-g">Play</span><ul><li><a href="trade_craft_quests.html">Quests and arcade</a></li><li><a href="trade_craft_wilds.html">The wilds</a></li></ul></div>
+<div class="sitenav-group"><span class="sitenav-g">Maps</span><ul><li><a href="trade_craft_map.html">Layered map</a></li><li><a href="trade_craft_interactive.html">Interactive map</a></li><li><a href="trade_craft_geomap.html">Geomap</a></li><li><a href="trade_craft_fabric.html">Spatial fabric</a></li></ul></div>
+<div class="sitenav-group"><span class="sitenav-g">Records</span><ul><li><a href="trade_craft_progress.html">Progress</a></li><li><a href="trade_craft_verify.html">Verify a record</a></li><li><a href="trade_craft_contribute.html">Contribute</a></li></ul></div>
+<div class="sitenav-group"><span class="sitenav-g">Sites</span><ul><li><a href="trade_craft_spaces.html">Spaces</a></li><li><a href="trade_craft_worksites.html">Work sites</a></li></ul></div>
+<div class="sitenav-group"><span class="sitenav-g">About</span><ul><li><a href="trade_craft_landing.html">Overview</a></li><li><a href="trade_craft_dashboard.html">Dashboard</a></li><li><a href="trade_craft_languages.html">Languages</a></li><li><a href="trade_craft_signin.html">Sign in</a></li><li><a href="smartcitix_trade_craft_academy.html">Academy spec</a></li><li><a href="trade_craft_design.html" aria-current="page">Design kit</a></li></ul></div>
+</div></details>
+</div>
+</nav>
+<main>
+<header class="g-intro">
+<p class="dk-eyebrow">web/design_kit.py</p>
+<h1>Design kit</h1>
+<p>Tokens and templates any page builder can import. Every template below is shown in the dark and the light
+palette with the exact call that drew it. Footage is house-made: recorded frame by frame from this build's own
+3D campus (see media/registry/media.json). Icons are Lucide, vendored under the ISC licence.</p>
+<ul class="g-toc"><li><a href="#t-hero">Hero with video background</a></li><li><a href="#t-feature_grid">Feature grid with icons</a></li><li><a href="#t-stat_band">Stat band</a></li><li><a href="#t-split">Split media section</a></li><li><a href="#t-timeline">Process timeline</a></li><li><a href="#t-cta">CTA band</a></li><li><a href="#t-callout">Callout and limit box</a></li><li><a href="#t-card">Card</a></li><li><a href="#t-badge">Badge</a></li><li><a href="#t-breadcrumb">Breadcrumb</a></li><li><a href="#t-footer">Footer</a></li><li><a href="#tokens">Tokens</a></li></ul>
+</header>
+<section class="g-sec" id="t-hero" aria-labelledby="h-hero">
+<div class="g-head"><h2 id="h-hero">Hero with video background</h2><code class="g-fn">design_kit.hero</code></div>
+<p class="g-why">A full-bleed opening band. The video is muted, loops, and sits under a scrim that keeps the text above AA contrast on every frame; the pause control is a real button, and a reader who asked for reduced motion gets the poster and never motion. Until a hero-quality clip is rendered this shows campus-green-crane-up, which is NOT hero quality: shadow striping on the green and the water once the camera climbs past about 120 m (second half of the move); not hero quality - re-shoot lower.</p>
+<div class="g-pair">
+<div class="g-frame dk" data-theme="dark"><span class="g-tag">dark</span><section class="dk-hero" data-dk-hero><div class="dk-hero-media"><video muted loop playsinline autoplay preload="metadata" poster="media/broll/campus-green-crane-up-poster.jpg" aria-hidden="true"><source src="media/broll/campus-green-crane-up.webm" type="video/webm"><source src="media/broll/campus-green-crane-up.mp4" type="video/mp4"></video></div><button type="button" class="dk-hero-pause" aria-pressed="false" data-pause="Pause background video" data-play="Play background video"><span class="dk-i-pause"><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-pause" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <rect x="14" y="3" width="5" height="18" rx="1" /> <rect x="5" y="3" width="5" height="18" rx="1" /> </svg></span><span class="dk-i-play"><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-play" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z" /> </svg></span><span class="dk-hero-pause-t">Pause background video</span></button><span class="dk-hero-credit">Footage: Campus green, crane-up reveal - recorded from this build</span><div class="dk-hero-scrim"></div><div class="dk-hero-body"><p class="dk-eyebrow">Trade Craft Academy</p><p class="dk-hero-title">Walk the campus before you walk the site</p><p class="dk-hero-lede">A 3D training campus, simulator seats and a map of the network - in the browser, on a phone, offline once loaded.</p><div class="dk-actions"><a class="dk-btn dk-btn-primary" href="trade_craft_3d.html">Open the campus<svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-arrow-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M5 12h14" /> <path d="m12 5 7 7-7 7" /> </svg></a><a class="dk-btn dk-btn-ghost" href="trade_craft_geomap.html">See the map</a></div></div></section></div>
+<div class="g-frame dk" data-theme="light"><span class="g-tag">light</span><section class="dk-hero" data-dk-hero><div class="dk-hero-media"><video muted loop playsinline autoplay preload="metadata" poster="media/broll/campus-green-crane-up-poster.jpg" aria-hidden="true"><source src="media/broll/campus-green-crane-up.webm" type="video/webm"><source src="media/broll/campus-green-crane-up.mp4" type="video/mp4"></video></div><button type="button" class="dk-hero-pause" aria-pressed="false" data-pause="Pause background video" data-play="Play background video"><span class="dk-i-pause"><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-pause" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <rect x="14" y="3" width="5" height="18" rx="1" /> <rect x="5" y="3" width="5" height="18" rx="1" /> </svg></span><span class="dk-i-play"><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-play" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z" /> </svg></span><span class="dk-hero-pause-t">Pause background video</span></button><span class="dk-hero-credit">Footage: Campus green, crane-up reveal - recorded from this build</span><div class="dk-hero-scrim"></div><div class="dk-hero-body"><p class="dk-eyebrow">Trade Craft Academy</p><p class="dk-hero-title">Walk the campus before you walk the site</p><p class="dk-hero-lede">A 3D training campus, simulator seats and a map of the network - in the browser, on a phone, offline once loaded.</p><div class="dk-actions"><a class="dk-btn dk-btn-primary" href="trade_craft_3d.html">Open the campus<svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-arrow-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M5 12h14" /> <path d="m12 5 7 7-7 7" /> </svg></a><a class="dk-btn dk-btn-ghost" href="trade_craft_geomap.html">See the map</a></div></div></section></div>
+</div>
+<details class="g-code"><summary>Usage</summary><pre><code>from design_kit import kit_css, KIT_JS, hero
+hero({&#x27;eyebrow&#x27;: &#x27;Trade Craft Academy&#x27;,
+ &#x27;title&#x27;: &#x27;Walk the campus before you walk the site&#x27;,
+ &#x27;lede&#x27;: &#x27;A 3D training campus, simulator seats and a map of the network - in the &#x27;
+         &#x27;browser, on a phone, offline once loaded.&#x27;,
+ &#x27;actions&#x27;: [{&#x27;text&#x27;: &#x27;Open the campus&#x27;,
+              &#x27;href&#x27;: &#x27;trade_craft_3d.html&#x27;,
+              &#x27;kind&#x27;: &#x27;primary&#x27;},
+             {&#x27;text&#x27;: &#x27;See the map&#x27;, &#x27;href&#x27;: &#x27;trade_craft_geomap.html&#x27;, &#x27;kind&#x27;: &#x27;ghost&#x27;}],
+ &#x27;video&#x27;: {&#x27;webm&#x27;: &#x27;media/broll/campus-green-crane-up.webm&#x27;,
+           &#x27;mp4&#x27;: &#x27;media/broll/campus-green-crane-up.mp4&#x27;,
+           &#x27;poster&#x27;: &#x27;media/broll/campus-green-crane-up-poster.jpg&#x27;,
+           &#x27;credit&#x27;: &#x27;Footage: Campus green, crane-up reveal - recorded from this build&#x27;,
+           &#x27;pause_label&#x27;: &#x27;Pause background video&#x27;,
+           &#x27;play_label&#x27;: &#x27;Play background video&#x27;},
+ &#x27;as_h1&#x27;: False})</code></pre></details>
+</section><section class="g-sec" id="t-feature_grid" aria-labelledby="h-feature_grid">
+<div class="g-head"><h2 id="h-feature_grid">Feature grid with icons</h2><code class="g-fn">design_kit.feature_grid</code></div>
+<p class="g-why">Three to six features, each an icon, a title and one sentence.</p>
+<div class="g-pair">
+<div class="g-frame dk" data-theme="dark"><span class="g-tag">dark</span><div class="dk-grid"><article class="dk-feature"><span class="dk-feature-icon"><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-building-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M10 12h4" /> <path d="M10 8h4" /> <path d="M14 21v-3a2 2 0 0 0-4 0v3" /> <path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2" /> <path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16" /> </svg></span><h3>Campus and halls</h3><p>Every trade hall stands on the campus green, with rooms you can walk.</p></article><article class="dk-feature"><span class="dk-feature-icon"><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-hard-hat" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M10 10V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5" /> <path d="M14 6a6 6 0 0 1 6 6v3" /> <path d="M4 15v-3a6 6 0 0 1 6-6" /> <rect x="2" y="15" width="20" height="4" rx="1" /> </svg></span><h3>Simulator seats</h3><p>Practice a lift or a trench in a seat that scores what you did.</p></article><article class="dk-feature"><span class="dk-feature-icon"><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-globe" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <circle cx="12" cy="12" r="10" /> <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" /> <path d="M2 12h20" /> </svg></span><h3>The network on a globe</h3><p>Every campus and site at its own registry coordinates.</p></article></div></div>
+<div class="g-frame dk" data-theme="light"><span class="g-tag">light</span><div class="dk-grid"><article class="dk-feature"><span class="dk-feature-icon"><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-building-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M10 12h4" /> <path d="M10 8h4" /> <path d="M14 21v-3a2 2 0 0 0-4 0v3" /> <path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2" /> <path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16" /> </svg></span><h3>Campus and halls</h3><p>Every trade hall stands on the campus green, with rooms you can walk.</p></article><article class="dk-feature"><span class="dk-feature-icon"><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-hard-hat" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M10 10V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5" /> <path d="M14 6a6 6 0 0 1 6 6v3" /> <path d="M4 15v-3a6 6 0 0 1 6-6" /> <rect x="2" y="15" width="20" height="4" rx="1" /> </svg></span><h3>Simulator seats</h3><p>Practice a lift or a trench in a seat that scores what you did.</p></article><article class="dk-feature"><span class="dk-feature-icon"><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-globe" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <circle cx="12" cy="12" r="10" /> <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" /> <path d="M2 12h20" /> </svg></span><h3>The network on a globe</h3><p>Every campus and site at its own registry coordinates.</p></article></div></div>
+</div>
+<details class="g-code"><summary>Usage</summary><pre><code>from design_kit import kit_css, KIT_JS, feature_grid
+feature_grid([{&#x27;icon&#x27;: &#x27;building-2&#x27;,
+  &#x27;title&#x27;: &#x27;Campus and halls&#x27;,
+  &#x27;body&#x27;: &#x27;Every trade hall stands on the campus green, with rooms you can walk.&#x27;},
+ {&#x27;icon&#x27;: &#x27;hard-hat&#x27;,
+  &#x27;title&#x27;: &#x27;Simulator seats&#x27;,
+  &#x27;body&#x27;: &#x27;Practice a lift or a trench in a seat that scores what you did.&#x27;},
+ {&#x27;icon&#x27;: &#x27;globe&#x27;,
+  &#x27;title&#x27;: &#x27;The network on a globe&#x27;,
+  &#x27;body&#x27;: &#x27;Every campus and site at its own registry coordinates.&#x27;}])</code></pre></details>
+</section><section class="g-sec" id="t-stat_band" aria-labelledby="h-stat_band">
+<div class="g-head"><h2 id="h-stat_band">Stat band</h2><code class="g-fn">design_kit.stat_band</code></div>
+<p class="g-why">Figures computed by the CALLER from a registry at build time; each names its source.</p>
+<div class="g-pair">
+<div class="g-frame dk" data-theme="dark"><span class="g-tag">dark</span><div class="dk-stats"><div class="dk-stat"><span class="dk-stat-v">11</span><span class="dk-stat-l">templates in this kit</span><span class="dk-stat-src">web/design_kit.py TEMPLATES</span></div><div class="dk-stat"><span class="dk-stat-v">18</span><span class="dk-stat-l">icons vendored</span><span class="dk-stat-src">web/vendor/icons/manifest.json</span></div><div class="dk-stat"><span class="dk-stat-v">1</span><span class="dk-stat-l">b-roll clips</span><span class="dk-stat-src">media/registry/media.json</span></div><div class="dk-stat"><span class="dk-stat-v">7</span><span class="dk-stat-l">seconds of footage</span><span class="dk-stat-src">media/registry/media.json</span></div></div></div>
+<div class="g-frame dk" data-theme="light"><span class="g-tag">light</span><div class="dk-stats"><div class="dk-stat"><span class="dk-stat-v">11</span><span class="dk-stat-l">templates in this kit</span><span class="dk-stat-src">web/design_kit.py TEMPLATES</span></div><div class="dk-stat"><span class="dk-stat-v">18</span><span class="dk-stat-l">icons vendored</span><span class="dk-stat-src">web/vendor/icons/manifest.json</span></div><div class="dk-stat"><span class="dk-stat-v">1</span><span class="dk-stat-l">b-roll clips</span><span class="dk-stat-src">media/registry/media.json</span></div><div class="dk-stat"><span class="dk-stat-v">7</span><span class="dk-stat-l">seconds of footage</span><span class="dk-stat-src">media/registry/media.json</span></div></div></div>
+</div>
+<details class="g-code"><summary>Usage</summary><pre><code>from design_kit import kit_css, KIT_JS, stat_band
+stat_band([{&#x27;value&#x27;: 11, &#x27;label&#x27;: &#x27;templates in this kit&#x27;, &#x27;source&#x27;: &#x27;web/design_kit.py TEMPLATES&#x27;},
+ {&#x27;value&#x27;: 18, &#x27;label&#x27;: &#x27;icons vendored&#x27;, &#x27;source&#x27;: &#x27;web/vendor/icons/manifest.json&#x27;},
+ {&#x27;value&#x27;: 1, &#x27;label&#x27;: &#x27;b-roll clips&#x27;, &#x27;source&#x27;: &#x27;media/registry/media.json&#x27;},
+ {&#x27;value&#x27;: 7, &#x27;label&#x27;: &#x27;seconds of footage&#x27;, &#x27;source&#x27;: &#x27;media/registry/media.json&#x27;}])</code></pre></details>
+</section><section class="g-sec" id="t-split" aria-labelledby="h-split">
+<div class="g-head"><h2 id="h-split">Split media section</h2><code class="g-fn">design_kit.split</code></div>
+<p class="g-why">Media on one side, words on the other; stacks on a phone. reverse=True mirrors it.</p>
+<div class="g-pair">
+<div class="g-frame dk" data-theme="dark"><span class="g-tag">dark</span><div class="dk-split"><div class="dk-split-media"><img src="media/broll/campus-green-crane-up-poster.jpg" alt="The Treasure Island campus green and its halls, rising from low over the green to a high three-quarter view" loading="lazy"></div><div><p class="dk-eyebrow">Recorded here</p><h2>Campus green, crane-up reveal</h2><p>The Treasure Island campus green and its halls, rising from low over the green to a high three-quarter view. RECORDED from this build (commit 57f497245b0d).</p><div class="dk-actions"><a class="dk-btn dk-btn-ghost" href="trade_craft_3d.html">Open the 3D campus<svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-arrow-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M5 12h14" /> <path d="m12 5 7 7-7 7" /> </svg></a></div></div></div></div>
+<div class="g-frame dk" data-theme="light"><span class="g-tag">light</span><div class="dk-split"><div class="dk-split-media"><img src="media/broll/campus-green-crane-up-poster.jpg" alt="The Treasure Island campus green and its halls, rising from low over the green to a high three-quarter view" loading="lazy"></div><div><p class="dk-eyebrow">Recorded here</p><h2>Campus green, crane-up reveal</h2><p>The Treasure Island campus green and its halls, rising from low over the green to a high three-quarter view. RECORDED from this build (commit 57f497245b0d).</p><div class="dk-actions"><a class="dk-btn dk-btn-ghost" href="trade_craft_3d.html">Open the 3D campus<svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-arrow-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M5 12h14" /> <path d="m12 5 7 7-7 7" /> </svg></a></div></div></div></div>
+</div>
+<details class="g-code"><summary>Usage</summary><pre><code>from design_kit import kit_css, KIT_JS, split
+split({&#x27;media_html&#x27;: &#x27;&lt;img src=&quot;media/broll/campus-green-crane-up-poster.jpg&quot; alt=&quot;The &#x27;
+               &#x27;Treasure Island campus green and its halls, rising from low over the &#x27;
+               &#x27;green to a high three-quarter view&quot; loading=&quot;lazy&quot;&gt;&#x27;,
+ &#x27;eyebrow&#x27;: &#x27;Recorded here&#x27;,
+ &#x27;title&#x27;: &#x27;Campus green, crane-up reveal&#x27;,
+ &#x27;body&#x27;: &#x27;The Treasure Island campus green and its halls, rising from low over the green &#x27;
+         &#x27;to a high three-quarter view. RECORDED from this build (commit 57f497245b0d).&#x27;,
+ &#x27;action&#x27;: {&#x27;text&#x27;: &#x27;Open the 3D campus&#x27;, &#x27;href&#x27;: &#x27;trade_craft_3d.html&#x27;, &#x27;kind&#x27;: &#x27;ghost&#x27;},
+ &#x27;reverse&#x27;: False})</code></pre></details>
+</section><section class="g-sec" id="t-timeline" aria-labelledby="h-timeline">
+<div class="g-head"><h2 id="h-timeline">Process timeline</h2><code class="g-fn">design_kit.timeline</code></div>
+<p class="g-why">Numbered by CSS counters, so the page types no digit.</p>
+<div class="g-pair">
+<div class="g-frame dk" data-theme="dark"><span class="g-tag">dark</span><ol class="dk-steps"><li class="dk-step"><h3>Pick a trade</h3><p>Find its hall on the campus.</p></li><li class="dk-step"><h3>Learn the room</h3><p>Walk the stations and read the lessons.</p></li><li class="dk-step"><h3>Take the seat</h3><p>Run the simulator and see what it scored.</p></li><li class="dk-step"><h3>Keep the record</h3><p>Your progress stays on your device.</p></li></ol></div>
+<div class="g-frame dk" data-theme="light"><span class="g-tag">light</span><ol class="dk-steps"><li class="dk-step"><h3>Pick a trade</h3><p>Find its hall on the campus.</p></li><li class="dk-step"><h3>Learn the room</h3><p>Walk the stations and read the lessons.</p></li><li class="dk-step"><h3>Take the seat</h3><p>Run the simulator and see what it scored.</p></li><li class="dk-step"><h3>Keep the record</h3><p>Your progress stays on your device.</p></li></ol></div>
+</div>
+<details class="g-code"><summary>Usage</summary><pre><code>from design_kit import kit_css, KIT_JS, timeline
+timeline([{&#x27;title&#x27;: &#x27;Pick a trade&#x27;, &#x27;body&#x27;: &#x27;Find its hall on the campus.&#x27;},
+ {&#x27;title&#x27;: &#x27;Learn the room&#x27;, &#x27;body&#x27;: &#x27;Walk the stations and read the lessons.&#x27;},
+ {&#x27;title&#x27;: &#x27;Take the seat&#x27;, &#x27;body&#x27;: &#x27;Run the simulator and see what it scored.&#x27;},
+ {&#x27;title&#x27;: &#x27;Keep the record&#x27;, &#x27;body&#x27;: &#x27;Your progress stays on your device.&#x27;}])</code></pre></details>
+</section><section class="g-sec" id="t-cta" aria-labelledby="h-cta">
+<div class="g-head"><h2 id="h-cta">CTA band</h2><code class="g-fn">design_kit.cta</code></div>
+<p class="g-why">One action, one sentence of why.</p>
+<div class="g-pair">
+<div class="g-frame dk" data-theme="dark"><span class="g-tag">dark</span><div class="dk-cta"><div><h2>Ready to look around?</h2><p>The campus opens in the browser; nothing to install.</p></div><a class="dk-btn dk-btn-primary" href="trade_craft_3d.html">Open the campus<svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-arrow-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M5 12h14" /> <path d="m12 5 7 7-7 7" /> </svg></a></div></div>
+<div class="g-frame dk" data-theme="light"><span class="g-tag">light</span><div class="dk-cta"><div><h2>Ready to look around?</h2><p>The campus opens in the browser; nothing to install.</p></div><a class="dk-btn dk-btn-primary" href="trade_craft_3d.html">Open the campus<svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-arrow-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M5 12h14" /> <path d="m12 5 7 7-7 7" /> </svg></a></div></div>
+</div>
+<details class="g-code"><summary>Usage</summary><pre><code>from design_kit import kit_css, KIT_JS, cta
+cta({&#x27;title&#x27;: &#x27;Ready to look around?&#x27;,
+ &#x27;body&#x27;: &#x27;The campus opens in the browser; nothing to install.&#x27;,
+ &#x27;action&#x27;: {&#x27;text&#x27;: &#x27;Open the campus&#x27;, &#x27;href&#x27;: &#x27;trade_craft_3d.html&#x27;, &#x27;kind&#x27;: &#x27;primary&#x27;}})</code></pre></details>
+</section><section class="g-sec" id="t-callout" aria-labelledby="h-callout">
+<div class="g-head"><h2 id="h-callout">Callout and limit box</h2><code class="g-fn">design_kit.callout</code></div>
+<p class="g-why">kind=&#x27;limit&#x27; is the box that says what something is NOT.</p>
+<div class="g-pair">
+<div class="g-frame dk" data-theme="dark"><span class="g-tag">dark</span><aside class="dk-callout dk-callout-limit" role="note"><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-circle-alert" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <circle cx="12" cy="12" r="10" /> <line x1="12" x2="12" y1="8" y2="12" /> <line x1="12" x2="12.01" y1="16" y2="16" /> </svg><div><strong>Play, not a credential</strong><p>Quests, badges and treasures are play. They never enter a completion record and certify nothing.</p></div></aside></div>
+<div class="g-frame dk" data-theme="light"><span class="g-tag">light</span><aside class="dk-callout dk-callout-limit" role="note"><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-circle-alert" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <circle cx="12" cy="12" r="10" /> <line x1="12" x2="12" y1="8" y2="12" /> <line x1="12" x2="12.01" y1="16" y2="16" /> </svg><div><strong>Play, not a credential</strong><p>Quests, badges and treasures are play. They never enter a completion record and certify nothing.</p></div></aside></div>
+</div>
+<details class="g-code"><summary>Usage</summary><pre><code>from design_kit import kit_css, KIT_JS, callout
+callout({&#x27;kind&#x27;: &#x27;limit&#x27;,
+ &#x27;title&#x27;: &#x27;Play, not a credential&#x27;,
+ &#x27;body&#x27;: &#x27;Quests, badges and treasures are play. They never enter a completion record &#x27;
+         &#x27;and certify nothing.&#x27;})</code></pre></details>
+</section><section class="g-sec" id="t-card" aria-labelledby="h-card">
+<div class="g-head"><h2 id="h-card">Card</h2><code class="g-fn">design_kit.card</code></div>
+<p class="g-why">A linked card lifts on hover; without href it is a plain article.</p>
+<div class="g-pair">
+<div class="g-frame dk" data-theme="dark"><span class="g-tag">dark</span><a class="dk-card" href="trade_craft_geomap.html"><div class="dk-card-head"><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-map" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z" /> <path d="M15 5.764v15" /> <path d="M9 3.236v15" /> </svg><span class="dk-badge dk-badge-steel">Schematic</span></div><h3>Globe map</h3><p>Every campus at its registry coordinates.</p><span class="dk-card-go">Open the map<svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="m9 18 6-6-6-6" /> </svg></span></a></div>
+<div class="g-frame dk" data-theme="light"><span class="g-tag">light</span><a class="dk-card" href="trade_craft_geomap.html"><div class="dk-card-head"><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-map" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z" /> <path d="M15 5.764v15" /> <path d="M9 3.236v15" /> </svg><span class="dk-badge dk-badge-steel">Schematic</span></div><h3>Globe map</h3><p>Every campus at its registry coordinates.</p><span class="dk-card-go">Open the map<svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="m9 18 6-6-6-6" /> </svg></span></a></div>
+</div>
+<details class="g-code"><summary>Usage</summary><pre><code>from design_kit import kit_css, KIT_JS, card
+card({&#x27;icon&#x27;: &#x27;map&#x27;,
+ &#x27;title&#x27;: &#x27;Globe map&#x27;,
+ &#x27;body&#x27;: &#x27;Every campus at its registry coordinates.&#x27;,
+ &#x27;badge&#x27;: (&#x27;Schematic&#x27;, &#x27;steel&#x27;),
+ &#x27;href&#x27;: &#x27;trade_craft_geomap.html&#x27;,
+ &#x27;go&#x27;: &#x27;Open the map&#x27;})</code></pre></details>
+</section><section class="g-sec" id="t-badge" aria-labelledby="h-badge">
+<div class="g-head"><h2 id="h-badge">Badge</h2><code class="g-fn">design_kit.badge</code></div>
+<p class="g-why">Four tones: steel, amber, muted, ok. For provenance words and states.</p>
+<div class="g-pair">
+<div class="g-frame dk" data-theme="dark"><span class="g-tag">dark</span><span class="dk-badge dk-badge-ok">Recorded</span> <span class="dk-badge dk-badge-steel">Schematic</span> <span class="dk-badge dk-badge-amber">Authored</span> <span class="dk-badge dk-badge-muted">Proposed</span></div>
+<div class="g-frame dk" data-theme="light"><span class="g-tag">light</span><span class="dk-badge dk-badge-ok">Recorded</span> <span class="dk-badge dk-badge-steel">Schematic</span> <span class="dk-badge dk-badge-amber">Authored</span> <span class="dk-badge dk-badge-muted">Proposed</span></div>
+</div>
+<details class="g-code"><summary>Usage</summary><pre><code>from design_kit import kit_css, KIT_JS, badge
+badge(&#x27;Recorded&#x27;, &#x27;ok&#x27;)  # tones: steel | amber | muted | ok</code></pre></details>
+</section><section class="g-sec" id="t-breadcrumb" aria-labelledby="h-breadcrumb">
+<div class="g-head"><h2 id="h-breadcrumb">Breadcrumb</h2><code class="g-fn">design_kit.breadcrumb</code></div>
+<p class="g-why">The last item is the current page (aria-current).</p>
+<div class="g-pair">
+<div class="g-frame dk" data-theme="dark"><span class="g-tag">dark</span><nav class="dk-crumbs" aria-label="Breadcrumb"><ol><li><a href="../index.html">Home</a></li><li><a href="trade_craft_landing.html">About</a></li><li><span aria-current="page">Design kit</span></li></ol></nav></div>
+<div class="g-frame dk" data-theme="light"><span class="g-tag">light</span><nav class="dk-crumbs" aria-label="Breadcrumb"><ol><li><a href="../index.html">Home</a></li><li><a href="trade_craft_landing.html">About</a></li><li><span aria-current="page">Design kit</span></li></ol></nav></div>
+</div>
+<details class="g-code"><summary>Usage</summary><pre><code>from design_kit import kit_css, KIT_JS, breadcrumb
+breadcrumb([(&#x27;Home&#x27;, &#x27;../index.html&#x27;), (&#x27;About&#x27;, &#x27;trade_craft_landing.html&#x27;), (&#x27;Design kit&#x27;, None)], &quot;Breadcrumb&quot;)</code></pre></details>
+</section><section class="g-sec" id="t-footer" aria-labelledby="h-footer">
+<div class="g-head"><h2 id="h-footer">Footer</h2><code class="g-fn">design_kit.footer</code></div>
+<p class="g-why">Columns of links and one note line.</p>
+<div class="g-pair">
+<div class="g-frame dk" data-theme="dark"><span class="g-tag">dark</span><footer class="dk-footer"><div class="dk-footer-cols"><div><h3>Learn</h3><ul><li><a href="trade_craft_3d.html">3D campus</a></li><li><a href="trade_craft_lessons.html">Lessons</a></li></ul></div><div><h3>Maps</h3><ul><li><a href="trade_craft_geomap.html">Globe map</a></li><li><a href="trade_craft_map.html">Network map</a></li></ul></div><div><h3>Records</h3><ul><li><a href="trade_craft_progress.html">Progress</a></li><li><a href="trade_craft_verify.html">Verify</a></li></ul></div></div><p class="dk-footer-note">Footage and templates are first-party; icons are Lucide (ISC).</p></footer></div>
+<div class="g-frame dk" data-theme="light"><span class="g-tag">light</span><footer class="dk-footer"><div class="dk-footer-cols"><div><h3>Learn</h3><ul><li><a href="trade_craft_3d.html">3D campus</a></li><li><a href="trade_craft_lessons.html">Lessons</a></li></ul></div><div><h3>Maps</h3><ul><li><a href="trade_craft_geomap.html">Globe map</a></li><li><a href="trade_craft_map.html">Network map</a></li></ul></div><div><h3>Records</h3><ul><li><a href="trade_craft_progress.html">Progress</a></li><li><a href="trade_craft_verify.html">Verify</a></li></ul></div></div><p class="dk-footer-note">Footage and templates are first-party; icons are Lucide (ISC).</p></footer></div>
+</div>
+<details class="g-code"><summary>Usage</summary><pre><code>from design_kit import kit_css, KIT_JS, footer
+footer([{&#x27;title&#x27;: &#x27;Learn&#x27;,
+  &#x27;links&#x27;: [(&#x27;3D campus&#x27;, &#x27;trade_craft_3d.html&#x27;),
+            (&#x27;Lessons&#x27;, &#x27;trade_craft_lessons.html&#x27;)]},
+ {&#x27;title&#x27;: &#x27;Maps&#x27;,
+  &#x27;links&#x27;: [(&#x27;Globe map&#x27;, &#x27;trade_craft_geomap.html&#x27;),
+            (&#x27;Network map&#x27;, &#x27;trade_craft_map.html&#x27;)]},
+ {&#x27;title&#x27;: &#x27;Records&#x27;,
+  &#x27;links&#x27;: [(&#x27;Progress&#x27;, &#x27;trade_craft_progress.html&#x27;),
+            (&#x27;Verify&#x27;, &#x27;trade_craft_verify.html&#x27;)]}],
+       &#x27;Footage and templates are first-party; icons are Lucide (ISC).&#x27;)</code></pre></details>
+</section>
+<section class="g-sec" id="tokens" aria-labelledby="h-tokens">
+<div class="g-head"><h2 id="h-tokens">Tokens</h2><code class="g-fn">design_kit.TOKENS</code></div>
+<p class="g-why">Colour, type, spacing, radii and elevation, as custom properties. Contrast ratios are computed from the values at build time.</p>
+<div class="g-tokens"><div class="g-frame dk" data-theme="dark"><span class="g-tag">dark</span><ul class="g-swatches"><li><span class="g-sw" style="background:#12181B"></span><code>--dk-plate</code><span>#12181B</span></li><li><span class="g-sw" style="background:#182023"></span><code>--dk-panel</code><span>#182023</span></li><li><span class="g-sw" style="background:#1F292D"></span><code>--dk-raised</code><span>#1F292D</span></li><li><span class="g-sw" style="background:#2B383C"></span><code>--dk-line</code><span>#2B383C</span></li><li><span class="g-sw" style="background:#E8EDEC"></span><code>--dk-ink</code><span>#E8EDEC</span></li><li><span class="g-sw" style="background:#93A3A6"></span><code>--dk-muted</code><span>#93A3A6</span></li><li><span class="g-sw" style="background:#E8A33D"></span><code>--dk-amber</code><span>#E8A33D</span></li><li><span class="g-sw" style="background:#41C4D4"></span><code>--dk-steel</code><span>#41C4D4</span></li><li><span class="g-sw" style="background:#12181B"></span><code>--dk-amber-ink</code><span>#12181B</span></li><li><span class="g-sw" style="background:#41C4D4"></span><code>--dk-link</code><span>#41C4D4</span></li><li><span class="g-sw" style="background:#E8A33D"></span><code>--dk-warn</code><span>#E8A33D</span></li><li><span class="g-sw" style="background:#6FCF97"></span><code>--dk-ok</code><span>#6FCF97</span></li></ul><h3 class="g-sub">Contrast, computed from these values</h3><ul class="g-ratios"><li><code>ink on plate</code><span>15.1:1</span></li><li><code>ink on panel</code><span>14.0:1</span></li><li><code>ink on raised</code><span>12.6:1</span></li><li><code>muted on plate</code><span>6.9:1</span></li><li><code>muted on panel</code><span>6.3:1</span></li><li><code>amber on plate</code><span>8.3:1</span></li><li><code>amber on panel</code><span>7.7:1</span></li><li><code>steel on plate</code><span>8.6:1</span></li><li><code>steel on panel</code><span>7.9:1</span></li><li><code>link on panel</code><span>7.9:1</span></li><li><code>amber-ink on amber</code><span>8.3:1</span></li><li><code>ok on panel</code><span>8.7:1</span></li></ul></div><div class="g-frame dk" data-theme="light"><span class="g-tag">light</span><ul class="g-swatches"><li><span class="g-sw" style="background:#F4F6F6"></span><code>--dk-plate</code><span>#F4F6F6</span></li><li><span class="g-sw" style="background:#FFFFFF"></span><code>--dk-panel</code><span>#FFFFFF</span></li><li><span class="g-sw" style="background:#EAEFEF"></span><code>--dk-raised</code><span>#EAEFEF</span></li><li><span class="g-sw" style="background:#D3DCDD"></span><code>--dk-line</code><span>#D3DCDD</span></li><li><span class="g-sw" style="background:#12181B"></span><code>--dk-ink</code><span>#12181B</span></li><li><span class="g-sw" style="background:#4E5C5F"></span><code>--dk-muted</code><span>#4E5C5F</span></li><li><span class="g-sw" style="background:#8F5500"></span><code>--dk-amber</code><span>#8F5500</span></li><li><span class="g-sw" style="background:#0B6B78"></span><code>--dk-steel</code><span>#0B6B78</span></li><li><span class="g-sw" style="background:#FFFFFF"></span><code>--dk-amber-ink</code><span>#FFFFFF</span></li><li><span class="g-sw" style="background:#0B6B78"></span><code>--dk-link</code><span>#0B6B78</span></li><li><span class="g-sw" style="background:#8F5500"></span><code>--dk-warn</code><span>#8F5500</span></li><li><span class="g-sw" style="background:#1E7A45"></span><code>--dk-ok</code><span>#1E7A45</span></li></ul><h3 class="g-sub">Contrast, computed from these values</h3><ul class="g-ratios"><li><code>ink on plate</code><span>16.5:1</span></li><li><code>ink on panel</code><span>17.9:1</span></li><li><code>ink on raised</code><span>15.4:1</span></li><li><code>muted on plate</code><span>6.4:1</span></li><li><code>muted on panel</code><span>7.0:1</span></li><li><code>amber on plate</code><span>5.6:1</span></li><li><code>amber on panel</code><span>6.1:1</span></li><li><code>steel on plate</code><span>5.7:1</span></li><li><code>steel on panel</code><span>6.2:1</span></li><li><code>link on panel</code><span>6.2:1</span></li><li><code>amber-ink on amber</code><span>6.1:1</span></li><li><code>ok on panel</code><span>5.4:1</span></li></ul></div></div>
+<h3 class="g-sub">Type scale</h3><ul class="g-scale"><li style="font-size:0.8rem"><code>--dk-t-xs</code> Walk the campus</li><li style="font-size:0.9rem"><code>--dk-t-sm</code> Walk the campus</li><li style="font-size:1rem"><code>--dk-t-md</code> Walk the campus</li><li style="font-size:1.25rem"><code>--dk-t-lg</code> Walk the campus</li><li style="font-size:1.563rem"><code>--dk-t-xl</code> Walk the campus</li><li style="font-size:1.953rem"><code>--dk-t-2xl</code> Walk the campus</li><li style="font-size:clamp(1.953rem, 1.4rem + 2.4vw, 2.441rem)"><code>--dk-t-3xl</code> Walk the campus</li><li style="font-size:clamp(2.2rem, 1.3rem + 4vw, 3.815rem)"><code>--dk-t-4xl</code> Walk the campus</li></ul>
+<h3 class="g-sub">Spacing</h3><ul class="g-space"><li><span class="g-bar" style="inline-size:4px"></span><code>--dk-s-1</code> 4px</li><li><span class="g-bar" style="inline-size:8px"></span><code>--dk-s-2</code> 8px</li><li><span class="g-bar" style="inline-size:12px"></span><code>--dk-s-3</code> 12px</li><li><span class="g-bar" style="inline-size:16px"></span><code>--dk-s-4</code> 16px</li><li><span class="g-bar" style="inline-size:24px"></span><code>--dk-s-5</code> 24px</li><li><span class="g-bar" style="inline-size:32px"></span><code>--dk-s-6</code> 32px</li><li><span class="g-bar" style="inline-size:48px"></span><code>--dk-s-7</code> 48px</li><li><span class="g-bar" style="inline-size:64px"></span><code>--dk-s-8</code> 64px</li><li><span class="g-bar" style="inline-size:96px"></span><code>--dk-s-9</code> 96px</li></ul>
+<h3 class="g-sub">Radii</h3><ul class="g-radii"><li style="border-radius:4px"><code>--dk-r-sm</code></li><li style="border-radius:8px"><code>--dk-r-md</code></li><li style="border-radius:14px"><code>--dk-r-lg</code></li><li style="border-radius:999px"><code>--dk-r-pill</code></li></ul>
+<h3 class="g-sub">Elevation</h3><ul class="g-elev"><li style="box-shadow:0 1px 2px rgb(0 0 0 / .18), 0 1px 1px rgb(0 0 0 / .12)"><code>--dk-e-1</code></li><li style="box-shadow:0 4px 12px rgb(0 0 0 / .18), 0 2px 4px rgb(0 0 0 / .12)"><code>--dk-e-2</code></li><li style="box-shadow:0 16px 40px rgb(0 0 0 / .28), 0 4px 10px rgb(0 0 0 / .14)"><code>--dk-e-3</code></li></ul>
+<h3 class="g-sub">Icons</h3><ul class="g-icons"><li><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-arrow-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M5 12h14" /> <path d="m12 5 7 7-7 7" /> </svg><code>arrow-right</code></li><li><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-building-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M10 12h4" /> <path d="M10 8h4" /> <path d="M14 21v-3a2 2 0 0 0-4 0v3" /> <path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2" /> <path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16" /> </svg><code>building-2</code></li><li><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-check" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M20 6 9 17l-5-5" /> </svg><code>check</code></li><li><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="m9 18 6-6-6-6" /> </svg><code>chevron-right</code></li><li><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-circle-alert" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <circle cx="12" cy="12" r="10" /> <line x1="12" x2="12" y1="8" y2="12" /> <line x1="12" x2="12.01" y1="16" y2="16" /> </svg><code>circle-alert</code></li><li><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-globe" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <circle cx="12" cy="12" r="10" /> <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" /> <path d="M2 12h20" /> </svg><code>globe</code></li><li><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-graduation-cap" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z" /> <path d="M22 10v6" /> <path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5" /> </svg><code>graduation-cap</code></li><li><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-hard-hat" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M10 10V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5" /> <path d="M14 6a6 6 0 0 1 6 6v3" /> <path d="M4 15v-3a6 6 0 0 1 6-6" /> <rect x="2" y="15" width="20" height="4" rx="1" /> </svg><code>hard-hat</code></li><li><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-info" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <circle cx="12" cy="12" r="10" /> <path d="M12 16v-4" /> <path d="M12 8h.01" /> </svg><code>info</code></li><li><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-layers" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z" /> <path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12" /> <path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17" /> </svg><code>layers</code></li><li><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-map" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z" /> <path d="M15 5.764v15" /> <path d="M9 3.236v15" /> </svg><code>map</code></li><li><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-pause" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <rect x="14" y="3" width="5" height="18" rx="1" /> <rect x="5" y="3" width="5" height="18" rx="1" /> </svg><code>pause</code></li><li><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-play" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z" /> </svg><code>play</code></li><li><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-route" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <circle cx="6" cy="19" r="3" /> <path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15" /> <circle cx="18" cy="5" r="3" /> </svg><code>route</code></li><li><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-shield-check" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /> <path d="m9 12 2 2 4-4" /> </svg><code>shield-check</code></li><li><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-users" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /> <path d="M16 3.128a4 4 0 0 1 0 7.744" /> <path d="M22 21v-2a4 4 0 0 0-3-3.87" /> <circle cx="9" cy="7" r="4" /> </svg><code>users</code></li><li><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-video" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5" /> <rect x="2" y="6" width="14" height="12" rx="2" /> </svg><code>video</code></li><li><svg aria-hidden="true" focusable="false" class="dk-icon lucide lucide-wrench" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z" /> </svg><code>wrench</code></li></ul>
+</section>
+</main>
+<script>(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  for (const hero of document.querySelectorAll('[data-dk-hero]')) {
+    const v = hero.querySelector('video');
+    const b = hero.querySelector('.dk-hero-pause');
+    if (!v || !b) continue;
+    const set = (paused) => {
+      b.setAttribute('aria-pressed', String(paused));
+      b.querySelector('.dk-hero-pause-t').textContent = paused ? b.dataset.play : b.dataset.pause;
+    };
+    if (reduce) { v.removeAttribute('autoplay'); v.pause(); set(true); }
+    else v.play().then(() => set(false), () => set(true));
+    b.addEventListener('click', () => {
+      if (v.paused) v.play().then(() => set(false), () => set(true));
+      else { v.pause(); set(true); }
+    });
+  }
+})();</script>
+</body>
+</html>

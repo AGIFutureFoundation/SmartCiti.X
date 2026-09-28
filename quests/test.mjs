@@ -1,0 +1,124 @@
+#!/usr/bin/env node
+/* quests/test.mjs - the quest registry and engine, held to the contract.
+   Prints "  ok " per check, FAIL at column 0, exits non-zero on failure. */
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import * as Q from './engine.mjs';
+
+const HERE = dirname(fileURLToPath(import.meta.url));
+const ROOT = join(HERE, '..');
+let fails = 0;
+function ok(name, cond, detail) {
+  if (cond) { console.log('  ok ' + name); return; }
+  fails++; console.log('FAIL ' + name);
+  for (const d of [].concat(detail || []).slice(0, 8)) console.log('     ' + d);
+}
+const read = (p) => readFileSync(join(ROOT, p), 'utf8');
+const reg = JSON.parse(read('quests/registry/quests.json'));
+const lessons = JSON.parse(read('lessons/registry/lessons.json'));
+const halls = new Set(JSON.parse(read('pack/registry/halls.json')).halls.map((h) => h.slug));
+const L = lessons.lessons;
+const ids = new Set(reg.quests.map((q) => q.id));
+
+ok(`ids are unique and kebab-case (${reg.quests.length})`, ids.size === reg.quests.length && reg.quests.every((q) => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(q.id)));
+ok('every kind is main | side | game | treasure | egg', reg.quests.every((q) => ['main', 'side', 'game', 'treasure', 'egg'].includes(q.kind)));
+const bad = [];
+for (const q of reg.quests) {
+  for (const l of q.requires.lessons) if (!(l in L)) bad.push(`${q.id}: lesson ${l}`);
+  for (const h of q.requires.halls) if (!halls.has(h)) bad.push(`${q.id}: hall ${h}`);
+  for (const r of q.requires.quests) if (!ids.has(r)) bad.push(`${q.id}: quest ${r}`);
+}
+ok('every requires id resolves (lessons, halls, quests)', bad.length === 0, bad);
+const expect = (r) => {
+  if (!r.lessons.every((i) => i in L) || !r.quests.every((i) => ids.has(i))) return null; // named by the resolve check above
+  const parts = [];
+  if (r.lessons.length) parts.push('walk ' + r.lessons.map((i) => `"${L[i].title}"`).join(', '));
+  if (r.halls.length) parts.push('finish a lesson in ' + r.halls.map((h) => JSON.parse(read('pack/registry/halls.json')).halls.find((x) => x.slug === h).name).join(', '));
+  if (r.quests.length) parts.push('finish ' + r.quests.map((i) => `"${reg.quests.find((x) => x.id === i).title}"`).join(', '));
+  return parts.length ? 'To unlock: ' + parts.join('; ') + '.' : 'Open to everyone.';
+};
+const ut = reg.quests.filter((q) => q.unlock_text !== expect(q.requires)).map((q) => q.id);
+ok('unlock_text is generated from requires for every entry', ut.length === 0, ut);
+ok('every entry is AUTHORED provenance with a badge reward', reg.quests.every((q) => q.provenance === 'AUTHORED' && q.reward && q.reward.badge && q.reward.label));
+ok('K-5 entries are explore-only (no lessons, no halls)', reg.quests.filter((q) => q.band === 'K-5').every((q) => !q.requires.lessons.length && !q.requires.halls.length));
+ok('honesty says play, never evidence, never a completion record',
+  /play/.test(reg.honesty) && /never evidence/.test(reg.honesty) && /never enter a completion record/.test(reg.honesty));
+const hallsWithLessons = new Set(Object.values(L).map((l) => l.hall));
+const sideHalls = new Set(reg.quests.filter((q) => q.id.startsWith('side-hall-')).map((q) => q.world.slice(5)));
+ok(`a side quest for every hall that has lessons (${hallsWithLessons.size})`, [...hallsWithLessons].every((h) => sideHalls.has(h)));
+ok('at least three arcade games, each gated by at least one lesson',
+  reg.quests.filter((q) => q.kind === 'game').length >= 3 && reg.quests.filter((q) => q.kind === 'game').every((q) => q.requires.lessons.length > 0));
+
+// every egg/treasure hook exists in the built page its world names, where that page carries the engine
+const WORLD_PAGE = (w) => (w.startsWith('page:') ? w.slice(5) : null);
+const missing = []; const pagesSeen = new Set();
+for (const q of reg.quests.filter((x) => x.kind === 'egg' || x.kind === 'treasure')) {
+  const p = WORLD_PAGE(q.world);
+  if (!p) continue;
+  pagesSeen.add(p);
+  if (!existsSync(join(ROOT, p))) { missing.push(`${q.id}: ${p} does not exist`); continue; }
+  const html = read(p);
+  if (!html.includes('QUEST_CORE:BEGIN')) continue;
+  if (!html.includes(`data-tc-egg="${q.id}"`)) missing.push(`${q.id}: no hook in ${p}`);
+  if (q.target && !new RegExp('<' + q.target + '[\\s>]').test(html)) missing.push(`${q.id}: target ${q.target} not in ${p}`);
+}
+const carrying = [...pagesSeen].filter((p) => existsSync(join(ROOT, p)) && read(p).includes('QUEST_CORE:BEGIN'));
+ok(`every egg/treasure hook is in the page its world names (${carrying.length} pages carry the engine)`, missing.length === 0 && carrying.length >= 3, missing);
+const threeEach = carrying.filter((p) => reg.quests.filter((q) => q.world === 'page:' + p && (q.kind === 'egg' || q.kind === 'treasure')).length < 3);
+ok('every page that carries the engine has at least three eggs or treasures', threeEach.length === 0, threeEach);
+
+// engine core byte-identical in every page that carries it
+const eng = read('quests/engine.mjs');
+const core = eng.slice(eng.indexOf('/* QUEST_CORE:BEGIN'), eng.indexOf('/* QUEST_CORE:END */') + '/* QUEST_CORE:END */'.length);
+const all = ['index.html', ...readdirSync(join(ROOT, 'web')).filter((f) => f.endsWith('.html')).map((f) => 'web/' + f)];
+const carriers = all.filter((p) => read(p).includes('QUEST_CORE:BEGIN'));
+const drift = carriers.filter((p) => !read(p).includes(core));
+ok(`the engine core is byte-identical in every page that carries it (${carriers.length})`, carriers.length > 0 && drift.length === 0, drift);
+
+// the evidence functions are the progress page's own, verbatim
+const prog = read('web/build_progress.py');
+const segA = prog.slice(prog.indexOf('const EVIDENCED_KINDS'), prog.indexOf('/* the digest input'));
+const segB = prog.slice(prog.indexOf('function stepEvidence('), prog.indexOf('async function buildCompletionRecord'));
+ok('the core carries the progress page\'s evidence functions verbatim', segA.length > 100 && segB.length > 100 && core.includes(segA) && core.includes(segB));
+ok('the core names the storage key tc-quests and reads the progress keys from data, not typed', Q.QUEST_STORE === 'tc-quests' && !core.includes("'tc-progress'"));
+
+// lessonsDone over a synthetic record the way the progress page's own suite seeds one
+const training = JSON.parse(read('training/registry/training.json')).episode_kinds;
+const D = { lessons: {}, meta: { step_kinds: lessons.step_kinds, episode_kinds: training, human_actor: 'human' } };
+D.lessons['crane-ops-read-the-chart'] = { hall: L['crane-ops-read-the-chart'].hall, steps: L['crane-ops-read-the-chart'].steps };
+ok('an empty device counts no lesson done', Q.questLessonsDone(null, null, D).size === 0);
+const lesson = L['crane-ops-read-the-chart'];
+const progSeed = { sims: {}, tools: {}, stations: [] };
+const trainSeed = [];
+const t = new Date(0).toISOString();
+for (const s of lesson.steps) {
+  if (s.kind === 'sim') progSeed.sims[s.sim] = { passed: true, runs: 1 };
+  if (s.kind === 'station') progSeed.stations.push(s.station);
+  if (s.kind === 'crib') progSeed.tools[s.crib] = { passed: true };
+  if (s.kind in Q.REF_FIELDS) { const ep = { kind: s.kind, hall: lesson.hall, t, actor: 'human' }; for (const f of Q.REF_FIELDS[s.kind]) ep[f] = s[f]; trainSeed.push(ep); }
+}
+ok('a device holding every recordable step of a lesson counts it done', Q.questLessonsDone(progSeed, trainSeed, D).has('crane-ops-read-the-chart'));
+const half = { ...progSeed, sims: {} };
+ok('a device missing the seat pass does not', !Q.questLessonsDone(half, trainSeed, D).has('crane-ops-read-the-chart'));
+
+// check / record
+const game = reg.quests.find((q) => q.id === 'game-load-chart');
+const T = { lessons: { 'crane-ops-read-the-chart': 'x' }, lesson_hall: { 'crane-ops-read-the-chart': 'crane-ops' }, halls: {}, quests: {} };
+const st0 = Q.questEmptyState();
+const c0 = Q.questCheck(game, st0, new Set(), T);
+ok('check() names the missing lessons of a locked game', !c0.ok && c0.missing.some((m) => m.kind === 'lesson' && m.id === 'crane-ops-read-the-chart'));
+ok('record() refuses a locked entry', Q.questRecord(st0, game, t, c0).changed === false);
+const c1 = Q.questCheck(game, st0, new Set(['crane-ops-read-the-chart']), T);
+const r1 = Q.questRecord(st0, game, t, c1);
+ok('record() records an open entry once and gives its badge', c1.ok && r1.changed && r1.state.done[game.id] === t && r1.state.badges.includes(game.reward.badge) && !Q.questRecord(r1.state, game, t, c1).changed);
+ok('a garbled store parses to an empty state', JSON.stringify(Q.questParseState('{nope')) === JSON.stringify(st0));
+let buf = []; let hits = [];
+for (const k of Q.QUEST_KONAMI) { const r = Q.questKeys(buf, k, ['hardhat']); buf = r.buf; hits = hits.concat(r.hits); }
+ok('the konami sequence triggers konami', hits.includes('konami'));
+buf = []; hits = [];
+for (const k of 'xhardhat') { const r = Q.questKeys(buf, k, ['hardhat']); buf = r.buf; hits = hits.concat(r.hits); }
+ok('a typed word triggers typed:<word>', hits.includes('typed:hardhat'));
+
+console.log(fails ? `quests/test: ${fails} FAILED` : 'quests/test: all passed');
+process.exit(fails ? 1 : 0);

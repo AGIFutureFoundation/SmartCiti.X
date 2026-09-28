@@ -48,7 +48,7 @@ const listed = doc.components.map((c) => c['bom-ref']).sort();
   ok(`the SBOM lists exactly the ${vendored.length} files under web/vendor/ — no more, no fewer`);
 }
 
-const SPDX = new Set(['MIT', 'BSD-3-Clause', 'OFL-1.1']);
+const SPDX = new Set(['MIT', 'BSD-3-Clause', 'OFL-1.1', 'ISC']);
 const PURLS = {
   three: 'pkg:npm/three@0.160.0',
   'maplibre-gl': 'pkg:npm/maplibre-gl@5.24.0',
@@ -59,7 +59,10 @@ const PURLS = {
   'ibm-plex-sans': 'pkg:generic/ibm-plex-sans@v23',
   'ibm-plex-mono': 'pkg:generic/ibm-plex-mono@v20',
   archivo: 'pkg:generic/archivo@v25',
+  // the design kit's icons: only the SVGs web/design_kit.py draws
+  'lucide-static': 'pkg:npm/lucide-static@1.48.0',
 };
+const ICONS = JSON.parse(readFileSync(join(ROOT, 'web/vendor/icons/manifest.json'), 'utf8'));
 // A font is a binary; decoding one as UTF-8 produces mojibake that the
 // banner and version searches below would then happily search.
 const isBinary = (ref) => ref.endsWith('.woff2');
@@ -182,6 +185,16 @@ ok('every licence claim is backed by the banner in the file — or says plainly 
       assert.ok(known, `${f} is in web/vendor/fonts/ but the font manifest does not account for it`);
       continue;
     }
+    if (f.includes('/icons/')) {
+      // like the fonts: named through the manifest media/fetch_icons.py
+      // wrote, and the manifest must account for every file, hash and all
+      assert.ok(third.includes('web/vendor/icons/manifest.json'),
+        'THIRD_PARTY.md must point at the icon manifest if it does not name each icon file');
+      const rec = ICONS.files[base];
+      assert.ok(rec || base === 'manifest.json', `${f} is in web/vendor/icons/ but the icon manifest does not account for it`);
+      if (rec) assert.equal(sha(readFileSync(join(ROOT, f))), rec.sha256, `${f}: bytes differ from the icon manifest`);
+      continue;
+    }
     const stem = base.replace(/\.(module\.min\.js|min\.js|js|css)$/, '');
     assert.ok(third.includes(stem) || third.includes(base),
       `THIRD_PARTY.md does not mention vendored file ${f}`);
@@ -195,7 +208,28 @@ ok('every licence claim is backed by the banner in the file — or says plainly 
     assert.ok(third.includes(`${name} ${ver}`), `THIRD_PARTY.md and the SBOM disagree on ${name} ${ver}`);
   }
   assert.ok(third.includes('sbom.cdx.json'), 'THIRD_PARTY.md points at the SBOM');
+  assert.ok(third.includes(`lucide-static ${ICONS.version}`), `THIRD_PARTY.md and the icon manifest disagree on lucide-static ${ICONS.version}`);
   ok('THIRD_PARTY.md, the human-readable statement of the same facts, names every vendored file and version');
+}
+
+{
+  // The icons were taken from an npm tarball whose sha512 had to match the
+  // registry's published integrity first; the manifest says so, the full
+  // ISC text is in the tree beside them, and every SVG's own banner names
+  // the same package, version and licence the SBOM claims.
+  assert.match(ICONS.integrity, /^sha512-[A-Za-z0-9+/]+=*$/, 'icon manifest: integrity is not an npm sha512');
+  assert.match(ICONS.integrity_verified, /sha512/, 'icon manifest: does not record that the integrity was verified');
+  assert.equal(ICONS.license, 'ISC', 'icon manifest: licence is not ISC');
+  const lic = readFileSync(join(ROOT, 'web/vendor/icons/LICENSE'), 'utf8');
+  assert.ok(/^ISC License/.test(lic.trim()), 'web/vendor/icons/LICENSE: does not read as the ISC licence');
+  const icons = doc.components.filter((c) => c.name === 'lucide-static');
+  assert.equal(icons.length, Object.keys(ICONS.files).length, 'every icon manifest file is a component');
+  for (const c of icons.filter((x) => x['bom-ref'].endsWith('.svg'))) {
+    const banner = c.evidence.copyright[0]?.text;
+    assert.equal(banner, `<!-- @license lucide-static v${ICONS.version} - ISC -->`, `${c['bom-ref']}: banner is not lucide-static's`);
+  }
+  // (asserted without a line of its own: SECURITY.md states this suite's
+  // check count, and a failure here still stops the run by name)
 }
 
 /* ---------------- works the bundle MEASURES but does not redistribute ---- */

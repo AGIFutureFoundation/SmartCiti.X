@@ -1,0 +1,90 @@
+{
+ "what": "The b-roll library: house-made footage filmed frame by frame from this build's own 3D campus and globe map. No third-party stock; every clip is first-party.",
+ "how": "media/record.mjs (virtual clock, camera driven through the page hook, one screenshot per frame) -> media/encode.py (grade, VP9 + H.264, poster, 480 px preview) -> media/build.py",
+ "budget_bytes": 3145728,
+ "fps": 24,
+ "source_stamp": "fbaff21f34fe978ea2530b66439803485aa660fc4c3123841754e29561fbff81",
+ "clips": [
+  {
+   "id": "campus-green-crane-up",
+   "title": "Campus green, crane-up reveal",
+   "shows": "The Treasure Island campus green and its halls, rising from low over the green to a high three-quarter view",
+   "source": {
+    "page": "web/trade_craft_3d.html",
+    "view": "campus:treasure-island"
+   },
+   "camera_move": "crane-up",
+   "duration_s": 7,
+   "fps": 24,
+   "frames": 168,
+   "resolution": [
+    1600,
+    900
+   ],
+   "preview_width": 480,
+   "hero": false,
+   "known_issue": "shadow striping on the green and the water once the camera climbs past about 120 m (second half of the move); not hero quality - re-shoot lower",
+   "status": "committed source",
+   "files": {
+    "webm": {
+     "path": "web/media/broll/campus-green-crane-up.webm",
+     "bytes": 1923043,
+     "sha256": "7743b14cb53c985f72fc3f3095568004a6487690be752345410bfbf615c961c1",
+     "type": "video/webm; codecs=vp9"
+    },
+    "mp4": {
+     "path": "web/media/broll/campus-green-crane-up.mp4",
+     "bytes": 2266338,
+     "sha256": "079bf98a063a14a2fd31fa7209a998e8264a60fce2f09569106059e51fe00b9d",
+     "type": "video/mp4; codecs=avc1"
+    },
+    "poster": {
+     "path": "web/media/broll/campus-green-crane-up-poster.jpg",
+     "bytes": 154349,
+     "sha256": "9a523f32db83fffccd36fb07498fc039eabd9d96092d0e3ebc50a625d30ceacf",
+     "type": "image/jpeg"
+    },
+    "preview": {
+     "path": "web/media/broll/campus-green-crane-up-480.webm",
+     "bytes": 159355,
+     "sha256": "5b048059df9711a5b570184fea78cf2eae69d4ec2afb494ff4068aae6ed78620",
+     "type": "video/webm; codecs=vp9"
+    }
+   },
+   "provenance": "RECORDED from this build (commit 57f497245b0d)",
+   "licence": "first-party",
+   "grade": "soft S-curve, saturation 1.07, contrast 1.03, vignette PI/6 (media/encode.py GRADE)",
+   "encoded": "2026-09-28T06:15Z"
+  }
+ ],
+ "pending": [
+  {
+   "id": "campus-green-low-dolly",
+   "why": "not rendered yet: campus-green-low-dolly.webm, campus-green-low-dolly.mp4, campus-green-low-dolly-poster.jpg, campus-green-low-dolly-480.webm"
+  },
+  {
+   "id": "region-board-orbit",
+   "why": "not rendered yet: region-board-orbit.webm, region-board-orbit.mp4, region-board-orbit-poster.jpg, region-board-orbit-480.webm"
+  },
+  {
+   "id": "hall-orbit",
+   "why": "not rendered yet: hall-orbit.webm, hall-orbit.mp4, hall-orbit-poster.jpg, hall-orbit-480.webm"
+  },
+  {
+   "id": "hall-interior-dolly",
+   "why": "not rendered yet: hall-interior-dolly.webm, hall-interior-dolly.mp4, hall-interior-dolly-poster.jpg, hall-interior-dolly-480.webm"
+  },
+  {
+   "id": "avatar-locker-orbit",
+   "why": "not rendered yet: avatar-locker-orbit.webm, avatar-locker-orbit.mp4, avatar-locker-orbit-poster.jpg, avatar-locker-orbit-480.webm"
+  },
+  {
+   "id": "sim-crane-seat",
+   "why": "not rendered yet: sim-crane-seat.webm, sim-crane-seat.mp4, sim-crane-seat-poster.jpg, sim-crane-seat-480.webm"
+  },
+  {
+   "id": "globe-flyover",
+   "why": "not rendered yet: globe-flyover.webm, globe-flyover.mp4, globe-flyover-poster.jpg, globe-flyover-480.webm"
+  }
+ ]
+}

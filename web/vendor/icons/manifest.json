@@ -1,0 +1,106 @@
+{
+ "package": "lucide-static",
+ "version": "1.48.0",
+ "license": "ISC",
+ "tarball": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.48.0.tgz",
+ "integrity": "sha512-ZUGgZ4rzlLfVbhN2Zi37TMrTaSpXAbWx6Y/xZxKSDLPiqxtTK7Mw2M+oBJa0gjV8p3+CWBHh48u+IC9+jKlUjA==",
+ "integrity_verified": "sha512 of the downloaded tarball matched the registry dist.integrity",
+ "icons": [
+  "arrow-right",
+  "building-2",
+  "check",
+  "chevron-right",
+  "circle-alert",
+  "globe",
+  "graduation-cap",
+  "hard-hat",
+  "info",
+  "layers",
+  "map",
+  "pause",
+  "play",
+  "route",
+  "shield-check",
+  "users",
+  "video",
+  "wrench"
+ ],
+ "files": {
+  "arrow-right.svg": {
+   "sha256": "0a3d3733645e158219bf0d3478895a53d70ab2572075bb4cb54d5f229cba5210",
+   "from": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.48.0.tgz#icons/arrow-right.svg"
+  },
+  "building-2.svg": {
+   "sha256": "d80787bfe10ab08d521a485715252bab47c0f540df085f384fe4315faad497d7",
+   "from": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.48.0.tgz#icons/building-2.svg"
+  },
+  "check.svg": {
+   "sha256": "e4bab3ed87dca8961e94a4e72ce23c17a674bebcb72bbbbe5eff4ef41532aa83",
+   "from": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.48.0.tgz#icons/check.svg"
+  },
+  "chevron-right.svg": {
+   "sha256": "62013d75bcc86b1fe6cece9251245488e9004efb239ea1ea15ce51a5534d7706",
+   "from": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.48.0.tgz#icons/chevron-right.svg"
+  },
+  "circle-alert.svg": {
+   "sha256": "ce9ed8492ca96c8ec007c56263a5fbea7b668aaa82e1aa5576c3cd11ea704c16",
+   "from": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.48.0.tgz#icons/circle-alert.svg"
+  },
+  "globe.svg": {
+   "sha256": "897bddddae3e96090a90ef5f68bfc634f8e8c6c5d4a4999d1587420e3252034f",
+   "from": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.48.0.tgz#icons/globe.svg"
+  },
+  "graduation-cap.svg": {
+   "sha256": "a9ae1601c3f87dc1e1727a80c78d5616d2132ad8f24212fde7d8836b273bac5a",
+   "from": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.48.0.tgz#icons/graduation-cap.svg"
+  },
+  "hard-hat.svg": {
+   "sha256": "f9f760bc154e12093af0f9426039823ee1f37eb3c713c5c0e8412f067e4045d6",
+   "from": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.48.0.tgz#icons/hard-hat.svg"
+  },
+  "info.svg": {
+   "sha256": "af880f5f1040830c149e539600fa62aee9d78ea231b03f9fb2eef78eaddb1d74",
+   "from": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.48.0.tgz#icons/info.svg"
+  },
+  "layers.svg": {
+   "sha256": "473868ad15d0e74599dc5c562639355b8ddb6c7ad957ae43d579d9217c35f041",
+   "from": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.48.0.tgz#icons/layers.svg"
+  },
+  "map.svg": {
+   "sha256": "6c71a62e17f42cc8ef2d5c3d4a1b8edb8e8a0b7f76a66deb5dd15315b5867d9e",
+   "from": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.48.0.tgz#icons/map.svg"
+  },
+  "pause.svg": {
+   "sha256": "51e2a1dc0be52d6c682b0d149d07c1863357f203e2a9b054e74c8597d5498fdd",
+   "from": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.48.0.tgz#icons/pause.svg"
+  },
+  "play.svg": {
+   "sha256": "5525570680b5b5706c045815a49ead15114cb4939a8bce77170cccf534c1f9a9",
+   "from": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.48.0.tgz#icons/play.svg"
+  },
+  "route.svg": {
+   "sha256": "001a83f065730db84c941f23c5ffabc3f8a7647c61bb89f92d162cd141dc0e39",
+   "from": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.48.0.tgz#icons/route.svg"
+  },
+  "shield-check.svg": {
+   "sha256": "99825a1716dbd3d0ade2d31749b46fccae12439c19ecddeac0077b6bf22f636c",
+   "from": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.48.0.tgz#icons/shield-check.svg"
+  },
+  "users.svg": {
+   "sha256": "cf785e62ec5611032358a1d9cace803efccd160169f6c911623d5cfbe63d1f54",
+   "from": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.48.0.tgz#icons/users.svg"
+  },
+  "video.svg": {
+   "sha256": "200c2539ab02bf22514b98dc8fc2c0fd70bf94b52ef6d1d9d7ce9ff9643e75af",
+   "from": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.48.0.tgz#icons/video.svg"
+  },
+  "wrench.svg": {
+   "sha256": "82203e2b522ea48381facffbb4b6168769d840581a9143019326b45b5aece000",
+   "from": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.48.0.tgz#icons/wrench.svg"
+  },
+  "LICENSE": {
+   "sha256": "b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57",
+   "from": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.48.0.tgz#LICENSE"
+  }
+ }
+}

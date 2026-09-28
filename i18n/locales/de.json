@@ -264,7 +264,25 @@
   "map.aria.plan": "Netzwerkplan: {n} Gewerkschaftshallen, gruppiert in acht Distrikte auf {c} gebauten Campus",
   "map.aria.floor": "Grundriss der Halle {name}: {n} Räume",
   "map.aria.hall": "{name} — Distrikt {district}, Raster {ref}",
-  "map.page_title": "Netzwerkplan"
+  "map.page_title": "Netzwerkplan",
+  "nav.group.play": "Spielen",
+  "nav.page.quests": "Quests und Spielhalle",
+  "nav.page.wilds": "Die Wildnis",
+  "nav.page.schools": "Schul-Lernwege",
+  "campus3d.questlog": "Questbuch",
+  "campus3d.play": "Quests, Schätze und Ostereier sind Spiel: Sie gelangen nie in einen Abschlussnachweis und bescheinigen nichts.",
+  "campus3d.locked": "Gesperrt. Schließe zuerst diese Lektionen ab:",
+  "campus3d.open": "Freigeschaltet. Jede verlangte Lektion ist auf diesem Gerät abgeschlossen.",
+  "campus3d.treasure": "Schatz gefunden",
+  "campus3d.egg": "Osterei gefunden",
+  "campus3d.hooks": "Die Quest-Engine ist hier noch nicht angebunden, daher werden Funde nur für diesen Besuch aufgelistet.",
+  "seo.desc.landing": "Warum es die Trade Craft Academy gibt: ein adaptives Trainingssystem für das Handwerk in einer begehbaren virtuellen Stadt aus Baustellen.",
+  "seo.desc.map": "Der Netzplan: jede Gewerkschaftshalle nach Bezirk gezeichnet, mit Hallen- und Modulzahlen aus dem Modulregister, nicht eingetippt.",
+  "seo.desc.languages": "Die Sprachen, in denen die Akademie angeboten wird, jeweils mit dem Übersetzungsstand, den ihr eigener Katalog festhält.",
+  "landing.video.pause": "Hintergrundvideo anhalten",
+  "landing.video.play": "Hintergrundvideo abspielen",
+  "landing.video.caption": "Hintergrund: ein Rundflug über den Campus Treasure Island, aufgenommen von der 3D-Seite dieses Builds.",
+  "nav.page.design": "Design-Baukasten"
  },
  "districts": {
   "structural": {

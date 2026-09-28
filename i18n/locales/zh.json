@@ -264,7 +264,25 @@
   "map.aria.plan": "网络规划图：{n} 个工会大厅，按八个辖区分组，分布在 {c} 个已建成校区",
   "map.aria.floor": "{name} 大厅平面图：{n} 个房间",
   "map.aria.hall": "{name} — {district} 辖区，网格 {ref}",
-  "map.page_title": "网络规划图"
+  "map.page_title": "网络规划图",
+  "nav.group.play": "游戏",
+  "nav.page.quests": "任务与游戏厅",
+  "nav.page.wilds": "荒野世界",
+  "nav.page.schools": "中小学学习路径",
+  "campus3d.questlog": "任务日志",
+  "campus3d.play": "任务、宝藏和彩蛋只是游戏：它们从不进入完成记录，也不证明任何事情。",
+  "campus3d.locked": "未解锁。请先完成这些课程：",
+  "campus3d.open": "已解锁。它要求的每节课都已在本设备上完成。",
+  "campus3d.treasure": "发现宝藏",
+  "campus3d.egg": "发现彩蛋",
+  "campus3d.hooks": "任务引擎尚未接入本页面，因此发现的内容仅在本次访问中列出。",
+  "seo.desc.landing": "Trade Craft Academy 为何存在：一套面向技术工种的自适应培训系统，置身于一座可步行探索的虚拟工地城市。",
+  "seo.desc.map": "网络平面图：按片区绘制每一座工会会馆，会馆与模块数量均读自模块登记表，而非手工键入。",
+  "seo.desc.languages": "本学院提供的各种语言，以及各自目录所记录的翻译状态。",
+  "landing.video.pause": "暂停背景视频",
+  "landing.video.play": "播放背景视频",
+  "landing.video.caption": "背景：环绕 Treasure Island 园区的一段环拍，录制自本版本的 3D 页面。",
+  "nav.page.design": "设计套件"
  },
  "districts": {
   "structural": {

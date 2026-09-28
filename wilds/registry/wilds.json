@@ -1,0 +1,853 @@
+{
+ "pack": "wilds",
+ "product": "SmartCiti.X : Trade Craft Academy",
+ "source_stamp": "f4403f6ae009e712",
+ "core_stamp": "07ffb9a376815025",
+ "provenance": {
+  "terrain": "AUTHORED",
+  "sites": "AUTHORED",
+  "caches": "AUTHORED",
+  "trails": "DERIVED",
+  "hall_names": "DERIVED",
+  "lesson_titles": "DERIVED",
+  "summit_register": "DERIVED"
+ },
+ "honesty": {
+  "landscape": "Every world is an authored landscape generated from a seed. It is not a survey, no height is a real elevation, and the region named is inspiration for its general geography only.",
+  "sites": "A work site is a schematic place to stand and think about a trade. It links to real halls and lessons in this bundle; it is not a real job site and shows no real crew.",
+  "play": "Caches, side quests and badges are play. They never enter a completion record and never certify anything.",
+  "lessons": "Lessons stay unverified general practice, exactly as the lessons pack states."
+ },
+ "off_trail_m": 120,
+ "counts": {
+  "worlds": 3,
+  "sites": 17,
+  "caches": 11,
+  "halls_linked": 29,
+  "lessons_linked": 14,
+  "area_km2": 323.0
+ },
+ "worlds": [
+  {
+   "id": "mountain",
+   "name": "High Country",
+   "inspiration": {
+    "evokes": "the general geography of the Colorado Front Range: high ridges, a tree line, snow on the tops",
+    "campus": "denver",
+    "campus_city": "Denver",
+    "standing": "inspiration only; the terrain is AUTHORED, not real elevation"
+   },
+   "seed": 81321,
+   "extent_m": 12288,
+   "chunk_m": 512,
+   "area_km2": 151.0,
+   "chunks_across": 24,
+   "sky": "#9CC3E4",
+   "fog": "#B9CFE0",
+   "biome": {
+    "model": "ridged",
+    "relief_m": 1250,
+    "feature_m": 2600,
+    "octaves": 6,
+    "water_level_m": 290,
+    "tree_line_m": 760,
+    "snow_line_m": 900,
+    "max_tree_slope": 0.85,
+    "tree_density": 0.55,
+    "deciduous_share": 0.12,
+    "rock_density": 0.35,
+    "stand_m": 900,
+    "clearing": 0.25,
+    "rim_m": 500,
+    "rim_width_m": 500,
+    "palette": {
+     "low": "#5E7A3E",
+     "mid": "#3F5A31",
+     "rock": "#7A736A",
+     "snow": "#F2F5F7",
+     "shore": "#9C8F6A"
+    }
+   },
+   "trailhead": {
+    "x": 0,
+    "z": 1800,
+    "name": "Pass trailhead",
+    "pad_m": 24
+   },
+   "sites": [
+    {
+     "id": "m-adit-portal",
+     "kind": "portal",
+     "x": -1900,
+     "z": 900,
+     "pad_m": 38,
+     "title": "Adit portal and ground support",
+     "work": "A mine adit driven into the hillside: ground support, ventilation and a portal that has to stay open.",
+     "halls": [
+      {
+       "id": "miners",
+       "name": "Underground Miners"
+      },
+      {
+       "id": "blasters",
+       "name": "Drillers & Blasters"
+      },
+      {
+       "id": "shoring",
+       "name": "Shoring & Underpinning"
+      }
+     ],
+     "lessons": [
+      {
+       "id": "shoring-read-the-ground-again",
+       "title": "Read the ground again after the rain",
+       "hall": "shoring"
+      }
+     ],
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "m-hv-corridor",
+     "kind": "tower",
+     "x": 1500,
+     "z": -600,
+     "pad_m": 34,
+     "title": "High-voltage line corridor",
+     "work": "A transmission line crossing the valley on lattice towers; stringing, clearances and fault finding.",
+     "halls": [
+      {
+       "id": "transmission",
+       "name": "Transmission Linemen"
+      },
+      {
+       "id": "line-workers",
+       "name": "Utility Line Workers"
+      }
+     ],
+     "lessons": [
+      {
+       "id": "line-workers-find-the-fault",
+       "title": "Find the fault instead of replacing things",
+       "hall": "line-workers"
+      }
+     ],
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "m-rockfall-netting",
+     "kind": "netting",
+     "x": -700,
+     "z": -1500,
+     "pad_m": 30,
+     "title": "Rockfall netting on a road cut",
+     "work": "Mesh and anchors hung on a cut slope above the road; rope access and lifted panels.",
+     "halls": [
+      {
+       "id": "high-angle",
+       "name": "High-Angle Rescue"
+      },
+      {
+       "id": "riggers",
+       "name": "Riggers & Signalpersons"
+      },
+      {
+       "id": "blasters",
+       "name": "Drillers & Blasters"
+      }
+     ],
+     "lessons": [
+      {
+       "id": "riggers-first-card",
+       "title": "Call the first lift before anybody touches the hook",
+       "hall": "riggers"
+      }
+     ],
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "m-snow-road",
+     "kind": "grader",
+     "x": 2600,
+     "z": 1400,
+     "pad_m": 40,
+     "title": "Snow-road grading on the pass",
+     "work": "Graders and plough trucks keeping a mountain road open; machines checked before they climb.",
+     "halls": [
+      {
+       "id": "operating-eng",
+       "name": "Operating Engineers"
+      },
+      {
+       "id": "teamsters",
+       "name": "Teamsters"
+      },
+      {
+       "id": "heavy-equip",
+       "name": "Heavy Equipment Technicians"
+      }
+     ],
+     "lessons": [
+      {
+       "id": "heavy-equip-listen-to-the-dash",
+       "title": "Listen to the dash before you replace anything",
+       "hall": "heavy-equip"
+      },
+      {
+       "id": "teamsters-check-the-truck-before-the-load",
+       "title": "Check the truck before you check the load",
+       "hall": "teamsters"
+      }
+     ],
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "m-wind-ridge",
+     "kind": "turbine",
+     "x": -3000,
+     "z": -2600,
+     "pad_m": 42,
+     "title": "Ridge-top turbine pad",
+     "work": "A crane pad on a ridge for a wind turbine; the lift chart decides what goes up in the wind.",
+     "halls": [
+      {
+       "id": "wind",
+       "name": "Wind Turbine Technicians"
+      },
+      {
+       "id": "crane-ops",
+       "name": "Crane Operators"
+      }
+     ],
+     "lessons": [
+      {
+       "id": "crane-ops-read-the-chart",
+       "title": "Refuse the pick the chart refuses",
+       "hall": "crane-ops"
+      }
+     ],
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "m-survey-control",
+     "kind": "survey",
+     "x": 3400,
+     "z": -3100,
+     "pad_m": 26,
+     "title": "Survey control on the high ground",
+     "work": "A control point and a drone landing square; everything below is laid out from here.",
+     "halls": [
+      {
+       "id": "surveyors",
+       "name": "Construction Surveyors"
+      },
+      {
+       "id": "survey-drone",
+       "name": "Aerial Survey Operators"
+      }
+     ],
+     "lessons": [
+      {
+       "id": "surveyors-trust-the-control",
+       "title": "Work from control, not from something near it",
+       "hall": "surveyors"
+      }
+     ],
+     "provenance": "AUTHORED"
+    }
+   ],
+   "trails": [
+    {
+     "from": "trailhead",
+     "to": "m-adit-portal",
+     "length_m": 2102
+    },
+    {
+     "from": "trailhead",
+     "to": "m-snow-road",
+     "length_m": 2631
+    },
+    {
+     "from": "m-snow-road",
+     "to": "m-hv-corridor",
+     "length_m": 2283
+    },
+    {
+     "from": "m-hv-corridor",
+     "to": "m-rockfall-netting",
+     "length_m": 2377
+    },
+    {
+     "from": "m-rockfall-netting",
+     "to": "m-wind-ridge",
+     "length_m": 2550
+    },
+    {
+     "from": "m-hv-corridor",
+     "to": "m-survey-control",
+     "length_m": 3140
+    }
+   ],
+   "trail_length_m": 15083,
+   "caches": [
+    {
+     "id": "m-cache-talus",
+     "kind": "cache",
+     "x": -2350,
+     "z": -500,
+     "riddle": "Below the portal, where the loose stone rests.",
+     "off_trail_m": 1471,
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "m-cache-tarn",
+     "kind": "cache",
+     "x": 3350,
+     "z": 250,
+     "riddle": "East of the plough road, a stone that does not match its neighbours.",
+     "off_trail_m": 1211,
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "m-hollow",
+     "kind": "hollow",
+     "x": 400,
+     "z": -3300,
+     "hollow_m": 70,
+     "hollow_depth_m": 14,
+     "riddle": "North of the towers the ground folds in on itself.",
+     "off_trail_m": 2082,
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "m-summit-register",
+     "kind": "summit",
+     "riddle": "The highest ground in the High Country keeps a book.",
+     "position": "DERIVED at runtime: the highest ground wildsTerrain(world).summit() finds from the seed",
+     "provenance": "DERIVED"
+    }
+   ],
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "forest",
+   "name": "Deep Timber",
+   "inspiration": {
+    "evokes": "the general geography of the Puget Sound lowlands: rolling timber, lakes and river flats",
+    "campus": "seattle",
+    "campus_city": "Seattle",
+    "standing": "inspiration only; the terrain is AUTHORED, not real elevation"
+   },
+   "seed": 44017,
+   "extent_m": 10240,
+   "chunk_m": 512,
+   "area_km2": 104.9,
+   "chunks_across": 20,
+   "sky": "#A8C4D2",
+   "fog": "#B7C9C9",
+   "biome": {
+    "model": "rolling",
+    "relief_m": 420,
+    "feature_m": 1500,
+    "octaves": 5,
+    "water_level_m": -45,
+    "tree_line_m": 5000,
+    "snow_line_m": 99999,
+    "max_tree_slope": 1.1,
+    "tree_density": 0.92,
+    "deciduous_share": 0.3,
+    "rock_density": 0.08,
+    "stand_m": 600,
+    "clearing": 0.12,
+    "rim_m": 260,
+    "rim_width_m": 450,
+    "palette": {
+     "low": "#4F6B35",
+     "mid": "#2F4A2A",
+     "rock": "#6E6B5E",
+     "snow": "#F2F5F7",
+     "shore": "#8B7F5A"
+    }
+   },
+   "trailhead": {
+    "x": 0,
+    "z": 0,
+    "name": "Ranger station trailhead",
+    "pad_m": 24
+   },
+   "sites": [
+    {
+     "id": "f-line-clearance",
+     "kind": "lineclear",
+     "x": 1700,
+     "z": 1100,
+     "pad_m": 30,
+     "title": "Utility line clearance",
+     "work": "A distribution line through the timber: the right-of-way cut back and the line walked for faults.",
+     "halls": [
+      {
+       "id": "line-workers",
+       "name": "Utility Line Workers"
+      },
+      {
+       "id": "grounds",
+       "name": "Grounds & Landscape"
+      }
+     ],
+     "lessons": [
+      {
+       "id": "line-workers-find-the-fault",
+       "title": "Find the fault instead of replacing things",
+       "hall": "line-workers"
+      }
+     ],
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "f-trail-bridge",
+     "kind": "bridge",
+     "x": -1400,
+     "z": 1500,
+     "pad_m": 30,
+     "title": "Trail bridge crew",
+     "work": "A timber footbridge over a creek; carpenters framing, labourers packing material in.",
+     "halls": [
+      {
+       "id": "carpenters",
+       "name": "Carpenters"
+      },
+      {
+       "id": "laborers",
+       "name": "Laborers"
+      },
+      {
+       "id": "bridge-inspect",
+       "name": "Bridge Inspection Crews"
+      }
+     ],
+     "lessons": [
+      {
+       "id": "carpenters-return-it-the-same",
+       "title": "Return it in the state you would want to find it",
+       "hall": "carpenters"
+      }
+     ],
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "f-fuel-break",
+     "kind": "fuelbreak",
+     "x": 2600,
+     "z": -1700,
+     "pad_m": 44,
+     "title": "Wildfire fuel break",
+     "work": "A strip thinned and cleared along a ridge; machines and hand crews working the same ground.",
+     "halls": [
+      {
+       "id": "grounds",
+       "name": "Grounds & Landscape"
+      },
+      {
+       "id": "operating-eng",
+       "name": "Operating Engineers"
+      },
+      {
+       "id": "laborers",
+       "name": "Laborers"
+      }
+     ],
+     "lessons": [
+      {
+       "id": "laborers-stand-where-the-cab-can-see",
+       "title": "Stand where the cab can see you",
+       "hall": "laborers"
+      }
+     ],
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "f-timber-frame",
+     "kind": "frame",
+     "x": -2200,
+     "z": -900,
+     "pad_m": 32,
+     "title": "Timber-frame shelter raising",
+     "work": "A post-and-beam shelter raised in a clearing; bents lifted and pinned.",
+     "halls": [
+      {
+       "id": "carpenters",
+       "name": "Carpenters"
+      },
+      {
+       "id": "riggers",
+       "name": "Riggers & Signalpersons"
+      }
+     ],
+     "lessons": [
+      {
+       "id": "riggers-first-card",
+       "title": "Call the first lift before anybody touches the hook",
+       "hall": "riggers"
+      }
+     ],
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "f-water-intake",
+     "kind": "intake",
+     "x": 600,
+     "z": 2900,
+     "pad_m": 28,
+     "title": "Lake intake and main",
+     "work": "A raw-water intake at the lake edge feeding a main down the valley.",
+     "halls": [
+      {
+       "id": "water-distrib",
+       "name": "Water Distribution Fitters"
+      }
+     ],
+     "lessons": [],
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "f-fire-lookout",
+     "kind": "lookout",
+     "x": -600,
+     "z": -2900,
+     "pad_m": 26,
+     "title": "Fire lookout tower",
+     "work": "A steel lookout on the highest knoll; the frame erected and the access scaffold tagged.",
+     "halls": [
+      {
+       "id": "steel-erectors",
+       "name": "Steel Erectors"
+      },
+      {
+       "id": "scaffold",
+       "name": "Scaffold Erectors"
+      }
+     ],
+     "lessons": [
+      {
+       "id": "steel-erectors-land-it-on-the-bolts",
+       "title": "Land the piece where the bolts can go in",
+       "hall": "steel-erectors"
+      },
+      {
+       "id": "scaffold-read-the-tag",
+       "title": "Believe the tag or believe nothing",
+       "hall": "scaffold"
+      }
+     ],
+     "provenance": "AUTHORED"
+    }
+   ],
+   "trails": [
+    {
+     "from": "trailhead",
+     "to": "f-line-clearance",
+     "length_m": 2025
+    },
+    {
+     "from": "trailhead",
+     "to": "f-trail-bridge",
+     "length_m": 2052
+    },
+    {
+     "from": "f-line-clearance",
+     "to": "f-water-intake",
+     "length_m": 2110
+    },
+    {
+     "from": "trailhead",
+     "to": "f-timber-frame",
+     "length_m": 2377
+    },
+    {
+     "from": "f-timber-frame",
+     "to": "f-fire-lookout",
+     "length_m": 2561
+    },
+    {
+     "from": "f-line-clearance",
+     "to": "f-fuel-break",
+     "length_m": 2941
+    }
+   ],
+   "trail_length_m": 14066,
+   "caches": [
+    {
+     "id": "f-cache-nurse-log",
+     "kind": "cache",
+     "x": -500,
+     "z": 1100,
+     "riddle": "Between the ranger station and the creek, off the path, under old timber.",
+     "off_trail_m": 385,
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "f-cache-lakeshore",
+     "kind": "cache",
+     "x": 2100,
+     "z": 2600,
+     "riddle": "Where the line cut meets the far shore.",
+     "off_trail_m": 1123,
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "f-hollow",
+     "kind": "hollow",
+     "x": 1300,
+     "z": -3200,
+     "hollow_m": 60,
+     "hollow_depth_m": 10,
+     "riddle": "A bowl the fuel crew never reached.",
+     "off_trail_m": 1924,
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "f-summit-register",
+     "kind": "summit",
+     "riddle": "Deep Timber has one highest knoll; the book is there.",
+     "position": "DERIVED at runtime: the highest ground wildsTerrain(world).summit() finds from the seed",
+     "provenance": "DERIVED"
+    }
+   ],
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "canyon",
+   "name": "Red Rock Canyon",
+   "inspiration": {
+    "evokes": "the general geography of western river canyons: stepped mesas and a river cut deep between them",
+    "campus": "denver",
+    "campus_city": "Denver",
+    "standing": "inspiration only; the terrain is AUTHORED, not real elevation"
+   },
+   "seed": 70913,
+   "extent_m": 8192,
+   "chunk_m": 512,
+   "area_km2": 67.1,
+   "chunks_across": 16,
+   "sky": "#B6CDE0",
+   "fog": "#D9C7AE",
+   "biome": {
+    "model": "canyon",
+    "relief_m": 420,
+    "feature_m": 1800,
+    "octaves": 5,
+    "terrace_m": 36,
+    "river_amp_m": 700,
+    "river_wavelength_m": 900,
+    "river_half_m": 60,
+    "canyon_half_m": 420,
+    "water_level_m": 40,
+    "tree_line_m": 5000,
+    "snow_line_m": 99999,
+    "max_tree_slope": 0.45,
+    "tree_density": 0.14,
+    "deciduous_share": 0.35,
+    "rock_density": 0.55,
+    "stand_m": 400,
+    "clearing": 0.45,
+    "rim_m": 220,
+    "rim_width_m": 400,
+    "palette": {
+     "low": "#A86B45",
+     "mid": "#8E5A3C",
+     "rock": "#B5794E",
+     "snow": "#E9D7B8",
+     "shore": "#C9B38A"
+    }
+   },
+   "trailhead": {
+    "x": 1300,
+    "z": 300,
+    "name": "Mesa trailhead",
+    "pad_m": 24
+   },
+   "sites": [
+    {
+     "id": "c-river-intake",
+     "kind": "dam",
+     "x": -625,
+     "z": -1400,
+     "pad_m": 30,
+     "title": "Run-of-river intake and penstock",
+     "work": "A low weir and an intake feeding a penstock down to a small powerhouse; divers work the screens.",
+     "halls": [
+      {
+       "id": "hydro",
+       "name": "Hydro Plant Trades"
+      },
+      {
+       "id": "divers",
+       "name": "Commercial Divers"
+      }
+     ],
+     "lessons": [],
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "c-pipeline-crossing",
+     "kind": "pipeline",
+     "x": 785,
+     "z": 1600,
+     "pad_m": 34,
+     "title": "Pipeline river crossing",
+     "work": "A pipeline crossing the canyon; tie-in digs on each side and a permit closed the way it opened.",
+     "halls": [
+      {
+       "id": "pipeline",
+       "name": "Pipeline Trades"
+      }
+     ],
+     "lessons": [
+      {
+       "id": "pipeline-close-the-permit-properly",
+       "title": "Close the permit the way it was opened",
+       "hall": "pipeline"
+      }
+     ],
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "c-valve-vault",
+     "kind": "vault",
+     "x": 1900,
+     "z": -2300,
+     "pad_m": 24,
+     "title": "Valve vault rescue drill",
+     "work": "A buried valve vault on the mesa used for a confined-space entry and retrieval drill.",
+     "halls": [
+      {
+       "id": "confined-space",
+       "name": "Confined Space Rescue"
+      },
+      {
+       "id": "water-distrib",
+       "name": "Water Distribution Fitters"
+      },
+      {
+       "id": "boilermakers",
+       "name": "Boilermakers"
+      }
+     ],
+     "lessons": [
+      {
+       "id": "boilermakers-get-them-out",
+       "title": "Put somebody inside a vessel and get them back out",
+       "hall": "boilermakers"
+      }
+     ],
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "c-mesa-solar",
+     "kind": "solar",
+     "x": -2400,
+     "z": 2200,
+     "pad_m": 50,
+     "title": "Mesa-top solar array",
+     "work": "Racking and strings laid out across a flat mesa top.",
+     "halls": [
+      {
+       "id": "solar",
+       "name": "Solar Installers"
+      },
+      {
+       "id": "electricians",
+       "name": "Electrical Workers"
+      }
+     ],
+     "lessons": [],
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "c-quarry-bench",
+     "kind": "quarry",
+     "x": -2000,
+     "z": -1900,
+     "pad_m": 40,
+     "title": "Quarry bench and blast pattern",
+     "work": "A stepped quarry face with a drill pattern marked out; everybody knows where not to stand.",
+     "halls": [
+      {
+       "id": "blasters",
+       "name": "Drillers & Blasters"
+      },
+      {
+       "id": "demolition",
+       "name": "Demolition Workers"
+      }
+     ],
+     "lessons": [
+      {
+       "id": "demolition-stand-back",
+       "title": "Know where not to stand",
+       "hall": "demolition"
+      }
+     ],
+     "provenance": "AUTHORED"
+    }
+   ],
+   "trails": [
+    {
+     "from": "trailhead",
+     "to": "c-pipeline-crossing",
+     "length_m": 1398
+    },
+    {
+     "from": "trailhead",
+     "to": "c-river-intake",
+     "length_m": 2568
+    },
+    {
+     "from": "c-river-intake",
+     "to": "c-quarry-bench",
+     "length_m": 1463
+    },
+    {
+     "from": "trailhead",
+     "to": "c-valve-vault",
+     "length_m": 2668
+    },
+    {
+     "from": "c-pipeline-crossing",
+     "to": "c-mesa-solar",
+     "length_m": 3241
+    }
+   ],
+   "trail_length_m": 11338,
+   "caches": [
+    {
+     "id": "c-cache-overhang",
+     "kind": "cache",
+     "x": -1100,
+     "z": 400,
+     "riddle": "Under the west rim, halfway between the solar mesa and the quarry.",
+     "off_trail_m": 1528,
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "c-hollow",
+     "kind": "hollow",
+     "x": 2700,
+     "z": 1200,
+     "hollow_m": 55,
+     "hollow_depth_m": 12,
+     "riddle": "East of the trailhead, a pothole the rain made.",
+     "off_trail_m": 1633,
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "c-summit-register",
+     "kind": "summit",
+     "riddle": "The highest step of the highest mesa.",
+     "position": "DERIVED at runtime: the highest ground wildsTerrain(world).summit() finds from the seed",
+     "provenance": "DERIVED"
+    }
+   ],
+   "provenance": "AUTHORED"
+  }
+ ]
+}

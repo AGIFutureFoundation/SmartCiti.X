@@ -1,9 +1,9 @@
 # The lessons page
 
 `web/trade_craft_lessons.html`, built by `web/build_lessons.py`, opens
-`lessons/registry/lessons.json`: **56 walkable lessons**,
-**256 steps** across **8 step kinds**, standing in
-56 rooms of 51 of the 111
+`lessons/registry/lessons.json`: **116 walkable lessons**,
+**476 steps** across **8 step kinds**, standing in
+116 rooms of 111 of the 111
 halls. [Lessons](Lessons.md) describes the pack; this page is about the
 surface that finally draws it.
 
@@ -19,7 +19,7 @@ the pack's own page contract puts them: the `limits` sentence renders with the l
 - **The 8 step kinds**, each with what it records or the
   registry's own reason for recording nothing.
 - **The ladder as advice.** 40 prerequisite edges over
-  56 lessons, rendered as named links with the edge reason shown
+  116 lessons, rendered as named links with the edge reason shown
   and nothing disabled. Enforcement: none. The ladder is a sensible order, not a permission system: no lesson is locked behind another and the page contract forbids the page from locking one.
 - **Every lesson in the registry's order**, with its hall linked through to
   the walkable world, its room, its `why`, its `limits` sentence and every one
@@ -39,19 +39,19 @@ The registries it reads through the lesson pack:
 
 ## The 8 step kinds
 
-145 of the 256 steps write an episode to the
-device-local training log; the other 111 write nothing at all,
+255 of the 476 steps write an episode to the
+device-local training log; the other 221 write nothing at all,
 and each silent kind says why rather than leaving the blank to be discovered.
 
 | Kind | What it is | Stage | Steps | Records | Reads |
 |---|---|---|---|---|---|
-| **walk** | walk to a room of this hall | class | 58 | records nothing — arriving somewhere is not an achievement, and a bundle that logged footsteps would be counting attendance while claiming to teach | `web/interiors.py` |
-| **placard** | read the door placard of a room and take on what it requires | class | 29 | records nothing — the placard states the room condition record; reading a record changes nothing and is nobody's score | `surfaces/registry/finishes.json` |
+| **walk** | walk to a room of this hall | class | 118 | records nothing — arriving somewhere is not an achievement, and a bundle that logged footsteps would be counting attendance while claiming to teach | `web/interiors.py` |
+| **placard** | read the door placard of a room and take on what it requires | class | 69 | records nothing — the placard states the room condition record; reading a record changes nothing and is nobody's score | `surfaces/registry/finishes.json` |
 | **station** | take a training station at its bench | class | 12 | records nothing — a station mark lands in the device-local progress record the halls already keep; the training log holds simulator, advisor, crew and walkaround episodes and this pack adds no fifth kind to it | `stations/registry/stations.json` |
-| **crib** | run the district crib check at the pegboard | class | 12 | records nothing — the crib check is graded deterministically against the crib record and kept with the progress record, not as a training episode | `tools/registry/toolcribs.json` |
+| **crib** | run the district crib check at the pegboard | class | 22 | records nothing — the crib check is graded deterministically against the crib record and kept with the progress record, not as a training episode | `tools/registry/toolcribs.json` |
 | **walkaround** | walk one pre-shift point of a seat and mark it | floor | 42 | writes a `walkaround` episode | `sims/registry/sims.json` |
 | **sim** | run one seat on the scenario its campus owns | floor | 31 | writes a `sim` episode | `sims/registry/sims.json` |
-| **advisor** | ask the advisor who stands in this room one of its fixed topics | class | 49 | writes an `advisor` episode | `agents/registry/advisors.json` |
+| **advisor** | ask the advisor who stands in this room one of its fixed topics | class | 159 | writes an `advisor` episode | `agents/registry/advisors.json` |
 | **crew** | ask one role of the standing crew one of its fixed topics while the seat runs | floor | 23 | writes a `crew` episode | `agents/registry/crews.json` |
 
 The page itself records nothing of its own: nothing about opening, reading or abandoning a lesson is recorded. The only episodes that reach the training log are the four the step kinds already declare, written by the recorder that was already writing them. The step
@@ -66,8 +66,8 @@ declared and unbuilt. `lessons/registry/lessons.json` was on it for one
 computed reason: no page generator under `web/` named the path, so nothing a
 learner opens read it. The wiki described the pack; nothing drew it.
 
-**Declared-and-unbuilt is now 8 entries, down from
-9**, and the lessons registry is the entry that left.
+**Declared-and-unbuilt is now 4 entries, down from
+5**, and the lessons registry is the entry that left.
 
 It left the way that register says entries leave — by satisfying the condition
 each entry carries in its own `drops_off_when` field: *a page generator under
@@ -77,7 +77,7 @@ backlog found it there, and the entry was gone on the next build of `rnd/`.
 **No honesty flag was deleted to close it.** In the register's own words:
 a pack that gets wired up drops off declared_unbuilt on the next build of this file, because the entry is computed from whether a renderer names its registry path - not from a note here saying it is unbuilt.
 
-The 8 registries still on that list are still on it, and this page
+The 4 registries still on that list are still on it, and this page
 claims nothing about them.
 
 ## What a lesson is not
@@ -86,8 +86,8 @@ claims nothing about them.
 - **Not a gate.** a lesson unlocks nothing. No step is locked behind another, the ladder is guidance about a sensible order rather than a permission system, and the assessment gate that schools/ declares stays exactly where it is: an unaided verification run that no lesson, station hour or simulator seat substitutes for.
 - **Not scored.** finishing a lesson changes no score and is read by no grader. Four of the eight step kinds write an episode to the existing device-local training log; the other four write nothing at all, and the registry says which is which rather than leaving it to be discovered.
 - **Not reviewed.** unverified general practice. These lessons were written to be argued with, corrected and replaced by journey-level practitioners from the halls they name - the same standing the module pack, the recovered stations and the simulator seats already carry, and for the same reason: nobody who does this work for a living has reviewed a line of it yet.
-- **Not a curriculum.** this is a set deliberately spread thin: 56 lessons across 51 halls, one in every one of the 45 halls a simulator seat is bound to, out of 111 halls and 1,221 rooms. It demonstrates the shape a lesson takes in this bundle. It is not a curriculum, it does not cover a trade, and no hall is finished because one of its rooms now has a lesson standing in it.
-- **Provenance.** AUTHORED: every lesson, every step order and every sentence in this pack was written here, by us. Nothing is generated, nothing is fetched and no model runs behind any of it.
+- **Not a curriculum.** this is a set deliberately spread thin: 116 lessons across 111 of 111 halls, one in every one of the 45 halls a simulator seat is bound to and one composed first walk in every hall without a seat that the rule could walk honestly (0 refused), out of 1,221 rooms. It demonstrates the shape a lesson takes in this bundle. It is not a curriculum, it does not cover a trade, and no hall is finished because one of its rooms now has a lesson standing in it.
+- **Provenance.** AUTHORED: every sentence in this pack was written here, by us. 56 lessons were written by hand, one hall at a time, step by step; the other 60 are composed by one rule in lessons/build.py from 6 arcs written here, one per room an advisor stands in, so their step order, title and why are marked DERIVED and carry authoring "rule" - the rule reads the hall name and focus from the roster and adds no fact of its own. Nothing is fetched and no model runs behind any of it.
 
 ---
 

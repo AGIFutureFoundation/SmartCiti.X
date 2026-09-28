@@ -986,6 +986,186 @@ LESSONS_SRC = [
  },
 ]
 
+# ------------------------------------------------- the composed lessons ---
+# The lessons above were each written by hand, one hall at a time, and they
+# stop where the seats stop: every hall with a simulator seat has one, and
+# the 60 halls with no seat, no station and no crew had none. Those halls
+# are not empty. Each has the eleven strand rooms, a condition record for
+# every one of them, a door placard wherever that record asks for PPE, a
+# district tool crib, and six room advisors who stand in six of its rooms.
+# That is enough for a short, honest walk and it is ALL such a walk may use.
+#
+# So the rest of the set is COMPOSED by one rule, written here once:
+# six ARCS, one per room an advisor stands in, each a fixed sequence of
+# step kinds with notes written here, by us. A hall with no hand-written
+# lesson is given exactly one arc, chosen by rotation over the roster
+# order so the strands spread rather than pile up, and falling through to
+# the next arc when the first cannot be walked honestly - a hazard room
+# whose record asks for no PPE has no placard to read, and a hall whose
+# own name would repeat a name the step reads would make the title a copy.
+# The rule adds no fact: the hall name and focus are READ from the roster,
+# the room, the placard, the crib and the advisor from the registries that
+# own them. What the rule decides - the order and the framing - is marked
+# DERIVED on the lesson, not AUTHORED, because it was not chosen for that
+# hall by a person; the notes and the limits are AUTHORED, because they
+# were. Every composed lesson carries `authoring: "rule"` and every
+# hand-written one `authoring: "hand"`, so a reader is never left to guess.
+# The composed tier is `fundamentals`: a first walk, and nothing more.
+COMPOSED_TIER = 'fundamentals'
+ARCS = [
+ {
+  'arc': 'safety',
+  'title': 'find out what the room is held to',
+  'why': 'This hall teaches {focus}, and none of it starts until you know what the room you are standing in asks of you and who may stop the work.',
+  'limits': 'Finishing this is not safety training, not an induction and not a permit to enter any real workspace; it is a walk through a schematic room and two scripted answers, and no hall, employer or authority has signed anything on the strength of it.',
+  'steps': [
+   ('walk', 'safety', 'Start in the room where the rules for the rest of the hall are posted, before you are anywhere near the work.'),
+   ('placard?', 'safety', 'Take on what the sign asks before you cross the threshold, and notice what it asks you to put on.'),
+   ('advisor', 'safety-steward', 'hazard', 'Ask what is actually in force here rather than assuming it matches the last hall you walked.'),
+   ('advisor', 'safety-steward', 'refuse', 'Practise the refusal while it costs nothing, because it is the part of the job people skip.'),
+  ],
+ },
+ {
+  'arc': 'tools',
+  'title': 'know the kit before you touch it',
+  'why': 'This hall teaches {focus}, and the habit worth building first is knowing what is issued, what it is for and how it comes back.',
+  'limits': 'Finishing this is not tool training and permits you to use nothing; the check is scored against a record, not against your hands, and no employer or hall accepts it as evidence of anything.',
+  'steps': [
+   ('walk', 'tools', 'Stand where things are issued and returned, since the kit a trade relies on is kept and counted here.'),
+   ('placard?', 'tools', 'Read what the room is held to before you reach for anything hanging on the wall.'),
+   ('advisor', 'crib-keeper', 'tools', 'Ask what is actually issued here before you guess from what you saw in another hall.'),
+   ('crib', 'Pick from the board by what the record says, not by what looks familiar from another trade.'),
+  ],
+ },
+ {
+  'arc': 'layout',
+  'title': 'trust a line only as far as it is proved',
+  'why': 'This hall teaches {focus}, and all of it is set out from marks somebody made, so the first question is how far those marks can be trusted.',
+  'limits': 'Finishing this is not setting-out training and qualifies nobody to mark anything; the floor here is schematic, no real reference has been proved by it, and nobody who does this work has reviewed these lines yet.',
+  'steps': [
+   ('walk', 'layout', 'Setting out starts here, and so does the habit of checking a mark before building on it.'),
+   ('placard?', 'layout', 'Read what the floor is held to before you kneel on it with a tape and a pencil.'),
+   ('advisor', 'layout-hand', 'control', 'Ask what the reference actually is before you measure anything off it.'),
+   ('advisor', 'layout-hand', 'check', 'Ask how a line is proved, then notice how often that step gets skipped when the day is short.'),
+  ],
+ },
+ {
+  'arc': 'inspection',
+  'title': 'ask what a pass would actually mean',
+  'why': 'This hall teaches {focus}, and before any of that work is judged it is worth knowing who judges it, against what, and what a pass leaves unsaid.',
+  'limits': 'Finishing this is not an inspection and not an acceptance of anybody\'s work; nothing here is a sign-off, no grader reads it, and the halls this trade belongs to have not reviewed a line of it.',
+  'steps': [
+   ('walk', 'inspection', 'Acceptance is decided at this bench, so the conversation about judging work belongs here.'),
+   ('placard?', 'inspection', 'Read what the bench is held to; judging work in bad light is its own kind of mistake.'),
+   ('advisor', 'inspector', 'score', 'Ask whether talk can move a result, and listen for what the answer says about the record.'),
+   ('advisor', 'inspector', 'cert', 'Ask it plainly, because the honest answer is the most useful thing said in this room.'),
+  ],
+ },
+ {
+  'arc': 'coordination',
+  'title': 'hand the shift over properly',
+  'why': 'This hall teaches {focus}, and most of that work passes between people, so the hand-off is worth practising before the work itself.',
+  'limits': 'Finishing this is not supervisor training and gives nobody the standing to run a crew; it is one scripted exchange in a schematic room, and no hall or employer has reviewed it.',
+  'steps': [
+   ('walk', 'coordination', 'Shift starts and hand-offs happen in this room, which is why the exchange is staged here.'),
+   ('placard?', 'coordination', 'Read what the room is held to; a briefing nobody can hear is a briefing that did not happen.'),
+   ('advisor', 'foreman', 'handoff', 'Ask what makes a hand-off good, then compare it with the last one you actually gave.'),
+   ('advisor', 'guide', 'rooms', 'Finish at the threshold by asking what else stands here, so the next walk has somewhere to go.'),
+  ],
+ },
+ {
+  'arc': 'documentation',
+  'title': 'find out where the record goes',
+  'why': 'This hall teaches {focus}, and every part of it leaves paper behind, so the first thing to learn is what gets kept, where, and what it proves.',
+  'limits': 'Finishing this is not permit or records training and issues no document of any kind; your progress stays on this device, nothing here certifies anybody, and no hall has reviewed a word of it.',
+  'steps': [
+   ('walk', 'documentation', 'Permits and as-builts are kept here, so this is where to learn what a record is and what it is not.'),
+   ('placard?', 'documentation', 'Read what the room is held to, even here, where the work is paper rather than plant.'),
+   ('advisor', 'records-clerk', 'where', 'Ask where your own progress is kept before assuming anybody else can see it.'),
+   ('advisor', 'records-clerk', 'cert', 'Ask it plainly, and hold on to the answer when a badge or a count tempts you to think otherwise.'),
+  ],
+ },
+]
+ARC_BY_ID = {a['arc']: a for a in ARCS}
+
+
+def _focus_phrase(focus):
+    # "Process piping, drainage" -> "process piping, drainage"; an acronym
+    # such as "ALARA" or "HVAC" keeps its capitals, because lowering it
+    # would misspell a word the roster owns.
+    if len(focus) > 1 and focus[0].isupper() and focus[1].islower():
+        return focus[0].lower() + focus[1:]
+    return focus
+
+
+def _arc_names(hall, arc):
+    """Every name the arc's steps would read in this hall - the same names
+    build_step puts in names_read - so the rule can refuse an arc whose
+    title or why would repeat one before build_step is asked to."""
+    names = []
+    for raw in arc['steps']:
+        k = raw[0]
+        if k in ('walk', 'placard?'):
+            names.append(ROOM_LABEL[raw[1]])
+        elif k == 'advisor':
+            adv = req(ADVISORS['advisors'], raw[1], f'arc {arc["arc"]}')
+            topic = req({t['id']: t for t in adv['topics']}, raw[2], f'arc {arc["arc"]}')
+            names += [adv['name'], topic['ask']]
+            if adv['stands_in'] in ROOM_LABEL:
+                names.append(ROOM_LABEL[adv['stands_in']])
+        elif k == 'crib':
+            district = req(CRIBS['hall_bindings'], hall, f'arc {arc["arc"]}')['district']
+            names += [req(CRIBS['cribs'], district, hall)['name'], CRIBS['drill']['name'], ROOM_LABEL['tools']]
+    return names
+
+
+def compose(hall, arc):
+    """One arc in one hall, or the named reason it cannot be walked there."""
+    conds = req(req(FINISHES['halls'], hall, hall), 'conditions', hall)
+    steps = []
+    for raw in arc['steps']:
+        if raw[0] == 'placard?':
+            strand = raw[1]
+            cond = req(conds, strand, f'{hall}.{strand}')
+            if req(cond, 'ppe', f'{hall}.{strand}'):
+                steps.append(('placard',) + raw[1:])
+            elif req(cond, 'hazards', f'{hall}.{strand}'):
+                return None, f'the {strand} room is a hazard room whose record asks for no PPE, so there is no placard to read'
+        else:
+            steps.append(raw)
+    if arc['steps'][-1][0] == 'crib':
+        req(CRIBS['hall_bindings'], hall, f'{hall}: the tools arc needs a district crib')
+    title = f'{HALL_NAME[hall]}: {arc["title"]}'
+    why = arc['why'].format(focus=_focus_phrase(HALL_FOCUS[hall]))
+    clash = [n for n in _arc_names(hall, arc) if n in title or n in why]
+    if clash:
+        return None, f'the framing would repeat {clash[0]!r}, a name the steps read'
+    if len(title) > 70:
+        return None, 'the hall name makes the title longer than a name'
+    return {'id': f'{hall}-{arc["arc"]}-first-walk', 'hall': hall, 'strand': arc['arc'],
+            'tier': COMPOSED_TIER, 'title': title, 'why': why, 'limits': arc['limits'],
+            'steps': steps, 'authoring': 'rule', 'arc': arc['arc']}, None
+
+
+_HAND_HALLS = {s['hall'] for s in LESSONS_SRC}
+for _s in LESSONS_SRC:
+    _s['authoring'] = 'hand'
+COMPOSED = []
+COMPOSE_REFUSED = {}
+_order = [h['slug'] for h in sorted(HALLS, key=lambda h: h['index']) if h['slug'] not in _HAND_HALLS]
+for _i, _hall in enumerate(_order):
+    _why_not = []
+    for _k in range(len(ARCS)):
+        _arc = ARCS[(_i + _k) % len(ARCS)]
+        _lesson, _reason = compose(_hall, _arc)
+        if _lesson:
+            COMPOSED.append(_lesson)
+            break
+        _why_not.append(f'{_arc["arc"]}: {_reason}')
+    else:
+        COMPOSE_REFUSED[_hall] = _why_not
+LESSONS_SRC = LESSONS_SRC + COMPOSED
+
 # ------------------------------------------------------------- the ladder ---
 # A prerequisite edge names a reason from a closed set, and each reason is
 # CHECKED against the registries below rather than taken on trust.
@@ -1046,7 +1226,8 @@ MAX_HALL_SHARE = 0.10
 
 # ------------------------------------------------------------ the honesty ---
 HONESTY = {
-    'status': 'AUTHORED: every lesson, every step order and every sentence in this pack was written here, by us. Nothing is generated, nothing is fetched and no model runs behind any of it. The word AI-SYNTHESIZED belongs to orbis/ and describes generated video; it would be a false label for a hand-written walk through a building.',
+    # {hand}, {rule} and {arcs} are filled in below from the counts the build computes
+    'status': 'AUTHORED: every sentence in this pack was written here, by us. {hand} lessons were written by hand, one hall at a time, step by step; the other {rule} are composed by one rule in lessons/build.py from {arcs} arcs written here, one per room an advisor stands in, so their step order, title and why are marked DERIVED and carry authoring "rule" - the rule reads the hall name and focus from the roster and adds no fact of its own. Nothing is fetched and no model runs behind any of it. The word AI-SYNTHESIZED belongs to orbis/ and describes generated video; it would be a false label for a hand-written walk through a building.',
     'content': 'unverified general practice. These lessons were written to be argued with, corrected and replaced by journey-level practitioners from the halls they name - the same standing the module pack, the recovered stations and the simulator seats already carry, and for the same reason: nobody who does this work for a living has reviewed a line of it yet.',
     'not_certification': 'no lesson here certifies anybody, qualifies anybody or permits anybody to do anything. Completing every lesson in this registry would leave a learner with exactly the standing they started with. Where a trade has a real ticket, that ticket is issued by a jurisdiction, an employer or a hall, and this bundle is none of those and speaks for none of them.',
     'not_a_gate': 'a lesson unlocks nothing. No step is locked behind another, the ladder is guidance about a sensible order rather than a permission system, and the assessment gate that schools/ declares stays exactly where it is: an unaided verification run that no lesson, station hour or simulator seat substitutes for.',
@@ -1055,7 +1236,7 @@ HONESTY = {
     'no_jurisdiction': 'nothing here cites a standard, a code or an authority, and nothing here speaks for one. Where a step says what a crew would do, that is unverified general practice and not an instruction from anybody with the standing to give one.',
     # {lessons}, {halls} and {seat_bound} are filled in below from the counts
     # the build computes; a typed figure here would be a second copy.
-    'scope': 'this is a set deliberately spread thin: {lessons} lessons across {halls} halls, one in every one of the {seat_bound} halls a simulator seat is bound to, out of 111 halls and 1,221 rooms. It demonstrates the shape a lesson takes in this bundle. It is not a curriculum, it does not cover a trade, and no hall is finished because one of its rooms now has a lesson standing in it.',
+    'scope': 'this is a set deliberately spread thin: {lessons} lessons across {halls} of {halls_total} halls, one in every one of the {seat_bound} halls a simulator seat is bound to and one composed first walk in every hall without a seat that the rule could walk honestly ({refused} refused), out of 1,221 rooms. It demonstrates the shape a lesson takes in this bundle. It is not a curriculum, it does not cover a trade, and no hall is finished because one of its rooms now has a lesson standing in it.',
 }
 
 PAGE_CONTRACT = {
@@ -1261,10 +1442,19 @@ for src in LESSONS_SRC:
         'records': sorted(set(written)),
         'stages': sorted({st['stage'] for st in steps}),
         'reads': sorted({st['reads'] for st in steps}),
-        'provenance': {'steps': 'AUTHORED', 'order': 'AUTHORED',
-                       'title': 'AUTHORED', 'why': 'AUTHORED',
-                       'limits': 'AUTHORED', 'names': 'READ'},
+        'authoring': src['authoring'],
+        # a composed lesson's order and framing were chosen by the rule
+        # above, not by a person for that hall, so they say DERIVED
+        'provenance': ({'steps': 'AUTHORED', 'order': 'AUTHORED',
+                        'title': 'AUTHORED', 'why': 'AUTHORED',
+                        'limits': 'AUTHORED', 'names': 'READ'}
+                       if src['authoring'] == 'hand' else
+                       {'steps': 'AUTHORED', 'order': 'DERIVED',
+                        'title': 'DERIVED', 'why': 'DERIVED',
+                        'limits': 'AUTHORED', 'names': 'READ'}),
     }
+    if src['authoring'] == 'rule':
+        LESSONS[lid]['arc'] = src['arc']
 
 # -- the prose. One sentence of `why`, a real `limits`, and no note that
 # -- repeats a name the registries already own.
@@ -1380,7 +1570,26 @@ assert not HAZARD_GAPS, 'hazard rooms walked without a placard step: ' + ' | '.j
 
 # the scope sentence carries the figures the build just computed, and nothing typed
 HONESTY['scope'] = HONESTY['scope'].format(
-    lessons=len(LESSONS), halls=len(HALLS_COVERED), seat_bound=len(SEAT_BOUND_HALLS))
+    lessons=len(LESSONS), halls=len(HALLS_COVERED), halls_total=len(HALLS),
+    seat_bound=len(SEAT_BOUND_HALLS), refused=len(COMPOSE_REFUSED))
+HAND_COUNT = sum(1 for L in LESSONS.values() if L['authoring'] == 'hand')
+RULE_COUNT = sum(1 for L in LESSONS.values() if L['authoring'] == 'rule')
+HONESTY['status'] = HONESTY['status'].format(hand=HAND_COUNT, rule=RULE_COUNT, arcs=len(ARCS))
+# -- every hall is walked, or the rule said by name why it could not be.
+# -- A hall silently missing is the gap this rule exists to close.
+_unwalked = [h['slug'] for h in HALLS
+             if h['slug'] not in _per_hall and h['slug'] not in COMPOSE_REFUSED]
+assert not _unwalked, 'halls with no lesson and no stated reason: ' + ', '.join(_unwalked)
+for _h, _why in COMPOSE_REFUSED.items():
+    assert len(_why) == len(ARCS), f'{_h}: refused without trying every arc'
+# -- a composed lesson is one per hall, never beside a hand-written one,
+# -- and it stands only on the step kinds a hall with no seat can support
+for L in LESSONS.values():
+    if L['authoring'] == 'rule':
+        assert _per_hall[L['hall']] == 1, f'{L["id"]}: a composed lesson shares its hall'
+        assert L['tier'] == COMPOSED_TIER, f'{L["id"]}: a composed lesson is a first walk'
+        assert {st['kind'] for st in L['steps']} <= {'walk', 'placard', 'crib', 'advisor'}, \
+            f'{L["id"]}: a composed lesson uses a step kind its hall cannot support'
 # and every episode kind training/ declares is actually exercised
 _kinds_used = sorted({k for L in LESSONS.values() for k in L['records']})
 assert _kinds_used == sorted(EPISODE_KINDS), \
@@ -1523,6 +1732,10 @@ doc = {
     'honesty': HONESTY,
     'counts': {
         'lessons': len(LESSONS),
+        'lessons_by_hand': HAND_COUNT,
+        'lessons_by_rule': RULE_COUNT,
+        'arcs': len(ARCS),
+        'halls_refused_by_rule': len(COMPOSE_REFUSED),
         'steps': len(ALL_STEPS),
         'step_kinds': len(STEP_KINDS),
         'steps_by_kind': {k: by_kind[k] for k in sorted(by_kind)},
@@ -1574,10 +1787,19 @@ doc = {
         'max_hall_share': TOP_SHARE,
         'max_hall_share_ceiling': MAX_HALL_SHARE,
         'seat_bound_halls': SEAT_BOUND_HALLS,
+        'composed_halls': sorted(L['hall'] for L in LESSONS.values() if L['authoring'] == 'rule'),
+        'refused_by_rule': COMPOSE_REFUSED,
         'note': 'breadth over the trades rather than depth in one: the ceiling is declared, computed and failed against, and all 11 strands must be stood in or the build stops.',
     },
     'step_kinds': STEP_KINDS,
     'off_room_places': OFF_ROOM_PLACES,
+    'composition': {
+        'rule': 'a hall with no hand-written lesson gets exactly one arc, chosen by rotation over the roster order and falling through to the next arc when the first cannot be walked honestly there; the arc fixes the step kinds, the order and the notes, and the hall name, focus, rooms, placard, crib and advisors are read from the registries that own them.',
+        'tier': COMPOSED_TIER,
+        'arcs': {a['arc']: {'title': a['title'], 'kinds': [r[0].rstrip('?') for r in a['steps']],
+                            'placard_if_the_record_asks_for_ppe': True} for a in ARCS},
+        'provenance': 'steps and limits AUTHORED (written here once per arc); order, title and why DERIVED (chosen by the rule, not by a person for that hall); names READ.',
+    },
     'plugs_into': {
         'loop': SCHOOLS['model']['loop'],
         'stages_used': _stages_used,

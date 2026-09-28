@@ -15,6 +15,7 @@ import sys
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+from seo import apply_seo  # noqa: E402  head tags only
 from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 
 
@@ -100,6 +101,8 @@ tabs = ''.join(
 sections = '\n'.join(section(code) for code in ORDER)
 
 NAV = nav_html('web/trade_craft_languages.html', nav_labels('en'))
+from questkit import QUEST_CSS, quest_js, page_hooks  # noqa: E402  quests: egg hooks only
+QUEST_TAIL = '<style>' + QUEST_CSS + '</style>\n' + page_hooks('web/trade_craft_languages.html') + quest_js('page:web/trade_craft_languages.html')
 
 page = f'''<!doctype html>
 <html lang="en">
@@ -170,9 +173,11 @@ function show(loc) {{
 for (const t of tabs) t.addEventListener('click', () => show(t.dataset.loc));
 show((navigator.language || 'en').slice(0, 2).match(/^({"|".join(ORDER)})$/) ? (navigator.language || 'en').slice(0, 2) : 'en');
 </script>
-</div></body>
+</div>{QUEST_TAIL}</body>
 </html>
 '''
 
 out = HERE / 'trade_craft_languages.html'
+page = apply_seo(page, 'web/trade_craft_languages.html', 'SmartCiti.X : Trade Craft Academy \u2014 languages',
+    locales['en']['strings']['seo.desc.languages'], 'page')
 emit(out, page, f"{len(ORDER)} locales | {L['halls']} halls")

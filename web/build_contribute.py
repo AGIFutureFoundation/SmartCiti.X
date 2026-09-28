@@ -37,6 +37,7 @@ import sys
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+from seo import apply_seo  # noqa: E402  head tags only
 from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 
 
@@ -551,6 +552,8 @@ READS = ''.join(f'<li><code>{E(p)}</code></li>' for p in (CONTRIB_PATH, TRAINING
 READS += f'<li><code>{E(PROTOCOLS_PATH)}</code> — {E(PROTOCOLS_STATE)}</li>'
 
 NAV = nav_html('web/trade_craft_contribute.html', nav_labels('en'))
+from questkit import QUEST_CSS, quest_js, page_hooks  # noqa: E402  quests: egg hooks only
+QUEST_TAIL = '<style>' + QUEST_CSS + '</style>\n' + page_hooks('web/trade_craft_contribute.html') + quest_js('page:web/trade_craft_contribute.html')
 
 page = f'''<!doctype html>
 <html lang="en">
@@ -718,10 +721,12 @@ footer.page a{{margin-inline-end:10px}}
 {CONTRIB_JS}</script>
 <script type="module">
 {SCRIPT}</script>
-</body>
+{QUEST_TAIL}</body>
 </html>
 '''
 
 out = HERE / 'trade_craft_contribute.html'
+page = apply_seo(page, 'web/trade_craft_contribute.html', 'SmartCiti.X : Trade Craft Academy \u2014 contribute training data',
+    'How to contribute training data: the scopes, episode kinds and rules a contribution is held to, read from the contribution registry.', 'page')
 emit(out, page, f'{len(SCOPES)} scopes, {len(FIELDS_BY_KIND)} episode kinds, {len(DESTINATIONS)} destinations '
                 f'({PROTOCOLS_STATE}), uploads nothing')

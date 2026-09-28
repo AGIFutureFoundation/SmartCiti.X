@@ -14,6 +14,10 @@ cp web/*.html _site/web/
 cp -r web/vendor/. _site/web/vendor/
 cp console/trade_craft_console.html _site/console/
 cp -r wiki _site/wiki
+# The front door's background footage and poster (web/herovideo.py), and the
+# search-engine files web/build_seo.py writes at the root.
+cp -r web/media _site/web/media
+cp sitemap.xml robots.txt _site/
 
 python3 - <<'PY'
 import pathlib, re, sys, urllib.parse

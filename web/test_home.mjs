@@ -44,7 +44,7 @@
  * and watch the check that covers that fault fail by name. A check nobody
  * has watched fail is not a check.
  */
-import { readFileSync } from 'node:fs';
+import { readFileSync, statSync, existsSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
 import { pathToFileURL, fileURLToPath } from 'node:url';
 
@@ -775,6 +775,120 @@ const escLikeHome = (t) => String(t).split(/\s+/).join(' ').trim()
     [`index=${/name="viewport"/.test(home)} landing=${/name="viewport"/.test(landing)}`]);
 }
 
+{
+  /* The hero's background footage (web/herovideo.py). Decoration that must
+     never cost a reader anything: muted, hidden from assistive tech, sources
+     attached only after first paint (data-src, no src), WebM first for the
+     browsers that decode it and MP4 second, each within budget, a poster
+     that exists, a visible Pause/Play control, and one line saying where
+     the footage came from. */
+  const hdr = home.slice(home.indexOf('<header class="top"'), home.indexOf('</header>'));
+  const vids = [...home.matchAll(/<video\b([^>]*)>([\s\S]*?)<\/video>/g)];
+  const v = vids.length === 1 ? vids[0] : null;
+  const attrs = v ? v[1] : '';
+  const need = ['autoplay', 'muted', 'loop', 'playsinline', 'preload="metadata"', 'aria-hidden="true"'];
+  ok('[shipped] index.html: exactly one <video>, inside the hero, muted, looping, inline, preload=metadata, '
+    + 'aria-hidden, with a poster',
+    v !== null && hdr.includes('<video') && need.every((a) => new RegExp(`(^|\\s)${a}(\\s|$)`).test(attrs))
+      && /\sposter="[^"]+"/.test(attrs),
+    [attrs.slice(0, 200)]);
+  const srcs = v ? [...v[2].matchAll(/<source\b([^>]*)>/g)].map((m) => m[1]) : [];
+  const ds = srcs.map((a) => (a.match(/data-src="([^"]+)"/) || [])[1]);
+  const types = srcs.map((a) => (a.match(/type="([^"]+)"/) || [])[1]);
+  const MAXB = 3 * 1024 * 1024;
+  const sizes = ds.map((f) => { try { return statSync(join(ROOT, f)).size; } catch { return -1; } });
+  ok('[shipped] index.html: the footage is WebM first and MP4 second, each a file in the bundle of at most '
+    + '3 MB, and neither is attached until script runs (data-src, no src)',
+    srcs.length === 2 && types[0] === 'video/webm' && types[1] === 'video/mp4'
+      && /\.webm$/.test(ds[0]) && /\.mp4$/.test(ds[1])
+      && sizes.every((b) => b > 0 && b <= MAXB) && srcs.every((a) => !/(^|\s)src="/.test(a)),
+    [JSON.stringify({ types, ds, sizes })]);
+  const poster = (attrs.match(/\sposter="([^"]+)"/) || [])[1];
+  ok('[shipped] index.html: the poster is a JPEG in the bundle',
+    !!poster && /\.jpe?g$/.test(poster) && existsSync(join(ROOT, poster)), [poster]);
+  const js = (home.match(/<script id="hv-js">([\s\S]*?)<\/script>/) || [])[1] || '';
+  ok('[shipped] index.html: the footage script declines to autoplay under prefers-reduced-motion, under '
+    + 'Save-Data and on a small screen, and starts only after the load event',
+    /matchMedia\('\(prefers-reduced-motion: reduce\)'\)/.test(js) && /navigator\.connection\.saveData/.test(js)
+      && /matchMedia\('\(max-width: \d+px\)'\)/.test(js) && /addEventListener\('load'/.test(js)
+      && /removeAttribute\('autoplay'\)/.test(js));
+  const btn = hdr.match(/<button\b[^>]*data-hero-video-toggle[^>]*>([\s\S]*?)<\/button>/);
+  ok('[shipped] index.html: a visible Pause/Play button for the footage (WCAG 2.2.2), with aria-pressed, '
+    + 'and a caption saying the footage is recorded from this build',
+    !!btn && /aria-pressed="(true|false)"/.test(btn[0]) && /Pause background video/.test(btn[1])
+      && /<p class="hv-cap">[^<]*recorded from this build/.test(hdr));
+  ok('[shipped] index.html: the footage sits absolutely behind the hero (no layout shift) under a scrim',
+    /\.hv\{position:absolute;inset:0;z-index:-1/.test(home) && /\.hv-scrim\{position:absolute;inset:0;background:rgba\(/.test(home));
+  ok('[shipped] index.html: a <main id="main"> holds the page\'s one <h1>, the target for skip links',
+    /<main id="main" tabindex="-1">[\s\S]*<h1>[\s\S]*<\/main>/.test(home) && (home.match(/<main\b/g) || []).length === 1);
+}
+
+{
+  /* The site search (web/sitesearch.py): its index is built from the same
+     registries this suite reads, so it is recounted here - every nav page,
+     every lesson, every hall, every seat - and every URL in it must land on
+     a page in the bundle using a link scheme a page already honours. */
+  const m = home.match(/<script type="application\/json" id="ss-index" data-prefix="([^"]*)">([\s\S]*?)<\/script>/);
+  let idx = null;
+  try { idx = m ? JSON.parse(m[2]) : null; } catch { idx = null; }
+  const by = (t) => (idx || []).filter((e) => e.t === t);
+  const hallsReg = JSON.parse(readFileSync(join(ROOT, 'pack/registry/halls.json'), 'utf8')).halls;
+  const simsReg = JSON.parse(readFileSync(join(ROOT, 'sims/registry/sims.json'), 'utf8')).sims;
+  const navSrc = readFileSync(join(ROOT, 'web/sitenav.py'), 'utf8');
+  const navPages = ['index.html', ...[...navSrc.slice(navSrc.indexOf('GROUPS = ['), navSrc.indexOf('# Every page: path'))
+    .matchAll(/\('(web\/[^']+\.html)', 'nav\.page\./g)].map((x) => x[1])];
+  ok(`[shipped] index.html: the search index parses and holds every nav page (${navPages.length}), `
+    + `every lesson (${Object.keys(LESSONS).length}), every hall (${hallsReg.length}) and every seat `
+    + `(${Object.keys(simsReg).length}), recounted from the registries`,
+    idx !== null && m[1] === ''
+      && JSON.stringify(by('page').map((e) => e.u)) === JSON.stringify(navPages)
+      && by('lesson').length === Object.keys(LESSONS).length
+      && by('hall').length === hallsReg.length && by('seat').length === Object.keys(simsReg).length,
+    idx ? [`pages ${by('page').length} lessons ${by('lesson').length} halls ${by('hall').length} seats ${by('seat').length}`] : ['no index']);
+  const badU = (idx || []).filter((e) => !existsSync(join(ROOT, e.u.split('?')[0]))
+    || !(/^[a-z0-9_/.-]+\.html$/.test(e.u) || /^web\/trade_craft_lessons\.html\?hall=[a-z0-9-]+$/.test(e.u)
+      || /^web\/trade_craft_3d\.html\?(sim|hall)=[a-z0-9-]+$/.test(e.u)));
+  ok('[shipped] index.html: every search result links to a file in the bundle, into the lessons page only '
+    + 'by ?hall= and into the 3D page only by ?sim= or ?hall=', idx !== null && badU.length === 0,
+    badU.slice(0, 4).map((e) => e.u));
+  const lessonsWrong = Object.values(LESSONS).filter((l) => !by('lesson').some((e) => e.n === l.title
+    && e.u === `web/trade_craft_lessons.html?hall=${l.hall}`));
+  ok('[shipped] index.html: each lesson in the search opens its own hall\'s course', lessonsWrong.length === 0,
+    lessonsWrong.slice(0, 3).map((l) => l.id));
+  const qPath = join(ROOT, 'quests/registry/quests.json');
+  const hidden = existsSync(qPath) ? JSON.parse(readFileSync(qPath, 'utf8')).quests
+    .filter((q) => q.kind === 'egg' || q.kind === 'treasure').map((q) => q.title) : [];
+  ok('[shipped] index.html: the search lists no treasure or easter egg - those are for finding',
+    idx !== null && by('quest').every((e) => !hidden.includes(e.n)), by('quest').filter((e) => hidden.includes(e.n)).map((e) => e.n));
+  const openBtn = home.match(/<button\b[^>]*data-search-open[^>]*>/);
+  ok('[shipped] index.html: a visible search button (Ctrl/Cmd+K advertised) opens a labelled dialog whose '
+    + 'input is a combobox driving a listbox, with a polite live status',
+    !!openBtn && /aria-keyshortcuts="Control\+K Meta\+K"/.test(openBtn[0]) && /aria-controls="ss-dlg"/.test(openBtn[0])
+      && /<dialog id="ss-dlg"[^>]*aria-labelledby="ss-title"/.test(home)
+      && /<label class="ss-lbl" for="ss-q">/.test(home)
+      && /<input id="ss-q"[^>]*role="combobox"[^>]*aria-controls="ss-list"/.test(home)
+      && /<ul id="ss-list"[^>]*role="listbox"/.test(home) && /role="status" aria-live="polite"/.test(home));
+}
+
+{
+  /* The programme page's hero carries the same footage (web/herovideo.py),
+     its button words and caption from the locale catalog. */
+  const landing = readFileSync(join(HERE, 'trade_craft_landing.html'), 'utf8');
+  const en = JSON.parse(readFileSync(join(ROOT, 'i18n/locales/en.json'), 'utf8')).strings;
+  const v = landing.match(/<video\b([^>]*)>([\s\S]*?)<\/video>/);
+  const ds = v ? [...v[2].matchAll(/<source data-src="([^"]+)" type="([^"]+)">/g)].map((m) => [m[1], m[2]]) : [];
+  const poster = v ? (v[1].match(/\sposter="([^"]+)"/) || [])[1] : null;
+  const esc = (t) => t.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/'/g, '&#x27;');
+  ok('[shipped] trade_craft_landing.html: the hero carries the footage (WebM then MP4, files beside the page, a '
+    + 'poster), a Pause/Play button whose words are the catalog\'s landing.video.* strings, and the caption',
+    !!v && /muted/.test(v[1]) && /aria-hidden="true"/.test(v[1]) && ds.length === 2 && ds[0][1] === 'video/webm'
+      && ds[1][1] === 'video/mp4' && ds.every(([f]) => existsSync(join(HERE, f))) && !!poster && existsSync(join(HERE, poster))
+      && landing.includes(`data-label-pause="${esc(en['landing.video.pause'])}" data-label-play="${esc(en['landing.video.play'])}"`)
+      && landing.includes(`<p class="hv-cap">${esc(en['landing.video.caption'])}</p>`)
+      && /<script id="hv-js">/.test(landing),
+    [JSON.stringify({ ds, poster })]);
+}
+
 /* ============================================================ [browser] === */
 if (WANT_BROWSER) {
   let chromium;
@@ -993,6 +1107,144 @@ if (WANT_BROWSER) {
       ok(`[browser] the site header on every page (${pages.length}), light and dark, 1440 and 390 px: `
         + 'every label at WCAG AA against the page\'s own surface and every link at least 24px tall',
         wrong.length === 0, wrong.slice(0, 8));
+    }
+
+    {
+      /* The hero footage and the search palette, driven the way a visitor
+         drives them. Contrast is MEASURED: for frames sampled across the
+         clip, the frame is drawn the way object-fit:cover draws it, the
+         scrim is composited over every pixel under each hero text element
+         that has no background of its own, and the element's text colour
+         must reach WCAG AA against the worst of those pixels. */
+      const hv = [];
+      const measure = async (scheme) => {
+        const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, colorScheme: scheme });
+        const pg = await ctx.newPage();
+        pg.on('pageerror', (e) => errs.push('pageerror: ' + e.message));
+        await pg.goto(`${ORIGIN}/index.html`, { waitUntil: 'load' });
+        await pg.waitForFunction(() => { const v = document.querySelector('.hv-video'); return v && v.readyState >= 2 && v.currentTime > 0.3; }, null, { timeout: 20000 }).catch(() => {});
+        const r = await pg.evaluate(async () => {
+          const v = document.querySelector('.hv-video');
+          const host = document.querySelector('[data-hero-host]');
+          const out = { playing: !v.paused && v.currentTime > 0.3, src: v.currentSrc, worst: [], frames: 0 };
+          v.pause();
+          const rgb = (c) => c.match(/[\d.]+/g).map(Number);
+          const lin = (x) => { x /= 255; return x <= 0.04045 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4; };
+          const L = (r, g, b) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+          const scrim = rgb(getComputedStyle(document.querySelector('.hv-scrim')).backgroundColor);
+          const a = scrim.length > 3 ? scrim[3] : 1;
+          const hr = host.getBoundingClientRect();
+          const cv = document.createElement('canvas'); cv.width = Math.round(hr.width); cv.height = Math.round(hr.height);
+          const g = cv.getContext('2d', { willReadFrequently: true });
+          const scale = Math.max(hr.width / v.videoWidth, hr.height / v.videoHeight);
+          const dw = v.videoWidth * scale; const dh = v.videoHeight * scale;
+          const opaque = (el) => { for (let e = el; e && e !== host; e = e.parentElement) { const b = getComputedStyle(e).backgroundColor; if (b !== 'rgba(0, 0, 0, 0)' && b !== 'transparent') return true; } return false; };
+          const els = [...host.querySelectorAll('.hero-copy *')].filter((e) => [...e.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())
+            && !opaque(e) && e.getBoundingClientRect().width > 0);
+          const worst = new Map();
+          for (const f of [0.05, 0.25, 0.45, 0.65, 0.85]) {
+            v.currentTime = f * v.duration;
+            await new Promise((res) => v.addEventListener('seeked', res, { once: true }));
+            g.drawImage(v, (hr.width - dw) / 2, (hr.height - dh) / 2, dw, dh);
+            out.frames++;
+            for (const el of els) {
+              const er = el.getBoundingClientRect();
+              const x = Math.max(0, Math.floor(er.left - hr.left)); const y = Math.max(0, Math.floor(er.top - hr.top));
+              const w = Math.min(cv.width - x, Math.ceil(er.width)); const h = Math.min(cv.height - y, Math.ceil(er.height));
+              if (w <= 0 || h <= 0) continue;
+              const d = g.getImageData(x, y, w, h).data;
+              let lo = 1; let hi = 0;
+              for (let i = 0; i < d.length; i += 4) {
+                const l = L(a * scrim[0] + (1 - a) * d[i], a * scrim[1] + (1 - a) * d[i + 1], a * scrim[2] + (1 - a) * d[i + 2]);
+                if (l < lo) lo = l; if (l > hi) hi = l;
+              }
+              const tc = rgb(getComputedStyle(el).color); const lt = L(tc[0], tc[1], tc[2]);
+              const cr = (p, q) => (Math.max(p, q) + 0.05) / (Math.min(p, q) + 0.05);
+              const ratio = Math.min(cr(lt, lo), cr(lt, hi));
+              const cs = getComputedStyle(el); const px = parseFloat(cs.fontSize); const bold = +cs.fontWeight >= 700;
+              const need = px >= 24 || (bold && px >= 18.66) ? 3 : 4.5;
+              const key = el.tagName.toLowerCase() + '.' + (el.className || '') + ' "' + el.textContent.trim().slice(0, 24) + '"';
+              const prev = worst.get(key);
+              if (!prev || ratio < prev.ratio) worst.set(key, { ratio: +ratio.toFixed(2), need });
+            }
+          }
+          out.worst = [...worst].map(([k, w]) => ({ k, ...w }));
+          return out;
+        });
+        await ctx.close();
+        return r;
+      };
+      const dark = await measure('dark');
+      const light = await measure('light');
+      const fails = [...dark.worst.map((w) => ({ ...w, s: 'dark' })), ...light.worst.map((w) => ({ ...w, s: 'light' }))].filter((w) => w.ratio < w.need);
+      const minOf = (r) => Math.min(...r.worst.map((w) => w.ratio));
+      ok(`[browser] over ${dark.frames} sampled frames of the footage, light and dark, every hero text without its own `
+        + `background holds WCAG AA against the worst scrimmed pixel under it (lowest: dark ${minOf(dark)}, light ${minOf(light)})`,
+        dark.frames >= 5 && light.frames >= 5 && dark.worst.length > 5 && fails.length === 0,
+        fails.slice(0, 6).map((f) => `${f.s} ${f.k} ${f.ratio} < ${f.need}`));
+      ok('[browser] at 1440 px with motion welcome the footage plays after load, from the WebM source',
+        dark.playing && /\.webm$/.test(dark.src), [JSON.stringify({ playing: dark.playing, src: dark.src })]);
+
+      const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
+      const pg = await ctx.newPage();
+      await pg.goto(`${ORIGIN}/index.html`, { waitUntil: 'load' });
+      await pg.waitForTimeout(1500);
+      const rm = await pg.evaluate(() => { const v = document.querySelector('.hv-video'); const b = document.querySelector('[data-hero-video-toggle]');
+        return { paused: v.paused, src: v.currentSrc, hidden: b.hidden, pressed: b.getAttribute('aria-pressed'), label: b.textContent.trim() }; });
+      ok('[browser] under prefers-reduced-motion the footage is never fetched or started: poster only, and the '
+        + 'visible button offers Play', rm.paused && rm.src === '' && !rm.hidden && rm.pressed === 'true'
+          && /Play background video/.test(rm.label), [JSON.stringify(rm)]);
+      await ctx.close();
+
+      const c2 = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+      const p2 = await c2.newPage();
+      await p2.goto(`${ORIGIN}/index.html`, { waitUntil: 'load' });
+      const h1a = await p2.$eval('h1', (e) => JSON.stringify(e.getBoundingClientRect()));
+      await p2.waitForFunction(() => { const v = document.querySelector('.hv-video'); return v && !v.paused && v.currentTime > 0.3; }, null, { timeout: 20000 }).catch(() => {});
+      const h1b = await p2.$eval('h1', (e) => JSON.stringify(e.getBoundingClientRect()));
+      await p2.click('[data-hero-video-toggle]');
+      const afterPause = await p2.evaluate(() => { const v = document.querySelector('.hv-video'); const b = document.querySelector('[data-hero-video-toggle]');
+        const t = v.currentTime; return { paused: v.paused, pressed: b.getAttribute('aria-pressed'), label: b.textContent.trim(), t }; });
+      await p2.waitForTimeout(600);
+      const t2 = await p2.evaluate(() => document.querySelector('.hv-video').currentTime);
+      ok('[browser] the Pause button stops the footage and says Play; starting the footage moved nothing on the page',
+        afterPause.paused && afterPause.pressed === 'true' && /Play background video/.test(afterPause.label)
+          && Math.abs(t2 - afterPause.t) < 0.01 && h1a === h1b, [JSON.stringify(afterPause), h1a === h1b ? 'no shift' : `${h1a} -> ${h1b}`]);
+
+      await p2.keyboard.press('Control+k');
+      const open1 = await p2.evaluate(() => ({ open: document.getElementById('ss-dlg').open, focus: document.activeElement && document.activeElement.id }));
+      await p2.keyboard.type('crane');
+      await p2.waitForTimeout(100);
+      const res = await p2.evaluate(() => ({ n: document.querySelectorAll('#ss-list [role="option"]').length,
+        act: document.getElementById('ss-q').getAttribute('aria-activedescendant'),
+        sel: document.querySelectorAll('#ss-list [aria-selected="true"]').length,
+        first: (document.querySelector('#ss-list [role="option"]') || { textContent: '' }).textContent,
+        status: document.getElementById('ss-status').textContent }));
+      await p2.keyboard.press('ArrowDown');
+      const act2 = await p2.evaluate(() => document.getElementById('ss-q').getAttribute('aria-activedescendant'));
+      await p2.keyboard.press('Escape');
+      const closed = await p2.evaluate(() => ({ open: document.getElementById('ss-dlg').open }));
+      ok('[browser] Ctrl+K opens the search with focus in the box; typing "crane" lists matches with one active '
+        + 'option announced in the status; ArrowDown moves it; Esc closes',
+        open1.open && open1.focus === 'ss-q' && res.n > 0 && res.act === 'ss-o0' && res.sel === 1
+          && /crane/i.test(res.first) && /result/.test(res.status) && act2 === 'ss-o1' && !closed.open,
+        [JSON.stringify({ open1, res, act2, closed })]);
+      await p2.click('[data-search-open]');
+      await p2.keyboard.type('verify a record');
+      await p2.waitForTimeout(100);
+      const [nav] = await Promise.all([p2.waitForNavigation({ waitUntil: 'load' }), p2.keyboard.press('Enter')]);
+      ok('[browser] the visible search button opens it too, and Enter follows the active result to a page that loads',
+        !!nav && nav.ok() && /trade_craft_verify\.html$/.test(p2.url()), [p2.url()]);
+      await c2.close();
+
+      const c3 = await browser.newContext({ viewport: { width: 390, height: 844 } });
+      const p3 = await c3.newPage();
+      await p3.goto(`${ORIGIN}/index.html`, { waitUntil: 'load' });
+      await p3.waitForTimeout(1200);
+      const small = await p3.evaluate(() => { const v = document.querySelector('.hv-video'); return { paused: v.paused, src: v.currentSrc, sw: document.documentElement.scrollWidth }; });
+      ok('[browser] at 390 px the footage does not autoplay (poster only) and the page does not scroll sideways',
+        small.paused && small.src === '' && small.sw <= 390, [JSON.stringify(small)]);
+      await c3.close();
     }
 
     ok('[browser] neither page raised an uncaught error nor logged a console error while every '

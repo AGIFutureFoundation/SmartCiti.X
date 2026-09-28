@@ -18,6 +18,7 @@ import sys
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+from seo import apply_seo  # noqa: E402  head tags only
 from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 
 ROOT = HERE.parent
@@ -301,6 +302,8 @@ toc = ''.join(f'<a href="#space-{esc(s["id"])}">{esc(s["title"])}</a>' for s in 
 embedded = json.dumps(reg, indent=1, sort_keys=True).replace('</', '<\\/')
 
 NAV = nav_html('web/trade_craft_spaces.html', nav_labels('en'))
+from questkit import QUEST_CSS, quest_js, page_hooks  # noqa: E402  quests: egg hooks only
+QUEST_TAIL = '<style>' + QUEST_CSS + '</style>\n' + page_hooks('web/trade_craft_spaces.html') + quest_js('page:web/trade_craft_spaces.html')
 
 page = f'''<!doctype html>
 <html lang="en">
@@ -396,9 +399,11 @@ code{{font:13px "IBM Plex Mono",monospace;color:var(--steel)}}
 {sections}
 <footer class="serves">Registry: <code>spaces/registry/spaces.json</code> · stamp <code data-stamp>{esc(reg["source_stamp"])}</code> · authored <code data-authored-stamp>{esc(reg["authored_stamp"])}</code> · embedded verbatim below.</footer>
 <script type="application/json" id="spaces-registry">{embedded}</script>
-</div></body>
+</div>{QUEST_TAIL}</body>
 </html>
 '''
 
 out = HERE / 'trade_craft_spaces.html'
+page = apply_seo(page, 'web/trade_craft_spaces.html', 'SmartCiti.X : Trade Craft Academy \u2014 custom spaces',
+    'Custom spaces drawn to scale from the spaces registry: every item labelled, finishes swatched, PPE derived and the serving halls linked.', 'page')
 emit(out, page, f'{c["spaces"]} spaces | {c["items"]} items | stamp {reg["source_stamp"]}')

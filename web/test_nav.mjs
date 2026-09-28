@@ -80,6 +80,10 @@ const BUILDERS = {
   'web/trade_craft_progress.html': 'build_progress.py',
   'web/trade_craft_spaces.html': 'build_spaces.py',
   'web/trade_craft_worksites.html': 'build_worksites.py',
+  'web/trade_craft_quests.html': 'build_quests.py',
+  'web/trade_craft_schools.html': 'build_schools.py',
+  'web/trade_craft_design.html': 'build_design.py',
+  'web/trade_craft_wilds.html': 'build_wilds.py',
 };
 
 const en = JSON.parse(readFileSync(join(ROOT, 'i18n/locales/en.json'), 'utf8')).strings;
@@ -90,7 +94,12 @@ const onDisk = ['index.html', ...readdirSync(HERE).filter((f) => f.endsWith('.ht
 const undeclared = onDisk.filter((p) => !(p in PAGES));
 ok(`every page file (index.html and web/*.html, ${onDisk.length} found) is declared in sitenav.PAGES`,
   undeclared.length === 0, undeclared.map((p) => `not in PAGES: ${p}`));
-const absent = Object.keys(PAGES).filter((p) => !existsSync(join(ROOT, p)));
+// A page in NOT_WIRED may be absent only while its owner is still building
+// it, and only the pages the quest contract names as pending may be there.
+const PENDING_OK = new Set(['web/trade_craft_wilds.html', 'web/trade_craft_schools.html']);
+ok(`NOT_WIRED names only pages the quest contract lists as pending (${NOT_WIRED.size})`,
+  [...NOT_WIRED].every((p) => PENDING_OK.has(p)), [...NOT_WIRED].filter((p) => !PENDING_OK.has(p)));
+const absent = Object.keys(PAGES).filter((p) => !NOT_WIRED.has(p) && !existsSync(join(ROOT, p)));
 ok(`every sitenav.PAGES entry (${Object.keys(PAGES).length}) exists on disk`,
   absent.length === 0, absent.map((p) => `declared but missing: ${p}`));
 ok('every page the nav declares has a builder here, or is named as one whose builder is not wired',
@@ -125,7 +134,9 @@ ok('web/sitenav.py\'s CSS uses logical properties only, so the nav mirrors under
 const wiring = [];
 for (const [page, b] of Object.entries(BUILDERS)) {
   const src = readFileSync(join(HERE, b), 'utf8');
-  const calls = [...src.matchAll(/nav_html\('([^']+)', nav_labels\('en'\)\)/g)].map((m) => m[1]);
+  // the page is either a literal or a module-level constant assigned one literal in the same file
+  const constOf = (name) => { const m = [...src.matchAll(new RegExp('^' + name + " = '([^']+)'$", 'gm'))]; return m.length === 1 ? m[0][1] : `<${name} is not one literal>`; };
+  const calls = [...src.matchAll(/nav_html\((?:'([^']+)'|([A-Z][A-Z_]*)), nav_labels\('en'\)\)/g)].map((m) => (m[1] !== undefined ? m[1] : constOf(m[2])));
   if (calls.length !== 1 || calls[0] !== page) wiring.push(`${b}: nav_html calls ${JSON.stringify(calls)}, want ['${page}']`);
   if (!/NAV_CSS/.test(src)) wiring.push(`${b}: does not carry NAV_CSS`);
   if (/data-sitenav|class="sitenav/.test(src)) wiring.push(`${b}: types site-nav markup of its own`);
@@ -161,7 +172,8 @@ for (const page of OWNED) {
   for (const l of links) {
     const target = l.href === undefined ? null : posix.normalize(posix.join(base, l.href));
     l.target = target;
-    if (!target || /^[a-z]+:/.test(l.href) || !existsSync(join(ROOT, target))) {
+    // a link to a NOT_WIRED page (its owner is still building it) is held to naming a declared page
+    if (!target || /^[a-z]+:/.test(l.href) || (!existsSync(join(ROOT, target)) && !(NOT_WIRED.has(target) && target in PAGES))) {
       perPage.href.push(`${page}: href "${l.href}" resolves to nothing`);
     }
   }

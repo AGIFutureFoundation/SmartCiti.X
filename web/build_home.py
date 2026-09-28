@@ -29,6 +29,13 @@ from sitenav import nav_html, labels as nav_labels, NAV_CSS, LOOP, PAGES, GROUPS
 # map, the 3D world and the crew marks all read from there; a second set of
 # numbers here would be eight facts with two owners.
 from mapdata import HUES  # noqa: E402
+# The front door's head tags, background footage and site search each live
+# in their own module so the landing page (and, next, every page) shares one
+# implementation: web/seo.py, web/herovideo.py, web/sitesearch.py.
+from seo import seo_head, seo_tail  # noqa: E402
+from herovideo import (hero_video_html, hero_video_control, HERO_VIDEO_CSS,  # noqa: E402
+                       HERO_VIDEO_JS)
+from sitesearch import search_button, search_dialog, SEARCH_JS, SEARCH_CSS  # noqa: E402
 
 
 def _pack_root():
@@ -1437,6 +1444,20 @@ GUIDE_JS = """<script>
 
 NAV = nav_html('index.html', nav_labels('en'))
 
+# The <main id="main"> a skip link lands on. test_nav holds that the site
+# nav is the first thing in <body>, so the skip link itself belongs INSIDE
+# nav_html (web/sitenav.py, requested of its owner) rather than before it;
+# its style ships here and in NAV_CSS's owner's hands alike.
+UX_CSS = """
+.sitenav-skip,.skip{position:absolute;inset-inline-start:12px;inset-block-start:-100px;z-index:100;
+  padding:10px 16px;border-radius:8px;background:var(--btn);color:var(--btn-ink);
+  font-weight:700;text-decoration:none}
+.sitenav-skip:focus,.skip:focus{inset-block-start:12px;outline:none;box-shadow:var(--focus)}
+main:focus{outline:none}
+"""
+from questkit import QUEST_CSS, quest_js, page_hooks  # noqa: E402  quests: egg hooks only
+QUEST_TAIL = '<style>' + QUEST_CSS + '</style>\n' + page_hooks('index.html') + quest_js('page:index.html')
+
 STATS_HTML = ''.join(
     f'<div class="stat" data-stat="{k}" data-src="{esc(src)}"><dt>{esc(label)}</dt>'
     f'<dd>{n(v)}</dd></div>' for k, v, label, src in STATS)
@@ -1447,7 +1468,8 @@ FOOT_COLS = ''.join(
     + '</ul></div>' for g, items in GROUPS)
 
 BODY = f"""<body>
-{NAV}<header class="top"><div class="wrap">
+{NAV}<main id="main" tabindex="-1">
+<header class="top" data-hero-host>{hero_video_html()}<div class="wrap">
   <div class="hero-grid">
     <div class="hero-copy">
       <span class="eyebrow">Union trade training &middot; walkable campus &middot; verifiable records</span>
@@ -1468,6 +1490,8 @@ BODY = f"""<body>
       <p class="also">Checking someone&rsquo;s record?
         <a class="textlink" href="web/trade_craft_verify.html">{_nl('web/trade_craft_verify.html')}</a>
         &middot; New here? <a class="textlink" href="#start-here">Take the first lesson</a></p>
+      {search_button()}
+      {hero_video_control()}
     </div>
     <aside class="figs" aria-labelledby="figs-h">
       <div class="figs-title"><h2 id="figs-h">Key figures</h2>
@@ -1579,6 +1603,7 @@ BODY = f"""<body>
   </div>
 </section>
 </div>
+</main>
 <footer><div class="wrap">
   <div class="foot-grid">
     <div class="foot-brand"><b>SmartCiti.X : Trade Craft Academy</b>
@@ -1706,17 +1731,19 @@ _DERIVED |= {f for s in (need(START_L, 'title', START_W),
              for f in _figures_in(s)}
 
 _loose = _figures_in(BODY) - _DERIVED
+BODY_Q = BODY.replace('</body>', QUEST_TAIL + '</body>')  # quests: engine carried after the prose lint
 assert not _loose, (
     'these figures appear in the front door\'s prose but were not read from a '
     'registry by this script: ' + ', '.join(str(x) for x in sorted(_loose)) +
     ' - read them, or the page will drift the way `400 options` did')
 
+_SEO = ('SmartCiti.X : Trade Craft Academy',
+        f'A walkable training world for the skilled trades: {HALLS} union halls, '
+        f'{CAMPUSES} campuses and {SEATS} operable machine seats, every figure read '
+        'from its own registry.', 'home')
 page = ('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
         '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
-        '<title>SmartCiti.X : Trade Craft Academy</title>\n'
-        '<meta name="description" content="A walkable training world for the '
-        f'skilled trades: {HALLS} union halls, {CAMPUSES} campuses and {SEATS} '
-        'operable machine seats, every figure read from its own registry.">\n'
+        + seo_head('index.html', *_SEO) +
         '<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 '
         'viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%226%22 '
         'fill=%22%230C1113%22/%3E%3Cpath d=%22M7 21 L16 7 L25 21 Z%22 fill=%22none%22 '
@@ -1726,7 +1753,15 @@ page = ('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
         '<!-- Self-hosted: nothing on this page is fetched from another '
         'origin at run time. See web/fetch_fonts.py. -->\n'
         '<link rel="stylesheet" href="web/vendor/fonts/fonts.css">\n'
-        f'<style>{CSS}</style>\n<style>{NAV_CSS}</style>\n</head>\n{BODY}\n</html>\n')
+        f'<style>{CSS}</style>\n<style>{NAV_CSS}</style>\n'
+        f'<style>{HERO_VIDEO_CSS}{SEARCH_CSS}{UX_CSS}</style>\n</head>\n{BODY_Q}\n</html>\n')
+# The palette's index (registry titles, which may hold figures of their own)
+# and the two small scripts join the page after the prose gate above, like
+# the quest engine: the gate is about typed prose, and these are data.
+_tail = (search_dialog('index.html') + SEARCH_JS + '\n' + HERO_VIDEO_JS + '\n'
+         + seo_tail('index.html', *_SEO))
+assert page.count('</body>') == 1, 'build_home: expected exactly one </body>'
+page = page.replace('</body>', _tail + '</body>')
 
 emit(ROOT / 'index.html', page,
      f'{len(CARDS)} cards | {HALLS} halls, {CAMPUSES} campuses, {SEATS} seats')

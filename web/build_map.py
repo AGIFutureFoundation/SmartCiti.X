@@ -71,6 +71,7 @@ sys.path.insert(0, str(ROOT))
 from interiors import build as build_interiors, ROOMS as ROOM_PROGRAMME  # noqa: E402
 from mapdata import make_codes, HUES as SHARED_HUES  # noqa: E402
 from staleness import emit  # noqa: E402
+from seo import apply_seo  # noqa: E402  head tags only
 from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 
 _districts_json = json.load(open(PACKS / 'unions/registry/districts.json'))['districts']
@@ -988,4 +989,6 @@ renderDetail(selected); apply();
 '''
 
 out = ROOT / 'trade_craft_map.html'
+PAGE = apply_seo(PAGE, 'web/trade_craft_map.html', 'Network plan \u2014 SmartCiti.X : Trade Craft Academy',
+    S('seo.desc.map'), 'page')
 emit(out, PAGE, f'{len(halls)} halls | {TOTALS["all"]:,} modules', encoding='utf-8')

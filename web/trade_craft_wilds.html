@@ -1,0 +1,1168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C1113'/%3E%3Cpath d='M4 25 L12 11 L17 18 L21 13 L28 25 Z' fill='none' stroke='%23E8A33D' stroke-width='2.4' stroke-linejoin='round'/%3E%3C/svg%3E">
+<title>SmartCiti.X : Trade Craft Academy — the wilds</title>
+<style>
+:root{
+  --plate:#12181B; --panel:#182023; --sunk:#0C1113; --ink:#E8EDEC; --muted:#93A3A6;
+  --rule:#28353A; --mark:#E8A33D; --mark-ink:#12181B; --steel:#41C4D4; --good:#5FBF7A;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--plate);color:var(--ink);font:16px/1.6 "IBM Plex Sans",system-ui,sans-serif}
+.wrap{max-width:1280px;margin:0 auto;padding:0 16px 48px}
+header{padding:28px 0 8px;border-bottom:3px solid var(--mark)}
+header h1{font:700 32px/1.1 "Barlow Condensed",system-ui,sans-serif;margin:0}
+header h1 .x{color:var(--mark)}
+header p{color:var(--muted);margin:6px 0 12px}
+a{color:var(--steel)}
+#switch{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+#switch button,.ctl button,.go,.qmark,.qhook{font:600 14px/1 "IBM Plex Sans",system-ui,sans-serif;background:var(--panel);color:var(--ink);border:1px solid var(--rule);border-radius:6px;padding:9px 14px;cursor:pointer;min-height:40px}
+#switch button[aria-pressed="true"]{background:var(--mark);color:var(--mark-ink);border-color:var(--mark)}
+#stage{position:relative;height:min(72vh,720px);min-height:380px;border:1px solid var(--rule);border-radius:10px;overflow:hidden;background:#9CC3E4;touch-action:none}
+#view{display:block;width:100%;height:100%;outline:none}
+#view:focus-visible,#view:focus{outline:3px solid var(--mark);outline-offset:-3px}
+#labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.lbl{position:absolute;left:0;top:0;pointer-events:auto;font:600 12px/1.2 "IBM Plex Sans",system-ui,sans-serif;background:rgba(12,17,19,.82);color:var(--ink);border:1px solid var(--mark);border-radius:5px;padding:4px 7px;white-space:nowrap;cursor:pointer;max-width:220px;overflow:hidden;text-overflow:ellipsis}
+.lbl.th{border-color:var(--steel);cursor:default}
+.ctl{position:absolute;top:10px;inset-inline-start:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;max-width:calc(100% - 200px)}
+.ctl .where{background:rgba(12,17,19,.82);border-radius:6px;padding:8px 10px;font-size:13px}
+#minimap{position:absolute;bottom:10px;inset-inline-end:10px;width:170px;height:170px;border:2px solid var(--sunk);border-radius:8px;cursor:crosshair;background:var(--sunk)}
+#stick{position:absolute;bottom:14px;inset-inline-start:14px;width:120px;height:120px;border-radius:50%;background:rgba(12,17,19,.35);border:2px solid rgba(232,237,236,.5);touch-action:none}
+#stick i{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px;border-radius:50%;background:rgba(232,237,236,.75)}
+#stage[data-mode="overview"] #stick{display:none}
+#panel{position:absolute;top:60px;inset-inline-end:10px;width:min(340px,calc(100% - 20px));max-height:calc(100% - 250px);overflow:auto;background:rgba(18,24,27,.95);border:1px solid var(--mark);border-radius:8px;padding:10px 14px}
+#panel-close{float:inline-end;background:none;border:1px solid var(--rule);color:var(--ink);border-radius:5px;cursor:pointer;min-width:36px;min-height:36px}
+#toast{position:absolute;bottom:150px;left:50%;transform:translateX(-50%);background:var(--mark);color:var(--mark-ink);border-radius:6px;padding:8px 14px;font-weight:600;max-width:90%}
+.help{color:var(--muted);font-size:14px}
+kbd{font:12px "IBM Plex Mono",monospace;border:1px solid var(--rule);border-radius:4px;padding:1px 5px;background:var(--sunk)}
+.world h2{font:700 28px/1.1 "Barlow Condensed",system-ui,sans-serif;margin:22px 0 4px}
+.evokes{color:var(--muted)}
+.figs{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0}
+.fig{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:8px 14px}
+.fig b{display:block;font:600 22px/1.2 "Barlow Condensed",system-ui,sans-serif;color:var(--mark)}
+.fig span{color:var(--muted);font-size:13px}
+.sites{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.site{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:10px 14px}
+.site h3{font:600 19px/1.2 "Barlow Condensed",system-ui,sans-serif;margin:0 0 4px}
+.prov{font:600 11px/1 "IBM Plex Mono",monospace;background:var(--sunk);color:var(--muted);border-radius:4px;padding:3px 6px;vertical-align:middle}
+.k{margin:8px 0 2px;color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:.05em}
+.links{margin:0;padding-inline-start:18px}
+.none{color:var(--muted);font-style:italic;margin:2px 0}
+.riddles{color:var(--muted)}
+.honesty{background:var(--sunk);border-inline-start:3px solid var(--mark);border-radius:6px;padding:12px 26px;color:var(--muted);font-size:14px}
+.quests{padding-inline-start:18px}
+.hint{color:var(--muted);font-size:14px}
+footer{margin-top:24px;color:var(--muted);font-size:14px;border-top:1px solid var(--rule);padding-top:12px}
+code{font:13px "IBM Plex Mono",monospace;color:var(--steel)}
+@media(max-width:720px){
+  header h1{font-size:26px}
+  #minimap{width:110px;height:110px}
+  .ctl{max-width:calc(100% - 20px)}
+  #stick{width:100px;height:100px}
+  #panel{top:auto;bottom:10px;max-height:45%}
+}
+</style>
+<style>.sitenav{--sn-ink:var(--ink,CanvasText);--sn-bg:var(--panel,var(--surface,Canvas));--sn-rule:var(--rule,var(--line,GrayText));--sn-mute:var(--muted,var(--ink,CanvasText));--sn-mark:var(--mark,var(--accent,LinkText));position:relative;z-index:40;font:500 13.5px/1.35 "IBM Plex Sans",system-ui,sans-serif;color:var(--sn-ink);background:var(--sn-bg);border-block-end:1px solid var(--sn-rule);padding-block:6px;padding-inline:16px;box-sizing:border-box;max-width:100%;overflow-wrap:anywhere}.sitenav *{box-sizing:border-box}.sitenav a{color:inherit;text-decoration:none;border-radius:6px;padding-block:4px;padding-inline:7px;display:inline-block}.sitenav a:hover{background:color-mix(in srgb,currentColor 11%,transparent)}.sitenav a:focus-visible,.sitenav summary:focus-visible{outline:2px solid var(--sn-mark);outline-offset:2px}.sitenav-row{display:flex;align-items:center;gap:6px 12px;min-width:0}.sitenav-home{font-weight:700;color:var(--sn-ink)!important;white-space:nowrap;border:1px solid var(--sn-rule);border-inline-start:3px solid var(--sn-mark)}.sitenav-menu{flex:1 1 auto;min-width:0}.sitenav-menu>summary{display:none}.sitenav-menu::details-content{content-visibility:visible;display:contents}@supports not selector(::details-content){.sitenav-menu>summary{display:inline-flex}}.sitenav-groups{display:flex;flex-wrap:wrap;align-items:center;gap:2px 0}.sitenav-group{display:flex;flex-wrap:wrap;align-items:center;gap:0 1px;min-width:0;padding-inline:8px;border-inline-start:1px solid var(--sn-rule)}.sitenav-group:first-child{border-inline-start:0}.sitenav-g{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--sn-mute);margin-inline-end:3px}.sitenav ul,.sitenav ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:0 1px}.sitenav [aria-current="page"]{font-weight:700;color:var(--sn-ink);background:color-mix(in srgb,currentColor 10%,transparent);box-shadow:inset 0 -3px 0 var(--sn-mark)}.sitenav-loop{margin-block-start:6px!important;padding-block-start:6px!important;border-block-start:1px solid var(--sn-rule);counter-reset:step;align-items:center;gap:4px 6px!important}.sitenav-loop li{counter-increment:step;color:var(--sn-mute);display:flex;align-items:center}.sitenav-loop li::before{content:counter(step);display:inline-grid;place-items:center;inline-size:1.5em;block-size:1.5em;border-radius:50%;font-size:11px;font-weight:700;border:1px solid var(--sn-rule);margin-inline-end:2px}.sitenav-loop a{color:var(--sn-ink)}.sitenav-loop [aria-current="step"]{font-weight:700;color:var(--sn-ink);background:color-mix(in srgb,currentColor 10%,transparent);box-shadow:inset 0 -3px 0 var(--sn-mark)}@media(max-width:720px){.sitenav{padding-inline:12px}.sitenav-row{justify-content:space-between}.sitenav-menu{flex:0 1 auto}.sitenav-menu::details-content{display:block;content-visibility:hidden}.sitenav-menu[open]::details-content{content-visibility:visible}.sitenav-menu>summary{display:inline-flex;align-items:center;gap:6px;cursor:pointer;list-style:none;padding-block:5px;padding-inline:10px;border:1px solid var(--sn-rule);border-radius:6px;font-weight:600;white-space:nowrap}.sitenav-menu>summary::-webkit-details-marker{display:none}.sitenav-menu>summary::after{content:"";inline-size:.45em;block-size:.45em;border-inline-end:2px solid currentColor;border-block-end:2px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform .15s}.sitenav-menu[open]>summary::after{transform:translateY(2px) rotate(-135deg)}.sitenav-menu[open]>.sitenav-groups{position:absolute;inset-inline:0;top:100%;display:grid;gap:0;background:var(--sn-bg);border-block-end:1px solid var(--sn-rule);box-shadow:0 12px 24px -12px rgba(0,0,0,.45);padding-block:4px 10px;padding-inline:12px}.sitenav-group{padding-inline:0;padding-block:6px;border-inline-start:0;border-block-start:1px solid var(--sn-rule)}.sitenav-group:first-child{border-block-start:0}.sitenav-g{flex:0 0 100%;margin-block-end:2px}.sitenav-loop{font-size:12.5px}}@media (prefers-reduced-motion:reduce){.sitenav *{transition:none!important}}</style>
+<style>
+.tc-toast{position:fixed;inset-inline:16px;inset-block-end:16px;max-inline-size:36rem;margin-inline:auto;padding:.7rem 1rem;
+  border-radius:10px;background:var(--ink,#1b1f24);color:var(--paper,#fff);font:inherit;font-size:.92rem;line-height:1.4;
+  box-shadow:0 6px 24px rgba(0,0,0,.25);opacity:0;transform:translateY(8px);transition:opacity .2s,transform .2s;
+  pointer-events:none;z-index:9999}
+.tc-toast.on{opacity:1;transform:none}
+.tc-hooks{display:flex;justify-content:flex-end;padding:0 16px 8px}
+.tc-cache{appearance:none;border:0;background:none;color:inherit;opacity:.18;font-size:.7rem;line-height:1;
+  padding:.4rem;cursor:pointer;min-inline-size:24px;min-block-size:24px}
+.tc-cache:hover,.tc-cache:focus-visible{opacity:.9}
+@media (prefers-reduced-motion:reduce){.tc-toast{transition:none}}
+</style>
+</head>
+<body>
+<nav class="sitenav" data-sitenav aria-label="Site pages">
+<div class="sitenav-row">
+<a class="sitenav-home" href="../index.html">Front door</a>
+<details class="sitenav-menu" data-sitenav-menu><summary>Site pages</summary>
+<div class="sitenav-groups">
+<div class="sitenav-group"><span class="sitenav-g">Learn</span><ul><li><a href="trade_craft_lessons.html">Lessons</a></li><li><a href="trade_craft_ladder.html">Ladder</a></li><li><a href="trade_craft_3d.html">Walk the campus</a></li><li><a href="trade_craft_schools.html">School pathways</a></li></ul></div>
+<div class="sitenav-group"><span class="sitenav-g">Play</span><ul><li><a href="trade_craft_quests.html">Quests and arcade</a></li><li><a href="trade_craft_wilds.html" aria-current="page">The wilds</a></li></ul></div>
+<div class="sitenav-group"><span class="sitenav-g">Maps</span><ul><li><a href="trade_craft_map.html">Layered map</a></li><li><a href="trade_craft_interactive.html">Interactive map</a></li><li><a href="trade_craft_geomap.html">Geomap</a></li><li><a href="trade_craft_fabric.html">Spatial fabric</a></li></ul></div>
+<div class="sitenav-group"><span class="sitenav-g">Records</span><ul><li><a href="trade_craft_progress.html">Progress</a></li><li><a href="trade_craft_verify.html">Verify a record</a></li><li><a href="trade_craft_contribute.html">Contribute</a></li></ul></div>
+<div class="sitenav-group"><span class="sitenav-g">Sites</span><ul><li><a href="trade_craft_spaces.html">Spaces</a></li><li><a href="trade_craft_worksites.html">Work sites</a></li></ul></div>
+<div class="sitenav-group"><span class="sitenav-g">About</span><ul><li><a href="trade_craft_landing.html">Overview</a></li><li><a href="trade_craft_dashboard.html">Dashboard</a></li><li><a href="trade_craft_languages.html">Languages</a></li><li><a href="trade_craft_signin.html">Sign in</a></li><li><a href="smartcitix_trade_craft_academy.html">Academy spec</a></li><li><a href="trade_craft_design.html">Design kit</a></li></ul></div>
+</div></details>
+</div>
+</nav>
+<div class="wrap">
+<header>
+  <h1>SmartCiti<span class="x">.X</span> : Trade Craft Academy</h1>
+  <p>powered by AGI Corp · the wilds: large exterior worlds with trade work sites, trails and hidden caches</p>
+</header>
+<p class="intro">Walk <b data-fig="worlds">3</b> authored worlds, <b data-fig="area">323.0</b> km² in all, with <b data-fig="sites">17</b> trade work sites tied to <b data-fig="halls">29</b> union halls and <b data-fig="lessons">14</b> lessons. Every landscape is generated from a seed: an <b>authored landscape, not a survey</b>.</p>
+<div id="switch" role="group" aria-label="Choose a world"><button type="button" data-world="mountain" aria-pressed="false">High Country</button><button type="button" data-world="forest" aria-pressed="false">Deep Timber</button><button type="button" data-world="canyon" aria-pressed="false">Red Rock Canyon</button></div>
+<div id="stage" data-mode="walk">
+  <canvas id="view" tabindex="0" aria-label="Three-dimensional view of the chosen world. Use W A S D or the arrow keys to walk, drag to look, O for the overview."></canvas>
+  <div id="labels"></div>
+  <div class="ctl"><span class="where" id="where"></span><button type="button" id="mode" aria-pressed="false">Overview</button><button type="button" id="speed">Pace: Walk</button><span class="where" id="hud-alt"></span></div>
+  <canvas id="minimap" width="170" height="170" aria-label="Minimap: click to travel there"></canvas>
+  <div id="stick" aria-hidden="true"><i></i></div>
+  <aside id="panel" hidden aria-live="polite"><button type="button" id="panel-close" aria-label="Close">×</button><div id="panel-body"></div></aside>
+  <div id="toast" hidden role="status"></div>
+</div>
+<p class="help"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrows walk · drag to look · <kbd>Q</kbd>/<kbd>E</kbd> turn · <kbd>Shift</kbd> run · <kbd>O</kbd> overview · on a touch screen, the stick walks and a drag looks · click the minimap to travel · walk onto a site to read about the work there.</p>
+<section class="world" data-world-card="mountain" hidden><h2>High Country</h2><p class="evokes">Evokes the general geography of the Colorado Front Range: high ridges, a tree line, snow on the tops - nearest campus in spirit: Denver. <b>inspiration only; the terrain is AUTHORED, not real elevation.</b></p><div class="figs"><div class="fig"><b>151.0</b><span>km² authored</span></div><div class="fig"><b>6</b><span>work sites</span></div><div class="fig"><b>15083</b><span>m of trail</span></div><div class="fig"><b>4</b><span>hidden treasures</span></div></div><div class="sites"><article class="site" id="site-m-adit-portal" data-site="m-adit-portal" data-world="mountain"><h3>Adit portal and ground support <span class="prov">SCHEMATIC</span></h3><p>A mine adit driven into the hillside: ground support, ventilation and a portal that has to stay open.</p><p class="k">Union halls</p><ul class="links"><li><a href="trade_craft_3d.html?hall=miners">Underground Miners</a></li><li><a href="trade_craft_3d.html?hall=blasters">Drillers &amp; Blasters</a></li><li><a href="trade_craft_3d.html?hall=shoring">Shoring &amp; Underpinning</a></li></ul><p class="k">Lessons at this site</p><ul class="links"><li><a href="trade_craft_lessons.html#lesson-shoring-read-the-ground-again">Read the ground again after the rain</a></li></ul><button type="button" class="go" data-goto="m-adit-portal">Go to this site</button></article><article class="site" id="site-m-hv-corridor" data-site="m-hv-corridor" data-world="mountain"><h3>High-voltage line corridor <span class="prov">SCHEMATIC</span></h3><p>A transmission line crossing the valley on lattice towers; stringing, clearances and fault finding.</p><p class="k">Union halls</p><ul class="links"><li><a href="trade_craft_3d.html?hall=transmission">Transmission Linemen</a></li><li><a href="trade_craft_3d.html?hall=line-workers">Utility Line Workers</a></li></ul><p class="k">Lessons at this site</p><ul class="links"><li><a href="trade_craft_lessons.html#lesson-line-workers-find-the-fault">Find the fault instead of replacing things</a></li></ul><button type="button" class="go" data-goto="m-hv-corridor">Go to this site</button></article><article class="site" id="site-m-rockfall-netting" data-site="m-rockfall-netting" data-world="mountain"><h3>Rockfall netting on a road cut <span class="prov">SCHEMATIC</span></h3><p>Mesh and anchors hung on a cut slope above the road; rope access and lifted panels.</p><p class="k">Union halls</p><ul class="links"><li><a href="trade_craft_3d.html?hall=high-angle">High-Angle Rescue</a></li><li><a href="trade_craft_3d.html?hall=riggers">Riggers &amp; Signalpersons</a></li><li><a href="trade_craft_3d.html?hall=blasters">Drillers &amp; Blasters</a></li></ul><p class="k">Lessons at this site</p><ul class="links"><li><a href="trade_craft_lessons.html#lesson-riggers-first-card">Call the first lift before anybody touches the hook</a></li></ul><button type="button" class="go" data-goto="m-rockfall-netting">Go to this site</button></article><article class="site" id="site-m-snow-road" data-site="m-snow-road" data-world="mountain"><h3>Snow-road grading on the pass <span class="prov">SCHEMATIC</span></h3><p>Graders and plough trucks keeping a mountain road open; machines checked before they climb.</p><p class="k">Union halls</p><ul class="links"><li><a href="trade_craft_3d.html?hall=operating-eng">Operating Engineers</a></li><li><a href="trade_craft_3d.html?hall=teamsters">Teamsters</a></li><li><a href="trade_craft_3d.html?hall=heavy-equip">Heavy Equipment Technicians</a></li></ul><p class="k">Lessons at this site</p><ul class="links"><li><a href="trade_craft_lessons.html#lesson-heavy-equip-listen-to-the-dash">Listen to the dash before you replace anything</a></li><li><a href="trade_craft_lessons.html#lesson-teamsters-check-the-truck-before-the-load">Check the truck before you check the load</a></li></ul><button type="button" class="go" data-goto="m-snow-road">Go to this site</button></article><article class="site" id="site-m-wind-ridge" data-site="m-wind-ridge" data-world="mountain"><h3>Ridge-top turbine pad <span class="prov">SCHEMATIC</span></h3><p>A crane pad on a ridge for a wind turbine; the lift chart decides what goes up in the wind.</p><p class="k">Union halls</p><ul class="links"><li><a href="trade_craft_3d.html?hall=wind">Wind Turbine Technicians</a></li><li><a href="trade_craft_3d.html?hall=crane-ops">Crane Operators</a></li></ul><p class="k">Lessons at this site</p><ul class="links"><li><a href="trade_craft_lessons.html#lesson-crane-ops-read-the-chart">Refuse the pick the chart refuses</a></li></ul><button type="button" class="go" data-goto="m-wind-ridge">Go to this site</button></article><article class="site" id="site-m-survey-control" data-site="m-survey-control" data-world="mountain"><h3>Survey control on the high ground <span class="prov">SCHEMATIC</span></h3><p>A control point and a drone landing square; everything below is laid out from here.</p><p class="k">Union halls</p><ul class="links"><li><a href="trade_craft_3d.html?hall=surveyors">Construction Surveyors</a></li><li><a href="trade_craft_3d.html?hall=survey-drone">Aerial Survey Operators</a></li></ul><p class="k">Lessons at this site</p><ul class="links"><li><a href="trade_craft_lessons.html#lesson-surveyors-trust-the-control">Work from control, not from something near it</a></li></ul><button type="button" class="go" data-goto="m-survey-control">Go to this site</button></article></div><h3>Treasure riddles</h3><ul class="riddles"><li data-cache="m-cache-talus"><b>cache</b> Below the portal, where the loose stone rests.</li><li data-cache="m-cache-tarn"><b>cache</b> East of the plough road, a stone that does not match its neighbours.</li><li data-cache="m-hollow"><b>hollow</b> North of the towers the ground folds in on itself.</li><li data-cache="m-summit-register"><b>summit</b> The highest ground in the High Country keeps a book.</li></ul></section><section class="world" data-world-card="forest" hidden><h2>Deep Timber</h2><p class="evokes">Evokes the general geography of the Puget Sound lowlands: rolling timber, lakes and river flats - nearest campus in spirit: Seattle. <b>inspiration only; the terrain is AUTHORED, not real elevation.</b></p><div class="figs"><div class="fig"><b>104.9</b><span>km² authored</span></div><div class="fig"><b>6</b><span>work sites</span></div><div class="fig"><b>14066</b><span>m of trail</span></div><div class="fig"><b>4</b><span>hidden treasures</span></div></div><div class="sites"><article class="site" id="site-f-line-clearance" data-site="f-line-clearance" data-world="forest"><h3>Utility line clearance <span class="prov">SCHEMATIC</span></h3><p>A distribution line through the timber: the right-of-way cut back and the line walked for faults.</p><p class="k">Union halls</p><ul class="links"><li><a href="trade_craft_3d.html?hall=line-workers">Utility Line Workers</a></li><li><a href="trade_craft_3d.html?hall=grounds">Grounds &amp; Landscape</a></li></ul><p class="k">Lessons at this site</p><ul class="links"><li><a href="trade_craft_lessons.html#lesson-line-workers-find-the-fault">Find the fault instead of replacing things</a></li></ul><button type="button" class="go" data-goto="f-line-clearance">Go to this site</button></article><article class="site" id="site-f-trail-bridge" data-site="f-trail-bridge" data-world="forest"><h3>Trail bridge crew <span class="prov">SCHEMATIC</span></h3><p>A timber footbridge over a creek; carpenters framing, labourers packing material in.</p><p class="k">Union halls</p><ul class="links"><li><a href="trade_craft_3d.html?hall=carpenters">Carpenters</a></li><li><a href="trade_craft_3d.html?hall=laborers">Laborers</a></li><li><a href="trade_craft_3d.html?hall=bridge-inspect">Bridge Inspection Crews</a></li></ul><p class="k">Lessons at this site</p><ul class="links"><li><a href="trade_craft_lessons.html#lesson-carpenters-return-it-the-same">Return it in the state you would want to find it</a></li></ul><button type="button" class="go" data-goto="f-trail-bridge">Go to this site</button></article><article class="site" id="site-f-fuel-break" data-site="f-fuel-break" data-world="forest"><h3>Wildfire fuel break <span class="prov">SCHEMATIC</span></h3><p>A strip thinned and cleared along a ridge; machines and hand crews working the same ground.</p><p class="k">Union halls</p><ul class="links"><li><a href="trade_craft_3d.html?hall=grounds">Grounds &amp; Landscape</a></li><li><a href="trade_craft_3d.html?hall=operating-eng">Operating Engineers</a></li><li><a href="trade_craft_3d.html?hall=laborers">Laborers</a></li></ul><p class="k">Lessons at this site</p><ul class="links"><li><a href="trade_craft_lessons.html#lesson-laborers-stand-where-the-cab-can-see">Stand where the cab can see you</a></li></ul><button type="button" class="go" data-goto="f-fuel-break">Go to this site</button></article><article class="site" id="site-f-timber-frame" data-site="f-timber-frame" data-world="forest"><h3>Timber-frame shelter raising <span class="prov">SCHEMATIC</span></h3><p>A post-and-beam shelter raised in a clearing; bents lifted and pinned.</p><p class="k">Union halls</p><ul class="links"><li><a href="trade_craft_3d.html?hall=carpenters">Carpenters</a></li><li><a href="trade_craft_3d.html?hall=riggers">Riggers &amp; Signalpersons</a></li></ul><p class="k">Lessons at this site</p><ul class="links"><li><a href="trade_craft_lessons.html#lesson-riggers-first-card">Call the first lift before anybody touches the hook</a></li></ul><button type="button" class="go" data-goto="f-timber-frame">Go to this site</button></article><article class="site" id="site-f-water-intake" data-site="f-water-intake" data-world="forest"><h3>Lake intake and main <span class="prov">SCHEMATIC</span></h3><p>A raw-water intake at the lake edge feeding a main down the valley.</p><p class="k">Union halls</p><ul class="links"><li><a href="trade_craft_3d.html?hall=water-distrib">Water Distribution Fitters</a></li></ul><p class="k">Lessons at this site</p><p class="none">No lesson in this bundle is written for this work yet.</p><button type="button" class="go" data-goto="f-water-intake">Go to this site</button></article><article class="site" id="site-f-fire-lookout" data-site="f-fire-lookout" data-world="forest"><h3>Fire lookout tower <span class="prov">SCHEMATIC</span></h3><p>A steel lookout on the highest knoll; the frame erected and the access scaffold tagged.</p><p class="k">Union halls</p><ul class="links"><li><a href="trade_craft_3d.html?hall=steel-erectors">Steel Erectors</a></li><li><a href="trade_craft_3d.html?hall=scaffold">Scaffold Erectors</a></li></ul><p class="k">Lessons at this site</p><ul class="links"><li><a href="trade_craft_lessons.html#lesson-steel-erectors-land-it-on-the-bolts">Land the piece where the bolts can go in</a></li><li><a href="trade_craft_lessons.html#lesson-scaffold-read-the-tag">Believe the tag or believe nothing</a></li></ul><button type="button" class="go" data-goto="f-fire-lookout">Go to this site</button></article></div><h3>Treasure riddles</h3><ul class="riddles"><li data-cache="f-cache-nurse-log"><b>cache</b> Between the ranger station and the creek, off the path, under old timber.</li><li data-cache="f-cache-lakeshore"><b>cache</b> Where the line cut meets the far shore.</li><li data-cache="f-hollow"><b>hollow</b> A bowl the fuel crew never reached.</li><li data-cache="f-summit-register"><b>summit</b> Deep Timber has one highest knoll; the book is there.</li></ul></section><section class="world" data-world-card="canyon" hidden><h2>Red Rock Canyon</h2><p class="evokes">Evokes the general geography of western river canyons: stepped mesas and a river cut deep between them - nearest campus in spirit: Denver. <b>inspiration only; the terrain is AUTHORED, not real elevation.</b></p><div class="figs"><div class="fig"><b>67.1</b><span>km² authored</span></div><div class="fig"><b>5</b><span>work sites</span></div><div class="fig"><b>11338</b><span>m of trail</span></div><div class="fig"><b>3</b><span>hidden treasures</span></div></div><div class="sites"><article class="site" id="site-c-river-intake" data-site="c-river-intake" data-world="canyon"><h3>Run-of-river intake and penstock <span class="prov">SCHEMATIC</span></h3><p>A low weir and an intake feeding a penstock down to a small powerhouse; divers work the screens.</p><p class="k">Union halls</p><ul class="links"><li><a href="trade_craft_3d.html?hall=hydro">Hydro Plant Trades</a></li><li><a href="trade_craft_3d.html?hall=divers">Commercial Divers</a></li></ul><p class="k">Lessons at this site</p><p class="none">No lesson in this bundle is written for this work yet.</p><button type="button" class="go" data-goto="c-river-intake">Go to this site</button></article><article class="site" id="site-c-pipeline-crossing" data-site="c-pipeline-crossing" data-world="canyon"><h3>Pipeline river crossing <span class="prov">SCHEMATIC</span></h3><p>A pipeline crossing the canyon; tie-in digs on each side and a permit closed the way it opened.</p><p class="k">Union halls</p><ul class="links"><li><a href="trade_craft_3d.html?hall=pipeline">Pipeline Trades</a></li></ul><p class="k">Lessons at this site</p><ul class="links"><li><a href="trade_craft_lessons.html#lesson-pipeline-close-the-permit-properly">Close the permit the way it was opened</a></li></ul><button type="button" class="go" data-goto="c-pipeline-crossing">Go to this site</button></article><article class="site" id="site-c-valve-vault" data-site="c-valve-vault" data-world="canyon"><h3>Valve vault rescue drill <span class="prov">SCHEMATIC</span></h3><p>A buried valve vault on the mesa used for a confined-space entry and retrieval drill.</p><p class="k">Union halls</p><ul class="links"><li><a href="trade_craft_3d.html?hall=confined-space">Confined Space Rescue</a></li><li><a href="trade_craft_3d.html?hall=water-distrib">Water Distribution Fitters</a></li><li><a href="trade_craft_3d.html?hall=boilermakers">Boilermakers</a></li></ul><p class="k">Lessons at this site</p><ul class="links"><li><a href="trade_craft_lessons.html#lesson-boilermakers-get-them-out">Put somebody inside a vessel and get them back out</a></li></ul><button type="button" class="go" data-goto="c-valve-vault">Go to this site</button></article><article class="site" id="site-c-mesa-solar" data-site="c-mesa-solar" data-world="canyon"><h3>Mesa-top solar array <span class="prov">SCHEMATIC</span></h3><p>Racking and strings laid out across a flat mesa top.</p><p class="k">Union halls</p><ul class="links"><li><a href="trade_craft_3d.html?hall=solar">Solar Installers</a></li><li><a href="trade_craft_3d.html?hall=electricians">Electrical Workers</a></li></ul><p class="k">Lessons at this site</p><p class="none">No lesson in this bundle is written for this work yet.</p><button type="button" class="go" data-goto="c-mesa-solar">Go to this site</button></article><article class="site" id="site-c-quarry-bench" data-site="c-quarry-bench" data-world="canyon"><h3>Quarry bench and blast pattern <span class="prov">SCHEMATIC</span></h3><p>A stepped quarry face with a drill pattern marked out; everybody knows where not to stand.</p><p class="k">Union halls</p><ul class="links"><li><a href="trade_craft_3d.html?hall=blasters">Drillers &amp; Blasters</a></li><li><a href="trade_craft_3d.html?hall=demolition">Demolition Workers</a></li></ul><p class="k">Lessons at this site</p><ul class="links"><li><a href="trade_craft_lessons.html#lesson-demolition-stand-back">Know where not to stand</a></li></ul><button type="button" class="go" data-goto="c-quarry-bench">Go to this site</button></article></div><h3>Treasure riddles</h3><ul class="riddles"><li data-cache="c-cache-overhang"><b>cache</b> Under the west rim, halfway between the solar mesa and the quarry.</li><li data-cache="c-hollow"><b>hollow</b> East of the trailhead, a pothole the rain made.</li><li data-cache="c-summit-register"><b>summit</b> The highest step of the highest mesa.</li></ul></section>
+<h2>Side quests and treasures</h2>
+<p class="help">Caches, side quests and badges are play: they never enter a completion record and never certify anything.</p>
+<ul class="quests"><li><button type="button" class="qhook" data-wilds-world="mountain" data-wilds-place="trailhead" data-wilds-kind="treasure" data-tc-egg="treasure-wilds-mountain-trailhead">Sign the trailhead book: High Country</button> <span class="hint">Every trail in High Country starts at the trailhead. Find its book.</span></li><li><button type="button" class="qhook" data-wilds-world="mountain" data-wilds-place="m-adit-portal" data-wilds-kind="side" data-tc-quest="side-wilds-m-adit-portal">Adit portal and ground support</button> <span class="hint">A mine adit driven into the hillside: ground support, ventilation and a portal that has to stay open.</span></li><li><button type="button" class="qhook" data-wilds-world="mountain" data-wilds-place="m-hv-corridor" data-wilds-kind="side" data-tc-quest="side-wilds-m-hv-corridor">High-voltage line corridor</button> <span class="hint">A transmission line crossing the valley on lattice towers; stringing, clearances and fault finding.</span></li><li><button type="button" class="qhook" data-wilds-world="mountain" data-wilds-place="m-rockfall-netting" data-wilds-kind="side" data-tc-quest="side-wilds-m-rockfall-netting">Rockfall netting on a road cut</button> <span class="hint">Mesh and anchors hung on a cut slope above the road; rope access and lifted panels.</span></li><li><button type="button" class="qhook" data-wilds-world="mountain" data-wilds-place="m-snow-road" data-wilds-kind="side" data-tc-quest="side-wilds-m-snow-road">Snow-road grading on the pass</button> <span class="hint">Graders and plough trucks keeping a mountain road open; machines checked before they climb.</span></li><li><button type="button" class="qhook" data-wilds-world="mountain" data-wilds-place="m-wind-ridge" data-wilds-kind="side" data-tc-quest="side-wilds-m-wind-ridge">Ridge-top turbine pad</button> <span class="hint">A crane pad on a ridge for a wind turbine; the lift chart decides what goes up in the wind.</span></li><li><button type="button" class="qhook" data-wilds-world="mountain" data-wilds-place="m-survey-control" data-wilds-kind="side" data-tc-quest="side-wilds-m-survey-control">Survey control on the high ground</button> <span class="hint">A control point and a drone landing square; everything below is laid out from here.</span></li><li><button type="button" class="qhook" data-wilds-world="forest" data-wilds-place="trailhead" data-wilds-kind="treasure" data-tc-egg="treasure-wilds-forest-trailhead">Sign the trailhead book: Deep Timber</button> <span class="hint">Every trail in Deep Timber starts at the trailhead. Find its book.</span></li><li><button type="button" class="qhook" data-wilds-world="forest" data-wilds-place="f-line-clearance" data-wilds-kind="side" data-tc-quest="side-wilds-f-line-clearance">Utility line clearance</button> <span class="hint">A distribution line through the timber: the right-of-way cut back and the line walked for faults.</span></li><li><button type="button" class="qhook" data-wilds-world="forest" data-wilds-place="f-trail-bridge" data-wilds-kind="side" data-tc-quest="side-wilds-f-trail-bridge">Trail bridge crew</button> <span class="hint">A timber footbridge over a creek; carpenters framing, labourers packing material in.</span></li><li><button type="button" class="qhook" data-wilds-world="forest" data-wilds-place="f-fuel-break" data-wilds-kind="side" data-tc-quest="side-wilds-f-fuel-break">Wildfire fuel break</button> <span class="hint">A strip thinned and cleared along a ridge; machines and hand crews working the same ground.</span></li><li><button type="button" class="qhook" data-wilds-world="forest" data-wilds-place="f-timber-frame" data-wilds-kind="side" data-tc-quest="side-wilds-f-timber-frame">Timber-frame shelter raising</button> <span class="hint">A post-and-beam shelter raised in a clearing; bents lifted and pinned.</span></li><li><button type="button" class="qhook" data-wilds-world="forest" data-wilds-place="f-fire-lookout" data-wilds-kind="side" data-tc-quest="side-wilds-f-fire-lookout">Fire lookout tower</button> <span class="hint">A steel lookout on the highest knoll; the frame erected and the access scaffold tagged.</span></li><li><button type="button" class="qhook" data-wilds-world="canyon" data-wilds-place="trailhead" data-wilds-kind="treasure" data-tc-egg="treasure-wilds-canyon-trailhead">Sign the trailhead book: Red Rock Canyon</button> <span class="hint">Every trail in Red Rock Canyon starts at the trailhead. Find its book.</span></li><li><button type="button" class="qhook" data-wilds-world="canyon" data-wilds-place="c-pipeline-crossing" data-wilds-kind="side" data-tc-quest="side-wilds-c-pipeline-crossing">Pipeline river crossing</button> <span class="hint">A pipeline crossing the canyon; tie-in digs on each side and a permit closed the way it opened.</span></li><li><button type="button" class="qhook" data-wilds-world="canyon" data-wilds-place="c-valve-vault" data-wilds-kind="side" data-tc-quest="side-wilds-c-valve-vault">Valve vault rescue drill</button> <span class="hint">A buried valve vault on the mesa used for a confined-space entry and retrieval drill.</span></li><li><button type="button" class="qhook" data-wilds-world="canyon" data-wilds-place="c-quarry-bench" data-wilds-kind="side" data-tc-quest="side-wilds-c-quarry-bench">Quarry bench and blast pattern</button> <span class="hint">A stepped quarry face with a drill pattern marked out; everybody knows where not to stand.</span></li></ul><div data-tc-questlog></div>
+<ul class="honesty">
+<li>Every world is an authored landscape generated from a seed. It is not a survey, no height is a real elevation, and the region named is inspiration for its general geography only.</li>
+<li>A work site is a schematic place to stand and think about a trade. It links to real halls and lessons in this bundle; it is not a real job site and shows no real crew.</li>
+<li>Caches, side quests and badges are play. They never enter a completion record and never certify anything.</li>
+<li>Lessons stay unverified general practice, exactly as the lessons pack states.</li>
+</ul>
+<footer data-honesty>Authored landscape, not a survey: every world here is generated from a seed and no height is a real elevation. Registry <code>wilds/registry/wilds.json</code> · stamp <code data-stamp>f4403f6ae009e712</code> · terrain core <code data-core-stamp>07ffb9a376815025</code> · embedded verbatim below.</footer>
+<script type="application/json" id="wilds-registry">{"core_stamp": "07ffb9a376815025", "counts": {"area_km2": 323.0, "caches": 11, "halls_linked": 29, "lessons_linked": 14, "sites": 17, "worlds": 3}, "honesty": {"landscape": "Every world is an authored landscape generated from a seed. It is not a survey, no height is a real elevation, and the region named is inspiration for its general geography only.", "lessons": "Lessons stay unverified general practice, exactly as the lessons pack states.", "play": "Caches, side quests and badges are play. They never enter a completion record and never certify anything.", "sites": "A work site is a schematic place to stand and think about a trade. It links to real halls and lessons in this bundle; it is not a real job site and shows no real crew."}, "off_trail_m": 120, "pack": "wilds", "product": "SmartCiti.X : Trade Craft Academy", "provenance": {"caches": "AUTHORED", "hall_names": "DERIVED", "lesson_titles": "DERIVED", "sites": "AUTHORED", "summit_register": "DERIVED", "terrain": "AUTHORED", "trails": "DERIVED"}, "source_stamp": "f4403f6ae009e712", "worlds": [{"area_km2": 151.0, "biome": {"clearing": 0.25, "deciduous_share": 0.12, "feature_m": 2600, "max_tree_slope": 0.85, "model": "ridged", "octaves": 6, "palette": {"low": "#5E7A3E", "mid": "#3F5A31", "rock": "#7A736A", "shore": "#9C8F6A", "snow": "#F2F5F7"}, "relief_m": 1250, "rim_m": 500, "rim_width_m": 500, "rock_density": 0.35, "snow_line_m": 900, "stand_m": 900, "tree_density": 0.55, "tree_line_m": 760, "water_level_m": 290}, "caches": [{"id": "m-cache-talus", "kind": "cache", "off_trail_m": 1471, "provenance": "AUTHORED", "riddle": "Below the portal, where the loose stone rests.", "x": -2350, "z": -500}, {"id": "m-cache-tarn", "kind": "cache", "off_trail_m": 1211, "provenance": "AUTHORED", "riddle": "East of the plough road, a stone that does not match its neighbours.", "x": 3350, "z": 250}, {"hollow_depth_m": 14, "hollow_m": 70, "id": "m-hollow", "kind": "hollow", "off_trail_m": 2082, "provenance": "AUTHORED", "riddle": "North of the towers the ground folds in on itself.", "x": 400, "z": -3300}, {"id": "m-summit-register", "kind": "summit", "position": "DERIVED at runtime: the highest ground wildsTerrain(world).summit() finds from the seed", "provenance": "DERIVED", "riddle": "The highest ground in the High Country keeps a book."}], "chunk_m": 512, "chunks_across": 24, "extent_m": 12288, "fog": "#B9CFE0", "id": "mountain", "inspiration": {"campus": "denver", "campus_city": "Denver", "evokes": "the general geography of the Colorado Front Range: high ridges, a tree line, snow on the tops", "standing": "inspiration only; the terrain is AUTHORED, not real elevation"}, "name": "High Country", "provenance": "AUTHORED", "seed": 81321, "sites": [{"halls": [{"id": "miners", "name": "Underground Miners"}, {"id": "blasters", "name": "Drillers & Blasters"}, {"id": "shoring", "name": "Shoring & Underpinning"}], "id": "m-adit-portal", "kind": "portal", "lessons": [{"hall": "shoring", "id": "shoring-read-the-ground-again", "title": "Read the ground again after the rain"}], "pad_m": 38, "provenance": "AUTHORED", "title": "Adit portal and ground support", "work": "A mine adit driven into the hillside: ground support, ventilation and a portal that has to stay open.", "x": -1900, "z": 900}, {"halls": [{"id": "transmission", "name": "Transmission Linemen"}, {"id": "line-workers", "name": "Utility Line Workers"}], "id": "m-hv-corridor", "kind": "tower", "lessons": [{"hall": "line-workers", "id": "line-workers-find-the-fault", "title": "Find the fault instead of replacing things"}], "pad_m": 34, "provenance": "AUTHORED", "title": "High-voltage line corridor", "work": "A transmission line crossing the valley on lattice towers; stringing, clearances and fault finding.", "x": 1500, "z": -600}, {"halls": [{"id": "high-angle", "name": "High-Angle Rescue"}, {"id": "riggers", "name": "Riggers & Signalpersons"}, {"id": "blasters", "name": "Drillers & Blasters"}], "id": "m-rockfall-netting", "kind": "netting", "lessons": [{"hall": "riggers", "id": "riggers-first-card", "title": "Call the first lift before anybody touches the hook"}], "pad_m": 30, "provenance": "AUTHORED", "title": "Rockfall netting on a road cut", "work": "Mesh and anchors hung on a cut slope above the road; rope access and lifted panels.", "x": -700, "z": -1500}, {"halls": [{"id": "operating-eng", "name": "Operating Engineers"}, {"id": "teamsters", "name": "Teamsters"}, {"id": "heavy-equip", "name": "Heavy Equipment Technicians"}], "id": "m-snow-road", "kind": "grader", "lessons": [{"hall": "heavy-equip", "id": "heavy-equip-listen-to-the-dash", "title": "Listen to the dash before you replace anything"}, {"hall": "teamsters", "id": "teamsters-check-the-truck-before-the-load", "title": "Check the truck before you check the load"}], "pad_m": 40, "provenance": "AUTHORED", "title": "Snow-road grading on the pass", "work": "Graders and plough trucks keeping a mountain road open; machines checked before they climb.", "x": 2600, "z": 1400}, {"halls": [{"id": "wind", "name": "Wind Turbine Technicians"}, {"id": "crane-ops", "name": "Crane Operators"}], "id": "m-wind-ridge", "kind": "turbine", "lessons": [{"hall": "crane-ops", "id": "crane-ops-read-the-chart", "title": "Refuse the pick the chart refuses"}], "pad_m": 42, "provenance": "AUTHORED", "title": "Ridge-top turbine pad", "work": "A crane pad on a ridge for a wind turbine; the lift chart decides what goes up in the wind.", "x": -3000, "z": -2600}, {"halls": [{"id": "surveyors", "name": "Construction Surveyors"}, {"id": "survey-drone", "name": "Aerial Survey Operators"}], "id": "m-survey-control", "kind": "survey", "lessons": [{"hall": "surveyors", "id": "surveyors-trust-the-control", "title": "Work from control, not from something near it"}], "pad_m": 26, "provenance": "AUTHORED", "title": "Survey control on the high ground", "work": "A control point and a drone landing square; everything below is laid out from here.", "x": 3400, "z": -3100}], "sky": "#9CC3E4", "trail_length_m": 15083, "trailhead": {"name": "Pass trailhead", "pad_m": 24, "x": 0, "z": 1800}, "trails": [{"from": "trailhead", "length_m": 2102, "to": "m-adit-portal"}, {"from": "trailhead", "length_m": 2631, "to": "m-snow-road"}, {"from": "m-snow-road", "length_m": 2283, "to": "m-hv-corridor"}, {"from": "m-hv-corridor", "length_m": 2377, "to": "m-rockfall-netting"}, {"from": "m-rockfall-netting", "length_m": 2550, "to": "m-wind-ridge"}, {"from": "m-hv-corridor", "length_m": 3140, "to": "m-survey-control"}]}, {"area_km2": 104.9, "biome": {"clearing": 0.12, "deciduous_share": 0.3, "feature_m": 1500, "max_tree_slope": 1.1, "model": "rolling", "octaves": 5, "palette": {"low": "#4F6B35", "mid": "#2F4A2A", "rock": "#6E6B5E", "shore": "#8B7F5A", "snow": "#F2F5F7"}, "relief_m": 420, "rim_m": 260, "rim_width_m": 450, "rock_density": 0.08, "snow_line_m": 99999, "stand_m": 600, "tree_density": 0.92, "tree_line_m": 5000, "water_level_m": -45}, "caches": [{"id": "f-cache-nurse-log", "kind": "cache", "off_trail_m": 385, "provenance": "AUTHORED", "riddle": "Between the ranger station and the creek, off the path, under old timber.", "x": -500, "z": 1100}, {"id": "f-cache-lakeshore", "kind": "cache", "off_trail_m": 1123, "provenance": "AUTHORED", "riddle": "Where the line cut meets the far shore.", "x": 2100, "z": 2600}, {"hollow_depth_m": 10, "hollow_m": 60, "id": "f-hollow", "kind": "hollow", "off_trail_m": 1924, "provenance": "AUTHORED", "riddle": "A bowl the fuel crew never reached.", "x": 1300, "z": -3200}, {"id": "f-summit-register", "kind": "summit", "position": "DERIVED at runtime: the highest ground wildsTerrain(world).summit() finds from the seed", "provenance": "DERIVED", "riddle": "Deep Timber has one highest knoll; the book is there."}], "chunk_m": 512, "chunks_across": 20, "extent_m": 10240, "fog": "#B7C9C9", "id": "forest", "inspiration": {"campus": "seattle", "campus_city": "Seattle", "evokes": "the general geography of the Puget Sound lowlands: rolling timber, lakes and river flats", "standing": "inspiration only; the terrain is AUTHORED, not real elevation"}, "name": "Deep Timber", "provenance": "AUTHORED", "seed": 44017, "sites": [{"halls": [{"id": "line-workers", "name": "Utility Line Workers"}, {"id": "grounds", "name": "Grounds & Landscape"}], "id": "f-line-clearance", "kind": "lineclear", "lessons": [{"hall": "line-workers", "id": "line-workers-find-the-fault", "title": "Find the fault instead of replacing things"}], "pad_m": 30, "provenance": "AUTHORED", "title": "Utility line clearance", "work": "A distribution line through the timber: the right-of-way cut back and the line walked for faults.", "x": 1700, "z": 1100}, {"halls": [{"id": "carpenters", "name": "Carpenters"}, {"id": "laborers", "name": "Laborers"}, {"id": "bridge-inspect", "name": "Bridge Inspection Crews"}], "id": "f-trail-bridge", "kind": "bridge", "lessons": [{"hall": "carpenters", "id": "carpenters-return-it-the-same", "title": "Return it in the state you would want to find it"}], "pad_m": 30, "provenance": "AUTHORED", "title": "Trail bridge crew", "work": "A timber footbridge over a creek; carpenters framing, labourers packing material in.", "x": -1400, "z": 1500}, {"halls": [{"id": "grounds", "name": "Grounds & Landscape"}, {"id": "operating-eng", "name": "Operating Engineers"}, {"id": "laborers", "name": "Laborers"}], "id": "f-fuel-break", "kind": "fuelbreak", "lessons": [{"hall": "laborers", "id": "laborers-stand-where-the-cab-can-see", "title": "Stand where the cab can see you"}], "pad_m": 44, "provenance": "AUTHORED", "title": "Wildfire fuel break", "work": "A strip thinned and cleared along a ridge; machines and hand crews working the same ground.", "x": 2600, "z": -1700}, {"halls": [{"id": "carpenters", "name": "Carpenters"}, {"id": "riggers", "name": "Riggers & Signalpersons"}], "id": "f-timber-frame", "kind": "frame", "lessons": [{"hall": "riggers", "id": "riggers-first-card", "title": "Call the first lift before anybody touches the hook"}], "pad_m": 32, "provenance": "AUTHORED", "title": "Timber-frame shelter raising", "work": "A post-and-beam shelter raised in a clearing; bents lifted and pinned.", "x": -2200, "z": -900}, {"halls": [{"id": "water-distrib", "name": "Water Distribution Fitters"}], "id": "f-water-intake", "kind": "intake", "lessons": [], "pad_m": 28, "provenance": "AUTHORED", "title": "Lake intake and main", "work": "A raw-water intake at the lake edge feeding a main down the valley.", "x": 600, "z": 2900}, {"halls": [{"id": "steel-erectors", "name": "Steel Erectors"}, {"id": "scaffold", "name": "Scaffold Erectors"}], "id": "f-fire-lookout", "kind": "lookout", "lessons": [{"hall": "steel-erectors", "id": "steel-erectors-land-it-on-the-bolts", "title": "Land the piece where the bolts can go in"}, {"hall": "scaffold", "id": "scaffold-read-the-tag", "title": "Believe the tag or believe nothing"}], "pad_m": 26, "provenance": "AUTHORED", "title": "Fire lookout tower", "work": "A steel lookout on the highest knoll; the frame erected and the access scaffold tagged.", "x": -600, "z": -2900}], "sky": "#A8C4D2", "trail_length_m": 14066, "trailhead": {"name": "Ranger station trailhead", "pad_m": 24, "x": 0, "z": 0}, "trails": [{"from": "trailhead", "length_m": 2025, "to": "f-line-clearance"}, {"from": "trailhead", "length_m": 2052, "to": "f-trail-bridge"}, {"from": "f-line-clearance", "length_m": 2110, "to": "f-water-intake"}, {"from": "trailhead", "length_m": 2377, "to": "f-timber-frame"}, {"from": "f-timber-frame", "length_m": 2561, "to": "f-fire-lookout"}, {"from": "f-line-clearance", "length_m": 2941, "to": "f-fuel-break"}]}, {"area_km2": 67.1, "biome": {"canyon_half_m": 420, "clearing": 0.45, "deciduous_share": 0.35, "feature_m": 1800, "max_tree_slope": 0.45, "model": "canyon", "octaves": 5, "palette": {"low": "#A86B45", "mid": "#8E5A3C", "rock": "#B5794E", "shore": "#C9B38A", "snow": "#E9D7B8"}, "relief_m": 420, "rim_m": 220, "rim_width_m": 400, "river_amp_m": 700, "river_half_m": 60, "river_wavelength_m": 900, "rock_density": 0.55, "snow_line_m": 99999, "stand_m": 400, "terrace_m": 36, "tree_density": 0.14, "tree_line_m": 5000, "water_level_m": 40}, "caches": [{"id": "c-cache-overhang", "kind": "cache", "off_trail_m": 1528, "provenance": "AUTHORED", "riddle": "Under the west rim, halfway between the solar mesa and the quarry.", "x": -1100, "z": 400}, {"hollow_depth_m": 12, "hollow_m": 55, "id": "c-hollow", "kind": "hollow", "off_trail_m": 1633, "provenance": "AUTHORED", "riddle": "East of the trailhead, a pothole the rain made.", "x": 2700, "z": 1200}, {"id": "c-summit-register", "kind": "summit", "position": "DERIVED at runtime: the highest ground wildsTerrain(world).summit() finds from the seed", "provenance": "DERIVED", "riddle": "The highest step of the highest mesa."}], "chunk_m": 512, "chunks_across": 16, "extent_m": 8192, "fog": "#D9C7AE", "id": "canyon", "inspiration": {"campus": "denver", "campus_city": "Denver", "evokes": "the general geography of western river canyons: stepped mesas and a river cut deep between them", "standing": "inspiration only; the terrain is AUTHORED, not real elevation"}, "name": "Red Rock Canyon", "provenance": "AUTHORED", "seed": 70913, "sites": [{"halls": [{"id": "hydro", "name": "Hydro Plant Trades"}, {"id": "divers", "name": "Commercial Divers"}], "id": "c-river-intake", "kind": "dam", "lessons": [], "pad_m": 30, "provenance": "AUTHORED", "title": "Run-of-river intake and penstock", "work": "A low weir and an intake feeding a penstock down to a small powerhouse; divers work the screens.", "x": -625, "z": -1400}, {"halls": [{"id": "pipeline", "name": "Pipeline Trades"}], "id": "c-pipeline-crossing", "kind": "pipeline", "lessons": [{"hall": "pipeline", "id": "pipeline-close-the-permit-properly", "title": "Close the permit the way it was opened"}], "pad_m": 34, "provenance": "AUTHORED", "title": "Pipeline river crossing", "work": "A pipeline crossing the canyon; tie-in digs on each side and a permit closed the way it opened.", "x": 785, "z": 1600}, {"halls": [{"id": "confined-space", "name": "Confined Space Rescue"}, {"id": "water-distrib", "name": "Water Distribution Fitters"}, {"id": "boilermakers", "name": "Boilermakers"}], "id": "c-valve-vault", "kind": "vault", "lessons": [{"hall": "boilermakers", "id": "boilermakers-get-them-out", "title": "Put somebody inside a vessel and get them back out"}], "pad_m": 24, "provenance": "AUTHORED", "title": "Valve vault rescue drill", "work": "A buried valve vault on the mesa used for a confined-space entry and retrieval drill.", "x": 1900, "z": -2300}, {"halls": [{"id": "solar", "name": "Solar Installers"}, {"id": "electricians", "name": "Electrical Workers"}], "id": "c-mesa-solar", "kind": "solar", "lessons": [], "pad_m": 50, "provenance": "AUTHORED", "title": "Mesa-top solar array", "work": "Racking and strings laid out across a flat mesa top.", "x": -2400, "z": 2200}, {"halls": [{"id": "blasters", "name": "Drillers & Blasters"}, {"id": "demolition", "name": "Demolition Workers"}], "id": "c-quarry-bench", "kind": "quarry", "lessons": [{"hall": "demolition", "id": "demolition-stand-back", "title": "Know where not to stand"}], "pad_m": 40, "provenance": "AUTHORED", "title": "Quarry bench and blast pattern", "work": "A stepped quarry face with a drill pattern marked out; everybody knows where not to stand.", "x": -2000, "z": -1900}], "sky": "#B6CDE0", "trail_length_m": 11338, "trailhead": {"name": "Mesa trailhead", "pad_m": 24, "x": 1300, "z": 300}, "trails": [{"from": "trailhead", "length_m": 1398, "to": "c-pipeline-crossing"}, {"from": "trailhead", "length_m": 2568, "to": "c-river-intake"}, {"from": "c-river-intake", "length_m": 1463, "to": "c-quarry-bench"}, {"from": "trailhead", "length_m": 2668, "to": "c-valve-vault"}, {"from": "c-pipeline-crossing", "length_m": 3241, "to": "c-mesa-solar"}]}]}</script>
+<script type="importmap">
+{"imports":{
+  "three":"./vendor/three.module.min.js",
+  "three/addons/":"./vendor/addons/"
+}}
+</script>
+<script type="module" id="wilds-main">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+/* WILDS_CORE:BEGIN */
+function wildsMulberry(seed) {
+  let a = seed >>> 0;
+  return function () {
+    a = (a + 0x6D2B79F5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function wildsNoise(seed) {
+  const rnd = wildsMulberry(seed);
+  const p = new Uint8Array(512);
+  const base = new Uint8Array(256);
+  for (let i = 0; i < 256; i++) base[i] = i;
+  for (let i = 255; i > 0; i--) {
+    const j = Math.floor(rnd() * (i + 1));
+    const t = base[i]; base[i] = base[j]; base[j] = t;
+  }
+  for (let i = 0; i < 512; i++) p[i] = base[i & 255];
+  const GX = [1, -1, 1, -1, 1, -1, 0, 0], GY = [1, 1, -1, -1, 0, 0, 1, -1];
+  const fade = (t) => t * t * t * (t * (t * 6 - 15) + 10);
+  function n2(x, y) {
+    const xi = Math.floor(x), yi = Math.floor(y);
+    const xf = x - xi, yf = y - yi;
+    const X = xi & 255, Y = yi & 255;
+    const g = (h, dx, dy) => { const k = h & 7; return GX[k] * dx + GY[k] * dy; };
+    const aa = p[p[X] + Y], ab = p[p[X] + Y + 1], ba = p[p[X + 1] + Y], bb = p[p[X + 1] + Y + 1];
+    const u = fade(xf), v = fade(yf);
+    const x1 = g(aa, xf, yf) + u * (g(ba, xf - 1, yf) - g(aa, xf, yf));
+    const x2 = g(ab, xf, yf - 1) + u * (g(bb, xf - 1, yf - 1) - g(ab, xf, yf - 1));
+    return (x1 + v * (x2 - x1)) * 0.7071;   // about -1..1
+  }
+  return n2;
+}
+
+function wildsSmooth(e0, e1, x) {
+  const t = Math.min(1, Math.max(0, (x - e0) / (e1 - e0)));
+  return t * t * (3 - 2 * t);
+}
+
+/* One world's ground. `world` is the registry entry; every field read here
+   is required by wilds/build.py, so nothing is defaulted. */
+function wildsTerrain(world) {
+  const b = world.biome;
+  const n = wildsNoise(world.seed);
+  const n2 = wildsNoise(world.seed ^ 0x5bd1e995);
+  const half = world.extent_m / 2;
+  const fbm = (x, z, oct, sc) => {
+    let s = 0, a = 1, f = 1 / sc, tot = 0;
+    for (let o = 0; o < oct; o++) { s += a * n(x * f, z * f); tot += a; a *= 0.5; f *= 2.03; }
+    return s / tot;
+  };
+  const ridged = (x, z, oct, sc) => {
+    let s = 0, a = 1, f = 1 / sc, tot = 0, w = 1;
+    for (let o = 0; o < oct; o++) {
+      let r = 1 - Math.abs(n2(x * f, z * f)); r *= r; r *= w; w = Math.min(1, r * 2);
+      s += a * r; tot += a; a *= 0.5; f *= 2.01;
+    }
+    return s / tot;
+  };
+  function raw(x, z) {
+    let h;
+    if (b.model === 'ridged') {
+      const mass = 0.5 + 0.5 * fbm(x + 913, z - 377, 3, b.feature_m * 2.2);
+      h = b.relief_m * Math.pow(ridged(x, z, b.octaves, b.feature_m), 1.25) * (0.35 + 0.9 * mass)
+        + b.relief_m * 0.18 * fbm(x, z, 3, b.feature_m * 0.5);
+    } else if (b.model === 'rolling') {
+      h = b.relief_m * (0.55 * fbm(x, z, b.octaves, b.feature_m)
+        + 0.3 * fbm(x - 4000, z + 2500, 3, b.feature_m * 3));
+    } else if (b.model === 'canyon') {
+      const plateau = b.relief_m * (0.6 + 0.25 * fbm(x, z, b.octaves, b.feature_m));
+      const steps = b.terrace_m;
+      const terr = Math.floor(plateau / steps) * steps + steps * wildsSmooth(0.75, 1, (plateau / steps) % 1);
+      const riverX = b.river_amp_m * Math.sin(z / b.river_wavelength_m) + b.river_amp_m * 0.4 * Math.sin(z / (b.river_wavelength_m * 0.37) + 1.3);
+      const d = Math.abs(x - riverX);
+      const cut = 1 - wildsSmooth(b.river_half_m, b.canyon_half_m, d + 25 * fbm(x, z, 2, 180));
+      h = terr * (1 - cut) + (b.water_level_m - 6) * cut;
+    } else {
+      throw new Error('wildsTerrain: unknown biome.model ' + b.model);
+    }
+    // the edge of the world rises to a rim so nobody walks off it
+    const edge = Math.max(Math.abs(x), Math.abs(z));
+    h += b.rim_m * wildsSmooth(half - b.rim_width_m, half, edge);
+    return h;
+  }
+  // site pads are levelled to their own centre; a hidden hollow is a bowl
+  const pads = world.sites.map((s) => ({ x: s.x, z: s.z, r: s.pad_m, h: raw(s.x, s.z) }));
+  pads.push({ x: world.trailhead.x, z: world.trailhead.z, r: world.trailhead.pad_m, h: raw(world.trailhead.x, world.trailhead.z) });
+  const hollows = world.caches.filter((c) => c.kind === 'hollow')
+    .map((c) => ({ x: c.x, z: c.z, r: c.hollow_m, d: c.hollow_depth_m }));
+  function height(x, z) {
+    let h = raw(x, z);
+    for (const p of pads) {
+      const dx = x - p.x, dz = z - p.z;
+      const d2 = dx * dx + dz * dz, R = p.r * 1.8;
+      if (d2 < R * R) h += (p.h - h) * (1 - wildsSmooth(p.r, R, Math.sqrt(d2)));
+    }
+    for (const o of hollows) {
+      const dx = x - o.x, dz = z - o.z, d = Math.sqrt(dx * dx + dz * dz);
+      if (d < o.r) { const k = 1 - d / o.r; h -= o.d * k * k * (3 - 2 * k); }
+    }
+    return h;
+  }
+  function slope(x, z) {
+    const e = 4;
+    const gx = (height(x + e, z) - height(x - e, z)) / (2 * e);
+    const gz = (height(x, z + e) - height(x, z - e)) / (2 * e);
+    return Math.sqrt(gx * gx + gz * gz);
+  }
+  /* Vegetation density 0..1 for one species at a point: the biome's bands
+     (water, tree line, snow line, steepness) decide where anything grows. */
+  function growth(x, z, h, s) {
+    if (h < b.water_level_m + 1.5) return { conifer: 0, deciduous: 0, rock: s > 0.5 ? 0.3 : 0.05 };
+    const tl = b.tree_line_m + 40 * n(x / 300, z / 300);
+    const alpine = 1 - wildsSmooth(tl - 60, tl, h);
+    const flat = 1 - wildsSmooth(b.max_tree_slope - 0.15, b.max_tree_slope, s);
+    const patch = 0.5 + 0.5 * fbm(x + 7000, z - 7000, 3, b.stand_m);
+    const tree = b.tree_density * alpine * flat * wildsSmooth(b.clearing, b.clearing + 0.25, patch);
+    const decid = b.deciduous_share * (0.5 + 0.5 * n(x / 700 + 11, z / 700 - 3));
+    const rock = b.rock_density * (0.25 + wildsSmooth(0.35, 0.9, s) + (1 - alpine) * 0.6);
+    return { conifer: tree * (1 - decid), deciduous: tree * decid, rock: Math.min(1, rock) };
+  }
+  /* The highest ground on a coarse grid, then refined: the summit register
+     is placed here, so it is derived from the seed, never typed. */
+  function summit() {
+    let best = { x: 0, z: 0, h: -1e9 };
+    const step = world.extent_m / 96, lim = half - b.rim_width_m - 200;
+    for (let x = -lim; x <= lim; x += step) for (let z = -lim; z <= lim; z += step) {
+      const h = height(x, z); if (h > best.h) best = { x, z, h };
+    }
+    for (let r = step / 2; r > 2; r /= 2) {
+      let moved = true;
+      while (moved) {
+        moved = false;
+        for (const [dx, dz] of [[r, 0], [-r, 0], [0, r], [0, -r]]) {
+          const h = height(best.x + dx, best.z + dz);
+          if (h > best.h) { best = { x: best.x + dx, z: best.z + dz, h }; moved = true; }
+        }
+      }
+    }
+    return best;
+  }
+  return { height, slope, growth, summit, raw, half };
+}
+
+/* Deterministic scatter: one candidate per cell, jittered by a hash of the
+   cell and the seed, kept when the growth density beats the hash. */
+function wildsHash(ix, iz, seed, k) {
+  let h = Math.imul(ix, 374761393) ^ Math.imul(iz, 668265263) ^ Math.imul(seed, 2246822519) ^ Math.imul(k, 3266489917);
+  h = Math.imul(h ^ (h >>> 13), 1274126177);
+  return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+}
+/* WILDS_CORE:END */
+const REG = JSON.parse(document.getElementById('wilds-registry').textContent);
+const WORLDS = new Map(REG.worlds.map((w) => [w.id, w]));
+/* Declared once. The eval (web/eval_wilds.mjs) holds these views to targets. */
+const RING_SEGS = [40, 40, 20, 10];   // grid segments per chunk by ring distance from the eye
+const RADIUS = 3;                      // chunk rings streamed around the eye
+const VEG_R = 420, VEG_CELL = 9;       // vegetation radius and scatter cell, metres
+const VEG_REFILL = 50;                 // refill vegetation after the eye moves this far
+const CAP = { conifer: 5200, deciduous: 2600, rock: 1600 };
+const SKIRT = 40, EYE_H = 1.7, WALK_MS = 1.7, RUN_MS = 5.0, FAST_MS = 24;
+const BUILD_PER_FRAME = 2;
+
+const stage = document.getElementById('stage');
+const canvas = document.getElementById('view');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(62, 1, 0.3, 9000);
+const hemi = new THREE.HemisphereLight(0xdfeeff, 0x4a4032, 1.05);
+const sun = new THREE.DirectionalLight(0xfff2dc, 1.6);
+sun.position.set(-0.5, 0.8, 0.35);
+scene.add(hemi, sun);
+const orbit = new OrbitControls(camera, canvas);
+orbit.enabled = false; orbit.maxPolarAngle = 1.45; orbit.enableDamping = false;
+
+const matTerrain = new THREE.MeshLambertMaterial({ vertexColors: true });
+const matVeg = new THREE.MeshLambertMaterial({ vertexColors: true });
+const matProp = new THREE.MeshLambertMaterial({ vertexColors: true });
+const matTrail = new THREE.MeshLambertMaterial({ color: 0xC9B48A, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
+const matWater = new THREE.MeshLambertMaterial({ color: 0x3E6E8E, transparent: true, opacity: 0.86 });
+
+let W = null, T = null, mode = 'walk';
+const chunks = new Map();              // key -> { mesh, lod }
+const worldGroup = new THREE.Group(); scene.add(worldGroup);
+const eye = { x: 0, z: 0, yaw: 0, pitch: -0.05 };
+let speedMode = 0;                     // 0 walk, 1 run, 2 fast
+const col = new THREE.Color(), col2 = new THREE.Color();
+let pal = null;
+
+function hex(c) { return new THREE.Color(c); }
+function groundColor(x, z, h, ny, out) {
+  const b = W.biome;
+  if (h < b.water_level_m + 2.5) return out.copy(pal.shore);
+  const snowAt = b.snow_line_m + 60 * Math.sin(x / 170) * Math.cos(z / 230);
+  if (h > snowAt && ny > 0.62) return out.copy(pal.snow);
+  if (ny < 0.74) return out.copy(pal.rock).lerp(pal.mid, Math.max(0, (ny - 0.6) * 3));
+  const t = Math.min(1, Math.max(0, (h - b.tree_line_m + 80) / 160));
+  out.copy(pal.mid).lerp(pal.low, t);
+  const k = 0.5 + 0.5 * Math.sin(x * 0.013 + Math.cos(z * 0.011) * 2);
+  return out.lerp(pal.low, k * 0.35);
+}
+
+/* ------------------------------------------------------ terrain chunks -- */
+function chunkGeometry(i, j, segs) {
+  const size = W.chunk_m, step = size / segs, x0 = i * size, z0 = j * size;
+  const n = segs + 1, G = segs + 3;              // one extra ring each side for normals
+  const H = new Float32Array(G * G);
+  for (let a = 0; a < G; a++) for (let c = 0; c < G; c++) H[a * G + c] = T.height(x0 + (c - 1) * step, z0 + (a - 1) * step);
+  const nv = n * n + 4 * segs;                   // grid + skirt ring
+  const pos = new Float32Array(nv * 3), nor = new Float32Array(nv * 3), clr = new Float32Array(nv * 3);
+  const put = (v, x, y, z, nx, ny, nz) => {
+    pos[v * 3] = x; pos[v * 3 + 1] = y; pos[v * 3 + 2] = z;
+    nor[v * 3] = nx; nor[v * 3 + 1] = ny; nor[v * 3 + 2] = nz;
+    groundColor(x, z, y, ny, col); clr[v * 3] = col.r; clr[v * 3 + 1] = col.g; clr[v * 3 + 2] = col.b;
+  };
+  for (let a = 0; a < n; a++) for (let c = 0; c < n; c++) {
+    const h = H[(a + 1) * G + c + 1];
+    const gx = (H[(a + 1) * G + c + 2] - H[(a + 1) * G + c]) / (2 * step);
+    const gz = (H[(a + 2) * G + c + 1] - H[a * G + c + 1]) / (2 * step);
+    const L = Math.hypot(gx, 1, gz);
+    put(a * n + c, x0 + c * step, h, z0 + a * step, -gx / L, 1 / L, -gz / L);
+  }
+  const idx = [];
+  for (let a = 0; a < segs; a++) for (let c = 0; c < segs; c++) {
+    const p = a * n + c;
+    idx.push(p, p + n, p + 1, p + 1, p + n, p + n + 1);
+  }
+  // skirt: the border walked once round, each vertex dropped SKIRT metres
+  const ring = [];
+  for (let c = 0; c < segs; c++) ring.push(c);
+  for (let a = 0; a < segs; a++) ring.push(a * n + segs);
+  for (let c = segs; c > 0; c--) ring.push(segs * n + c);
+  for (let a = segs; a > 0; a--) ring.push(a * n);
+  let v = n * n;
+  const first = v;
+  for (const r of ring) {
+    put(v, pos[r * 3], pos[r * 3 + 1] - SKIRT, pos[r * 3 + 2], nor[r * 3], nor[r * 3 + 1], nor[r * 3 + 2]);
+    v++;
+  }
+  for (let k = 0; k < ring.length; k++) {
+    const a = ring[k], b2 = ring[(k + 1) % ring.length], sa = first + k, sb = first + (k + 1) % ring.length;
+    idx.push(a, sa, b2, b2, sa, sb, a, b2, sa, b2, sb, sa);   // both faces: skirts are seen from either side
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  g.setAttribute('normal', new THREE.BufferAttribute(nor, 3));
+  g.setAttribute('color', new THREE.BufferAttribute(clr, 3));
+  g.setIndex(idx);
+  g.computeBoundingSphere();
+  return g;
+}
+const nChunks = () => W.extent_m / W.chunk_m;
+function wanted() {
+  const ci = Math.floor(eye.x / W.chunk_m), cj = Math.floor(eye.z / W.chunk_m), lim = nChunks() / 2;
+  const out = [];
+  for (let i = ci - RADIUS; i <= ci + RADIUS; i++) for (let j = cj - RADIUS; j <= cj + RADIUS; j++) {
+    if (i < -lim || j < -lim || i >= lim || j >= lim) continue;
+    const r = Math.max(Math.abs(i - ci), Math.abs(j - cj));
+    out.push({ key: i + ',' + j, i, j, lod: RING_SEGS[r], r });
+  }
+  out.sort((a, b) => a.r - b.r);
+  return out;
+}
+let queue = [];
+function updateChunks(all) {
+  const want = wanted(), keep = new Set();
+  queue = [];
+  for (const w of want) {
+    keep.add(w.key);
+    const have = chunks.get(w.key);
+    if (!have || have.lod !== w.lod) queue.push(w);
+  }
+  for (const [k, ch] of chunks) if (!keep.has(k)) { worldGroup.remove(ch.mesh); ch.mesh.geometry.dispose(); chunks.delete(k); }
+  pump(all ? Infinity : BUILD_PER_FRAME);
+}
+function pump(budget) {
+  while (queue.length && budget-- > 0) {
+    const w = queue.shift();
+    const g = chunkGeometry(w.i, w.j, w.lod);
+    const old = chunks.get(w.key);
+    if (old) { worldGroup.remove(old.mesh); old.mesh.geometry.dispose(); }
+    const m = new THREE.Mesh(g, matTerrain); m.matrixAutoUpdate = false;
+    worldGroup.add(m); chunks.set(w.key, { mesh: m, lod: w.lod });
+  }
+}
+
+/* One low-resolution mesh of the whole world: the overview and the minimap's ground. */
+let overviewMesh = null;
+function buildOverview() {
+  const segs = 128, size = W.extent_m, step = size / segs, n = segs + 1;
+  const pos = new Float32Array(n * n * 3), clr = new Float32Array(n * n * 3);
+  for (let a = 0; a < n; a++) for (let c = 0; c < n; c++) {
+    const x = -size / 2 + c * step, z = -size / 2 + a * step, h = T.height(x, z), v = (a * n + c) * 3;
+    pos[v] = x; pos[v + 1] = h; pos[v + 2] = z;
+  }
+  const idx = [];
+  for (let a = 0; a < segs; a++) for (let c = 0; c < segs; c++) { const p = a * n + c; idx.push(p, p + n, p + 1, p + 1, p + n, p + n + 1); }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals();
+  const nor = g.getAttribute('normal');
+  for (let k = 0; k < n * n; k++) { groundColor(pos[k * 3], pos[k * 3 + 2], pos[k * 3 + 1], nor.getY(k), col); clr[k * 3] = col.r; clr[k * 3 + 1] = col.g; clr[k * 3 + 2] = col.b; }
+  g.setAttribute('color', new THREE.BufferAttribute(clr, 3));
+  overviewMesh = new THREE.Mesh(g, matTerrain); overviewMesh.visible = false;
+  worldGroup.add(overviewMesh);
+}
+
+/* ------------------------------------------------------------ vegetation -- */
+function painted(geo, hexc) {
+  const g = geo.index ? geo.toNonIndexed() : geo;
+  const c = new THREE.Color(hexc), n = g.getAttribute('position').count, a = new Float32Array(n * 3);
+  for (let k = 0; k < n; k++) { a[k * 3] = c.r; a[k * 3 + 1] = c.g; a[k * 3 + 2] = c.b; }
+  g.setAttribute('color', new THREE.BufferAttribute(a, 3));
+  g.deleteAttribute('uv');
+  return g;
+}
+function at(geo, x, y, z, ry = 0) { geo.rotateY(ry); geo.translate(x, y, z); return geo; }
+const SPECIES = {
+  conifer: mergeGeometries([
+    painted(at(new THREE.CylinderGeometry(0.22, 0.34, 2.4, 5, 1, true), 0, 1.2, 0), 0x5A4030),
+    painted(at(new THREE.ConeGeometry(2.4, 5.2, 7, 1, true), 0, 4.4, 0), 0x2E4D2C),
+    painted(at(new THREE.ConeGeometry(1.7, 4.2, 7, 1, true), 0, 7.0, 0, 0.4), 0x365A33),
+  ]),
+  deciduous: mergeGeometries([
+    painted(at(new THREE.CylinderGeometry(0.2, 0.3, 3.4, 5, 1, true), 0, 1.7, 0), 0x6B5238),
+    painted(at(new THREE.IcosahedronGeometry(2.6, 0), 0, 5.0, 0), 0x6E8F3E),
+  ]),
+  rock: painted(new THREE.DodecahedronGeometry(1, 0), 0x8A857C),
+};
+const veg = {};
+for (const [k, g] of Object.entries(SPECIES)) {
+  const m = new THREE.InstancedMesh(g, matVeg, CAP[k]);
+  m.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  m.count = 0; m.frustumCulled = false;
+  scene.add(m); veg[k] = m;
+}
+let vegAt = null;
+const _m = new THREE.Matrix4(), _q = new THREE.Quaternion(), _s = new THREE.Vector3(), _p = new THREE.Vector3(), _e = new THREE.Euler();
+let trailSegs = [], clearings = [];
+function nearTrail(x, z, r) {
+  for (const s of trailSegs) {
+    const dx = s[2] - s[0], dz = s[3] - s[1], L2 = dx * dx + dz * dz;
+    let t = ((x - s[0]) * dx + (z - s[1]) * dz) / L2; t = t < 0 ? 0 : t > 1 ? 1 : t;
+    const ex = x - s[0] - t * dx, ez = z - s[1] - t * dz;
+    if (ex * ex + ez * ez < r * r) return true;
+  }
+  for (const c of clearings) { const dx = x - c.x, dz = z - c.z; if (dx * dx + dz * dz < c.r * c.r) return true; }
+  return false;
+}
+function refillVeg() {
+  vegAt = { x: eye.x, z: eye.z };
+  const cand = { conifer: [], deciduous: [], rock: [] };
+  const c0 = Math.floor((eye.x - VEG_R) / VEG_CELL), c1 = Math.floor((eye.x + VEG_R) / VEG_CELL);
+  const r0 = Math.floor((eye.z - VEG_R) / VEG_CELL), r1 = Math.floor((eye.z + VEG_R) / VEG_CELL);
+  const lim = W.extent_m / 2 - 10;
+  for (let ci = c0; ci <= c1; ci++) for (let ri = r0; ri <= r1; ri++) {
+    const x = (ci + wildsHash(ci, ri, W.seed, 1)) * VEG_CELL, z = (ri + wildsHash(ci, ri, W.seed, 2)) * VEG_CELL;
+    const dx = x - eye.x, dz = z - eye.z, d2 = dx * dx + dz * dz;
+    if (d2 > VEG_R * VEG_R || Math.abs(x) > lim || Math.abs(z) > lim) continue;
+    const roll = wildsHash(ci, ri, W.seed, 3);
+    if (roll > 0.97) continue;
+    const h = T.height(x, z), s = T.slope(x, z), g = T.growth(x, z, h, s);
+    let kind = null;
+    if (roll < g.conifer) kind = 'conifer';
+    else if (roll < g.conifer + g.deciduous) kind = 'deciduous';
+    else if (wildsHash(ci, ri, W.seed, 4) < g.rock * 0.35) kind = 'rock';
+    if (kind === null || nearTrail(x, z, kind === 'rock' ? 2.5 : 4)) continue;
+    cand[kind].push([d2, x, h, z, wildsHash(ci, ri, W.seed, 5)]);
+  }
+  for (const k of Object.keys(cand)) {
+    const list = cand[k], m = veg[k];
+    if (list.length > CAP[k]) { list.sort((a, b) => a[0] - b[0]); list.length = CAP[k]; }
+    for (let n = 0; n < list.length; n++) {
+      const [, x, h, z, r] = list[n];
+      if (k === 'rock') {
+        const sc = 0.6 + r * 2.4;
+        _e.set(r * 3, r * 7, r * 5); _q.setFromEuler(_e); _s.set(sc * (1 + r), sc * 0.6, sc);
+        _p.set(x, h + sc * 0.15, z);
+      } else {
+        const sc = 0.75 + r * 0.9;
+        _e.set(0, r * 6.28, 0); _q.setFromEuler(_e); _s.set(sc, sc * (0.9 + r * 0.5), sc);
+        _p.set(x, h - 0.2, z);
+      }
+      _m.compose(_p, _q, _s); m.setMatrixAt(n, _m);
+      col.setHSL(k === 'deciduous' ? 0.17 + r * 0.12 : 0.28 + r * 0.06, k === 'rock' ? 0.02 : 0.25, k === 'rock' ? 0.55 + r * 0.25 : 0.85 + r * 0.3);
+      m.setColorAt(n, col);
+    }
+    m.count = list.length; m.instanceMatrix.needsUpdate = true;
+    if (m.instanceColor) m.instanceColor.needsUpdate = true;
+  }
+}
+
+/* ------------------------------------------------ trails, props, water -- */
+let trailMesh = null, propMesh = null, cacheMesh = null, water = null;
+const nodePos = new Map();
+function buildTrails() {
+  const pos = [], idx = [];
+  trailSegs = [];
+  for (const leg of W.trails) {
+    const a = nodePos.get(leg.from), b = nodePos.get(leg.to);
+    trailSegs.push([a.x, a.z, b.x, b.z]);
+    const L = Math.hypot(b.x - a.x, b.z - a.z), n = Math.ceil(L / 6);
+    const px = -(b.z - a.z) / L * 1.2, pz = (b.x - a.x) / L * 1.2;
+    const base = pos.length / 3;
+    for (let k = 0; k <= n; k++) {
+      const x = a.x + (b.x - a.x) * k / n, z = a.z + (b.z - a.z) * k / n;
+      pos.push(x - px, T.height(x - px, z - pz) + 0.6, z - pz, x + px, T.height(x + px, z + pz) + 0.6, z + pz);
+      if (k < n) { const p = base + k * 2; idx.push(p, p + 2, p + 1, p + 1, p + 2, p + 3); }
+    }
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals();
+  trailMesh = new THREE.Mesh(g, matTrail); worldGroup.add(trailMesh);
+}
+function box(w, h, d, x, y, z, c, ry = 0) { return painted(at(new THREE.BoxGeometry(w, h, d), x, y, z, ry), c); }
+function cyl(r0, r1, h, x, y, z, c, seg = 6) { return painted(at(new THREE.CylinderGeometry(r0, r1, h, seg), x, y, z), c); }
+const ORANGE = 0xE8A33D, STEEL = 0x8C979C, TIMBER = 0x9A6B3F, DARK = 0x33393C, CONC = 0xB8B4AA;
+const KIT = {
+  portal: () => [box(12, 1.6, 3, 0, 7.6, 0, CONC), box(1.6, 7, 3, -5.2, 3.5, 0, CONC), box(1.6, 7, 3, 5.2, 3.5, 0, CONC), box(8.8, 6.8, 0.4, 0, 3.4, -1.3, DARK), box(3, 2, 2, 9, 1, 4, ORANGE)],
+  tower: () => [cyl(0.4, 2.8, 34, 0, 17, 0, STEEL, 4), box(16, 0.6, 0.6, 0, 30, 0, STEEL), box(10, 0.5, 0.5, 0, 26, 0, STEEL), cyl(0.3, 1.8, 30, 60, 15, 0, STEEL, 4)],
+  netting: () => [box(22, 14, 0.3, 0, 7, -6, 0x707A6A), cyl(0.2, 0.2, 15, -11, 7.5, -6, STEEL), cyl(0.2, 0.2, 15, 11, 7.5, -6, STEEL), box(4, 2.4, 2, 6, 1.2, 4, ORANGE)],
+  grader: () => [box(9, 1.6, 2.4, 0, 1.6, 0, 0xE0B23A), box(2.4, 2.2, 2.4, 3, 3.4, 0, 0xE0B23A), box(3.8, 0.8, 0.4, -1, 0.6, 0, DARK), box(8, 2.6, 2.6, -1, 1.8, 7, 0xC7473A)],
+  turbine: () => [cyl(1.4, 2.2, 60, 0, 30, 0, 0xE9ECEE, 8), box(3, 3, 7, 0, 61, 0, 0xE9ECEE), box(1, 34, 0.6, 0, 61, 3.8, 0xE9ECEE), box(18, 1.2, 18, 0, 0.6, 0, CONC)],
+  survey: () => [cyl(0.6, 0.8, 1.2, 0, 0.6, 0, CONC), cyl(0.05, 0.05, 1.6, 2, 0.8, 0, ORANGE, 4), box(6, 0.1, 6, 8, 0.05, 0, 0xDADADA)],
+  lineclear: () => [cyl(0.2, 0.28, 12, 0, 6, 0, TIMBER), box(3, 0.3, 0.3, 0, 11, 0, TIMBER), cyl(0.2, 0.28, 12, 45, 6, 0, TIMBER), box(3, 0.3, 0.3, 45, 11, 0, TIMBER), box(3, 2.8, 7, 12, 1.4, 5, 0xE9ECEE)],
+  bridge: () => [box(3, 0.4, 26, 0, 3, 0, TIMBER), box(0.2, 1.1, 26, 1.4, 3.7, 0, TIMBER), box(0.2, 1.1, 26, -1.4, 3.7, 0, TIMBER), box(4, 3, 1, 0, 1.5, 12.5, CONC), box(4, 3, 1, 0, 1.5, -12.5, CONC)],
+  fuelbreak: () => [box(5, 2.6, 2.6, 0, 1.3, 0, 0x5E7A3E), box(1.5, 1.2, 1.2, 3, 3, 0, DARK), box(30, 0.05, 60, 0, 0.03, 0, 0x8E8458)],
+  frame: () => [0, 1, 2].flatMap((k) => [box(0.4, 5, 0.4, -4, 2.5, k * 4 - 4, TIMBER), box(0.4, 5, 0.4, 4, 2.5, k * 4 - 4, TIMBER), box(8.8, 0.5, 0.5, 0, 5, k * 4 - 4, TIMBER)]).concat([box(0.4, 0.4, 9, 0, 6.8, 0, TIMBER)]),
+  intake: () => [box(6, 3, 6, 0, 1.5, 0, CONC), cyl(0.5, 0.5, 30, 0, 0.5, 18, STEEL, 8).rotateX(0), box(2, 2.4, 2, 5, 1.2, -4, ORANGE)],
+  lookout: () => [cyl(1, 3, 22, 0, 11, 0, STEEL, 4), box(5, 3, 5, 0, 23.5, 0, 0xD8D2C4), box(6, 0.4, 6, 0, 25.2, 0, DARK)],
+  dam: () => [box(40, 4, 3, 0, 2, 0, CONC), box(6, 6, 6, 18, 3, 8, CONC), cyl(0.9, 0.9, 30, 18, 1, 25, STEEL, 8)],
+  pipeline: () => [box(60, 1.1, 1.1, 0, 0.8, 0, 0x3E5C3A), box(4, 2.6, 2.4, 6, 1.3, 5, 0xE0B23A), box(3, 0.05, 8, -6, 0.03, -4, 0x6F5A45)],
+  vault: () => [box(4, 0.5, 4, 0, 0.25, 0, CONC), cyl(0.05, 0.05, 2.6, 0, 1.3, 0, ORANGE, 4), cyl(1.2, 1.2, 0.1, 0, 2.6, 0, ORANGE, 3), box(6, 2.6, 2.4, 5, 1.3, 5, 0xC7473A)],
+  solar: () => [0, 1, 2, 3, 4].flatMap((r) => [box(36, 0.12, 3, 0, 1.6, r * 7 - 14, 0x24344A)]).concat([box(4, 2.4, 3, 22, 1.2, 0, 0xE9ECEE)]),
+  quarry: () => [box(30, 8, 12, 0, 4, -14, 0xA0765A), box(24, 4, 10, 0, 2, -4, 0xA88064), box(3, 3, 5, 8, 1.5, 6, 0xE0B23A)],
+};
+function buildProps() {
+  const parts = [];
+  for (const s of W.sites) {
+    const h = T.height(s.x, s.z), ry = (s.x * 7 + s.z * 3) % 6.28;
+    for (const g of KIT[s.kind]()) { g.rotateY(ry); g.translate(s.x, h, s.z); parts.push(g); }
+    parts.push(cyl(0.15, 0.15, 7, s.x + s.pad_m * 0.6, h + 3.5, s.z, ORANGE, 5), box(1.4, 0.9, 0.05, s.x + s.pad_m * 0.6 + 0.75, h + 6.4, s.z, ORANGE));
+  }
+  const th = W.trailhead, hh = T.height(th.x, th.z);
+  parts.push(box(4, 2.4, 0.3, th.x, hh + 1.2, th.z, TIMBER), box(4.6, 0.3, 0.8, th.x, hh + 2.5, th.z, DARK));
+  propMesh = new THREE.Mesh(mergeGeometries(parts), matProp); worldGroup.add(propMesh);
+}
+let cachePos = [];
+function buildCaches() {
+  cachePos = [];
+  const parts = [];
+  for (const c of W.caches) {
+    let x, z;
+    if (c.kind === 'summit') { const s = T.summit(); x = s.x; z = s.z; } else { x = c.x; z = c.z; }
+    const h = T.height(x, z);
+    cachePos.push({ id: c.id, kind: c.kind, x, z, h, found: false });
+    parts.push(box(0.7, 0.45, 0.45, x, h + 0.22, z, 0x6B6F4A));
+    if (c.kind === 'summit') for (let k = 0; k < 4; k++) parts.push(painted(at(new THREE.DodecahedronGeometry(0.7 - k * 0.12, 0), x + 1.4, h + 0.4 + k * 0.7, z), 0x8A857C));
+  }
+  cacheMesh = new THREE.Mesh(mergeGeometries(parts), matProp); worldGroup.add(cacheMesh);
+}
+function buildWater() {
+  water = new THREE.Mesh(new THREE.PlaneGeometry(W.extent_m, W.extent_m).rotateX(-Math.PI / 2), matWater);
+  water.position.y = W.biome.water_level_m; worldGroup.add(water);
+}
+
+/* ------------------------------------------------------------ minimap -- */
+const mini = document.getElementById('minimap'), mctx = mini.getContext('2d');
+let miniBase = null;
+function buildMinimap() {
+  const N = 160, img = mctx.createImageData(N, N), half = W.extent_m / 2;
+  for (let a = 0; a < N; a++) for (let c = 0; c < N; c++) {
+    const x = -half + (c + 0.5) * W.extent_m / N, z = -half + (a + 0.5) * W.extent_m / N, h = T.height(x, z);
+    const sh = Math.max(0.55, Math.min(1.25, 1 - (T.height(x + 30, z + 30) - h) / 40));
+    if (h < W.biome.water_level_m) col.set(0x3E6E8E); else groundColor(x, z, h, 0.9, col);
+    const k = (a * N + c) * 4;
+    img.data[k] = Math.min(255, col.r * 255 * sh); img.data[k + 1] = Math.min(255, col.g * 255 * sh); img.data[k + 2] = Math.min(255, col.b * 255 * sh); img.data[k + 3] = 255;
+  }
+  const off = document.createElement('canvas'); off.width = off.height = N;
+  off.getContext('2d').putImageData(img, 0, 0);
+  miniBase = off;
+}
+function toMini(x, z) { const S = mini.width; return [(x / W.extent_m + 0.5) * S, (z / W.extent_m + 0.5) * S]; }
+function drawMinimap() {
+  const S = mini.width;
+  mctx.imageSmoothingEnabled = true; mctx.drawImage(miniBase, 0, 0, S, S);
+  mctx.strokeStyle = '#F3E3B5'; mctx.lineWidth = 1.5; mctx.beginPath();
+  for (const s of trailSegs) { const a = toMini(s[0], s[1]), b = toMini(s[2], s[3]); mctx.moveTo(a[0], a[1]); mctx.lineTo(b[0], b[1]); }
+  mctx.stroke();
+  mctx.fillStyle = '#E8A33D';
+  for (const s of W.sites) { const p = toMini(s.x, s.z); mctx.fillRect(p[0] - 3, p[1] - 3, 6, 6); }
+  const p = toMini(eye.x, eye.z);
+  mctx.save(); mctx.translate(p[0], p[1]); mctx.rotate(-eye.yaw);
+  mctx.fillStyle = '#FFFFFF'; mctx.strokeStyle = '#0C1113'; mctx.beginPath();
+  mctx.moveTo(0, -7); mctx.lineTo(5, 5); mctx.lineTo(-5, 5); mctx.closePath(); mctx.fill(); mctx.stroke(); mctx.restore();
+}
+mini.addEventListener('click', (ev) => {
+  const r = mini.getBoundingClientRect();
+  const x = ((ev.clientX - r.left) / r.width - 0.5) * W.extent_m, z = ((ev.clientY - r.top) / r.height - 0.5) * W.extent_m;
+  const lim = W.extent_m / 2 - W.biome.rim_width_m;
+  teleport(Math.max(-lim, Math.min(lim, x)), Math.max(-lim, Math.min(lim, z)), eye.yaw);
+});
+
+/* -------------------------------------------------------- site labels -- */
+const labelLayer = document.getElementById('labels');
+let labelEls = [];
+function buildLabels() {
+  labelLayer.textContent = '';
+  labelEls = W.sites.map((s) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'lbl'; b.textContent = s.title; b.dataset.site = s.id;
+    b.addEventListener('click', () => openSite(s.id));
+    labelLayer.appendChild(b);
+    return { el: b, x: s.x, z: s.z, y: T.height(s.x, s.z) + 9 };
+  });
+  const th = W.trailhead, b = document.createElement('span');
+  b.className = 'lbl th'; b.textContent = th.name; labelLayer.appendChild(b);
+  labelEls.push({ el: b, x: th.x, z: th.z, y: T.height(th.x, th.z) + 4 });
+}
+const _v = new THREE.Vector3();
+function placeLabels() {
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  for (const L of labelEls) {
+    const d = Math.hypot(L.x - camera.position.x, L.z - camera.position.z);
+    _v.set(L.x, L.y, L.z).project(camera);
+    const show = (mode === 'overview' || d < 1500) && _v.z < 1 && Math.abs(_v.x) < 1 && Math.abs(_v.y) < 1;
+    L.el.hidden = !show;
+    if (show) L.el.style.transform = `translate(${((_v.x + 1) / 2 * w).toFixed(0)}px,${((1 - _v.y) / 2 * h).toFixed(0)}px) translate(-50%,-100%)`;
+  }
+}
+
+/* ---------------------------------------------------------- site panel -- */
+const panel = document.getElementById('panel'), panelBody = document.getElementById('panel-body');
+let openId = null, thSigned = false;
+function openSite(id) {
+  const card = document.getElementById('site-' + id);
+  if (card === null) throw new Error('wilds: no card for site ' + id);
+  panelBody.textContent = '';
+  const clone = card.cloneNode(true); clone.removeAttribute('id');
+  const go = clone.querySelector('.go'); if (go) go.remove();
+  panelBody.appendChild(clone);
+  for (const q of document.querySelectorAll(`.qhook[data-wilds-place="${id}"][data-tc-quest]`)) {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'qmark'; b.textContent = 'Side quest: ' + q.textContent;
+    b.addEventListener('click', () => q.click()); panelBody.appendChild(b);
+  }
+  panel.hidden = false; openId = id;
+}
+document.getElementById('panel-close').addEventListener('click', () => { panel.hidden = true; });
+function toast(msg) {
+  const t = document.getElementById('toast'); t.textContent = msg; t.hidden = false;
+  clearTimeout(toast.timer); toast.timer = setTimeout(() => { t.hidden = true; }, 3200);
+}
+function checkNear() {
+  for (const s of W.sites) {
+    const d = Math.hypot(s.x - eye.x, s.z - eye.z);
+    if (d < s.pad_m && openId !== s.id) openSite(s.id);
+  }
+  // the trailhead book: a place quests may name ("trailhead"), signed by walking up to the board
+  if (!thSigned && Math.hypot(W.trailhead.x - eye.x, W.trailhead.z - eye.z) < 3.5) {
+    thSigned = true;
+    const hooks = document.querySelectorAll(`.qhook[data-wilds-world="${W.id}"][data-wilds-place="trailhead"][data-tc-egg]`);
+    if (hooks.length) for (const hk of hooks) hk.click();
+    else toast('You signed the trailhead book. The quest log is not wired to this page yet, so nothing is recorded.');
+  }
+  for (const c of cachePos) {
+    if (c.found) continue;
+    if (Math.hypot(c.x - eye.x, c.z - eye.z) < 4) {
+      c.found = true;
+      const hooks = document.querySelectorAll(`.qhook[data-wilds-world="${W.id}"][data-wilds-place="${c.id}"][data-tc-egg]`);
+      if (hooks.length) for (const hk of hooks) hk.click();
+      else toast('You found a hidden cache. The quest log is not wired to this page yet, so nothing is recorded.');
+    }
+  }
+}
+
+/* ------------------------------------------------------------ controls -- */
+const keys = {};
+addEventListener('keydown', (e) => {
+  if (e.target.closest && e.target.closest('input,textarea,select')) return;
+  keys[e.code] = true;
+  if (e.code === 'KeyO') setMode(mode === 'walk' ? 'overview' : 'walk');
+  if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code) && e.target === canvas) e.preventDefault();
+});
+addEventListener('keyup', (e) => { keys[e.code] = false; });
+addEventListener('blur', () => { for (const k in keys) keys[k] = false; });
+let drag = null;
+canvas.addEventListener('pointerdown', (e) => { if (mode !== 'walk') return; drag = { x: e.clientX, y: e.clientY, id: e.pointerId }; canvas.setPointerCapture(e.pointerId); canvas.focus(); });
+canvas.addEventListener('pointermove', (e) => {
+  if (!drag || e.pointerId !== drag.id) return;
+  eye.yaw -= (e.clientX - drag.x) * 0.005; eye.pitch = Math.max(-1.3, Math.min(1.2, eye.pitch - (e.clientY - drag.y) * 0.004));
+  drag.x = e.clientX; drag.y = e.clientY;
+});
+canvas.addEventListener('pointerup', () => { drag = null; });
+canvas.addEventListener('pointercancel', () => { drag = null; });
+const stick = document.getElementById('stick'), knob = stick.querySelector('i');
+const stickIn = { f: 0, s: 0, id: null };
+stick.addEventListener('pointerdown', (e) => { stickIn.id = e.pointerId; stick.setPointerCapture(e.pointerId); moveStick(e); });
+stick.addEventListener('pointermove', (e) => { if (e.pointerId === stickIn.id) moveStick(e); });
+const endStick = () => { stickIn.id = null; stickIn.f = stickIn.s = 0; knob.style.transform = ''; };
+stick.addEventListener('pointerup', endStick); stick.addEventListener('pointercancel', endStick);
+function moveStick(e) {
+  const r = stick.getBoundingClientRect(), R = r.width / 2;
+  let dx = (e.clientX - r.left - R) / R, dy = (e.clientY - r.top - R) / R; const m = Math.hypot(dx, dy);
+  if (m > 1) { dx /= m; dy /= m; }
+  stickIn.f = -dy; stickIn.s = dx; knob.style.transform = `translate(${dx * R * 0.6}px,${dy * R * 0.6}px)`;
+}
+const speedBtn = document.getElementById('speed');
+const SPEEDS = [['Walk', WALK_MS], ['Run', RUN_MS], ['Fast travel', FAST_MS]];
+speedBtn.addEventListener('click', () => { speedMode = (speedMode + 1) % 3; speedBtn.textContent = 'Pace: ' + SPEEDS[speedMode][0]; });
+document.getElementById('mode').addEventListener('click', () => setMode(mode === 'walk' ? 'overview' : 'walk'));
+function walk(dt) {
+  let f = (keys.KeyW || keys.ArrowUp ? 1 : 0) - (keys.KeyS || keys.ArrowDown ? 1 : 0) + stickIn.f;
+  let s = (keys.KeyD ? 1 : 0) - (keys.KeyA ? 1 : 0) + stickIn.s;
+  const turn = (keys.ArrowLeft ? 1 : 0) - (keys.ArrowRight ? 1 : 0) + (keys.KeyQ ? 1 : 0) - (keys.KeyE ? 1 : 0);
+  eye.yaw += turn * 1.6 * dt;
+  const m = Math.hypot(f, s); if (m > 1) { f /= m; s /= m; }
+  let v = SPEEDS[speedMode][1]; if ((keys.ShiftLeft || keys.ShiftRight) && speedMode === 0) v = RUN_MS;
+  if (f < 0) v = Math.min(v, WALK_MS);
+  const sx = Math.sin(eye.yaw), cz = Math.cos(eye.yaw);
+  const nx = eye.x + (-sx * f + cz * s) * v * dt, nz = eye.z + (-cz * f - sx * s) * v * dt;
+  const lim = W.extent_m / 2 - 20;
+  if (Math.abs(nx) < lim && Math.abs(nz) < lim && T.height(nx, nz) > W.biome.water_level_m - 0.4) { eye.x = nx; eye.z = nz; }
+}
+/* The ground the eye stands on is the finest chunk's triangles, not the
+   noise between them: on a steep slope the two differ by metres, and an
+   eye placed on the noise can end up inside the mesh. Same triangle split
+   as chunkGeometry's index order. */
+function meshHeight(x, z) {
+  const st = W.chunk_m / RING_SEGS[0], c = Math.floor(x / st), a = Math.floor(z / st);
+  const u = x / st - c, v = z / st - a;
+  const h00 = T.height(c * st, a * st), h10 = T.height((c + 1) * st, a * st), h01 = T.height(c * st, (a + 1) * st);
+  if (u + v <= 1) return h00 + u * (h10 - h00) + v * (h01 - h00);
+  const h11 = T.height((c + 1) * st, (a + 1) * st);
+  return h11 + (1 - u) * (h01 - h11) + (1 - v) * (h10 - h11);
+}
+function placeEye() {
+  camera.position.set(eye.x, Math.max(meshHeight(eye.x, eye.z), T.height(eye.x, eye.z), W.biome.water_level_m) + EYE_H, eye.z);
+  camera.rotation.set(eye.pitch, eye.yaw, 0, 'YXZ');
+}
+function teleport(x, z, yaw) {
+  eye.x = x; eye.z = z; eye.yaw = yaw; eye.pitch = -0.05;
+  if (mode === 'overview') { orbit.target.set(x, T.height(x, z), z); }
+  else placeEye();
+  updateChunks(true); refillVeg(); openId = null;
+}
+
+/* --------------------------------------------------------------- modes -- */
+function fogFor(m) {
+  scene.fog = m === 'overview' ? new THREE.Fog(W.fog, W.extent_m * 0.9, W.extent_m * 2.2)
+    : new THREE.Fog(W.fog, 250, (RADIUS + 0.4) * W.chunk_m);
+}
+function setMode(m) {
+  mode = m;
+  document.getElementById('mode').textContent = m === 'walk' ? 'Overview' : 'Walk';
+  document.getElementById('mode').setAttribute('aria-pressed', String(m === 'overview'));
+  stage.dataset.mode = m;
+  fogFor(m);
+  const walkOn = m === 'walk';
+  for (const ch of chunks.values()) ch.mesh.visible = walkOn;
+  overviewMesh.visible = !walkOn;
+  for (const k in veg) veg[k].visible = walkOn;
+  cacheMesh.visible = walkOn;
+  orbit.enabled = !walkOn;
+  if (!walkOn) {
+    orbit.target.set(0, W.biome.relief_m * 0.3, 0);
+    camera.position.set(0, W.extent_m * 0.78, W.extent_m * 0.5);
+    orbit.update();
+  } else placeEye();
+}
+
+async function loadWorld(id) {
+  const w = WORLDS.get(id);
+  if (w === undefined) throw new Error('wilds: unknown world ' + id);
+  for (const ch of chunks.values()) ch.mesh.geometry.dispose();
+  chunks.clear(); worldGroup.clear(); queue = [];
+  W = w; T = wildsTerrain(W);
+  pal = Object.fromEntries(Object.entries(W.biome.palette).map(([k, v]) => [k, hex(v)]));
+  scene.background = new THREE.Color(W.sky);
+  nodePos.clear(); nodePos.set('trailhead', W.trailhead);
+  for (const s of W.sites) nodePos.set(s.id, s);
+  clearings = W.sites.map((s) => ({ x: s.x, z: s.z, r: s.pad_m * 1.2 }));
+  buildTrails(); buildProps(); buildCaches(); buildWater(); buildOverview(); buildMinimap(); buildLabels();
+  for (const c of cachePos) clearings.push({ x: c.x, z: c.z, r: 3 });
+  const first = W.trails[0], to = nodePos.get(first.to);
+  eye.x = W.trailhead.x; eye.z = W.trailhead.z + 6;
+  eye.yaw = Math.atan2(-(to.x - eye.x), -(to.z - eye.z)); eye.pitch = -0.05;
+  for (const b of document.querySelectorAll('#switch button')) b.setAttribute('aria-pressed', String(b.dataset.world === id));
+  for (const s of document.querySelectorAll('[data-world-card]')) s.hidden = s.dataset.worldCard !== id;
+  panel.hidden = true; openId = null; thSigned = false;
+  document.getElementById('where').textContent = W.name;
+  updateChunks(true); refillVeg();
+  setMode('walk');
+  try { history.replaceState(null, '', '#' + id); } catch (e) { /* a sandboxed frame may refuse */ }
+}
+for (const b of document.querySelectorAll('#switch button')) b.addEventListener('click', () => loadWorld(b.dataset.world));
+for (const b of document.querySelectorAll('.site .go')) b.addEventListener('click', () => {
+  const s = W.sites.find((x) => x.id === b.dataset.goto);
+  if (mode !== 'walk') setMode('walk');
+  teleport(s.x, s.z + s.pad_m + 12, 0);
+  stage.scrollIntoView({ block: 'start' });
+});
+
+/* --------------------------------------------------------------- loop -- */
+function resize() {
+  const w = stage.clientWidth, h = stage.clientHeight;
+  renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+}
+addEventListener('resize', resize);
+const hud = document.getElementById('hud-alt');
+let last = performance.now(), lastInfo = { calls: 0, triangles: 0 }, miniT = 0, frameMs = 0;
+function frame(now) {
+  const dt = Math.min(0.1, (now - last) / 1000); last = now;
+  if (mode === 'walk') {
+    walk(dt); placeEye();
+    const ci = Math.floor(eye.x / W.chunk_m) + ',' + Math.floor(eye.z / W.chunk_m);
+    if (ci !== frame.cell) { frame.cell = ci; updateChunks(false); } else pump(BUILD_PER_FRAME);
+    if (Math.hypot(eye.x - vegAt.x, eye.z - vegAt.z) > VEG_REFILL) refillVeg();
+    checkNear();
+  } else orbit.update();
+  const t0 = performance.now();
+  renderer.render(scene, camera);
+  frameMs = performance.now() - t0;
+  lastInfo = { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles };
+  placeLabels();
+  if (now - miniT > 150) { miniT = now; drawMinimap(); hud.textContent = Math.round(camera.position.y - EYE_H) + ' m (authored height)'; }
+  requestAnimationFrame(frame);
+}
+
+/* Eval hooks: web/eval_wilds.mjs drives the page through these. */
+function denseSpot() {
+  let best = null; const lim = W.extent_m / 2 - W.biome.rim_width_m - 400, st = W.extent_m / 40;
+  for (let x = -lim; x <= lim; x += st) for (let z = -lim; z <= lim; z += st) {
+    const h = T.height(x, z), g = T.growth(x, z, h, T.slope(x, z)), d = g.conifer + g.deciduous;
+    if (best === null || d > best.d) best = { x, z, d };
+  }
+  return best;
+}
+window.__wilds = {
+  worlds: () => REG.worlds.map((w) => w.id),
+  load: (id) => loadWorld(id),
+  view(name) {
+    if (name === 'overview') { setMode('overview'); return; }
+    if (mode !== 'walk') setMode('walk');
+    if (name === 'trail') { const to = nodePos.get(W.trails[0].to); teleport(W.trailhead.x, W.trailhead.z + 6, Math.atan2(-(to.x - W.trailhead.x), -(to.z - W.trailhead.z - 6))); }
+    else if (name === 'dense') { const d = denseSpot(); teleport(d.x, d.z, 0.7); }
+    else if (name === 'summit') { const s = T.summit(); teleport(s.x + 3, s.z + 3, Math.atan2(s.x, s.z)); eye.pitch = -0.12; placeEye(); }
+    else throw new Error('wilds: unknown view ' + name);
+  },
+  stats: () => ({
+    world: W.id, mode, calls: lastInfo.calls, triangles: lastInfo.triangles,
+    chunks: mode === 'walk' ? chunks.size : 1, pending: queue.length,
+    instances: Object.fromEntries(Object.entries(veg).map(([k, m]) => [k, m.visible ? m.count : 0])),
+    instanced: Object.values(veg).every((m) => m.isInstancedMesh), frameMs,
+  }),
+  frameTimes(n) {
+    const gl = renderer.getContext(), out = [];
+    const px = new Uint8Array(4);
+    // readPixels cannot return until the frame is drawn, so it is the fence
+    for (let k = 0; k < n; k++) { const t = performance.now(); renderer.render(scene, camera); gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px); out.push(performance.now() - t); }
+    lastInfo = { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles };
+    return out;
+  },
+  caches: () => cachePos.map((c) => ({ ...c })),
+  eye: () => ({ ...eye }),
+  teleport: (x, z, yaw) => teleport(x, z, yaw),
+};
+resize();
+const start = (location.hash || '').slice(1);
+await loadWorld(WORLDS.has(start) ? start : REG.worlds[0].id);
+requestAnimationFrame(frame);
+document.documentElement.dataset.wildsReady = '1';
+</script>
+<script data-tc-quests>
+(function () {
+"use strict";
+/* QUEST_CORE:BEGIN - the pure quest core. No DOM, no storage, no clock: the
+   page glue hands it what it read and what time it is. Carried byte-for-byte
+   into every page that carries quests; quests/test.mjs holds it identical.
+   The evidence functions below are a verbatim copy of the ones in
+   web/build_progress.py's COMPLETION_JS, so a lesson counts here from exactly
+   the evidence the progress page counts; quests/test.mjs holds the copy. */
+const QUEST_STORE = 'tc-quests';
+const QUEST_KINDS_FINDABLE = ['treasure', 'egg'];
+const QUEST_KONAMI = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+const EVIDENCED_KINDS = ['sim', 'station', 'crib'];
+/* the reference a step of an episode kind carries, as lessons.json spells it;
+   a training episode must equal every one of these AND the lesson's hall */
+const REF_FIELDS = { walkaround: ['sim', 'point'], advisor: ['advisor', 'topic', 'answer_kind'],
+  crew: ['crew', 'role', 'topic', 'answer_kind', 'seat', 'muster'] };
+/* an episode kind whose recorded fields do not cover the step's reference can
+   never mark a step done; the missing fields are named, not skipped */
+function unmatchableKinds(episodeKinds) {
+  const out = {};
+  for (const k of Object.keys(REF_FIELDS)) {
+    const fields = episodeKinds && episodeKinds[k] && Array.isArray(episodeKinds[k].fields) ? episodeKinds[k].fields : [];
+    const missing = REF_FIELDS[k].filter((f) => !fields.includes(f));
+    if (!fields.includes('hall')) missing.push('hall');
+    if (missing.length) out[k] = missing;
+  }
+  return out;
+}
+/* the app stamps t as new Date().toISOString() (web/build_3d.py, recordEpisode);
+   an episode whose t is not a string that parses to a finite time is no match */
+function episodeTimeOk(ep) { return typeof ep.t === 'string' && isFinite(Date.parse(ep.t)); }
+function episodeEvidence(step, hall, training, meta, skipped) {
+  if (!(step.kind in REF_FIELDS) || !Array.isArray(training)) return null;
+  if (step.kind in unmatchableKinds(meta.episode_kinds)) return null;
+  for (const ep of training) {
+    if (!ep || typeof ep !== 'object' || ep.kind !== step.kind || ep.hall !== hall) continue;
+    if (!episodeTimeOk(ep)) { if (skipped) skipped.add(ep); continue; }
+    if (ep.actor !== undefined && ep.actor !== meta.human_actor) continue;
+    if (!REF_FIELDS[step.kind].every((f) => step[f] !== undefined && ep[f] === step[f])) continue;
+    const ev = { episode: step.kind, t: ep.t, hall };
+    for (const f of REF_FIELDS[step.kind]) ev[f] = step[f];
+    return ev;
+  }
+  return null;
+}
+
+function stepEvidence(step, prog, hall, training, meta, skipped) {
+  if (step.kind in REF_FIELDS) return episodeEvidence(step, hall, training, meta, skipped);
+  const sims = (prog && typeof prog.sims === 'object' && prog.sims) ? prog.sims : {};
+  const tools = (prog && typeof prog.tools === 'object' && prog.tools) ? prog.tools : {};
+  const stations = (prog && Array.isArray(prog.stations)) ? prog.stations : [];
+  if (step.kind === 'sim') {
+    const rec = Object.prototype.hasOwnProperty.call(sims, step.sim) ? sims[step.sim] : null;
+    if (!rec || typeof rec !== 'object') return null;
+    /* the app keeps one record per seat; a record that names scenarios is
+       held to the scenario the step names, one that does not is held to the seat */
+    let src = rec;
+    if (rec.scenarios && typeof rec.scenarios === 'object') {
+      if (!Object.prototype.hasOwnProperty.call(rec.scenarios, step.scenario)) return null;
+      src = rec.scenarios[step.scenario];
+      if (!src || typeof src !== 'object') return null;
+    }
+    if (src.passed !== true) return null;
+    return { sim: step.sim, scenario: step.scenario,
+      score: typeof src.score === 'number' ? src.score : null, passed: true };
+  }
+  if (step.kind === 'station') {
+    return stations.includes(step.station) ? { station: step.station } : null;
+  }
+  if (step.kind === 'crib') {
+    const rec = Object.prototype.hasOwnProperty.call(tools, step.crib) ? tools[step.crib] : null;
+    if (!rec || typeof rec !== 'object' || rec.passed !== true) return null;
+    return { crib: step.crib, passed: true };
+  }
+  /* walk and placard record nothing anywhere; walkaround, advisor and crew
+     write episodes to the training log, which is not the record this is
+     built from, and the seat-level walkaround tally names no point */
+  return null;
+}
+
+/* A lesson counts as done for play when every step of it that this device CAN
+   record carries evidence under the progress page's own rule, and there is at
+   least one such step. Silent kinds (records null and not device-marked: walk,
+   placard) and episode kinds whose fields cannot match (unmatchableKinds) are
+   recorded by nothing, so no lesson could ever count if they were required;
+   this is the line the progress page's continue point draws, not its
+   "complete", and it never enters any record. */
+function questLessonsDone(prog, training, D) {
+  if (!D || !D.lessons || !D.meta || !D.meta.step_kinds || !D.meta.episode_kinds) throw new Error('quests: lesson data missing');
+  const unmatch = unmatchableKinds(D.meta.episode_kinds);
+  const sk = D.meta.step_kinds;
+  const silent = Object.keys(sk).filter((k) => sk[k].records === null && !EVIDENCED_KINDS.includes(k));
+  const p = (prog && typeof prog === 'object' && !Array.isArray(prog)) ? prog : {};
+  const t = Array.isArray(training) ? training : null;
+  const out = new Set();
+  for (const id of Object.keys(D.lessons)) {
+    const L = D.lessons[id];
+    const rec = L.steps.filter((s) => !silent.includes(s.kind) && !(s.kind in unmatch));
+    if (!rec.length) continue;
+    if (rec.every((s) => stepEvidence(s, p, L.hall, t, D.meta, null) !== null)) out.add(id);
+  }
+  return out;
+}
+function questEmptyState() { return { found: {}, done: {}, badges: [] }; }
+function questParseState(raw) {
+  const st = questEmptyState();
+  let v = null;
+  try { v = raw ? JSON.parse(raw) : null; } catch (e) { v = null; }
+  if (!v || typeof v !== 'object' || Array.isArray(v)) return st;
+  for (const k of ['found', 'done']) {
+    if (v[k] && typeof v[k] === 'object' && !Array.isArray(v[k])) {
+      for (const id of Object.keys(v[k])) if (typeof v[k][id] === 'string') st[k][id] = v[k][id];
+    }
+  }
+  if (Array.isArray(v.badges)) st.badges = v.badges.filter((b) => typeof b === 'string');
+  return st;
+}
+function questCheck(q, st, lessonsDone, T) {
+  if (!q || !q.requires) throw new Error('quests: no such quest');
+  const missing = [];
+  for (const id of q.requires.lessons) if (!lessonsDone.has(id)) missing.push({ kind: 'lesson', id, title: T.lessons[id] });
+  for (const h of q.requires.halls) {
+    let any = false;
+    for (const l of lessonsDone) if (T.lesson_hall[l] === h) any = true;
+    if (!any) missing.push({ kind: 'hall', id: h, title: T.halls[h] });
+  }
+  for (const id of q.requires.quests) if (!(id in st.done) && !(id in st.found)) missing.push({ kind: 'quest', id, title: T.quests[id] });
+  return { ok: missing.length === 0, missing };
+}
+/* records a find (treasure/egg) or a completion (everything else); returns a
+   new state and whether anything changed. Never records a locked entry. */
+function questRecord(st, q, iso, check) {
+  if (!check.ok) return { state: st, changed: false };
+  const slot = QUEST_KINDS_FINDABLE.includes(q.kind) ? 'found' : 'done';
+  if (q.id in st[slot]) return { state: st, changed: false };
+  const next = { found: { ...st.found }, done: { ...st.done }, badges: st.badges.slice() };
+  next[slot][q.id] = iso;
+  if (!next.badges.includes(q.reward.badge)) next.badges.push(q.reward.badge);
+  return { state: next, changed: true };
+}
+/* one keystroke into a rolling buffer; returns the triggers it completes */
+function questKeys(buf, key, words) {
+  const b = buf.concat([key]).slice(-24);
+  const hits = [];
+  const tail = b.slice(-QUEST_KONAMI.length).map((k) => (k.length === 1 ? k.toLowerCase() : k));
+  if (tail.length === QUEST_KONAMI.length && tail.every((k, i) => k === QUEST_KONAMI[i])) hits.push('konami');
+  const typed = b.filter((k) => k.length === 1).join('').toLowerCase();
+  for (const w of words) if (typed.endsWith(w)) hits.push('typed:' + w);
+  return { buf: b, hits };
+}
+/* QUEST_CORE:END */
+const QD = {"honesty":"Quests, games, treasures, easter eggs and badges are play: they are kept on this device only, they are never evidence of anything, and they never enter a completion record.","keys":{"progress":"tc-progress","training":"tc-training"},"lessons_href":"trade_craft_lessons.html","quests_href":"trade_craft_quests.html","lessons":{"boilermakers-get-them-out":{"hall":"boilermakers","steps":[{"n":1,"kind":"walk"},{"n":2,"kind":"placard"},{"n":3,"kind":"walkaround","sim":"weld-bead","point":"gas"},{"n":4,"kind":"crew","topic":"never","answer_kind":"say","crew":"confined-space-crew","role":"attendant","seat":"weld-bead","muster":"procedure"},{"n":5,"kind":"advisor","advisor":"safety-steward","topic":"refuse","answer_kind":"say"}]},"carpenters-return-it-the-same":{"hall":"carpenters","steps":[{"n":1,"kind":"walk"},{"n":2,"kind":"placard"},{"n":3,"kind":"advisor","advisor":"crib-keeper","topic":"tools","answer_kind":"read"},{"n":4,"kind":"crib","crib":"envelope"}]},"crane-ops-read-the-chart":{"hall":"crane-ops","steps":[{"n":1,"kind":"walk"},{"n":2,"kind":"walkaround","sim":"load-chart","point":"chart"},{"n":3,"kind":"sim","sim":"load-chart","scenario":"bay-pick-list"},{"n":4,"kind":"advisor","advisor":"operator","topic":"task","answer_kind":"read"}]},"demolition-stand-back":{"hall":"demolition","steps":[{"n":1,"kind":"walk"},{"n":2,"kind":"placard"},{"n":3,"kind":"walkaround","sim":"excavator-trench","point":"tracks"},{"n":4,"kind":"advisor","advisor":"safety-steward","topic":"refuse","answer_kind":"say"}]},"heavy-equip-listen-to-the-dash":{"hall":"heavy-equip","steps":[{"n":1,"kind":"walk"},{"n":2,"kind":"walkaround","sim":"forklift-run","point":"tires"},{"n":3,"kind":"advisor","advisor":"operator","topic":"gauges","answer_kind":"read"},{"n":4,"kind":"sim","sim":"forklift-run","scenario":"oak-lane"}]},"laborers-stand-where-the-cab-can-see":{"hall":"laborers","steps":[{"n":1,"kind":"walk"},{"n":2,"kind":"placard"},{"n":3,"kind":"advisor","advisor":"safety-steward","topic":"ppe","answer_kind":"read"},{"n":4,"kind":"walkaround","sim":"excavator-trench","point":"edge"},{"n":5,"kind":"crew","topic":"where","answer_kind":"say","crew":"trench-crew","role":"spotter","seat":"excavator-trench","muster":"layout"}]},"line-workers-find-the-fault":{"hall":"line-workers","steps":[{"n":1,"kind":"walk"},{"n":2,"kind":"placard"},{"n":3,"kind":"crib","crib":"energy"},{"n":4,"kind":"walk"},{"n":5,"kind":"advisor","advisor":"inspector","topic":"score","answer_kind":"say"}]},"pipeline-close-the-permit-properly":{"hall":"pipeline","steps":[{"n":1,"kind":"walk"},{"n":2,"kind":"placard"},{"n":3,"kind":"walkaround","sim":"weld-bead","point":"extraction"},{"n":4,"kind":"crew","topic":"close","answer_kind":"say","crew":"hot-work-crew","role":"permit-holder","seat":"weld-bead","muster":"safety"},{"n":5,"kind":"sim","sim":"weld-bead","scenario":"oak-flange-bead"}]},"riggers-first-card":{"hall":"riggers","steps":[{"n":1,"kind":"walk"},{"n":2,"kind":"advisor","advisor":"foreman","topic":"walk","answer_kind":"read"},{"n":3,"kind":"walkaround","sim":"rigging-signals","point":"sightline"},{"n":4,"kind":"sim","sim":"rigging-signals","scenario":"bay-first-card"}]},"scaffold-read-the-tag":{"hall":"scaffold","steps":[{"n":1,"kind":"walk"},{"n":2,"kind":"placard"},{"n":3,"kind":"station","station":"st003"},{"n":4,"kind":"walkaround","sim":"scaffold-bay","point":"tag"},{"n":5,"kind":"advisor","advisor":"safety-steward","topic":"ppe","answer_kind":"read"}]},"shoring-read-the-ground-again":{"hall":"shoring","steps":[{"n":1,"kind":"walk"},{"n":2,"kind":"advisor","advisor":"layout-hand","topic":"check","answer_kind":"say"},{"n":3,"kind":"walkaround","sim":"excavator-trench","point":"slew-brake"},{"n":4,"kind":"crew","topic":"again","answer_kind":"say","crew":"trench-crew","role":"trench-competent-person","seat":"excavator-trench","muster":"layout"},{"n":5,"kind":"sim","sim":"excavator-trench","scenario":"oak-fill"}]},"steel-erectors-land-it-on-the-bolts":{"hall":"steel-erectors","steps":[{"n":1,"kind":"walk"},{"n":2,"kind":"walkaround","sim":"crane-lift","point":"limits"},{"n":3,"kind":"crew","topic":"procedure","answer_kind":"read","crew":"crane-lift-crew","role":"signalperson","seat":"crane-lift","muster":"coordination"},{"n":4,"kind":"sim","sim":"crane-lift","scenario":"bay-steel"},{"n":5,"kind":"advisor","advisor":"foreman","topic":"handoff","answer_kind":"say"}]},"surveyors-trust-the-control":{"hall":"surveyors","steps":[{"n":1,"kind":"walk"},{"n":2,"kind":"placard"},{"n":3,"kind":"advisor","advisor":"layout-hand","topic":"control","answer_kind":"say"},{"n":4,"kind":"advisor","advisor":"layout-hand","topic":"check","answer_kind":"say"},{"n":5,"kind":"crib","crib":"control"}]},"teamsters-check-the-truck-before-the-load":{"hall":"teamsters","steps":[{"n":1,"kind":"walk"},{"n":2,"kind":"placard"},{"n":3,"kind":"walkaround","sim":"forklift-run","point":"mast"},{"n":4,"kind":"sim","sim":"forklift-run","scenario":"oak-lane"},{"n":5,"kind":"advisor","advisor":"operator","topic":"walk","answer_kind":"read"}]}},"meta":{"step_kinds":{"walk":{"act":"walk to a room of this hall","records":null,"stage":"class","reads":"web/interiors.py","why_no_episode":"arriving somewhere is not an achievement, and a bundle that logged footsteps would be counting attendance while claiming to teach"},"placard":{"act":"read the door placard of a room and take on what it requires","records":null,"stage":"class","reads":"surfaces/registry/finishes.json","why_no_episode":"the placard states the room condition record; reading a record changes nothing and is nobody's score"},"station":{"act":"take a training station at its bench","records":null,"stage":"class","reads":"stations/registry/stations.json","why_no_episode":"a station mark lands in the device-local progress record the halls already keep; the training log holds simulator, advisor, crew and walkaround episodes and this pack adds no fifth kind to it"},"crib":{"act":"run the district crib check at the pegboard","records":null,"stage":"class","reads":"tools/registry/toolcribs.json","why_no_episode":"the crib check is graded deterministically against the crib record and kept with the progress record, not as a training episode"},"walkaround":{"act":"walk one pre-shift point of a seat and mark it","records":"walkaround","stage":"floor","reads":"sims/registry/sims.json","why_no_episode":null},"sim":{"act":"run one seat on the scenario its campus owns","records":"sim","stage":"floor","reads":"sims/registry/sims.json","why_no_episode":null},"advisor":{"act":"ask the advisor who stands in this room one of its fixed topics","records":"advisor","stage":"class","reads":"agents/registry/advisors.json","why_no_episode":null},"crew":{"act":"ask one role of the standing crew one of its fixed topics while the seat runs","records":"crew","stage":"floor","reads":"agents/registry/crews.json","why_no_episode":null}},"episode_kinds":{"sim":{"fields":["t","kind","campus","hall","sim","scenario","controls","actor","operator","outcome"],"actor":"one of ACTORS: `human` or `scripted-reference`","operator":"{level, seed, scenario, steps, dt} - present ONLY when actor is scripted-reference: the closed level name, the integer seed of its fixed-seed generator, the scenario id, the number of control steps the run took, and the fixed step length when the run was headless (steps x dt is then its deterministic sim time - the `time` axis itself is wall-clock and informational) or null when a learner watched it at real time; absent on a human episode","outcome_shape":{"passed":"bool","rows":"[{axis, value, ok}] - the rubric rows","trace":"[{t, gauges}] - OPTIONAL, present only when TRACE is on: ~1 Hz samples of the sim's own gauges() readout across the run, capped at TRACE['max_samples']"},"granularity":"episode-level by default: the scenario and control scheme a run was attempted under, and how it ended. With TRACE on, also a coarse (~1 Hz) gauge trace across the run - still not a per-tick physics or joint trajectory; see TRACE below","what":"one completed simulator run"},"advisor":{"fields":["t","kind","campus","hall","advisor","topic","answer_kind"],"outcome_shape":null,"granularity":"one exchange: which fixed topic was asked and whether the answer was read from a record or written in the advisor registry","what":"one advisor question asked and answered"},"crew":{"fields":["t","kind","campus","hall","crew","role","topic","answer_kind"],"outcome_shape":null,"granularity":"one exchange with one role of one crew: which crew was standing, which role was asked, which fixed topic, and whether the answer was read from a record or written in the crews registry","what":"one crew role asked one question while its seat was running"},"walkaround":{"fields":["t","kind","campus","hall","sim","point"],"outcome_shape":null,"granularity":"one point marked - not a score, the same habit the sim registry already declares is not a gate","what":"one pre-shift walkaround point checked"}},"human_actor":"human"},"titles":{"lessons":{"boilermakers-get-them-out":"Put somebody inside a vessel and get them back out","carpenters-return-it-the-same":"Return it in the state you would want to find it","crane-ops-read-the-chart":"Refuse the pick the chart refuses","demolition-stand-back":"Know where not to stand","heavy-equip-listen-to-the-dash":"Listen to the dash before you replace anything","laborers-stand-where-the-cab-can-see":"Stand where the cab can see you","line-workers-find-the-fault":"Find the fault instead of replacing things","pipeline-close-the-permit-properly":"Close the permit the way it was opened","riggers-first-card":"Call the first lift before anybody touches the hook","scaffold-read-the-tag":"Believe the tag or believe nothing","shoring-read-the-ground-again":"Read the ground again after the rain","steel-erectors-land-it-on-the-bolts":"Land the piece where the bolts can go in","surveyors-trust-the-control":"Work from control, not from something near it","teamsters-check-the-truck-before-the-load":"Check the truck before you check the load"},"lesson_hall":{"boilermakers-get-them-out":"boilermakers","carpenters-return-it-the-same":"carpenters","crane-ops-read-the-chart":"crane-ops","demolition-stand-back":"demolition","heavy-equip-listen-to-the-dash":"heavy-equip","laborers-stand-where-the-cab-can-see":"laborers","line-workers-find-the-fault":"line-workers","pipeline-close-the-permit-properly":"pipeline","riggers-first-card":"riggers","scaffold-read-the-tag":"scaffold","shoring-read-the-ground-again":"shoring","steel-erectors-land-it-on-the-bolts":"steel-erectors","surveyors-trust-the-control":"surveyors","teamsters-check-the-truck-before-the-load":"teamsters"},"halls":{},"quests":{}},"quests":[{"id":"treasure-wilds-mountain-trailhead","kind":"treasure","title":"Sign the trailhead book: High Country","world":"wilds:mountain","place":"trailhead","requires":{"lessons":[],"halls":[],"quests":[]},"unlock_text":"Open to everyone.","hint":"Every trail in High Country starts at the trailhead. Find its book.","reward":{"badge":"badge-treasure-wilds-mountain-trailhead","label":"High Country walker"},"band":"K-5"},{"id":"side-wilds-m-adit-portal","kind":"side","title":"Adit portal and ground support","world":"wilds:mountain","place":"m-adit-portal","requires":{"lessons":["shoring-read-the-ground-again"],"halls":[],"quests":[]},"unlock_text":"To unlock: walk \"Read the ground again after the rain\".","hint":"A mine adit driven into the hillside: ground support, ventilation and a portal that has to stay open.","reward":{"badge":"badge-side-wilds-m-adit-portal","label":"Adit portal and ground support crew"}},{"id":"side-wilds-m-hv-corridor","kind":"side","title":"High-voltage line corridor","world":"wilds:mountain","place":"m-hv-corridor","requires":{"lessons":["line-workers-find-the-fault"],"halls":[],"quests":[]},"unlock_text":"To unlock: walk \"Find the fault instead of replacing things\".","hint":"A transmission line crossing the valley on lattice towers; stringing, clearances and fault finding.","reward":{"badge":"badge-side-wilds-m-hv-corridor","label":"High-voltage line corridor crew"}},{"id":"side-wilds-m-rockfall-netting","kind":"side","title":"Rockfall netting on a road cut","world":"wilds:mountain","place":"m-rockfall-netting","requires":{"lessons":["riggers-first-card"],"halls":[],"quests":[]},"unlock_text":"To unlock: walk \"Call the first lift before anybody touches the hook\".","hint":"Mesh and anchors hung on a cut slope above the road; rope access and lifted panels.","reward":{"badge":"badge-side-wilds-m-rockfall-netting","label":"Rockfall netting on a road cut crew"}},{"id":"side-wilds-m-snow-road","kind":"side","title":"Snow-road grading on the pass","world":"wilds:mountain","place":"m-snow-road","requires":{"lessons":["teamsters-check-the-truck-before-the-load","heavy-equip-listen-to-the-dash"],"halls":[],"quests":[]},"unlock_text":"To unlock: walk \"Check the truck before you check the load\", \"Listen to the dash before you replace anything\".","hint":"Graders and plough trucks keeping a mountain road open; machines checked before they climb.","reward":{"badge":"badge-side-wilds-m-snow-road","label":"Snow-road grading on the pass crew"}},{"id":"side-wilds-m-wind-ridge","kind":"side","title":"Ridge-top turbine pad","world":"wilds:mountain","place":"m-wind-ridge","requires":{"lessons":["crane-ops-read-the-chart"],"halls":[],"quests":[]},"unlock_text":"To unlock: walk \"Refuse the pick the chart refuses\".","hint":"A crane pad on a ridge for a wind turbine; the lift chart decides what goes up in the wind.","reward":{"badge":"badge-side-wilds-m-wind-ridge","label":"Ridge-top turbine pad crew"}},{"id":"side-wilds-m-survey-control","kind":"side","title":"Survey control on the high ground","world":"wilds:mountain","place":"m-survey-control","requires":{"lessons":["surveyors-trust-the-control"],"halls":[],"quests":[]},"unlock_text":"To unlock: walk \"Work from control, not from something near it\".","hint":"A control point and a drone landing square; everything below is laid out from here.","reward":{"badge":"badge-side-wilds-m-survey-control","label":"Survey control on the high ground crew"}},{"id":"treasure-wilds-forest-trailhead","kind":"treasure","title":"Sign the trailhead book: Deep Timber","world":"wilds:forest","place":"trailhead","requires":{"lessons":[],"halls":[],"quests":[]},"unlock_text":"Open to everyone.","hint":"Every trail in Deep Timber starts at the trailhead. Find its book.","reward":{"badge":"badge-treasure-wilds-forest-trailhead","label":"Deep Timber walker"},"band":"K-5"},{"id":"side-wilds-f-line-clearance","kind":"side","title":"Utility line clearance","world":"wilds:forest","place":"f-line-clearance","requires":{"lessons":["line-workers-find-the-fault"],"halls":[],"quests":[]},"unlock_text":"To unlock: walk \"Find the fault instead of replacing things\".","hint":"A distribution line through the timber: the right-of-way cut back and the line walked for faults.","reward":{"badge":"badge-side-wilds-f-line-clearance","label":"Utility line clearance crew"}},{"id":"side-wilds-f-trail-bridge","kind":"side","title":"Trail bridge crew","world":"wilds:forest","place":"f-trail-bridge","requires":{"lessons":["carpenters-return-it-the-same"],"halls":[],"quests":[]},"unlock_text":"To unlock: walk \"Return it in the state you would want to find it\".","hint":"A timber footbridge over a creek; carpenters framing, labourers packing material in.","reward":{"badge":"badge-side-wilds-f-trail-bridge","label":"Trail bridge crew crew"}},{"id":"side-wilds-f-fuel-break","kind":"side","title":"Wildfire fuel break","world":"wilds:forest","place":"f-fuel-break","requires":{"lessons":["laborers-stand-where-the-cab-can-see"],"halls":[],"quests":[]},"unlock_text":"To unlock: walk \"Stand where the cab can see you\".","hint":"A strip thinned and cleared along a ridge; machines and hand crews working the same ground.","reward":{"badge":"badge-side-wilds-f-fuel-break","label":"Wildfire fuel break crew"}},{"id":"side-wilds-f-timber-frame","kind":"side","title":"Timber-frame shelter raising","world":"wilds:forest","place":"f-timber-frame","requires":{"lessons":["riggers-first-card"],"halls":[],"quests":[]},"unlock_text":"To unlock: walk \"Call the first lift before anybody touches the hook\".","hint":"A post-and-beam shelter raised in a clearing; bents lifted and pinned.","reward":{"badge":"badge-side-wilds-f-timber-frame","label":"Timber-frame shelter raising crew"}},{"id":"side-wilds-f-fire-lookout","kind":"side","title":"Fire lookout tower","world":"wilds:forest","place":"f-fire-lookout","requires":{"lessons":["scaffold-read-the-tag","steel-erectors-land-it-on-the-bolts"],"halls":[],"quests":[]},"unlock_text":"To unlock: walk \"Believe the tag or believe nothing\", \"Land the piece where the bolts can go in\".","hint":"A steel lookout on the highest knoll; the frame erected and the access scaffold tagged.","reward":{"badge":"badge-side-wilds-f-fire-lookout","label":"Fire lookout tower crew"}},{"id":"treasure-wilds-canyon-trailhead","kind":"treasure","title":"Sign the trailhead book: Red Rock Canyon","world":"wilds:canyon","place":"trailhead","requires":{"lessons":[],"halls":[],"quests":[]},"unlock_text":"Open to everyone.","hint":"Every trail in Red Rock Canyon starts at the trailhead. Find its book.","reward":{"badge":"badge-treasure-wilds-canyon-trailhead","label":"Red Rock Canyon walker"},"band":"K-5"},{"id":"side-wilds-c-pipeline-crossing","kind":"side","title":"Pipeline river crossing","world":"wilds:canyon","place":"c-pipeline-crossing","requires":{"lessons":["pipeline-close-the-permit-properly"],"halls":[],"quests":[]},"unlock_text":"To unlock: walk \"Close the permit the way it was opened\".","hint":"A pipeline crossing the canyon; tie-in digs on each side and a permit closed the way it opened.","reward":{"badge":"badge-side-wilds-c-pipeline-crossing","label":"Pipeline river crossing crew"}},{"id":"side-wilds-c-valve-vault","kind":"side","title":"Valve vault rescue drill","world":"wilds:canyon","place":"c-valve-vault","requires":{"lessons":["boilermakers-get-them-out"],"halls":[],"quests":[]},"unlock_text":"To unlock: walk \"Put somebody inside a vessel and get them back out\".","hint":"A buried valve vault on the mesa used for a confined-space entry and retrieval drill.","reward":{"badge":"badge-side-wilds-c-valve-vault","label":"Valve vault rescue drill crew"}},{"id":"side-wilds-c-quarry-bench","kind":"side","title":"Quarry bench and blast pattern","world":"wilds:canyon","place":"c-quarry-bench","requires":{"lessons":["demolition-stand-back"],"halls":[],"quests":[]},"unlock_text":"To unlock: walk \"Know where not to stand\".","hint":"A stepped quarry face with a drill pattern marked out; everybody knows where not to stand.","reward":{"badge":"badge-side-wilds-c-quarry-bench","label":"Quarry bench and blast pattern crew"}}]};
+
+const QW = window;
+const Q_BY = {};
+for (const q of QD.quests) Q_BY[q.id] = q;
+const Q_ON = { found: [], done: [], locked: [] };
+function qRead(k) { try { return QW.localStorage.getItem(k); } catch (e) { return null; } }
+function qJSON(raw) { try { return raw ? JSON.parse(raw) : null; } catch (e) { return null; } }
+function qState() { return questParseState(qRead(QUEST_STORE)); }
+function qSave(st) { try { QW.localStorage.setItem(QUEST_STORE, JSON.stringify(st)); return true; } catch (e) { return false; } }
+function qLessonsDone() { return questLessonsDone(qJSON(qRead(QD.keys.progress)), qJSON(qRead(QD.keys.training)), QD); }
+function qEmit(ev, x) { for (const fn of Q_ON[ev]) { try { fn(x); } catch (e) { /* a listener's fault is its own */ } } }
+function qEntry(id) { const q = Q_BY[id]; if (!q) throw new Error('quests: ' + id + ' is not carried on this page'); return q; }
+function qCheck(id) { return questCheck(qEntry(id), qState(), qLessonsDone(), QD.titles); }
+function qToast(msg) {
+  let t = document.querySelector('[data-tc-toast]');
+  if (!t) { t = document.createElement('div'); t.className = 'tc-toast'; t.setAttribute('data-tc-toast', ''); t.setAttribute('role', 'status'); t.setAttribute('aria-live', 'polite'); document.body.appendChild(t); }
+  t.textContent = msg; t.classList.add('on');
+  clearTimeout(qToast.h); qToast.h = setTimeout(() => t.classList.remove('on'), 5200);
+}
+function qRecord(id, findable) {
+  const q = qEntry(id);
+  if (findable !== QUEST_KINDS_FINDABLE.includes(q.kind)) throw new Error('quests: ' + id + ' is a ' + q.kind);
+  const c = qCheck(id);
+  if (!c.ok) { qToast('Locked: ' + q.title + '. ' + q.unlock_text); qEmit('locked', { id, check: c }); return c; }
+  const r = questRecord(qState(), q, new Date().toISOString(), c);
+  if (r.changed) {
+    qSave(r.state);
+    qToast((findable ? 'Found: ' : 'Done: ') + q.title + ' - badge "' + q.reward.label + '". ' + QD.honesty);
+    qEmit(findable ? 'found' : 'done', { id, quest: q });
+    qRender();
+  }
+  return { ok: true };
+}
+function qRender() {
+  for (const el of document.querySelectorAll('[data-tc-questlog]')) {
+    if (typeof QW.TCQuestsRender === 'function') { QW.TCQuestsRender(el, QW.TCQuests); continue; }
+    const st = qState(); const ld = qLessonsDone();
+    const ul = document.createElement('ul'); ul.className = 'tc-log';
+    for (const q of QD.quests) {
+      const got = (q.id in st.done) || (q.id in st.found);
+      const c = questCheck(q, st, ld, QD.titles);
+      const li = document.createElement('li');
+      li.dataset.state = got ? 'got' : (c.ok ? 'open' : 'locked');
+      li.textContent = (got ? '✓ ' : (c.ok ? '○ ' : '■ ')) + q.title + ' - ' + (got ? q.reward.label : (c.ok ? q.hint : q.unlock_text));
+      ul.appendChild(li);
+    }
+    el.replaceChildren(ul);
+  }
+}
+QW.TCQuests = {
+  data: QD,
+  state: qState,
+  lessonsDone: qLessonsDone,
+  check: qCheck,
+  complete: (id) => qRecord(id, false),
+  find: (id) => qRecord(id, true),
+  on: (ev, fn) => { if (!(ev in Q_ON)) throw new Error('quests: no event ' + ev); Q_ON[ev].push(fn); },
+  render: qRender,
+  toast: qToast,
+};
+function qBind() {
+  const words = [];
+  const keyed = {};
+  for (const el of document.querySelectorAll('[data-tc-egg]')) {
+    const id = el.getAttribute('data-tc-egg');
+    const trig = el.getAttribute('data-tc-trigger');
+    if (!trig) {
+      el.addEventListener('click', () => qRecord(id, true));
+      el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); qRecord(id, true); } });
+    } else if (trig === 'konami' || trig.startsWith('typed:')) {
+      if (trig.startsWith('typed:')) words.push(trig.slice(6));
+      (keyed[trig] = keyed[trig] || []).push(id);
+    } else if (trig.startsWith('clicks:')) {
+      const n = Number(trig.slice(7));
+      const target = document.querySelector(el.getAttribute('data-tc-target') || '');
+      if (!target || !(n > 0)) continue;
+      let count = 0; let last = 0;
+      target.addEventListener('click', () => {
+        const now = performance.now();
+        count = (now - last < 1500) ? count + 1 : 1; last = now;
+        if (count >= n) { count = 0; qRecord(id, true); }
+      });
+    }
+  }
+  let buf = [];
+  if (Object.keys(keyed).length) {
+    document.addEventListener('keydown', (e) => {
+      if (typeof e.key !== 'string') return;
+      const r = questKeys(buf, e.key, words); buf = r.buf;
+      for (const h of r.hits) for (const id of (keyed[h] || [])) qRecord(id, true);
+    });
+  }
+  for (const el of document.querySelectorAll('[data-tc-quest]')) {
+    const id = el.getAttribute('data-tc-quest');
+    el.addEventListener('click', () => qRecord(id, false));
+  }
+  qRender();
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', qBind); else qBind();
+})();
+</script>
+
+</div></body>
+</html>

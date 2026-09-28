@@ -48,16 +48,16 @@ $ node completion/verify.mjs completion/fixture/good.json
 ok record.fields: checked 6, failing 0
 ok digest: checked 2, failing 0
 ok identity.signature: checked 1, failing 0
-ok ids.lesson: checked 56, failing 0
-ok ids.hall: checked 56, failing 0
-ok ids.step: checked 512, failing 0
+ok ids.lesson: checked 116, failing 0
+ok ids.hall: checked 116, failing 0
+ok ids.step: checked 952, failing 0
 ok ids.sim: checked 4, failing 0
 ok ids.scenario: checked 2, failing 0
 ok ids.station: checked 1, failing 0
 ok ids.district: checked 0, failing 0
-ok step.recording-evidence: checked 145, failing 0
+ok step.recording-evidence: checked 255, failing 0
 ok step.episode-evidence: checked 26, failing 0
-ok lesson.complete-all-steps: checked 56, failing 0
+ok lesson.complete-all-steps: checked 116, failing 0
 ok sim.threshold: checked 2, failing 0
 ok ladder.prerequisite: checked 40, failing 0
 note sim.threshold: rigging-signals has no scalar threshold in sims.json; passed=true is taken from the record and not re-derived
@@ -80,16 +80,16 @@ ok record.fields: checked 6, failing 0
 FAIL digest: checked 2, failing 1
      digest does not recompute over the canonical record
 ok identity.signature: checked 1, failing 0
-ok ids.lesson: checked 56, failing 0
-ok ids.hall: checked 56, failing 0
-ok ids.step: checked 512, failing 0
+ok ids.lesson: checked 116, failing 0
+ok ids.hall: checked 116, failing 0
+ok ids.step: checked 952, failing 0
 ok ids.sim: checked 4, failing 0
 ok ids.scenario: checked 2, failing 0
 ok ids.station: checked 1, failing 0
 ok ids.district: checked 0, failing 0
-ok step.recording-evidence: checked 145, failing 0
+ok step.recording-evidence: checked 255, failing 0
 ok step.episode-evidence: checked 26, failing 0
-ok lesson.complete-all-steps: checked 56, failing 0
+ok lesson.complete-all-steps: checked 116, failing 0
 ok sim.threshold: checked 2, failing 0
 ok ladder.prerequisite: checked 40, failing 0
 note sim.threshold: rigging-signals has no scalar threshold in sims.json; passed=true is taken from the record and not re-derived

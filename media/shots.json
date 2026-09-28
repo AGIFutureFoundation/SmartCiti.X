@@ -1,0 +1,293 @@
+{
+  "fps": 24,
+  "width": 1600,
+  "height": 900,
+  "clips": [
+    {
+      "id": "campus-green-crane-up",
+      "title": "Campus green, crane-up reveal",
+      "shows": "The Treasure Island campus green and its halls, rising from low over the green to a high three-quarter view",
+      "page": "web/trade_craft_3d.html",
+      "view": "campus:treasure-island",
+      "move": "crane-up",
+      "seconds": 7,
+      "hero": false,
+      "setup": [
+        [
+          "quality",
+          "high"
+        ],
+        [
+          "view",
+          "campus:treasure-island"
+        ]
+      ],
+      "path": {
+        "kind": "lerp",
+        "eye0": [
+          0,
+          40,
+          210
+        ],
+        "eye1": [
+          60,
+          230,
+          290
+        ],
+        "at0": [
+          0,
+          10,
+          0
+        ],
+        "at1": [
+          0,
+          0,
+          0
+        ]
+      },
+      "known_issue": "shadow striping on the green and the water once the camera climbs past about 120 m (second half of the move); not hero quality - re-shoot lower"
+    },
+    {
+      "id": "campus-green-low-dolly",
+      "title": "Campus green, low lateral dolly",
+      "shows": "The Treasure Island campus green and its training yard, the camera sliding sideways low over the green",
+      "page": "web/trade_craft_3d.html",
+      "view": "campus:treasure-island",
+      "move": "lateral dolly (low)",
+      "seconds": 6,
+      "hero": true,
+      "known_issue": null,
+      "setup": [
+        [
+          "quality",
+          "high"
+        ],
+        [
+          "view",
+          "campus:treasure-island"
+        ]
+      ],
+      "path": {
+        "kind": "lerp",
+        "eye0": [
+          -70,
+          38,
+          205
+        ],
+        "eye1": [
+          70,
+          44,
+          195
+        ],
+        "at0": [
+          -20,
+          8,
+          0
+        ],
+        "at1": [
+          20,
+          8,
+          0
+        ]
+      }
+    },
+    {
+      "id": "region-board-orbit",
+      "title": "Region board, slow orbit",
+      "shows": "The ten-campus region board turning slowly under a high three-quarter camera",
+      "page": "web/trade_craft_3d.html",
+      "view": "region",
+      "move": "orbit",
+      "seconds": 6,
+      "hero": true,
+      "setup": [
+        [
+          "quality",
+          "high"
+        ],
+        [
+          "view",
+          "region"
+        ]
+      ],
+      "path": {
+        "kind": "orbit",
+        "center": [
+          10,
+          0,
+          0
+        ],
+        "r0": 330,
+        "r1": 300,
+        "h0": 210,
+        "h1": 190,
+        "deg0": -12,
+        "deg1": 22
+      },
+      "known_issue": null
+    },
+    {
+      "id": "hall-orbit",
+      "title": "Hall exterior, close orbit",
+      "shows": "One trade hall seen from outside, the camera circling it at roof height",
+      "page": "web/trade_craft_3d.html",
+      "view": "hall",
+      "move": "orbit",
+      "seconds": 6,
+      "hero": true,
+      "setup": [
+        [
+          "quality",
+          "high"
+        ],
+        [
+          "view",
+          "hall"
+        ]
+      ],
+      "path": {
+        "kind": "orbit",
+        "center": [
+          0,
+          2,
+          0
+        ],
+        "r0": 52,
+        "r1": 46,
+        "h0": 22,
+        "h1": 18,
+        "deg0": 30,
+        "deg1": 75
+      },
+      "known_issue": null
+    },
+    {
+      "id": "hall-interior-dolly",
+      "title": "Hall interior, eye-level dolly",
+      "shows": "Standing inside a trade hall, the camera moving forward at eye height along the floor",
+      "page": "web/trade_craft_3d.html",
+      "view": "hall",
+      "move": "dolly-in",
+      "seconds": 6,
+      "hero": false,
+      "setup": [
+        [
+          "quality",
+          "high"
+        ],
+        [
+          "view",
+          "hall"
+        ]
+      ],
+      "path": {
+        "kind": "lerp",
+        "eye0": [
+          0,
+          1.7,
+          16
+        ],
+        "eye1": [
+          0,
+          1.7,
+          8
+        ],
+        "at0": [
+          0,
+          1.6,
+          0
+        ],
+        "at1": [
+          0,
+          1.5,
+          -4
+        ]
+      },
+      "known_issue": null
+    },
+    {
+      "id": "avatar-locker-orbit",
+      "title": "Avatar locker, turntable orbit",
+      "shows": "The avatar on its locker stand, the camera circling it at chest height",
+      "page": "web/trade_craft_3d.html",
+      "view": "avatar",
+      "move": "orbit",
+      "seconds": 6,
+      "hero": false,
+      "setup": [
+        [
+          "quality",
+          "high"
+        ],
+        [
+          "view",
+          "avatar"
+        ]
+      ],
+      "path": {
+        "kind": "orbit",
+        "center": [
+          0,
+          1.1,
+          0
+        ],
+        "r0": 6.0,
+        "r1": 5.2,
+        "h0": 2.2,
+        "h1": 1.8,
+        "deg0": 20,
+        "deg1": 80
+      },
+      "known_issue": null
+    },
+    {
+      "id": "sim-crane-seat",
+      "title": "Simulator seat running",
+      "shows": "The crane-lift seat running under the scripted reference operator, from the seat's own camera",
+      "page": "web/trade_craft_3d.html",
+      "view": "sim:crane-lift",
+      "move": "locked-off (the seat owns the camera)",
+      "seconds": 6,
+      "hero": false,
+      "setup": [
+        [
+          "quality",
+          "high"
+        ],
+        [
+          "simStart",
+          "crane-lift:optimal"
+        ]
+      ],
+      "path": {
+        "kind": "hold"
+      },
+      "known_issue": null
+    },
+    {
+      "id": "globe-flyover",
+      "title": "Globe, slow flyover",
+      "shows": "The globe geomap turning toward the campus network and easing in",
+      "page": "web/trade_craft_geomap.html",
+      "view": "globe",
+      "move": "flyover",
+      "seconds": 6,
+      "hero": false,
+      "setup": [],
+      "path": {
+        "kind": "globe",
+        "lng0": -140,
+        "lng1": -100,
+        "lat0": 25,
+        "lat1": 36,
+        "zoom0": 1.6,
+        "zoom1": 3.0,
+        "bearing0": 0,
+        "bearing1": 0,
+        "pitch0": 0,
+        "pitch1": 0
+      },
+      "known_issue": null
+    }
+  ]
+}

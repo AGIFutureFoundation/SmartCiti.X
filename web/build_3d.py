@@ -259,7 +259,9 @@ for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
             'xr.ended', 'xr.unavailable', 'xr.noNavigatorXr', 'xr.banner',
             'xr.spaceFloor', 'xr.spaceLocal', 'xr.seatYours', 'xr.handsOnSeat',
             'xr.operator', 'xr.operatorDone', 'xr.operatorWatching',
-            'xr.perf', 'xr.perfNextSession', 'xr.notWalkable', 'xr.walkableCity')},
+            'xr.perf', 'xr.perfNextSession', 'xr.notWalkable', 'xr.walkableCity',
+            'campus3d.questlog', 'campus3d.play', 'campus3d.locked', 'campus3d.open',
+            'campus3d.treasure', 'campus3d.egg', 'campus3d.hooks')},
         'districts': {k: v['name'] for k, v in c['districts'].items()},
         'strands': c['strands'], 'tiers': c['tiers'], 'states': c['states'],
     }
@@ -420,7 +422,120 @@ assert _eh, 'web/eval_scene.mjs no longer states its draw-call headroom'
 HALL_CALL_BASE = int(_eb.group(1).replace('_', ''))
 HALL_CALL_CEILING = round(HALL_CALL_BASE * float(_eh.group(1)))
 
+compliance_reg = json.load(open(ROOT / 'compliance/registry/compliance.json'))
+evals_reg = json.load(open(ROOT / 'evals/registry/evals.json'))
+venue_reg = json.load(open(ROOT / 'venue/registry/venue.json'))
+
+# ------------------------------------------------ CAMPUS QUEST LAYER ------
+# Side quests, treasures and easter eggs in the walkable campus. Play only:
+# nothing here enters a completion record (campus3d.play says so on the
+# page). Every gate is a lesson id read from lessons/registry/lessons.json,
+# every quote is read from the registry it names - compliance placards,
+# the curriculum eval's own limit sentence, the measured venue's counts -
+# and a missing field is a KeyError here, never a default.
+#
+# INTEGRATION HOOK (QUEST_CONTRACT v1): quests/registry/quests.json is owned
+# by QUESTS. Once it and web/questkit.py exist, every id below must resolve
+# in it with the same world, and the page carries quest_js("campus") after
+# its main script. Until then the page's own glue (questFind/questCheck in
+# QUEST3D_JS) shows finds for the visit and fails closed on every gate.
+QUEST_REG_PATH = ROOT / 'quests/registry/quests.json'
+QUESTS_WIRED = QUEST_REG_PATH.exists() and (HERE / 'questkit.py').exists()
+sys.path.insert(0, str(HERE))
+from questkit import quest_js, QUEST_CSS   # noqa: E402 - the quest contract's helper
+assert QUESTS_WIRED, ('quest layer: quests/registry/quests.json and web/questkit.py are the quest '
+                      'contract this page consumes; one of them is missing')
+_qreg = {q['id']: q for q in json.load(open(QUEST_REG_PATH))['quests']}
+_label_strand = {d['label']: s for s, d in ROOM_DEFS.items()}
+_lay_of = {h['slug']: h['lay'] for h in HALLS}
+_lay_strands = [{r['strand'] for r in lay} for _, lay in LAY_LIST]
+# side quests are CONSUMED from the registry exactly as QUESTS wrote them:
+# a hall quest stands in the room its `place` names, a seat quest at the
+# yard seat its `place` names; the gate is the registry's own `requires`
+_q_hall, _q_seat = {}, {}
+for _q in _qreg.values():
+    if _q['kind'] != 'side':
+        continue
+    if _q['world'].startswith('hall:'):
+        _sg = _q['world'][5:]
+        _st = _label_strand[_q['place']]
+        assert _st in _lay_strands[_lay_of[_sg]], (
+            f'quest layer: {_q["id"]} stands in {_q["place"]}, a room hall {_sg} does not lay out')
+        _q_hall[_sg] = {'id': _q['id'], 'lessons': _q['requires']['lessons'],
+                        'strand': _st, 'title': _q['title'], 'unlock': _q['unlock_text']}
+    elif _q['world'] == 'campus' and _q['id'].startswith('side-seat-'):
+        assert _q['place'] in sims_reg['sims'], f'quest layer: {_q["id"]} names no sim seat'
+        _q_seat[_q['place']] = {'id': _q['id'], 'lessons': _q['requires']['lessons'],
+                                'title': _q['title'], 'unlock': _q['unlock_text']}
+assert _q_hall and _q_seat, 'quest layer: the registry carries no hall or seat side quests'
+_q_treasure = {}
+for _sg in sorted(_q_hall):
+    # the treasure sits in a room whose PPE placard the compliance ledger
+    # records as hung - a hazard room first - and reads that placard back
+    _strands = _lay_strands[_lay_of[_sg]]
+    _rooms = compliance_reg['halls'][_sg]['rooms']
+    _hung = [s for s in _rooms if _rooms[s]['placard']['hung'] and s in _strands]
+    assert _hung, f'quest layer: compliance records no hung placard in a laid-out room of {_sg}'
+    _pick = sorted(_hung, key=lambda s: (not _rooms[s]['hazard_room'], s))[0]
+    _q_treasure[_sg] = {'id': f'treasure-placard-{_sg}', 'strand': _pick,
+                        'items': _rooms[_pick]['placard']['items'],
+                        'hazard_room': _rooms[_pick]['hazard_room'],
+                        'src': f'compliance/registry/compliance.json halls.{_sg}.rooms.{_pick}.placard.items'}
+# campus greens: one treasure per campus, each quoting one module verbatim
+_GREEN_QUOTES = [
+    {'mod': 'evals', 'src': 'evals/registry/evals.json limit.sentence (quoted from '
+     + evals_reg['limit']['quoted_from'] + ')', 'text': evals_reg['limit']['sentence']},
+    {'mod': 'venue', 'src': 'venue/registry/venue.json counts, source.tier, honesty.a_box_is_not_a_room',
+     'text': (f"contents_meshes {venue_reg['counts']['contents_meshes']} · "
+              f"contents_clusters {venue_reg['counts']['contents_clusters']} · "
+              f"floor_plates {venue_reg['counts']['floor_plates']} · tier {venue_reg['source']['tier']} — "
+              + venue_reg['honesty']['a_box_is_not_a_room'].split('. ')[0] + '.')},
+    {'mod': 'compliance', 'src': 'compliance/registry/compliance.json honesty.is_not',
+     'text': 'The compliance ledger is not ' + ', not '.join(compliance_reg['honesty']['is_not']) + '.'},
+]
+_q_green = {k: {'id': f'treasure-green-{k}', **_GREEN_QUOTES[i % len(_GREEN_QUOTES)]}
+            for i, k in enumerate(sorted(campuses_reg))}
+# the secret room sits behind the back partition of the first hall on the
+# flagship that has a lesson - chosen by rule, not by hand
+_egg_hall = next(sg for sg in campuses_reg['treasure-island']['halls'] if sg in _q_hall)
+QUEST3D = {
+    'hall': _q_hall, 'treasure': _q_treasure, 'seat': _q_seat, 'green': _q_green,
+    'eggs': {
+        'konami': 'egg-konami-sky',             # the konami code: a meteor shower across the sky
+        'partition': 'egg-secret-partition',    # a gem behind a hall's back partition
+        'advisor': 'egg-advisor-hidden-line',   # the same advisor greeted three times running
+        'placard': 'egg-brand-placard-clicks',  # the academy's name plate clicked seven times
+        'night': 'egg-night-owl',               # the hour set to night inside a hall
+        'typed': 'egg-typed-solidarity',        # the word solidarity typed in the scene
+    },
+    'eggHall': _egg_hall,
+    'advisorLine': ('AUTHORED easter-egg line, not advice: "You came back three times. '
+                    'On a real job that is called asking again, and it is always allowed."'),
+    'placardClicks': 7,
+    'typedWord': 'solidarity',
+}
+QUEST3D_IDS = ([v['id'] for v in _q_hall.values()] + [v['id'] for v in _q_treasure.values()]
+               + [v['id'] for v in _q_seat.values()] + [v['id'] for v in _q_green.values()]
+               + list(QUEST3D['eggs'].values()))
+assert len(QUEST3D_IDS) == len(set(QUEST3D_IDS)), 'quest layer: duplicate quest ids'
+assert all(re.fullmatch(r'[a-z0-9]+(-[a-z0-9]+)*', q) for q in QUEST3D_IDS), (
+    'quest layer: a quest id is not kebab-case')
+# Treasures and eggs are this page's own finds. Each one QUESTS has put in
+# the registry is live (the engine records it); one not yet registered is
+# PENDING - it still stands and still opens its panel, but no call reaches
+# the engine with an id it would refuse. A registered id must agree on its
+# world and kind; the pending list is printed at build time, never hidden.
+_want_world = {v['id']: f'hall:{sg}' for sg, v in _q_treasure.items()}
+_want_world.update({v['id']: 'campus' for v in _q_green.values()})
+_want_world.update({v: 'campus' for v in QUEST3D['eggs'].values()})
+for _id, _w in _want_world.items():
+    if _id in _qreg:
+        assert _qreg[_id]['world'] == _w, f'quest layer: {_id} is {_qreg[_id]["world"]} in the registry, {_w} here'
+        assert _qreg[_id]['kind'] in ('treasure', 'egg'), f'quest layer: {_id} is not findable in the registry'
+QUEST3D['pending'] = sorted(i for i in _want_world if i not in _qreg)
+
 DATA = json.dumps({
+    'quest3d': QUEST3D,
     'districts': {k: {'name': d['name'], 'halls': d['halls'], 'hue': HUES[k]}
                   for k, d in districts_reg.items()},
     'campuses': campuses_reg,
@@ -5494,6 +5609,7 @@ function openAdvisor(aid, topicId) {
   // one's scroll offset could drop a reader into the middle of it
   document.getElementById('panel').scrollTop = 0;
   document.body.classList.add('open');
+  questAdvisorEgg(aid, topicId);
 }
 
 
@@ -7043,6 +7159,7 @@ body.open #bar > *:not(#guideBtn){pointer-events:none;opacity:.3}
 @media(prefers-reduced-motion:reduce){#panel{transition:none}}
 </style>
 <style>__NAV_CSS__</style>
+<style>__QUEST_CSS__</style>
 <style>
 /* The site nav on a full-window canvas. It is fixed, so it takes no flow
    space and the canvas keeps innerWidth x innerHeight (every pointer and
@@ -7123,6 +7240,7 @@ __NAV__<h1 id="ptitle" class="vh">SmartCiti.X : Trade Craft Academy — __H1_TEX
   <button id="restorationBtn" class="barbtn" aria-label="Bay Restoration sites and training tracks">🌊</button>
   <select id="hour" aria-label="hour of the day"></select>
   <button id="guideBtn" class="barbtn" aria-label="open the guide: what this place is and how to move in it">❓ Guide</button>
+  <button id="questBtn" class="barbtn" aria-label="__QUESTLOG_LABEL__">🧭</button>
 
   <button id="vrBtn" class="barbtn" style="display:none">🥽 VR</button>
   <button id="arBtn" class="barbtn" style="display:none">📱 AR</button>
@@ -8013,6 +8131,7 @@ function setPhase(id) {
   const sel = document.getElementById('hour');
   if (sel && sel.value !== id) sel.value = id;
   applyAtmos(campusKey);          // one path: the hour is part of the light
+  questPhase(id);
 }
 window.__tc3dPhase = (id) => {
   if (id !== undefined) setPhase(id);
@@ -11934,9 +12053,9 @@ window.__tc3dChapters = openChapters;
 // load-chart board - so stepping onto one off the campus concrete is a
 // change you can hear. The rect is recorded where the pad is BUILT.
 let yardPads = [];
-let seatHits = [], nearSeat = null;
+let seatHits = [], nearSeat = null, yardSeatsAt = [];
 function buildTrainingYard(g, R) {
-  seatHits = []; yardPads = [];
+  seatHits = []; yardPads = []; yardSeatsAt = [];
   const halls = new Set(D.campuses[campusKey]?.halls ?? []);
   if (!halls.size) return;                       // a hub: no home halls, no yard
   const seats = [...new Set([...halls]
@@ -11976,6 +12095,7 @@ function buildTrainingYard(g, R) {
       hueMatOf(hue));
     post.position.set(sx, 1.35, sz); post.castShadow = true;
     post.userData.seat = id; yg.add(post); seatHits.push(post);
+    yardSeatsAt.push({ id, x: yg.position.x + sx, z: yg.position.z + sz });
     campusSolid(yg.position.x + sx, yg.position.z + sz, .24);
     const head = new THREE.Mesh(new THREE.OctahedronGeometry(.62), mat.post);
     head.position.set(sx, 3.1, sz); head.castShadow = true;
@@ -14645,6 +14765,8 @@ renderer.domElement.addEventListener('pointerdown', (e) => {
 // the left controller's ray in a headset - so in-session picking opens
 // exactly what a click would
 function pickWith(ray) {
+  // a quest marker, treasure or egg gem answers before anything behind it
+  if ((view === 'hall' || view === 'campus') && questPick(ray)) return;
   if (view === 'region') {
     const phit = ray.intersectObjects(plates, false)[0];
     if (phit?.object.userData.campus) showCampus(phit.object.userData.campus);
@@ -15463,6 +15585,7 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
 __GUIDE_JS__
 __XR_JS__
 
+__QUEST3D_JS__
 const clock = new THREE.Clock();
 renderer.setAnimationLoop(() => {
   const dt = clock.getDelta();
@@ -15509,6 +15632,7 @@ renderer.setAnimationLoop(() => {
   advisorProximity(dt);
   faunaStep(clock.elapsedTime, dt);
   labelStep(dt);
+  questStep(dt);
   roomLitStep();
   // The sun's shadow box rides with the view, so it is placed after
   // everything that can move the camera this frame and before the frame is
@@ -15522,14 +15646,314 @@ renderer.setAnimationLoop(() => {
 </html>
 '''
 
+QUEST3D_JS = r"""/* ------------------------------------------ side quests, treasures, eggs ---
+
+   Play laid over the campus: side-quest markers at the yard's simulator
+   seats and in each hall's lesson room, gated by that hall's own lesson
+   ids; a treasure in each hall that reads back the PPE placard the
+   compliance ledger records as hung there; a treasure on every campus
+   green quoting the curriculum eval, the measured venue or the ledger
+   itself, verbatim; and six easter eggs. None of it is recorded as
+   learning - campus3d.play says so in every panel it opens.
+
+   ONE DRAW CALL, WHATEVER IS STANDING. Every marker, treasure, egg gem and
+   meteor is an instance of a single InstancedMesh (QPOOL) with one
+   geometry and one material, rewritten whenever the view changes. A
+   treasure that added a mesh per instance would add a draw call per
+   instance, and the hall budget in web/eval_scene.mjs is draw calls. The
+   pool casts no shadow (a shadow pass is a second call) and carries no
+   label (the legibility limits count signs, and a gem is found, not read).
+
+   INTEGRATION HOOK (QUEST_CONTRACT v1): every gate and every find goes
+   through questCheck()/questFind(), which call window.TCQuests when the
+   quest engine is on the page (quest_js("campus"), included AFTER this
+   module). Until then a gate is LOCKED - fail closed, nothing is guessed
+   from storage this page does not own - and a find is listed for the
+   visit only. */
+const Q3 = D.quest3d;
+const QCAP = 64;
+const QCOL = { locked: 0x8a8f98, open: 0x4cd964, treasure: 0xffc83d,
+               found: 0x6b5a2a, egg: 0xb07cff, meteor: 0xfff3c4 };
+const qGeo = new THREE.OctahedronGeometry(1, 0);
+const qMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: .35,
+  metalness: .25, emissive: 0x2a2410 });
+qGeo.userData.shared = true; qMat.userData.shared = true;
+const QPOOL = new THREE.InstancedMesh(qGeo, qMat, QCAP);
+QPOOL.name = 'quest-pool';
+QPOOL.castShadow = false; QPOOL.receiveShadow = false;
+QPOOL.frustumCulled = false;          // instances span the whole campus
+QPOOL.count = 0; QPOOL.visible = false;
+QPOOL.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+QPOOL.setColorAt(0, new THREE.Color(0xffffff));
+scene.add(QPOOL);
+let qItems = [], qKey = '', qLoc = '', qMeteorT = 0, qSub = false;
+const qSeen = new Set();              // this visit's finds, when no engine is wired
+const _qDummy = new THREE.Object3D(), _qCol = new THREE.Color();
+const qApi = () => window.TCQuests || null;
+function questCheck(id) {
+  const api = qApi();
+  return api ? api.check(id) : { ok: false, missing: null };
+}
+const qEsc = (s) => String(s).replace(/[&<>"]/g,
+  (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function questPanel(head, body) {
+  if (walkActive && plc.isLocked) plc.unlock();
+  document.getElementById('pbody').innerHTML = '<h2>' + qEsc(head) + '</h2>' + body
+    + '<p class="src">' + qEsc(t('campus3d.play')) + '</p>'
+    + (qApi() ? '' : '<p class="src">' + qEsc(t('campus3d.hooks')) + '</p>');
+  document.getElementById('panel').scrollTop = 0;
+  document.body.classList.add('open');
+}
+const qPending = new Set(Q3.pending);
+function questFind(id, kind, body) {
+  const api = qApi();
+  // the engine gates, records and toasts - but only an id the registry
+  // carries; a pending one is shown for this visit and recorded nowhere
+  if (api && !qPending.has(id)) api.find(id);
+  qSeen.add(id);
+  questPanel(t(kind === 'egg' ? 'campus3d.egg' : 'campus3d.treasure'), body
+    + (qPending.has(id) ? '<p class="src">' + qEsc(id)
+       + ': pending entry in quests/registry/quests.json, so nothing is recorded</p>' : ''));
+  qKey = '';                          // re-tint: a found treasure dims
+}
+function lessonList(ids) {
+  return '<ul>' + ids.map((lid) => {
+    const L = LESSONS[lid];
+    if (!L) throw new Error('quest layer: lesson ' + lid + ' is not in D.lessons');
+    return '<li><a href="trade_craft_lessons.html#lesson-' + qEsc(lid) + '">'
+      + qEsc(L.title) + '</a> <span class="src">' + qEsc(lid) + '</span></li>';
+  }).join('') + '</ul>';
+}
+function questMarker(q, title) {
+  const c = questCheck(q.id);
+  if (c.ok) {
+    const api = qApi(); if (api) api.complete(q.id);
+    return questPanel(title, '<p class="focus">' + qEsc(t('campus3d.open')) + '</p>'
+      + lessonList(q.lessons) + '<p class="src">' + qEsc(q.id) + '</p>');
+  }
+  questPanel(title, '<p class="focus">' + qEsc(t('campus3d.locked')) + '</p>'
+    + lessonList(q.lessons) + '<p class="src">' + qEsc(q.id) + '</p>');
+}
+function treasureBody(tr) {
+  return '<blockquote>' + qEsc(tr.text) + '</blockquote><p class="src">' + qEsc(tr.src) + '</p>';
+}
+function placardBody(tr) {
+  return '<p class="focus">' + qEsc(D.roomDefs[tr.strand].label) + '</p>'
+    + '<blockquote>' + tr.items.map(qEsc).join(' · ') + '</blockquote>'
+    + '<p class="src">' + qEsc(tr.src) + (tr.hazard_room ? ' · hazard room' : '') + '</p>';
+}
+function qRoomAt(strand) {
+  const r = roomRects.find((x) => x.strand === strand);
+  if (!r) throw new Error('quest layer: hall ' + slug + ' lays out no ' + strand + ' room');
+  return r;
+}
+/* What stands where, for the view on screen. Rebuilt only when the view,
+   the hall, the campus or the locale changes, or a find re-tints it. */
+function questLayout() {
+  const items = [];
+  if (view === 'hall' && Q3.hall[slug]) {
+    const q = Q3.hall[slug], r = qRoomAt(q.strand);
+    items.push({ id: q.id, kind: 'marker', x: (r.x0 + r.x1) / 2, y: 2.6,
+      z: (r.z0 + r.z1) / 2, s: [.34, .7, .34], q, title: q.title });
+    const tr = Q3.treasure[slug], tr0 = qRoomAt(tr.strand);
+    items.push({ id: tr.id, kind: 'treasure', x: tr0.x1 - .9, y: .35, z: tr0.z1 - .9,
+      s: [.22, .28, .22], tr });
+    if (slug === Q3.eggHall) {
+      // behind the back partition: past the deepest room, where nobody
+      // walking the rooms looks - the secret room of this campus
+      const zb = Math.max(...roomRects.map((x) => x.z1)), xb = Math.max(...roomRects.map((x) => x.x1));
+      items.push({ id: Q3.eggs.partition, kind: 'egg', x: xb - 1.2, y: .4, z: zb + 1.1,
+        s: [.2, .26, .2] });
+    }
+  } else if (view === 'campus') {
+    for (const st of yardSeatsAt) {
+      const q = Q3.seat[st.id];
+      if (!q) continue;                // a seat no lesson gates carries no marker
+      items.push({ id: q.id, kind: 'marker', x: st.x + 1.7, y: 1.6, z: st.z,
+        s: [.3, .6, .3], q, title: q.title });
+    }
+    const gr = Q3.green[campusKey];
+    if (!gr) throw new Error('quest layer: no green treasure for campus ' + campusKey);
+    items.push({ id: gr.id, kind: 'treasure', x: 9, y: .5, z: 41, s: [.3, .38, .3], tr: gr });
+  }
+  return items;
+}
+function questTint(it) {
+  if (it.kind === 'marker') return questCheck(it.id).ok ? QCOL.open : QCOL.locked;
+  if (it.kind === 'treasure') return qSeen.has(it.id) ? QCOL.found : QCOL.treasure;
+  if (it.kind === 'meteor') return QCOL.meteor;
+  return QCOL.egg;
+}
+function questWrite(time) {
+  const all = qItems.concat(qMeteorT > 0 ? qMeteors : []);
+  const n = Math.min(QCAP, all.length);
+  for (let i = 0; i < n; i++) {
+    const it = all[i];
+    if (it.kind === 'meteor') {
+      const k = 1 - qMeteorT / 5;
+      _qDummy.position.set(it.x + it.vx * k, it.y + it.vy * k, it.z);
+      _qDummy.rotation.set(0, 0, Math.atan2(it.vy, it.vx) + Math.PI / 2);
+    } else {
+      const bob = it.kind === 'marker' ? Math.sin(time * 2 + i) * .12 : 0;
+      _qDummy.position.set(it.x, it.y + bob, it.z);
+      _qDummy.rotation.set(0, time * (it.kind === 'marker' ? 1.2 : .6), 0);
+    }
+    _qDummy.scale.set(it.s[0], it.s[1], it.s[2]);
+    _qDummy.updateMatrix();
+    QPOOL.setMatrixAt(i, _qDummy.matrix);
+    QPOOL.setColorAt(i, _qCol.setHex(it.kind === 'meteor' ? QCOL.meteor : it.col));
+  }
+  QPOOL.count = n;
+  QPOOL.visible = n > 0;
+  QPOOL.instanceMatrix.needsUpdate = true;
+  if (QPOOL.instanceColor) QPOOL.instanceColor.needsUpdate = true;
+}
+let qMeteors = [];
+function questStep(dt) {
+  const key = view + '|' + slug + '|' + campusKey + '|' + loc + '|' + yardSeatsAt.length;
+  if (key !== qKey) {
+    qKey = key;
+    qItems = (view === 'hall' || view === 'campus') ? questLayout() : [];
+    for (const it of qItems) it.col = questTint(it);
+    const api = qApi();
+    if (api && !qSub) {             // the engine's own finds re-tint the pool
+      qSub = true;
+      for (const ev of ['found', 'done']) api.on(ev, () => { qKey = ''; });
+    }
+    if (loc !== qLoc) {
+      qLoc = loc;
+      document.getElementById('questBtn').setAttribute('aria-label', t('campus3d.questlog'));
+    }
+  }
+  if (qMeteorT > 0) qMeteorT = Math.max(0, qMeteorT - dt);
+  if (!qItems.length && !(qMeteorT > 0)) { if (QPOOL.visible) { QPOOL.count = 0; QPOOL.visible = false; } return; }
+  questWrite(clock.elapsedTime);
+  // walking up to a treasure or an egg finds it, like clicking it would
+  if (walkActive && !document.body.classList.contains('open')) {
+    const e = eyePos();
+    for (const it of qItems) {
+      if (it.kind === 'marker' || qSeen.has(it.id)) continue;
+      if (Math.hypot(e.x - it.x, e.z - it.z) < 1.8) { questActivate(it); break; }
+    }
+  }
+}
+function questActivate(it) {
+  if (it.kind === 'marker') return questMarker(it.q, it.title);
+  if (it.kind === 'treasure') return questFind(it.id, 'treasure', it.tr.items ? placardBody(it.tr) : treasureBody(it.tr));
+  if (it.kind === 'egg') return questFind(it.id, 'egg',
+    '<p class="focus">A room behind the partition that no lesson sends you to.</p>'
+    + '<p class="src">AUTHORED · ' + qEsc(it.id) + '</p>');
+}
+function questPick(ray) {
+  if (!QPOOL.visible || !qItems.length) return false;
+  // the instances move with the view, so the pool's bounds are re-read
+  // before a ray is tested against them, never a stale sphere
+  QPOOL.computeBoundingSphere(); QPOOL.computeBoundingBox?.();
+  const hit = ray.intersectObject(QPOOL, false)[0];
+  if (!hit || hit.instanceId === undefined || hit.instanceId >= qItems.length) return false;
+  questActivate(qItems[hit.instanceId]);
+  return true;
+}
+/* ---- the eggs that are not gems ---- */
+function questEgg(name, body) {
+  const id = Q3.eggs[name];
+  if (!id) throw new Error('quest layer: no egg named ' + name);
+  questFind(id, 'egg', body + '<p class="src">AUTHORED · ' + qEsc(id) + '</p>');
+}
+const KONAMI = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft',
+  'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
+let qKon = 0, qTyped = '';
+function questMeteorShower() {
+  qMeteors = [];
+  const rnd = seeded(1337);
+  for (let i = 0; i < 16; i++)
+    qMeteors.push({ kind: 'meteor', x: (rnd() - .5) * 260, y: 90 + rnd() * 60,
+      z: -120 - rnd() * 80, vx: 60 + rnd() * 40, vy: -30 - rnd() * 20, s: [.35, 4, .35] });
+  qMeteorT = 5;
+}
+document.addEventListener('keydown', (e) => {
+  const tag = (e.target && e.target.tagName) || '';
+  if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
+  qKon = e.code === KONAMI[qKon] ? qKon + 1 : (e.code === KONAMI[0] ? 1 : 0);
+  if (qKon === KONAMI.length) {
+    qKon = 0; questMeteorShower();
+    questEgg('konami', '<p class="focus">A meteor shower crosses the sky for five seconds.</p>');
+  }
+  if (e.key && e.key.length === 1) {
+    qTyped = (qTyped + e.key.toLowerCase()).slice(-Q3.typedWord.length);
+    if (qTyped === Q3.typedWord) {
+      qTyped = '';
+      questEgg('typed', '<p class="focus">' + qEsc(Q3.typedWord) + '.</p>');
+    }
+  }
+});
+{
+  let n = 0;
+  const brand = document.querySelector('#bar .brand');
+  brand.addEventListener('click', () => {
+    n += 1;
+    if (n === Q3.placardClicks) {
+      n = 0;
+      questEgg('placard', '<p class="focus">The name plate, clicked '
+        + Q3.placardClicks + ' times.</p>');
+    }
+  });
+}
+let qAdvLast = null, qAdvN = 0;
+function questAdvisorEgg(aid, topicId) {
+  if (topicId) { qAdvLast = null; qAdvN = 0; return; }
+  qAdvN = aid === qAdvLast ? qAdvN + 1 : 1; qAdvLast = aid;
+  if (qAdvN < 3) return;
+  qAdvN = 0;
+  const api = qApi();
+  if (api && !qPending.has(Q3.eggs.advisor)) api.find(Q3.eggs.advisor);
+  qSeen.add(Q3.eggs.advisor);
+  // the hidden line is added to the advisor's own panel, marked for what it is
+  document.getElementById('pbody').insertAdjacentHTML('beforeend',
+    '<p class="src" data-egg-line="1">' + qEsc(Q3.advisorLine) + '</p>');
+}
+function questPhase(id) {
+  if (view === 'hall' && PHASE_OF[id].elevation_deg < -18)
+    questEgg('night', '<p class="focus">Night in the hall. The room lamps are the only light left.</p>');
+}
+const questLogEl = document.createElement('div');
+questLogEl.setAttribute('data-tc-questlog', '');
+questLogEl.id = 'questlog';
+function openQuestLog() {
+  const found = [...qSeen];
+  questPanel(t('campus3d.questlog'), '');
+  const pb = document.getElementById('pbody');
+  pb.insertBefore(questLogEl, pb.children[1] || null);
+  const api = qApi();
+  if (api) api.render();              // the engine's own log: found, done, locked, badges
+  else questLogEl.innerHTML = found.length
+    ? '<ul>' + found.map((x) => '<li>' + qEsc(x) + '</li>').join('') + '</ul>'
+    : '<p class="focus">—</p>';
+}
+document.getElementById('questBtn').addEventListener('click', openQuestLog);
+window.__tc3dQuest = () => ({
+  wired: !!qApi(), view, slug, campus: campusKey,
+  pool: { count: QPOOL.count, visible: QPOOL.visible, capacity: QCAP,
+          meshes: scene.children.filter((o) => o.name === 'quest-pool').length },
+  items: qItems.map((it, i) => ({ i, id: it.id, kind: it.kind,
+    locked: it.kind === 'marker' ? !questCheck(it.id).ok : null,
+    at: [+it.x.toFixed(2), +it.y.toFixed(2), +it.z.toFixed(2)] })),
+  seen: [...qSeen], meteors: qMeteorT > 0,
+});
+window.__tc3dQuestPick = (i) => { questStep(0); questActivate(qItems[i]); };
+"""
+
 page = page.replace('__DATA__', DATA).replace('__PIPELINE_JS__', PIPELINE_JS)
 page = page.replace('__KIT_RUNS__', KIT_RUNS_JS)
 page = page.replace('__SIM_JS__', SIM_JS).replace('__XR_JS__', XR_JS)
 page = page.replace('__GUIDE_JS__', GUIDE_JS)
+page = page.replace('__QUEST3D_JS__', QUEST3D_JS)
+page = page.replace('__QUESTLOG_LABEL__', I18N['en']['strings']['campus3d.questlog'])
 page = page.replace('__RESPOND_JS__', RESPOND_JS)
 page = page.replace('__AVATAR_JS__', AVATAR_JS)
 page = page.replace('__ADVISOR_JS__', ADVISOR_JS)
 page = page.replace('__GROUND_TRUTH_JS__', GROUND_TRUTH_JS)
+page = page.replace('__QUEST_CSS__', QUEST_CSS)
 page = page.replace('__NAV_CSS__', NAV_CSS).replace('__NAV__', NAV)
 page = page.replace('__H1_TEXT__', I18N['en']['strings']['nav.page.campus'])
 # the bar's controls carry their English names in the markup, so every link
@@ -15538,6 +15962,14 @@ page = page.replace('__H1_TEXT__', I18N['en']['strings']['nav.page.campus'])
 # wire does not carry is a KeyError here, not a blank button.
 page = re.sub(r'__L_([a-zA-Z.]+)__', lambda m: I18N['en']['strings'][m.group(1)], page)
 assert '__L_' not in page, 'an unfilled control label is left in the page'
+# QUEST_CONTRACT v1: the quest engine comes AFTER this page's own main
+# module, so no suite that reads the page's first <script> is disturbed.
+# INTEGRATION HOOK: live the moment QUESTS publishes its registry and
+# web/questkit.py; until then the page's quest layer runs on its own glue.
+if QUESTS_WIRED:
+    _head, _sep, _tail = page.rpartition('</script>\n</body>')
+    assert _sep, 'the page no longer ends its main module before </body>'
+    page = _head + '</script>\n' + quest_js('campus') + '\n</body>' + _tail
 
 # ---------------------------------------------------------- guide gate ---
 # The guide answers about wherever you are standing, and it routes by the

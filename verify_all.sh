@@ -19,7 +19,7 @@ for t in control/test.mjs control/test_graph.mjs control/test_hints.mjs \
          agents/test.mjs world/test.mjs labels/test.mjs training/test.mjs \
          roadmap/test.mjs orbis/test.mjs restoration/test.mjs guide/test.mjs sky/test.mjs lessons/test.mjs \
          kit/test.mjs props/test.mjs terrain/test.mjs rnd/test.mjs xr/test.mjs ei/test.mjs respond/test.mjs \
-         spatial/test.mjs auth/test.mjs venue/test.mjs evals/test.mjs bundles/test.mjs completion/test.mjs sessions/test.mjs compliance/test.mjs contrib/test.mjs web/test_contribute.mjs protocols/test.mjs spaces/test.mjs web/test_spaces.mjs worksites/test.mjs web/test_worksites.mjs web/test_interactive.mjs web/test_geomap.mjs web/test_map.mjs web/test_home.mjs web/test_nav.mjs web/test_verify.mjs web/test_fabric.mjs web/test_gltf.mjs web/test_progress.mjs web/test_ladder.mjs web/test_3d.mjs web/test_rtl.mjs; do
+         web/test_seo.mjs spatial/test.mjs auth/test.mjs venue/test.mjs evals/test.mjs bundles/test.mjs completion/test.mjs sessions/test.mjs compliance/test.mjs contrib/test.mjs web/test_contribute.mjs protocols/test.mjs spaces/test.mjs web/test_spaces.mjs worksites/test.mjs web/test_worksites.mjs web/test_interactive.mjs web/test_geomap.mjs web/test_map.mjs web/test_home.mjs web/test_nav.mjs web/test_verify.mjs web/test_fabric.mjs web/test_gltf.mjs web/test_progress.mjs web/test_ladder.mjs web/test_3d.mjs web/test_rtl.mjs quests/test.mjs web/test_quests.mjs media/test.mjs web/test_design.mjs; do
   out=$(node "$t" 2>&1); rc=$?
   n=$(printf '%s\n' "$out" | grep -c '^  ok ')
   total=$((total + n))
@@ -45,10 +45,16 @@ python3 web/build_lessons.py --check || fail=$((fail + 1))
 python3 web/build_landing.py --check || fail=$((fail + 1))
 python3 web/build_3d.py --check || fail=$((fail + 1))
 python3 web/build_home.py --check || fail=$((fail + 1))
+python3 web/build_seo.py --check || fail=$((fail + 1))
 python3 web/build_auth.py --check || fail=$((fail + 1))
 python3 web/build_ladder.py --check || fail=$((fail + 1))
 python3 web/build_progress.py --check || fail=$((fail + 1))
+python3 quests/build.py --check || fail=$((fail + 1))
+python3 web/build_quests.py --check || fail=$((fail + 1))
 python3 web/fetch_fonts.py --check || fail=$((fail + 1))
+python3 media/fetch_icons.py --check || fail=$((fail + 1))
+python3 media/build.py --check || fail=$((fail + 1))
+python3 web/build_design.py --check || fail=$((fail + 1))
 python3 terrain/fetch_terrain.py --check || fail=$((fail + 1))
 iout=$(python3 web/test_interiors.py 2>&1) || fail=$((fail + 1))
 printf '%s\n' "$iout" | tail -1

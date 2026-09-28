@@ -264,7 +264,25 @@
   "map.aria.plan": "Network plan: {n} union halls grouped into eight districts across {c} built campuses",
   "map.aria.floor": "Floor plan of the {name} hall: {n} rooms",
   "map.aria.hall": "{name} — {district} district, grid {ref}",
-  "map.page_title": "Network Plan"
+  "map.page_title": "Network Plan",
+  "nav.group.play": "Play",
+  "nav.page.quests": "Quests and arcade",
+  "nav.page.wilds": "The wilds",
+  "nav.page.schools": "School pathways",
+  "campus3d.questlog": "Quest log",
+  "campus3d.play": "Quests, treasures and easter eggs are play: they never enter a completion record and certify nothing.",
+  "campus3d.locked": "Locked. Finish these lessons first:",
+  "campus3d.open": "Unlocked. Every lesson it asks for is done on this device.",
+  "campus3d.treasure": "Treasure found",
+  "campus3d.egg": "Easter egg found",
+  "campus3d.hooks": "The quest engine is not wired into this page yet, so finds are listed here for this visit only.",
+  "seo.desc.landing": "Why Trade Craft Academy exists: an adaptive training system for the skilled trades, set in a walkable virtual city of job sites.",
+  "seo.desc.map": "The network plan: every union hall drawn by district, with hall and module counts read from the module registry, not typed.",
+  "seo.desc.languages": "The languages the academy is offered in, each with the translation status its own catalog records.",
+  "landing.video.pause": "Pause background video",
+  "landing.video.play": "Play background video",
+  "landing.video.caption": "Background: an orbit over the Treasure Island campus, recorded from this build’s 3D page.",
+  "nav.page.design": "Design kit"
  },
  "districts": {
   "structural": {

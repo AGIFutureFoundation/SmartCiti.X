@@ -26,6 +26,7 @@ import sys
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+from seo import apply_seo  # noqa: E402  head tags only
 from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 
 
@@ -686,6 +687,8 @@ page = '''<!doctype html>
 '''
 
 out = HERE / 'trade_craft_signin.html'
+page = apply_seo(page, 'web/trade_craft_signin.html', 'SmartCiti.X : Trade Craft Academy \u2014 sign in',
+    'Sign in to the academy: each sign-in method and whether it is configured to work in this build, stated plainly.', 'page')
 emit(out, page,
      '%d methods, %d off, %d missing pieces named'
      % (C['methods'], C['configured_false'], C['missing_server_side_items']))

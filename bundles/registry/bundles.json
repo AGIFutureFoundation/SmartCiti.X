@@ -1420,7 +1420,17 @@
     "seats": [],
     "seat_names": [],
     "lessons": [
-     "bricklayers-gear-that-stays-on"
+     "aviation-ground-safety-first-walk",
+     "bricklayers-gear-that-stays-on",
+     "cleanroom-safety-first-walk",
+     "concrete-pump-safety-first-walk",
+     "ev-charging-safety-first-walk",
+     "mold-remediation-safety-first-walk",
+     "network-cabling-safety-first-walk",
+     "pipefitters-safety-first-walk",
+     "toolmakers-safety-first-walk",
+     "water-distrib-safety-first-walk",
+     "wind-safety-first-walk"
     ]
    },
    "size": {
@@ -1428,8 +1438,8 @@
     "ladder_cells": 111,
     "seats": 0,
     "seat_scenarios": 0,
-    "lessons": 1,
-    "lesson_steps": 4,
+    "lessons": 11,
+    "lesson_steps": 44,
     "contact_hours": null
    },
    "coverage": {
@@ -1569,7 +1579,10 @@
     "seats": [],
     "seat_names": [],
     "lessons": [
-     "hazmat-wash-and-decon"
+     "hazmat-wash-and-decon",
+     "lead-abatement-documentation-first-walk",
+     "mold-remediation-safety-first-walk",
+     "survey-drone-documentation-first-walk"
     ]
    },
    "size": {
@@ -1577,8 +1590,8 @@
     "ladder_cells": 66,
     "seats": 0,
     "seat_scenarios": 0,
-    "lessons": 1,
-    "lesson_steps": 5,
+    "lessons": 4,
+    "lesson_steps": 15,
     "contact_hours": null
    },
    "coverage": {
@@ -1601,7 +1614,7 @@
   "trades_offered": 111,
   "seats_offered": 11,
   "cells_offered": 366,
-  "lessons_offered": 22,
+  "lessons_offered": 34,
   "packages_with_no_seat": 2
  },
  "reads": [

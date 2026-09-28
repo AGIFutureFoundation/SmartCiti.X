@@ -848,6 +848,74 @@ ok('no table on the lessons page stands outside a horizontal-scroll box, so a 39
     return tables > 0 && tables === wrapped && /\.tscroll\{overflow-x:auto/.test(learnerPage);
   })());
 
+/* ------------------------------------------------ the composed lessons ---
+   The set grew past the seats by ONE RULE in lessons/build.py: a hall with no
+   hand-written lesson gets one arc of walk / placard / crib / advisor steps.
+   Everything the rule claims is recomputed here from the roster and the
+   registries, never read back from the fields the rule itself wrote. */
+const SEAT_HALLS = new Set(Object.keys(sims.hall_bindings));
+const handHalls = new Set(lessons.filter(([, L]) => L.authoring === 'hand').map(([, L]) => L.hall));
+const ruled = lessons.filter(([, L]) => L.authoring === 'rule');
+ok('every lesson says how it was authored - by hand or by the rule - and the counts are the lessons counted again',
+  lessons.every(([, L]) => L.authoring === 'hand' || L.authoring === 'rule')
+  && reg.counts.lessons_by_hand === lessons.length - ruled.length
+  && reg.counts.lessons_by_rule === ruled.length
+  && reg.counts.lessons_by_hand + reg.counts.lessons_by_rule === reg.counts.lessons);
+ok('a composed lesson marks its order, title and why DERIVED and its notes and limits AUTHORED; a hand lesson is AUTHORED throughout',
+  lessons.every(([, L]) => {
+    const p = L.provenance;
+    if (L.authoring === 'hand') return ['steps', 'order', 'title', 'why', 'limits'].every((k) => p[k] === 'AUTHORED');
+    return p.steps === 'AUTHORED' && p.limits === 'AUTHORED' && p.order === 'DERIVED'
+      && p.title === 'DERIVED' && p.why === 'DERIVED' && p.names === 'READ';
+  }));
+ok('the honesty status says how many lessons the rule composed, and says DERIVED, instead of claiming every lesson was hand-written',
+  reg.honesty.status.includes(`${reg.counts.lessons_by_hand} lessons were written by hand`)
+  && reg.honesty.status.includes(`the other ${reg.counts.lessons_by_rule} are composed by one rule`)
+  && /DERIVED/.test(reg.honesty.status) && !/Nothing is generated/.test(reg.honesty.status));
+ok('every one of the halls on the roster has a lesson, or the rule names why it refused that hall under every arc',
+  halls.every((h) => lessons.some(([, L]) => L.hall === h.slug)
+    || (h.slug in reg.spread.refused_by_rule
+        && reg.spread.refused_by_rule[h.slug].length === Object.keys(reg.composition.arcs).length))
+  && reg.counts.halls_refused_by_rule === Object.keys(reg.spread.refused_by_rule).length);
+ok('a composed lesson stands only in a hall with no hand-written lesson and no seat, one per hall',
+  ruled.every(([, L]) => !handHalls.has(L.hall) && !SEAT_HALLS.has(L.hall)
+    && ruled.filter(([, M]) => M.hall === L.hall).length === 1)
+  && JSON.stringify(ruled.map(([, L]) => L.hall).sort()) === JSON.stringify(reg.spread.composed_halls));
+ok('a composed lesson uses only walk, placard, crib and advisor - the kinds a hall with no seat, station or crew can support',
+  ruled.every(([, L]) => L.steps.every((s) => ['walk', 'placard', 'crib', 'advisor'].includes(s.kind))
+    && L.steps.some((s) => s.kind === 'advisor')));
+ok('a composed lesson is a fundamentals first walk that stands in its arc\'s own room, and its id says so',
+  ruled.every(([lid, L]) => L.tier === 'fundamentals' && L.strand === L.arc
+    && lid === `${L.hall}-${L.arc}-first-walk` && L.arc in reg.composition.arcs));
+ok('a composed lesson reads a placard exactly where the room\'s own record asks for PPE (recomputed from surfaces)',
+  ruled.every(([, L]) => {
+    const conds = finishes.halls[L.hall].conditions;
+    const wanted = new Set(L.steps.filter((s) => s.kind === 'walk' || s.kind === 'advisor' || s.kind === 'crib')
+      .map((s) => s.where).filter((w) => w in conds && conds[w].ppe.length));
+    const read = new Set(L.steps.filter((s) => s.kind === 'placard').map((s) => s.where));
+    return [...wanted].every((w) => read.has(w)) && [...read].every((w) => conds[w].ppe.length > 0);
+  }));
+ok('a composed title opens with the hall\'s own name and its why carries the hall\'s own focus, both read from the roster',
+  ruled.every(([, L]) => {
+    const h = halls.find((x) => x.slug === L.hall);
+    return L.title.startsWith(`${h.name}: `) && L.why.toLowerCase().includes(h.focus.toLowerCase());
+  }));
+ok('the rule spreads the composed lessons across every arc rather than piling them in one room',
+  (() => {
+    const per = {};
+    for (const [, L] of ruled) per[L.arc] = (per[L.arc] || 0) + 1;
+    const v = Object.values(per);
+    return ruled.length === 0 || (Object.keys(per).length === Object.keys(reg.composition.arcs).length
+      && Math.max(...v) - Math.min(...v) <= Math.ceil(ruled.length / v.length));
+  })());
+
+ok('every lesson on the learner page says on its face whether it was written by hand or composed by rule, as the registry says',
+  lessons.every(([lid, L]) => {
+    const i = learnerPage.indexOf(`id="lesson-${lid}"`);
+    const head = i < 0 ? '' : learnerPage.slice(i, learnerPage.indexOf('</header>', i));
+    return head.includes(`data-authoring="${L.authoring}">${L.authoring === 'rule' ? 'composed by rule' : 'written by hand'}<`);
+  }));
+
 console.log(`lessons/test: ${n} checks passed — ${reg.counts.lessons} walkable lessons, `
   + `${reg.counts.steps} steps in ${reg.counts.step_kinds} kinds, standing in `
   + `${reg.counts.rooms_stood_in} rooms across ${reg.counts.halls_covered} of `
@@ -861,4 +929,5 @@ console.log(`lessons/test: ${n} checks passed — ${reg.counts.lessons} walkable
   + `depth ${reg.counts.ladder_depth}, acyclic; every one of the `
   + `${reg.counts.seat_bound_halls} seat-bound halls has a lesson, `
   + `${reg.counts.hazard_rooms_walked} hazard rooms walked and `
-  + `${reg.counts.hazard_room_placard_gaps} without a placard step; certifies nobody`);
+  + `${reg.counts.hazard_room_placard_gaps} without a placard step; ${reg.counts.lessons_by_hand} by hand, `
+  + `${reg.counts.lessons_by_rule} composed by rule; certifies nobody`);
