@@ -99,7 +99,7 @@
       "view": "region",
       "move": "orbit",
       "seconds": 6,
-      "hero": true,
+      "hero": false,
       "setup": [
         [
           "quality",
@@ -124,7 +124,7 @@
         "deg0": -12,
         "deg1": 22
       },
-      "known_issue": null
+      "known_issue": "the board fills about a fifth of the frame and a glint crosses the water; not used as a hero"
     },
     {
       "id": "hall-orbit",

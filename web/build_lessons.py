@@ -44,6 +44,7 @@ HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
 from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
+from seo import apply_seo  # noqa: E402  head tags only
 
 
 def _pack_root():
@@ -1128,9 +1129,9 @@ footer.page a{{margin-inline-end:10px}}
 <p class="shown" id="course-note"></p>
 <p class="shown" id="place" hidden></p>
 
-<main id="lessons">
+<main id="main"><div id="lessons">
 {COURSE_BLOCKS}
-</main>
+</div></main>
 
 <section>
   <h2>What this page read</h2>
@@ -1153,5 +1154,7 @@ footer.page a{{margin-inline-end:10px}}
 '''
 
 out = HERE / 'trade_craft_lessons.html'
+page = apply_seo(page, 'web/trade_craft_lessons.html', 'Lessons \u2014 SmartCiti.X : Trade Craft Academy',
+    'Walkable lessons through schematic trade halls and outdoor sites, written by hand or composed by rule; unverified general practice that certifies nobody.', 'page')
 emit(out, page, f"{len(LESSONS)} lessons, {TOTAL_STEPS} steps, "
                 f"{COUNTS['halls_covered']} halls, certifies nobody")

@@ -281,8 +281,17 @@
   "seo.desc.languages": "Les langues dans lesquelles l'académie est proposée, chacune avec l'état de traduction que consigne son propre catalogue.",
   "landing.video.pause": "Mettre en pause la vidéo de fond",
   "landing.video.play": "Lire la vidéo de fond",
-  "landing.video.caption": "Arrière-plan : une orbite au-dessus du campus de Treasure Island, enregistrée depuis la page 3D de cette version.",
-  "nav.page.design": "Kit graphique"
+  "landing.video.caption": "Arrière-plan : un travelling bas sur la pelouse du campus de Treasure Island, filmé image par image dans le campus 3D de cette version.",
+  "nav.page.design": "Kit graphique",
+  "nav.skip": "Aller au contenu principal",
+  "quests.title": "Quêtes et salle d’arcade",
+  "quests.lede": "Quêtes secondaires, jeux, trésors et œufs de Pâques dans toute l’académie, débloqués par les leçons qu’ils utilisent.",
+  "quests.h.arcade": "Salle d’arcade",
+  "quests.h.shelf": "Étagère des badges",
+  "quests.h.log": "Journal des quêtes",
+  "quests.h.clues": "Indices sur le tableau",
+  "quests.seo_desc": "Quêtes, mini-jeux, trésors et œufs de Pâques dans l’académie. Pur jeu : les badges restent sur cet appareil et n’entrent jamais dans un relevé d’achèvement.",
+  "nav.search": "Rechercher"
  },
  "districts": {
   "structural": {

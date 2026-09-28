@@ -224,7 +224,9 @@ for (const h of hrefs) {
   if (/^https?:\/\//.test(h)) { if (!citations.has(h)) bad.push(h); continue; }
   if (h.startsWith('data:image/svg+xml')) { if (!outside.includes(`rel="icon" href="${h}"`)) bad.push(h); continue; }
   const file = h.split('?')[0].split('#')[0];
-  if (file === '' || !existsSync(join(WEB, file))) bad.push(h);
+  // a fragment-only link (the site nav's skip link) must land on an id this page carries
+  if (file === '') { const frag = h.slice(1); if (!frag || !outside.includes(`id="${frag}"`)) bad.push(h); continue; }
+  if (!existsSync(join(WEB, file))) bad.push(h);
 }
 ok(`[shipped] every href resolves to a file under web/ (${hrefs.length} hrefs; external ones are the registry's own citations)`
   + (bad.length ? ` - unresolved: ${bad.join(', ')}` : ''), bad.length === 0);

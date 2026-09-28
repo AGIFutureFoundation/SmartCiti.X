@@ -64,6 +64,7 @@ HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
 from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
+from seo import apply_seo  # noqa: E402  head tags only
 
 
 def _root():
@@ -2327,7 +2328,7 @@ footer.page a{{margin-inline-end:10px}}
 <style>{NAV_CSS}</style>
 </head>
 <body>
-{NAV}<div class="wrap">
+{NAV}<div class="wrap" id="main">
 
 <header class="page">
   <h1>{E(TITLE)} — <span class="x">learner progression</span></h1>
@@ -2577,6 +2578,8 @@ footer.page a{{margin-inline-end:10px}}
 '''
 
 out = HERE / 'trade_craft_progress.html'
+page = apply_seo(page, 'web/trade_craft_progress.html', 'Learner progress \u2014 SmartCiti.X : Trade Craft Academy',
+    'Your lesson progress, kept on this device only: what you have walked, what is left, and why none of it is a credential.', 'page')
 emit(out, page,
      f'{F(N_CONTROL_LINES)} lines of control plane over {F(N_CELLS_PER_HALL)} cells, '
      f'{F(N_CONTROL_CHECKS)} control checks, certifies nobody')

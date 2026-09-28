@@ -1,8 +1,8 @@
 # The lessons
 
 A reason to go to a particular room in a particular hall and do something there.
-**116 lessons**, **476 steps** in 8 kinds,
-standing in 116 rooms of 111 of the
+**139 lessons**, **568 steps** in 8 kinds,
+standing in 137 rooms of 111 of the
 111 halls — and not one of them certifies anybody.
 
 ## What a lesson does not mean
@@ -11,11 +11,11 @@ No lesson here certifies anybody, qualifies anybody or permits anybody to do any
 
 A lesson unlocks nothing. No step is locked behind another, the ladder is guidance about a sensible order rather than a permission system, and the assessment gate that schools/ declares stays exactly where it is: an unaided verification run that no lesson, station hour or simulator seat substitutes for.
 
-This is a set deliberately spread thin: 116 lessons across 111 of 111 halls, one in every one of the 45 halls a simulator seat is bound to and one composed first walk in every hall without a seat that the rule could walk honestly (0 refused), out of 1,221 rooms. It demonstrates the shape a lesson takes in this bundle. It is not a curriculum, it does not cover a trade, and no hall is finished because one of its rooms now has a lesson standing in it.
+This is a set deliberately spread thin: 139 lessons across 111 of 111 halls, one in every one of the 45 halls a simulator seat is bound to and one composed first walk in every hall without a seat that the rule could walk honestly (0 refused), out of 1,221 rooms. It demonstrates the shape a lesson takes in this bundle. It is not a curriculum, it does not cover a trade, and no hall is finished because one of its rooms now has a lesson standing in it.
 
 ## What a lesson is
 
-AUTHORED: every sentence in this pack was written here, by us. 56 lessons were written by hand, one hall at a time, step by step; the other 60 are composed by one rule in lessons/build.py from 6 arcs written here, one per room an advisor stands in, so their step order, title and why are marked DERIVED and carry authoring "rule" - the rule reads the hall name and focus from the roster and adds no fact of its own. Nothing is fetched and no model runs behind any of it.
+AUTHORED: every sentence in this pack was written here, by us. 56 lessons were written by hand, one hall at a time, step by step; the other 83 are composed by one rule in lessons/build.py from 7 arcs written here - 60 first walks, one per room an advisor stands in, and 23 walks before a WILDS site from one more arc, whose site title and world are read from wilds/registry/wilds.json, where the terrain is AUTHORED, not a surveyed place - so their step order, title and why are marked DERIVED and carry authoring "rule" - the rule reads the hall name and focus from the roster and adds no fact of its own. Nothing is fetched and no model runs behind any of it.
 
 This pack holds no second copy of anything. Hall names, room labels, station names, seat names, scenario names, advisor names, crew role names and topic wordings are all read at build time from the registries that own them, and the test re-reads them the same way. A step that could not resolve its ids did not become a lesson with a footnote; it failed the build.
 
@@ -26,17 +26,17 @@ four stages: a lesson is the class and floor halves of the existing loop made wa
 
 | Kind | What it is | Stage | Records | Steps | Reads |
 |---|---|---|---|---|---|
-| **walk** | walk to a room of this hall | class | — | 118 | `web/interiors.py` |
-| **placard** | read the door placard of a room and take on what it requires | class | — | 69 | `surfaces/registry/finishes.json` |
+| **walk** | walk to a room of this hall | class | — | 141 | `web/interiors.py` |
+| **placard** | read the door placard of a room and take on what it requires | class | — | 92 | `surfaces/registry/finishes.json` |
 | **station** | take a training station at its bench | class | — | 12 | `stations/registry/stations.json` |
 | **crib** | run the district crib check at the pegboard | class | — | 22 | `tools/registry/toolcribs.json` |
 | **walkaround** | walk one pre-shift point of a seat and mark it | floor | `walkaround` | 42 | `sims/registry/sims.json` |
 | **sim** | run one seat on the scenario its campus owns | floor | `sim` | 31 | `sims/registry/sims.json` |
-| **advisor** | ask the advisor who stands in this room one of its fixed topics | class | `advisor` | 159 | `agents/registry/advisors.json` |
+| **advisor** | ask the advisor who stands in this room one of its fixed topics | class | `advisor` | 205 | `agents/registry/advisors.json` |
 | **crew** | ask one role of the standing crew one of its fixed topics while the seat runs | floor | `crew` | 23 | `agents/registry/crews.json` |
 
-255 of the 476 steps write an episode to the
-device-local training log; the other 221 write nothing at all.
+301 of the 568 steps write an episode to the
+device-local training log; the other 267 write nothing at all.
 The recording ones use 4 episode kinds `training/`
 already had and add 0 of their own. The 4
 kinds that stay silent each say why:
@@ -54,7 +54,7 @@ Breadth over the trades rather than depth in one: the ceiling is declared, compu
 
 All 11 of the 11 strands are stood in,
 across 3 campuses and 111 halls, and no
-hall holds more than 1.72% of the set against a
+hall holds more than 2.16% of the set against a
 ceiling of 10%.
 
 The steps reach 12 of 25 training stations,
@@ -68,9 +68,9 @@ registry that owns it, at build time, or the lesson does not exist.
 
 ## The ladder
 
-40 edges over 116 lessons.
-77 lessons need nothing before them, and the longest chain is
-5 deep (77 at depth 1, 21 at depth 2, 12 at depth 3, 3 at depth 4, 3 at depth 5). The graph is acyclic and the build
+40 edges over 139 lessons.
+100 lessons need nothing before them, and the longest chain is
+5 deep (100 at depth 1, 21 at depth 2, 12 at depth 3, 3 at depth 4, 3 at depth 5). The graph is acyclic and the build
 checks that it is.
 
 ```mermaid
@@ -125,7 +125,7 @@ flowchart LR
 
 **Enforcement:** none. The ladder is a sensible order, not a permission system: no lesson is locked behind another and the page contract forbids the page from locking one.
 
-## The 116 lessons, one by one
+## The 139 lessons, one by one
 
 Each lesson carries its own limit sentence, and the page contract puts that
 sentence beside the lesson rather than behind a disclosure control:
@@ -249,6 +249,29 @@ the `limits` sentence renders with the lesson, not behind a disclosure control, 
 | **High-Angle Rescue: ask what a pass would actually mean** | High-Angle Rescue | Inspection Bench | inspection | fundamentals | 4 | Finishing this is not an inspection and not an acceptance of anybody's work; nothing here is a sign-off, no grader reads it, and the halls this trade belongs to have not reviewed a line of it. |
 | **Industrial Cleaning Crews: hand the shift over properly** | Industrial Cleaning Crews | Briefing Room | coordination | fundamentals | 3 | Finishing this is not supervisor training and gives nobody the standing to run a crew; it is one scripted exchange in a schematic room, and no hall or employer has reviewed it. |
 | **Aerial Survey Operators: find out where the record goes** | Aerial Survey Operators | Records | documentation | fundamentals | 3 | Finishing this is not permit or records training and issues no document of any kind; your progress stays on this device, nothing here certifies anybody, and no hall has reviewed a word of it. |
+| **Underground Miners: before the adit portal and ground support** | Underground Miners | Induction & PPE | safety | fundamentals | 4 | Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it. |
+| **Transmission Linemen: before the high-voltage line corridor** | Transmission Linemen | Induction & PPE | safety | fundamentals | 4 | Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it. |
+| **High-Angle Rescue: before the rockfall netting on a road cut** | High-Angle Rescue | Induction & PPE | safety | fundamentals | 4 | Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it. |
+| **Operating Engineers: before the snow-road grading on the pass** | Operating Engineers | Induction & PPE | safety | fundamentals | 4 | Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it. |
+| **Wind Turbine Technicians: before the ridge-top turbine pad** | Wind Turbine Technicians | Induction & PPE | safety | fundamentals | 4 | Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it. |
+| **Construction Surveyors: before the survey control on the high ground** | Construction Surveyors | Induction & PPE | safety | fundamentals | 4 | Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it. |
+| **Utility Line Workers: before the utility line clearance** | Utility Line Workers | Induction & PPE | safety | fundamentals | 4 | Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it. |
+| **Carpenters: before the trail bridge crew** | Carpenters | Induction & PPE | safety | fundamentals | 4 | Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it. |
+| **Grounds & Landscape: before the wildfire fuel break** | Grounds & Landscape | Induction & PPE | safety | fundamentals | 4 | Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it. |
+| **Riggers & Signalpersons: before the timber-frame shelter raising** | Riggers & Signalpersons | Induction & PPE | safety | fundamentals | 4 | Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it. |
+| **Water Distribution Fitters: before the lake intake and main** | Water Distribution Fitters | Induction & PPE | safety | fundamentals | 4 | Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it. |
+| **Steel Erectors: before the fire lookout tower** | Steel Erectors | Induction & PPE | safety | fundamentals | 4 | Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it. |
+| **Hydro Plant Trades: before the run-of-river intake and penstock** | Hydro Plant Trades | Induction & PPE | safety | fundamentals | 4 | Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it. |
+| **Pipeline Trades: before the pipeline river crossing** | Pipeline Trades | Induction & PPE | safety | fundamentals | 4 | Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it. |
+| **Confined Space Rescue: before the valve vault rescue drill** | Confined Space Rescue | Induction & PPE | safety | fundamentals | 4 | Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it. |
+| **Solar Installers: before the mesa-top solar array** | Solar Installers | Induction & PPE | safety | fundamentals | 4 | Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it. |
+| **Drillers & Blasters: before the quarry bench and blast pattern** | Drillers & Blasters | Induction & PPE | safety | fundamentals | 4 | Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it. |
+| **Wastewater Operators: before the levee pump station** | Wastewater Operators | Induction & PPE | safety | fundamentals | 4 | Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it. |
+| **Marine Terminal Operators: before the river terminal berth** | Marine Terminal Operators | Induction & PPE | safety | fundamentals | 4 | Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it. |
+| **Piling Crews: before the timber pile trestle over a bayou** | Piling Crews | Induction & PPE | safety | fundamentals | 4 | Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it. |
+| **Commercial Divers: before the outfall line and dive station** | Commercial Divers | Induction & PPE | safety | fundamentals | 4 | Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it. |
+| **Spill Response Technicians: before the spill boom staging** | Spill Response Technicians | Induction & PPE | safety | fundamentals | 4 | Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it. |
+| **Crane Operators: before the wind turbine staging yard** | Crane Operators | Induction & PPE | safety | fundamentals | 4 | Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it. |
 
 ## What a lesson is not
 
@@ -256,7 +279,7 @@ the `limits` sentence renders with the lesson, not behind a disclosure control, 
 - **Not a gate.** a lesson unlocks nothing. No step is locked behind another, the ladder is guidance about a sensible order rather than a permission system, and the assessment gate that schools/ declares stays exactly where it is: an unaided verification run that no lesson, station hour or simulator seat substitutes for.
 - **Not reviewed.** unverified general practice. These lessons were written to be argued with, corrected and replaced by journey-level practitioners from the halls they name - the same standing the module pack, the recovered stations and the simulator seats already carry, and for the same reason: nobody who does this work for a living has reviewed a line of it yet.
 - **Not a code ruling.** nothing here cites a standard, a code or an authority, and nothing here speaks for one. Where a step says what a crew would do, that is unverified general practice and not an instruction from anybody with the standing to give one.
-- **Not a curriculum.** this is a set deliberately spread thin: 116 lessons across 111 of 111 halls, one in every one of the 45 halls a simulator seat is bound to and one composed first walk in every hall without a seat that the rule could walk honestly (0 refused), out of 1,221 rooms. It demonstrates the shape a lesson takes in this bundle. It is not a curriculum, it does not cover a trade, and no hall is finished because one of its rooms now has a lesson standing in it.
+- **Not a curriculum.** this is a set deliberately spread thin: 139 lessons across 111 of 111 halls, one in every one of the 45 halls a simulator seat is bound to and one composed first walk in every hall without a seat that the rule could walk honestly (0 refused), out of 1,221 rooms. It demonstrates the shape a lesson takes in this bundle. It is not a curriculum, it does not cover a trade, and no hall is finished because one of its rooms now has a lesson standing in it.
 
 ---
 

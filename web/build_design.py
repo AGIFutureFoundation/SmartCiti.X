@@ -24,6 +24,7 @@ sys.path.insert(0, str(HERE))
 import design_kit as K  # noqa: E402
 from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 from staleness import emit  # noqa: E402
+from seo import apply_seo  # noqa: E402  head tags only
 
 E = html.escape
 PAGE = 'web/trade_craft_design.html'
@@ -197,14 +198,13 @@ page = f'''<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Design kit - Trade Craft Academy</title>
-<meta name="description" content="The design kit's tokens and templates, in dark and light, each with the call that renders it.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C1113'/%3E%3Cpath d='M7 21 L16 7 L25 21 Z' fill='none' stroke='%23E8A33D' stroke-width='2.6' stroke-linejoin='round'/%3E%3Cpath d='M11 21 h10' stroke='%2341C4D4' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="vendor/fonts/fonts.css">
 <style>{NAV_CSS}</style>
 <style>{K.kit_css()}{GCSS}</style>
 </head>
 <body class="dk">
-{NAV}<main>
+{NAV}<main id="main">
 <header class="g-intro">
 <p class="dk-eyebrow">web/design_kit.py</p>
 <h1>Design kit</h1>
@@ -229,4 +229,6 @@ palette with the exact call that drew it. Footage is house-made: recorded frame 
 </body>
 </html>
 '''
+page = apply_seo(page, 'web/trade_craft_design.html', 'Design kit - Trade Craft Academy',
+                 "The design kit's tokens and templates, in dark and light, each with the call that renders it.", 'page')
 emit(HERE / 'trade_craft_design.html', page)

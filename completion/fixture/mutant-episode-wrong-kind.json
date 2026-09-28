@@ -3712,6 +3712,719 @@
      "evidence": null
     }
    ]
+  },
+  {
+   "lesson": "m-adit-portal-site-walk",
+   "hall": "miners",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "m-hv-corridor-site-walk",
+   "hall": "transmission",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "m-rockfall-netting-site-walk",
+   "hall": "high-angle",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "m-snow-road-site-walk",
+   "hall": "operating-eng",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "m-wind-ridge-site-walk",
+   "hall": "wind",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "m-survey-control-site-walk",
+   "hall": "surveyors",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "f-line-clearance-site-walk",
+   "hall": "line-workers",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "f-trail-bridge-site-walk",
+   "hall": "carpenters",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "f-fuel-break-site-walk",
+   "hall": "grounds",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "f-timber-frame-site-walk",
+   "hall": "riggers",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "f-water-intake-site-walk",
+   "hall": "water-distrib",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "f-fire-lookout-site-walk",
+   "hall": "steel-erectors",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "c-river-intake-site-walk",
+   "hall": "hydro",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "c-pipeline-crossing-site-walk",
+   "hall": "pipeline",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "c-valve-vault-site-walk",
+   "hall": "confined-space",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "c-mesa-solar-site-walk",
+   "hall": "solar",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "c-quarry-bench-site-walk",
+   "hall": "blasters",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "d-levee-pump-site-walk",
+   "hall": "wastewater",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "d-terminal-berth-site-walk",
+   "hall": "marine-terminal",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "d-pile-trestle-site-walk",
+   "hall": "piling",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "d-outfall-dive-site-walk",
+   "hall": "divers",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "d-spill-boom-site-walk",
+   "hall": "spill-response",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "d-wind-staging-site-walk",
+   "hall": "crane-ops",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
   }
  ],
  "sims": {
@@ -3749,6 +4462,6 @@
  "digest": {
   "alg": "SHA-256",
   "over": "canonical JSON of every top-level field except digest, with identity.signature forced to null: keys sorted recursively, no whitespace, UTF-8",
-  "hex": "e131695265e5241cbdf9bfb209e29a91c982dfd7fd0c25f521cd38135bb92fba"
+  "hex": "dbb3cdeb2063d171fb41666177001e6a53f94daa1c827f5baa5f25f594d33cf1"
  }
 }

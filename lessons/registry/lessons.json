@@ -3,39 +3,41 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-26",
- "source_stamp": "8166d8a01cae77d0",
+ "source_stamp": "68794dad4d6967a8",
  "honesty": {
-  "status": "AUTHORED: every sentence in this pack was written here, by us. 56 lessons were written by hand, one hall at a time, step by step; the other 60 are composed by one rule in lessons/build.py from 6 arcs written here, one per room an advisor stands in, so their step order, title and why are marked DERIVED and carry authoring \"rule\" - the rule reads the hall name and focus from the roster and adds no fact of its own. Nothing is fetched and no model runs behind any of it. The word AI-SYNTHESIZED belongs to orbis/ and describes generated video; it would be a false label for a hand-written walk through a building.",
+  "status": "AUTHORED: every sentence in this pack was written here, by us. 56 lessons were written by hand, one hall at a time, step by step; the other 83 are composed by one rule in lessons/build.py from 7 arcs written here - 60 first walks, one per room an advisor stands in, and 23 walks before a WILDS site from one more arc, whose site title and world are read from wilds/registry/wilds.json, where the terrain is AUTHORED, not a surveyed place - so their step order, title and why are marked DERIVED and carry authoring \"rule\" - the rule reads the hall name and focus from the roster and adds no fact of its own. Nothing is fetched and no model runs behind any of it. The word AI-SYNTHESIZED belongs to orbis/ and describes generated video; it would be a false label for a hand-written walk through a building.",
   "content": "unverified general practice. These lessons were written to be argued with, corrected and replaced by journey-level practitioners from the halls they name - the same standing the module pack, the recovered stations and the simulator seats already carry, and for the same reason: nobody who does this work for a living has reviewed a line of it yet.",
   "not_certification": "no lesson here certifies anybody, qualifies anybody or permits anybody to do anything. Completing every lesson in this registry would leave a learner with exactly the standing they started with. Where a trade has a real ticket, that ticket is issued by a jurisdiction, an employer or a hall, and this bundle is none of those and speaks for none of them.",
   "not_a_gate": "a lesson unlocks nothing. No step is locked behind another, the ladder is guidance about a sensible order rather than a permission system, and the assessment gate that schools/ declares stays exactly where it is: an unaided verification run that no lesson, station hour or simulator seat substitutes for.",
   "not_scored": "finishing a lesson changes no score and is read by no grader. Four of the eight step kinds write an episode to the existing device-local training log; the other four write nothing at all, and the registry says which is which rather than leaving it to be discovered.",
   "one_truth": "this pack holds no second copy of anything. Hall names, room labels, station names, seat names, scenario names, advisor names, crew role names and topic wordings are all read at build time from the registries that own them, and the test re-reads them the same way. A step that could not resolve its ids did not become a lesson with a footnote; it failed the build.",
   "no_jurisdiction": "nothing here cites a standard, a code or an authority, and nothing here speaks for one. Where a step says what a crew would do, that is unverified general practice and not an instruction from anybody with the standing to give one.",
-  "scope": "this is a set deliberately spread thin: 116 lessons across 111 of 111 halls, one in every one of the 45 halls a simulator seat is bound to and one composed first walk in every hall without a seat that the rule could walk honestly (0 refused), out of 1,221 rooms. It demonstrates the shape a lesson takes in this bundle. It is not a curriculum, it does not cover a trade, and no hall is finished because one of its rooms now has a lesson standing in it."
+  "scope": "this is a set deliberately spread thin: 139 lessons across 111 of 111 halls, one in every one of the 45 halls a simulator seat is bound to and one composed first walk in every hall without a seat that the rule could walk honestly (0 refused), out of 1,221 rooms. It demonstrates the shape a lesson takes in this bundle. It is not a curriculum, it does not cover a trade, and no hall is finished because one of its rooms now has a lesson standing in it."
  },
  "counts": {
-  "lessons": 116,
+  "lessons": 139,
   "lessons_by_hand": 56,
-  "lessons_by_rule": 60,
+  "lessons_by_rule": 83,
   "arcs": 6,
   "halls_refused_by_rule": 0,
-  "steps": 476,
+  "lessons_at_sites": 23,
+  "sites_refused_by_rule": 0,
+  "steps": 568,
   "step_kinds": 8,
   "steps_by_kind": {
-   "advisor": 159,
+   "advisor": 205,
    "crew": 23,
    "crib": 22,
-   "placard": 69,
+   "placard": 92,
    "sim": 31,
    "station": 12,
-   "walk": 118,
+   "walk": 141,
    "walkaround": 42
   },
-  "recording_steps": 255,
-  "silent_steps": 221,
+  "recording_steps": 301,
+  "silent_steps": 267,
   "episodes_by_kind": {
-   "advisor": 159,
+   "advisor": 205,
    "crew": 23,
    "sim": 31,
    "walkaround": 42
@@ -47,9 +49,9 @@
   "halls_total": 111,
   "strands_covered": 11,
   "strands_total": 11,
-  "rooms_stood_in": 116,
+  "rooms_stood_in": 137,
   "campuses_covered": 3,
-  "max_lessons_in_one_hall": 2,
+  "max_lessons_in_one_hall": 3,
   "stations_used": 12,
   "stations_total": 25,
   "sims_used": 11,
@@ -64,16 +66,16 @@
   "crew_roles_used": 19,
   "cribs_used": 7,
   "prerequisite_edges": 40,
-  "ladder_roots": 77,
+  "ladder_roots": 100,
   "ladder_depth": 5,
   "ladder_layers": 5,
   "edge_reasons": 3,
   "files_read": 7,
   "seat_bound_halls": 45,
   "seat_bound_halls_with_a_lesson": 45,
-  "hazard_rooms_walked": 15,
+  "hazard_rooms_walked": 17,
   "hazard_room_placard_gaps": 0,
-  "placard_steps": 69
+  "placard_steps": 92
  },
  "spread": {
   "halls": [
@@ -202,7 +204,7 @@
    "tools",
    "troubleshooting"
   ],
-  "max_hall_share": 0.017241379310344827,
+  "max_hall_share": 0.02158273381294964,
   "max_hall_share_ceiling": 0.1,
   "seat_bound_halls": [
    "boilermakers",
@@ -313,6 +315,32 @@
    "water-distrib",
    "wind"
   ],
+  "site_walks": {
+   "m-adit-portal": "m-adit-portal-site-walk",
+   "m-hv-corridor": "m-hv-corridor-site-walk",
+   "m-rockfall-netting": "m-rockfall-netting-site-walk",
+   "m-snow-road": "m-snow-road-site-walk",
+   "m-wind-ridge": "m-wind-ridge-site-walk",
+   "m-survey-control": "m-survey-control-site-walk",
+   "f-line-clearance": "f-line-clearance-site-walk",
+   "f-trail-bridge": "f-trail-bridge-site-walk",
+   "f-fuel-break": "f-fuel-break-site-walk",
+   "f-timber-frame": "f-timber-frame-site-walk",
+   "f-water-intake": "f-water-intake-site-walk",
+   "f-fire-lookout": "f-fire-lookout-site-walk",
+   "c-river-intake": "c-river-intake-site-walk",
+   "c-pipeline-crossing": "c-pipeline-crossing-site-walk",
+   "c-valve-vault": "c-valve-vault-site-walk",
+   "c-mesa-solar": "c-mesa-solar-site-walk",
+   "c-quarry-bench": "c-quarry-bench-site-walk",
+   "d-levee-pump": "d-levee-pump-site-walk",
+   "d-terminal-berth": "d-terminal-berth-site-walk",
+   "d-pile-trestle": "d-pile-trestle-site-walk",
+   "d-outfall-dive": "d-outfall-dive-site-walk",
+   "d-spill-boom": "d-spill-boom-site-walk",
+   "d-wind-staging": "d-wind-staging-site-walk"
+  },
+  "sites_refused_by_rule": {},
   "refused_by_rule": {},
   "note": "breadth over the trades rather than depth in one: the ceiling is declared, computed and failed against, and all 11 strands must be stood in or the build stops."
  },
@@ -452,6 +480,17 @@
     ],
     "placard_if_the_record_asks_for_ppe": true
    }
+  },
+  "site_arc": {
+   "title": "before the <site title>",
+   "kinds": [
+    "walk",
+    "placard",
+    "advisor",
+    "advisor"
+   ],
+   "rule": "one site walk per WILDS site: the first hall the site names that no earlier site walk used and that the arc can be walked in honestly; site id, title and world name READ from wilds/registry/wilds.json, whose terrain is AUTHORED.",
+   "reads": "wilds/registry/wilds.json"
   },
   "provenance": "steps and limits AUTHORED (written here once per arc); order, title and why DERIVED (chosen by the rule, not by a person for that hall); names READ."
  },
@@ -13085,6 +13124,2609 @@
    ],
    "hazard_rooms_walked": [],
    "placard_steps_in": []
+  },
+  "m-adit-portal-site-walk": {
+   "id": "m-adit-portal-site-walk",
+   "hall": "miners",
+   "hall_name": "Underground Miners",
+   "campus": "oakland",
+   "strand": "safety",
+   "tier": "fundamentals",
+   "skill_id": "miners.safety.fundamentals",
+   "room_label": "Induction & PPE",
+   "title": "Underground Miners: before the adit portal and ground support",
+   "why": "Out in the High Country world this hall works at a site drawn on AUTHORED terrain, and before walking out to it you should know what the work asks of you and who may stop it.",
+   "limits": "Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE \u2014 gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor"
+   ],
+   "stages": [
+    "class"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "authoring": "rule",
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "DERIVED",
+    "title": "DERIVED",
+    "why": "DERIVED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "arc": "site",
+   "site": {
+    "world": "mountain",
+    "world_name": "High Country",
+    "id": "m-adit-portal",
+    "title": "Adit portal and ground support",
+    "provenance": "AUTHORED"
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "safety"
+   ]
+  },
+  "m-hv-corridor-site-walk": {
+   "id": "m-hv-corridor-site-walk",
+   "hall": "transmission",
+   "hall_name": "Transmission Linemen",
+   "campus": "new-orleans",
+   "strand": "safety",
+   "tier": "fundamentals",
+   "skill_id": "transmission.safety.fundamentals",
+   "room_label": "Induction & PPE",
+   "title": "Transmission Linemen: before the high-voltage line corridor",
+   "why": "Out in the High Country world this hall works at a site drawn on AUTHORED terrain, and before walking out to it you should know what the work asks of you and who may stop it.",
+   "limits": "Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE \u2014 gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor"
+   ],
+   "stages": [
+    "class"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "authoring": "rule",
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "DERIVED",
+    "title": "DERIVED",
+    "why": "DERIVED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "arc": "site",
+   "site": {
+    "world": "mountain",
+    "world_name": "High Country",
+    "id": "m-hv-corridor",
+    "title": "High-voltage line corridor",
+    "provenance": "AUTHORED"
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "safety"
+   ]
+  },
+  "m-rockfall-netting-site-walk": {
+   "id": "m-rockfall-netting-site-walk",
+   "hall": "high-angle",
+   "hall_name": "High-Angle Rescue",
+   "campus": "new-orleans",
+   "strand": "safety",
+   "tier": "fundamentals",
+   "skill_id": "high-angle.safety.fundamentals",
+   "room_label": "Induction & PPE",
+   "title": "High-Angle Rescue: before the rockfall netting on a road cut",
+   "why": "Out in the High Country world this hall works at a site drawn on AUTHORED terrain, and before walking out to it you should know what the work asks of you and who may stop it.",
+   "limits": "Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE \u2014 gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor"
+   ],
+   "stages": [
+    "class"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "authoring": "rule",
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "DERIVED",
+    "title": "DERIVED",
+    "why": "DERIVED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "arc": "site",
+   "site": {
+    "world": "mountain",
+    "world_name": "High Country",
+    "id": "m-rockfall-netting",
+    "title": "Rockfall netting on a road cut",
+    "provenance": "AUTHORED"
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [
+    "safety"
+   ],
+   "placard_steps_in": [
+    "safety"
+   ]
+  },
+  "m-snow-road-site-walk": {
+   "id": "m-snow-road-site-walk",
+   "hall": "operating-eng",
+   "hall_name": "Operating Engineers",
+   "campus": "oakland",
+   "strand": "safety",
+   "tier": "fundamentals",
+   "skill_id": "operating-eng.safety.fundamentals",
+   "room_label": "Induction & PPE",
+   "title": "Operating Engineers: before the snow-road grading on the pass",
+   "why": "Out in the High Country world this hall works at a site drawn on AUTHORED terrain, and before walking out to it you should know what the work asks of you and who may stop it.",
+   "limits": "Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE \u2014 gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor"
+   ],
+   "stages": [
+    "class"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "authoring": "rule",
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "DERIVED",
+    "title": "DERIVED",
+    "why": "DERIVED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "arc": "site",
+   "site": {
+    "world": "mountain",
+    "world_name": "High Country",
+    "id": "m-snow-road",
+    "title": "Snow-road grading on the pass",
+    "provenance": "AUTHORED"
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "safety"
+   ]
+  },
+  "m-wind-ridge-site-walk": {
+   "id": "m-wind-ridge-site-walk",
+   "hall": "wind",
+   "hall_name": "Wind Turbine Technicians",
+   "campus": "new-orleans",
+   "strand": "safety",
+   "tier": "fundamentals",
+   "skill_id": "wind.safety.fundamentals",
+   "room_label": "Induction & PPE",
+   "title": "Wind Turbine Technicians: before the ridge-top turbine pad",
+   "why": "Out in the High Country world this hall works at a site drawn on AUTHORED terrain, and before walking out to it you should know what the work asks of you and who may stop it.",
+   "limits": "Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE \u2014 gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor"
+   ],
+   "stages": [
+    "class"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "authoring": "rule",
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "DERIVED",
+    "title": "DERIVED",
+    "why": "DERIVED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "arc": "site",
+   "site": {
+    "world": "mountain",
+    "world_name": "High Country",
+    "id": "m-wind-ridge",
+    "title": "Ridge-top turbine pad",
+    "provenance": "AUTHORED"
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [
+    "safety"
+   ],
+   "placard_steps_in": [
+    "safety"
+   ]
+  },
+  "m-survey-control-site-walk": {
+   "id": "m-survey-control-site-walk",
+   "hall": "surveyors",
+   "hall_name": "Construction Surveyors",
+   "campus": "new-orleans",
+   "strand": "safety",
+   "tier": "fundamentals",
+   "skill_id": "surveyors.safety.fundamentals",
+   "room_label": "Induction & PPE",
+   "title": "Construction Surveyors: before the survey control on the high ground",
+   "why": "Out in the High Country world this hall works at a site drawn on AUTHORED terrain, and before walking out to it you should know what the work asks of you and who may stop it.",
+   "limits": "Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE \u2014 gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor"
+   ],
+   "stages": [
+    "class"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "authoring": "rule",
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "DERIVED",
+    "title": "DERIVED",
+    "why": "DERIVED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "arc": "site",
+   "site": {
+    "world": "mountain",
+    "world_name": "High Country",
+    "id": "m-survey-control",
+    "title": "Survey control on the high ground",
+    "provenance": "AUTHORED"
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "safety"
+   ]
+  },
+  "f-line-clearance-site-walk": {
+   "id": "f-line-clearance-site-walk",
+   "hall": "line-workers",
+   "hall_name": "Utility Line Workers",
+   "campus": "new-orleans",
+   "strand": "safety",
+   "tier": "fundamentals",
+   "skill_id": "line-workers.safety.fundamentals",
+   "room_label": "Induction & PPE",
+   "title": "Utility Line Workers: before the utility line clearance",
+   "why": "Out in the Deep Timber world this hall works at a site drawn on AUTHORED terrain, and before walking out to it you should know what the work asks of you and who may stop it.",
+   "limits": "Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE \u2014 gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor"
+   ],
+   "stages": [
+    "class"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "authoring": "rule",
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "DERIVED",
+    "title": "DERIVED",
+    "why": "DERIVED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "arc": "site",
+   "site": {
+    "world": "forest",
+    "world_name": "Deep Timber",
+    "id": "f-line-clearance",
+    "title": "Utility line clearance",
+    "provenance": "AUTHORED"
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "safety"
+   ]
+  },
+  "f-trail-bridge-site-walk": {
+   "id": "f-trail-bridge-site-walk",
+   "hall": "carpenters",
+   "hall_name": "Carpenters",
+   "campus": "treasure-island",
+   "strand": "safety",
+   "tier": "fundamentals",
+   "skill_id": "carpenters.safety.fundamentals",
+   "room_label": "Induction & PPE",
+   "title": "Carpenters: before the trail bridge crew",
+   "why": "Out in the Deep Timber world this hall works at a site drawn on AUTHORED terrain, and before walking out to it you should know what the work asks of you and who may stop it.",
+   "limits": "Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE \u2014 gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor"
+   ],
+   "stages": [
+    "class"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "authoring": "rule",
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "DERIVED",
+    "title": "DERIVED",
+    "why": "DERIVED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "arc": "site",
+   "site": {
+    "world": "forest",
+    "world_name": "Deep Timber",
+    "id": "f-trail-bridge",
+    "title": "Trail bridge crew",
+    "provenance": "AUTHORED"
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "safety"
+   ]
+  },
+  "f-fuel-break-site-walk": {
+   "id": "f-fuel-break-site-walk",
+   "hall": "grounds",
+   "hall_name": "Grounds & Landscape",
+   "campus": "oakland",
+   "strand": "safety",
+   "tier": "fundamentals",
+   "skill_id": "grounds.safety.fundamentals",
+   "room_label": "Induction & PPE",
+   "title": "Grounds & Landscape: before the wildfire fuel break",
+   "why": "Out in the Deep Timber world this hall works at a site drawn on AUTHORED terrain, and before walking out to it you should know what the work asks of you and who may stop it.",
+   "limits": "Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE \u2014 gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor"
+   ],
+   "stages": [
+    "class"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "authoring": "rule",
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "DERIVED",
+    "title": "DERIVED",
+    "why": "DERIVED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "arc": "site",
+   "site": {
+    "world": "forest",
+    "world_name": "Deep Timber",
+    "id": "f-fuel-break",
+    "title": "Wildfire fuel break",
+    "provenance": "AUTHORED"
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "safety"
+   ]
+  },
+  "f-timber-frame-site-walk": {
+   "id": "f-timber-frame-site-walk",
+   "hall": "riggers",
+   "hall_name": "Riggers & Signalpersons",
+   "campus": "treasure-island",
+   "strand": "safety",
+   "tier": "fundamentals",
+   "skill_id": "riggers.safety.fundamentals",
+   "room_label": "Induction & PPE",
+   "title": "Riggers & Signalpersons: before the timber-frame shelter raising",
+   "why": "Out in the Deep Timber world this hall works at a site drawn on AUTHORED terrain, and before walking out to it you should know what the work asks of you and who may stop it.",
+   "limits": "Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE \u2014 gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor"
+   ],
+   "stages": [
+    "class"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "authoring": "rule",
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "DERIVED",
+    "title": "DERIVED",
+    "why": "DERIVED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "arc": "site",
+   "site": {
+    "world": "forest",
+    "world_name": "Deep Timber",
+    "id": "f-timber-frame",
+    "title": "Timber-frame shelter raising",
+    "provenance": "AUTHORED"
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "safety"
+   ]
+  },
+  "f-water-intake-site-walk": {
+   "id": "f-water-intake-site-walk",
+   "hall": "water-distrib",
+   "hall_name": "Water Distribution Fitters",
+   "campus": "new-orleans",
+   "strand": "safety",
+   "tier": "fundamentals",
+   "skill_id": "water-distrib.safety.fundamentals",
+   "room_label": "Induction & PPE",
+   "title": "Water Distribution Fitters: before the lake intake and main",
+   "why": "Out in the Deep Timber world this hall works at a site drawn on AUTHORED terrain, and before walking out to it you should know what the work asks of you and who may stop it.",
+   "limits": "Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE \u2014 gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor"
+   ],
+   "stages": [
+    "class"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "authoring": "rule",
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "DERIVED",
+    "title": "DERIVED",
+    "why": "DERIVED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "arc": "site",
+   "site": {
+    "world": "forest",
+    "world_name": "Deep Timber",
+    "id": "f-water-intake",
+    "title": "Lake intake and main",
+    "provenance": "AUTHORED"
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "safety"
+   ]
+  },
+  "f-fire-lookout-site-walk": {
+   "id": "f-fire-lookout-site-walk",
+   "hall": "steel-erectors",
+   "hall_name": "Steel Erectors",
+   "campus": "treasure-island",
+   "strand": "safety",
+   "tier": "fundamentals",
+   "skill_id": "steel-erectors.safety.fundamentals",
+   "room_label": "Induction & PPE",
+   "title": "Steel Erectors: before the fire lookout tower",
+   "why": "Out in the Deep Timber world this hall works at a site drawn on AUTHORED terrain, and before walking out to it you should know what the work asks of you and who may stop it.",
+   "limits": "Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE \u2014 gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor"
+   ],
+   "stages": [
+    "class"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "authoring": "rule",
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "DERIVED",
+    "title": "DERIVED",
+    "why": "DERIVED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "arc": "site",
+   "site": {
+    "world": "forest",
+    "world_name": "Deep Timber",
+    "id": "f-fire-lookout",
+    "title": "Fire lookout tower",
+    "provenance": "AUTHORED"
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "safety"
+   ]
+  },
+  "c-river-intake-site-walk": {
+   "id": "c-river-intake-site-walk",
+   "hall": "hydro",
+   "hall_name": "Hydro Plant Trades",
+   "campus": "new-orleans",
+   "strand": "safety",
+   "tier": "fundamentals",
+   "skill_id": "hydro.safety.fundamentals",
+   "room_label": "Induction & PPE",
+   "title": "Hydro Plant Trades: before the run-of-river intake and penstock",
+   "why": "Out in the Red Rock Canyon world this hall works at a site drawn on AUTHORED terrain, and before walking out to it you should know what the work asks of you and who may stop it.",
+   "limits": "Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE \u2014 gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor"
+   ],
+   "stages": [
+    "class"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "authoring": "rule",
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "DERIVED",
+    "title": "DERIVED",
+    "why": "DERIVED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "arc": "site",
+   "site": {
+    "world": "canyon",
+    "world_name": "Red Rock Canyon",
+    "id": "c-river-intake",
+    "title": "Run-of-river intake and penstock",
+    "provenance": "AUTHORED"
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "safety"
+   ]
+  },
+  "c-pipeline-crossing-site-walk": {
+   "id": "c-pipeline-crossing-site-walk",
+   "hall": "pipeline",
+   "hall_name": "Pipeline Trades",
+   "campus": "oakland",
+   "strand": "safety",
+   "tier": "fundamentals",
+   "skill_id": "pipeline.safety.fundamentals",
+   "room_label": "Induction & PPE",
+   "title": "Pipeline Trades: before the pipeline river crossing",
+   "why": "Out in the Red Rock Canyon world this hall works at a site drawn on AUTHORED terrain, and before walking out to it you should know what the work asks of you and who may stop it.",
+   "limits": "Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE \u2014 gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor"
+   ],
+   "stages": [
+    "class"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "authoring": "rule",
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "DERIVED",
+    "title": "DERIVED",
+    "why": "DERIVED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "arc": "site",
+   "site": {
+    "world": "canyon",
+    "world_name": "Red Rock Canyon",
+    "id": "c-pipeline-crossing",
+    "title": "Pipeline river crossing",
+    "provenance": "AUTHORED"
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "safety"
+   ]
+  },
+  "c-valve-vault-site-walk": {
+   "id": "c-valve-vault-site-walk",
+   "hall": "confined-space",
+   "hall_name": "Confined Space Rescue",
+   "campus": "new-orleans",
+   "strand": "safety",
+   "tier": "fundamentals",
+   "skill_id": "confined-space.safety.fundamentals",
+   "room_label": "Induction & PPE",
+   "title": "Confined Space Rescue: before the valve vault rescue drill",
+   "why": "Out in the Red Rock Canyon world this hall works at a site drawn on AUTHORED terrain, and before walking out to it you should know what the work asks of you and who may stop it.",
+   "limits": "Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE \u2014 gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor"
+   ],
+   "stages": [
+    "class"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "authoring": "rule",
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "DERIVED",
+    "title": "DERIVED",
+    "why": "DERIVED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "arc": "site",
+   "site": {
+    "world": "canyon",
+    "world_name": "Red Rock Canyon",
+    "id": "c-valve-vault",
+    "title": "Valve vault rescue drill",
+    "provenance": "AUTHORED"
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "safety"
+   ]
+  },
+  "c-mesa-solar-site-walk": {
+   "id": "c-mesa-solar-site-walk",
+   "hall": "solar",
+   "hall_name": "Solar Installers",
+   "campus": "new-orleans",
+   "strand": "safety",
+   "tier": "fundamentals",
+   "skill_id": "solar.safety.fundamentals",
+   "room_label": "Induction & PPE",
+   "title": "Solar Installers: before the mesa-top solar array",
+   "why": "Out in the Red Rock Canyon world this hall works at a site drawn on AUTHORED terrain, and before walking out to it you should know what the work asks of you and who may stop it.",
+   "limits": "Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE \u2014 gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor"
+   ],
+   "stages": [
+    "class"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "authoring": "rule",
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "DERIVED",
+    "title": "DERIVED",
+    "why": "DERIVED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "arc": "site",
+   "site": {
+    "world": "canyon",
+    "world_name": "Red Rock Canyon",
+    "id": "c-mesa-solar",
+    "title": "Mesa-top solar array",
+    "provenance": "AUTHORED"
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "safety"
+   ]
+  },
+  "c-quarry-bench-site-walk": {
+   "id": "c-quarry-bench-site-walk",
+   "hall": "blasters",
+   "hall_name": "Drillers & Blasters",
+   "campus": "oakland",
+   "strand": "safety",
+   "tier": "fundamentals",
+   "skill_id": "blasters.safety.fundamentals",
+   "room_label": "Induction & PPE",
+   "title": "Drillers & Blasters: before the quarry bench and blast pattern",
+   "why": "Out in the Red Rock Canyon world this hall works at a site drawn on AUTHORED terrain, and before walking out to it you should know what the work asks of you and who may stop it.",
+   "limits": "Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE \u2014 gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor"
+   ],
+   "stages": [
+    "class"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "authoring": "rule",
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "DERIVED",
+    "title": "DERIVED",
+    "why": "DERIVED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "arc": "site",
+   "site": {
+    "world": "canyon",
+    "world_name": "Red Rock Canyon",
+    "id": "c-quarry-bench",
+    "title": "Quarry bench and blast pattern",
+    "provenance": "AUTHORED"
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "safety"
+   ]
+  },
+  "d-levee-pump-site-walk": {
+   "id": "d-levee-pump-site-walk",
+   "hall": "wastewater",
+   "hall_name": "Wastewater Operators",
+   "campus": "new-orleans",
+   "strand": "safety",
+   "tier": "fundamentals",
+   "skill_id": "wastewater.safety.fundamentals",
+   "room_label": "Induction & PPE",
+   "title": "Wastewater Operators: before the levee pump station",
+   "why": "Out in the Salt Marsh Delta world this hall works at a site drawn on AUTHORED terrain, and before walking out to it you should know what the work asks of you and who may stop it.",
+   "limits": "Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE \u2014 gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor"
+   ],
+   "stages": [
+    "class"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "authoring": "rule",
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "DERIVED",
+    "title": "DERIVED",
+    "why": "DERIVED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "arc": "site",
+   "site": {
+    "world": "delta",
+    "world_name": "Salt Marsh Delta",
+    "id": "d-levee-pump",
+    "title": "Levee pump station",
+    "provenance": "AUTHORED"
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "safety"
+   ]
+  },
+  "d-terminal-berth-site-walk": {
+   "id": "d-terminal-berth-site-walk",
+   "hall": "marine-terminal",
+   "hall_name": "Marine Terminal Operators",
+   "campus": "oakland",
+   "strand": "safety",
+   "tier": "fundamentals",
+   "skill_id": "marine-terminal.safety.fundamentals",
+   "room_label": "Induction & PPE",
+   "title": "Marine Terminal Operators: before the river terminal berth",
+   "why": "Out in the Salt Marsh Delta world this hall works at a site drawn on AUTHORED terrain, and before walking out to it you should know what the work asks of you and who may stop it.",
+   "limits": "Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE \u2014 gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor"
+   ],
+   "stages": [
+    "class"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "authoring": "rule",
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "DERIVED",
+    "title": "DERIVED",
+    "why": "DERIVED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "arc": "site",
+   "site": {
+    "world": "delta",
+    "world_name": "Salt Marsh Delta",
+    "id": "d-terminal-berth",
+    "title": "River terminal berth",
+    "provenance": "AUTHORED"
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "safety"
+   ]
+  },
+  "d-pile-trestle-site-walk": {
+   "id": "d-pile-trestle-site-walk",
+   "hall": "piling",
+   "hall_name": "Piling Crews",
+   "campus": "treasure-island",
+   "strand": "safety",
+   "tier": "fundamentals",
+   "skill_id": "piling.safety.fundamentals",
+   "room_label": "Induction & PPE",
+   "title": "Piling Crews: before the timber pile trestle over a bayou",
+   "why": "Out in the Salt Marsh Delta world this hall works at a site drawn on AUTHORED terrain, and before walking out to it you should know what the work asks of you and who may stop it.",
+   "limits": "Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE \u2014 gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor"
+   ],
+   "stages": [
+    "class"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "authoring": "rule",
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "DERIVED",
+    "title": "DERIVED",
+    "why": "DERIVED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "arc": "site",
+   "site": {
+    "world": "delta",
+    "world_name": "Salt Marsh Delta",
+    "id": "d-pile-trestle",
+    "title": "Timber pile trestle over a bayou",
+    "provenance": "AUTHORED"
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "safety"
+   ]
+  },
+  "d-outfall-dive-site-walk": {
+   "id": "d-outfall-dive-site-walk",
+   "hall": "divers",
+   "hall_name": "Commercial Divers",
+   "campus": "oakland",
+   "strand": "safety",
+   "tier": "fundamentals",
+   "skill_id": "divers.safety.fundamentals",
+   "room_label": "Induction & PPE",
+   "title": "Commercial Divers: before the outfall line and dive station",
+   "why": "Out in the Salt Marsh Delta world this hall works at a site drawn on AUTHORED terrain, and before walking out to it you should know what the work asks of you and who may stop it.",
+   "limits": "Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE \u2014 gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor"
+   ],
+   "stages": [
+    "class"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "authoring": "rule",
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "DERIVED",
+    "title": "DERIVED",
+    "why": "DERIVED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "arc": "site",
+   "site": {
+    "world": "delta",
+    "world_name": "Salt Marsh Delta",
+    "id": "d-outfall-dive",
+    "title": "Outfall line and dive station",
+    "provenance": "AUTHORED"
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "safety"
+   ]
+  },
+  "d-spill-boom-site-walk": {
+   "id": "d-spill-boom-site-walk",
+   "hall": "spill-response",
+   "hall_name": "Spill Response Technicians",
+   "campus": "new-orleans",
+   "strand": "safety",
+   "tier": "fundamentals",
+   "skill_id": "spill-response.safety.fundamentals",
+   "room_label": "Induction & PPE",
+   "title": "Spill Response Technicians: before the spill boom staging",
+   "why": "Out in the Salt Marsh Delta world this hall works at a site drawn on AUTHORED terrain, and before walking out to it you should know what the work asks of you and who may stop it.",
+   "limits": "Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE \u2014 gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor"
+   ],
+   "stages": [
+    "class"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "authoring": "rule",
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "DERIVED",
+    "title": "DERIVED",
+    "why": "DERIVED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "arc": "site",
+   "site": {
+    "world": "delta",
+    "world_name": "Salt Marsh Delta",
+    "id": "d-spill-boom",
+    "title": "Spill boom staging",
+    "provenance": "AUTHORED"
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "safety"
+   ]
+  },
+  "d-wind-staging-site-walk": {
+   "id": "d-wind-staging-site-walk",
+   "hall": "crane-ops",
+   "hall_name": "Crane Operators",
+   "campus": "treasure-island",
+   "strand": "safety",
+   "tier": "fundamentals",
+   "skill_id": "crane-ops.safety.fundamentals",
+   "room_label": "Induction & PPE",
+   "title": "Crane Operators: before the wind turbine staging yard",
+   "why": "Out in the Salt Marsh Delta world this hall works at a site drawn on AUTHORED terrain, and before walking out to it you should know what the work asks of you and who may stop it.",
+   "limits": "Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE \u2014 gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor"
+   ],
+   "stages": [
+    "class"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "authoring": "rule",
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "DERIVED",
+    "title": "DERIVED",
+    "why": "DERIVED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "arc": "site",
+   "site": {
+    "world": "delta",
+    "world_name": "Salt Marsh Delta",
+    "id": "d-wind-staging",
+    "title": "Wind turbine staging yard",
+    "provenance": "AUTHORED"
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "safety"
+   ]
   }
  },
  "ladder": {
@@ -13650,7 +16292,30 @@
    "confined-space-layout-first-walk": [],
    "high-angle-inspection-first-walk": [],
    "industrial-clean-coordination-first-walk": [],
-   "survey-drone-documentation-first-walk": []
+   "survey-drone-documentation-first-walk": [],
+   "m-adit-portal-site-walk": [],
+   "m-hv-corridor-site-walk": [],
+   "m-rockfall-netting-site-walk": [],
+   "m-snow-road-site-walk": [],
+   "m-wind-ridge-site-walk": [],
+   "m-survey-control-site-walk": [],
+   "f-line-clearance-site-walk": [],
+   "f-trail-bridge-site-walk": [],
+   "f-fuel-break-site-walk": [],
+   "f-timber-frame-site-walk": [],
+   "f-water-intake-site-walk": [],
+   "f-fire-lookout-site-walk": [],
+   "c-river-intake-site-walk": [],
+   "c-pipeline-crossing-site-walk": [],
+   "c-valve-vault-site-walk": [],
+   "c-mesa-solar-site-walk": [],
+   "c-quarry-bench-site-walk": [],
+   "d-levee-pump-site-walk": [],
+   "d-terminal-berth-site-walk": [],
+   "d-pile-trestle-site-walk": [],
+   "d-outfall-dive-site-walk": [],
+   "d-spill-boom-site-walk": [],
+   "d-wind-staging-site-walk": []
   },
   "roots": [
    "acoustic-documentation-first-walk",
@@ -13663,12 +16328,23 @@
    "blasters-inspection-first-walk",
    "bricklayers-gear-that-stays-on",
    "bridge-inspect-inspection-first-walk",
+   "c-mesa-solar-site-walk",
+   "c-pipeline-crossing-site-walk",
+   "c-quarry-bench-site-walk",
+   "c-river-intake-site-walk",
+   "c-valve-vault-site-walk",
    "cable-splicers-inspection-first-walk",
    "carpenters-return-it-the-same",
    "catenary-coordination-first-walk",
    "cleanroom-safety-first-walk",
    "concrete-pump-safety-first-walk",
    "confined-space-layout-first-walk",
+   "d-levee-pump-site-walk",
+   "d-outfall-dive-site-walk",
+   "d-pile-trestle-site-walk",
+   "d-spill-boom-site-walk",
+   "d-terminal-berth-site-walk",
+   "d-wind-staging-site-walk",
    "data-center-tools-first-walk",
    "district-energy-inspection-first-walk",
    "divers-layout-first-walk",
@@ -13676,6 +16352,12 @@
    "electricians-clip-in-first",
    "elevator-tools-first-walk",
    "ev-charging-safety-first-walk",
+   "f-fire-lookout-site-walk",
+   "f-fuel-break-site-walk",
+   "f-line-clearance-site-walk",
+   "f-timber-frame-site-walk",
+   "f-trail-bridge-site-walk",
+   "f-water-intake-site-walk",
    "fiber-splicers-keep-the-trace",
    "fire-alarm-coordination-first-walk",
    "fire-sprinkler-tools-first-walk",
@@ -13693,6 +16375,12 @@
    "lathers-frame-for-the-next-trade",
    "lead-abatement-documentation-first-walk",
    "line-workers-find-the-fault",
+   "m-adit-portal-site-walk",
+   "m-hv-corridor-site-walk",
+   "m-rockfall-netting-site-walk",
+   "m-snow-road-site-walk",
+   "m-survey-control-site-walk",
+   "m-wind-ridge-site-walk",
    "medical-gas-tools-first-walk",
    "meter-techs-coordination-first-walk",
    "miners-coordination-first-walk",
@@ -13847,7 +16535,30 @@
    "confined-space-layout-first-walk": 1,
    "high-angle-inspection-first-walk": 1,
    "industrial-clean-coordination-first-walk": 1,
-   "survey-drone-documentation-first-walk": 1
+   "survey-drone-documentation-first-walk": 1,
+   "m-adit-portal-site-walk": 1,
+   "m-hv-corridor-site-walk": 1,
+   "m-rockfall-netting-site-walk": 1,
+   "m-snow-road-site-walk": 1,
+   "m-wind-ridge-site-walk": 1,
+   "m-survey-control-site-walk": 1,
+   "f-line-clearance-site-walk": 1,
+   "f-trail-bridge-site-walk": 1,
+   "f-fuel-break-site-walk": 1,
+   "f-timber-frame-site-walk": 1,
+   "f-water-intake-site-walk": 1,
+   "f-fire-lookout-site-walk": 1,
+   "c-river-intake-site-walk": 1,
+   "c-pipeline-crossing-site-walk": 1,
+   "c-valve-vault-site-walk": 1,
+   "c-mesa-solar-site-walk": 1,
+   "c-quarry-bench-site-walk": 1,
+   "d-levee-pump-site-walk": 1,
+   "d-terminal-berth-site-walk": 1,
+   "d-pile-trestle-site-walk": 1,
+   "d-outfall-dive-site-walk": 1,
+   "d-spill-boom-site-walk": 1,
+   "d-wind-staging-site-walk": 1
   },
   "layers": {
    "1": [
@@ -13861,12 +16572,23 @@
     "blasters-inspection-first-walk",
     "bricklayers-gear-that-stays-on",
     "bridge-inspect-inspection-first-walk",
+    "c-mesa-solar-site-walk",
+    "c-pipeline-crossing-site-walk",
+    "c-quarry-bench-site-walk",
+    "c-river-intake-site-walk",
+    "c-valve-vault-site-walk",
     "cable-splicers-inspection-first-walk",
     "carpenters-return-it-the-same",
     "catenary-coordination-first-walk",
     "cleanroom-safety-first-walk",
     "concrete-pump-safety-first-walk",
     "confined-space-layout-first-walk",
+    "d-levee-pump-site-walk",
+    "d-outfall-dive-site-walk",
+    "d-pile-trestle-site-walk",
+    "d-spill-boom-site-walk",
+    "d-terminal-berth-site-walk",
+    "d-wind-staging-site-walk",
     "data-center-tools-first-walk",
     "district-energy-inspection-first-walk",
     "divers-layout-first-walk",
@@ -13874,6 +16596,12 @@
     "electricians-clip-in-first",
     "elevator-tools-first-walk",
     "ev-charging-safety-first-walk",
+    "f-fire-lookout-site-walk",
+    "f-fuel-break-site-walk",
+    "f-line-clearance-site-walk",
+    "f-timber-frame-site-walk",
+    "f-trail-bridge-site-walk",
+    "f-water-intake-site-walk",
     "fiber-splicers-keep-the-trace",
     "fire-alarm-coordination-first-walk",
     "fire-sprinkler-tools-first-walk",
@@ -13891,6 +16619,12 @@
     "lathers-frame-for-the-next-trade",
     "lead-abatement-documentation-first-walk",
     "line-workers-find-the-fault",
+    "m-adit-portal-site-walk",
+    "m-hv-corridor-site-walk",
+    "m-rockfall-netting-site-walk",
+    "m-snow-road-site-walk",
+    "m-survey-control-site-walk",
+    "m-wind-ridge-site-walk",
     "medical-gas-tools-first-walk",
     "meter-techs-coordination-first-walk",
     "miners-coordination-first-walk",

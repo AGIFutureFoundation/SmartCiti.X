@@ -573,7 +573,7 @@ const escLikeHome = (t) => String(t).split(/\s+/).join(' ').trim()
 /* ====================================================== [front door] === */
 /* The structure the front door was rebuilt around: one h1 and an outline
    that never skips a level; hero figures that each name the registry they
-   were counted from; two calls to action and four audience paths that land
+   were counted from; two calls to action and five audience paths that land
    on built pages; the learner loop drawn from web/sitenav.py's own LOOP with
    pictures that ship; and what a record proves, word for word from the
    registry the verifier is built on. Every check reads markup, never prose. */
@@ -649,7 +649,7 @@ const escLikeHome = (t) => String(t).split(/\s+/).join(' ').trim()
     [`ctas=${JSON.stringify(cta)}`]);
 
   /* -- the audience paths ------------------------------------------------ */
-  const WANT_PATHS = ['learners', 'instructors', 'employers', 'partners'];
+  const WANT_PATHS = ['learners', 'instructors', 'schools', 'employers', 'partners'];
   const pathBlocks = [...bare.matchAll(/<article class="path" data-path="([^"]*)">([\s\S]*?)<\/article>/g)];
   const pathWrong = [];
   for (const [, k, inner] of pathBlocks) {
@@ -658,10 +658,24 @@ const escLikeHome = (t) => String(t).split(/\s+/).join(' ').trim()
     if (!hrefs.length) pathWrong.push(`${k}: no link`);
     for (const h of hrefs) if (!existsSync(join(ROOT, h.split(/[?#]/)[0]))) pathWrong.push(`${k}: ${h} is not a file`);
   }
-  ok('[shipped] index.html: four audience paths - learners, instructors, employers, partners - in that '
+  ok('[shipped] index.html: five audience paths - learners, instructors, schools, employers, partners - in that '
     + 'order, each with a heading and at least one link, every link a built page',
     JSON.stringify(pathBlocks.map((m) => m[1])) === JSON.stringify(WANT_PATHS) && pathWrong.length === 0,
     [`paths=[${pathBlocks.map((m) => m[1])}]`, ...pathWrong]);
+  // the play and schools pages are reachable from the door, and play is never sold as a record
+  const PLAY = ['web/trade_craft_quests.html', 'web/trade_craft_wilds.html'];
+  const surfaced = new Set(pathBlocks.flatMap(([, , inner]) => [...inner.matchAll(/href="([^"]*)"/g)].map((m) => m[1])));
+  const surfWrong = [...PLAY, 'web/trade_craft_schools.html'].filter((p) => !surfaced.has(p)).map((p) => `${p}: in no audience path`);
+  for (const [, k, inner] of pathBlocks) {
+    if (PLAY.some((p) => inner.includes(`href="${p}"`)) && !/<p>[^<]*nothing you do there enters a record[^<]*<\/p>/.test(inner))
+      surfWrong.push(`${k}: links a play page without saying play enters no record`);
+    if (/\b(certif|accredit)/i.test(inner.replace(/<[^>]*>/g, '').replace(/\bis not an? (certification|accreditation)\b/gi, ''))) surfWrong.push(`${k}: names a certification`);
+  }
+  const pathsH2 = (bare.match(/<section id="paths">[\s\S]*?<h2>([^<]*)<\/h2>/) || [])[1] || '';
+  if (!pathsH2.startsWith(`${pathBlocks.length} ways in`)) surfWrong.push(`heading "${pathsH2}" does not count the ${pathBlocks.length} paths`);
+  ok('[shipped] index.html: the audience paths surface quests, wilds and schools, and a path that links a play page '
+    + 'says in its own prose that nothing done there enters a record',
+    surfWrong.length === 0, surfWrong);
 
   /* -- the learner loop, from the one declaration ------------------------ */
   const LOOP_DECL = JSON.parse(execFileSync('python3', ['-c', [
@@ -806,6 +820,30 @@ const escLikeHome = (t) => String(t).split(/\s+/).join(' ').trim()
   const poster = (attrs.match(/\sposter="([^"]+)"/) || [])[1];
   ok('[shipped] index.html: the poster is a JPEG in the bundle',
     !!poster && /\.jpe?g$/.test(poster) && existsSync(join(ROOT, poster)), [poster]);
+  // the footage is MEDIA's registered hero b-roll, byte for byte, never a placeholder or a hero=false clip
+  {
+    const { createHash } = await import('node:crypto');
+    const hvSrc = readFileSync(join(ROOT, 'web/herovideo.py'), 'utf8');
+    const clipId = (hvSrc.match(/^HERO_CLIP_ID = '([^']+)'/m) || [])[1];
+    const reg = JSON.parse(readFileSync(join(ROOT, 'media/registry/media.json'), 'utf8'));
+    const clip = reg.clips.find((c) => c.id === clipId);
+    const shipped = [...attrs.matchAll(/\sposter="([^"]+)"/g)].map((m) => m[1])
+      .concat([...hdr.matchAll(/<source data-src="([^"]+)"/g)].map((m) => m[1]));
+    const why = [];
+    if (!clip) why.push(`no clip ${clipId} in media/registry/media.json`);
+    else {
+      if (clip.hero !== true) why.push(`${clipId} is not registered hero=true`);
+      const want = [clip.files.poster.path, clip.files.webm.path, clip.files.mp4.path];
+      if (JSON.stringify(shipped) !== JSON.stringify(want)) why.push(`shipped ${shipped} != registry ${want}`);
+      for (const k of ['poster', 'webm', 'mp4']) {
+        const f = clip.files[k];
+        if (!existsSync(join(ROOT, f.path))) { why.push(`${f.path} missing`); continue; }
+        if (createHash('sha256').update(readFileSync(join(ROOT, f.path))).digest('hex') !== f.sha256) why.push(`${f.path}: sha256 differs from the registry`);
+      }
+    }
+    ok('[shipped] index.html: the hero footage is the b-roll herovideo.HERO_CLIP_ID names in media/registry/media.json - '
+      + 'registered hero=true, poster/WebM/MP4 exactly its files, each still matching its registered sha256', why.length === 0, why);
+  }
   const js = (home.match(/<script id="hv-js">([\s\S]*?)<\/script>/) || [])[1] || '';
   ok('[shipped] index.html: the footage script declines to autoplay under prefers-reduced-motion, under '
     + 'Save-Data and on a small screen, and starts only after the load event',
@@ -816,7 +854,7 @@ const escLikeHome = (t) => String(t).split(/\s+/).join(' ').trim()
   ok('[shipped] index.html: a visible Pause/Play button for the footage (WCAG 2.2.2), with aria-pressed, '
     + 'and a caption saying the footage is recorded from this build',
     !!btn && /aria-pressed="(true|false)"/.test(btn[0]) && /Pause background video/.test(btn[1])
-      && /<p class="hv-cap">[^<]*recorded from this build/.test(hdr));
+      && /<p class="hv-cap">[^<]*(recorded|filmed frame by frame) from this build/.test(hdr));
   ok('[shipped] index.html: the footage sits absolutely behind the hero (no layout shift) under a scrim',
     /\.hv\{position:absolute;inset:0;z-index:-1/.test(home) && /\.hv-scrim\{position:absolute;inset:0;background:rgba\(/.test(home));
   ok('[shipped] index.html: a <main id="main"> holds the page\'s one <h1>, the target for skip links',
@@ -861,6 +899,27 @@ const escLikeHome = (t) => String(t).split(/\s+/).join(' ').trim()
   ok('[shipped] index.html: the search lists no treasure or easter egg - those are for finding',
     idx !== null && by('quest').every((e) => !hidden.includes(e.n)), by('quest').filter((e) => hidden.includes(e.n)).map((e) => e.n));
   const openBtn = home.match(/<button\b[^>]*data-search-open[^>]*>/);
+  // every other page reaches the palette through sitesearch.search_trigger(): a plain link to index.html#search
+  const TRIG = JSON.parse((await import("node:child_process")).execFileSync('python3', ['-c', [
+    'import json, sys', `sys.path.insert(0, ${JSON.stringify(HERE)})`,
+    'import sitesearch as s, sitenav as n',
+    'print(json.dumps({p: s.search_trigger(p) for p in n.PAGES}))'].join('\n')], { encoding: 'utf8' }));
+  const trigWrong = [];
+  for (const [p, a] of Object.entries(TRIG)) {
+    const href = (a.match(/^<a class="ss-go" href="([^"]+)" data-search-go[^>]*>/) || [])[1];
+    if (/<script/i.test(a)) trigWrong.push(`${p}: trigger carries a script`);
+    if (!href || !href.endsWith('#search')) { trigWrong.push(`${p}: href=${href}`); continue; }
+    const file = href.split('#')[0];
+    const target = file ? join(ROOT, dirname(p), file) : join(ROOT, p);
+    if (resolve(target) !== resolve(join(ROOT, 'index.html'))) trigWrong.push(`${p}: ${href} does not land on index.html`);
+  }
+  const ssjs = (home.match(/<script id="ss-js">([\s\S]*?)<\/script>/) || [])[1] || '';
+  if (!/location\.hash !== '#search'/.test(ssjs) || !/addEventListener\('hashchange', fromHash\)/.test(ssjs)
+      || !/\bfromHash\(\);/.test(ssjs)) trigWrong.push('index.html: palette script does not open on #search (load + hashchange)');
+  if (!/history\.replaceState/.test(ssjs)) trigWrong.push('index.html: #search is not cleared, a reload would reopen the palette');
+  ok('[shipped] every nav page\'s search_trigger() is a script-free link that lands on index.html#search, and the '
+    + 'front door opens its palette on #search (on load and on hashchange) then clears the hash',
+    trigWrong.length === 0, trigWrong);
   ok('[shipped] index.html: a visible search button (Ctrl/Cmd+K advertised) opens a labelled dialog whose '
     + 'input is a combobox driving a listbox, with a polite live status',
     !!openBtn && /aria-keyshortcuts="Control\+K Meta\+K"/.test(openBtn[0]) && /aria-controls="ss-dlg"/.test(openBtn[0])
@@ -1117,13 +1176,13 @@ if (WANT_BROWSER) {
          that has no background of its own, and the element's text colour
          must reach WCAG AA against the worst of those pixels. */
       const hv = [];
-      const measure = async (scheme) => {
+      const measure = async (scheme, page = 'index.html', sel = '.hero-copy *') => {
         const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, colorScheme: scheme });
         const pg = await ctx.newPage();
         pg.on('pageerror', (e) => errs.push('pageerror: ' + e.message));
-        await pg.goto(`${ORIGIN}/index.html`, { waitUntil: 'load' });
+        await pg.goto(`${ORIGIN}/${page}`, { waitUntil: 'load' });
         await pg.waitForFunction(() => { const v = document.querySelector('.hv-video'); return v && v.readyState >= 2 && v.currentTime > 0.3; }, null, { timeout: 20000 }).catch(() => {});
-        const r = await pg.evaluate(async () => {
+        const r = await pg.evaluate(async (sel) => {
           const v = document.querySelector('.hv-video');
           const host = document.querySelector('[data-hero-host]');
           const out = { playing: !v.paused && v.currentTime > 0.3, src: v.currentSrc, worst: [], frames: 0 };
@@ -1139,7 +1198,7 @@ if (WANT_BROWSER) {
           const scale = Math.max(hr.width / v.videoWidth, hr.height / v.videoHeight);
           const dw = v.videoWidth * scale; const dh = v.videoHeight * scale;
           const opaque = (el) => { for (let e = el; e && e !== host; e = e.parentElement) { const b = getComputedStyle(e).backgroundColor; if (b !== 'rgba(0, 0, 0, 0)' && b !== 'transparent') return true; } return false; };
-          const els = [...host.querySelectorAll('.hero-copy *')].filter((e) => [...e.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())
+          const els = [...host.querySelectorAll(sel)].filter((e) => [...e.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())
             && !opaque(e) && e.getBoundingClientRect().width > 0);
           const worst = new Map();
           for (const f of [0.05, 0.25, 0.45, 0.65, 0.85]) {
@@ -1170,7 +1229,7 @@ if (WANT_BROWSER) {
           }
           out.worst = [...worst].map(([k, w]) => ({ k, ...w }));
           return out;
-        });
+        }, sel);
         await ctx.close();
         return r;
       };
@@ -1182,6 +1241,14 @@ if (WANT_BROWSER) {
         + `background holds WCAG AA against the worst scrimmed pixel under it (lowest: dark ${minOf(dark)}, light ${minOf(light)})`,
         dark.frames >= 5 && light.frames >= 5 && dark.worst.length > 5 && fails.length === 0,
         fails.slice(0, 6).map((f) => `${f.s} ${f.k} ${f.ratio} < ${f.need}`));
+      // the landing hero carries the same footage under its own copy (lede-2 is --muted): measured the same way
+      const ldark = await measure('dark', 'web/trade_craft_landing.html', ':scope > :not(.hv) , :scope > :not(.hv) *');
+      const llight = await measure('light', 'web/trade_craft_landing.html', ':scope > :not(.hv) , :scope > :not(.hv) *');
+      const lfails = [...ldark.worst.map((w) => ({ ...w, s: 'dark' })), ...llight.worst.map((w) => ({ ...w, s: 'light' }))].filter((w) => w.ratio < w.need);
+      ok(`[browser] trade_craft_landing.html: over ${ldark.frames} sampled frames, light and dark, every hero text without its own `
+        + `background holds WCAG AA against the worst scrimmed pixel under it (lowest: dark ${minOf(ldark)}, light ${minOf(llight)})`,
+        ldark.frames >= 5 && llight.frames >= 5 && ldark.worst.length >= 3 && lfails.length === 0,
+        lfails.slice(0, 6).map((f) => `${f.s} ${f.k} ${f.ratio} < ${f.need}`));
       ok('[browser] at 1440 px with motion welcome the footage plays after load, from the WebM source',
         dark.playing && /\.webm$/.test(dark.src), [JSON.stringify({ playing: dark.playing, src: dark.src })]);
 

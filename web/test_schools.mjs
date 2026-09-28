@@ -49,7 +49,14 @@ ok('the page carries the site nav and exactly one h1',
   /class="sitenav/.test(page) && (page.match(/<h1[\s>]/g) || []).length === 1);
 ok('the page is built by web/build_schools.py through the site nav helper, and fetches nothing',
   builder.includes('from sitenav import nav_html, labels as nav_labels, NAV_CSS')
-  && !/https?:\/\//.test(page.replace(/xmlns='http:\/\/www\.w3\.org\/2000\/svg'/g, '')));
+  && !/https?:\/\//.test(page.replace(/xmlns='http:\/\/www\.w3\.org\/2000\/svg'/g, '')
+    // the search/link-preview card (web/seo.py) names the page's own public URL; naming is not fetching
+    .replace(/<meta (?:property|name)="(?:og|twitter):[^"]*" content="[^"]*">/g, '')
+    .replace(/<link rel="canonical" href="[^"]*">/g, '')
+    .replace(/<script type="application\/ld\+json"[^>]*>[\s\S]*?<\/script>/g, '')));
+ok('the page carries the one search card from web/seo.py: a description, a canonical URL and no second <title>',
+  (page.match(/<title>/g) || []).length === 1 && (page.match(/name="description"/g) || []).length === 1
+  && /<link rel="canonical" href="[^"]*trade_craft_schools\.html">/.test(page) && /id="main"/.test(page));
 ok('the builder fails closed: no `.get(` default and no `??` on registry data',
   !/\.get\(/.test(builder) && !/\?\?/.test(builder));
 ok('the four bands schools/ declares each have a section, in order, with the level and offer verbatim',

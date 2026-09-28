@@ -21,6 +21,11 @@ hall riggers (Riggers & Signalpersons) — lesson riggers-first-card, seat riggi
     step 3 crew @yard: not done
     step 4 sim @yard: not done
     step 5 advisor @yard: not done
+  lesson f-timber-frame-site-walk: in progress in the record; placard step in every hazard room: no; hazard rooms not walked: materials
+    step 1 walk @safety: not done
+    step 2 placard @safety: not done
+    step 3 advisor @safety: not done
+    step 4 advisor @safety: not done
   seat crane-lift: not passed in this record
   seat rigging-signals (Rigging Signal Call): passed — evidenced by record.sims and a sim step episode; decided by the seat's rule: calls == all, wrong == 0, time informational — the axes are the seat's rule in sims.json, not the record's evidence; the record carries passed only
   seat load-chart (Load Chart Judgment): passed — evidenced by record.sims and a sim step episode; decided by the seat's rule: judgments == all, overloads == 0, time informational — the axes are the seat's rule in sims.json, not the record's evidence; the record carries passed only
@@ -42,6 +47,11 @@ hall crane-ops (Crane Operators) — lesson crane-ops-read-the-chart, seat riggi
     step 2 walkaround @yard: evidenced
     step 3 sim @yard: evidenced
     step 4 advisor @yard: evidenced
+  lesson d-wind-staging-site-walk: in progress in the record; placard step in every hazard room: no; hazard rooms not walked: materials
+    step 1 walk @safety: not done
+    step 2 placard @safety: not done
+    step 3 advisor @safety: not done
+    step 4 advisor @safety: not done
   seat crane-lift: not passed in this record
   seat rigging-signals (Rigging Signal Call): passed — evidenced by record.sims and a sim step episode; decided by the seat's rule: calls == all, wrong == 0, time informational — the axes are the seat's rule in sims.json, not the record's evidence; the record carries passed only
   seat load-chart (Load Chart Judgment): passed — evidenced by record.sims and a sim step episode; decided by the seat's rule: judgments == all, overloads == 0, time informational — the axes are the seat's rule in sims.json, not the record's evidence; the record carries passed only

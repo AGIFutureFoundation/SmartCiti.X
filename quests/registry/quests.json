@@ -2,20 +2,22 @@
  "pack": "quests",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
- "source_stamp": "ab999c9c4e995979",
+ "source_stamp": "3779c28ff59ea1cb",
  "reads": [
   "lessons/registry/lessons.json",
   "pack/registry/halls.json",
   "sims/registry/sims.json",
-  "tools/registry/toolcribs.json"
+  "tools/registry/toolcribs.json",
+  "wilds/registry/wilds.json",
+  "quests/source/campus.json"
  ],
  "honesty": "Quests, games, treasures, easter eggs and badges are play: they are kept on this device only, they are never evidence of anything, and they never enter a completion record.",
  "counts": {
   "main": 7,
-  "side": 144,
+  "side": 153,
   "game": 4,
-  "treasure": 20,
-  "egg": 31
+  "treasure": 156,
+  "egg": 37
  },
  "halls_with_side_quests": [
   "acoustic",
@@ -515,7 +517,8 @@
    "world": "hall:blasters",
    "requires": {
     "lessons": [
-     "blasters-inspection-first-walk"
+     "blasters-inspection-first-walk",
+     "c-quarry-bench-site-walk"
     ],
     "halls": [
      "blasters"
@@ -529,7 +532,7 @@
    },
    "provenance": "AUTHORED",
    "place": "Inspection Bench",
-   "unlock_text": "To unlock: walk \"Drillers & Blasters: ask what a pass would actually mean\"; finish a lesson in Drillers & Blasters."
+   "unlock_text": "To unlock: walk \"Drillers & Blasters: ask what a pass would actually mean\", \"Drillers & Blasters: before the quarry bench and blast pattern\"; finish a lesson in Drillers & Blasters."
   },
   {
    "id": "side-hall-boilermakers",
@@ -631,7 +634,8 @@
    "world": "hall:carpenters",
    "requires": {
     "lessons": [
-     "carpenters-return-it-the-same"
+     "carpenters-return-it-the-same",
+     "f-trail-bridge-site-walk"
     ],
     "halls": [
      "carpenters"
@@ -645,7 +649,7 @@
    },
    "provenance": "AUTHORED",
    "place": "Tool Crib",
-   "unlock_text": "To unlock: walk \"Return it in the state you would want to find it\"; finish a lesson in Carpenters."
+   "unlock_text": "To unlock: walk \"Return it in the state you would want to find it\", \"Carpenters: before the trail bridge crew\"; finish a lesson in Carpenters."
   },
   {
    "id": "side-hall-catenary",
@@ -769,7 +773,8 @@
    "world": "hall:confined-space",
    "requires": {
     "lessons": [
-     "confined-space-layout-first-walk"
+     "confined-space-layout-first-walk",
+     "c-valve-vault-site-walk"
     ],
     "halls": [
      "confined-space"
@@ -783,7 +788,7 @@
    },
    "provenance": "AUTHORED",
    "place": "Layout Floor",
-   "unlock_text": "To unlock: walk \"Confined Space Rescue: trust a line only as far as it is proved\"; finish a lesson in Confined Space Rescue."
+   "unlock_text": "To unlock: walk \"Confined Space Rescue: trust a line only as far as it is proved\", \"Confined Space Rescue: before the valve vault rescue drill\"; finish a lesson in Confined Space Rescue."
   },
   {
    "id": "side-hall-crane-ops",
@@ -792,6 +797,7 @@
    "world": "hall:crane-ops",
    "requires": {
     "lessons": [
+     "d-wind-staging-site-walk",
      "crane-ops-read-the-chart"
     ],
     "halls": [
@@ -799,14 +805,14 @@
     ],
     "quests": []
    },
-   "hint": "Walk to the Equipment Bay and report in once the hall's lessons are walked.",
+   "hint": "Walk to the Induction & PPE and report in once the hall's lessons are walked.",
    "reward": {
     "badge": "badge-side-hall-crane-ops",
     "label": "Crane Operators regular"
    },
    "provenance": "AUTHORED",
-   "place": "Equipment Bay",
-   "unlock_text": "To unlock: walk \"Refuse the pick the chart refuses\"; finish a lesson in Crane Operators."
+   "place": "Induction & PPE",
+   "unlock_text": "To unlock: walk \"Crane Operators: before the wind turbine staging yard\", \"Refuse the pick the chart refuses\"; finish a lesson in Crane Operators."
   },
   {
    "id": "side-hall-curtainwall",
@@ -930,7 +936,8 @@
    "world": "hall:divers",
    "requires": {
     "lessons": [
-     "divers-layout-first-walk"
+     "divers-layout-first-walk",
+     "d-outfall-dive-site-walk"
     ],
     "halls": [
      "divers"
@@ -944,7 +951,7 @@
    },
    "provenance": "AUTHORED",
    "place": "Layout Floor",
-   "unlock_text": "To unlock: walk \"Commercial Divers: trust a line only as far as it is proved\"; finish a lesson in Commercial Divers."
+   "unlock_text": "To unlock: walk \"Commercial Divers: trust a line only as far as it is proved\", \"Commercial Divers: before the outfall line and dive station\"; finish a lesson in Commercial Divers."
   },
   {
    "id": "side-hall-drywall",
@@ -1298,7 +1305,8 @@
    "world": "hall:grounds",
    "requires": {
     "lessons": [
-     "grounds-coordination-first-walk"
+     "grounds-coordination-first-walk",
+     "f-fuel-break-site-walk"
     ],
     "halls": [
      "grounds"
@@ -1312,7 +1320,7 @@
    },
    "provenance": "AUTHORED",
    "place": "Briefing Room",
-   "unlock_text": "To unlock: walk \"Grounds & Landscape: hand the shift over properly\"; finish a lesson in Grounds & Landscape."
+   "unlock_text": "To unlock: walk \"Grounds & Landscape: hand the shift over properly\", \"Grounds & Landscape: before the wildfire fuel break\"; finish a lesson in Grounds & Landscape."
   },
   {
    "id": "side-hall-hazmat",
@@ -1367,7 +1375,8 @@
    "world": "hall:high-angle",
    "requires": {
     "lessons": [
-     "high-angle-inspection-first-walk"
+     "high-angle-inspection-first-walk",
+     "m-rockfall-netting-site-walk"
     ],
     "halls": [
      "high-angle"
@@ -1381,7 +1390,7 @@
    },
    "provenance": "AUTHORED",
    "place": "Inspection Bench",
-   "unlock_text": "To unlock: walk \"High-Angle Rescue: ask what a pass would actually mean\"; finish a lesson in High-Angle Rescue."
+   "unlock_text": "To unlock: walk \"High-Angle Rescue: ask what a pass would actually mean\", \"High-Angle Rescue: before the rockfall netting on a road cut\"; finish a lesson in High-Angle Rescue."
   },
   {
    "id": "side-hall-hvacr",
@@ -1413,7 +1422,8 @@
    "world": "hall:hydro",
    "requires": {
     "lessons": [
-     "hydro-inspection-first-walk"
+     "hydro-inspection-first-walk",
+     "c-river-intake-site-walk"
     ],
     "halls": [
      "hydro"
@@ -1427,7 +1437,7 @@
    },
    "provenance": "AUTHORED",
    "place": "Inspection Bench",
-   "unlock_text": "To unlock: walk \"Hydro Plant Trades: ask what a pass would actually mean\"; finish a lesson in Hydro Plant Trades."
+   "unlock_text": "To unlock: walk \"Hydro Plant Trades: ask what a pass would actually mean\", \"Hydro Plant Trades: before the run-of-river intake and penstock\"; finish a lesson in Hydro Plant Trades."
   },
   {
    "id": "side-hall-hydrogen",
@@ -1620,7 +1630,8 @@
    "world": "hall:line-workers",
    "requires": {
     "lessons": [
-     "line-workers-find-the-fault"
+     "line-workers-find-the-fault",
+     "f-line-clearance-site-walk"
     ],
     "halls": [
      "line-workers"
@@ -1634,7 +1645,7 @@
    },
    "provenance": "AUTHORED",
    "place": "Diagnostic Bench",
-   "unlock_text": "To unlock: walk \"Find the fault instead of replacing things\"; finish a lesson in Utility Line Workers."
+   "unlock_text": "To unlock: walk \"Find the fault instead of replacing things\", \"Utility Line Workers: before the utility line clearance\"; finish a lesson in Utility Line Workers."
   },
   {
    "id": "side-hall-machinists",
@@ -1689,6 +1700,7 @@
    "world": "hall:marine-terminal",
    "requires": {
     "lessons": [
+     "d-terminal-berth-site-walk",
      "marine-terminal-brief-the-lane"
     ],
     "halls": [
@@ -1696,14 +1708,14 @@
     ],
     "quests": []
    },
-   "hint": "Walk to the Briefing Room and report in once the hall's lessons are walked.",
+   "hint": "Walk to the Induction & PPE and report in once the hall's lessons are walked.",
    "reward": {
     "badge": "badge-side-hall-marine-terminal",
     "label": "Marine Terminal Operators regular"
    },
    "provenance": "AUTHORED",
-   "place": "Briefing Room",
-   "unlock_text": "To unlock: walk \"Brief the lane before the first box moves\"; finish a lesson in Marine Terminal Operators."
+   "place": "Induction & PPE",
+   "unlock_text": "To unlock: walk \"Marine Terminal Operators: before the river terminal berth\", \"Brief the lane before the first box moves\"; finish a lesson in Marine Terminal Operators."
   },
   {
    "id": "side-hall-masonry-restore",
@@ -1805,7 +1817,8 @@
    "world": "hall:miners",
    "requires": {
     "lessons": [
-     "miners-coordination-first-walk"
+     "miners-coordination-first-walk",
+     "m-adit-portal-site-walk"
     ],
     "halls": [
      "miners"
@@ -1819,7 +1832,7 @@
    },
    "provenance": "AUTHORED",
    "place": "Briefing Room",
-   "unlock_text": "To unlock: walk \"Underground Miners: hand the shift over properly\"; finish a lesson in Underground Miners."
+   "unlock_text": "To unlock: walk \"Underground Miners: hand the shift over properly\", \"Underground Miners: before the adit portal and ground support\"; finish a lesson in Underground Miners."
   },
   {
    "id": "side-hall-mold-remediation",
@@ -1897,7 +1910,8 @@
    "world": "hall:operating-eng",
    "requires": {
     "lessons": [
-     "operating-eng-locate-first"
+     "operating-eng-locate-first",
+     "m-snow-road-site-walk"
     ],
     "halls": [
      "operating-eng"
@@ -1911,7 +1925,7 @@
    },
    "provenance": "AUTHORED",
    "place": "Layout Floor",
-   "unlock_text": "To unlock: walk \"Prove what is under the ground before the bucket moves\"; finish a lesson in Operating Engineers."
+   "unlock_text": "To unlock: walk \"Prove what is under the ground before the bucket moves\", \"Operating Engineers: before the snow-road grading on the pass\"; finish a lesson in Operating Engineers."
   },
   {
    "id": "side-hall-painters",
@@ -1944,6 +1958,7 @@
    "world": "hall:piling",
    "requires": {
     "lessons": [
+     "d-pile-trestle-site-walk",
      "piling-stand-the-rig-on-something"
     ],
     "halls": [
@@ -1951,14 +1966,14 @@
     ],
     "quests": []
    },
-   "hint": "Walk to the Equipment Bay and report in once the hall's lessons are walked.",
+   "hint": "Walk to the Induction & PPE and report in once the hall's lessons are walked.",
    "reward": {
     "badge": "badge-side-hall-piling",
     "label": "Piling Crews regular"
    },
    "provenance": "AUTHORED",
-   "place": "Equipment Bay",
-   "unlock_text": "To unlock: walk \"Stand the rig on ground that will hold it\"; finish a lesson in Piling Crews."
+   "place": "Induction & PPE",
+   "unlock_text": "To unlock: walk \"Piling Crews: before the timber pile trestle over a bayou\", \"Stand the rig on ground that will hold it\"; finish a lesson in Piling Crews."
   },
   {
    "id": "side-hall-pipefitters",
@@ -1990,6 +2005,7 @@
    "world": "hall:pipeline",
    "requires": {
     "lessons": [
+     "c-pipeline-crossing-site-walk",
      "pipeline-close-the-permit-properly"
     ],
     "halls": [
@@ -1997,14 +2013,14 @@
     ],
     "quests": []
    },
-   "hint": "Walk to the Inspection Bench and report in once the hall's lessons are walked.",
+   "hint": "Walk to the Induction & PPE and report in once the hall's lessons are walked.",
    "reward": {
     "badge": "badge-side-hall-pipeline",
     "label": "Pipeline Trades regular"
    },
    "provenance": "AUTHORED",
-   "place": "Inspection Bench",
-   "unlock_text": "To unlock: walk \"Close the permit the way it was opened\"; finish a lesson in Pipeline Trades."
+   "place": "Induction & PPE",
+   "unlock_text": "To unlock: walk \"Pipeline Trades: before the pipeline river crossing\", \"Close the permit the way it was opened\"; finish a lesson in Pipeline Trades."
   },
   {
    "id": "side-hall-plasterers",
@@ -2221,6 +2237,7 @@
    "requires": {
     "lessons": [
      "riggers-first-card",
+     "f-timber-frame-site-walk",
      "riggers-carry-under-control"
     ],
     "halls": [
@@ -2235,7 +2252,7 @@
    },
    "provenance": "AUTHORED",
    "place": "Briefing Room",
-   "unlock_text": "To unlock: walk \"Call the first lift before anybody touches the hook\", \"Carry a load that is not fighting you\"; finish a lesson in Riggers & Signalpersons."
+   "unlock_text": "To unlock: walk \"Call the first lift before anybody touches the hook\", \"Riggers & Signalpersons: before the timber-frame shelter raising\", \"Carry a load that is not fighting you\"; finish a lesson in Riggers & Signalpersons."
   },
   {
    "id": "side-hall-robotics",
@@ -2452,7 +2469,8 @@
    "world": "hall:solar",
    "requires": {
     "lessons": [
-     "solar-documentation-first-walk"
+     "solar-documentation-first-walk",
+     "c-mesa-solar-site-walk"
     ],
     "halls": [
      "solar"
@@ -2466,7 +2484,7 @@
    },
    "provenance": "AUTHORED",
    "place": "Records",
-   "unlock_text": "To unlock: walk \"Solar Installers: find out where the record goes\"; finish a lesson in Solar Installers."
+   "unlock_text": "To unlock: walk \"Solar Installers: find out where the record goes\", \"Solar Installers: before the mesa-top solar array\"; finish a lesson in Solar Installers."
   },
   {
    "id": "side-hall-spill-response",
@@ -2475,7 +2493,8 @@
    "world": "hall:spill-response",
    "requires": {
     "lessons": [
-     "spill-response-tools-first-walk"
+     "spill-response-tools-first-walk",
+     "d-spill-boom-site-walk"
     ],
     "halls": [
      "spill-response"
@@ -2489,7 +2508,7 @@
    },
    "provenance": "AUTHORED",
    "place": "Tool Crib",
-   "unlock_text": "To unlock: walk \"Spill Response Technicians: know the kit before you touch it\"; finish a lesson in Spill Response Technicians."
+   "unlock_text": "To unlock: walk \"Spill Response Technicians: know the kit before you touch it\", \"Spill Response Technicians: before the spill boom staging\"; finish a lesson in Spill Response Technicians."
   },
   {
    "id": "side-hall-steel-erectors",
@@ -2498,6 +2517,7 @@
    "world": "hall:steel-erectors",
    "requires": {
     "lessons": [
+     "f-fire-lookout-site-walk",
      "steel-erectors-land-it-on-the-bolts"
     ],
     "halls": [
@@ -2505,14 +2525,14 @@
     ],
     "quests": []
    },
-   "hint": "Walk to the Practice Bays and report in once the hall's lessons are walked.",
+   "hint": "Walk to the Induction & PPE and report in once the hall's lessons are walked.",
    "reward": {
     "badge": "badge-side-hall-steel-erectors",
     "label": "Steel Erectors regular"
    },
    "provenance": "AUTHORED",
-   "place": "Practice Bays",
-   "unlock_text": "To unlock: walk \"Land the piece where the bolts can go in\"; finish a lesson in Steel Erectors."
+   "place": "Induction & PPE",
+   "unlock_text": "To unlock: walk \"Steel Erectors: before the fire lookout tower\", \"Land the piece where the bolts can go in\"; finish a lesson in Steel Erectors."
   },
   {
    "id": "side-hall-stone-carvers",
@@ -2590,7 +2610,8 @@
    "world": "hall:surveyors",
    "requires": {
     "lessons": [
-     "surveyors-trust-the-control"
+     "surveyors-trust-the-control",
+     "m-survey-control-site-walk"
     ],
     "halls": [
      "surveyors"
@@ -2604,7 +2625,7 @@
    },
    "provenance": "AUTHORED",
    "place": "Layout Floor",
-   "unlock_text": "To unlock: walk \"Work from control, not from something near it\"; finish a lesson in Construction Surveyors."
+   "unlock_text": "To unlock: walk \"Work from control, not from something near it\", \"Construction Surveyors: before the survey control on the high ground\"; finish a lesson in Construction Surveyors."
   },
   {
    "id": "side-hall-tank-erectors",
@@ -2751,7 +2772,8 @@
    "world": "hall:transmission",
    "requires": {
     "lessons": [
-     "transmission-layout-first-walk"
+     "transmission-layout-first-walk",
+     "m-hv-corridor-site-walk"
     ],
     "halls": [
      "transmission"
@@ -2765,7 +2787,7 @@
    },
    "provenance": "AUTHORED",
    "place": "Layout Floor",
-   "unlock_text": "To unlock: walk \"Transmission Linemen: trust a line only as far as it is proved\"; finish a lesson in Transmission Linemen."
+   "unlock_text": "To unlock: walk \"Transmission Linemen: trust a line only as far as it is proved\", \"Transmission Linemen: before the high-voltage line corridor\"; finish a lesson in Transmission Linemen."
   },
   {
    "id": "side-hall-wastewater",
@@ -2774,7 +2796,8 @@
    "world": "hall:wastewater",
    "requires": {
     "lessons": [
-     "wastewater-tools-first-walk"
+     "wastewater-tools-first-walk",
+     "d-levee-pump-site-walk"
     ],
     "halls": [
      "wastewater"
@@ -2788,7 +2811,7 @@
    },
    "provenance": "AUTHORED",
    "place": "Tool Crib",
-   "unlock_text": "To unlock: walk \"Wastewater Operators: know the kit before you touch it\"; finish a lesson in Wastewater Operators."
+   "unlock_text": "To unlock: walk \"Wastewater Operators: know the kit before you touch it\", \"Wastewater Operators: before the levee pump station\"; finish a lesson in Wastewater Operators."
   },
   {
    "id": "side-hall-water-distrib",
@@ -2797,7 +2820,8 @@
    "world": "hall:water-distrib",
    "requires": {
     "lessons": [
-     "water-distrib-safety-first-walk"
+     "water-distrib-safety-first-walk",
+     "f-water-intake-site-walk"
     ],
     "halls": [
      "water-distrib"
@@ -2811,7 +2835,7 @@
    },
    "provenance": "AUTHORED",
    "place": "Induction & PPE",
-   "unlock_text": "To unlock: walk \"Water Distribution Fitters: find out what the room is held to\"; finish a lesson in Water Distribution Fitters."
+   "unlock_text": "To unlock: walk \"Water Distribution Fitters: find out what the room is held to\", \"Water Distribution Fitters: before the lake intake and main\"; finish a lesson in Water Distribution Fitters."
   },
   {
    "id": "side-hall-waterproofers",
@@ -2866,7 +2890,8 @@
    "world": "hall:wind",
    "requires": {
     "lessons": [
-     "wind-safety-first-walk"
+     "wind-safety-first-walk",
+     "m-wind-ridge-site-walk"
     ],
     "halls": [
      "wind"
@@ -2880,7 +2905,7 @@
    },
    "provenance": "AUTHORED",
    "place": "Induction & PPE",
-   "unlock_text": "To unlock: walk \"Wind Turbine Technicians: find out what the room is held to\"; finish a lesson in Wind Turbine Technicians."
+   "unlock_text": "To unlock: walk \"Wind Turbine Technicians: find out what the room is held to\", \"Wind Turbine Technicians: before the ridge-top turbine pad\"; finish a lesson in Wind Turbine Technicians."
   },
   {
    "id": "side-hall-window-glazing",
@@ -3345,6 +3370,7 @@
    "world": "wilds:mountain",
    "requires": {
     "lessons": [
+     "m-adit-portal-site-walk",
      "shoring-read-the-ground-again"
     ],
     "halls": [],
@@ -3357,7 +3383,7 @@
    },
    "provenance": "AUTHORED",
    "place": "m-adit-portal",
-   "unlock_text": "To unlock: walk \"Read the ground again after the rain\"."
+   "unlock_text": "To unlock: walk \"Underground Miners: before the adit portal and ground support\", \"Read the ground again after the rain\"."
   },
   {
    "id": "side-wilds-m-hv-corridor",
@@ -3366,7 +3392,8 @@
    "world": "wilds:mountain",
    "requires": {
     "lessons": [
-     "line-workers-find-the-fault"
+     "line-workers-find-the-fault",
+     "m-hv-corridor-site-walk"
     ],
     "halls": [],
     "quests": []
@@ -3378,7 +3405,7 @@
    },
    "provenance": "AUTHORED",
    "place": "m-hv-corridor",
-   "unlock_text": "To unlock: walk \"Find the fault instead of replacing things\"."
+   "unlock_text": "To unlock: walk \"Find the fault instead of replacing things\", \"Transmission Linemen: before the high-voltage line corridor\"."
   },
   {
    "id": "side-wilds-m-rockfall-netting",
@@ -3387,7 +3414,8 @@
    "world": "wilds:mountain",
    "requires": {
     "lessons": [
-     "riggers-first-card"
+     "riggers-first-card",
+     "m-rockfall-netting-site-walk"
     ],
     "halls": [],
     "quests": []
@@ -3399,7 +3427,7 @@
    },
    "provenance": "AUTHORED",
    "place": "m-rockfall-netting",
-   "unlock_text": "To unlock: walk \"Call the first lift before anybody touches the hook\"."
+   "unlock_text": "To unlock: walk \"Call the first lift before anybody touches the hook\", \"High-Angle Rescue: before the rockfall netting on a road cut\"."
   },
   {
    "id": "side-wilds-m-snow-road",
@@ -3409,6 +3437,7 @@
    "requires": {
     "lessons": [
      "teamsters-check-the-truck-before-the-load",
+     "m-snow-road-site-walk",
      "heavy-equip-listen-to-the-dash"
     ],
     "halls": [],
@@ -3421,7 +3450,7 @@
    },
    "provenance": "AUTHORED",
    "place": "m-snow-road",
-   "unlock_text": "To unlock: walk \"Check the truck before you check the load\", \"Listen to the dash before you replace anything\"."
+   "unlock_text": "To unlock: walk \"Check the truck before you check the load\", \"Operating Engineers: before the snow-road grading on the pass\", \"Listen to the dash before you replace anything\"."
   },
   {
    "id": "side-wilds-m-wind-ridge",
@@ -3430,6 +3459,7 @@
    "world": "wilds:mountain",
    "requires": {
     "lessons": [
+     "m-wind-ridge-site-walk",
      "crane-ops-read-the-chart"
     ],
     "halls": [],
@@ -3442,7 +3472,7 @@
    },
    "provenance": "AUTHORED",
    "place": "m-wind-ridge",
-   "unlock_text": "To unlock: walk \"Refuse the pick the chart refuses\"."
+   "unlock_text": "To unlock: walk \"Wind Turbine Technicians: before the ridge-top turbine pad\", \"Refuse the pick the chart refuses\"."
   },
   {
    "id": "side-wilds-m-survey-control",
@@ -3451,7 +3481,8 @@
    "world": "wilds:mountain",
    "requires": {
     "lessons": [
-     "surveyors-trust-the-control"
+     "surveyors-trust-the-control",
+     "m-survey-control-site-walk"
     ],
     "halls": [],
     "quests": []
@@ -3463,7 +3494,91 @@
    },
    "provenance": "AUTHORED",
    "place": "m-survey-control",
-   "unlock_text": "To unlock: walk \"Work from control, not from something near it\"."
+   "unlock_text": "To unlock: walk \"Work from control, not from something near it\", \"Construction Surveyors: before the survey control on the high ground\"."
+  },
+  {
+   "id": "treasure-wilds-m-cache-talus",
+   "kind": "treasure",
+   "title": "Cache in High Country",
+   "world": "wilds:mountain",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Below the portal, where the loose stone rests.",
+   "reward": {
+    "badge": "badge-treasure-wilds-m-cache-talus",
+    "label": "Cache finder: High Country"
+   },
+   "provenance": "AUTHORED",
+   "place": "m-cache-talus",
+   "band": "K-5",
+   "riddle": "Below the portal, where the loose stone rests.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-wilds-m-cache-tarn",
+   "kind": "treasure",
+   "title": "Cache in High Country",
+   "world": "wilds:mountain",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "East of the plough road, a stone that does not match its neighbours.",
+   "reward": {
+    "badge": "badge-treasure-wilds-m-cache-tarn",
+    "label": "Cache finder: High Country"
+   },
+   "provenance": "AUTHORED",
+   "place": "m-cache-tarn",
+   "band": "K-5",
+   "riddle": "East of the plough road, a stone that does not match its neighbours.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-wilds-m-hollow",
+   "kind": "treasure",
+   "title": "Hollow in High Country",
+   "world": "wilds:mountain",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "North of the towers the ground folds in on itself.",
+   "reward": {
+    "badge": "badge-treasure-wilds-m-hollow",
+    "label": "Hollow finder: High Country"
+   },
+   "provenance": "AUTHORED",
+   "place": "m-hollow",
+   "band": "K-5",
+   "riddle": "North of the towers the ground folds in on itself.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-wilds-m-summit-register",
+   "kind": "treasure",
+   "title": "Summit register in High Country",
+   "world": "wilds:mountain",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The highest ground in the High Country keeps a book.",
+   "reward": {
+    "badge": "badge-treasure-wilds-m-summit-register",
+    "label": "Summit register finder: High Country"
+   },
+   "provenance": "AUTHORED",
+   "place": "m-summit-register",
+   "band": "K-5",
+   "riddle": "The highest ground in the High Country keeps a book.",
+   "unlock_text": "Open to everyone."
   },
   {
    "id": "treasure-wilds-forest-trailhead",
@@ -3492,7 +3607,8 @@
    "world": "wilds:forest",
    "requires": {
     "lessons": [
-     "line-workers-find-the-fault"
+     "line-workers-find-the-fault",
+     "f-line-clearance-site-walk"
     ],
     "halls": [],
     "quests": []
@@ -3504,7 +3620,7 @@
    },
    "provenance": "AUTHORED",
    "place": "f-line-clearance",
-   "unlock_text": "To unlock: walk \"Find the fault instead of replacing things\"."
+   "unlock_text": "To unlock: walk \"Find the fault instead of replacing things\", \"Utility Line Workers: before the utility line clearance\"."
   },
   {
    "id": "side-wilds-f-trail-bridge",
@@ -3513,7 +3629,8 @@
    "world": "wilds:forest",
    "requires": {
     "lessons": [
-     "carpenters-return-it-the-same"
+     "carpenters-return-it-the-same",
+     "f-trail-bridge-site-walk"
     ],
     "halls": [],
     "quests": []
@@ -3525,7 +3642,7 @@
    },
    "provenance": "AUTHORED",
    "place": "f-trail-bridge",
-   "unlock_text": "To unlock: walk \"Return it in the state you would want to find it\"."
+   "unlock_text": "To unlock: walk \"Return it in the state you would want to find it\", \"Carpenters: before the trail bridge crew\"."
   },
   {
    "id": "side-wilds-f-fuel-break",
@@ -3534,6 +3651,7 @@
    "world": "wilds:forest",
    "requires": {
     "lessons": [
+     "f-fuel-break-site-walk",
      "laborers-stand-where-the-cab-can-see"
     ],
     "halls": [],
@@ -3546,7 +3664,7 @@
    },
    "provenance": "AUTHORED",
    "place": "f-fuel-break",
-   "unlock_text": "To unlock: walk \"Stand where the cab can see you\"."
+   "unlock_text": "To unlock: walk \"Grounds & Landscape: before the wildfire fuel break\", \"Stand where the cab can see you\"."
   },
   {
    "id": "side-wilds-f-timber-frame",
@@ -3555,7 +3673,8 @@
    "world": "wilds:forest",
    "requires": {
     "lessons": [
-     "riggers-first-card"
+     "riggers-first-card",
+     "f-timber-frame-site-walk"
     ],
     "halls": [],
     "quests": []
@@ -3567,7 +3686,29 @@
    },
    "provenance": "AUTHORED",
    "place": "f-timber-frame",
-   "unlock_text": "To unlock: walk \"Call the first lift before anybody touches the hook\"."
+   "unlock_text": "To unlock: walk \"Call the first lift before anybody touches the hook\", \"Riggers & Signalpersons: before the timber-frame shelter raising\"."
+  },
+  {
+   "id": "side-wilds-f-water-intake",
+   "kind": "side",
+   "title": "Lake intake and main",
+   "world": "wilds:forest",
+   "requires": {
+    "lessons": [
+     "water-distrib-safety-first-walk",
+     "f-water-intake-site-walk"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A raw-water intake at the lake edge feeding a main down the valley.",
+   "reward": {
+    "badge": "badge-side-wilds-f-water-intake",
+    "label": "Lake intake and main crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "f-water-intake",
+   "unlock_text": "To unlock: walk \"Water Distribution Fitters: find out what the room is held to\", \"Water Distribution Fitters: before the lake intake and main\"."
   },
   {
    "id": "side-wilds-f-fire-lookout",
@@ -3577,6 +3718,7 @@
    "requires": {
     "lessons": [
      "scaffold-read-the-tag",
+     "f-fire-lookout-site-walk",
      "steel-erectors-land-it-on-the-bolts"
     ],
     "halls": [],
@@ -3589,7 +3731,91 @@
    },
    "provenance": "AUTHORED",
    "place": "f-fire-lookout",
-   "unlock_text": "To unlock: walk \"Believe the tag or believe nothing\", \"Land the piece where the bolts can go in\"."
+   "unlock_text": "To unlock: walk \"Believe the tag or believe nothing\", \"Steel Erectors: before the fire lookout tower\", \"Land the piece where the bolts can go in\"."
+  },
+  {
+   "id": "treasure-wilds-f-cache-nurse-log",
+   "kind": "treasure",
+   "title": "Cache in Deep Timber",
+   "world": "wilds:forest",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Between the ranger station and the creek, off the path, under old timber.",
+   "reward": {
+    "badge": "badge-treasure-wilds-f-cache-nurse-log",
+    "label": "Cache finder: Deep Timber"
+   },
+   "provenance": "AUTHORED",
+   "place": "f-cache-nurse-log",
+   "band": "K-5",
+   "riddle": "Between the ranger station and the creek, off the path, under old timber.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-wilds-f-cache-lakeshore",
+   "kind": "treasure",
+   "title": "Cache in Deep Timber",
+   "world": "wilds:forest",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Where the line cut meets the far shore.",
+   "reward": {
+    "badge": "badge-treasure-wilds-f-cache-lakeshore",
+    "label": "Cache finder: Deep Timber"
+   },
+   "provenance": "AUTHORED",
+   "place": "f-cache-lakeshore",
+   "band": "K-5",
+   "riddle": "Where the line cut meets the far shore.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-wilds-f-hollow",
+   "kind": "treasure",
+   "title": "Hollow in Deep Timber",
+   "world": "wilds:forest",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A bowl the fuel crew never reached.",
+   "reward": {
+    "badge": "badge-treasure-wilds-f-hollow",
+    "label": "Hollow finder: Deep Timber"
+   },
+   "provenance": "AUTHORED",
+   "place": "f-hollow",
+   "band": "K-5",
+   "riddle": "A bowl the fuel crew never reached.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-wilds-f-summit-register",
+   "kind": "treasure",
+   "title": "Summit register in Deep Timber",
+   "world": "wilds:forest",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Deep Timber has one highest knoll; the book is there.",
+   "reward": {
+    "badge": "badge-treasure-wilds-f-summit-register",
+    "label": "Summit register finder: Deep Timber"
+   },
+   "provenance": "AUTHORED",
+   "place": "f-summit-register",
+   "band": "K-5",
+   "riddle": "Deep Timber has one highest knoll; the book is there.",
+   "unlock_text": "Open to everyone."
   },
   {
    "id": "treasure-wilds-canyon-trailhead",
@@ -3612,12 +3838,36 @@
    "unlock_text": "Open to everyone."
   },
   {
+   "id": "side-wilds-c-river-intake",
+   "kind": "side",
+   "title": "Run-of-river intake and penstock",
+   "world": "wilds:canyon",
+   "requires": {
+    "lessons": [
+     "divers-layout-first-walk",
+     "hydro-inspection-first-walk",
+     "c-river-intake-site-walk"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A low weir and an intake feeding a penstock down to a small powerhouse; divers work the screens.",
+   "reward": {
+    "badge": "badge-side-wilds-c-river-intake",
+    "label": "Run-of-river intake and penstock crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "c-river-intake",
+   "unlock_text": "To unlock: walk \"Commercial Divers: trust a line only as far as it is proved\", \"Hydro Plant Trades: ask what a pass would actually mean\", \"Hydro Plant Trades: before the run-of-river intake and penstock\"."
+  },
+  {
    "id": "side-wilds-c-pipeline-crossing",
    "kind": "side",
    "title": "Pipeline river crossing",
    "world": "wilds:canyon",
    "requires": {
     "lessons": [
+     "c-pipeline-crossing-site-walk",
      "pipeline-close-the-permit-properly"
     ],
     "halls": [],
@@ -3630,7 +3880,7 @@
    },
    "provenance": "AUTHORED",
    "place": "c-pipeline-crossing",
-   "unlock_text": "To unlock: walk \"Close the permit the way it was opened\"."
+   "unlock_text": "To unlock: walk \"Pipeline Trades: before the pipeline river crossing\", \"Close the permit the way it was opened\"."
   },
   {
    "id": "side-wilds-c-valve-vault",
@@ -3639,6 +3889,7 @@
    "world": "wilds:canyon",
    "requires": {
     "lessons": [
+     "c-valve-vault-site-walk",
      "boilermakers-get-them-out"
     ],
     "halls": [],
@@ -3651,7 +3902,30 @@
    },
    "provenance": "AUTHORED",
    "place": "c-valve-vault",
-   "unlock_text": "To unlock: walk \"Put somebody inside a vessel and get them back out\"."
+   "unlock_text": "To unlock: walk \"Confined Space Rescue: before the valve vault rescue drill\", \"Put somebody inside a vessel and get them back out\"."
+  },
+  {
+   "id": "side-wilds-c-mesa-solar",
+   "kind": "side",
+   "title": "Mesa-top solar array",
+   "world": "wilds:canyon",
+   "requires": {
+    "lessons": [
+     "electricians-clip-in-first",
+     "solar-documentation-first-walk",
+     "c-mesa-solar-site-walk"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Racking and strings laid out across a flat mesa top.",
+   "reward": {
+    "badge": "badge-side-wilds-c-mesa-solar",
+    "label": "Mesa-top solar array crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "c-mesa-solar",
+   "unlock_text": "To unlock: walk \"Clip in before the basket moves\", \"Solar Installers: find out where the record goes\", \"Solar Installers: before the mesa-top solar array\"."
   },
   {
    "id": "side-wilds-c-quarry-bench",
@@ -3660,6 +3934,7 @@
    "world": "wilds:canyon",
    "requires": {
     "lessons": [
+     "c-quarry-bench-site-walk",
      "demolition-stand-back"
     ],
     "halls": [],
@@ -3672,7 +3947,2704 @@
    },
    "provenance": "AUTHORED",
    "place": "c-quarry-bench",
-   "unlock_text": "To unlock: walk \"Know where not to stand\"."
+   "unlock_text": "To unlock: walk \"Drillers & Blasters: before the quarry bench and blast pattern\", \"Know where not to stand\"."
+  },
+  {
+   "id": "treasure-wilds-c-cache-overhang",
+   "kind": "treasure",
+   "title": "Cache in Red Rock Canyon",
+   "world": "wilds:canyon",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Under the west rim, halfway between the solar mesa and the quarry.",
+   "reward": {
+    "badge": "badge-treasure-wilds-c-cache-overhang",
+    "label": "Cache finder: Red Rock Canyon"
+   },
+   "provenance": "AUTHORED",
+   "place": "c-cache-overhang",
+   "band": "K-5",
+   "riddle": "Under the west rim, halfway between the solar mesa and the quarry.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-wilds-c-hollow",
+   "kind": "treasure",
+   "title": "Hollow in Red Rock Canyon",
+   "world": "wilds:canyon",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "East of the trailhead, a pothole the rain made.",
+   "reward": {
+    "badge": "badge-treasure-wilds-c-hollow",
+    "label": "Hollow finder: Red Rock Canyon"
+   },
+   "provenance": "AUTHORED",
+   "place": "c-hollow",
+   "band": "K-5",
+   "riddle": "East of the trailhead, a pothole the rain made.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-wilds-c-summit-register",
+   "kind": "treasure",
+   "title": "Summit register in Red Rock Canyon",
+   "world": "wilds:canyon",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The highest step of the highest mesa.",
+   "reward": {
+    "badge": "badge-treasure-wilds-c-summit-register",
+    "label": "Summit register finder: Red Rock Canyon"
+   },
+   "provenance": "AUTHORED",
+   "place": "c-summit-register",
+   "band": "K-5",
+   "riddle": "The highest step of the highest mesa.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-wilds-delta-trailhead",
+   "kind": "treasure",
+   "title": "Sign the trailhead book: Salt Marsh Delta",
+   "world": "wilds:delta",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Every trail in Salt Marsh Delta starts at the trailhead. Find its book.",
+   "reward": {
+    "badge": "badge-treasure-wilds-delta-trailhead",
+    "label": "Salt Marsh Delta walker"
+   },
+   "provenance": "AUTHORED",
+   "place": "trailhead",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "side-wilds-d-levee-pump",
+   "kind": "side",
+   "title": "Levee pump station",
+   "world": "wilds:delta",
+   "requires": {
+    "lessons": [
+     "electricians-clip-in-first",
+     "wastewater-tools-first-walk",
+     "d-levee-pump-site-walk"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A drainage pump station set into the levee; wastewater crews keep the pumps, screens and wet well working.",
+   "reward": {
+    "badge": "badge-side-wilds-d-levee-pump",
+    "label": "Levee pump station crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "d-levee-pump",
+   "unlock_text": "To unlock: walk \"Clip in before the basket moves\", \"Wastewater Operators: know the kit before you touch it\", \"Wastewater Operators: before the levee pump station\"."
+  },
+  {
+   "id": "side-wilds-d-terminal-berth",
+   "kind": "side",
+   "title": "River terminal berth",
+   "world": "wilds:delta",
+   "requires": {
+    "lessons": [
+     "d-terminal-berth-site-walk",
+     "marine-terminal-brief-the-lane",
+     "port-crane-read-the-rope"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A barge berth with a crane working cargo; the lane is briefed before anything swings.",
+   "reward": {
+    "badge": "badge-side-wilds-d-terminal-berth",
+    "label": "River terminal berth crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "d-terminal-berth",
+   "unlock_text": "To unlock: walk \"Marine Terminal Operators: before the river terminal berth\", \"Brief the lane before the first box moves\", \"Read the rope before the box goes up\"."
+  },
+  {
+   "id": "side-wilds-d-pile-trestle",
+   "kind": "side",
+   "title": "Timber pile trestle over a bayou",
+   "world": "wilds:delta",
+   "requires": {
+    "lessons": [
+     "bridge-inspect-inspection-first-walk",
+     "d-pile-trestle-site-walk",
+     "piling-stand-the-rig-on-something"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A pile-supported trestle across a channel: new piles driven from a rig on firm footing, old bents inspected.",
+   "reward": {
+    "badge": "badge-side-wilds-d-pile-trestle",
+    "label": "Timber pile trestle over a bayou crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "d-pile-trestle",
+   "unlock_text": "To unlock: walk \"Bridge Inspection Crews: ask what a pass would actually mean\", \"Piling Crews: before the timber pile trestle over a bayou\", \"Stand the rig on ground that will hold it\"."
+  },
+  {
+   "id": "side-wilds-d-outfall-dive",
+   "kind": "side",
+   "title": "Outfall line and dive station",
+   "world": "wilds:delta",
+   "requires": {
+    "lessons": [
+     "divers-layout-first-walk",
+     "d-outfall-dive-site-walk",
+     "marine-pipe-know-when-to-come-out"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "An outfall pipe running into the channel; a dive team inspects it from a station on the bank.",
+   "reward": {
+    "badge": "badge-side-wilds-d-outfall-dive",
+    "label": "Outfall line and dive station crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "d-outfall-dive",
+   "unlock_text": "To unlock: walk \"Commercial Divers: trust a line only as far as it is proved\", \"Commercial Divers: before the outfall line and dive station\", \"Know when to come out of the compartment\"."
+  },
+  {
+   "id": "side-wilds-d-spill-boom",
+   "kind": "side",
+   "title": "Spill boom staging",
+   "world": "wilds:delta",
+   "requires": {
+    "lessons": [
+     "spill-response-tools-first-walk",
+     "d-spill-boom-site-walk",
+     "hazmat-wash-and-decon"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Containment boom and a skimmer staged on the bank, ready to deploy across a channel mouth.",
+   "reward": {
+    "badge": "badge-side-wilds-d-spill-boom",
+    "label": "Spill boom staging crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "d-spill-boom",
+   "unlock_text": "To unlock: walk \"Spill Response Technicians: know the kit before you touch it\", \"Spill Response Technicians: before the spill boom staging\", \"Come out cleaner than what you washed\"."
+  },
+  {
+   "id": "side-wilds-d-wind-staging",
+   "kind": "side",
+   "title": "Wind turbine staging yard",
+   "world": "wilds:delta",
+   "requires": {
+    "lessons": [
+     "wind-safety-first-walk",
+     "d-wind-staging-site-walk",
+     "crane-ops-read-the-chart"
+    ],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A turbine erected on the ridge beside a laydown yard where blades and tower sections wait for the crane.",
+   "reward": {
+    "badge": "badge-side-wilds-d-wind-staging",
+    "label": "Wind turbine staging yard crew"
+   },
+   "provenance": "AUTHORED",
+   "place": "d-wind-staging",
+   "unlock_text": "To unlock: walk \"Wind Turbine Technicians: find out what the room is held to\", \"Crane Operators: before the wind turbine staging yard\", \"Refuse the pick the chart refuses\"."
+  },
+  {
+   "id": "treasure-wilds-d-cache-shell-midden",
+   "kind": "treasure",
+   "title": "Cache in Salt Marsh Delta",
+   "world": "wilds:delta",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "On an old shell ridge, well off the trail, between the trailhead and the pump station.",
+   "reward": {
+    "badge": "badge-treasure-wilds-d-cache-shell-midden",
+    "label": "Cache finder: Salt Marsh Delta"
+   },
+   "provenance": "AUTHORED",
+   "place": "d-cache-shell-midden",
+   "band": "K-5",
+   "riddle": "On an old shell ridge, well off the trail, between the trailhead and the pump station.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-wilds-d-hollow",
+   "kind": "treasure",
+   "title": "Hollow in Salt Marsh Delta",
+   "world": "wilds:delta",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A dry scour hole the last flood left, off the trail between the trailhead and the boom yard.",
+   "reward": {
+    "badge": "badge-treasure-wilds-d-hollow",
+    "label": "Hollow finder: Salt Marsh Delta"
+   },
+   "provenance": "AUTHORED",
+   "place": "d-hollow",
+   "band": "K-5",
+   "riddle": "A dry scour hole the last flood left, off the trail between the trailhead and the boom yard.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-wilds-d-summit-register",
+   "kind": "treasure",
+   "title": "Summit register in Salt Marsh Delta",
+   "world": "wilds:delta",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The delta has one highest ridge; the book is on its crown.",
+   "reward": {
+    "badge": "badge-treasure-wilds-d-summit-register",
+    "label": "Summit register finder: Salt Marsh Delta"
+   },
+   "provenance": "AUTHORED",
+   "place": "d-summit-register",
+   "band": "K-5",
+   "riddle": "The delta has one highest ridge; the book is on its crown.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-acoustic",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:acoustic",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-acoustic",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-airfield",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:airfield",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-airfield",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-asbestos",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:asbestos",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-asbestos",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-automation-int",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:automation-int",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-automation-int",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-aviation-ground",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:aviation-ground",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-aviation-ground",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-bas-controls",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:bas-controls",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-bas-controls",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-battery-storage",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:battery-storage",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-battery-storage",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-blasters",
+   "kind": "treasure",
+   "title": "The placard in the Materials Store",
+   "world": "hall:blasters",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-blasters",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Materials Store",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-boilermakers",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:boilermakers",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-boilermakers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-bricklayers",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:bricklayers",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-bricklayers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-bridge-inspect",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:bridge-inspect",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-bridge-inspect",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-cable-splicers",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:cable-splicers",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-cable-splicers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-carpenters",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:carpenters",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-carpenters",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-catenary",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:catenary",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-catenary",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-cement-masons",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:cement-masons",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-cement-masons",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-cladding",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:cladding",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-cladding",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-cleanroom",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:cleanroom",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-cleanroom",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-concrete-pump",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:concrete-pump",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-concrete-pump",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-confined-space",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:confined-space",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-confined-space",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-crane-ops",
+   "kind": "treasure",
+   "title": "The placard in the Materials Store",
+   "world": "hall:crane-ops",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-crane-ops",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Materials Store",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-curtainwall",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:curtainwall",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-curtainwall",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-data-center",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:data-center",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-data-center",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-decking",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:decking",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-decking",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-demolition",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:demolition",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-demolition",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-district-energy",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:district-energy",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-district-energy",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-divers",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:divers",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-divers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-drywall",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:drywall",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-drywall",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-electricians",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:electricians",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-electricians",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-elevator",
+   "kind": "treasure",
+   "title": "The placard in the Materials Store",
+   "world": "hall:elevator",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-elevator",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Materials Store",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-ev-charging",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:ev-charging",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-ev-charging",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-fabricators",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:fabricators",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-fabricators",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-fiber-splicers",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:fiber-splicers",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-fiber-splicers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-fire-alarm",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:fire-alarm",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-fire-alarm",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-fire-sprinkler",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:fire-sprinkler",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-fire-sprinkler",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-firestop",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:firestop",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-firestop",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-fleet-diesel",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:fleet-diesel",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-fleet-diesel",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-flooring",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:flooring",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-flooring",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-foundry",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:foundry",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-foundry",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-gas-distrib",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:gas-distrib",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-gas-distrib",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-geothermal",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:geothermal",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-geothermal",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-glaziers",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:glaziers",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-glaziers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-grounds",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:grounds",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-grounds",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-hazmat",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:hazmat",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-hazmat",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-heavy-equip",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:heavy-equip",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-heavy-equip",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-high-angle",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:high-angle",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-high-angle",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-hvacr",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:hvacr",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-hvacr",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-hydro",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:hydro",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-hydro",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-hydrogen",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:hydrogen",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-hydrogen",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-industrial-clean",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:industrial-clean",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-industrial-clean",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-instrumentation",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:instrumentation",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-instrumentation",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-insulators",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:insulators",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-insulators",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-ironworkers",
+   "kind": "treasure",
+   "title": "The placard in the Materials Store",
+   "world": "hall:ironworkers",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-ironworkers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Materials Store",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-laborers",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:laborers",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-laborers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-lathers",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:lathers",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-lathers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-lead-abatement",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:lead-abatement",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-lead-abatement",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-line-workers",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:line-workers",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-line-workers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-machinists",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:machinists",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-machinists",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-marine-pipe",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:marine-pipe",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-marine-pipe",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-marine-terminal",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:marine-terminal",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-marine-terminal",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-masonry-restore",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:masonry-restore",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-masonry-restore",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-medical-gas",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:medical-gas",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-medical-gas",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-meter-techs",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:meter-techs",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-meter-techs",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-millwrights",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:millwrights",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-millwrights",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-miners",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:miners",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-miners",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-mold-remediation",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:mold-remediation",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-mold-remediation",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-network-cabling",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:network-cabling",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-network-cabling",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-nuclear",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:nuclear",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-nuclear",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-operating-eng",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:operating-eng",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-operating-eng",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-painters",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:painters",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-painters",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-piling",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:piling",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-piling",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-pipefitters",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:pipefitters",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-pipefitters",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-pipeline",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:pipeline",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-pipeline",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-plasterers",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:plasterers",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-plasterers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-platers",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:platers",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-platers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-plc-techs",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:plc-techs",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-plc-techs",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-port-crane",
+   "kind": "treasure",
+   "title": "The placard in the Materials Store",
+   "world": "hall:port-crane",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-port-crane",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Materials Store",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-post-tension",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:post-tension",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-post-tension",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-precast",
+   "kind": "treasure",
+   "title": "The placard in the Materials Store",
+   "world": "hall:precast",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-precast",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Materials Store",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-rail-signals",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:rail-signals",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-rail-signals",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-rail-track",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:rail-track",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-rail-track",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-refractory",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:refractory",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-refractory",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-riggers",
+   "kind": "treasure",
+   "title": "The placard in the Materials Store",
+   "world": "hall:riggers",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-riggers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Materials Store",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-robotics",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:robotics",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-robotics",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-roofers",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:roofers",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-roofers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-scaffold",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:scaffold",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-scaffold",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-security-sys",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:security-sys",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-security-sys",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-sheetmetal",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:sheetmetal",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-sheetmetal",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-shipfitters",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:shipfitters",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-shipfitters",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-shoring",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:shoring",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-shoring",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-site-safety",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:site-safety",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-site-safety",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-smelter",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:smelter",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-smelter",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-solar",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:solar",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-solar",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-spill-response",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:spill-response",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-spill-response",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-steel-erectors",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:steel-erectors",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-steel-erectors",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-stone-carvers",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:stone-carvers",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-stone-carvers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-substation",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:substation",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-substation",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-survey-drone",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:survey-drone",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-survey-drone",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-surveyors",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:surveyors",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-surveyors",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-tank-erectors",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:tank-erectors",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-tank-erectors",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-teamsters",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:teamsters",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-teamsters",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-terrazzo",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:terrazzo",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-terrazzo",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-tilesetters",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:tilesetters",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-tilesetters",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-toolmakers",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:toolmakers",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-toolmakers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-transit-vehicle",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:transit-vehicle",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-transit-vehicle",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-transmission",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:transmission",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-transmission",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-wastewater",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:wastewater",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-wastewater",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-water-distrib",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:water-distrib",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-water-distrib",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-waterproofers",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:waterproofers",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-waterproofers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-welders",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:welders",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-welders",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Practice Bays",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-wind",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:wind",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-wind",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Equipment Bay",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-placard-window-glazing",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:window-glazing",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-window-glazing",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED",
+   "place": "Inspection Bench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-green-chicago",
+   "kind": "treasure",
+   "title": "A stone on the Loop Rail Hub green",
+   "world": "campus",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Out on the green, not far from where you start walking, something catches the light.",
+   "reward": {
+    "badge": "badge-treasure-green-chicago",
+    "label": "Green finder"
+   },
+   "provenance": "AUTHORED",
+   "place": "green:chicago",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-green-denver",
+   "kind": "treasure",
+   "title": "A stone on the Front Range Mining Hub green",
+   "world": "campus",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Out on the green, not far from where you start walking, something catches the light.",
+   "reward": {
+    "badge": "badge-treasure-green-denver",
+    "label": "Green finder"
+   },
+   "provenance": "AUTHORED",
+   "place": "green:denver",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-green-detroit",
+   "kind": "treasure",
+   "title": "A stone on the Motor City Hub green",
+   "world": "campus",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Out on the green, not far from where you start walking, something catches the light.",
+   "reward": {
+    "badge": "badge-treasure-green-detroit",
+    "label": "Green finder"
+   },
+   "provenance": "AUTHORED",
+   "place": "green:detroit",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-green-houston",
+   "kind": "treasure",
+   "title": "A stone on the Bayou Energy Hub green",
+   "world": "campus",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Out on the green, not far from where you start walking, something catches the light.",
+   "reward": {
+    "badge": "badge-treasure-green-houston",
+    "label": "Green finder"
+   },
+   "provenance": "AUTHORED",
+   "place": "green:houston",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-green-miami",
+   "kind": "treasure",
+   "title": "A stone on the Biscayne Coastal Hub green",
+   "world": "campus",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Out on the green, not far from where you start walking, something catches the light.",
+   "reward": {
+    "badge": "badge-treasure-green-miami",
+    "label": "Green finder"
+   },
+   "provenance": "AUTHORED",
+   "place": "green:miami",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-green-new-orleans",
+   "kind": "treasure",
+   "title": "A stone on the Crescent Works Campus green",
+   "world": "campus",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Out on the green, not far from where you start walking, something catches the light.",
+   "reward": {
+    "badge": "badge-treasure-green-new-orleans",
+    "label": "Green finder"
+   },
+   "provenance": "AUTHORED",
+   "place": "green:new-orleans",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-green-oakland",
+   "kind": "treasure",
+   "title": "A stone on the Oakland Waterfront Campus green",
+   "world": "campus",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Out on the green, not far from where you start walking, something catches the light.",
+   "reward": {
+    "badge": "badge-treasure-green-oakland",
+    "label": "Green finder"
+   },
+   "provenance": "AUTHORED",
+   "place": "green:oakland",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-green-pittsburgh",
+   "kind": "treasure",
+   "title": "A stone on the Three Rivers Steel Hub green",
+   "world": "campus",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Out on the green, not far from where you start walking, something catches the light.",
+   "reward": {
+    "badge": "badge-treasure-green-pittsburgh",
+    "label": "Green finder"
+   },
+   "provenance": "AUTHORED",
+   "place": "green:pittsburgh",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-green-seattle",
+   "kind": "treasure",
+   "title": "A stone on the Sound Aerospace Hub green",
+   "world": "campus",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Out on the green, not far from where you start walking, something catches the light.",
+   "reward": {
+    "badge": "badge-treasure-green-seattle",
+    "label": "Green finder"
+   },
+   "provenance": "AUTHORED",
+   "place": "green:seattle",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-green-treasure-island",
+   "kind": "treasure",
+   "title": "A stone on the Treasure Island Campus green",
+   "world": "campus",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Out on the green, not far from where you start walking, something catches the light.",
+   "reward": {
+    "badge": "badge-treasure-green-treasure-island",
+    "label": "Green finder"
+   },
+   "provenance": "AUTHORED",
+   "place": "green:treasure-island",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-konami-sky",
+   "kind": "egg",
+   "title": "Meteors over the campus",
+   "world": "campus",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Up, up, down, down... the sky remembers an old code.",
+   "reward": {
+    "badge": "badge-egg-konami-sky",
+    "label": "Meteors over the campus"
+   },
+   "provenance": "AUTHORED",
+   "place": "sky",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-secret-partition",
+   "kind": "egg",
+   "title": "The room behind the partition",
+   "world": "campus",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "One hall keeps something behind its deepest wall.",
+   "reward": {
+    "badge": "badge-egg-secret-partition",
+    "label": "The room behind the partition"
+   },
+   "provenance": "AUTHORED",
+   "place": "hall:ironworkers",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-advisor-hidden-line",
+   "kind": "egg",
+   "title": "The advisor who says one more thing",
+   "world": "campus",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Ask for the same person three times running.",
+   "reward": {
+    "badge": "badge-egg-advisor-hidden-line",
+    "label": "The advisor who says one more thing"
+   },
+   "provenance": "AUTHORED",
+   "place": "advisor",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-brand-placard-clicks",
+   "kind": "egg",
+   "title": "The name plate",
+   "world": "campus",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The academy name answers if you keep knocking - seven times.",
+   "reward": {
+    "badge": "badge-egg-brand-placard-clicks",
+    "label": "The name plate"
+   },
+   "provenance": "AUTHORED",
+   "place": "bar:brand",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-night-owl",
+   "kind": "egg",
+   "title": "Night owl",
+   "world": "campus",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stay in a hall until the sky goes fully dark.",
+   "reward": {
+    "badge": "badge-egg-night-owl",
+    "label": "Night owl"
+   },
+   "provenance": "AUTHORED",
+   "place": "hour:night",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-typed-solidarity",
+   "kind": "egg",
+   "title": "A word worth typing",
+   "world": "campus",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type the word the whole movement stands on.",
+   "reward": {
+    "badge": "badge-egg-typed-solidarity",
+    "label": "A word worth typing"
+   },
+   "provenance": "AUTHORED",
+   "place": "typed:solidarity",
+   "unlock_text": "Open to everyone."
   },
   {
    "id": "side-inspect-sequencer-eval",

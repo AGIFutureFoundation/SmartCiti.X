@@ -1,7 +1,7 @@
 {
  "pack": "wilds",
  "product": "SmartCiti.X : Trade Craft Academy",
- "source_stamp": "f4403f6ae009e712",
+ "source_stamp": "4d3051d7efbf7cce",
  "core_stamp": "07ffb9a376815025",
  "provenance": {
   "terrain": "AUTHORED",
@@ -10,6 +10,7 @@
   "trails": "DERIVED",
   "hall_names": "DERIVED",
   "lesson_titles": "DERIVED",
+  "site_walks": "DERIVED",
   "summit_register": "DERIVED"
  },
  "honesty": {
@@ -20,12 +21,12 @@
  },
  "off_trail_m": 120,
  "counts": {
-  "worlds": 3,
-  "sites": 17,
-  "caches": 11,
-  "halls_linked": 29,
-  "lessons_linked": 14,
-  "area_km2": 323.0
+  "worlds": 4,
+  "sites": 23,
+  "caches": 14,
+  "halls_linked": 36,
+  "lessons_linked": 51,
+  "area_km2": 427.9
  },
  "worlds": [
   {
@@ -102,6 +103,11 @@
        "id": "shoring-read-the-ground-again",
        "title": "Read the ground again after the rain",
        "hall": "shoring"
+      },
+      {
+       "id": "m-adit-portal-site-walk",
+       "title": "Underground Miners: before the adit portal and ground support",
+       "hall": "miners"
       }
      ],
      "provenance": "AUTHORED"
@@ -129,6 +135,11 @@
        "id": "line-workers-find-the-fault",
        "title": "Find the fault instead of replacing things",
        "hall": "line-workers"
+      },
+      {
+       "id": "m-hv-corridor-site-walk",
+       "title": "Transmission Linemen: before the high-voltage line corridor",
+       "hall": "transmission"
       }
      ],
      "provenance": "AUTHORED"
@@ -160,6 +171,11 @@
        "id": "riggers-first-card",
        "title": "Call the first lift before anybody touches the hook",
        "hall": "riggers"
+      },
+      {
+       "id": "m-rockfall-netting-site-walk",
+       "title": "High-Angle Rescue: before the rockfall netting on a road cut",
+       "hall": "high-angle"
       }
      ],
      "provenance": "AUTHORED"
@@ -196,6 +212,11 @@
        "id": "teamsters-check-the-truck-before-the-load",
        "title": "Check the truck before you check the load",
        "hall": "teamsters"
+      },
+      {
+       "id": "m-snow-road-site-walk",
+       "title": "Operating Engineers: before the snow-road grading on the pass",
+       "hall": "operating-eng"
       }
      ],
      "provenance": "AUTHORED"
@@ -223,6 +244,11 @@
        "id": "crane-ops-read-the-chart",
        "title": "Refuse the pick the chart refuses",
        "hall": "crane-ops"
+      },
+      {
+       "id": "m-wind-ridge-site-walk",
+       "title": "Wind Turbine Technicians: before the ridge-top turbine pad",
+       "hall": "wind"
       }
      ],
      "provenance": "AUTHORED"
@@ -249,6 +275,11 @@
       {
        "id": "surveyors-trust-the-control",
        "title": "Work from control, not from something near it",
+       "hall": "surveyors"
+      },
+      {
+       "id": "m-survey-control-site-walk",
+       "title": "Construction Surveyors: before the survey control on the high ground",
        "hall": "surveyors"
       }
      ],
@@ -398,6 +429,11 @@
        "id": "line-workers-find-the-fault",
        "title": "Find the fault instead of replacing things",
        "hall": "line-workers"
+      },
+      {
+       "id": "f-line-clearance-site-walk",
+       "title": "Utility Line Workers: before the utility line clearance",
+       "hall": "line-workers"
       }
      ],
      "provenance": "AUTHORED"
@@ -428,6 +464,11 @@
       {
        "id": "carpenters-return-it-the-same",
        "title": "Return it in the state you would want to find it",
+       "hall": "carpenters"
+      },
+      {
+       "id": "f-trail-bridge-site-walk",
+       "title": "Carpenters: before the trail bridge crew",
        "hall": "carpenters"
       }
      ],
@@ -460,6 +501,11 @@
        "id": "laborers-stand-where-the-cab-can-see",
        "title": "Stand where the cab can see you",
        "hall": "laborers"
+      },
+      {
+       "id": "f-fuel-break-site-walk",
+       "title": "Grounds & Landscape: before the wildfire fuel break",
+       "hall": "grounds"
       }
      ],
      "provenance": "AUTHORED"
@@ -487,6 +533,11 @@
        "id": "riggers-first-card",
        "title": "Call the first lift before anybody touches the hook",
        "hall": "riggers"
+      },
+      {
+       "id": "f-timber-frame-site-walk",
+       "title": "Riggers & Signalpersons: before the timber-frame shelter raising",
+       "hall": "riggers"
       }
      ],
      "provenance": "AUTHORED"
@@ -505,7 +556,18 @@
        "name": "Water Distribution Fitters"
       }
      ],
-     "lessons": [],
+     "lessons": [
+      {
+       "id": "water-distrib-safety-first-walk",
+       "title": "Water Distribution Fitters: find out what the room is held to",
+       "hall": "water-distrib"
+      },
+      {
+       "id": "f-water-intake-site-walk",
+       "title": "Water Distribution Fitters: before the lake intake and main",
+       "hall": "water-distrib"
+      }
+     ],
      "provenance": "AUTHORED"
     },
     {
@@ -536,6 +598,11 @@
        "id": "scaffold-read-the-tag",
        "title": "Believe the tag or believe nothing",
        "hall": "scaffold"
+      },
+      {
+       "id": "f-fire-lookout-site-walk",
+       "title": "Steel Erectors: before the fire lookout tower",
+       "hall": "steel-erectors"
       }
      ],
      "provenance": "AUTHORED"
@@ -684,7 +751,23 @@
        "name": "Commercial Divers"
       }
      ],
-     "lessons": [],
+     "lessons": [
+      {
+       "id": "hydro-inspection-first-walk",
+       "title": "Hydro Plant Trades: ask what a pass would actually mean",
+       "hall": "hydro"
+      },
+      {
+       "id": "divers-layout-first-walk",
+       "title": "Commercial Divers: trust a line only as far as it is proved",
+       "hall": "divers"
+      },
+      {
+       "id": "c-river-intake-site-walk",
+       "title": "Hydro Plant Trades: before the run-of-river intake and penstock",
+       "hall": "hydro"
+      }
+     ],
      "provenance": "AUTHORED"
     },
     {
@@ -705,6 +788,11 @@
       {
        "id": "pipeline-close-the-permit-properly",
        "title": "Close the permit the way it was opened",
+       "hall": "pipeline"
+      },
+      {
+       "id": "c-pipeline-crossing-site-walk",
+       "title": "Pipeline Trades: before the pipeline river crossing",
        "hall": "pipeline"
       }
      ],
@@ -737,6 +825,11 @@
        "id": "boilermakers-get-them-out",
        "title": "Put somebody inside a vessel and get them back out",
        "hall": "boilermakers"
+      },
+      {
+       "id": "c-valve-vault-site-walk",
+       "title": "Confined Space Rescue: before the valve vault rescue drill",
+       "hall": "confined-space"
       }
      ],
      "provenance": "AUTHORED"
@@ -759,7 +852,23 @@
        "name": "Electrical Workers"
       }
      ],
-     "lessons": [],
+     "lessons": [
+      {
+       "id": "solar-documentation-first-walk",
+       "title": "Solar Installers: find out where the record goes",
+       "hall": "solar"
+      },
+      {
+       "id": "electricians-clip-in-first",
+       "title": "Clip in before the basket moves",
+       "hall": "electricians"
+      },
+      {
+       "id": "c-mesa-solar-site-walk",
+       "title": "Solar Installers: before the mesa-top solar array",
+       "hall": "solar"
+      }
+     ],
      "provenance": "AUTHORED"
     },
     {
@@ -785,6 +894,11 @@
        "id": "demolition-stand-back",
        "title": "Know where not to stand",
        "hall": "demolition"
+      },
+      {
+       "id": "c-quarry-bench-site-walk",
+       "title": "Drillers & Blasters: before the quarry bench and blast pattern",
+       "hall": "blasters"
       }
      ],
      "provenance": "AUTHORED"
@@ -843,6 +957,340 @@
      "id": "c-summit-register",
      "kind": "summit",
      "riddle": "The highest step of the highest mesa.",
+     "position": "DERIVED at runtime: the highest ground wildsTerrain(world).summit() finds from the seed",
+     "provenance": "DERIVED"
+    }
+   ],
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "delta",
+   "name": "Salt Marsh Delta",
+   "inspiration": {
+    "evokes": "the general geography of a Gulf river delta: low ridges of old shoreline, marsh and braided channels running to open water",
+    "campus": "new-orleans",
+    "campus_city": "New Orleans",
+    "standing": "inspiration only; the terrain is AUTHORED, not real elevation"
+   },
+   "seed": 40427,
+   "extent_m": 10240,
+   "chunk_m": 512,
+   "area_km2": 104.9,
+   "chunks_across": 20,
+   "sky": "#C4D8E4",
+   "fog": "#D6DDD8",
+   "biome": {
+    "model": "rolling",
+    "relief_m": 70,
+    "feature_m": 1500,
+    "octaves": 5,
+    "water_level_m": 2,
+    "tree_line_m": 5000,
+    "snow_line_m": 99999,
+    "max_tree_slope": 0.3,
+    "tree_density": 0.3,
+    "deciduous_share": 0.85,
+    "rock_density": 0.05,
+    "stand_m": 260,
+    "clearing": 0.4,
+    "rim_m": 90,
+    "rim_width_m": 500,
+    "palette": {
+     "low": "#6F8A4E",
+     "mid": "#5E7A45",
+     "rock": "#8C8467",
+     "snow": "#D9D6C4",
+     "shore": "#CDBF8F"
+    }
+   },
+   "trailhead": {
+    "x": -500,
+    "z": 1000,
+    "name": "Levee trailhead",
+    "pad_m": 24
+   },
+   "sites": [
+    {
+     "id": "d-levee-pump",
+     "kind": "pumpstation",
+     "x": -2400,
+     "z": -2000,
+     "pad_m": 34,
+     "title": "Levee pump station",
+     "work": "A drainage pump station set into the levee; wastewater crews keep the pumps, screens and wet well working.",
+     "halls": [
+      {
+       "id": "wastewater",
+       "name": "Wastewater Operators"
+      },
+      {
+       "id": "electricians",
+       "name": "Electrical Workers"
+      }
+     ],
+     "lessons": [
+      {
+       "id": "wastewater-tools-first-walk",
+       "title": "Wastewater Operators: know the kit before you touch it",
+       "hall": "wastewater"
+      },
+      {
+       "id": "electricians-clip-in-first",
+       "title": "Clip in before the basket moves",
+       "hall": "electricians"
+      },
+      {
+       "id": "d-levee-pump-site-walk",
+       "title": "Wastewater Operators: before the levee pump station",
+       "hall": "wastewater"
+      }
+     ],
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "d-terminal-berth",
+     "kind": "berth",
+     "x": 2800,
+     "z": 2400,
+     "pad_m": 50,
+     "title": "River terminal berth",
+     "work": "A barge berth with a crane working cargo; the lane is briefed before anything swings.",
+     "halls": [
+      {
+       "id": "marine-terminal",
+       "name": "Marine Terminal Operators"
+      },
+      {
+       "id": "port-crane",
+       "name": "Port Crane Technicians"
+      }
+     ],
+     "lessons": [
+      {
+       "id": "marine-terminal-brief-the-lane",
+       "title": "Brief the lane before the first box moves",
+       "hall": "marine-terminal"
+      },
+      {
+       "id": "port-crane-read-the-rope",
+       "title": "Read the rope before the box goes up",
+       "hall": "port-crane"
+      },
+      {
+       "id": "d-terminal-berth-site-walk",
+       "title": "Marine Terminal Operators: before the river terminal berth",
+       "hall": "marine-terminal"
+      }
+     ],
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "d-pile-trestle",
+     "kind": "bridge",
+     "x": -3300,
+     "z": 3000,
+     "pad_m": 30,
+     "title": "Timber pile trestle over a bayou",
+     "work": "A pile-supported trestle across a channel: new piles driven from a rig on firm footing, old bents inspected.",
+     "halls": [
+      {
+       "id": "piling",
+       "name": "Piling Crews"
+      },
+      {
+       "id": "bridge-inspect",
+       "name": "Bridge Inspection Crews"
+      }
+     ],
+     "lessons": [
+      {
+       "id": "piling-stand-the-rig-on-something",
+       "title": "Stand the rig on ground that will hold it",
+       "hall": "piling"
+      },
+      {
+       "id": "bridge-inspect-inspection-first-walk",
+       "title": "Bridge Inspection Crews: ask what a pass would actually mean",
+       "hall": "bridge-inspect"
+      },
+      {
+       "id": "d-pile-trestle-site-walk",
+       "title": "Piling Crews: before the timber pile trestle over a bayou",
+       "hall": "piling"
+      }
+     ],
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "d-outfall-dive",
+     "kind": "intake",
+     "x": -600,
+     "z": 2900,
+     "pad_m": 28,
+     "title": "Outfall line and dive station",
+     "work": "An outfall pipe running into the channel; a dive team inspects it from a station on the bank.",
+     "halls": [
+      {
+       "id": "divers",
+       "name": "Commercial Divers"
+      },
+      {
+       "id": "marine-pipe",
+       "name": "Marine Pipefitters"
+      }
+     ],
+     "lessons": [
+      {
+       "id": "divers-layout-first-walk",
+       "title": "Commercial Divers: trust a line only as far as it is proved",
+       "hall": "divers"
+      },
+      {
+       "id": "marine-pipe-know-when-to-come-out",
+       "title": "Know when to come out of the compartment",
+       "hall": "marine-pipe"
+      },
+      {
+       "id": "d-outfall-dive-site-walk",
+       "title": "Commercial Divers: before the outfall line and dive station",
+       "hall": "divers"
+      }
+     ],
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "d-spill-boom",
+     "kind": "boom",
+     "x": 900,
+     "z": -3200,
+     "pad_m": 30,
+     "title": "Spill boom staging",
+     "work": "Containment boom and a skimmer staged on the bank, ready to deploy across a channel mouth.",
+     "halls": [
+      {
+       "id": "spill-response",
+       "name": "Spill Response Technicians"
+      },
+      {
+       "id": "hazmat",
+       "name": "Hazmat & Environmental"
+      }
+     ],
+     "lessons": [
+      {
+       "id": "spill-response-tools-first-walk",
+       "title": "Spill Response Technicians: know the kit before you touch it",
+       "hall": "spill-response"
+      },
+      {
+       "id": "hazmat-wash-and-decon",
+       "title": "Come out cleaner than what you washed",
+       "hall": "hazmat"
+      },
+      {
+       "id": "d-spill-boom-site-walk",
+       "title": "Spill Response Technicians: before the spill boom staging",
+       "hall": "spill-response"
+      }
+     ],
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "d-wind-staging",
+     "kind": "turbine",
+     "x": 2600,
+     "z": -2600,
+     "pad_m": 40,
+     "title": "Wind turbine staging yard",
+     "work": "A turbine erected on the ridge beside a laydown yard where blades and tower sections wait for the crane.",
+     "halls": [
+      {
+       "id": "wind",
+       "name": "Wind Turbine Technicians"
+      },
+      {
+       "id": "crane-ops",
+       "name": "Crane Operators"
+      }
+     ],
+     "lessons": [
+      {
+       "id": "wind-safety-first-walk",
+       "title": "Wind Turbine Technicians: find out what the room is held to",
+       "hall": "wind"
+      },
+      {
+       "id": "crane-ops-read-the-chart",
+       "title": "Refuse the pick the chart refuses",
+       "hall": "crane-ops"
+      },
+      {
+       "id": "d-wind-staging-site-walk",
+       "title": "Crane Operators: before the wind turbine staging yard",
+       "hall": "crane-ops"
+      }
+     ],
+     "provenance": "AUTHORED"
+    }
+   ],
+   "trails": [
+    {
+     "from": "trailhead",
+     "to": "d-outfall-dive",
+     "length_m": 1903
+    },
+    {
+     "from": "d-outfall-dive",
+     "to": "d-pile-trestle",
+     "length_m": 2702
+    },
+    {
+     "from": "d-outfall-dive",
+     "to": "d-terminal-berth",
+     "length_m": 3437
+    },
+    {
+     "from": "trailhead",
+     "to": "d-levee-pump",
+     "length_m": 3551
+    },
+    {
+     "from": "d-levee-pump",
+     "to": "d-spill-boom",
+     "length_m": 3511
+    },
+    {
+     "from": "d-spill-boom",
+     "to": "d-wind-staging",
+     "length_m": 1803
+    }
+   ],
+   "trail_length_m": 16907,
+   "caches": [
+    {
+     "id": "d-cache-shell-midden",
+     "kind": "cache",
+     "x": -2200,
+     "z": 400,
+     "riddle": "On an old shell ridge, well off the trail, between the trailhead and the pump station.",
+     "off_trail_m": 1115,
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "d-hollow",
+     "kind": "hollow",
+     "x": -300,
+     "z": -1600,
+     "hollow_m": 50,
+     "hollow_depth_m": 3,
+     "riddle": "A dry scour hole the last flood left, off the trail between the trailhead and the boom yard.",
+     "off_trail_m": 1094,
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "d-summit-register",
+     "kind": "summit",
+     "riddle": "The delta has one highest ridge; the book is on its crown.",
      "position": "DERIVED at runtime: the highest ground wildsTerrain(world).summit() finds from the seed",
      "provenance": "DERIVED"
     }

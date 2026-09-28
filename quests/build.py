@@ -199,11 +199,52 @@ if (ROOT / WILDS_PATH).exists():
             missing = [l for l in named if l not in LESSONS]
             if missing:
                 raise KeyError(f'{WILDS_PATH}#{sid} names lessons {missing} that {LESSONS_PATH} does not hold')
-            if not named:
-                continue
+            if named:
+                gate = req(course_order(named))
+            else:
+                # no lessons of its own: gated by the halls the site names, and
+                # only when every one of them has a lesson that could satisfy it
+                halls = [need(h, 'id', f'{WILDS_PATH}#{sid}.halls') for h in need(site, 'halls', f'{WILDS_PATH}#{sid}')]
+                if not halls or any(h not in HALLS or h not in by_hall for h in halls):
+                    continue
+                gate = req(halls=halls)
             add(f'side-wilds-{sid}', 'side', need(site, 'title', f'{WILDS_PATH}#{sid}'), f'wilds:{wid}',
-                req(course_order(named)), need(site, 'work', f'{WILDS_PATH}#{sid}'),
+                gate, need(site, 'work', f'{WILDS_PATH}#{sid}'),
                 need(site, 'title', f'{WILDS_PATH}#{sid}') + ' crew', place=sid)
+        # one explore-only treasure per hidden cache; its riddle is WILDS's own
+        for c in need(world, 'caches', f'{WILDS_PATH}#{wid}'):
+            cid = need(c, 'id', f'{WILDS_PATH}#{wid}.caches')
+            kind = need(c, 'kind', f'{WILDS_PATH}#{cid}')
+            riddle = need(c, 'riddle', f'{WILDS_PATH}#{cid}')
+            label = {'cache': 'Cache', 'hollow': 'Hollow', 'summit': 'Summit register'}
+            if kind not in label:
+                raise KeyError(f'{WILDS_PATH}#{cid}: cache kind {kind!r} is not one of {sorted(label)}')
+            add(f'treasure-wilds-{cid}', 'treasure', f'{label[kind]} in {wname}', f'wilds:{wid}', req(),
+                riddle, f'{label[kind]} finder: {wname}', place=cid, band='K-5', riddle=riddle)
+
+# The campus and its halls (CAMPUS publishes these entries; the 3D page binds
+# them itself and calls TCQuests.find(id), so they carry no trigger fields).
+CAMPUS_SRC = 'quests/source/campus.json'
+_campus = need(load(CAMPUS_SRC), 'entries', CAMPUS_SRC)
+for e in _campus:
+    eid = need(e, 'id', CAMPUS_SRC)
+    for k in ('kind', 'title', 'world', 'place', 'requires', 'hint', 'reward', 'provenance'):
+        need(e, k, f'{CAMPUS_SRC}#{eid}')
+    if e['kind'] not in ('treasure', 'egg'):
+        raise ValueError(f'{CAMPUS_SRC}#{eid}: kind {e["kind"]!r} - CAMPUS entries are treasure|egg')
+    if not (e['world'] == 'campus' or e['world'].startswith('hall:')):
+        raise ValueError(f'{CAMPUS_SRC}#{eid}: world {e["world"]!r} is not campus | hall:<id>')
+    if 'trigger' in e or 'target' in e:
+        raise ValueError(f'{CAMPUS_SRC}#{eid}: campus entries carry no trigger fields (the 3D page binds them)')
+    if e['provenance'] != 'AUTHORED':
+        raise ValueError(f'{CAMPUS_SRC}#{eid}: provenance must be AUTHORED')
+    r = e['requires']
+    add(eid, e['kind'], e['title'], e['world'],
+        req(need(r, 'lessons', eid), need(r, 'halls', eid), need(r, 'quests', eid)), e['hint'],
+        need(e['reward'], 'label', f'{CAMPUS_SRC}#{eid}.reward'), place=e['place'],
+        band=e['band'] if 'band' in e else None)
+    if Q[-1]['reward']['badge'] != need(e['reward'], 'badge', f'{CAMPUS_SRC}#{eid}.reward'):
+        raise ValueError(f'{CAMPUS_SRC}#{eid}: reward badge must be badge-{eid}')
 
 # Modules no page reads today, brought into play on the quest board.
 add('side-inspect-sequencer-eval', 'side', 'Inspect the sequencer eval', QUEST_PAGE, req(),
@@ -332,13 +373,15 @@ for i in by_id:
 
 counts = {k: sum(1 for q in Q if q['kind'] == k) for k in KINDS}
 stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()
-                       + (ROOT / LESSONS_PATH).read_bytes() + (ROOT / SIMS_PATH).read_bytes()).hexdigest()[:16]
+                       + (ROOT / LESSONS_PATH).read_bytes() + (ROOT / SIMS_PATH).read_bytes()
+                       + (ROOT / CAMPUS_SRC).read_bytes()
+                       + ((ROOT / WILDS_PATH).read_bytes() if (ROOT / WILDS_PATH).exists() else b'')).hexdigest()[:16]
 doc = {
     'pack': 'quests',
     'product': need(lessons_reg, 'product', LESSONS_PATH),
     'pack_version': need(lessons_reg, 'pack_version', LESSONS_PATH),
     'source_stamp': stamp,
-    'reads': [LESSONS_PATH, HALLS_PATH, SIMS_PATH, CRIBS_PATH],
+    'reads': [LESSONS_PATH, HALLS_PATH, SIMS_PATH, CRIBS_PATH, WILDS_PATH, CAMPUS_SRC],
     'honesty': HONESTY,
     'counts': counts,
     'halls_with_side_quests': sorted(by_hall),

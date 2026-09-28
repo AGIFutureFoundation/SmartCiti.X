@@ -43,6 +43,7 @@ ROOT = _pack_root()
 sys.path.insert(0, str(ROOT / 'web'))
 from interiors import build as build_interiors, FIXTURES as ROOM_FIXTURES  # noqa: E402
 from staleness import emit  # noqa: E402
+from seo import apply_seo  # noqa: E402  head tags only
 from mapdata import strand_modules, PIPELINE_JS, HUES, make_codes  # noqa: E402
 from groundtruth import GROUND_TRUTH_JS  # noqa: E402
 from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
@@ -7205,7 +7206,8 @@ nav.sitenav .sitenav-menu[open]>.sitenav-groups,nav.sitenav .sitenav-menu[open] 
 </style>
 </head>
 <body>
-__NAV__<h1 id="ptitle" class="vh">SmartCiti.X : Trade Craft Academy — __H1_TEXT__</h1>
+__NAV__<main id="main">
+<h1 id="ptitle" class="vh">SmartCiti.X : Trade Craft Academy — __H1_TEXT__</h1>
 <script>
 // the nav's folded row, measured (see --navh in the stylesheet)
 (function () {
@@ -7270,6 +7272,7 @@ __NAV__<h1 id="ptitle" class="vh">SmartCiti.X : Trade Craft Academy — __H1_TEX
 <div id="cross">+</div>
 <div id="ov"></div>
 <aside id="panel"><button id="pclose">__L_ui.close__</button><div id="pbody"></div></aside>
+</main>
 <script id="data" type="application/json">__DATA__</script>
 <script type="importmap">
 {"imports":{
@@ -7382,7 +7385,10 @@ const SHADOW_PX = isTouch ? 1024 : 2048;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.12;
 renderer.xr.enabled = true;
-document.body.appendChild(renderer.domElement);
+// the world is the page's main region: the skip link lands on it
+const mainEl = document.getElementById('main');
+if (!mainEl) throw new Error('the page has no main region (#main) for the renderer');
+mainEl.appendChild(renderer.domElement);
 
 /* WebXR - experimental: the buttons appear only where the platform
    actually offers the session kind, and a refused session degrades to a
@@ -15686,7 +15692,7 @@ QPOOL.count = 0; QPOOL.visible = false;
 QPOOL.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
 QPOOL.setColorAt(0, new THREE.Color(0xffffff));
 scene.add(QPOOL);
-let qItems = [], qKey = '', qLoc = '', qMeteorT = 0, qSub = false;
+let qItems = [], qKey = '', qLoc = '', qMeteorT = 0, qMeteorEnd = 0, qSub = false;
 const qSeen = new Set();              // this visit's finds, when no engine is wired
 const _qDummy = new THREE.Object3D(), _qCol = new THREE.Color();
 const qApi = () => window.TCQuests || null;
@@ -15825,7 +15831,9 @@ function questStep(dt) {
       document.getElementById('questBtn').setAttribute('aria-label', t('campus3d.questlog'));
     }
   }
-  if (qMeteorT > 0) qMeteorT = Math.max(0, qMeteorT - dt);
+  // the shower runs on the wall clock, not the loop's dt: a slow or
+  // throttled frame must neither stretch nor swallow its five seconds
+  if (qMeteorEnd) { qMeteorT = Math.max(0, (qMeteorEnd - performance.now()) / 1000); if (!(qMeteorT > 0)) qMeteorEnd = 0; }
   if (!qItems.length && !(qMeteorT > 0)) { if (QPOOL.visible) { QPOOL.count = 0; QPOOL.visible = false; } return; }
   questWrite(clock.elapsedTime);
   // walking up to a treasure or an egg finds it, like clicking it would
@@ -15869,6 +15877,7 @@ function questMeteorShower() {
   for (let i = 0; i < 16; i++)
     qMeteors.push({ kind: 'meteor', x: (rnd() - .5) * 260, y: 90 + rnd() * 60,
       z: -120 - rnd() * 80, vx: 60 + rnd() * 40, vy: -30 - rnd() * 20, s: [.35, 4, .35] });
+  qMeteorEnd = performance.now() + 5000;
   qMeteorT = 5;
 }
 document.addEventListener('keydown', (e) => {
@@ -15941,6 +15950,23 @@ window.__tc3dQuest = () => ({
   seen: [...qSeen], meteors: qMeteorT > 0,
 });
 window.__tc3dQuestPick = (i) => { questStep(0); questActivate(qItems[i]); };
+/* Aim the eye at quest item i so a REAL click lands on it. __tc3dLook
+   alone is undone next frame by controls.update(), which turns the camera
+   back to the orbit target - so this sets controls.target to the gem too,
+   and returns the gem's pixel for the probe to click. */
+window.__tc3dQuestAim = (i, dist = 4) => {
+  questStep(0);
+  const it = qItems[i];
+  if (!it) throw new Error('no quest item ' + i);
+  const tgt = new THREE.Vector3(it.x, it.y, it.z);
+  camera.position.set(it.x, it.y + dist * .3, it.z + dist);
+  controls.target.copy(tgt);
+  camera.lookAt(tgt);
+  controls.update();
+  camera.updateMatrixWorld(true);
+  const p = tgt.clone().project(camera), r = renderer.domElement.getBoundingClientRect();
+  return { id: it.id, x: r.left + (p.x + 1) / 2 * r.width, y: r.top + (1 - p.y) / 2 * r.height };
+};
 """
 
 page = page.replace('__DATA__', DATA).replace('__PIPELINE_JS__', PIPELINE_JS)
@@ -16190,5 +16216,7 @@ for _v in props_reg['props']:
         assert _any == ['*any*'] or set(_any) & _ppe_words, (
             f'prop {_v["id"]} is triggered by PPE no room record names: {_any}')
 
+page = apply_seo(page, 'web/trade_craft_3d.html', 'SmartCiti.X : Trade Craft Academy \u2014 3D hall environment',
+    'A walkable 3D campus of the academy\'s union training halls, their rooms and sim seats, with optional play quests that certify nothing.', 'page')
 out = HERE / 'trade_craft_3d.html'
 emit(out, page, f"{len(HALLS)} halls | {stations_reg['count']} stations | {len(I18N)} locales")

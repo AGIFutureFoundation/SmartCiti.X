@@ -37,9 +37,6 @@ const NO_CANONICAL_LINK = { 'web/trade_craft_verify.html': 'test_verify forbids 
 // JSON-LD's @context and @id do: it carries the head tags only.
 const NO_JSONLD = { 'web/trade_craft_verify.html': 'test_verify: no script on the page names a remote origin' };
 const PENDING = new Set([
-  'web/trade_craft_3d.html', 'web/trade_craft_wilds.html', 'web/trade_craft_lessons.html',
-  'web/trade_craft_progress.html', 'web/trade_craft_schools.html', 'web/trade_craft_quests.html',
-  'web/trade_craft_design.html',   // MEDIA's design-kit page, new this wave
 ]);
 
 // ---- the declared facts --------------------------------------------------
@@ -93,6 +90,8 @@ ok(`[shipped] every nav page carries seo_head() except the PENDING list (${adopt
   notAdopted.every((p) => PENDING.has(p)), notAdopted.filter((p) => !PENDING.has(p)));
 ok('[suite] and PENDING only shrinks: no page on it has adopted seo_head() already',
   [...PENDING].every((p) => !adopted.includes(p)), [...PENDING].filter((p) => adopted.includes(p)));
+ok('[suite] PENDING names only pages the site nav declares (a page that left the nav, or a typo, leaves the list)',
+  [...PENDING].every((p) => PAGES.includes(p)), [...PENDING].filter((p) => !PAGES.includes(p)));
 
 const attr = (head, sel) => {
   const m = head.match(new RegExp(`<meta (?:name|property)="${sel}" content="([^"]*)"`));

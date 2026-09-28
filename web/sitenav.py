@@ -94,7 +94,7 @@ LOOP = [
 for _p, _k in LOOP:
     assert _p in PAGES, f'sitenav: loop step {_p} is not a declared page'
 
-KEYS = (['nav.site', 'nav.loop', 'nav.home', 'nav.group.home']
+KEYS = (['nav.site', 'nav.loop', 'nav.home', 'nav.group.home', 'nav.skip', 'nav.search']
         + [g for g, _ in GROUPS] + [k for _, items in GROUPS for _, k in items]
         + [k for _, k in LOOP])
 
@@ -132,7 +132,13 @@ def nav_html(current_path, labels):
     # the header is one flat bar; on a narrow one the summary is the menu
     # button. No script: page suites count and parse <script> tags, and a
     # header has no business adding one to every page.
+    # The skip link is the nav's FIRST child: the first tab stop on every
+    # page, hidden until focused. It lands on the target nav_html itself
+    # emits right after </nav> (id="tc-main"), so every page that carries
+    # the nav has a real place to skip to - no page can ship a skip link
+    # that goes nowhere, whatever its own markup calls its content.
     out = [f'<nav class="sitenav" data-sitenav aria-label="{E("nav.site")}">',
+           f'<a class="skip" href="#tc-main">{E("nav.skip")}</a>',
            '<div class="sitenav-row">',
            link(FRONT_DOOR, 'nav.home', 'sitenav-home'),
            '<details class="sitenav-menu" data-sitenav-menu>'
@@ -142,6 +148,9 @@ def nav_html(current_path, labels):
         out.append(f'<div class="sitenav-group"><span class="sitenav-g">{E(gkey)}</span><ul>'
                    + ''.join(f'<li>{link(p, k)}</li>' for p, k in items) + '</ul></div>')
     out.append('</div></details>')
+    # The site search: a script-free link to the front door's palette
+    # (index.html#search), the header bar's last child on every page.
+    out.append(search_trigger(current_path, labels['nav.search']))
     out.append('</div>')
     steps = [p for p, _ in LOOP]
     if current_path in steps:
@@ -151,6 +160,8 @@ def nav_html(current_path, labels):
             out.append(f'<li><a href="{html.escape(_rel(current_path, p))}"{cur}>{E(k)}</a></li>')
         out.append('</ol>')
     out.append('</nav>')
+    # the skip link's landing point: the first thing after the header
+    out.append('<span id="tc-main" class="sitenav-skip-target" tabindex="-1"></span>')
     return '\n'.join(out) + '\n'
 
 
@@ -169,6 +180,12 @@ NAV_CSS = (
     '.sitenav a:hover{background:color-mix(in srgb,currentColor 11%,transparent)}'
     '.sitenav a:focus-visible,.sitenav summary:focus-visible{outline:2px solid var(--sn-mark);'
     'outline-offset:2px}'
+    '.sitenav a.skip{position:absolute;inset-inline-start:8px;inset-block-start:4px;z-index:60;'
+    'padding-block:6px;padding-inline:12px;font-weight:700;color:var(--sn-ink);'
+    'background:var(--sn-bg);border:2px solid var(--sn-mark);'
+    'clip-path:inset(50%);overflow:hidden;white-space:nowrap;display:inline-flex;'
+    'align-items:center;min-block-size:24px;box-sizing:border-box}'
+    '.sitenav a.skip:focus,.sitenav a.skip:focus-visible{clip-path:none;overflow:visible}'
     '.sitenav-row{display:flex;align-items:center;gap:6px 12px;min-width:0}'
     # Text in the header is always the page's own ink on the page's own
     # panel - the one pair every page already holds to AA. The accent marks
@@ -229,3 +246,10 @@ NAV_CSS = (
     '.sitenav-loop{font-size:12.5px}}'
     '@media (prefers-reduced-motion:reduce){.sitenav *{transition:none!important}}'
 )
+
+
+# The search link and its CSS come from web/sitesearch.py, which itself reads
+# PAGES / FRONT_DOOR / labels from here - so it is imported last, once those
+# exist. (Import sitenav before sitesearch; every builder does.)
+from sitesearch import search_trigger, SEARCH_TRIGGER_CSS  # noqa: E402
+NAV_CSS = NAV_CSS + SEARCH_TRIGGER_CSS.strip().replace('\n', '')

@@ -120,5 +120,25 @@ buf = []; hits = [];
 for (const k of 'xhardhat') { const r = Q.questKeys(buf, k, ['hardhat']); buf = r.buf; hits = hits.concat(r.hits); }
 ok('a typed word triggers typed:<word>', hits.includes('typed:hardhat'));
 
+// CAMPUS's published entries (quests/source/campus.json) all land, unchanged, with no trigger fields
+const campus = JSON.parse(read('quests/source/campus.json')).entries;
+const byId = new Map(reg.quests.map((q) => [q.id, q]));
+const cmiss = campus.filter((e) => { const q = byId.get(e.id);
+  return !q || q.kind !== e.kind || q.world !== e.world || q.place !== e.place || q.title !== e.title || 'trigger' in q
+    || JSON.stringify(q.requires) !== JSON.stringify(e.requires) || q.reward.badge !== e.reward.badge; }).map((e) => e.id);
+ok(`every CAMPUS entry is registered as published, campus | hall:<id>, no trigger (${campus.length})`, campus.length > 0 && cmiss.length === 0, cmiss);
+// every WILDS hidden cache has an explore-only treasure placed on it; every site with a gate has a side quest
+const wreg = JSON.parse(read('wilds/registry/wilds.json'));
+const wmiss = [];
+for (const w of wreg.worlds) {
+  for (const c of w.caches) { const q = byId.get(`treasure-wilds-${c.id}`);
+    if (!q || q.kind !== 'treasure' || q.world !== `wilds:${w.id}` || q.place !== c.id || q.band !== 'K-5') wmiss.push(`${w.id}/${c.id}`); }
+  for (const s of w.sites) {
+    const gated = s.lessons.length || (s.halls.length && s.halls.every((h) => hallsWithLessons.has(h.id)));
+    if (gated && !byId.has(`side-wilds-${s.id}`)) wmiss.push(`${w.id}/${s.id} (side)`);
+  }
+}
+ok('every wilds cache has a K-5 treasure on it, and every gateable wilds site a side quest', wmiss.length === 0, wmiss);
+
 console.log(fails ? `quests/test: ${fails} FAILED` : 'quests/test: all passed');
 process.exit(fails ? 1 : 0);

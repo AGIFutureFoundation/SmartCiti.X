@@ -1166,6 +1166,90 @@ for _i, _hall in enumerate(_order):
         COMPOSE_REFUSED[_hall] = _why_not
 LESSONS_SRC = LESSONS_SRC + COMPOSED
 
+# ------------------------------------------------------ the site walks ---
+# WILDS draws outdoor work sites on AUTHORED terrain (wilds/registry/
+# wilds.json worlds[].sites[]) and names the halls that work at each one.
+# A site has no room, no placard and no seat of its own, so no step can
+# honestly stand there. What the rule CAN do is walk a hall that works at
+# the site through the part of its own building that comes before going
+# out: the posted rules, the door sign, and the two safety questions. That
+# is the SITE_ARC, written here once. One site walk per site: the hall is
+# the first one the site names that no earlier site walk has used and that
+# the arc can be walked in honestly (a safety room whose record asks for
+# no PPE, or a title that would run past a name, refuses the hall by
+# name). The site id, title and world name are READ from wilds.json; the
+# terrain is AUTHORED there, not a surveyed place, and the lesson says so.
+WILDS_REG = ROOT / 'wilds/registry/wilds.json'
+assert WILDS_REG.exists(), 'wilds/registry/wilds.json is missing: the site walks read their sites from it'
+WILDS = json.load(open(WILDS_REG))
+SITE_ARC = {
+  'arc': 'site',
+  'strand': 'safety',
+  'why': 'Out in the {world} world this hall works at a site drawn on AUTHORED terrain, and before walking out to it you should know what the work asks of you and who may stop it.',
+  'limits': 'Finishing this is not site training, not an induction and not a permit to enter any real site; the site is drawn on AUTHORED terrain, not a surveyed place, the walk is through a schematic room and two scripted answers, and nobody has signed anything on the strength of it.',
+  'steps': [
+   ('walk', 'safety', 'Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.'),
+   ('placard?', 'safety', 'Take on what the sign asks here, since out on the terrain nobody will hang one for you.'),
+   ('advisor', 'safety-steward', 'hazard', 'Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.'),
+   ('advisor', 'safety-steward', 'refuse', 'Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.'),
+  ],
+}
+
+
+def _lc_first(t):
+    return t[0].lower() + t[1:] if len(t) > 1 and t[1].islower() else t
+
+
+def compose_site(hall, world, site):
+    """The site arc for one hall at one WILDS site, or the named reason."""
+    conds = req(req(FINISHES['halls'], hall, hall), 'conditions', hall)
+    steps = []
+    for raw in SITE_ARC['steps']:
+        if raw[0] == 'placard?':
+            cond = req(conds, raw[1], f'{hall}.{raw[1]}')
+            if req(cond, 'ppe', f'{hall}.{raw[1]}'):
+                steps.append(('placard',) + raw[1:])
+            elif req(cond, 'hazards', f'{hall}.{raw[1]}'):
+                return None, f'the {raw[1]} room is a hazard room whose record asks for no PPE, so there is no placard to read'
+        else:
+            steps.append(raw)
+    title = f'{HALL_NAME[hall]}: before the {_lc_first(req(site, "title", site["id"]))}'
+    why = SITE_ARC['why'].format(world=req(world, 'name', world['id']))
+    arc_names = _arc_names(hall, SITE_ARC)
+    clash = [n for n in arc_names if n in title or n in why]
+    if clash:
+        return None, f'the framing would repeat {clash[0]!r}, a name the steps read'
+    if len(title) > 70:
+        return None, 'the hall and site names make the title longer than a name'
+    return {'id': f'{site["id"]}-site-walk', 'hall': hall, 'strand': SITE_ARC['strand'],
+            'tier': COMPOSED_TIER, 'title': title, 'why': why, 'limits': SITE_ARC['limits'],
+            'steps': steps, 'authoring': 'rule', 'arc': 'site',
+            'site': {'world': world['id'], 'world_name': world['name'], 'id': site['id'],
+                     'title': site['title'], 'provenance': 'AUTHORED'}}, None
+
+
+SITE_WALKS = []
+SITE_REFUSED = {}
+_site_halls_used = set()
+for _w in req(WILDS, 'worlds', 'wilds.json'):
+    for _site in req(_w, 'sites', _w['id']):
+        _why_not = []
+        _names = [req(h, 'id', _site['id']) for h in req(_site, 'halls', _site['id'])]
+        _fresh = [h for h in _names if h not in _site_halls_used]
+        for _hall in _fresh:
+            assert _hall in HALL_NAME, f'site {_site["id"]}: {_hall} is not a hall in the roster'
+            _lesson, _reason = compose_site(_hall, _w, _site)
+            if _lesson:
+                SITE_WALKS.append(_lesson)
+                _site_halls_used.add(_hall)
+                break
+            _why_not.append(f'{_hall}: {_reason}')
+        else:
+            if not _fresh:
+                _why_not.append('every hall this site names already has a site walk at an earlier site')
+            SITE_REFUSED[_site['id']] = _why_not
+LESSONS_SRC = LESSONS_SRC + SITE_WALKS
+
 # ------------------------------------------------------------- the ladder ---
 # A prerequisite edge names a reason from a closed set, and each reason is
 # CHECKED against the registries below rather than taken on trust.
@@ -1227,7 +1311,7 @@ MAX_HALL_SHARE = 0.10
 # ------------------------------------------------------------ the honesty ---
 HONESTY = {
     # {hand}, {rule} and {arcs} are filled in below from the counts the build computes
-    'status': 'AUTHORED: every sentence in this pack was written here, by us. {hand} lessons were written by hand, one hall at a time, step by step; the other {rule} are composed by one rule in lessons/build.py from {arcs} arcs written here, one per room an advisor stands in, so their step order, title and why are marked DERIVED and carry authoring "rule" - the rule reads the hall name and focus from the roster and adds no fact of its own. Nothing is fetched and no model runs behind any of it. The word AI-SYNTHESIZED belongs to orbis/ and describes generated video; it would be a false label for a hand-written walk through a building.',
+    'status': 'AUTHORED: every sentence in this pack was written here, by us. {hand} lessons were written by hand, one hall at a time, step by step; the other {rule} are composed by one rule in lessons/build.py from {arcs} arcs written here - {first} first walks, one per room an advisor stands in, and {site} walks before a WILDS site from one more arc, whose site title and world are read from wilds/registry/wilds.json, where the terrain is AUTHORED, not a surveyed place - so their step order, title and why are marked DERIVED and carry authoring "rule" - the rule reads the hall name and focus from the roster and adds no fact of its own. Nothing is fetched and no model runs behind any of it. The word AI-SYNTHESIZED belongs to orbis/ and describes generated video; it would be a false label for a hand-written walk through a building.',
     'content': 'unverified general practice. These lessons were written to be argued with, corrected and replaced by journey-level practitioners from the halls they name - the same standing the module pack, the recovered stations and the simulator seats already carry, and for the same reason: nobody who does this work for a living has reviewed a line of it yet.',
     'not_certification': 'no lesson here certifies anybody, qualifies anybody or permits anybody to do anything. Completing every lesson in this registry would leave a learner with exactly the standing they started with. Where a trade has a real ticket, that ticket is issued by a jurisdiction, an employer or a hall, and this bundle is none of those and speaks for none of them.',
     'not_a_gate': 'a lesson unlocks nothing. No step is locked behind another, the ladder is guidance about a sensible order rather than a permission system, and the assessment gate that schools/ declares stays exactly where it is: an unaided verification run that no lesson, station hour or simulator seat substitutes for.',
@@ -1455,6 +1539,8 @@ for src in LESSONS_SRC:
     }
     if src['authoring'] == 'rule':
         LESSONS[lid]['arc'] = src['arc']
+    if src['authoring'] == 'rule' and src['arc'] == 'site':
+        LESSONS[lid]['site'] = src['site']
 
 # -- the prose. One sentence of `why`, a real `limits`, and no note that
 # -- repeats a name the registries already own.
@@ -1574,7 +1660,9 @@ HONESTY['scope'] = HONESTY['scope'].format(
     seat_bound=len(SEAT_BOUND_HALLS), refused=len(COMPOSE_REFUSED))
 HAND_COUNT = sum(1 for L in LESSONS.values() if L['authoring'] == 'hand')
 RULE_COUNT = sum(1 for L in LESSONS.values() if L['authoring'] == 'rule')
-HONESTY['status'] = HONESTY['status'].format(hand=HAND_COUNT, rule=RULE_COUNT, arcs=len(ARCS))
+SITE_COUNT = sum(1 for L in LESSONS.values() if L['authoring'] == 'rule' and L['arc'] == 'site')
+HONESTY['status'] = HONESTY['status'].format(hand=HAND_COUNT, rule=RULE_COUNT, arcs=len(ARCS) + 1,
+                                             first=RULE_COUNT - SITE_COUNT, site=SITE_COUNT)
 # -- every hall is walked, or the rule said by name why it could not be.
 # -- A hall silently missing is the gap this rule exists to close.
 _unwalked = [h['slug'] for h in HALLS
@@ -1582,11 +1670,28 @@ _unwalked = [h['slug'] for h in HALLS
 assert not _unwalked, 'halls with no lesson and no stated reason: ' + ', '.join(_unwalked)
 for _h, _why in COMPOSE_REFUSED.items():
     assert len(_why) == len(ARCS), f'{_h}: refused without trying every arc'
+_site_ids = [x['id'] for w in WILDS['worlds'] for x in w['sites']]
+_site_walked = {L['site']['id'] for L in LESSONS.values() if 'site' in L}
+_unsited = [x for x in _site_ids if x not in _site_walked and x not in SITE_REFUSED]
+assert not _unsited, 'wilds sites with no site walk and no stated reason: ' + ', '.join(_unsited)
 # -- a composed lesson is one per hall, never beside a hand-written one,
 # -- and it stands only on the step kinds a hall with no seat can support
 for L in LESSONS.values():
-    if L['authoring'] == 'rule':
-        assert _per_hall[L['hall']] == 1, f'{L["id"]}: a composed lesson shares its hall'
+    if L['authoring'] == 'rule' and L['arc'] == 'site':
+        _st = L['site']
+        _w = req({w['id']: w for w in WILDS['worlds']}, _st['world'], L['id'])
+        _s = req({x['id']: x for x in _w['sites']}, _st['id'], L['id'])
+        assert L['hall'] in [h['id'] for h in _s['halls']], \
+            f'{L["id"]}: a site walk stands in a hall the site does not name'
+        assert L['id'] == f'{_s["id"]}-site-walk' and _st['title'] == _s['title'], \
+            f'{L["id"]}: a site walk reads its site id and title from wilds.json'
+        assert L['tier'] == COMPOSED_TIER, f'{L["id"]}: a site walk is a first walk'
+        assert {st['kind'] for st in L['steps']} <= {'walk', 'placard', 'advisor'}, \
+            f'{L["id"]}: a site walk uses a step kind the site arc does not'
+        assert 'AUTHORED' in L['why'] and 'not a surveyed place' in L['limits'], \
+            f'{L["id"]}: a site walk stops saying its terrain is AUTHORED'
+    elif L['authoring'] == 'rule':
+        assert _per_hall[L['hall']] - sum(1 for M in LESSONS.values() if M['hall'] == L['hall'] and M['authoring'] == 'rule' and M['arc'] == 'site') == 1, f'{L["id"]}: a composed lesson shares its hall'
         assert L['tier'] == COMPOSED_TIER, f'{L["id"]}: a composed lesson is a first walk'
         assert {st['kind'] for st in L['steps']} <= {'walk', 'placard', 'crib', 'advisor'}, \
             f'{L["id"]}: a composed lesson uses a step kind its hall cannot support'
@@ -1736,6 +1841,8 @@ doc = {
         'lessons_by_rule': RULE_COUNT,
         'arcs': len(ARCS),
         'halls_refused_by_rule': len(COMPOSE_REFUSED),
+        'lessons_at_sites': SITE_COUNT,
+        'sites_refused_by_rule': len(SITE_REFUSED),
         'steps': len(ALL_STEPS),
         'step_kinds': len(STEP_KINDS),
         'steps_by_kind': {k: by_kind[k] for k in sorted(by_kind)},
@@ -1787,7 +1894,9 @@ doc = {
         'max_hall_share': TOP_SHARE,
         'max_hall_share_ceiling': MAX_HALL_SHARE,
         'seat_bound_halls': SEAT_BOUND_HALLS,
-        'composed_halls': sorted(L['hall'] for L in LESSONS.values() if L['authoring'] == 'rule'),
+        'composed_halls': sorted(L['hall'] for L in LESSONS.values() if L['authoring'] == 'rule' and L['arc'] != 'site'),
+        'site_walks': {L['site']['id']: L['id'] for L in LESSONS.values() if 'site' in L},
+        'sites_refused_by_rule': SITE_REFUSED,
         'refused_by_rule': COMPOSE_REFUSED,
         'note': 'breadth over the trades rather than depth in one: the ceiling is declared, computed and failed against, and all 11 strands must be stood in or the build stops.',
     },
@@ -1798,6 +1907,9 @@ doc = {
         'tier': COMPOSED_TIER,
         'arcs': {a['arc']: {'title': a['title'], 'kinds': [r[0].rstrip('?') for r in a['steps']],
                             'placard_if_the_record_asks_for_ppe': True} for a in ARCS},
+        'site_arc': {'title': 'before the <site title>', 'kinds': [r[0].rstrip('?') for r in SITE_ARC['steps']],
+                     'rule': 'one site walk per WILDS site: the first hall the site names that no earlier site walk used and that the arc can be walked in honestly; site id, title and world name READ from wilds/registry/wilds.json, whose terrain is AUTHORED.',
+                     'reads': 'wilds/registry/wilds.json'},
         'provenance': 'steps and limits AUTHORED (written here once per arc); order, title and why DERIVED (chosen by the rule, not by a person for that hall); names READ.',
     },
     'plugs_into': {

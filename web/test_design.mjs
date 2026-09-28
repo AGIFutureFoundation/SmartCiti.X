@@ -95,5 +95,18 @@ check(stat('icons vendored') === ICONS.icons.length, 'stat: icons = the icon man
 check(stat('b-roll clips') === MEDIA.clips.length, 'stat: clips = the b-roll registry');
 check(stat('seconds of footage') === MEDIA.clips.reduce((a, c) => a + c.duration_s, 0), 'stat: seconds = the b-roll registry');
 
+// the site nav reads --ink/--panel/--line/--muted/--mark (web/sitenav.py NAV_CSS). A kit page must hand it the kit
+// palette and keep `.dk a` off the nav links, or the header labels fall to 2.09:1 in dark (HOMEUX, wave 1).
+const bridge = html.match(/body\.dk\{([^}]*)\}/);
+check(!!bridge && ['ink', 'panel', 'line', 'muted', 'mark'].every((v) => new RegExp(`--${v}:var\\(--dk-`).test(bridge[1])),
+  'nav palette: body.dk maps --ink/--panel/--line/--muted/--mark onto kit tokens');
+check(/\.dk \.sitenav a\{color:inherit\}/.test(html),
+  'nav palette: .dk .sitenav a{color:inherit} (0,2,1) outranks .dk a (0,1,1) on nav links');
+check(/:root\{[^}]*color-scheme:dark/.test(html) && /prefers-color-scheme: light\)\{:root:not\(\[data-theme="dark"\]\)\{[^}]*color-scheme:light/.test(html),
+  'nav palette: root color-scheme follows the kit theme (system colours match the plate)');
+// the site nav's skip link (sitenav, wave 2) targets #main; the page's main region must carry that id, exactly once
+check((html.match(/\bid="main"/g) || []).length === 1 && /<main id="main">/.test(html),
+  'skip link: <main id="main"> is the one #main target');
+
 console.log(`${oks} checks passed${fails ? `, ${fails} FAILED` : ''}.`);
 process.exit(fails ? 1 : 0);

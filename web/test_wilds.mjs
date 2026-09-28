@@ -68,6 +68,12 @@ ok('[draw calls] vegetation is instanced: one InstancedMesh per species, refille
   /new THREE\.InstancedMesh\(/.test(main) && /setMatrixAt\(/.test(main) && /for \(const \[k, g\] of Object\.entries\(SPECIES\)\)/.test(main));
 ok('[draw calls] props, caches and species geometry are merged (mergeGeometries)', (main.match(/mergeGeometries\(/g) || []).length >= 3);
 ok('[draw calls] terrain streams in chunks with LOD rings and skirts', /const RING_SEGS = \[/.test(main) && /SKIRT/.test(main) && /function updateChunks/.test(main));
+ok('[view] far horizon: a coarse whole-world mesh shown in walk mode, discarded inside the streamed chunk square, sunk below the chunks',
+  /horizonMesh = worldMesh\(HORIZON_SEGS, matHorizon, HORIZON_SINK_M\)/.test(main) && /horizonMesh\.visible = walkOn/.test(main)
+  && /uBox\.w\) discard;/.test(main) && /function updateChunks\(all\) \{\s*setHorizonBox\(\);/.test(main)
+  && /HORIZON_SINK_M = [1-9]/.test(main));
+ok('[hooks] a camera hook for filming (window.__wilds.cam) that refuses malformed input',
+  /cam\(arg\) \{/.test(main) && /throw new Error\('wilds cam: expected/.test(main));
 ok('[view] distance fog and an overview camera', /new THREE\.Fog\(/.test(main) && /new OrbitControls\(/.test(main) && /function buildOverview/.test(main));
 ok('[view] water where the world has it, and a minimap', /function buildWater/.test(main) && /id="minimap"/.test(html) && /function drawMinimap/.test(main));
 

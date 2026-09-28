@@ -281,8 +281,17 @@
   "seo.desc.languages": "本学院提供的各种语言，以及各自目录所记录的翻译状态。",
   "landing.video.pause": "暂停背景视频",
   "landing.video.play": "播放背景视频",
-  "landing.video.caption": "背景：环绕 Treasure Island 园区的一段环拍，录制自本版本的 3D 页面。",
-  "nav.page.design": "设计套件"
+  "landing.video.caption": "背景：低机位横移掠过 Treasure Island 园区草坪，在本版本的 3D 园区中逐帧拍摄。",
+  "nav.page.design": "设计套件",
+  "nav.skip": "跳到主要内容",
+  "quests.title": "任务与游戏厅",
+  "quests.lede": "遍布整个学院的支线任务、游戏、宝藏和彩蛋，由它们所用的课程解锁。",
+  "quests.h.arcade": "游戏厅",
+  "quests.h.shelf": "徽章架",
+  "quests.h.log": "任务日志",
+  "quests.h.clues": "看板上的线索",
+  "quests.seo_desc": "学院中的任务、小游戏、宝藏和彩蛋。仅供游戏：徽章只保存在本设备上，绝不会进入完成记录。",
+  "nav.search": "搜索"
  },
  "districts": {
   "structural": {

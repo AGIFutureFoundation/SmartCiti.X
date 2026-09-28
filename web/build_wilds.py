@@ -30,6 +30,7 @@ sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
 import sitenav  # noqa: E402
 from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
+from seo import apply_seo  # noqa: E402  head tags only
 
 PAGE = 'web/trade_craft_wilds.html'
 REG = json.loads((ROOT / 'wilds/registry/wilds.json').read_text())
@@ -251,6 +252,7 @@ function wanted() {
 }
 let queue = [];
 function updateChunks(all) {
+  setHorizonBox();
   const want = wanted(), keep = new Set();
   queue = [];
   for (const w of want) {
@@ -273,9 +275,29 @@ function pump(budget) {
 }
 
 /* One low-resolution mesh of the whole world: the overview and the minimap's ground. */
-let overviewMesh = null;
-function buildOverview() {
-  const segs = 128, size = W.extent_m, step = size / segs, n = segs + 1;
+let overviewMesh = null, horizonMesh = null;
+/* The far horizon: a coarse whole-world mesh drawn in walk mode everywhere
+   OUTSIDE the square of streamed chunks (the fragment shader discards inside
+   it, so the fine chunks alone carry the near ground), sunk HORIZON_SINK_M
+   so it can only ever sit under them at the seam. Walk-mode fog then reaches
+   far enough that distant ridges read beyond the chunk radius. */
+const HORIZON_SEGS = 64, HORIZON_SINK_M = 2;
+const horizonBox = { value: new THREE.Vector4(0, 0, 0, 0) };
+const matHorizon = new THREE.MeshLambertMaterial({ vertexColors: true });
+matHorizon.onBeforeCompile = (sh) => {
+  sh.uniforms.uBox = horizonBox;
+  sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying vec2 vWxz;')
+    .replace('#include <begin_vertex>', '#include <begin_vertex>\nvWxz = (modelMatrix * vec4(transformed, 1.0)).xz;');
+  sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying vec2 vWxz;\nuniform vec4 uBox;')
+    .replace('void main() {', 'void main() {\n  if (vWxz.x > uBox.x && vWxz.x < uBox.z && vWxz.y > uBox.y && vWxz.y < uBox.w) discard;');
+};
+function setHorizonBox() {
+  const ci = Math.floor(eye.x / W.chunk_m), cj = Math.floor(eye.z / W.chunk_m), lim = nChunks() / 2;
+  horizonBox.value.set(Math.max(ci - RADIUS, -lim) * W.chunk_m, Math.max(cj - RADIUS, -lim) * W.chunk_m,
+    (Math.min(ci + RADIUS, lim - 1) + 1) * W.chunk_m, (Math.min(cj + RADIUS, lim - 1) + 1) * W.chunk_m);
+}
+function worldMesh(segs, mat, sink) {
+  const size = W.extent_m, step = size / segs, n = segs + 1;
   const pos = new Float32Array(n * n * 3), clr = new Float32Array(n * n * 3);
   for (let a = 0; a < n; a++) for (let c = 0; c < n; c++) {
     const x = -size / 2 + c * step, z = -size / 2 + a * step, h = T.height(x, z), v = (a * n + c) * 3;
@@ -288,8 +310,13 @@ function buildOverview() {
   const nor = g.getAttribute('normal');
   for (let k = 0; k < n * n; k++) { groundColor(pos[k * 3], pos[k * 3 + 2], pos[k * 3 + 1], nor.getY(k), col); clr[k * 3] = col.r; clr[k * 3 + 1] = col.g; clr[k * 3 + 2] = col.b; }
   g.setAttribute('color', new THREE.BufferAttribute(clr, 3));
-  overviewMesh = new THREE.Mesh(g, matTerrain); overviewMesh.visible = false;
-  worldGroup.add(overviewMesh);
+  const m = new THREE.Mesh(g, mat); m.visible = false; m.position.y = -sink;
+  worldGroup.add(m);
+  return m;
+}
+function buildOverview() {
+  overviewMesh = worldMesh(128, matTerrain, 0);
+  horizonMesh = worldMesh(HORIZON_SEGS, matHorizon, HORIZON_SINK_M);
 }
 
 /* ------------------------------------------------------------ vegetation -- */
@@ -419,6 +446,9 @@ const KIT = {
   pipeline: () => [box(60, 1.1, 1.1, 0, 0.8, 0, 0x3E5C3A), box(4, 2.6, 2.4, 6, 1.3, 5, 0xE0B23A), box(3, 0.05, 8, -6, 0.03, -4, 0x6F5A45)],
   vault: () => [box(4, 0.5, 4, 0, 0.25, 0, CONC), cyl(0.05, 0.05, 2.6, 0, 1.3, 0, ORANGE, 4), cyl(1.2, 1.2, 0.1, 0, 2.6, 0, ORANGE, 3), box(6, 2.6, 2.4, 5, 1.3, 5, 0xC7473A)],
   solar: () => [0, 1, 2, 3, 4].flatMap((r) => [box(36, 0.12, 3, 0, 1.6, r * 7 - 14, 0x24344A)]).concat([box(4, 2.4, 3, 22, 1.2, 0, 0xE9ECEE)]),
+  pumpstation: () => [box(14, 7, 10, 0, 3.5, 0, CONC), box(14.4, 0.6, 10.4, 0, 7.3, 0, DARK), cyl(0.8, 0.8, 24, -3, 1, 16, STEEL, 8), cyl(0.8, 0.8, 24, 3, 1, 16, STEEL, 8), box(3, 2.4, 2.4, 10, 1.2, -4, ORANGE)],
+  berth: () => [box(40, 2, 12, 0, 1, 0, CONC), cyl(0.5, 0.5, 3, -16, 2.5, 5, DARK, 6), cyl(0.5, 0.5, 3, 16, 2.5, 5, DARK, 6), box(3, 18, 3, 0, 11, -2, ORANGE), box(2, 2, 28, 0, 20, 8, ORANGE), box(30, 3, 10, 0, 1, 14, 0x4A5A64)],
+  boom: () => [0, 1, 2, 3, 4, 5].map((k) => cyl(0.45, 0.45, 5, -14 + k * 5.4, 0.5, 3 + (k % 2), 0xE0B23A, 8)).concat([box(6, 2.6, 2.6, 6, 1.3, -6, 0xE9ECEE), box(4, 1.6, 3, -6, 0.8, -6, 0xC7473A)]),
   quarry: () => [box(30, 8, 12, 0, 4, -14, 0xA0765A), box(24, 4, 10, 0, 2, -4, 0xA88064), box(3, 3, 5, 8, 1.5, 6, 0xE0B23A)],
 };
 function buildProps() {
@@ -634,7 +664,7 @@ function teleport(x, z, yaw) {
 /* --------------------------------------------------------------- modes -- */
 function fogFor(m) {
   scene.fog = m === 'overview' ? new THREE.Fog(W.fog, W.extent_m * 0.9, W.extent_m * 2.2)
-    : new THREE.Fog(W.fog, 250, (RADIUS + 0.4) * W.chunk_m);
+    : new THREE.Fog(W.fog, 250, W.extent_m * 0.7);
 }
 function setMode(m) {
   mode = m;
@@ -645,6 +675,7 @@ function setMode(m) {
   const walkOn = m === 'walk';
   for (const ch of chunks.values()) ch.mesh.visible = walkOn;
   overviewMesh.visible = !walkOn;
+  horizonMesh.visible = walkOn;
   for (const k in veg) veg[k].visible = walkOn;
   cacheMesh.visible = walkOn;
   orbit.enabled = !walkOn;
@@ -738,6 +769,7 @@ window.__wilds = {
     chunks: mode === 'walk' ? chunks.size : 1, pending: queue.length,
     instances: Object.fromEntries(Object.entries(veg).map(([k, m]) => [k, m.visible ? m.count : 0])),
     instanced: Object.values(veg).every((m) => m.isInstancedMesh), frameMs,
+    horizon: horizonMesh.visible,
   }),
   frameTimes(n) {
     const gl = renderer.getContext(), out = [];
@@ -750,6 +782,22 @@ window.__wilds = {
   caches: () => cachePos.map((c) => ({ ...c })),
   eye: () => ({ ...eye }),
   teleport: (x, z, yaw) => teleport(x, z, yaw),
+  /* Camera hook for filming flyovers (same shape as the 3D page's
+     __tc3dDo('cam', ...)): "eyeX,eyeY,eyeZ|atX,atY,atZ" places a free
+     camera in overview mode (the whole world is drawn, orbit paused while
+     it is held); cam(null) hands the view back to the orbit. Ground-level
+     shots use view('trail'|'dense'|'summit') or teleport(). */
+  cam(arg) {
+    if (arg === null) { orbit.enabled = mode === 'overview'; return null; }
+    const parts = String(arg).split('|').map((v) => v.split(',').map(Number));
+    const eyeP = parts[0], atP = parts[1];
+    if (eyeP.length !== 3 || eyeP.some((v) => !Number.isFinite(v))) throw new Error('wilds cam: expected "x,y,z|x,y,z", got ' + arg);
+    if (mode !== 'overview') setMode('overview');
+    orbit.enabled = false;
+    camera.position.set(eyeP[0], eyeP[1], eyeP[2]);
+    if (atP !== undefined) { orbit.target.set(atP[0], atP[1], atP[2]); camera.lookAt(atP[0], atP[1], atP[2]); }
+    return { x: camera.position.x, y: camera.position.y, z: camera.position.z };
+  },
 };
 resize();
 const start = (location.hash || '').slice(1);
@@ -763,7 +811,7 @@ page = f'''<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C1113'/%3E%3Cpath d='M4 25 L12 11 L17 18 L21 13 L28 25 Z' fill='none' stroke='%23E8A33D' stroke-width='2.4' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C1113'/%3E%3Cpath d='M7 21 L16 7 L25 21 Z' fill='none' stroke='%23E8A33D' stroke-width='2.6' stroke-linejoin='round'/%3E%3Cpath d='M11 21 h10' stroke='%2341C4D4' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
 <title>SmartCiti.X : Trade Craft Academy — the wilds</title>
 <style>
 :root{{
@@ -870,5 +918,9 @@ code{{font:13px "IBM Plex Mono",monospace;color:var(--steel)}}
 </html>
 '''
 
+# search and link-preview head tags (web/seo.py): head region only
+page = apply_seo(page, PAGE, 'The wilds \u2014 SmartCiti.X : Trade Craft Academy',
+                 f'Walk {c["worlds"]} authored exterior worlds, {c["area_km2"]} km\u00b2 in all, with trade work sites '
+                 'tied to union halls and lessons. Authored landscapes, not surveys.', 'page')
 out = HERE / 'trade_craft_wilds.html'
 emit(out, page, f'{c["worlds"]} worlds | {c["sites"]} sites | quests {QUEST_STATE} | nav wired')

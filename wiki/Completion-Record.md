@@ -29,7 +29,7 @@ the learner's device.
 ## What the verifier checks
 
 `node completion/verify.mjs <record.json>` applies 15 rules: `record.fields` · `digest` · `identity.signature` · `ids.lesson` · `ids.hall` · `ids.step` · `ids.sim` · `ids.scenario` · `ids.station` · `ids.district` · `step.recording-evidence` · `step.episode-evidence` · `lesson.complete-all-steps` · `sim.threshold` · `ladder.prerequisite`.
-Of the registry's 116 lessons, 93 can be
+Of the registry's 139 lessons, 116 can be
 completed from recorded evidence and 23 cannot (a
 crew step no single device can record).
 
@@ -42,16 +42,16 @@ $ node completion/verify.mjs completion/fixture/good.json
 ok record.fields: checked 6, failing 0
 ok digest: checked 2, failing 0
 ok identity.signature: checked 1, failing 0
-ok ids.lesson: checked 116, failing 0
-ok ids.hall: checked 116, failing 0
-ok ids.step: checked 952, failing 0
+ok ids.lesson: checked 139, failing 0
+ok ids.hall: checked 139, failing 0
+ok ids.step: checked 1136, failing 0
 ok ids.sim: checked 4, failing 0
 ok ids.scenario: checked 2, failing 0
 ok ids.station: checked 1, failing 0
 ok ids.district: checked 0, failing 0
-ok step.recording-evidence: checked 255, failing 0
+ok step.recording-evidence: checked 301, failing 0
 ok step.episode-evidence: checked 26, failing 0
-ok lesson.complete-all-steps: checked 116, failing 0
+ok lesson.complete-all-steps: checked 139, failing 0
 ok sim.threshold: checked 2, failing 0
 ok ladder.prerequisite: checked 40, failing 0
 note sim.threshold: rigging-signals has no scalar threshold in sims.json; passed=true is taken from the record and not re-derived

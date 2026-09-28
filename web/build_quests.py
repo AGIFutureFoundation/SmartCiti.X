@@ -31,6 +31,18 @@ ROOT = HERE.parent
 sys.path.insert(0, str(HERE))
 from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 from questkit import QUEST_CSS, quest_js, egg_attr, quest_attr, page_hooks, BY_ID, HONESTY, LESSONS  # noqa: E402
+from seo import apply_seo  # noqa: E402  head tags only
+
+# Page chrome comes from the catalog (quests.* keys, all 8 locales); strict like
+# sitenav.labels(): a missing or empty key stops the build.
+_CAT = json.loads((ROOT / 'i18n/locales/en.json').read_text(encoding='utf-8'))['strings']
+
+
+def T(k):
+    if k not in _CAT or not isinstance(_CAT[k], str) or not _CAT[k].strip():
+        raise KeyError(f'i18n/locales/en.json has no quests chrome key {k!r}')
+    return html.escape(_CAT[k])
+
 
 PATH = 'web/trade_craft_quests.html'
 OUT = ROOT / PATH
@@ -321,7 +333,7 @@ page = f'''<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Quests and arcade — Trade Craft Academy</title>
+<title>{T('quests.title')} — Trade Craft Academy</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C1113'/%3E%3Cpath d='M7 21 L16 7 L25 21 Z' fill='none' stroke='%23E8A33D' stroke-width='2.6' stroke-linejoin='round'/%3E%3Cpath d='M11 21 h10' stroke='%2341C4D4' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
 <style>
 :root{{--plate:#12181B;--panel:#182023;--sunk:#0C1113;--ink:#E8EDEC;--muted:#93A3A6;--rule:#28353A;--mark:#E8A33D;
@@ -368,10 +380,10 @@ footer.page{{margin-top:30px;border-top:1px solid var(--rule);padding:14px 0 24p
 </style>
 </head>
 <body>
-{NAV}<div class="wrap">
+{NAV}<div class="wrap" id="main">
 <header class="page">
-  <h1>Quests and arcade</h1>
-  <p class="muted">Side quests, games, treasures and easter eggs across the whole academy, gated by the lessons they use.</p>
+  <h1>{T('quests.title')}</h1>
+  <p class="muted">{T('quests.lede')}</p>
 </header>
 
 <section class="lead" id="honesty">
@@ -380,7 +392,7 @@ footer.page{{margin-top:30px;border-top:1px solid var(--rule);padding:14px 0 24p
      <span class="muted">Start the main chain here.</span></p>
 </section>
 
-<h2 id="arcade-h">Arcade</h2>
+<h2 id="arcade-h">{T('quests.h.arcade')}</h2>
 <p class="muted">Each game is locked until the lessons it needs count as done on this device. A lesson counts when every
 step this device can record is done (walk and placard steps are recorded by nothing, so they are not waited on). The
 round clock and the pick sizes are AUTHORED game rules; the signals, keys, chart and rubric are the simulator seats' own.</p>
@@ -391,13 +403,13 @@ round clock and the pick sizes are AUTHORED game rules; the signals, keys, chart
 <div class="arcade">{ARCADE}
 </div>
 
-<h2>Badge shelf</h2>
+<h2>{T('quests.h.shelf')}</h2>
 <ul id="shelf"></ul>
 
-<h2>Quest log</h2>
+<h2>{T('quests.h.log')}</h2>
 <div data-tc-questlog></div>
 
-<h2>Clues on the board</h2>
+<h2>{T('quests.h.clues')}</h2>
 <details class="clue" id="compliance-placard"><summary {egg_attr("treasure-compliance-placard")} tabindex="0">A placard by the shelf</summary>
   <p>{E(COMP_WHAT)}</p>
   <p class="muted">Ledger classes: {E(", ".join(COMP_CLASSES))}. Read from <code>compliance/registry/compliance.json</code>.</p></details>
@@ -424,6 +436,9 @@ round clock and the pick sizes are AUTHORED game rules; the signals, keys, chart
 {quest_js("all", PATH)}</body>
 </html>
 '''
+
+page = apply_seo(page, PATH, _CAT['quests.title'] + ' \u2014 SmartCiti.X : Trade Craft Academy',
+                 _CAT['quests.seo_desc'], 'page')
 
 if '--check' in sys.argv:
     if not OUT.exists() or OUT.read_text(encoding='utf-8') != page:

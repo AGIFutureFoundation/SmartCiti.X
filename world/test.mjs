@@ -21,11 +21,14 @@ const campuses = JSON.parse(readFileSync(
   new URL('../unions/registry/campuses.json', import.meta.url))).campuses;
 
 /* ------------------------------------------------ nothing is downloaded --- */
+// the page's two link-preview tags (og:image, twitter:image, from web/seo.py) name a screenshot
+// another site shows beside a shared link; the page never loads them, so only those two are set aside
+const scene = page.replace(/<meta (?:property="og:image"|name="twitter:image") content="[^"]*">/g, '');
 ok('the texture claim is absolute, and the page keeps it: no loader, no image file',
   /no texture, photograph or artwork file exists/.test(reg.honesty.textures)
   && /generates the image and its\s+normal map/.test(reg.honesty.textures)
   && ['TextureLoader', 'CubeTextureLoader', 'RGBELoader', '.jpg', '.png',
-      '.hdr', '.exr', '.webp'].every((b) => !page.includes(b)));
+      '.hdr', '.exr', '.webp'].every((b) => !scene.includes(b)));
 ok('every ground surface is a recipe with a base, a grain, octaves and a relief',
   Object.values(reg.ground).every((g) => /^#[0-9a-f]{6}$/i.test(g.base)
     && /^\d+,\d+,\d+$/.test(g.grain) && g.octaves >= 1 && g.octaves <= 6

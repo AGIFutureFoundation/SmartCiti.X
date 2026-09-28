@@ -428,6 +428,8 @@ GRID = ''.join(
     for i, b in enumerate(bands))
 
 NAV = nav_html('web/trade_craft_map.html', nav_labels('en'))
+from questkit import QUEST_CSS, quest_js, page_hooks  # noqa: E402  quests: egg hooks only (body tail)
+QUEST_TAIL = '<style>' + QUEST_CSS + '</style>\n' + page_hooks('web/trade_craft_map.html') + quest_js('page:web/trade_craft_map.html')
 
 PAGE = f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Trade Craft {S('map.page_title')}</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C1113'/%3E%3Cpath d='M7 21 L16 7 L25 21 Z' fill='none' stroke='%23E8A33D' stroke-width='2.6' stroke-linejoin='round'/%3E%3Cpath d='M11 21 h10' stroke='%2341C4D4' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
@@ -986,7 +988,7 @@ dlist.addEventListener('click', (e) => {{
 
 renderDetail(selected); apply();
 </script>
-'''
+''' + QUEST_TAIL
 
 out = ROOT / 'trade_craft_map.html'
 PAGE = apply_seo(PAGE, 'web/trade_craft_map.html', 'Network plan \u2014 SmartCiti.X : Trade Craft Academy',

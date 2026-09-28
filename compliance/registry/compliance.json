@@ -7,14 +7,14 @@
  "stamps": {
   "finishes": "b8c0693f81600d3c",
   "sims": "987a9d4812b4c73b",
-  "lessons": "91141a08c6f69b25",
+  "lessons": "e905659b0a718ab6",
   "halls": "3807e54afe6abfe6",
-  "completion": "a245569086421e20",
+  "completion": "a95de65feb282e76",
   "manifest": "169fa4e75499d00e",
-  "build_3d": "31d81aa3a09d1129",
+  "build_3d": "e83231d898e252fe",
   "hall_signoff": "e67ba161ef70d996",
   "roadmap": "edb0a399213e9e56",
-  "completion_fixture": "dda7bfd3b70db30c",
+  "completion_fixture": "55c31b9c5b7ce667",
   "self": "8a4ceed33db622e1"
  },
  "stamped_paths": {
@@ -58,19 +58,19 @@
  },
  "placard_rule": {
   "hangs_when": {
-   "line": 10950,
+   "line": 10956,
    "read": "if (rc.ppe.length) { const plac = label(rc.ppe.join(' · '), ..., { kind: 'placard', items: rc.ppe })"
   },
   "rc_is": {
-   "line": 10904,
+   "line": 10910,
    "read": "const rc = condOf(h.slug, r.strand);"
   },
   "condOf": {
-   "line": 14600,
+   "line": 14606,
    "read": "return D.condOver[hallSlug]?.[strand], else D.baseCond[strand]"
   },
   "condOver": {
-   "line": 574,
+   "line": 575,
    "read": "'condOver': {sl: {st: c for st, c in h['conditions'].items() if c['hazards']} for sl, h in finishes_reg['halls'].items() if any(...)}"
   },
   "rule": "a room gets a door placard iff its merged condition record (hall conditions[strand] when that strand carries a hazard, else base_conditions[strand]) lists at least one PPE item; the placard shows that list"
@@ -2160,6 +2160,56 @@
        "ledger_class": "evidenceable"
       }
      ]
+    },
+    {
+     "lesson": "f-trail-bridge-site-walk",
+     "title": "Carpenters: before the trail bridge crew",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      }
+     ]
     }
    ],
    "lesson_covers_every_hazard_room": false
@@ -2560,6 +2610,60 @@
        "n": 5,
        "kind": "sim",
        "where": "yard",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    },
+    {
+     "lesson": "m-snow-road-site-walk",
+     "title": "Operating Engineers: before the snow-road grading on the pass",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "machines",
+      "materials"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "machines",
+      "materials"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
        "ledger_class": "evidenceable"
       }
      ]
@@ -8430,6 +8534,56 @@
        "ledger_class": "evidenceable"
       }
      ]
+    },
+    {
+     "lesson": "d-wind-staging-site-walk",
+     "title": "Crane Operators: before the wind turbine staging yard",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [
+      "materials"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "materials"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      }
+     ]
     }
    ],
    "lesson_covers_every_hazard_room": false
@@ -8862,6 +9016,56 @@
        "n": 5,
        "kind": "advisor",
        "where": "yard",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    },
+    {
+     "lesson": "f-timber-frame-site-walk",
+     "title": "Riggers & Signalpersons: before the timber-frame shelter raising",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [
+      "materials"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "materials"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
        "ledger_class": "evidenceable"
       }
      ]
@@ -10320,6 +10524,60 @@
        "ledger_class": "evidenceable"
       }
      ]
+    },
+    {
+     "lesson": "f-fuel-break-site-walk",
+     "title": "Grounds & Landscape: before the wildfire fuel break",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "machines",
+      "materials"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "machines",
+      "materials"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      }
+     ]
     }
    ],
    "lesson_covers_every_hazard_room": false
@@ -10709,6 +10967,58 @@
        "ledger_class": "evidenceable"
       }
      ]
+    },
+    {
+     "lesson": "f-line-clearance-site-walk",
+     "title": "Utility Line Workers: before the utility line clearance",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "troubleshooting"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "troubleshooting"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      }
+     ]
     }
    ],
    "lesson_covers_every_hazard_room": false
@@ -11046,6 +11356,52 @@
        "n": 3,
        "kind": "advisor",
        "where": "documentation",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    },
+    {
+     "lesson": "c-mesa-solar-site-walk",
+     "title": "Solar Installers: before the mesa-top solar array",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
        "ledger_class": "evidenceable"
       }
      ]
@@ -11401,6 +11757,59 @@
     {
      "lesson": "wind-safety-first-walk",
      "title": "Wind Turbine Technicians: find out what the room is held to",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [
+      "safety",
+      "procedure",
+      "machines"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "machines"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    },
+    {
+     "lesson": "m-wind-ridge-site-walk",
+     "title": "Wind Turbine Technicians: before the ridge-top turbine pad",
      "steps": 4,
      "rooms_walked": [
       "safety"
@@ -12620,6 +13029,52 @@
        "n": 5,
        "kind": "crib",
        "where": "tools",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    },
+    {
+     "lesson": "m-survey-control-site-walk",
+     "title": "Construction Surveyors: before the survey control on the high ground",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
        "ledger_class": "evidenceable"
       }
      ]
@@ -14179,6 +14634,56 @@
        "ledger_class": "evidenceable"
       }
      ]
+    },
+    {
+     "lesson": "c-pipeline-crossing-site-walk",
+     "title": "Pipeline Trades: before the pipeline river crossing",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      }
+     ]
     }
    ],
    "lesson_covers_every_hazard_room": false
@@ -15727,6 +16232,56 @@
        "ledger_class": "evidenceable"
       }
      ]
+    },
+    {
+     "lesson": "d-outfall-dive-site-walk",
+     "title": "Commercial Divers: before the outfall line and dive station",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      }
+     ]
     }
    ],
    "lesson_covers_every_hazard_room": false
@@ -16108,6 +16663,58 @@
        "ledger_class": "evidenceable"
       }
      ]
+    },
+    {
+     "lesson": "c-quarry-bench-site-walk",
+     "title": "Drillers & Blasters: before the quarry bench and blast pattern",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "materials"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "materials"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      }
+     ]
     }
    ],
    "lesson_covers_every_hazard_room": false
@@ -16475,6 +17082,60 @@
        "n": 3,
        "kind": "advisor",
        "where": "door",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    },
+    {
+     "lesson": "m-adit-portal-site-walk",
+     "title": "Underground Miners: before the adit portal and ground support",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "machines",
+      "materials"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "machines",
+      "materials"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
        "ledger_class": "evidenceable"
       }
      ]
@@ -20608,6 +21269,58 @@
        "ledger_class": "evidenceable"
       }
      ]
+    },
+    {
+     "lesson": "f-water-intake-site-walk",
+     "title": "Water Distribution Fitters: before the lake intake and main",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "machines"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "machines"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      }
+     ]
     }
    ],
    "lesson_covers_every_hazard_room": false
@@ -20987,6 +21700,58 @@
        "n": 4,
        "kind": "crib",
        "where": "tools",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    },
+    {
+     "lesson": "d-levee-pump-site-walk",
+     "title": "Wastewater Operators: before the levee pump station",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "machines"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "machines"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
        "ledger_class": "evidenceable"
       }
      ]
@@ -21757,6 +22522,58 @@
        "n": 4,
        "kind": "advisor",
        "where": "inspection",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    },
+    {
+     "lesson": "c-river-intake-site-walk",
+     "title": "Hydro Plant Trades: before the run-of-river intake and penstock",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "machines"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "machines"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
        "ledger_class": "evidenceable"
       }
      ]
@@ -23595,6 +24412,58 @@
        "n": 4,
        "kind": "advisor",
        "where": "layout",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    },
+    {
+     "lesson": "m-hv-corridor-site-walk",
+     "title": "Transmission Linemen: before the high-voltage line corridor",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "troubleshooting"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "troubleshooting"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
        "ledger_class": "evidenceable"
       }
      ]
@@ -28622,6 +29491,60 @@
        "ledger_class": "evidenceable"
       }
      ]
+    },
+    {
+     "lesson": "d-pile-trestle-site-walk",
+     "title": "Piling Crews: before the timber pile trestle over a bayou",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "machines",
+      "materials"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "machines",
+      "materials"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      }
+     ]
     }
    ],
    "lesson_covers_every_hazard_room": false
@@ -30045,6 +30968,52 @@
        "n": 5,
        "kind": "advisor",
        "where": "coordination",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    },
+    {
+     "lesson": "f-fire-lookout-site-walk",
+     "title": "Steel Erectors: before the fire lookout tower",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [],
+     "placard_step_in_every_hazard_room": true,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
        "ledger_class": "evidenceable"
       }
      ]
@@ -37929,6 +38898,56 @@
        "ledger_class": "evidenceable"
       }
      ]
+    },
+    {
+     "lesson": "d-terminal-berth-site-walk",
+     "title": "Marine Terminal Operators: before the river terminal berth",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      }
+     ]
     }
    ],
    "lesson_covers_every_hazard_room": false
@@ -40118,6 +41137,56 @@
        "ledger_class": "evidenceable"
       }
      ]
+    },
+    {
+     "lesson": "d-spill-boom-site-walk",
+     "title": "Spill Response Technicians: before the spill boom staging",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      }
+     ]
     }
    ],
    "lesson_covers_every_hazard_room": false
@@ -40500,6 +41569,58 @@
        "ledger_class": "evidenceable"
       }
      ]
+    },
+    {
+     "lesson": "c-valve-vault-site-walk",
+     "title": "Confined Space Rescue: before the valve vault rescue drill",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [
+      "procedure",
+      "machines"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure",
+      "machines"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      }
+     ]
     }
    ],
    "lesson_covers_every_hazard_room": false
@@ -40879,6 +42000,57 @@
        "n": 4,
        "kind": "advisor",
        "where": "inspection",
+       "ledger_class": "evidenceable"
+      }
+     ]
+    },
+    {
+     "lesson": "m-rockfall-netting-site-walk",
+     "title": "High-Angle Rescue: before the rockfall netting on a road cut",
+     "steps": 4,
+     "rooms_walked": [
+      "safety"
+     ],
+     "placard_steps_in": [
+      "safety"
+     ],
+     "hazard_rooms_of_hall": [
+      "safety",
+      "procedure"
+     ],
+     "placard_step_in_every_hazard_room": false,
+     "hazard_rooms_walked_without_placard_step": [],
+     "hazard_rooms_not_walked": [
+      "procedure"
+     ],
+     "steps_by_ledger_class": {
+      "evidenceable": 2,
+      "self-reported": 2,
+      "not-recordable": 0
+     },
+     "step_kinds": [
+      {
+       "n": 1,
+       "kind": "walk",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 2,
+       "kind": "placard",
+       "where": "safety",
+       "ledger_class": "self-reported"
+      },
+      {
+       "n": 3,
+       "kind": "advisor",
+       "where": "safety",
+       "ledger_class": "evidenceable"
+      },
+      {
+       "n": 4,
+       "kind": "advisor",
+       "where": "safety",
        "ledger_class": "evidenceable"
       }
      ]
@@ -41989,7 +43161,7 @@
   "halls_with_a_lesson": 111,
   "halls_with_hazards_and_a_lesson": 63,
   "halls_with_a_lesson_covering_every_hazard_room": 5,
-  "lessons": 116,
+  "lessons": 139,
   "lessons_with_a_hazard_room_walked_without_placard_step": 0,
   "halls_with_a_seat": 45,
   "seat_bindings": 79,
@@ -41998,11 +43170,11 @@
   "seats_with_an_informational_axis": 11,
   "seats_with_scalar_threshold": 0,
   "items_by_ledger_class": {
-   "evidenceable": 345,
-   "self-reported": 187,
+   "evidenceable": 391,
+   "self-reported": 233,
    "not-recordable": 1355
   },
-  "items": 1887
+  "items": 1979
  },
  "verifier": {
   "run": "node compliance/verify.mjs <record.json>",

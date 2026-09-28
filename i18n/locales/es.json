@@ -281,8 +281,17 @@
   "seo.desc.languages": "Los idiomas en que se ofrece la academia, cada uno con el estado de traducción que registra su propio catálogo.",
   "landing.video.pause": "Pausar el vídeo de fondo",
   "landing.video.play": "Reproducir el vídeo de fondo",
-  "landing.video.caption": "Fondo: una órbita sobre el campus de Treasure Island, grabada desde la página 3D de esta compilación.",
-  "nav.page.design": "Kit de diseño"
+  "landing.video.caption": "Fondo: un travelling bajo sobre la explanada del campus de Treasure Island, filmado fotograma a fotograma en el campus 3D de esta compilación.",
+  "nav.page.design": "Kit de diseño",
+  "nav.skip": "Saltar al contenido principal",
+  "quests.title": "Misiones y arcade",
+  "quests.lede": "Misiones secundarias, juegos, tesoros y huevos de pascua en toda la academia, desbloqueados por las lecciones que usan.",
+  "quests.h.arcade": "Arcade",
+  "quests.h.shelf": "Estante de insignias",
+  "quests.h.log": "Registro de misiones",
+  "quests.h.clues": "Pistas en el tablero",
+  "quests.seo_desc": "Misiones, minijuegos, tesoros y huevos de pascua en la academia. Solo juego: las insignias quedan en este dispositivo y nunca entran en un registro de finalización.",
+  "nav.search": "Buscar"
  },
  "districts": {
   "structural": {

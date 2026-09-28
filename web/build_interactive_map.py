@@ -250,6 +250,8 @@ DATA = json.dumps({
 }, ensure_ascii=False, separators=(',', ':'))
 
 NAV = nav_html('web/trade_craft_interactive.html', nav_labels('en'))
+from questkit import QUEST_CSS, quest_js, page_hooks  # noqa: E402  quests: egg hooks only (body tail)
+QUEST_TAIL = '<style>' + QUEST_CSS + '</style>\n' + page_hooks('web/trade_craft_interactive.html') + quest_js('page:web/trade_craft_interactive.html')
 
 page = '''<!doctype html>
 <html lang="en">
@@ -691,11 +693,12 @@ addEventListener('resize', ladderEdges);
 if (params.get('hall') && D.halls.some(h => h.slug === params.get('hall')))
   openHall(params.get('hall'));
 </script>
-</body>
+__QUEST_TAIL__</body>
 </html>
 '''
 
 page = page.replace('__SITENAV_CSS__', NAV_CSS).replace('__SITENAV__', NAV)
+page = page.replace('__QUEST_TAIL__', QUEST_TAIL)
 page = page.replace('__DATA__', DATA).replace('__PIPELINE_JS__', PIPELINE_JS)
 out = HERE / 'trade_craft_interactive.html'
 n_st = stations_reg['count']

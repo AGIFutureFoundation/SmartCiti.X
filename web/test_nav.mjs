@@ -148,7 +148,8 @@ ok(`each of the ${Object.keys(BUILDERS).length} builders calls nav_html() once, 
 const NAV_RE = /<nav\b[^>]*\bdata-sitenav\b[^>]*>[\s\S]*?<\/nav>/g;
 const LOOP_RE = /<ol\b[^>]*\bdata-sitenav-loop\b[^>]*>[\s\S]*?<\/ol>/;
 const navs = {};
-const perPage = { count: [], place: [], href: [], current: [], text: [], loop: [], digits: [] };
+const perPage = { count: [], place: [], href: [], current: [], text: [], loop: [], digits: [], skip: [], search: [], target: [] };
+const SKIP_RE = /^<nav\b[^>]*>\s*<a class="skip" href="#tc-main">([^<]*)<\/a>/;
 const textOf = (h) => h.replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/&#x27;/g, "'").replace(/&quot;/g, '"').trim();
 const expectedOrder = [decl.front, ...decl.groups.flatMap(([, items]) => items.map(([p]) => p))];
 
@@ -164,7 +165,25 @@ for (const page of OWNED) {
     perPage.place.push(`${page}: the nav is not the first thing in the body`);
   }
   const base = posix.dirname(page);
-  const links = [...nav.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/g)].map((m) => ({
+  // the skip link: the nav's FIRST child, to #tc-main, labelled by the catalog
+  const skip = nav.match(SKIP_RE);
+  // ...and it lands: the one id="tc-main" on the page is the element right after </nav>
+  const after = html.slice(at + nav.length);
+  if (!/^\s*<span id="tc-main" class="sitenav-skip-target" tabindex="-1"><\/span>/.test(after)
+      || (html.match(/id="tc-main"/g) || []).length !== 1) {
+    perPage.target.push(`${page}: the skip link's target is not the one id="tc-main" right after the nav`);
+  }
+  if (!skip || textOf(skip[1]) !== en['nav.skip'] || (nav.match(/class="skip"/g) ?? []).length !== 1) {
+    perPage.skip.push(`${page}: the nav's first child is not the one skip link to #tc-main with the catalog label`);
+  }
+  // the search link: the header bar's last child, to the front door's #search palette, labelled nav.search
+  const searchLinks = [...nav.matchAll(/<a class="ss-go" href="([^"]*)" data-search-go\b[^>]*>([\s\S]*?)<\/a>\s*<\/div>/g)];
+  const wantSearch = page === decl.front ? '#search' : posix.relative(posix.dirname(page) || '.', decl.front) + '#search';
+  if (searchLinks.length !== 1 || (nav.match(/data-search-go/g) ?? []).length !== 1 || searchLinks[0][1] !== wantSearch
+    || textOf(searchLinks[0][2]) !== en['nav.search']) {
+    perPage.search.push(`${page}: ${searchLinks.length} search links closing the header bar (want one, href ${wantSearch}, label nav.search)`);
+  }
+  const links = [...nav.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/g)].filter((m) => !/class="skip"|data-search-go/.test(m[1])).map((m) => ({
     href: (m[1].match(/href="([^"]*)"/) ?? [])[1],
     cur: (m[1].match(/aria-current="([^"]*)"/) ?? [])[1],
     text: textOf(m[2]),
@@ -222,13 +241,21 @@ ok('every nav label, group name and the nav\'s aria-label is the en catalog valu
 ok(`the loop strip appears on exactly the loop pages built here, with that page's step current`,
   perPage.loop.length === 0, perPage.loop);
 ok('no nav shows a digit', perPage.digits.length === 0, perPage.digits);
+ok('every page\'s header bar ends with the one search link to the front door\'s #search palette, labelled nav.search',
+  perPage.search.length === 0, perPage.search);
+ok('every nav opens with a skip link to #tc-main, labelled nav.skip, and NAV_CSS hides it until it has focus',
+  perPage.skip.length === 0 && /\.sitenav a\.skip\{[^}]*clip-path:inset\(50%\)/.test(navSrc.replace(/'\s*\n\s*'/g, ''))
+  && /\.sitenav a\.skip:focus[^{]*\{[^}]*clip-path:none/.test(navSrc.replace(/'\s*\n\s*'/g, '')), perPage.skip);
+ok('every skip link lands: each page carries exactly one id="tc-main", the element right after the nav',
+  perPage.target.length === 0, perPage.target);
 
 // Same nav everywhere: resolve every href to a bundle-root path, drop the
 // current markers and the loop strip, and compare.
 const canon = (page, nav) => nav
   .replace(new RegExp(`\\n?${LOOP_RE.source}`), '')
   .replace(/ aria-current="[^"]*"/g, '')
-  .replace(/href="([^"]*)"/g, (_, h) => `href="${posix.normalize(posix.join(posix.dirname(page), h))}"`);
+  .replace(/href="[^"]*" data-search-go/g, 'data-search-to="front-door" data-search-go')
+  .replace(/href="([^"]*)"/g, (_, h) => (h.startsWith('#') ? `href="${h}"` : `href="${posix.normalize(posix.join(posix.dirname(page), h))}"`));
 const canons = Object.entries(navs).map(([p, nav]) => [p, canon(p, nav)]);
 const ref = canons.length ? canons[0][1] : '';
 const differ = canons.filter(([, c]) => c !== ref).map(([p]) => `${p}: differs from ${canons[0][0]}`);

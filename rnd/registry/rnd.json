@@ -38,8 +38,8 @@
   "budget_views": 6,
   "budget_currencies": 2,
   "budget_agreements": 7,
-  "suites_run": 75,
-  "suite_checks_declared": 3563,
+  "suites_run": 78,
+  "suite_checks_declared": 3721,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
@@ -1519,7 +1519,7 @@
   {
    "id": "lessons.steps",
    "what": "lesson steps, every one resolving to a real id in another registry",
-   "value": 476,
+   "value": 568,
    "unit": "steps",
    "tier": "COMPUTED-FROM-REGISTRY",
    "file": "lessons/registry/lessons.json",
@@ -1971,7 +1971,8 @@
    "doc_renderers": [],
    "builders": [],
    "suites": [
-    "web/test_design.mjs"
+    "web/test_design.mjs",
+    "web/test_home.mjs"
    ],
    "own_pack": [
     "media/build.py",
@@ -2849,9 +2850,12 @@
    ],
    "doc_renderers": [],
    "builders": [
+    "lessons/build.py",
     "quests/build.py"
    ],
    "suites": [
+    "lessons/test.mjs",
+    "quests/test.mjs",
     "web/test_schools.mjs",
     "web/test_wilds.mjs"
    ],
@@ -3883,7 +3887,7 @@
    {
     "suite": "lessons/test.mjs",
     "pack": "lessons",
-    "readme_checks": 84,
+    "readme_checks": 90,
     "declared": true,
     "in_readme_table": true
    },
@@ -3939,7 +3943,28 @@
    {
     "suite": "web/test_seo.mjs",
     "pack": "web",
-    "readme_checks": 17,
+    "readme_checks": 18,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "wilds/test.mjs",
+    "pack": "wilds",
+    "readme_checks": 34,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_wilds.mjs",
+    "pack": "web",
+    "readme_checks": 32,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_schools.mjs",
+    "pack": "web",
+    "readme_checks": 28,
     "declared": true,
     "in_readme_table": true
    },
@@ -4072,14 +4097,14 @@
    {
     "suite": "web/test_home.mjs",
     "pack": "web",
-    "readme_checks": 54,
+    "readme_checks": 57,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_nav.mjs",
     "pack": "web",
-    "readme_checks": 18,
+    "readme_checks": 21,
     "declared": true,
     "in_readme_table": true
    },
@@ -4121,7 +4146,7 @@
    {
     "suite": "web/test_3d.mjs",
     "pack": "web",
-    "readme_checks": 331,
+    "readme_checks": 334,
     "declared": true,
     "in_readme_table": true
    },
@@ -4135,7 +4160,7 @@
    {
     "suite": "quests/test.mjs",
     "pack": "quests",
-    "readme_checks": 23,
+    "readme_checks": 25,
     "declared": true,
     "in_readme_table": true
    },
@@ -4149,30 +4174,30 @@
    {
     "suite": "media/test.mjs",
     "pack": "media",
-    "readme_checks": 20,
+    "readme_checks": 62,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_design.mjs",
     "pack": "web",
-    "readme_checks": 43,
+    "readme_checks": 47,
     "declared": true,
     "in_readme_table": true
    }
   ],
-  "suites_run": 75,
-  "suites_declaring_a_count": 74,
+  "suites_run": 78,
+  "suites_declaring_a_count": 77,
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 3563,
-  "readme_headline": 3574,
+  "declared_total": 3721,
+  "readme_headline": 3732,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
-  "max": 331,
-  "median": 40.5,
+  "max": 334,
+  "median": 40,
   "thinnest": [
    {
     "suite": "ops/fuzz.mjs",
@@ -4202,7 +4227,7 @@
   "thickest": [
    {
     "suite": "web/test_3d.mjs",
-    "checks": 331
+    "checks": 334
    },
    {
     "suite": "web/test_worksites.mjs",
@@ -4221,8 +4246,8 @@
     "checks": 112
    },
    {
-    "suite": "restoration/test.mjs",
-    "checks": 84
+    "suite": "lessons/test.mjs",
+    "checks": 90
    }
   ],
   "note": "a thin suite is not automatically a bad one - tools/ has 13 checks over a registry of twelve hand tools - but a thin suite over a large surface is where an unfound defect is most likely to be sitting, and this table is the only place the two are shown side by side."

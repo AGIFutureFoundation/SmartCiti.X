@@ -40,7 +40,14 @@ def load(rel):
 
 
 HALLS = {h['slug']: h for h in load('pack/registry/halls.json')['halls']}
-LESSONS = load('lessons/registry/lessons.json')['lessons']
+LESSONS_DOC = load('lessons/registry/lessons.json')
+LESSONS = LESSONS_DOC['lessons']
+# LEARN writes one site walk per wilds site (lessons.json spread.site_walks:
+# site id -> lesson id). Every site's walk is DERIVED from that map, never
+# typed here, and a site without one stops the build.
+if 'spread' not in LESSONS_DOC or 'site_walks' not in LESSONS_DOC['spread']:
+    raise SystemExit('wilds/build.py: lessons/registry/lessons.json has no spread.site_walks')
+SITE_WALKS = LESSONS_DOC['spread']['site_walks']
 CAMPUSES = load('geo/registry/campuses_geo.json')['campuses']
 
 PROVENANCE = {
@@ -50,6 +57,7 @@ PROVENANCE = {
     'trails': 'DERIVED',
     'hall_names': 'DERIVED',
     'lesson_titles': 'DERIVED',
+    'site_walks': 'DERIVED',
     'summit_register': 'DERIVED',
 }
 HONESTY = {
@@ -168,7 +176,7 @@ WORLDS = [
              'title': 'Lake intake and main',
              'work': 'A raw-water intake at the lake edge feeding a main down the valley.',
              'halls': ['water-distrib'],
-             'lessons': []},
+             'lessons': ['water-distrib-safety-first-walk']},
             {'id': 'f-fire-lookout', 'kind': 'lookout', 'x': -600, 'z': -2900, 'pad_m': 26,
              'title': 'Fire lookout tower',
              'work': 'A steel lookout on the highest knoll; the frame erected and the access scaffold tagged.',
@@ -207,7 +215,7 @@ WORLDS = [
              'title': 'Run-of-river intake and penstock',
              'work': 'A low weir and an intake feeding a penstock down to a small powerhouse; divers work the screens.',
              'halls': ['hydro', 'divers'],
-             'lessons': []},
+             'lessons': ['hydro-inspection-first-walk', 'divers-layout-first-walk']},
             {'id': 'c-pipeline-crossing', 'kind': 'pipeline', 'x': 785, 'z': 1600, 'pad_m': 34,
              'title': 'Pipeline river crossing',
              'work': 'A pipeline crossing the canyon; tie-in digs on each side and a permit closed the way it opened.',
@@ -222,7 +230,7 @@ WORLDS = [
              'title': 'Mesa-top solar array',
              'work': 'Racking and strings laid out across a flat mesa top.',
              'halls': ['solar', 'electricians'],
-             'lessons': []},
+             'lessons': ['solar-documentation-first-walk', 'electricians-clip-in-first']},
             {'id': 'c-quarry-bench', 'kind': 'quarry', 'x': -2000, 'z': -1900, 'pad_m': 40,
              'title': 'Quarry bench and blast pattern',
              'work': 'A stepped quarry face with a drill pattern marked out; everybody knows where not to stand.',
@@ -233,6 +241,62 @@ WORLDS = [
             {'id': 'c-cache-overhang', 'kind': 'cache', 'x': -1100, 'z': 400, 'riddle': 'Under the west rim, halfway between the solar mesa and the quarry.'},
             {'id': 'c-hollow', 'kind': 'hollow', 'x': 2700, 'z': 1200, 'hollow_m': 55, 'hollow_depth_m': 12, 'riddle': 'East of the trailhead, a pothole the rain made.'},
             {'id': 'c-summit-register', 'kind': 'summit', 'riddle': 'The highest step of the highest mesa.'},
+        ],
+    },
+    {
+        'id': 'delta',
+        'name': 'Salt Marsh Delta',
+        'evokes': 'the general geography of a Gulf river delta: low ridges of old shoreline, marsh and braided channels running to open water',
+        'campus': 'new-orleans',
+        'seed': 40427,
+        'extent_m': 10240,
+        'chunk_m': 512,
+        'sky': '#C4D8E4', 'fog': '#D6DDD8',
+        'biome': {
+            'model': 'rolling', 'relief_m': 70, 'feature_m': 1500, 'octaves': 5,
+            'water_level_m': 2, 'tree_line_m': 5000, 'snow_line_m': 99999,
+            'max_tree_slope': 0.3, 'tree_density': 0.3, 'deciduous_share': 0.85,
+            'rock_density': 0.05, 'stand_m': 260, 'clearing': 0.4,
+            'rim_m': 90, 'rim_width_m': 500,
+            'palette': {'low': '#6F8A4E', 'mid': '#5E7A45', 'rock': '#8C8467', 'snow': '#D9D6C4', 'shore': '#CDBF8F'},
+        },
+        'trailhead': {'x': -500, 'z': 1000, 'name': 'Levee trailhead', 'pad_m': 24},
+        'sites': [
+            {'id': 'd-levee-pump', 'kind': 'pumpstation', 'x': -2400, 'z': -2000, 'pad_m': 34,
+             'title': 'Levee pump station',
+             'work': 'A drainage pump station set into the levee; wastewater crews keep the pumps, screens and wet well working.',
+             'halls': ['wastewater', 'electricians'],
+             'lessons': ['wastewater-tools-first-walk', 'electricians-clip-in-first']},
+            {'id': 'd-terminal-berth', 'kind': 'berth', 'x': 2800, 'z': 2400, 'pad_m': 50,
+             'title': 'River terminal berth',
+             'work': 'A barge berth with a crane working cargo; the lane is briefed before anything swings.',
+             'halls': ['marine-terminal', 'port-crane'],
+             'lessons': ['marine-terminal-brief-the-lane', 'port-crane-read-the-rope']},
+            {'id': 'd-pile-trestle', 'kind': 'bridge', 'x': -3300, 'z': 3000, 'pad_m': 30,
+             'title': 'Timber pile trestle over a bayou',
+             'work': 'A pile-supported trestle across a channel: new piles driven from a rig on firm footing, old bents inspected.',
+             'halls': ['piling', 'bridge-inspect'],
+             'lessons': ['piling-stand-the-rig-on-something', 'bridge-inspect-inspection-first-walk']},
+            {'id': 'd-outfall-dive', 'kind': 'intake', 'x': -600, 'z': 2900, 'pad_m': 28,
+             'title': 'Outfall line and dive station',
+             'work': 'An outfall pipe running into the channel; a dive team inspects it from a station on the bank.',
+             'halls': ['divers', 'marine-pipe'],
+             'lessons': ['divers-layout-first-walk', 'marine-pipe-know-when-to-come-out']},
+            {'id': 'd-spill-boom', 'kind': 'boom', 'x': 900, 'z': -3200, 'pad_m': 30,
+             'title': 'Spill boom staging',
+             'work': 'Containment boom and a skimmer staged on the bank, ready to deploy across a channel mouth.',
+             'halls': ['spill-response', 'hazmat'],
+             'lessons': ['spill-response-tools-first-walk', 'hazmat-wash-and-decon']},
+            {'id': 'd-wind-staging', 'kind': 'turbine', 'x': 2600, 'z': -2600, 'pad_m': 40,
+             'title': 'Wind turbine staging yard',
+             'work': 'A turbine erected on the ridge beside a laydown yard where blades and tower sections wait for the crane.',
+             'halls': ['wind', 'crane-ops'],
+             'lessons': ['wind-safety-first-walk', 'crane-ops-read-the-chart']},
+        ],
+        'caches': [
+            {'id': 'd-cache-shell-midden', 'kind': 'cache', 'x': -2200, 'z': 400, 'riddle': 'On an old shell ridge, well off the trail, between the trailhead and the pump station.'},
+            {'id': 'd-hollow', 'kind': 'hollow', 'x': -300, 'z': -1600, 'hollow_m': 50, 'hollow_depth_m': 3, 'riddle': 'A dry scour hole the last flood left, off the trail between the trailhead and the boom yard.'},
+            {'id': 'd-summit-register', 'kind': 'summit', 'riddle': 'The delta has one highest ridge; the book is on its crown.'},
         ],
     },
 ]
@@ -320,8 +384,13 @@ def build_world(w):
             if h not in HALLS:
                 die(f'site {s["id"]}: hall {h!r} is not in pack/registry/halls.json')
             halls.append({'id': h, 'name': HALLS[h]['name']})
+        if s['id'] not in SITE_WALKS:
+            die(f'site {s["id"]} has no walk in lessons/registry/lessons.json spread.site_walks')
+        walk = SITE_WALKS[s['id']]
+        if walk in s['lessons']:
+            die(f'site {s["id"]}: walk {walk} is typed in its lessons; it is DERIVED from spread.site_walks')
         lessons = []
-        for lid in s['lessons']:
+        for lid in s['lessons'] + [walk]:
             if lid not in LESSONS:
                 die(f'site {s["id"]}: lesson {lid!r} is not in lessons/registry/lessons.json')
             L = LESSONS[lid]
@@ -374,6 +443,10 @@ def build_world(w):
 
 def main():
     worlds = [build_world(w) for w in WORLDS]
+    site_ids = {s['id'] for w in worlds for s in w['sites']}
+    stray = sorted(set(SITE_WALKS) - site_ids)
+    if stray:
+        die(f'lessons spread.site_walks names sites that are not in the wilds: {stray}')
     ids = [w['id'] for w in worlds]
     for must in ('mountain', 'forest'):
         if must not in ids:

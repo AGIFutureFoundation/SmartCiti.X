@@ -281,8 +281,17 @@
   "seo.desc.languages": "The languages the academy is offered in, each with the translation status its own catalog records.",
   "landing.video.pause": "Pause background video",
   "landing.video.play": "Play background video",
-  "landing.video.caption": "Background: an orbit over the Treasure Island campus, recorded from this build’s 3D page.",
-  "nav.page.design": "Design kit"
+  "landing.video.caption": "Background: a low dolly across the Treasure Island campus green, filmed frame by frame from this build’s 3D campus.",
+  "nav.page.design": "Design kit",
+  "nav.skip": "Skip to main content",
+  "quests.title": "Quests and arcade",
+  "quests.lede": "Side quests, games, treasures and easter eggs across the whole academy, gated by the lessons they use.",
+  "quests.h.arcade": "Arcade",
+  "quests.h.shelf": "Badge shelf",
+  "quests.h.log": "Quest log",
+  "quests.h.clues": "Clues on the board",
+  "quests.seo_desc": "Quests, mini games, treasures and easter eggs across the academy. Play only: badges live on this device and never enter a completion record.",
+  "nav.search": "Search"
  },
  "districts": {
   "structural": {

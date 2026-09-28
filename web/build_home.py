@@ -989,13 +989,19 @@ def _nl(page):
 PATHS = [
     ('learners', 'Learners and apprentices',
      'Start with one lesson in your own trade, walk it on campus, and keep a '
-     'record you can carry off the device.',
-     ['web/trade_craft_lessons.html', 'web/trade_craft_3d.html', 'web/trade_craft_progress.html']),
+     'record you can carry off the device. Quests and the wilds are play for '
+     'the same trades: nothing you do there enters a record.',
+     ['web/trade_craft_lessons.html', 'web/trade_craft_3d.html', 'web/trade_craft_progress.html',
+      'web/trade_craft_quests.html', 'web/trade_craft_wilds.html']),
     ('instructors', 'Training directors and instructors',
      'See which rungs of each trade’s ladder a simulator seat stands on and '
      'which it does not, and read the protocol that schedules practice.',
      ['web/trade_craft_ladder.html', 'web/trade_craft_dashboard.html',
       'web/smartcitix_trade_craft_academy.html']),
+    ('schools', 'Schools and teachers',
+     'Grade-band pathways that point a classroom toward the trades. The page '
+     'states each district’s status as the registry records it.',
+     ['web/trade_craft_schools.html']),
     ('employers', 'Employers checking a record',
      'Recheck a learner’s exported record in your own browser. A pass says the '
      'file is intact and consistent; it is not a certification.',
@@ -1159,7 +1165,7 @@ header.top .wrap{padding-block:var(--s7) var(--s7)}
 .netmap figcaption{color:var(--dim);font-size:var(--fs-xs);margin-top:var(--s2)}
 
 /* ---- cards: one family -------------------------------------------------- */
-.paths{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--s4)}
+.paths{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:var(--s4)}
 .path,a.card,.pv,.seat-row,.rec{background:var(--panel);border:1px solid var(--rule);
   border-radius:var(--r-md)}
 .path{padding:var(--s5);display:flex;flex-direction:column;gap:var(--s2);
@@ -1508,7 +1514,7 @@ BODY = f"""<body>
 <div class="wrap">
 <section id="paths">
   <div class="sec-head"><span class="eyebrow">Who it is for</span>
-    <h2>Four ways in, depending on why you are here</h2></div>
+    <h2>{n(len(PATHS))} ways in, depending on why you are here</h2></div>
   {paths_html()}
 </section>
 

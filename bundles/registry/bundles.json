@@ -145,6 +145,9 @@
     ],
     "lessons": [
      "crane-ops-read-the-chart",
+     "d-wind-staging-site-walk",
+     "f-fire-lookout-site-walk",
+     "f-timber-frame-site-walk",
      "ironworkers-plan-out-loud",
      "port-crane-read-the-rope",
      "riggers-carry-under-control",
@@ -156,8 +159,8 @@
     "ladder_cells": 30,
     "seats": 4,
     "seat_scenarios": 12,
-    "lessons": 5,
-    "lesson_steps": 22,
+    "lessons": 8,
+    "lesson_steps": 34,
     "contact_hours": null
    },
    "coverage": {
@@ -266,7 +269,8 @@
     ],
     "lessons": [
      "demolition-stand-back",
-     "laborers-stand-where-the-cab-can-see"
+     "laborers-stand-where-the-cab-can-see",
+     "m-snow-road-site-walk"
     ]
    },
    "size": {
@@ -274,8 +278,8 @@
     "ladder_cells": 24,
     "seats": 1,
     "seat_scenarios": 3,
-    "lessons": 2,
-    "lesson_steps": 9,
+    "lessons": 3,
+    "lesson_steps": 13,
     "contact_hours": null
    },
    "coverage": {
@@ -411,6 +415,7 @@
      "Weld Bead Run"
     ],
     "lessons": [
+     "c-pipeline-crossing-site-walk",
      "pipeline-close-the-permit-properly",
      "tank-erectors-isolate-before-testing",
      "welders-the-watch"
@@ -421,8 +426,8 @@
     "ladder_cells": 42,
     "seats": 1,
     "seat_scenarios": 3,
-    "lessons": 3,
-    "lesson_steps": 16,
+    "lessons": 4,
+    "lesson_steps": 20,
     "contact_hours": null
    },
    "coverage": {
@@ -581,6 +586,7 @@
     ],
     "lessons": [
      "electricians-clip-in-first",
+     "f-trail-bridge-site-walk",
      "painters-contain-it",
      "painters-lay-the-coat",
      "roofers-mind-the-edge-and-the-skylight",
@@ -593,8 +599,8 @@
     "ladder_cells": 54,
     "seats": 2,
     "seat_scenarios": 6,
-    "lessons": 6,
-    "lesson_steps": 28,
+    "lessons": 7,
+    "lesson_steps": 32,
     "contact_hours": null
    },
    "coverage": {
@@ -833,7 +839,9 @@
      "Forklift Yard Run"
     ],
     "lessons": [
+     "d-terminal-berth-site-walk",
      "laborers-stand-where-the-cab-can-see",
+     "m-snow-road-site-walk",
      "marine-terminal-brief-the-lane",
      "teamsters-check-the-truck-before-the-load"
     ]
@@ -843,8 +851,8 @@
     "ladder_cells": 30,
     "seats": 1,
     "seat_scenarios": 3,
-    "lessons": 3,
-    "lesson_steps": 14,
+    "lessons": 5,
+    "lesson_steps": 22,
     "contact_hours": null
    },
    "coverage": {
@@ -974,6 +982,8 @@
     ],
     "lessons": [
      "crane-ops-read-the-chart",
+     "d-wind-staging-site-walk",
+     "f-timber-frame-site-walk",
      "millwrights-shop-move",
      "riggers-carry-under-control"
     ]
@@ -983,8 +993,8 @@
     "ladder_cells": 36,
     "seats": 1,
     "seat_scenarios": 3,
-    "lessons": 3,
-    "lesson_steps": 14,
+    "lessons": 5,
+    "lesson_steps": 22,
     "contact_hours": null
    },
    "coverage": {
@@ -1422,9 +1432,32 @@
     "lessons": [
      "aviation-ground-safety-first-walk",
      "bricklayers-gear-that-stays-on",
+     "c-mesa-solar-site-walk",
+     "c-pipeline-crossing-site-walk",
+     "c-quarry-bench-site-walk",
+     "c-river-intake-site-walk",
+     "c-valve-vault-site-walk",
      "cleanroom-safety-first-walk",
      "concrete-pump-safety-first-walk",
+     "d-levee-pump-site-walk",
+     "d-outfall-dive-site-walk",
+     "d-pile-trestle-site-walk",
+     "d-spill-boom-site-walk",
+     "d-terminal-berth-site-walk",
+     "d-wind-staging-site-walk",
      "ev-charging-safety-first-walk",
+     "f-fire-lookout-site-walk",
+     "f-fuel-break-site-walk",
+     "f-line-clearance-site-walk",
+     "f-timber-frame-site-walk",
+     "f-trail-bridge-site-walk",
+     "f-water-intake-site-walk",
+     "m-adit-portal-site-walk",
+     "m-hv-corridor-site-walk",
+     "m-rockfall-netting-site-walk",
+     "m-snow-road-site-walk",
+     "m-survey-control-site-walk",
+     "m-wind-ridge-site-walk",
      "mold-remediation-safety-first-walk",
      "network-cabling-safety-first-walk",
      "pipefitters-safety-first-walk",
@@ -1438,8 +1471,8 @@
     "ladder_cells": 111,
     "seats": 0,
     "seat_scenarios": 0,
-    "lessons": 11,
-    "lesson_steps": 44,
+    "lessons": 34,
+    "lesson_steps": 136,
     "contact_hours": null
    },
    "coverage": {
@@ -1579,8 +1612,12 @@
     "seats": [],
     "seat_names": [],
     "lessons": [
+     "c-valve-vault-site-walk",
+     "d-spill-boom-site-walk",
      "hazmat-wash-and-decon",
      "lead-abatement-documentation-first-walk",
+     "m-rockfall-netting-site-walk",
+     "m-survey-control-site-walk",
      "mold-remediation-safety-first-walk",
      "survey-drone-documentation-first-walk"
     ]
@@ -1590,8 +1627,8 @@
     "ladder_cells": 66,
     "seats": 0,
     "seat_scenarios": 0,
-    "lessons": 4,
-    "lesson_steps": 15,
+    "lessons": 8,
+    "lesson_steps": 31,
     "contact_hours": null
    },
    "coverage": {
@@ -1614,7 +1651,7 @@
   "trades_offered": 111,
   "seats_offered": 11,
   "cells_offered": 366,
-  "lessons_offered": 34,
+  "lessons_offered": 57,
   "packages_with_no_seat": 2
  },
  "reads": [

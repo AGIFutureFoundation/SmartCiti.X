@@ -118,12 +118,16 @@ def kit_css():
     base += ''.join(f'--dk-e-{k}:{v};' for k, v in t['elevation'].items())
     base += ''.join(f'--dk-f-{k}:{v};' for k, v in t['font'].items())
     dark, light = _vars('dark'), _vars('light')
-    return f""":root{{{base}{dark}}}
-@media (prefers-color-scheme: light){{:root:not([data-theme="dark"]){{{light}}}}}
+    return f""":root{{{base}{dark}color-scheme:dark}}
+@media (prefers-color-scheme: light){{:root:not([data-theme="dark"]){{{light}color-scheme:light}}}}
 [data-theme="dark"]{{{dark}color-scheme:dark}}
 [data-theme="light"]{{{light}color-scheme:light}}
 .dk{{font-family:var(--dk-f-body);color:var(--dk-ink);background:var(--dk-plate);line-height:1.55;font-size:var(--dk-t-md)}}
 .dk *{{box-sizing:border-box}}
+/* the site nav (web/sitenav.py) reads --ink/--panel/--line/--muted/--mark; hand it the kit palette so its
+   labels sit on the kit panel, and keep .dk a from recolouring nav links (was 2.09:1 in dark) */
+body.dk{{--ink:var(--dk-ink);--panel:var(--dk-panel);--line:var(--dk-line);--muted:var(--dk-muted);--mark:var(--dk-amber)}}
+.dk .sitenav a{{color:inherit}}
 .dk h2,.dk h3{{font-family:var(--dk-f-display);letter-spacing:.01em;line-height:1.1;margin:0 0 var(--dk-s-3)}}
 .dk p{{margin:0 0 var(--dk-s-3)}}
 .dk a{{color:var(--dk-link)}}

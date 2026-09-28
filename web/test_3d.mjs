@@ -2644,7 +2644,9 @@ ok('a person\'s hand is palm, four-finger mitt and thumb - with a gauntlet cuff 
   const bad = [];
   try {
     const blocks = [...built.matchAll(/<script(\s[^>]*)?>([\s\S]*?)<\/script>/g)]
-      .filter((m) => !/type="(application\/json|importmap)"/.test(m[1] ?? ''));
+      // data blocks (the JSON payload, the import map, the SEO card's
+      // JSON-LD) are never run, so they are not parsed as script
+      .filter((m) => !/type="(application\/json|application\/ld\+json|importmap)"/.test(m[1] ?? ''));
     blocks.forEach((m, i) => {
       const file = join(dir, `s${i}.${/type="module"/.test(m[1] ?? '') ? 'mjs' : 'cjs'}`);
       writeFileSync(file, m[2]);
@@ -2759,6 +2761,26 @@ ok('a person\'s hand is palm, four-finger mitt and thumb - with a gauntlet cuff 
     coreAt > mainEnd && (built.match(/QUEST_CORE:BEGIN/g) ?? []).length === 1
     && built.indexOf('QW.TCQuests = {') > mainEnd && coreAt < built.lastIndexOf('</body>')
     && /_head \+ '<\/script>\\n' \+ quest_js\('campus'\) \+ '\\n<\/body>' \+ _tail/.test(src));
+  // the meteor shower runs on the wall clock: a loop-dt countdown died in
+  // under 400 ms in a throttled browser (19 instances, then 3)
+  ok('the konami meteor shower lasts five seconds of wall-clock time (performance.now() end stamp), never a countdown of the loop\'s dt',
+    /qMeteorEnd = performance\.now\(\) \+ 5000;\s*qMeteorT = 5;/.test(fn('questMeteorShower'))
+    && /if \(qMeteorEnd\) \{ qMeteorT = Math\.max\(0, \(qMeteorEnd - performance\.now\(\)\) \/ 1000\);/.test(fn('questStep'))
+    && !/qMeteorT\s*-\s*dt/.test(qjs) && !/qMeteorT\s*-=/.test(qjs));
+  // a probe (or a screenshot) aims at a gem through the orbit target, which
+  // controls.update() would otherwise swing the camera back to next frame
+  ok('window.__tc3dQuestAim(i) points the orbit target AND the camera at quest item i and returns its pixel, so a real click lands on the gem',
+    /window\.__tc3dQuestAim = \(i, dist = 4\) => \{/.test(qjs)
+    && /controls\.target\.copy\(tgt\);\s*camera\.lookAt\(tgt\);\s*controls\.update\(\);/.test(qjs)
+    && /\.project\(camera\)/.test(qjs) && /if \(!it\) throw new Error\('no quest item ' \+ i\);/.test(qjs));
+  // the site's skip link lands on the page's main region, which holds the world
+  ok('the page has exactly one <main id="main"> (the skip link target) wrapping the HUD, and the renderer\'s canvas is placed inside it, failing closed if it is missing',
+    (built.match(/<main id="main">/g) ?? []).length === 1 && (built.match(/<\/main>/g) ?? []).length === 1
+    && built.indexOf('<main id="main">') < built.indexOf('<h1 id="ptitle"')
+    && built.indexOf('</main>') > built.indexOf('<aside id="panel">')
+    && built.indexOf('</main>') < built.indexOf('<script id="data"')
+    && /const mainEl = document\.getElementById\('main'\);\s*if \(!mainEl\) throw new Error/.test(code)
+    && /mainEl\.appendChild\(renderer\.domElement\);/.test(code) && !/document\.body\.appendChild\(renderer\.domElement\)/.test(code));
   // the HUD quest-log button has an accessible name and opens data-tc-questlog
   const qb = built.match(/<button id="questBtn" class="barbtn" aria-label="([^"]+)">/);
   ok('the HUD quest-log button has an accessible name from the catalog, re-read per locale, and opens a [data-tc-questlog] the engine renders',

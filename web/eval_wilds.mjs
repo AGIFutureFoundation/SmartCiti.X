@@ -60,6 +60,17 @@ const BASE = {
     dense: { calls: 26, tris: 54_668, ms: 105.3, chunks: 49, veg: 594 },
     summit: { calls: 24, tris: 45_800, ms: 79.4, chunks: 42, veg: null },
   },
+  /* delta (wave 2): measured 2026-09-28 07:03 UTC, same machine and settings,
+     in the verification run that checked the three rows above (log:
+     scratchpad wilds_w2_eval.log). A marsh world is sparsely wooded by
+     design, so its veg floors are low; the summit view is not meant to be
+     wooded, as elsewhere. */
+  delta: {
+    overview: { calls: 4, tris: 39_224, ms: 49.5, chunks: 1, veg: null },
+    trail: { calls: 26, tris: 51_390, ms: 55, chunks: 49, veg: 468 },
+    dense: { calls: 17, tris: 53_222, ms: 52.3, chunks: 35, veg: 666 },
+    summit: { calls: 23, tris: 56_030, ms: 75.3, chunks: 49, veg: null },
+  },
 };
 const CALL_HEADROOM = 1.25, TRI_HEADROOM = 1.5, MS_HEADROOM = 2, VEG_FLOOR = 0.9;
 const MEASURE_ONLY = process.argv.includes('--measure');

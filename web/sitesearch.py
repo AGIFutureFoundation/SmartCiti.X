@@ -19,14 +19,64 @@ Each entry's link uses a scheme a page already honours, never a new one:
 Fail closed: every field is read with a subscript or need(); a missing one
 stops the build with its name.
 
-    from sitesearch import search_index, SEARCH_CSS, search_button, search_dialog, search_js
+    from sitesearch import search_index, SEARCH_CSS, search_button, search_dialog, SEARCH_JS
+    from sitesearch import search_trigger, SEARCH_TRIGGER_JS, SEARCH_TRIGGER_CSS   # any other page
 """
 import html
 import json
 import pathlib
 import posixpath
 
-from sitenav import PAGES, labels as nav_labels
+# ---------------------------------------------------- every other page ------
+# The palette and its index live on the front door. Every other page reaches
+# it through one plain link, `index.html#search`, which the front door's
+# script turns into an open palette. The link is markup only (the site header
+# carries no script), works without script (it lands on the front door), and
+# costs a page no index bytes. SEARCH_TRIGGER_JS is optional and goes after
+# a page's own scripts, never in the header: it makes Ctrl/Cmd+K follow the
+# link on a page that has no palette of its own. This block is defined before
+# this module reads sitenav, because sitenav imports it back (so either
+# import order works).
+SEARCH_HASH = 'search'
+
+
+def search_trigger(current_path, label='Search'):
+    """The header link to the front door's palette, relative to current_path."""
+    from sitenav import FRONT_DOOR   # at call time: sitenav imports this module
+    base = posixpath.dirname(current_path)
+    href = posixpath.relpath(FRONT_DOOR, base or '.') + '#' + SEARCH_HASH
+    if current_path == FRONT_DOOR:
+        href = '#' + SEARCH_HASH
+    return (f'<a class="ss-go" href="{html.escape(href)}" data-search-go '
+            'aria-keyshortcuts="Control+K Meta+K">'
+            '<svg aria-hidden="true" viewBox="0 0 20 20" width="16" height="16"><circle cx="8.5" cy="8.5" '
+            'r="5.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4.5 4.5" '
+            'stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'
+            f'<span>{html.escape(label)}</span></a>')
+
+
+SEARCH_TRIGGER_JS = r"""<script id="ss-go-js">
+(function () {
+  if (document.querySelector('dialog.ss-dlg')) return;   /* the front door handles its own keys */
+  document.addEventListener('keydown', function (ev) {
+    if ((ev.ctrlKey || ev.metaKey) && !ev.altKey && (ev.key === 'k' || ev.key === 'K')) {
+      var a = document.querySelector('a[data-search-go]');
+      if (a) { ev.preventDefault(); location.href = a.href; }
+    }
+  });
+}());
+</script>"""
+
+SEARCH_TRIGGER_CSS = """
+.ss-go{display:inline-flex;align-items:center;gap:6px;min-block-size:44px;padding-inline:10px;white-space:nowrap;flex:none;
+  color:inherit;text-decoration:none;border-radius:8px}
+.ss-go:hover{text-decoration:underline}
+.ss-go:focus-visible{outline:none;box-shadow:var(--focus)}
+"""
+
+
+
+from sitenav import PAGES, labels as nav_labels  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
@@ -96,7 +146,7 @@ def search_index():
 
 
 def search_button(label='Search pages, lessons, halls and seats'):
-    return ('<button type="button" class="ss-open" data-search-open hidden '
+    return ('<button type="button" id="' + SEARCH_HASH + '" class="ss-open" data-search-open hidden '
             'aria-haspopup="dialog" aria-controls="ss-dlg" aria-keyshortcuts="Control+K Meta+K">'
             '<svg aria-hidden="true" viewBox="0 0 20 20" width="18" height="18"><circle cx="8.5" cy="8.5" r="5.5" '
             'fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4.5 4.5" '
@@ -220,6 +270,14 @@ SEARCH_JS = r"""<script id="ss-js">
   document.querySelectorAll('[data-search-open]').forEach(function (b) {
     b.hidden = false; b.addEventListener('click', open);
   });
+  /* index.html#search: every other page's header link lands here (sitesearch.search_trigger) */
+  function fromHash() {
+    if (location.hash !== '#search') return;
+    history.replaceState(null, '', location.pathname + location.search);
+    open();
+  }
+  window.addEventListener('hashchange', fromHash);
+  fromHash();
   document.addEventListener('keydown', function (ev) {
     if ((ev.ctrlKey || ev.metaKey) && !ev.altKey && (ev.key === 'k' || ev.key === 'K')) {
       ev.preventDefault(); if (dlg.open) dlg.close(); else open();

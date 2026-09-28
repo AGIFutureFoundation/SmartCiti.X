@@ -281,8 +281,17 @@
   "seo.desc.languages": "Os idiomas em que a academia é oferecida, cada um com o estado de tradução que o seu próprio catálogo regista.",
   "landing.video.pause": "Pausar o vídeo de fundo",
   "landing.video.play": "Reproduzir o vídeo de fundo",
-  "landing.video.caption": "Fundo: uma órbita sobre o campus de Treasure Island, gravada a partir da página 3D desta versão.",
-  "nav.page.design": "Kit de design"
+  "landing.video.caption": "Fundo: um travelling baixo sobre o gramado do campus de Treasure Island, filmado quadro a quadro no campus 3D desta versão.",
+  "nav.page.design": "Kit de design",
+  "nav.skip": "Ir para o conteúdo principal",
+  "quests.title": "Missões e fliperama",
+  "quests.lede": "Missões secundárias, jogos, tesouros e easter eggs em toda a academia, liberados pelas lições que usam.",
+  "quests.h.arcade": "Fliperama",
+  "quests.h.shelf": "Estante de insígnias",
+  "quests.h.log": "Diário de missões",
+  "quests.h.clues": "Pistas no quadro",
+  "quests.seo_desc": "Missões, minijogos, tesouros e easter eggs na academia. Apenas diversão: as insígnias ficam neste aparelho e nunca entram num registro de conclusão.",
+  "nav.search": "Pesquisar"
  },
  "districts": {
   "structural": {

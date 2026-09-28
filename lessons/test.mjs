@@ -63,6 +63,7 @@ const schools = JSON.parse(readFileSync(url('../schools/registry/schools.json'))
 const finishes = JSON.parse(readFileSync(url('../surfaces/registry/finishes.json')));
 const advisors = JSON.parse(readFileSync(url('../agents/registry/advisors.json'))).advisors;
 const crews = JSON.parse(readFileSync(url('../agents/registry/crews.json'))).crews;
+const wilds = JSON.parse(readFileSync(url('../wilds/registry/wilds.json')));
 const cribs = JSON.parse(readFileSync(url('../tools/registry/toolcribs.json')));
 const labels = JSON.parse(readFileSync(url('../labels/registry/labels.json')));
 const campuses = JSON.parse(readFileSync(url('../unions/registry/campuses.json'))).campuses;
@@ -856,6 +857,8 @@ ok('no table on the lessons page stands outside a horizontal-scroll box, so a 39
 const SEAT_HALLS = new Set(Object.keys(sims.hall_bindings));
 const handHalls = new Set(lessons.filter(([, L]) => L.authoring === 'hand').map(([, L]) => L.hall));
 const ruled = lessons.filter(([, L]) => L.authoring === 'rule');
+const firsts = ruled.filter(([, L]) => L.arc !== 'site');
+const sited = ruled.filter(([, L]) => L.arc === 'site');
 ok('every lesson says how it was authored - by hand or by the rule - and the counts are the lessons counted again',
   lessons.every(([, L]) => L.authoring === 'hand' || L.authoring === 'rule')
   && reg.counts.lessons_by_hand === lessons.length - ruled.length
@@ -878,14 +881,14 @@ ok('every one of the halls on the roster has a lesson, or the rule names why it 
         && reg.spread.refused_by_rule[h.slug].length === Object.keys(reg.composition.arcs).length))
   && reg.counts.halls_refused_by_rule === Object.keys(reg.spread.refused_by_rule).length);
 ok('a composed lesson stands only in a hall with no hand-written lesson and no seat, one per hall',
-  ruled.every(([, L]) => !handHalls.has(L.hall) && !SEAT_HALLS.has(L.hall)
-    && ruled.filter(([, M]) => M.hall === L.hall).length === 1)
-  && JSON.stringify(ruled.map(([, L]) => L.hall).sort()) === JSON.stringify(reg.spread.composed_halls));
+  firsts.every(([, L]) => !handHalls.has(L.hall) && !SEAT_HALLS.has(L.hall)
+    && firsts.filter(([, M]) => M.hall === L.hall).length === 1)
+  && JSON.stringify(firsts.map(([, L]) => L.hall).sort()) === JSON.stringify(reg.spread.composed_halls));
 ok('a composed lesson uses only walk, placard, crib and advisor - the kinds a hall with no seat, station or crew can support',
-  ruled.every(([, L]) => L.steps.every((s) => ['walk', 'placard', 'crib', 'advisor'].includes(s.kind))
+  firsts.every(([, L]) => L.steps.every((s) => ['walk', 'placard', 'crib', 'advisor'].includes(s.kind))
     && L.steps.some((s) => s.kind === 'advisor')));
 ok('a composed lesson is a fundamentals first walk that stands in its arc\'s own room, and its id says so',
-  ruled.every(([lid, L]) => L.tier === 'fundamentals' && L.strand === L.arc
+  firsts.every(([lid, L]) => L.tier === 'fundamentals' && L.strand === L.arc
     && lid === `${L.hall}-${L.arc}-first-walk` && L.arc in reg.composition.arcs));
 ok('a composed lesson reads a placard exactly where the room\'s own record asks for PPE (recomputed from surfaces)',
   ruled.every(([, L]) => {
@@ -896,18 +899,50 @@ ok('a composed lesson reads a placard exactly where the room\'s own record asks 
     return [...wanted].every((w) => read.has(w)) && [...read].every((w) => conds[w].ppe.length > 0);
   }));
 ok('a composed title opens with the hall\'s own name and its why carries the hall\'s own focus, both read from the roster',
-  ruled.every(([, L]) => {
+  firsts.every(([, L]) => {
     const h = halls.find((x) => x.slug === L.hall);
     return L.title.startsWith(`${h.name}: `) && L.why.toLowerCase().includes(h.focus.toLowerCase());
   }));
 ok('the rule spreads the composed lessons across every arc rather than piling them in one room',
   (() => {
     const per = {};
-    for (const [, L] of ruled) per[L.arc] = (per[L.arc] || 0) + 1;
+    for (const [, L] of firsts) per[L.arc] = (per[L.arc] || 0) + 1;
     const v = Object.values(per);
-    return ruled.length === 0 || (Object.keys(per).length === Object.keys(reg.composition.arcs).length
-      && Math.max(...v) - Math.min(...v) <= Math.ceil(ruled.length / v.length));
+    return firsts.length === 0 || (Object.keys(per).length === Object.keys(reg.composition.arcs).length
+      && Math.max(...v) - Math.min(...v) <= Math.ceil(firsts.length / v.length));
   })());
+
+/* the site walks: one per WILDS site, recomputed from wilds.json here */
+const SITES = wilds.worlds.flatMap((w) => w.sites.map((x) => ({ w, x })));
+ok('every WILDS site has a site walk or a named refusal, and the counts are the site walks counted again',
+  SITES.every(({ x }) => sited.some(([, L]) => L.site.id === x.id) || x.id in reg.spread.sites_refused_by_rule)
+  && reg.counts.lessons_at_sites === sited.length
+  && Object.keys(reg.spread.site_walks).length === sited.length
+  && reg.counts.sites_refused_by_rule === Object.keys(reg.spread.sites_refused_by_rule).length);
+ok('a site walk stands in a hall its site names, reads its site id, title and world from wilds.json, and its id says so',
+  sited.every(([lid, L]) => {
+    const hit = SITES.find(({ x }) => x.id === L.site.id);
+    return hit && hit.w.id === L.site.world && hit.w.name === L.site.world_name && hit.x.title === L.site.title
+      && hit.x.halls.some((h) => h.id === L.hall) && lid === `${hit.x.id}-site-walk`
+      && reg.spread.site_walks[hit.x.id] === lid;
+  }));
+ok('a site walk is a fundamentals safety walk of walk, placard and advisor steps only, recording at least one advisor answer',
+  sited.every(([, L]) => L.tier === 'fundamentals' && L.strand === 'safety' && L.steps[0].kind === 'walk'
+    && L.steps.every((s) => ['walk', 'placard', 'advisor'].includes(s.kind))
+    && L.steps.some((s) => s.kind === 'advisor')));
+ok('a site walk says its terrain is AUTHORED and not a surveyed place, and its title names the site as wilds.json does',
+  sited.every(([, L]) => /AUTHORED/.test(L.why) && L.limits.includes('not a surveyed place')
+    && L.title.toLowerCase().endsWith(L.site.title.toLowerCase())
+    && L.title.startsWith(`${halls.find((h) => h.slug === L.hall).name}: before the `)));
+ok('no two site walks share a hall while their site names an unused one (the rule spreads them)',
+  sited.every(([, L], i) => {
+    const hit = SITES.find(({ x }) => x.id === L.site.id);
+    const earlier = new Set(sited.slice(0, i).map(([, M]) => M.hall));
+    return !earlier.has(L.hall);
+  }));
+ok('the honesty status counts the site walks and says their terrain is AUTHORED',
+  reg.honesty.status.includes(`and ${sited.length} walks before a WILDS site`)
+  && reg.honesty.status.includes(`${firsts.length} first walks`));
 
 ok('every lesson on the learner page says on its face whether it was written by hand or composed by rule, as the registry says',
   lessons.every(([lid, L]) => {

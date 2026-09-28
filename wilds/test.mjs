@@ -70,6 +70,19 @@ for (const w of W) for (const s of w.sites) {
 }
 ok('[ids] every site hall id resolves in pack/registry/halls.json with its name copied', hallMiss.length === 0, hallMiss);
 ok('[ids] every site lesson id resolves in lessons/registry/lessons.json with its title copied', lessonMiss.length === 0, lessonMiss);
+
+/* LEARN's site walks (lessons.json spread.site_walks): each site carries
+   exactly its own walk, and the map names no site the wilds lack. */
+const walks = readJSON('lessons/registry/lessons.json').spread.site_walks;
+const walkBad = [];
+for (const w of W) for (const s of w.sites) {
+  const mine = s.lessons.filter((l) => /-site-walk$/.test(l.id)).map((l) => l.id);
+  if (!(s.id in walks)) walkBad.push(`${s.id}: no walk in spread.site_walks`);
+  else if (mine.length !== 1 || mine[0] !== walks[s.id]) walkBad.push(`${s.id}: carries ${JSON.stringify(mine)}, expected ${walks[s.id]}`);
+}
+const siteSet = new Set(W.flatMap((w) => w.sites.map((s) => s.id)));
+for (const k of Object.keys(walks)) if (!siteSet.has(k)) walkBad.push(`spread.site_walks names ${k}, not a wilds site`);
+ok('[walks] every site carries exactly its LEARN site walk (spread.site_walks), and no walk names a missing site', walkBad.length === 0, walkBad);
 ok('[ids] a lesson only stands at a site its own hall works at', borrowed.length === 0, borrowed);
 const allIds = W.flatMap((w) => [...w.sites.map((s) => s.id), ...w.caches.map((c) => c.id)]);
 ok('[ids] site and cache ids unique across every world (quests use them as places)', new Set(allIds).size === allIds.length);

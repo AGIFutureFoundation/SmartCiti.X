@@ -281,8 +281,17 @@
   "seo.desc.languages": "Die Sprachen, in denen die Akademie angeboten wird, jeweils mit dem Übersetzungsstand, den ihr eigener Katalog festhält.",
   "landing.video.pause": "Hintergrundvideo anhalten",
   "landing.video.play": "Hintergrundvideo abspielen",
-  "landing.video.caption": "Hintergrund: ein Rundflug über den Campus Treasure Island, aufgenommen von der 3D-Seite dieses Builds.",
-  "nav.page.design": "Design-Baukasten"
+  "landing.video.caption": "Hintergrund: eine tiefe Kamerafahrt über die Grünfläche des Campus Treasure Island, Bild für Bild aufgenommen auf dem 3D-Campus dieses Builds.",
+  "nav.page.design": "Design-Baukasten",
+  "nav.skip": "Zum Hauptinhalt springen",
+  "quests.title": "Quests und Spielhalle",
+  "quests.lede": "Nebenquests, Spiele, Schätze und Easter Eggs in der ganzen Akademie, freigeschaltet durch die Lektionen, die sie nutzen.",
+  "quests.h.arcade": "Spielhalle",
+  "quests.h.shelf": "Abzeichenregal",
+  "quests.h.log": "Questbuch",
+  "quests.h.clues": "Hinweise an der Tafel",
+  "quests.seo_desc": "Quests, Minispiele, Schätze und Easter Eggs in der Akademie. Nur Spiel: Abzeichen bleiben auf diesem Gerät und gelangen nie in einen Abschlussnachweis.",
+  "nav.search": "Suchen"
  },
  "districts": {
   "structural": {

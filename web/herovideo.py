@@ -21,9 +21,9 @@ the control. The rules it holds:
     frames and measures every hero text colour against the worst composited
     pixel under it, so the scrim's number is held to a measured contrast.
 
-CLIP is the one place the footage is chosen. MEDIA's b-roll manifest
-(media/registry/media.json) may replace the placeholder clip under
-web/media/hero/: point CLIP at those files and rebuild.
+CLIP is the one place the footage is chosen: HERO_CLIP_ID names a clip in
+MEDIA's b-roll registry (media/registry/media.json), which supplies its
+files and their sha256.
 """
 import html
 import pathlib
@@ -36,13 +36,38 @@ SMALL_PX = 560
 SCRIM_DARK = 0.86
 SCRIM_LIGHT = 0.90
 
-CLIP = {
-    'webm': 'web/media/hero/campus-orbit.webm',
-    'mp4': 'web/media/hero/campus-orbit.mp4',
-    'poster': 'web/media/hero/campus-orbit.jpg',
-    'caption': ('Background: an orbit over the Treasure Island campus, recorded '
-                'from this build’s 3D page.'),
-}
+# The footage is MEDIA's b-roll, chosen by id and read from its registry:
+# the paths, and the sha256 each file must still have, come from
+# media/registry/media.json, never typed here. A clip not registered
+# hero=true, or a file whose bytes changed since MEDIA registered it, stops
+# the build by name.
+MEDIA_PATH = 'media/registry/media.json'
+HERO_CLIP_ID = 'campus-green-low-dolly'
+
+
+def _hero_clip():
+    import hashlib
+    import json
+    reg = json.loads((ROOT / MEDIA_PATH).read_text(encoding='utf-8'))
+    hits = [c for c in reg['clips'] if c['id'] == HERO_CLIP_ID]
+    assert len(hits) == 1, f'herovideo: {MEDIA_PATH} holds {len(hits)} clips with id {HERO_CLIP_ID!r}'
+    clip = hits[0]
+    assert clip['hero'] is True, f'herovideo: {MEDIA_PATH}#{HERO_CLIP_ID} is not registered hero=true'
+    out = {}
+    for k in ('webm', 'mp4', 'poster'):
+        f = clip['files'][k]
+        data = (ROOT / f['path']).read_bytes()
+        assert hashlib.sha256(data).hexdigest() == f['sha256'], \
+            f'herovideo: {f["path"]} no longer matches {MEDIA_PATH}#{HERO_CLIP_ID}.files.{k}.sha256'
+        out[k] = f['path']
+    out['source_page'] = clip['source']['page']
+    out['provenance'] = clip['provenance']
+    return out
+
+
+CLIP = _hero_clip()
+CLIP['caption'] = ('Background: a low dolly across the Treasure Island campus green, '
+                   'filmed frame by frame from this build’s 3D campus.')
 
 
 def _checked(rel, maxb):

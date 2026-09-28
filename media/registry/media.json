@@ -3,7 +3,7 @@
  "how": "media/record.mjs (virtual clock, camera driven through the page hook, one screenshot per frame) -> media/encode.py (grade, VP9 + H.264, poster, 480 px preview) -> media/build.py",
  "budget_bytes": 3145728,
  "fps": 24,
- "source_stamp": "fbaff21f34fe978ea2530b66439803485aa660fc4c3123841754e29561fbff81",
+ "source_stamp": "4f8db1444ea30f8c319f1888c606e6141b95f4e17e0170ff5d7dd3684e50593f",
  "clips": [
   {
    "id": "campus-green-crane-up",
@@ -55,21 +55,162 @@
    "licence": "first-party",
    "grade": "soft S-curve, saturation 1.07, contrast 1.03, vignette PI/6 (media/encode.py GRADE)",
    "encoded": "2026-09-28T06:15Z"
-  }
- ],
- "pending": [
+  },
   {
    "id": "campus-green-low-dolly",
-   "why": "not rendered yet: campus-green-low-dolly.webm, campus-green-low-dolly.mp4, campus-green-low-dolly-poster.jpg, campus-green-low-dolly-480.webm"
+   "title": "Campus green, low lateral dolly",
+   "shows": "The Treasure Island campus green and its training yard, the camera sliding sideways low over the green",
+   "source": {
+    "page": "web/trade_craft_3d.html",
+    "view": "campus:treasure-island"
+   },
+   "camera_move": "lateral dolly (low)",
+   "duration_s": 6,
+   "fps": 24,
+   "frames": 144,
+   "resolution": [
+    1600,
+    900
+   ],
+   "preview_width": 480,
+   "hero": true,
+   "known_issue": null,
+   "status": "committed source",
+   "files": {
+    "webm": {
+     "path": "web/media/broll/campus-green-low-dolly.webm",
+     "bytes": 667779,
+     "sha256": "89b4816e2930d61156cd1662ef06eff055bf09d335bab0f17f4be37c64dd6079",
+     "type": "video/webm; codecs=vp9"
+    },
+    "mp4": {
+     "path": "web/media/broll/campus-green-low-dolly.mp4",
+     "bytes": 1050410,
+     "sha256": "8a3fbc3d6dbdbed875c68936f4bafe419f9bd238dcbf1b860829adad39ed2554",
+     "type": "video/mp4; codecs=avc1"
+    },
+    "poster": {
+     "path": "web/media/broll/campus-green-low-dolly-poster.jpg",
+     "bytes": 106590,
+     "sha256": "e5ecbf57e2e815c8520d979cd20ad1bb53a1bd38f5dab7024b52914b7d9c45f2",
+     "type": "image/jpeg"
+    },
+    "preview": {
+     "path": "web/media/broll/campus-green-low-dolly-480.webm",
+     "bytes": 55487,
+     "sha256": "cfffe2f29f2f0f7021ff61bc1394a8456da8fc347cf82c54725634eaade9ab8f",
+     "type": "video/webm; codecs=vp9"
+    }
+   },
+   "provenance": "RECORDED from this build (commit 57f497245b0d)",
+   "licence": "first-party",
+   "grade": "soft S-curve, saturation 1.07, contrast 1.03, vignette PI/6 (media/encode.py GRADE)",
+   "encoded": "2026-09-28T06:48Z"
   },
   {
    "id": "region-board-orbit",
-   "why": "not rendered yet: region-board-orbit.webm, region-board-orbit.mp4, region-board-orbit-poster.jpg, region-board-orbit-480.webm"
+   "title": "Region board, slow orbit",
+   "shows": "The ten-campus region board turning slowly under a high three-quarter camera",
+   "source": {
+    "page": "web/trade_craft_3d.html",
+    "view": "region"
+   },
+   "camera_move": "orbit",
+   "duration_s": 6,
+   "fps": 24,
+   "frames": 144,
+   "resolution": [
+    1600,
+    900
+   ],
+   "preview_width": 480,
+   "hero": false,
+   "known_issue": "the board fills about a fifth of the frame and a glint crosses the water; not used as a hero",
+   "status": "committed source",
+   "files": {
+    "webm": {
+     "path": "web/media/broll/region-board-orbit.webm",
+     "bytes": 1333680,
+     "sha256": "d6db241b4e6b1e4c852f9d518f8fce8cb86249a444ff11e137108ec72410518d",
+     "type": "video/webm; codecs=vp9"
+    },
+    "mp4": {
+     "path": "web/media/broll/region-board-orbit.mp4",
+     "bytes": 1260056,
+     "sha256": "611529016337109bb5dd6bf0fe09e7efb375ae9ace4f7c803d9abad2ce3647b7",
+     "type": "video/mp4; codecs=avc1"
+    },
+    "poster": {
+     "path": "web/media/broll/region-board-orbit-poster.jpg",
+     "bytes": 138715,
+     "sha256": "300afad05280a45079fe36970cf29d234f81df42ac7edd801ab9b0f84ff3426c",
+     "type": "image/jpeg"
+    },
+    "preview": {
+     "path": "web/media/broll/region-board-orbit-480.webm",
+     "bytes": 85779,
+     "sha256": "1fa40f602adab49e1e168a5630ecb347944c5e205793231fa46bfa5a2436b86a",
+     "type": "video/webm; codecs=vp9"
+    }
+   },
+   "provenance": "RECORDED from this build (commit 57f497245b0d)",
+   "licence": "first-party",
+   "grade": "soft S-curve, saturation 1.07, contrast 1.03, vignette PI/6 (media/encode.py GRADE)",
+   "encoded": "2026-09-28T06:49Z"
   },
   {
    "id": "hall-orbit",
-   "why": "not rendered yet: hall-orbit.webm, hall-orbit.mp4, hall-orbit-poster.jpg, hall-orbit-480.webm"
-  },
+   "title": "Hall exterior, close orbit",
+   "shows": "One trade hall seen from outside, the camera circling it at roof height",
+   "source": {
+    "page": "web/trade_craft_3d.html",
+    "view": "hall"
+   },
+   "camera_move": "orbit",
+   "duration_s": 6,
+   "fps": 24,
+   "frames": 144,
+   "resolution": [
+    1600,
+    900
+   ],
+   "preview_width": 480,
+   "hero": true,
+   "known_issue": null,
+   "status": "committed source",
+   "files": {
+    "webm": {
+     "path": "web/media/broll/hall-orbit.webm",
+     "bytes": 883878,
+     "sha256": "90b261c5efa8dd528cca33ab5b226e4ea237dfa0a15ecfbf2861cc04d8568454",
+     "type": "video/webm; codecs=vp9"
+    },
+    "mp4": {
+     "path": "web/media/broll/hall-orbit.mp4",
+     "bytes": 903499,
+     "sha256": "c875a286ef804de25ebeeeff7896a8f5fdbe689d5bcbe4be3eb578b29eda1781",
+     "type": "video/mp4; codecs=avc1"
+    },
+    "poster": {
+     "path": "web/media/broll/hall-orbit-poster.jpg",
+     "bytes": 111273,
+     "sha256": "3822ae2efc2bdc282ec8d6cfff003f1fa089dde689d0583f21e4264ac8a3a6e8",
+     "type": "image/jpeg"
+    },
+    "preview": {
+     "path": "web/media/broll/hall-orbit-480.webm",
+     "bytes": 104775,
+     "sha256": "0f11f5c6ef406da0836deba3a35f132d79036cd5723ddb26452500481f5211da",
+     "type": "video/webm; codecs=vp9"
+    }
+   },
+   "provenance": "RECORDED from this build (commit 57f497245b0d)",
+   "licence": "first-party",
+   "grade": "soft S-curve, saturation 1.07, contrast 1.03, vignette PI/6 (media/encode.py GRADE)",
+   "encoded": "2026-09-28T06:49Z"
+  }
+ ],
+ "pending": [
   {
    "id": "hall-interior-dolly",
    "why": "not rendered yet: hall-interior-dolly.webm, hall-interior-dolly.mp4, hall-interior-dolly-poster.jpg, hall-interior-dolly-480.webm"

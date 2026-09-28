@@ -223,11 +223,13 @@ ok('[shipped] the footer stamps are the registry stamps',
 
 /* ----------------------------------------------------------------- hrefs -- */
 const hrefs = [...new Set(attr(/href="([^"#][^"]*)"/g))].filter((h) => !h.startsWith('data:'));
-const missing = hrefs.filter((h) => !existsSync(join(WEB, h.split('?')[0])));
+const missing = hrefs.filter((h) => !existsSync(join(WEB, h.split('?')[0].split('#')[0])));
 ok(`[shipped] every href resolves to a file beside the page (${hrefs.length} distinct)`, hrefs.length > 0 && missing.length === 0, missing);
 const anchors = attr(/href="#([^"]+)"/g);
 const ids = new Set(attr(/ id="([^"]+)"/g));
-ok('[shipped] every in-page anchor points at an element id', anchors.length === spaces.length && anchors.every((a) => ids.has(a)));
+// one anchor per space, plus the site nav's skip link (#tc-main); every one must land on an id
+ok('[shipped] every in-page anchor points at an element id',
+  anchors.filter((a) => a !== 'tc-main').length === spaces.length && anchors.every((a) => ids.has(a)));
 ok('[shipped] the 3D hall links use the ?hall= query the 3D page reads',
   attr(/data-hall="[^"]+"/g).length > 0 && [...page.matchAll(/href="([^"]+)" data-hall="([^"]+)"/g)].every((m) => m[1] === `trade_craft_3d.html?hall=${m[2]}`));
 
