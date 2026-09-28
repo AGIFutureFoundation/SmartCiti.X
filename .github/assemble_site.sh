@@ -41,7 +41,10 @@ def resolve(page, href):
 pages = list(site.rglob('*.html'))
 for page in pages:
     html = SCRIPT.sub(' ', page.read_text(errors='ignore'))
-    for href in re.findall(r'(?:href|src)="([^"]+)"', html):
+    # an attribute NAMED href or src, not one that merely ends in it: the front
+    # door records each figure's registry in data-src="...", which is a citation
+    # a reader sees, not a file the browser loads
+    for href in re.findall(r'(?<![\w-])(?:href|src)="([^"]+)"', html):
         resolve(page, href)
 
 # Stylesheets carry their own links, and the fonts now live behind one. A
