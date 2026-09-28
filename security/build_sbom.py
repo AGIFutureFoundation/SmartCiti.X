@@ -44,7 +44,7 @@ UPSTREAMS = {
     'maplibre-gl': {
         'purl': 'pkg:npm/maplibre-gl',
         'license': 'BSD-3-Clause',
-        'license_url': 'https://github.com/maplibre/maplibre-gl-js/blob/v4.7.1/LICENSE.txt',
+        'license_url': 'https://github.com/maplibre/maplibre-gl-js/blob/v5.24.0/LICENSE.txt',
         'vcs': 'https://github.com/maplibre/maplibre-gl-js',
         'website': 'https://maplibre.org/',
     },

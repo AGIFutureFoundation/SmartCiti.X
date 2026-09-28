@@ -109,7 +109,7 @@ def plan_svg(site):
                      text_box(x, y + 30, r['name'], LABEL_PX, 'middle'),
                      text_box(x, y + 42, r['union'], LABEL_PX, 'middle')]
     bounds += keep_off
-    parts.append('<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--mark)"/></marker></defs>')
+    parts.append(f'<defs><marker id="arr-{esc(site["id"])}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--mark)"/></marker></defs>')
     badges = []
     for h in site['handoffs']:
         (x1, y1), (x2, y2) = P[h['by']], P[h['to']]
@@ -121,7 +121,7 @@ def plan_svg(site):
         sx, sy = round(x1 + dx / L * 16 + ox, 1), round(y1 + dy / L * 16 + oy, 1)
         ex, ey = round(x2 - dx / L * 16 + ox, 1), round(y2 - dy / L * 16 + oy, 1)
         cls = 'arrow' if h['verifiable'] else 'arrow unverifiable'
-        parts.append(f'<line class="{cls}" x1="{sx}" y1="{sy}" x2="{ex}" y2="{ey}" marker-end="url(#arr)" data-handoff="{h["n"]}" data-by="{esc(h["by"])}" data-to="{esc(h["to"])}"><title>{h["n"]}. {esc(h["step"])}</title></line>')
+        parts.append(f'<line class="{cls}" x1="{sx}" y1="{sy}" x2="{ex}" y2="{ey}" marker-end="url(#arr-{esc(site["id"])})" data-handoff="{h["n"]}" data-by="{esc(h["by"])}" data-to="{esc(h["to"])}"><title>{h["n"]}. {esc(h["step"])}</title></line>')
         bounds.append((min(sx, ex) - 4, min(sy, ey) - 4, max(sx, ex) + 4, max(sy, ey) + 4))
         # the badge: first spot along its own arrow, nearest the middle and
         # on the arrow's own side, clear of every post, role label and badge
@@ -211,7 +211,7 @@ def site_section(s):
 <h3>Lessons that name this crew</h3><p class="serves">{lessons}</p>
 </div></div>
 <details><summary>Hand-offs, in order, with the evidence at each end</summary>
-<table class="sched"><thead><tr><th>#</th><th>hand-off</th><th>step</th><th>from-evidence</th><th>to-evidence</th><th>verifiable?</th></tr></thead><tbody>{hand}</tbody></table></details>
+<div class="tablewrap"><table class="sched"><thead><tr><th>#</th><th>hand-off</th><th>step</th><th>from-evidence</th><th>to-evidence</th><th>verifiable?</th></tr></thead><tbody>{hand}</tbody></table></div></details>
 </section>'''
 
 
@@ -279,6 +279,7 @@ a{{color:var(--steel)}}
 details{{margin-top:14px}}
 summary{{cursor:pointer;color:var(--steel)}}
 .sched{{border-collapse:collapse;width:100%;font-size:13px;margin-top:8px}}
+.tablewrap{{overflow-x:auto;max-width:100%}}
 .sched th,.sched td{{border-top:1px solid var(--rule);padding:4px 8px;text-align:start;vertical-align:top}}
 .sched th{{color:var(--muted);font-weight:600}}
 .num{{font-variant-numeric:tabular-nums;white-space:nowrap}}

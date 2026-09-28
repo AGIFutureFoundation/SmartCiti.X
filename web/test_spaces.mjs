@@ -246,6 +246,10 @@ const DRILL = [
 ];
 ok(`[drill] ${DRILL.length} mutations each name the check that catches them`, DRILL.every(([, c]) => c.length > 0));
 
+ok('every item schedule table sits in its own horizontal scroll wrapper, so a 390px screen does not cut its columns off',
+  (page.match(/<div class="tablewrap"><table class="sched">/g) || []).length === (page.match(/<table class="sched">/g) || []).length
+  && (page.match(/<table class="sched">/g) || []).length > 0 && /\.tablewrap\{overflow-x:auto/.test(page));
+
 if (bad) {
   console.log(`web/test_spaces: ${bad} FAILED, ${n} passed`);
   process.exit(1);

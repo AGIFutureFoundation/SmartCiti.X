@@ -565,6 +565,216 @@ ok('[shipped] trade_craft_lessons.html: the course page invents no deep-link sch
     typed.map((s) => `${s.href} ${s.kind} appears verbatim in build_home.py`));
 }
 
+/* index.html's escaping, as build_home.py's esc() does it: whitespace
+   collapsed, then & < > escaped. */
+const escLikeHome = (t) => String(t).split(/\s+/).join(' ').trim()
+  .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+/* ====================================================== [front door] === */
+/* The structure the front door was rebuilt around: one h1 and an outline
+   that never skips a level; hero figures that each name the registry they
+   were counted from; two calls to action and four audience paths that land
+   on built pages; the learner loop drawn from web/sitenav.py's own LOOP with
+   pictures that ship; and what a record proves, word for word from the
+   registry the verifier is built on. Every check reads markup, never prose. */
+{
+  const { existsSync, readFileSync: rf, readdirSync } = await import('node:fs');
+  const { execFileSync } = await import('node:child_process');
+  const bare = home.replace(/<script\b[\s\S]*?<\/script>/g, '');
+
+  /* -- one h1, and an outline that never skips a level ------------------ */
+  const levels = [...bare.matchAll(/<h([1-6])\b/g)].map((m) => Number(m[1]));
+  const skips = levels.map((l, i) => (i && l > levels[i - 1] + 1 ? `h${levels[i - 1]} -> h${l}` : null))
+    .filter(Boolean);
+  ok('[shipped] index.html: exactly one <h1>, it is the first heading, and no heading skips a level '
+    + `on the way down (${levels.length} headings)`,
+    levels.filter((l) => l === 1).length === 1 && levels[0] === 1 && skips.length === 0,
+    [`h1 count=${levels.filter((l) => l === 1).length} first=h${levels[0]}`, ...skips.slice(0, 4)]);
+
+  /* -- the hero figures: each one names its registry and equals a recount - */
+  const finishes = readJSON('surfaces/registry/finishes.json');
+  const readme = rf(join(ROOT, 'README.md'), 'utf8');
+  const STAT_RULES = {
+    halls: ['unions/registry/unions.json#count', () => unionsReg.count],
+    campuses: ['geo/registry/campuses_geo.json#campuses', () => CAMPUSES],
+    seats: ['sims/registry/sims.json#sims', () => SEATS],
+    lessons: ['lessons/registry/lessons.json#counts.lessons',
+      () => (lessonsReg.counts.lessons === LIDS.length ? LIDS.length : NaN)],
+    steps: ['lessons/registry/lessons.json#counts.steps',
+      () => (lessonsReg.counts.steps === LIDS.reduce((a, id) => a + LESSONS[id].steps.length, 0)
+        ? lessonsReg.counts.steps : NaN)],
+    modules: ['README.md', null],
+    surfaces: ['surfaces/registry/finishes.json#catalogue+wall_catalogue',
+      () => Object.keys(finishes.catalogue).length + Object.keys(finishes.wall_catalogue).length],
+    locales: ['i18n/locales/*.json',
+      () => readdirSync(join(ROOT, 'i18n/locales')).filter((f) => f.endsWith('.json')).length],
+  };
+  const stats = [...home.matchAll(
+    /<div class="stat" data-stat="([^"]*)" data-src="([^"]*)"><dt>[^<]*<\/dt><dd>([^<]*)<\/dd><\/div>/g)]
+    .map((m) => ({ key: m[1], src: m[2], shown: m[3] }));
+  const statWrong = [];
+  for (const s of stats) {
+    const rule = STAT_RULES[s.key];
+    if (!rule) { statWrong.push(`${s.key}: no rule in this suite`); continue; }
+    if (s.src !== rule[0]) statWrong.push(`${s.key}: data-src=${s.src}, want ${rule[0]}`);
+    if (rule[1] === null) {
+      // the one figure that is a headline, not a length: the bundle's own
+      // README must state it in exactly the form the page prints
+      if (!/^\d{1,3}(,\d{3})+$/.test(s.shown) || !readme.includes(s.shown)) {
+        statWrong.push(`${s.key}: ${s.shown} is not stated in README.md`);
+      }
+    } else if (s.shown.replace(/,/g, '') !== String(rule[1]())) {
+      statWrong.push(`${s.key}: page=${s.shown} registry=${rule[1]()}`);
+    }
+  }
+  const statKeys = stats.map((s) => s.key);
+  ok(`[shipped] index.html: every hero figure (${stats.length}) names in data-src the registry it was `
+    + 'counted from, and equals this suite\'s own recount of that registry',
+    stats.length > 0 && statWrong.length === 0, statWrong);
+  ok('[shipped] index.html: and the hero figures are exactly the set this suite recounts - no stat '
+    + 'slot missing, repeated, or added without a rule, and none outside the data-stat grid',
+    JSON.stringify([...statKeys].sort()) === JSON.stringify(Object.keys(STAT_RULES).sort())
+    && new Set(statKeys).size === statKeys.length
+    && attrAll(home, 'data-stat').length === stats.length,
+    [`page=[${statKeys}] slots=${attrAll(home, 'data-stat').length}`]);
+
+  /* -- the calls to action ----------------------------------------------- */
+  const cta = Object.fromEntries([...home.matchAll(/<a class="btn [^"]*" data-cta="([^"]*)" href="([^"]*)"/g)]
+    .map((m) => [m[1], m[2]]));
+  ok('[shipped] index.html: the hero carries exactly two calls to action - "primary" into the lessons '
+    + 'and "secondary" into the walkable campus - as real links to built pages',
+    attrAll(home, 'data-cta').length === 2
+    && cta.primary === 'web/trade_craft_lessons.html' && cta.secondary === 'web/trade_craft_3d.html'
+    && existsSync(join(ROOT, cta.primary)) && existsSync(join(ROOT, cta.secondary)),
+    [`ctas=${JSON.stringify(cta)}`]);
+
+  /* -- the audience paths ------------------------------------------------ */
+  const WANT_PATHS = ['learners', 'instructors', 'employers', 'partners'];
+  const pathBlocks = [...bare.matchAll(/<article class="path" data-path="([^"]*)">([\s\S]*?)<\/article>/g)];
+  const pathWrong = [];
+  for (const [, k, inner] of pathBlocks) {
+    const hrefs = [...inner.matchAll(/href="([^"]*)"/g)].map((m) => m[1]);
+    if (!/<h3>[^<]+<\/h3>/.test(inner)) pathWrong.push(`${k}: no h3`);
+    if (!hrefs.length) pathWrong.push(`${k}: no link`);
+    for (const h of hrefs) if (!existsSync(join(ROOT, h.split(/[?#]/)[0]))) pathWrong.push(`${k}: ${h} is not a file`);
+  }
+  ok('[shipped] index.html: four audience paths - learners, instructors, employers, partners - in that '
+    + 'order, each with a heading and at least one link, every link a built page',
+    JSON.stringify(pathBlocks.map((m) => m[1])) === JSON.stringify(WANT_PATHS) && pathWrong.length === 0,
+    [`paths=[${pathBlocks.map((m) => m[1])}]`, ...pathWrong]);
+
+  /* -- the learner loop, from the one declaration ------------------------ */
+  const LOOP_DECL = JSON.parse(execFileSync('python3', ['-c', [
+    'import json, sys', `sys.path.insert(0, ${JSON.stringify(HERE)})`,
+    'import sitenav as s', 'print(json.dumps(s.LOOP))'].join('\n')], { encoding: 'utf8' }));
+  const en = readJSON('i18n/locales/en.json').strings;
+  const steps = [...bare.matchAll(/<li class="step" data-loop-step="([^"]*)">([\s\S]*?)<\/li>/g)];
+  const loopWrong = [];
+  if (steps.length !== LOOP_DECL.length) loopWrong.push(`page ${steps.length} steps, sitenav.LOOP ${LOOP_DECL.length}`);
+  LOOP_DECL.forEach(([page, key], i) => {
+    const s = steps[i];
+    if (!s) return;
+    const [, k, inner] = s;
+    if (k !== key.split('.').pop()) loopWrong.push(`step ${i + 1}: data-loop-step=${k}, want ${key.split('.').pop()}`);
+    const href = (inner.match(/<a class="step-link" href="([^"]*)"/) || [])[1];
+    if (href !== page) loopWrong.push(`step ${i + 1}: href=${href}, want ${page}`);
+    const h3 = (inner.match(/<h3>([^<]*)<\/h3>/) || [])[1];
+    if (h3 !== escLikeHome(en[key])) loopWrong.push(`step ${i + 1}: label "${h3}" is not the catalog's "${en[key]}"`);
+    const img = inner.match(/<img src="([^"]*)" alt="([^"]*)"/);
+    const ph = /<div class="shot-ph" data-placeholder><span>Placeholder<\/span>[^<]+<\/div>/.test(inner);
+    if (!img && !ph) loopWrong.push(`step ${i + 1}: neither a screenshot nor a labelled placeholder`);
+    if (img && !/^wiki\/img\/process-[a-z0-9-]+\.png$/.test(img[1])) loopWrong.push(`step ${i + 1}: ${img[1]} is not a shipped process shot`);
+  });
+  ok('[shipped] index.html: the learner loop is web/sitenav.py\'s LOOP, step for step - same order, same '
+    + 'pages, each named by its own catalog label - and each step shows a shipped wiki/img/process-*.png '
+    + 'or a placeholder labelled as one',
+    loopWrong.length === 0, loopWrong);
+
+  /* -- every picture: alt text, a file that ships, its real size ---------- */
+  const imgs = [...bare.matchAll(/<img\b([^>]*)>/g)].map((m) => m[1]);
+  const imgWrong = [];
+  for (const a of imgs) {
+    const src = (a.match(/\bsrc="([^"]*)"/) || [])[1];
+    const alt = (a.match(/\balt="([^"]*)"/) || [])[1];
+    const w = Number((a.match(/\bwidth="(\d+)"/) || [])[1]);
+    const h = Number((a.match(/\bheight="(\d+)"/) || [])[1]);
+    if (!alt || !alt.trim()) imgWrong.push(`${src}: no alt text`);
+    if (!src || !existsSync(join(ROOT, src))) { imgWrong.push(`${src}: not a file under the bundle root`); continue; }
+    const buf = rf(join(ROOT, src));
+    if (buf.readUInt32BE(16) !== w || buf.readUInt32BE(20) !== h) {
+      imgWrong.push(`${src}: width/height ${w}x${h}, file is ${buf.readUInt32BE(16)}x${buf.readUInt32BE(20)}`);
+    }
+  }
+  ok(`[shipped] index.html: every <img> (${imgs.length}) has alt text, a src that is a file in the bundle, `
+    + 'and width/height equal to that file\'s own PNG header, so the page does not jump as it loads',
+    imgs.length > 0 && imgWrong.length === 0, imgWrong);
+
+  /* -- no dead link: every local href and src lands on a file or an id ---- */
+  const ids = new Set(attrAll(bare, 'id'));
+  const dead = [];
+  for (const [, attr, v] of bare.matchAll(/(?<![\w-])(href|src)="([^"]*)"/g)) {
+    if (/^(https?:|data:|mailto:)/.test(v)) continue;
+    if (v.startsWith('#')) { if (!ids.has(v.slice(1))) dead.push(`${attr}=${v}: no such id`); continue; }
+    const file = v.replace(/&amp;/g, '&').split(/[?#]/)[0];
+    if (!existsSync(join(ROOT, file))) dead.push(`${attr}=${v}: no such file`);
+  }
+  ok('[shipped] index.html: no dead link - every local href and src resolves to a file under the bundle '
+    + 'root, and every in-page #fragment to an id the page carries',
+    dead.length === 0, dead.slice(0, 6));
+
+  /* -- what a record proves, word for word ------------------------------- */
+  const COMPLETION = 'completion/registry/completion.json';
+  const comp = readJSON(COMPLETION).honesty;
+  const recs = [...bare.matchAll(/<(li|p)(?: class="[^"]*")? data-from="completion\/registry\/completion\.json#honesty\.([a-z_]+)(?:\[(\d+)\])?">([^<]*)<\/\1>/g)];
+  const recWrong = [];
+  const seen = { proves: [], does_not_prove: [], accreditation: [] };
+  for (const [, , fieldName, idx, text] of recs) {
+    const v = idx === undefined ? comp[fieldName] : (comp[fieldName] || [])[Number(idx)];
+    if (typeof v !== 'string') { recWrong.push(`${fieldName}[${idx}]: not a sentence in ${COMPLETION}`); continue; }
+    if (text !== escLikeHome(v)) recWrong.push(`${fieldName}[${idx}]: shipped "${text.slice(0, 50)}..." != registry`);
+    if (seen[fieldName]) seen[fieldName].push(idx === undefined ? 0 : Number(idx));
+  }
+  const whole = (k) => JSON.stringify(seen[k]) === JSON.stringify(comp[k].map((_, i) => i));
+  ok('[shipped] index.html: what a record proves and does not prove is the verifier registry\'s own '
+    + `sentences, verbatim and complete - ${comp.proves.length} proves, ${comp.does_not_prove.length} `
+    + 'does-not-prove, and the accreditation line - each naming its field in data-from',
+    recWrong.length === 0 && whole('proves') && whole('does_not_prove') && seen.accreditation.length === 1,
+    [...recWrong, `proves=[${seen.proves}] not=[${seen.does_not_prove}] accred=${seen.accreditation.length}`]);
+}
+
+{
+  /* The fail-closed rule, held against the whole generator - its f-string
+     page template included. The older check strips triple-quoted strings,
+     and the footer's `.get('honesty.modules', '')` sat inside one, unseen. */
+  /* Docstrings go (they quote the very idioms they forbid); f-string
+     templates stay, because a default inside one ships. Triple quotes are
+     paired in order, and a pair whose opener is prefixed f is a template. */
+  const src = readFileSync(HOME_GEN, 'utf8');
+  const q = [...src.matchAll(/"""/g)].map((m) => m.index);
+  let raw = '', at = 0;
+  for (let i = 0; i + 1 < q.length; i += 2) {
+    const isF = /[fF][rR]?$|[rR][fF]$/.test(src.slice(Math.max(0, q[i] - 2), q[i]));
+    raw += src.slice(at, q[i]) + (isF ? src.slice(q[i], q[i + 1] + 3) : ' ');
+    at = q[i + 1] + 3;
+  }
+  raw = (raw + src.slice(at)).replace(/^\s*#.*$/gm, ' ');
+  const hits = raw.match(/\.get\([^)]*,[^)]*\)|\?\?/g) || [];
+  ok('[generator] build_home.py substitutes no default anywhere, page template included: no `.get(k, '
+    + 'default)` and no `??`, inside or outside a triple-quoted string',
+    hits.length === 0, hits.slice(0, 4));
+}
+
+{
+  /* The programme page is a front door too. Without a viewport meta a phone
+     lays it out at 980 px and shrinks it, which QA measured as a 1032 px
+     scroll width at 390. */
+  const landing = readFileSync(join(HERE, 'trade_craft_landing.html'), 'utf8');
+  ok('[shipped] index.html and trade_craft_landing.html each declare a device-width viewport, so a phone '
+    + 'lays them out at its own width rather than a desktop one scaled down',
+    [home, landing].every((h) => /<meta name="viewport" content="width=device-width, initial-scale=1">/.test(h)),
+    [`index=${/name="viewport"/.test(home)} landing=${/name="viewport"/.test(landing)}`]);
+}
+
 /* ============================================================ [browser] === */
 if (WANT_BROWSER) {
   let chromium;
@@ -654,6 +864,135 @@ if (WANT_BROWSER) {
         + 'episode',
         JSON.stringify(before) === JSON.stringify(after) && /1 of \d+ marked/.test(done),
         [`storage before=${before} after=${after} tally=${JSON.stringify(done)}`]);
+    }
+
+    /* the front door itself, as a reader meets it: on a phone and a desk, in
+       both colour schemes - no sideways scroll, body text at WCAG AA against
+       the surface actually behind it (alpha composited, measured with
+       getComputedStyle rather than guessed), and both calls to action
+       reachable from the keyboard alone. */
+    {
+      const wrong = [];
+      for (const target of ['index.html', 'web/trade_craft_landing.html']) {
+      for (const [w, h] of [[390, 844], [1440, 900]]) {
+        for (const scheme of ['light', 'dark']) {
+          const ctx = await browser.newContext({ viewport: { width: w, height: h }, colorScheme: scheme });
+          const p = await ctx.newPage();
+          const tag = `${target} ${w} ${scheme}`;
+          p.on('pageerror', (e) => errs.push(`pageerror (${tag}): ${e.message}`));
+          p.on('console', (m) => { if (m.type() === 'error') errs.push(`console (${tag}): ${m.text()}`); });
+          await p.goto(`${ORIGIN}/${target}`, { waitUntil: 'load' });
+          const r = await p.evaluate(() => {
+            // measure what a reader can open, not only what is open
+            document.querySelectorAll('details:not([data-sitenav-menu])').forEach((d) => { d.open = true; });
+            const rgba = (c) => { const v = (c.match(/[\d.]+/g) || []).map(Number); return [v[0], v[1], v[2], v.length > 3 ? v[3] : 1]; };
+            const over = (top, bot) => [0, 1, 2].map((i) => top[i] * top[3] + bot[i] * (1 - top[3])).concat(1);
+            const behind = (el) => {
+              const stack = [];
+              for (let e = el; e; e = e.parentElement) {
+                const b = rgba(getComputedStyle(e).backgroundColor);
+                if (b[3] > 0) { stack.push(b); if (b[3] >= 1) break; }
+              }
+              let acc = [255, 255, 255, 1];
+              for (let i = stack.length - 1; i >= 0; i--) acc = over(stack[i], acc);
+              return acc;
+            };
+            const lum = (c) => { const [r, g, b] = c.slice(0, 3).map((x) => { x /= 255; return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+            const low = [];
+            for (const el of document.querySelectorAll('p, li, a, span, b, dt, dd, h1, h2, h3, h4, summary, button, kbd, code, figcaption')) {
+              if (el.closest('svg') || !el.getClientRects().length) continue;
+              if (![...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())) continue;
+              const cs = getComputedStyle(el);
+              if (cs.visibility === 'hidden') continue;
+              const bg = behind(el);
+              const fg = over(rgba(cs.color), bg);
+              const [a, b] = [lum(fg), lum(bg)].sort((x, y) => y - x);
+              const ratio = (a + 0.05) / (b + 0.05);
+              const size = parseFloat(cs.fontSize);
+              const large = size >= 24 || (size >= 18.66 && Number(cs.fontWeight) >= 700);
+              if (ratio < (large ? 3 : 4.5)) low.push(`${el.tagName.toLowerCase()}.${el.className} ${ratio.toFixed(2)}`);
+            }
+            // every control a finger has to hit: 24 CSS px tall at least
+            const small = [...document.querySelectorAll('a[href], button, summary')]
+              .filter((e) => !e.closest('svg') && e.getClientRects().length
+                && getComputedStyle(e).visibility !== 'hidden')
+              .map((e) => [e, e.getBoundingClientRect()])
+              .filter(([, r]) => r.width > 0 && r.height < 24)
+              .map(([e, r]) => `${e.tagName.toLowerCase()}.${e.className} "${e.textContent.trim().slice(0, 24)}" ${r.height.toFixed(1)}px`);
+            return { sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth, low, small };
+          });
+          if (r.sw > r.cw) wrong.push(`${tag}: scrollWidth ${r.sw} > ${r.cw}`);
+          for (const l of r.low.slice(0, 3)) wrong.push(`${tag}: contrast ${l}`);
+          for (const l of r.small.slice(0, 3)) wrong.push(`${tag}: tap target ${l}`);
+          if (w === 390 && target === 'index.html') {
+            const reached = new Set();
+            for (let i = 0; i < 40 && reached.size < 2; i++) {
+              await p.keyboard.press('Tab');
+              const c = await p.evaluate(() => document.activeElement && document.activeElement.dataset.cta);
+              if (c) reached.add(c);
+            }
+            if (reached.size !== 2) wrong.push(`${tag}: Tab reached only [${[...reached]}] of the two calls to action`);
+          }
+          await ctx.close();
+        }
+      }
+      }
+      ok('[browser] index.html and trade_craft_landing.html at 390 and 1440 px, light and dark: no '
+        + 'horizontal scroll, every text node '
+        + 'at WCAG AA contrast against the surface behind it, every link, button and summary at least '
+        + '24px tall, and both calls to action reachable by Tab',
+        wrong.length === 0, wrong.slice(0, 8));
+    }
+
+    /* The site header is web/sitenav.py's, and it sits on every page, over
+       every page's own palette. Its text is held to AA and its links to the
+       24px tap minimum on each of them, in both schemes, at both widths -
+       the menu opened, so the links a phone reader reaches are measured too. */
+    {
+      const { readdirSync } = await import('node:fs');
+      const pages = ['index.html', ...readdirSync(HERE).filter((f) => f.endsWith('.html')).sort().map((f) => `web/${f}`)];
+      const wrong = [];
+      for (const scheme of ['light', 'dark']) {
+        for (const w of [1440, 390]) {
+          const ctx = await browser.newContext({ viewport: { width: w, height: 800 }, colorScheme: scheme });
+          const p = await ctx.newPage();
+          for (const pg of pages) {
+            await p.goto(`${ORIGIN}/${pg}`, { waitUntil: 'domcontentloaded' });
+            const r = await p.evaluate(() => {
+              const nav = document.querySelector('[data-sitenav]');
+              if (!nav) return { bad: ['no site nav'] };
+              nav.querySelectorAll('details').forEach((d) => { d.open = true; });
+              const rgba = (c) => { const v = (c.match(/[\d.]+/g) || []).map(Number); return [v[0], v[1], v[2], v.length > 3 ? v[3] : 1]; };
+              const over = (t, b) => [0, 1, 2].map((i) => t[i] * t[3] + b[i] * (1 - t[3])).concat(1);
+              const behind = (el) => {
+                const st = [];
+                for (let e = el; e; e = e.parentElement) { const x = rgba(getComputedStyle(e).backgroundColor); if (x[3] > 0) { st.push(x); if (x[3] >= 1) break; } }
+                let a = [255, 255, 255, 1];
+                for (let i = st.length - 1; i >= 0; i--) a = over(st[i], a);
+                return a;
+              };
+              const lum = (c) => { const [r, g, b] = c.slice(0, 3).map((x) => { x /= 255; return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+              const bad = [];
+              for (const el of nav.querySelectorAll('a, span, summary')) {
+                if (!el.getClientRects().length) continue;
+                const bg = behind(el);
+                const fg = over(rgba(getComputedStyle(el).color), bg);
+                const [a, c] = [lum(fg), lum(bg)].sort((x, y) => y - x);
+                const ratio = (a + 0.05) / (c + 0.05);
+                if (ratio < 4.5) bad.push(`"${el.textContent.trim().slice(0, 18)}" ${ratio.toFixed(2)}:1`);
+                const h = el.getBoundingClientRect().height;
+                if (el.tagName !== 'SPAN' && h < 24) bad.push(`"${el.textContent.trim().slice(0, 18)}" ${h.toFixed(1)}px tall`);
+              }
+              return { bad };
+            });
+            for (const b of r.bad.slice(0, 2)) wrong.push(`${pg} ${w} ${scheme}: ${b}`);
+          }
+          await ctx.close();
+        }
+      }
+      ok(`[browser] the site header on every page (${pages.length}), light and dark, 1440 and 390 px: `
+        + 'every label at WCAG AA against the page\'s own surface and every link at least 24px tall',
+        wrong.length === 0, wrong.slice(0, 8));
     }
 
     ok('[browser] neither page raised an uncaught error nor logged a console error while every '

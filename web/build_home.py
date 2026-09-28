@@ -24,7 +24,7 @@ import sys
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
-from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
+from sitenav import nav_html, labels as nav_labels, NAV_CSS, LOOP, PAGES, GROUPS  # noqa: E402
 # The eight district hues. web/mapdata.py owns them and the campus
 # map, the 3D world and the crew marks all read from there; a second set of
 # numbers here would be eight facts with two owners.
@@ -870,187 +870,490 @@ LIMITS = [
 ]
 
 
+# ------------------------------------------------------------ key figures ---
+# The hero's figures. Each carries, in `data-src`, the registry file and the
+# field it was counted from, so web/test_home.mjs can open that file, count
+# again and hold the shipped number to its own answer. Nothing here is typed:
+# a stat whose rule is not one of these reads is not a stat this page prints.
 STATS = [
-    (n(HALLS), 'union halls'),
-    (n(CAMPUSES), 'campuses'),
-    (n(SEATS), 'training seats'),
-    (n(MODULES), 'addressable modules'),
-    (n(FLOORS + WALLS), 'built surfaces'),
-    (n(CREWS), f'crews, {n(CREW_ROLES)} roles'),
+    ('halls', HALLS, 'union halls', 'unions/registry/unions.json#count'),
+    ('campuses', CAMPUSES, 'campuses', 'geo/registry/campuses_geo.json#campuses'),
+    ('seats', SEATS, 'training seats', 'sims/registry/sims.json#sims'),
+    ('lessons', LESSONS, 'walkable lessons', 'lessons/registry/lessons.json#counts.lessons'),
+    ('steps', LESSON_STEPS, 'lesson steps', 'lessons/registry/lessons.json#counts.steps'),
+    ('modules', MODULES, 'addressable modules', 'README.md'),
+    ('surfaces', FLOORS + WALLS, 'built surfaces',
+     'surfaces/registry/finishes.json#catalogue+wall_catalogue'),
+    ('locales', LOCALES, 'languages', 'i18n/locales/*.json'),
 ]
 
 
-# ------------------------------------------------------------------ page ---
-CSS = """
-:root{--plate:#0E1417;--panel:#161F23;--sunk:#0A0E10;--ink:#E8EDEC;
-  --muted:#93A3A6;--dim:#6E7E82;--rule:#25333A;--mark:#E8A33D;--steel:#41C4D4}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--plate);color:var(--ink);
-  font:16px/1.65 "IBM Plex Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
-a{color:var(--steel)}
-header.top{border-bottom:1px solid var(--rule);background:
-  linear-gradient(180deg,#121A1E 0%,var(--plate) 100%)}
-header.top .wrap{padding-top:58px;padding-bottom:40px}
-.brandline{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
-h1{font:700 clamp(34px,6vw,58px)/1.02 "Barlow Condensed",system-ui,sans-serif;
-  margin:0;letter-spacing:.4px}
-h1 .x{color:var(--mark)}
-.by{color:var(--dim);font:600 13px "IBM Plex Mono",monospace;letter-spacing:1.4px;
-  text-transform:uppercase}
-.tagline{color:var(--ink);font-size:clamp(17px,2.2vw,21px);max-width:62ch;margin:18px 0 0}
-.sub{color:var(--muted);max-width:68ch;margin:14px 0 0}
-.stripe{height:8px;background:repeating-linear-gradient(135deg,
-  var(--mark) 0 14px,transparent 14px 28px);opacity:.45}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-  gap:1px;background:var(--rule);border:1px solid var(--rule);margin:34px 0 0}
-.stat{background:var(--panel);padding:16px 18px}
-.stat b{display:block;font:700 26px "Barlow Condensed",sans-serif;color:var(--mark)}
-.stat span{color:var(--muted);font-size:13px}
-section{padding:52px 0 0}
-h2{font:600 26px "Barlow Condensed",sans-serif;margin:0 0 6px;letter-spacing:.3px}
-h2 + p.lede{color:var(--muted);margin:0 0 22px;max-width:74ch}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
-a.card{display:flex;flex-direction:column;background:var(--panel);
-  border:1px solid var(--rule);border-radius:12px;padding:20px 22px 18px;
-  color:inherit;text-decoration:none;transition:border-color .15s,transform .15s}
-a.card:hover,a.card:focus-visible{border-color:var(--mark);transform:translateY(-2px)}
-a.card.lead{grid-column:1/-1;border-color:#3A4B52}
-a.card.lead b{font-size:26px}
-a.card b{font:600 20px "Barlow Condensed",sans-serif;color:var(--ink);margin-bottom:2px}
-a.card .kicker{color:var(--mark);font:600 12px "IBM Plex Mono",monospace;
-  letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px}
-a.card p{margin:0;color:var(--muted);font-size:14.5px}
-a.card .limit{margin-top:12px;padding-top:10px;border-top:1px dashed var(--rule);
-  color:var(--dim);font-size:13px}
-a.card .limit b2{display:none}
-.limit-tag{color:var(--dim);font:600 11px "IBM Plex Mono",monospace;
-  letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:3px}
-a.card .badge{display:inline-block;align-self:start;margin:0 0 8px;padding:2px 8px;
-  border:1px solid var(--rule);border-radius:999px;color:var(--dim);
-  font:600 11px "IBM Plex Mono",monospace;letter-spacing:.6px;text-transform:uppercase}
-/* the seat index: one card per operable seat, its task, its controls and
-   the axes it is scored on. Two columns where there is room, one where
-   there is not - a phone gets the whole of every entry, not a truncated
-   one, because the thresholds are the part worth reading. */
-.seats{list-style:none;margin:0;padding:0;display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
-.seat-row{background:var(--sunk);border:1px solid var(--rule);
-  border-radius:10px;padding:15px 17px}
-.seat-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px}
-.seat-open{font:600 16.5px/1.3 "IBM Plex Sans",system-ui,sans-serif;
-  color:var(--mark);text-decoration:none}
-.seat-open:hover,.seat-open:focus{text-decoration:underline}
-.seat-kind{color:var(--dim);font:11.5px "IBM Plex Mono",monospace;
-  letter-spacing:.4px}
-.seat-kind code{color:var(--dim)}
-.seat-task{margin:9px 0 0;color:var(--ink);font-size:14px}
-.seat-ctl{margin:9px 0 0;color:var(--muted);font-size:13px}
-.seat-ctl kbd{background:var(--panel);border:1px solid var(--rule);
-  border-radius:4px;padding:1px 5px;font:11.5px "IBM Plex Mono",monospace;
-  color:var(--ink)}
-.axes{list-style:none;margin:11px 0 0;padding:11px 0 0;
-  border-top:1px solid var(--rule)}
-.axes li{color:var(--muted);font-size:12.5px;margin:0 0 5px}
-.axes b{color:var(--ink);font:600 12.5px "IBM Plex Mono",monospace;
-  margin-right:6px}
-.axes .pass{color:var(--steel);font:12px "IBM Plex Mono",monospace;
-  white-space:nowrap}
-h3{font:600 20px "Barlow Condensed",sans-serif;margin:34px 0 6px;letter-spacing:.3px}
-h3 + p.lede{color:var(--muted);margin:0 0 18px;max-width:74ch}
-/* ---- the way in -----------------------------------------------------
-   The three things a visitor can do, the one first step, and the trades
-   that have a course. Every figure in here sits in its own `.fig` slot so
-   a check reads a slot rather than a sentence. */
-.fig{color:var(--mark);font-family:"IBM Plex Mono",monospace;
-  font-weight:600;font-variant-numeric:tabular-nums}
-.doable{margin-bottom:22px}
-.doable .pv b{color:var(--mark)}
-a.card.start{margin:0}
-a.card.start .limit + .limit{margin-top:8px}
-.trades{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));
-  gap:8px;margin:0 0 6px}
-a.trade{display:flex;justify-content:space-between;align-items:baseline;gap:10px;
-  background:var(--sunk);border:1px solid var(--rule);border-radius:8px;
-  padding:9px 12px;color:var(--ink);text-decoration:none;font-size:14.5px}
-a.trade:hover,a.trade:focus-visible{border-color:var(--mark)}
-a.trade .tsteps{color:var(--dim);font:11.5px "IBM Plex Mono",monospace;
-  white-space:nowrap}
-/* the limits carry the longest headings on the page, so they get wider
-   columns than the five-word provenance words do */
-.prov.limitrow{grid-template-columns:repeat(auto-fit,minmax(272px,1fr))}
-.prov{display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));gap:14px}
-.pv{background:var(--sunk);border:1px solid var(--rule);border-radius:10px;padding:14px 16px}
-.pv b{display:block;font:600 13px "IBM Plex Mono",monospace;letter-spacing:1px;
-  color:var(--steel);margin-bottom:5px}
-/* A `.pv b` is the HEADING of a card and is a block. A figure inside a
-   card's prose is also a `<b>`, and without this it takes the heading's
-   display, letter-spacing and size - every number on its own line, in the
-   wrong colour. Found by opening the page in a browser and looking at it,
-   not by reading this file. */
-.pv b.fig{display:inline;font:600 inherit/inherit "IBM Plex Mono",monospace;
-  letter-spacing:0;margin-bottom:0;color:var(--mark);
-  font-variant-numeric:tabular-nums}
-.pv span{color:var(--muted);font-size:13.5px}
-footer{margin-top:56px;border-top:1px solid var(--rule);background:var(--sunk)}
-footer .wrap{padding:26px 20px 40px}
-footer p{color:var(--dim);font-size:13px;max-width:82ch;margin:0 0 10px}
+def _png_size(rel):
+    """A shipped screenshot's pixel size, read from its own PNG header, or
+    stop the build naming the file. Width and height go on the <img> so the
+    page reserves the space and does not jump as the pictures arrive."""
+    path = ROOT / rel
+    if not path.is_file():
+        raise FileNotFoundError(f'{rel}: the front door shows this screenshot and it is not there')
+    head = path.read_bytes()[:24]
+    if head[:8] != b'\x89PNG\r\n\x1a\n':
+        raise ValueError(f'{rel} is not a PNG')
+    return int.from_bytes(head[16:20], 'big'), int.from_bytes(head[20:24], 'big')
 
-/* ---- the drawings ---------------------------------------------------
-   Everything below styles SVG this page generated from its own registries.
-   No image is fetched; there is nothing to fetch. */
-.hero{display:block;width:100%;height:auto;margin:30px 0 0;
-  border:1px solid var(--rule);border-radius:10px;background:var(--sunk)}
+
+# ------------------------------------------------------- the learner loop ---
+# The six steps are web/sitenav.py's LOOP - the same declaration the site
+# header draws its loop strip from - and each step's name is that step's own
+# catalog label. What is authored here is one line on what the step asks of
+# a learner, and which shipped screenshot (wiki/img/process-*.png, the ones
+# web/smoke.mjs captures) shows it. A step with no screenshot says so in a
+# labelled placeholder rather than borrowing a picture of something else.
+NAV_EN = nav_labels('en')
+LOOP_COPY = {
+    'web/trade_craft_signin.html': (
+        None, None,
+        'Say whose training record this device holds, or sign a message with a '
+        'wallet. The page lists every method, including the ones that fail closed.'),
+    'web/trade_craft_lessons.html': (
+        'wiki/img/process-interactive-lessons.png',
+        'The interactive campus map with its lessons layer switched on',
+        'Pick your trade’s course. Each lesson names the hall it stands in and '
+        'every step it will ask of you.'),
+    'web/trade_craft_3d.html': (
+        'wiki/img/process-3d-sim.png',
+        'The walkable world, seen from inside a training seat',
+        'Walk the hall on foot, read its walls, and sit in a seat scored by a '
+        'rubric you can read before you start.'),
+    'web/trade_craft_progress.html': (
+        'wiki/img/process-progress-completion.png',
+        'The progress page at its section for carrying a record off this device',
+        'Carry your record off this device as a file that carries its own digest.'),
+    'web/trade_craft_verify.html': (
+        'wiki/img/process-verify.png',
+        'The verify page, where a record’s digest and rules are checked again',
+        'Anyone can recheck the file in a browser. The page says what a pass '
+        'means, and what it does not.'),
+    'web/trade_craft_contribute.html': (
+        'wiki/img/process-contribute.png',
+        'The contribute page, where consent scopes are chosen before anything is built',
+        'Build a contribution under consent scopes you choose. The page itself '
+        'sends nothing anywhere.'),
+}
+if sorted(LOOP_COPY) != sorted(p for p, _ in LOOP):
+    raise AssertionError('web/sitenav.py LOOP and the front door’s loop copy name '
+                         'different pages; the strip would show a step it cannot describe')
+LOOP_STEPS = []
+for _i, (_p, _k) in enumerate(LOOP):
+    _img, _alt, _line = LOOP_COPY[_p]
+    LOOP_STEPS.append({'page': _p, 'key': _k.split('.')[-1], 'label': NAV_EN[_k],
+                       'img': _img, 'alt': _alt, 'line': _line,
+                       'size': _png_size(_img) if _img else None})
+
+
+def loop_strip():
+    out = []
+    for i, s in enumerate(LOOP_STEPS):
+        if s['img']:
+            w, h = s['size']
+            pic = (f'<img src="{s["img"]}" alt="{esc(s["alt"])}" width="{w}" height="{h}" '
+                   f'loading="lazy" decoding="async">')
+        else:
+            pic = ('<div class="shot-ph" data-placeholder>'
+                   '<span>Placeholder</span>No screenshot of this step yet</div>')
+        out.append(
+            f'<li class="step" data-loop-step="{esc(s["key"])}">'
+            f'<a class="step-link" href="{s["page"]}">'
+            f'<span class="shot">{pic}</span>'
+            f'<span class="step-no" aria-hidden="true"></span>'
+            f'<h3>{esc(s["label"])}</h3></a>'
+            f'<p>{esc(s["line"])}</p></li>')
+    return f'<ol class="loop" aria-label="{esc(NAV_EN["nav.loop"])}">{"".join(out)}</ol>'
+
+
+# ------------------------------------------------------ who it is for ---------
+# Four readers arrive at this door with four different questions. Each path
+# is authored prose and a handful of links; every link label that names a
+# page is that page's own catalog label, so the path and the header can never
+# call one page by two names.
+def _nl(page):
+    return esc(NAV_EN[PAGES[page][1]])
+
+
+PATHS = [
+    ('learners', 'Learners and apprentices',
+     'Start with one lesson in your own trade, walk it on campus, and keep a '
+     'record you can carry off the device.',
+     ['web/trade_craft_lessons.html', 'web/trade_craft_3d.html', 'web/trade_craft_progress.html']),
+    ('instructors', 'Training directors and instructors',
+     'See which rungs of each trade’s ladder a simulator seat stands on and '
+     'which it does not, and read the protocol that schedules practice.',
+     ['web/trade_craft_ladder.html', 'web/trade_craft_dashboard.html',
+      'web/smartcitix_trade_craft_academy.html']),
+    ('employers', 'Employers checking a record',
+     'Recheck a learner’s exported record in your own browser. A pass says the '
+     'file is intact and consistent; it is not a certification.',
+     ['web/trade_craft_verify.html']),
+    ('partners', 'Halls and partners',
+     'Contribute training data under consent scopes, lay out work sites and '
+     'spaces, or read what the programme is for.',
+     ['web/trade_craft_contribute.html', 'web/trade_craft_worksites.html',
+      'web/trade_craft_spaces.html', 'web/trade_craft_landing.html']),
+]
+for _k, _t, _b, _links in PATHS:
+    for _p in _links:
+        if _p not in PAGES or not (ROOT / _p).is_file():
+            raise FileNotFoundError(f'audience path {_k}: {_p} is not a built, declared page')
+
+
+def paths_html():
+    out = []
+    for k, title, body, links in PATHS:
+        lis = ''.join(f'<li><a href="{p}">{_nl(p)}<span aria-hidden="true"> →</span></a></li>'
+                      for p in links)
+        out.append(f'<article class="path" data-path="{k}"><h3>{esc(title)}</h3>'
+                   f'<p>{esc(body)}</p><ul>{lis}</ul></article>')
+    return f'<div class="paths">{"".join(out)}</div>'
+
+
+# ------------------------------------------ what a record is and is not -------
+# Read verbatim from the registry the verifier itself is built on, each line
+# naming its field in `data-from`. The front door does not paraphrase what a
+# record proves: a paraphrase is a second claim, and the second claim is the
+# one that drifts.
+COMPLETION_PATH = 'completion/registry/completion.json'
+completion_reg = R(COMPLETION_PATH)
+_c_honesty = need(completion_reg, 'honesty', COMPLETION_PATH)
+RECORD_PROVES = need(_c_honesty, 'proves', f'{COMPLETION_PATH}#honesty')
+RECORD_NOT = need(_c_honesty, 'does_not_prove', f'{COMPLETION_PATH}#honesty')
+RECORD_ACCRED = field(completion_reg, 'honesty.accreditation', COMPLETION_PATH)
+for _name, _rows in (('proves', RECORD_PROVES), ('does_not_prove', RECORD_NOT)):
+    if not isinstance(_rows, list) or not _rows or not all(isinstance(r, str) and r.strip() for r in _rows):
+        raise KeyError(f'{COMPLETION_PATH}#honesty.{_name} is not a list of sentences')
+
+
+def record_html():
+    def rows(name, items):
+        return ''.join(f'<li data-from="{COMPLETION_PATH}#honesty.{name}[{i}]">{esc(t)}</li>'
+                       for i, t in enumerate(items))
+    return (
+        '<div class="record">'
+        '<div class="rec rec-yes"><h4>A verified record proves</h4>'
+        f'<ul>{rows("proves", RECORD_PROVES)}</ul></div>'
+        '<div class="rec rec-no"><h4>It does not prove</h4>'
+        f'<ul>{rows("does_not_prove", RECORD_NOT)}</ul></div>'
+        f'<p class="rec-foot" data-from="{COMPLETION_PATH}#honesty.accreditation">'
+        f'{esc(RECORD_ACCRED)}</p></div>')
+
+
+def _catalog(key):
+    """One string out of the en catalog, or stop the build naming the key."""
+    s = need(i18n_en, 'strings', 'i18n/locales/en.json')
+    if not isinstance(s.get(key), str) or not s[key].strip():
+        raise KeyError(f'i18n/locales/en.json: strings.{key} is missing, and the front door prints it')
+    return s[key]
+
+
+
+# ------------------------------------------------------------------ page ---
+# One small design system, declared once as tokens: a type scale, a spacing
+# scale, three radii, the surface/ink/accent colours for dark AND light (the
+# reader's own prefers-color-scheme picks), and one focus ring. Every rule
+# below reads a token; a colour typed further down is a bug. The contrast of
+# each ink on each surface was measured in the browser with getComputedStyle
+# (web/test_home.mjs --browser holds body text to WCAG AA in both schemes).
+CSS = """
+:root{
+  --fs-xs:12.5px;--fs-sm:14px;--fs-md:16px;--fs-lg:18px;--fs-xl:22px;
+  --fs-2xl:clamp(26px,3.2vw,34px);--fs-3xl:clamp(36px,5.4vw,60px);
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;--s8:72px;
+  --r-sm:6px;--r-md:10px;--r-lg:16px;
+  --font:"IBM Plex Sans",system-ui,sans-serif;
+  --display:"Barlow Condensed","IBM Plex Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  color-scheme:dark;
+  --plate:#0D1316;--panel:#141C20;--sunk:#0A0F11;--raise:#1A252A;
+  --ink:#E9EEED;--muted:#B3BFC1;--dim:#8FA0A3;--rule:#27353B;--rule-2:#384A51;
+  --mark:#EBA844;--steel:#5FD0DE;--btn:#EBA844;--btn-ink:#17110A;
+  --btn2:transparent;--btn2-ink:#E9EEED;--hero:linear-gradient(180deg,#121B1F 0%,#0D1316 100%);
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 8px 24px -12px rgba(0,0,0,.6);
+  --focus:0 0 0 3px #0D1316,0 0 0 5px #F2C46E;
+}
+@media (prefers-color-scheme:light){:root{
+  color-scheme:light;
+  --plate:#F4F6F5;--panel:#FFFFFF;--sunk:#EBEFEE;--raise:#FFFFFF;
+  --ink:#13201F;--muted:#3E4D51;--dim:#526267;--rule:#D2DAD8;--rule-2:#B4C1BF;
+  --mark:#8C4E00;--steel:#08646F;--btn:#A35C00;--btn-ink:#FFFFFF;
+  --btn2:#FFFFFF;--btn2-ink:#13201F;--hero:linear-gradient(180deg,#FFFFFF 0%,#F4F6F5 100%);
+  --shadow:0 1px 2px rgba(16,32,31,.06),0 8px 24px -14px rgba(16,32,31,.22);
+  --focus:0 0 0 3px #FFFFFF,0 0 0 5px #08646F;
+}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--plate);color:var(--ink);
+  font:var(--fs-md)/1.6 var(--font);-webkit-font-smoothing:antialiased}
+img,svg{max-width:100%}
+.wrap{max-width:1200px;margin:0 auto;padding-inline:var(--s5)}
+a{color:var(--steel);text-underline-offset:3px}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:none;box-shadow:var(--focus);
+  border-radius:var(--r-sm)}
+code,kbd{font-family:var(--mono)}
+
+/* ---- type ------------------------------------------------------------ */
+h1,h2,h3,h4{color:var(--ink);margin:0}
+h1{font:700 var(--fs-3xl)/1 var(--display);letter-spacing:.2px}
+h1 .x{color:var(--mark)}
+h2{font:700 var(--fs-2xl)/1.1 var(--display);letter-spacing:.2px}
+h3{font:600 var(--fs-lg)/1.3 var(--font)}
+h4{font:600 var(--fs-sm)/1.4 var(--font)}
+.eyebrow{display:block;color:var(--mark);font:600 var(--fs-xs)/1.4 var(--mono);
+  letter-spacing:.12em;text-transform:uppercase;margin:0 0 var(--s2)}
+.lede{color:var(--muted);max-width:72ch;margin:var(--s2) 0 var(--s5)}
+.sec-head{margin-bottom:var(--s5)}
+section{padding-block:var(--s8) 0}
+.sub-head{margin:var(--s7) 0 var(--s2)}
+.sub-head + .lede{margin-top:var(--s1)}
+
+/* ---- buttons: one family ---------------------------------------------- */
+.btn{display:inline-flex;align-items:center;gap:var(--s2);min-height:44px;
+  padding:0 var(--s5);border-radius:var(--r-sm);font:600 var(--fs-md)/1 var(--font);
+  text-decoration:none;border:1px solid transparent;transition:transform .12s,background .12s}
+.btn-primary{background:var(--btn);color:var(--btn-ink)}
+.btn-primary:hover{filter:brightness(1.06);transform:translateY(-1px)}
+.btn-secondary{background:var(--btn2);color:var(--btn2-ink);border-color:var(--rule-2)}
+.btn-secondary:hover{border-color:var(--mark)}
+.btn-row{display:flex;flex-wrap:wrap;gap:var(--s3);margin:var(--s5) 0 0}
+.textlink{font-weight:600}
+
+/* ---- hero -------------------------------------------------------------- */
+header.top{background:var(--hero);border-bottom:1px solid var(--rule)}
+header.top .wrap{padding-block:var(--s7) var(--s7)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.9fr);
+  gap:var(--s7);align-items:start}
+.by{display:inline-block;margin-top:var(--s3);color:var(--dim);
+  font:600 var(--fs-xs) var(--mono);letter-spacing:.12em;text-transform:uppercase}
+.tagline{font-size:clamp(18px,2vw,21px);line-height:1.5;max-width:56ch;margin:var(--s5) 0 0}
+.sub{color:var(--muted);max-width:64ch;margin:var(--s4) 0 0;font-size:var(--fs-sm)}
+.also{color:var(--muted);font-size:var(--fs-sm);margin:var(--s4) 0 0}
+.figs{background:var(--panel);border:1px solid var(--rule);border-radius:var(--r-lg);
+  padding:var(--s5);box-shadow:var(--shadow)}
+.figs-title{display:flex;justify-content:space-between;gap:var(--s3);flex-wrap:wrap;
+  align-items:baseline;margin-bottom:var(--s4)}
+.figs-title h2{font:600 var(--fs-sm)/1.4 var(--font);color:var(--ink)}
+.figs-title span{color:var(--dim);font-size:var(--fs-xs)}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;
+  background:var(--rule);border:1px solid var(--rule);border-radius:var(--r-md);overflow:hidden;margin:0}
+.stat{background:var(--panel);padding:var(--s3) var(--s4)}
+.stat dd{margin:0;font:700 28px/1.1 var(--display);color:var(--mark);
+  font-variant-numeric:tabular-nums}
+.stat dt{color:var(--muted);font-size:var(--fs-xs)}
+.stat{display:flex;flex-direction:column-reverse}
+.figs-note{color:var(--dim);font-size:var(--fs-xs);margin:var(--s3) 0 0}
+.netmap{margin:var(--s7) 0 0}
+.netmap figcaption{color:var(--dim);font-size:var(--fs-xs);margin-top:var(--s2)}
+
+/* ---- cards: one family -------------------------------------------------- */
+.paths{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--s4)}
+.path,a.card,.pv,.seat-row,.rec{background:var(--panel);border:1px solid var(--rule);
+  border-radius:var(--r-md)}
+.path{padding:var(--s5);display:flex;flex-direction:column;gap:var(--s2);
+  border-top:3px solid var(--mark)}
+.path p{margin:0;color:var(--muted);font-size:var(--fs-sm);flex:1}
+.path ul{list-style:none;margin:var(--s3) 0 0;padding:var(--s3) 0 0;
+  border-top:1px solid var(--rule);display:grid;gap:var(--s1)}
+.path a{font-weight:600;font-size:var(--fs-sm);text-decoration:none;display:inline-block;
+  padding:2px 0}
+.path a:hover{text-decoration:underline}
+
+/* ---- the learner loop ----------------------------------------------------- */
+.loop{list-style:none;margin:0;padding:0;counter-reset:step;display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));gap:var(--s4)}
+.step{counter-increment:step;display:flex;flex-direction:column;position:relative}
+.step-link{display:flex;flex-direction:column;gap:var(--s2);text-decoration:none;color:inherit}
+.shot{display:block;aspect-ratio:16/10;overflow:hidden;border-radius:var(--r-md);
+  border:1px solid var(--rule);background:var(--sunk)}
+.shot img{display:block;width:100%;height:100%;object-fit:cover;object-position:top left;
+  transition:transform .2s}
+.step-link:hover .shot img{transform:scale(1.03)}
+.step-link:hover .shot{border-color:var(--mark)}
+.shot-ph{height:100%;display:grid;place-content:center;text-align:center;gap:var(--s1);
+  color:var(--muted);font-size:var(--fs-xs);padding:var(--s3);
+  background:repeating-linear-gradient(135deg,transparent 0 10px,var(--rule) 10px 11px)}
+.shot-ph span{font:600 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.step-no::before{content:counter(step);display:inline-grid;place-items:center;
+  width:26px;height:26px;border-radius:50%;background:var(--btn);color:var(--btn-ink);
+  font:700 var(--fs-xs)/1 var(--font)}
+.step-no{margin-top:var(--s1)}
+.step h3{font-size:var(--fs-md);color:var(--ink)}
+.step-link:hover h3{color:var(--mark)}
+.step p{margin:var(--s1) 0 0;color:var(--muted);font-size:var(--fs-sm);line-height:1.5}
+
+/* ---- the way in ---------------------------------------------------------- */
+.fig{color:var(--mark);font-family:var(--mono);font-weight:600;font-variant-numeric:tabular-nums}
+.prov{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--s3)}
+.prov.limitrow{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.doable{margin-bottom:var(--s5)}
+.pv{padding:var(--s4) var(--s5)}
+.pv b{display:block;font:600 var(--fs-xs)/1.4 var(--mono);letter-spacing:.1em;
+  color:var(--steel);margin-bottom:var(--s2)}
+.pv b.fig{display:inline;font:600 inherit/inherit var(--mono);letter-spacing:0;
+  margin-bottom:0;color:var(--mark)}
+.pv span{color:var(--muted);font-size:var(--fs-sm)}
+.limitrow .pv{border-inline-start:3px solid var(--mark)}
+a.card{display:flex;flex-direction:column;padding:var(--s5);color:inherit;text-decoration:none;
+  transition:border-color .15s,transform .15s,box-shadow .15s}
+a.card:hover{border-color:var(--mark);transform:translateY(-2px);box-shadow:var(--shadow)}
+a.card.lead{grid-column:1/-1;border-color:var(--rule-2)}
+a.card b{font:600 var(--fs-xl)/1.2 var(--display);color:var(--ink);margin-bottom:var(--s2)}
+a.card.lead b{font-size:26px}
+a.card .kicker{color:var(--mark);font:600 var(--fs-xs)/1.4 var(--mono);
+  letter-spacing:.06em;text-transform:uppercase;margin-bottom:var(--s2)}
+a.card p{margin:0;color:var(--muted);font-size:var(--fs-sm)}
+a.card .limit{margin-top:var(--s3);padding-top:var(--s3);border-top:1px dashed var(--rule-2);
+  color:var(--muted);font-size:13.5px}
+.limit-tag{color:var(--dim);font:600 11.5px var(--mono);letter-spacing:.08em;
+  text-transform:uppercase;display:block;margin-bottom:var(--s1)}
+a.card .badge{display:inline-block;align-self:start;margin:0 0 var(--s2);padding:2px 8px;
+  border:1px solid var(--rule-2);border-radius:999px;color:var(--muted);
+  font:600 11.5px var(--mono);letter-spacing:.05em;text-transform:uppercase}
+a.card.start{margin:0;border-inline-start:3px solid var(--mark)}
+a.card.start .limit + .limit{margin-top:var(--s2)}
+.trades{display:grid;grid-template-columns:repeat(auto-fill,minmax(236px,1fr));gap:var(--s2)}
+a.trade{display:flex;justify-content:space-between;align-items:baseline;gap:var(--s3);
+  background:var(--panel);border:1px solid var(--rule);border-radius:var(--r-sm);
+  padding:var(--s2) var(--s3);color:var(--ink);text-decoration:none;font-size:var(--fs-sm)}
+a.trade:hover{border-color:var(--mark)}
+a.trade .tsteps{color:var(--dim);font:12px var(--mono);white-space:nowrap}
+
+/* ---- trust ----------------------------------------------------------- */
+.trust{background:var(--sunk);border-block:1px solid var(--rule);margin-top:var(--s8);
+  padding-block:var(--s7) var(--s7)}
+.trust section{padding-top:0}
+.record{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:var(--s4)}
+.rec{padding:var(--s4) var(--s5)}
+.rec h4{margin-bottom:var(--s2)}
+.rec-yes h4{color:var(--steel)}
+.rec-no h4{color:var(--mark)}
+.rec ul{margin:0;padding-inline-start:1.1em;display:grid;gap:var(--s2)}
+.rec li{color:var(--muted);font-size:var(--fs-sm);line-height:1.5}
+.rec-foot{grid-column:1/-1;margin:0;color:var(--ink);font-weight:600;font-size:var(--fs-sm)}
+.rec-foot::first-letter{text-transform:uppercase}
+
+/* ---- the campus -------------------------------------------------------- */
+.seats{list-style:none;margin:var(--s4) 0 0;padding:0;display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:var(--s3)}
+.seat-row{padding:var(--s4) var(--s4)}
+.seat-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px}
+/* every control on the page is at least 24px tall (WCAG 2.5.8), links in
+   running prose included - measured in web/test_home.mjs --browser */
+.seat-open{font:600 var(--fs-md)/1.3 var(--font);color:var(--mark);text-decoration:none;
+  display:inline-block;padding-block:3px}
+.lede a,.also a,.gcite a{display:inline-block;padding-block:2px}
+.seat-open:hover{text-decoration:underline}
+.seat-kind{color:var(--dim);font:12px var(--mono)}
+.seat-kind code{color:var(--dim)}
+.seat-task{margin:var(--s2) 0 0;color:var(--ink);font-size:var(--fs-sm)}
+.seat-ctl{margin:var(--s2) 0 0;color:var(--muted);font-size:13px}
+.seat-ctl kbd{background:var(--sunk);border:1px solid var(--rule);border-radius:4px;
+  padding:1px 5px;font-size:12px;color:var(--ink)}
+.axes{list-style:none;margin:var(--s3) 0 0;padding:var(--s3) 0 0;border-top:1px solid var(--rule)}
+.axes li{color:var(--muted);font-size:13px;margin:0 0 5px}
+.axes b{color:var(--ink);font:600 13px var(--mono);margin-inline-end:6px}
+.axes .pass{color:var(--steel);font:12.5px var(--mono);white-space:nowrap}
+details.disclose{margin-top:var(--s4);border:1px solid var(--rule);border-radius:var(--r-md);
+  background:var(--panel)}
+details.disclose>summary{cursor:pointer;padding:var(--s3) var(--s4);font-weight:600;
+  color:var(--ink);min-height:44px;display:flex;align-items:center;gap:var(--s2)}
+details.disclose>summary::marker{color:var(--mark)}
+details.disclose[open]>summary{border-bottom:1px solid var(--rule)}
+details.disclose>.seats{padding:0 var(--s4) var(--s4)}
+
+/* ---- the drawings: SVG this page generated from its own registries ---- */
+.hero{display:block;width:100%;height:auto;border:1px solid var(--rule);
+  border-radius:var(--r-md);background:var(--sunk)}
 .hero .plate{fill:var(--sunk)}
-.hero .grat{stroke:var(--rule);stroke-width:1;opacity:.55}
-.hero .route{fill:none;stroke:var(--steel);stroke-width:1.2;opacity:.42}
+.hero .grat{stroke:var(--rule);stroke-width:1;opacity:.7}
+.hero .route{fill:none;stroke:var(--steel);stroke-width:1.2;opacity:.45}
 .hero .dot{fill:var(--steel);stroke:var(--sunk);stroke-width:2}
 .hero .dot.flag{fill:var(--mark)}
-.hero .cname{fill:var(--muted);font:11.5px "IBM Plex Sans",sans-serif}
+.hero .cname{fill:var(--muted);font:12px var(--font)}
 .hero .lead{stroke:var(--dim);stroke-width:1;opacity:.6}
-.hero .cap{fill:var(--dim);font:10.5px "IBM Plex Mono",monospace;
-  letter-spacing:.3px;text-transform:uppercase}
-.bar,.strip{display:block;width:100%;height:auto;margin:18px 0 0}
-.bar .seg{transition:opacity .15s}
+.hero .cap{fill:var(--dim);font:10.5px var(--mono);letter-spacing:.3px;text-transform:uppercase}
+.bar,.strip{display:block;width:100%;height:auto;margin:var(--s3) 0 0}
 .bar .seg:hover{opacity:.82}
-.bar .dname{fill:var(--ink);font:600 11.5px "IBM Plex Sans",sans-serif}
-.bar .dcount{fill:var(--dim);font:10.5px "IBM Plex Mono",monospace}
+.bar .dname{fill:var(--ink);font:600 11.5px var(--font)}
+.bar .dcount{fill:var(--dim);font:10.5px var(--mono)}
 .strip .stile{fill:var(--panel);stroke:var(--rule);stroke-width:1}
 .strip .sbar{fill:var(--mark)}
-.strip .sname{fill:var(--muted);font:9.5px "IBM Plex Sans",sans-serif}
+.strip .sname{fill:var(--muted);font:9.5px var(--font)}
 .strip .seat:hover .stile{stroke:var(--mark)}
 
-/* ---- the guide, beside the cards ------------------------------------ */
-.withguide{display:grid;grid-template-columns:minmax(0,1fr) 320px;
-  gap:22px;align-items:start}
-#guide{position:sticky;top:18px;background:var(--panel);
-  border:1px solid var(--rule);border-radius:10px;padding:16px 16px 14px}
-.ghead{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;
-  padding-bottom:9px;border-bottom:1px solid var(--rule)}
-.ghead b{font:600 16px "Barlow Condensed",sans-serif;color:var(--mark);
-  letter-spacing:.4px}
-.ghead span{color:var(--dim);font-size:11.5px}
-.gwhat{color:var(--muted);font-size:12px;margin:10px 0 12px}
+/* ---- the index and the guide ----------------------------------------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:var(--s4)}
+.withguide{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:var(--s5);align-items:start}
+#guide{position:sticky;top:var(--s4);background:var(--panel);border:1px solid var(--rule);
+  border-radius:var(--r-md);padding:var(--s4)}
+.ghead{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;padding-bottom:9px;
+  border-bottom:1px solid var(--rule)}
+.ghead b{font:600 var(--fs-md) var(--display);color:var(--mark);letter-spacing:.4px}
+.ghead span{color:var(--dim);font-size:var(--fs-xs)}
+.gwhat{color:var(--muted);font-size:13px;margin:10px 0 12px}
 .gasks{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
-.gask{text-align:start;background:var(--sunk);color:var(--ink);
-  border:1px solid var(--rule);border-radius:7px;padding:7px 10px;
-  font:inherit;font-size:12.5px;cursor:pointer}
+.gask{text-align:start;background:var(--sunk);color:var(--ink);border:1px solid var(--rule);
+  border-radius:var(--r-sm);padding:8px 10px;font:inherit;font-size:13px;cursor:pointer;min-height:36px}
 .gask:hover{border-color:var(--mark)}
 .gask[aria-expanded="true"]{border-color:var(--mark);color:var(--mark)}
-.gans p{font-size:12.5px;line-height:1.6;margin:0 0 8px}
-.gcite{color:var(--dim);font-size:10.5px}
-.gcite code{font-family:"IBM Plex Mono",monospace}
-.gfoot{color:var(--dim);font-size:10.5px;margin:12px 0 0;
-  padding-top:10px;border-top:1px solid var(--rule)}
+.gans p{font-size:13px;line-height:1.6;margin:0 0 8px;color:var(--ink)}
+.gcite{color:var(--dim);font-size:12px}
+.gfoot{color:var(--dim);font-size:12px;margin:12px 0 0;padding-top:10px;border-top:1px solid var(--rule)}
+
+/* ---- footer ------------------------------------------------------------ */
+footer{margin-top:var(--s8);border-top:1px solid var(--rule);background:var(--sunk)}
+footer .wrap{padding-block:var(--s7)}
+.foot-grid{display:grid;grid-template-columns:minmax(0,1.6fr) repeat(5,minmax(0,1fr));gap:var(--s5)}
+.foot-brand b{font:700 var(--fs-xl) var(--display);color:var(--ink)}
+.foot-brand p{color:var(--muted);font-size:13px;margin:var(--s2) 0 0}
+.foot-col .foot-h{margin:0 0 var(--s2);font:600 var(--fs-xs)/1.4 var(--mono);letter-spacing:.1em;text-transform:uppercase;
+  color:var(--dim)}
+.foot-col ul{list-style:none;margin:0;padding:0;display:grid;gap:var(--s1)}
+.foot-col a{color:var(--muted);text-decoration:none;font-size:var(--fs-sm);
+  display:inline-block;padding-block:2px}
+.foot-col a:hover{color:var(--ink);text-decoration:underline}
+.foot-fine{margin-top:var(--s6);padding-top:var(--s5);border-top:1px solid var(--rule)}
+.foot-fine p{color:var(--muted);font-size:13px;max-width:90ch;margin:0 0 var(--s2)}
+
+/* ---- responsive ------------------------------------------------------- */
+@media(max-width:1080px){
+  .loop{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .paths{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .foot-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .foot-brand{grid-column:1/-1}
+}
 @media(max-width:900px){
+  .hero-grid{grid-template-columns:1fr;gap:var(--s6)}
   .withguide{grid-template-columns:1fr}
   #guide{position:static}
+  .record{grid-template-columns:1fr}
   .hero .cname,.bar .dname,.bar .dcount,.strip .sname{font-size:13px}
 }
-@media (prefers-reduced-motion:reduce){*{transition:none!important}
-  html{scroll-behavior:auto}}
+@media(max-width:640px){
+  .wrap{padding-inline:var(--s4)}
+  header.top .wrap{padding-block:var(--s6)}
+  section{padding-top:var(--s7)}
+  .paths,.loop{grid-template-columns:1fr}
+  .loop .step-link{display:grid;grid-template-columns:120px minmax(0,1fr);
+    grid-template-rows:auto 1fr;column-gap:var(--s3);align-items:start}
+  .loop .shot{grid-row:1/3}
+  .loop .step p{margin-inline-start:calc(120px + var(--s3))}
+  .btn{flex:1 1 auto;justify-content:center}
+  .grid,.seats{grid-template-columns:1fr}
+  .trades{grid-template-columns:repeat(2,minmax(0,1fr))}
+  a.trade{flex-direction:column;gap:0}
+  .foot-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stat dd{font-size:24px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}html{scroll-behavior:auto}}
 """
+
 
 
 def card(c):
@@ -1134,89 +1437,102 @@ GUIDE_JS = """<script>
 
 NAV = nav_html('index.html', nav_labels('en'))
 
+STATS_HTML = ''.join(
+    f'<div class="stat" data-stat="{k}" data-src="{esc(src)}"><dt>{esc(label)}</dt>'
+    f'<dd>{n(v)}</dd></div>' for k, v, label, src in STATS)
+
+FOOT_COLS = ''.join(
+    f'<div class="foot-col"><p class="foot-h">{esc(NAV_EN[g])}</p><ul>'
+    + ''.join(f'<li><a href="{p}">{_nl(p)}</a></li>' for p, _k in items)
+    + '</ul></div>' for g, items in GROUPS)
+
 BODY = f"""<body>
 {NAV}<header class="top"><div class="wrap">
-  <div class="brandline">
-    <h1>SmartCiti<span class="x">.X</span> : Trade Craft Academy</h1>
-    <span class="by">powered by AGI Corp</span>
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">Union trade training &middot; walkable campus &middot; verifiable records</span>
+      <h1>SmartCiti<span class="x">.X</span> : Trade Craft Academy</h1>
+      <span class="by">powered by AGI Corp</span>
+      <p class="tagline">A walkable training world for the skilled trades &mdash;
+        {n(HALLS)} union halls across {n(CAMPUSES)} campuses, with
+        {n(SEATS)} operable machine seats standing in the yard.</p>
+      <p class="sub">Every surface, figure and lesson in this bundle traces to a
+        registry you can read, and each carries the word for how it was come by.
+        Nothing is fetched at run time; nothing is generated when you look at it.
+        Where a thing is unverified, it says so &mdash; on the page, not in an
+        appendix.</p>
+      <div class="btn-row">
+        <a class="btn btn-primary" data-cta="primary" href="web/trade_craft_lessons.html">Start learning</a>
+        <a class="btn btn-secondary" data-cta="secondary" href="web/trade_craft_3d.html">Walk the campus</a>
+      </div>
+      <p class="also">Checking someone&rsquo;s record?
+        <a class="textlink" href="web/trade_craft_verify.html">{_nl('web/trade_craft_verify.html')}</a>
+        &middot; New here? <a class="textlink" href="#start-here">Take the first lesson</a></p>
+    </div>
+    <aside class="figs" aria-labelledby="figs-h">
+      <div class="figs-title"><h2 id="figs-h">Key figures</h2>
+        <span>counted from the registries when this page was built</span></div>
+      <dl class="stats">{STATS_HTML}</dl>
+      <p class="figs-note">These count what this bundle contains. A figure being
+        consistent is not a figure being verified.</p>
+    </aside>
   </div>
-  <p class="tagline">A walkable training world for the skilled trades &mdash;
-    {n(HALLS)} union halls across {n(CAMPUSES)} campuses, with
-    {n(SEATS)} operable machine seats standing in the yard.</p>
-  <p class="sub">Every surface, figure and lesson in this bundle traces to a
-    registry you can read, and each carries the word for how it was come by.
-    Nothing is fetched at run time; nothing is generated when you look at it.
-    Where a thing is unverified, it says so &mdash; on the page, not in an
-    appendix.</p>
-  <div class="stats">
-    {''.join(f'<div class="stat"><b>{v}</b><span>{esc(k)}</span></div>' for v, k in STATS)}
-  </div>
-  {hero_map()}
+  <figure class="netmap">{hero_map()}
+    <figcaption>The campuses at their real coordinates; dot area is the hall count.</figcaption></figure>
 </div></header>
-<div class="stripe"></div>
+
 <div class="wrap">
+<section id="paths">
+  <div class="sec-head"><span class="eyebrow">Who it is for</span>
+    <h2>Four ways in, depending on why you are here</h2></div>
+  {paths_html()}
+</section>
+
+<section id="loop">
+  <div class="sec-head"><span class="eyebrow">How it works</span>
+    <h2>The learner loop, in {n(len(LOOP_STEPS))} steps</h2>
+    <p class="lede">The same loop the header shows on each of these pages: sign
+      in, take a lesson, walk it, carry the record away, have it checked, and
+      share it if you choose.</p></div>
+  {loop_strip()}
+</section>
+
 <section id="start">
+  <div class="sec-head"><span class="eyebrow">Start here</span>
   <h2>What you can do here, and where to start</h2>
   <p class="lede">Three things, in plain words. Everything further down this
-    page is the index behind them, and the limits are here rather than in a
-    footer because a reader who has already clicked has not been told
-    anything.</p>
+    page is the index behind them, and the limits come straight after, because
+    a reader who has already clicked has not been told anything.</p></div>
   <div class="prov doable">
     {''.join(f'<div class="pv" data-do="{esc(w)}"><b>{esc(w)}</b><span>{d}</span></div>'
              for w, d in DOABLE)}
   </div>
   {START_CARD}
-  <h3 id="trades">Or take your own trade's course</h3>
+  <h3 id="trades" class="sub-head">Or take your own trade&rsquo;s course</h3>
   <p class="lede">Each link opens that trade's lessons in the order the
     lessons registry's own ladder puts them, with every step numbered straight
     through, each step linking to the simulator seat it opens and saying so
     where it opens none. The number beside a trade is that course's step
     count.</p>
   <nav class="trades" aria-label="courses by trade">{TRADE_LINKS}</nav>
-  <h3 id="limits">What none of this is</h3>
+</section>
+</div>
+
+<div class="trust"><div class="wrap">
+<section id="trust">
+  <div class="sec-head"><span class="eyebrow">Trust and limits</span>
+  <h2>What none of this is</h2>
   <p class="lede">The limits, stated once, plainly, where a visitor meets
-    them.</p>
-  <div class="prov limitrow">
+    them.</p></div>
+  <div class="prov limitrow" id="limits">
     {''.join(f'<div class="pv" data-limit="{esc(k)}"><b>{esc(w)}</b><span>{d}</span></div>'
              for k, w, d in LIMITS)}
   </div>
-</section>
-<section>
-  <h2>Every hall, by district</h2>
-  <p class="lede">All {n(HALLS)} halls, banded into the {len(districts)}
-    districts that organise them. Each tick is one hall; the colours are the
-    same eight the campus map and the walkable world use.</p>
-  {district_bar()}
-</section>
-<section>
-  <h2>The yard</h2>
-  <p class="lede">{n(SEATS)} operable training seats stand in the campus
-    yard. Every one is a machine you sit in and drive, scored by a rubric
-    you can read.</p>
-  {seat_strip()}
-</section>
-<section id="seats">
-  <h2>Every seat, and the way in</h2>
-  <p class="lede">One link per seat, straight into the machine rather than
-    into the front of the world. Each says what it asks of you and what it
-    measures you against, because the rubric is the whole of the judgement:
-    every axis below is computed from measured state, and nothing you say
-    about a run can move it. {esc(SEAT_HONESTY)}</p>
-  {seat_index()}
-</section>
-<section id="surfaces">
-  <h2>Every surface in this bundle</h2>
-  <p class="lede">{n(len(CARDS))} surfaces, each built from the same
-    registries, for a reader who wants the whole thing rather than a course.
-    <a href="#start-here">The course above</a> is the way in if you do not
-    already know this architecture.</p>
-  <div class="withguide">
-    <div class="grid">{''.join(card(c) for c in CARDS)}</div>
-    {GUIDE_HTML}
-  </div>
-</section>
-<section>
-  <h2>How to read a claim here</h2>
+  <h3 class="sub-head" id="record">What a record is, and what it is not</h3>
+  <p class="lede">Read word for word from the registry the verifier is built
+    on, so the front door cannot promise more than the check behind it.</p>
+  {record_html()}
+  <h3 class="sub-head" id="claims">How to read a claim here</h3>
   <p class="lede">Every record in this bundle carries one of five words for
     how it was come by. They are not decoration: a build refuses a record
     that claims the wrong one, and the suites check it.</p>
@@ -1225,9 +1541,51 @@ BODY = f"""<body>
              for w, d in PROV)}
   </div>
 </section>
+</div></div>
+
+<div class="wrap">
+<section id="campus">
+  <div class="sec-head"><span class="eyebrow">Inside the campus</span>
+  <h2>Every hall, and every seat in the yard</h2></div>
+  <h3 class="sub-head">Every hall, by district</h3>
+  <p class="lede">All {n(HALLS)} halls, banded into the {len(districts)}
+    districts that organise them. Each tick is one hall; the colours are the
+    same eight the campus map and the walkable world use.</p>
+  {district_bar()}
+  <h3 class="sub-head">The yard</h3>
+  <p class="lede">{n(SEATS)} operable training seats stand in the campus
+    yard. Every one is a machine you sit in and drive, scored by a rubric
+    you can read.</p>
+  {seat_strip()}
+  <h3 class="sub-head" id="seats">Every seat, and the way in</h3>
+  <p class="lede">One link per seat, straight into the machine rather than
+    into the front of the world. Each says what it asks of you and what it
+    measures you against, because the rubric is the whole of the judgement:
+    every axis below is computed from measured state, and nothing you say
+    about a run can move it. {esc(SEAT_HONESTY)}</p>
+  <details class="disclose"><summary>Show all {n(SEATS)} seats with their tasks,
+    controls and pass marks</summary>{seat_index()}</details>
+</section>
+<section id="surfaces">
+  <div class="sec-head"><span class="eyebrow">The full index</span>
+  <h2>Every surface in this bundle</h2>
+  <p class="lede">{n(len(CARDS))} surfaces, each built from the same
+    registries, for a reader who wants the whole thing rather than a course.
+    <a href="#start-here">The course above</a> is the way in if you do not
+    already know this architecture.</p></div>
+  <div class="withguide">
+    <div class="grid">{''.join(card(c) for c in CARDS)}</div>
+    {GUIDE_HTML}
+  </div>
+</section>
 </div>
 <footer><div class="wrap">
-  <p>{esc(i18n_en['strings'].get('honesty.modules', ''))}</p>
+  <div class="foot-grid">
+    <div class="foot-brand"><b>SmartCiti.X : Trade Craft Academy</b>
+      <p>{esc(_catalog('honesty.modules'))}</p></div>
+    {FOOT_COLS}
+  </div>
+  <div class="foot-fine">
   <p>Built from {n(FLOORS)} floor finishes, {n(WALLS)} wall finishes and
     {n(PATTERNS)} surface patterns over {n(GROUNDS)} ground recipes and
     {n(WEATHER)} weather states; {n(STATIONS)} training stations;
@@ -1236,6 +1594,7 @@ BODY = f"""<body>
     {n(AV_SECTIONS)} sections; {n(SITES)} real restoration sites, of which
     {n(WALKABLE)} are walkable. Every one of those figures is read from its
     own registry by the script that generated this page.</p>
+  </div>
 </div></footer>
 {GUIDE_JS}
 </body>"""

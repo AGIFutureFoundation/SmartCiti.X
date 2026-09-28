@@ -313,6 +313,21 @@ ok('[shipped] the district map is intact: every hall pad, district band and the 
   ok('[shipped] the page has exactly one <h1>, and it names the page',
     (html.match(/<h1[\s>]/g) || []).length === 1 && /<h1 class="vh">[^<]+<\/h1>/.test(html));
 }
+{
+  // narrow screens: the page declares a device viewport, and no grid track
+  // takes its min-content width (the 940px plan used to push the page sideways)
+  ok('[shipped] the page declares a device-width viewport', /<meta name="viewport" content="width=device-width, initial-scale=1">/.test(html));
+  ok('[shipped] the shell, plan, detail and hall-panel grids are minmax(0,1fr), so a 390px screen does not scroll sideways',
+    /@media\(max-width:900px\)\{\.shell\{grid-template-columns:minmax\(0,1fr\)\}\}/.test(html)
+    && /\.plan\{[^}]*grid-template-columns:minmax\(0,1fr\)/.test(html)
+    && /\.detail\{[^}]*grid-template-columns:minmax\(0,1fr\)/.test(html)
+    && /\.hallpanel \.hp-row\{[^}]*grid-template-columns:auto minmax\(0,1fr\)/.test(html));
+  ok('[shipped] the layer focus buttons are at least 24px tall and wide (touch target)',
+    /\.layers \.lfocus\{[^}]*min-height:24px;min-width:24px/.test(html));
+  ok('[shipped] the hall heading is ink on the panel; the district colour is a swatch and a rule, never the text colour',
+    !/style="color:\$\{h\.chip\}"/.test(html) && !/[";\s`']color:\$\{[^}]*h\.chip/.test(html) && /<h2 class="dname" style="border-inline-start-color:\$\{h\.chip\}">/.test(html)
+    && /<i class="dsw" style="background:\$\{h\.chip\}"><\/i>/.test(html) && /\.detail h2\.dname\{color:var\(--ink\)/.test(html));
+}
 if (failures.length) {
   for (const f of failures) console.error(`FAIL ${f}`);
   console.error(`web/test_map: ${failures.length} of ${passed + failures.length} checks FAILED`);

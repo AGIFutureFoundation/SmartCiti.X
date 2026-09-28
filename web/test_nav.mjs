@@ -19,9 +19,9 @@
  *   - the nav is the same nav on every page, apart from the current marker
  *     and the relative prefix.
  *
- * web/trade_craft_3d.html (web/build_3d.py) and web/trade_craft_verify.html
- * (web/build_verify.py) are declared pages that the nav links to, but their
- * builders are not wired here, so they are held to existence only.
+ * Every declared page's builder is wired here, web/trade_craft_3d.html
+ * (web/build_3d.py) included; NOT_WIRED stays as the named place for a page
+ * whose builder is not, held to existence only.
  *
  *   node web/test_nav.mjs
  */
@@ -57,13 +57,14 @@ const LOOP = decl.loop.map(([p, k]) => ({ path: p, key: k }));
 const LOOP_PATHS = LOOP.map((s) => s.path);
 
 // Pages the nav links to whose builders are not wired to sitenav here.
-const NOT_WIRED = new Set(['web/trade_craft_3d.html']);
+const NOT_WIRED = new Set([]);
 const OWNED = Object.keys(PAGES).filter((p) => !NOT_WIRED.has(p));
 
 // Which builder writes which page (path from the bundle root).
 const BUILDERS = {
   'index.html': 'build_home.py',
   'web/trade_craft_signin.html': 'build_auth.py',
+  'web/trade_craft_3d.html': 'build_3d.py',
   'web/trade_craft_contribute.html': 'build_contribute.py',
   'web/trade_craft_verify.html': 'build_verify.py',
   'web/trade_craft_dashboard.html': 'build_dashboard.py',

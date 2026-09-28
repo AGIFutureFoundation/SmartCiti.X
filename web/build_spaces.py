@@ -288,8 +288,8 @@ def space_section(s):
 </div>
 </div>
 <details><summary>Item schedule ({s["counts"]["items"]})</summary>
-<table class="sched"><thead><tr><th>#</th><th>kind</th><th>id</th><th>name</th><th>x, y (m)</th><th>rot</th><th>footprint (m)</th></tr></thead>
-<tbody>{rows}</tbody></table></details>
+<div class="tablewrap"><table class="sched"><thead><tr><th>#</th><th>kind</th><th>id</th><th>name</th><th>x, y (m)</th><th>rot</th><th>footprint (m)</th></tr></thead>
+<tbody>{rows}</tbody></table></div></details>
 </section>'''
 
 
@@ -355,6 +355,7 @@ a{{color:var(--steel)}}
 details{{margin-top:14px}}
 summary{{cursor:pointer;color:var(--steel)}}
 .sched{{border-collapse:collapse;width:100%;font-size:13px;margin-top:8px}}
+.tablewrap{{overflow-x:auto;max-width:100%}}
 .sched th,.sched td{{border-top:1px solid var(--rule);padding:4px 8px;text-align:start;vertical-align:top}}
 .sched th{{color:var(--muted);font-weight:600}}
 .num{{font-variant-numeric:tabular-nums;white-space:nowrap}}

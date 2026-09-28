@@ -45,6 +45,12 @@ from interiors import build as build_interiors, FIXTURES as ROOM_FIXTURES  # noq
 from staleness import emit  # noqa: E402
 from mapdata import strand_modules, PIPELINE_JS, HUES, make_codes  # noqa: E402
 from groundtruth import GROUND_TRUTH_JS  # noqa: E402
+from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
+
+# The shared site header (web/sitenav.py). It is fixed over the top of the
+# viewport and folds to one row until hovered or focused, so the canvas keeps
+# the whole window - pointer maths, the HUD corners and XR are unchanged.
+NAV = nav_html('web/trade_craft_3d.html', nav_labels('en'))
 
 manifest = json.load(open(ROOT / 'pack/manifest.json'))
 L = manifest['ledger']
@@ -239,14 +245,14 @@ for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
     I18N[c['locale']] = {
         'language': c['language'], 'dir': c['dir'],
         'strings': {k: s[k] for k in (
-            'nav.campus', 'language.select', 'hall.rooms', 'hall.stations',
+            'nav.campus', 'nav.page.campus', 'language.select', 'hall.rooms', 'hall.stations',
             'station.checklist', 'station.quiz', 'ui.close',
             'map.layer.modules', 'figures.modules', 'figures.lessons', 'room.finish',
             'figures.halls', 'figures.districts', 'figures.campuses',
             'view.campus', 'view.region', 'ui.walk',
             'hint.campus', 'hint.walk', 'hint.walkRefused', 'geo.note',
             'yard.name', 'yard.seats',
-            'sim.start', 'sim.results', 'sim.pass', 'sim.retry',
+            'sim.start', 'sim.operator', 'sim.results', 'sim.pass', 'sim.retry',
             'sim.sound', 'sim.view', 'sim.choose', 'progress.local',
             'city.note', 'avatar.title', 'chapters.hall',
             'honesty.taxonomy', 'honesty.content',
@@ -1516,6 +1522,65 @@ function craneSim(P = {}) {
 }
 
 /* ------------------------------------------------ excavator trench cut --- */
+/* The excavator's dress: what makes the boxes read as the machine. The
+   undercarriage gets its drive sprocket, front idler, bottom rollers and a
+   grouser on every shoe; the house a slew ring, a framed cab with roof work
+   lights, an exhaust stack and chevron striping on the counterweight; the
+   boom, stick and bucket their hydraulic cylinders (barrel and chrome rod),
+   the pins at every joint and teeth on the lip. Every piece rides the group
+   that moves it - undercarriage, slewing house, boom, stick - and each
+   group's pieces pool into one mesh per material through partCollector()
+   and flushParts(), so the dress costs a handful of draw calls, not one
+   per bolt. Built from shared materials only; nothing here is raycast. */
+function excavatorDetail(g, hg, boomG, stickG, L1, L2) {
+  const pools = [g, hg, boomG, stickG].map(() => new Map());
+  const [U, H, Bm, St] = pools.map(partCollector);
+  const cyl = (r, h, m, x, y, z, grp, axis, seg = 12) => {
+    const c = new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, seg), m);
+    if (axis === 'x') c.rotation.z = Math.PI / 2;
+    if (axis === 'z') c.rotation.x = Math.PI / 2;
+    c.position.set(x, y, z); grp.add(c); return c;
+  };
+  const piece = (w, h, d, m, x, y, z, grp, rz = 0) => {
+    const b = new THREE.Mesh(boxGeo(w, h, d), m);
+    b.position.set(x, y, z); b.rotation.z = rz; grp.add(b); return b;
+  };
+  // undercarriage: tracks are 1.1 wide, .7 tall, 4.2 long, at x = +-.95
+  for (const sx of [-.95, .95]) {
+    cyl(.36, 1.14, mat.metal, sx, .36, -1.78, U, 'x', 14);        // drive sprocket
+    cyl(.34, 1.14, mat.metal, sx, .36, 1.8, U, 'x', 14);          // front idler
+    for (let i = 0; i < 5; i++) cyl(.13, 1.16, mat.metal, sx, .16, -1.2 + i * .6, U, 'x', 10);
+    for (let i = 0; i < 12; i++) piece(1.14, .05, .09, mat.part, sx, .725, -1.9 + i * .345, U);
+    piece(.06, .22, 3.1, mat.post, sx + Math.sign(sx) * .56, .42, 0, U);   // track-frame rail
+  }
+  piece(.8, .3, 2.2, mat.part, 0, .55, 0, U);                     // car body between the tracks
+  cyl(.95, .1, mat.metal, 0, .75, -.3, U, 'y', 20);               // slew ring
+  // house (hg): house box 2.2 x 1.3 x 2.6 at y .75; cab .9 cube at (.8, 1.6, .4)
+  const cx = .8, cz = .4, cy = 1.6;
+  piece(.98, .06, .98, mat.post, cx, cy + .53, cz, H);            // cab roof
+  for (const dx of [-.47, .47]) for (const dz of [-.47, .47])
+    piece(.06, 1.02, .06, mat.post, cx + dx, cy, cz + dz, H);     // cab pillars
+  piece(.94, .05, .94, mat.post, cx, cy - .47, cz, H);            // cab sill
+  for (const dx of [-.25, .25]) piece(.14, .09, .06, mat.paint, cx + dx, cy + .6, cz + .44, H);  // work lights
+  cyl(.06, .55, mat.metal, -.6, 1.62, -1.1, H, 'y', 10);          // exhaust stack
+  for (let i = 0; i < 4; i++)                                     // counterweight chevrons
+    piece(.1, .62, .02, mat.post, -.51 + i * .34, .8, -2.11, H, .6);
+  piece(2.24, .06, 2.64, mat.part, 0, 1.43, -.3, H);              // house roof edge
+  // boom (boomG, along +x): barrel under, rod out toward the stick; a
+  // second cylinder on top drives the stick
+  cyl(.1, 2.2, mat.part, 1.4, -.36, 0, Bm, 'x');
+  cyl(.055, 1.3, mat.paint, 3.15, -.36, 0, Bm, 'x');
+  cyl(.085, 1.6, mat.part, 2.9, .38, 0, Bm, 'x');
+  cyl(.05, 1.1, mat.paint, 4.2, .38, 0, Bm, 'x');
+  cyl(.1, .6, mat.metal, 0, 0, 0, Bm, 'z');                        // boom foot pin
+  cyl(.1, .56, mat.metal, L1, 0, 0, Bm, 'z');                      // boom-stick pin
+  // stick (stickG): bucket cylinder along the top, pins, bucket teeth
+  cyl(.075, 1.8, mat.part, 1.4, .27, 0, St, 'x');
+  cyl(.045, 1.1, mat.paint, 2.75, .27, 0, St, 'x');
+  cyl(.09, 1.02, mat.metal, L2, 0, 0, St, 'z');                    // stick-bucket pin
+  for (let i = 0; i < 4; i++) piece(.16, .09, .1, mat.metal, L2 + .5, -.62, -.33 + i * .22, St);
+  [g, hg, boomG, stickG].forEach((grp, i) => flushParts(pools[i], grp));
+}
 function excavatorSim(P = {}) {
   const g = new THREE.Group();
   simYard(g, 26, 20);
@@ -1536,6 +1601,7 @@ function excavatorSim(P = {}) {
   const bucket = box(.9, .7, .95, mat.part, L2, -.3, 0, stickG);
   const spoilInBucket = box(.7, .4, .75, mat.wood, L2, .15, 0, stickG, false);
   spoilInBucket.visible = false;
+  excavatorDetail(g, hg, boomG, stickG, L1, L2);
   // the trench: cells and flagged utilities come from the regional scenario;
   // the trench line, cell pitch, spoil zone and bite are the registry's
   // layout - read here and by the scripted operator, typed nowhere twice
@@ -3617,6 +3683,32 @@ function sphere(r, m, x, y, z, parent, sx = 1, sy = 1, sz = 1) {
   return o;
 }
 
+/* A worker's hand, as ONE mesh: a flattened palm (palms face the body, so
+   it is thin in x), the four fingers as one mitt below it, a thumb forward
+   and down, and - gloved - a gauntlet cuff up over the wrist. It replaces
+   the ball the hand used to be one for one, same material, so a figure
+   costs no extra draw call for having hands. */
+function handMesh(r, m, gloved, parent) {
+  const parts = [];
+  const palm = new THREE.SphereGeometry(r, 12, 8);
+  palm.scale(.58, 1.05, .85); parts.push(palm);
+  const mitt = new THREE.CapsuleGeometry(r * .5, r * .75, 3, 8);
+  mitt.scale(.62, 1, 1.35); mitt.translate(0, -r * 1.2, 0); parts.push(mitt);
+  const thumb = new THREE.CapsuleGeometry(r * .24, r * .62, 3, 6);
+  thumb.rotateX(.55); thumb.translate(0, -r * .35, r * .78); parts.push(thumb);
+  if (gloved) {
+    const cuff = new THREE.CylinderGeometry(r * .92, r * .8, r * 1.1, 10);
+    cuff.translate(0, r * 1.05, 0); parts.push(cuff);
+  }
+  // every part has uv (SphereGeometry, CapsuleGeometry, CylinderGeometry)
+  const geo = mergeGeometries(parts);
+  parts.forEach((ge) => ge.dispose());
+  if (!geo) throw new Error('a hand: its parts did not merge');
+  const o = new THREE.Mesh(geo, m);
+  o.position.set(0, -.02, 0); o.castShadow = true; parent.add(o);
+  return o;
+}
+
 function buildAvatarMesh(cfg) {
   const g = new THREE.Group();
   const M = (hex, rough = .8) => new THREE.MeshStandardMaterial({
@@ -3890,7 +3982,10 @@ function buildAvatarMesh(cfg) {
     bones[side + 'Hand'] = hd;
     capsule(.07, .2, tank ? skin : topM, 0, -.14, 0, p);
     capsule(.06, .18, sleeves ? topM : skin, 0, -.14, 0, lo);
-    sphere(APE ? .082 : cfg.costume === 'mascot' ? .085 : .06, handM, 0, -.02, 0, hd);
+    // a paw stays a paw; a person's hand is palm, fingers and thumb
+    if (APE || ANIMAL || cfg.costume === 'mascot')
+      sphere(APE ? .082 : cfg.costume === 'mascot' ? .085 : .06, handM, 0, -.02, 0, hd);
+    else handMesh(.06, handM, cfg.extras === 'gloves', hd);
     if (cfg.extras === 'elbow-pads') box(.1, .1, .09, dark, 0, -.02, .05, lo, false);
     if (cfg.costume === 'night-reflective' || cfg.costume === 'tunnel')
       box(.15, .035, .15, reflect, 0, .04, 0, lo, false);
@@ -6947,20 +7042,79 @@ body.open #bar > *:not(#guideBtn){pointer-events:none;opacity:.3}
 #panel details.respf > summary{cursor:pointer;font-size:13px;line-height:1.5}
 @media(prefers-reduced-motion:reduce){#panel{transition:none}}
 </style>
+<style>__NAV_CSS__</style>
+<style>
+/* The site nav on a full-window canvas. It is fixed, so it takes no flow
+   space and the canvas keeps innerWidth x innerHeight (every pointer and
+   raycast sum here divides by those). Folded it is one clipped row; hover
+   or keyboard focus opens it over the scene. It sits under the panel scrim
+   (9) and over the bar (5), and the bar and minimap move down by its row.
+   --navh is that row: measured off the nav's home link once the page runs
+   (the shared nav's type and padding are sitenav.py's to change), with a
+   fallback for the first paint. Opened, it lets its own disclosure drop
+   past its edge (overflow visible) rather than scrolling inside itself. */
+:root{--navh:34px}
+.vh{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;
+  overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
+nav.sitenav{position:fixed;top:0;inset-inline:0;z-index:8;height:var(--navh);
+  overflow:hidden;padding-block:4px;
+  background:color-mix(in oklab, var(--sunk) 94%, transparent);backdrop-filter:blur(6px)}
+nav.sitenav .sitenav-row,nav.sitenav .sitenav-groups,nav.sitenav .sitenav-group,
+nav.sitenav .sitenav-row ul{flex-wrap:nowrap;white-space:nowrap}
+nav.sitenav .sitenav-row > *,nav.sitenav .sitenav-groups > *{flex-shrink:0}
+nav.sitenav:hover,nav.sitenav:focus-within{height:auto;
+  overflow:visible;box-shadow:0 10px 28px rgba(0,0,0,.55)}
+nav.sitenav:hover .sitenav-row,nav.sitenav:focus-within .sitenav-row,
+nav.sitenav:hover .sitenav-groups,nav.sitenav:focus-within .sitenav-groups,
+nav.sitenav:hover .sitenav-group,nav.sitenav:focus-within .sitenav-group,
+nav.sitenav:hover .sitenav-row ul,nav.sitenav:focus-within .sitenav-row ul{flex-wrap:wrap;white-space:normal}
+/* The narrow layout (sitenav.py's own breakpoint): the groups sit in the
+   "Site pages" disclosure. Opened, they drop IN FLOW (position static)
+   inside this fixed bar rather than absolutely below it, and the bar grows
+   to hold them and scrolls within the viewport if it has to - so an open
+   menu is never clipped by the folded height, whether or not the summary
+   still has focus. */
+nav.sitenav:has(.sitenav-menu[open]){height:auto;max-height:100dvh;overflow-y:auto;
+  box-shadow:0 10px 28px rgba(0,0,0,.55)}
+nav.sitenav .sitenav-menu[open]>.sitenav-groups{position:static;box-shadow:none}
+nav.sitenav .sitenav-menu[open] .sitenav-groups,nav.sitenav .sitenav-menu[open] .sitenav-group,
+nav.sitenav .sitenav-menu[open] ul{flex-wrap:wrap;white-space:normal}
+nav.sitenav:has(.sitenav-menu[open]) .sitenav-row{flex-wrap:wrap}
+nav.sitenav .sitenav-menu[open]{flex:1 1 100%;min-width:0;max-width:100%}
+nav.sitenav .sitenav-menu[open]>summary{position:absolute;top:4px;inset-inline-end:12px}
+nav.sitenav .sitenav-menu[open]>.sitenav-groups,nav.sitenav .sitenav-menu[open] .sitenav-group{min-width:0;max-width:100%}
+#bar{top:var(--navh)}
+#mm{top:calc(62px + var(--navh))}
+</style>
 </head>
 <body>
+__NAV__<h1 id="ptitle" class="vh">SmartCiti.X : Trade Craft Academy — __H1_TEXT__</h1>
+<script>
+// the nav's folded row, measured (see --navh in the stylesheet)
+(function () {
+  const home = document.querySelector('nav.sitenav .sitenav-home');
+  if (!home) throw new Error('the site nav has no home link to measure its row by');
+  // the row is the taller of the home link and the menu button (the button
+  // is display:none, height 0, on a wide screen)
+  const menu = document.querySelector('nav.sitenav .sitenav-menu > summary');
+  const fit = () => document.documentElement.style.setProperty('--navh',
+    Math.ceil(Math.max(home.getBoundingClientRect().height,
+      menu ? menu.getBoundingClientRect().height : 0) + 8) + 'px');
+  fit(); addEventListener('resize', fit);
+}());
+</script>
 <div id="bar">
   <span class="brand">SmartCiti<span class="x">.X</span> : Trade Craft Academy</span>
-  <a href="trade_craft_interactive.html" id="back"></a>
+  <a href="trade_craft_interactive.html" id="back">← __L_nav.campus__</a>
   <select id="hall" aria-label="hall"></select>
-  <button id="regionBtn" class="barbtn"></button>
-  <button id="campusBtn" class="barbtn"></button>
-  <button id="walkBtn" class="barbtn"></button>
-  <button id="simBtn" class="barbtn"></button>
-  <button id="avaBtn" class="barbtn"></button>
-  <button id="camBtn" class="barbtn" style="display:none"></button>
-  <button id="sndBtn" class="barbtn" style="display:none"></button>
-  <button id="opBtn" class="barbtn" style="display:none"></button>
+  <button id="regionBtn" class="barbtn">⌂ __L_view.region__</button>
+  <button id="campusBtn" class="barbtn">↑ __L_view.campus__</button>
+  <button id="walkBtn" class="barbtn">⤞ __L_ui.walk__</button>
+  <button id="simBtn" class="barbtn">▶ __L_sim.start__</button>
+  <button id="avaBtn" class="barbtn">👤 __L_avatar.title__</button>
+  <button id="camBtn" class="barbtn" style="display:none">▦ __L_sim.view__</button>
+  <button id="sndBtn" class="barbtn" style="display:none">♪ __L_sim.sound__</button>
+  <button id="opBtn" class="barbtn" style="display:none">👷 __L_sim.operator__</button>
   <button id="dnBtn" class="barbtn" aria-label="day / night">🌙</button>
   <button id="recBtn" class="barbtn" aria-label="records">⏱</button>
   <button id="orbisBtn" class="barbtn" aria-label="Orbis synthetic-training prompt">🎬</button>
@@ -6984,8 +7138,8 @@ body.open #bar > *:not(#guideBtn){pointer-events:none;opacity:.3}
 </div>
 <div id="joy" style="display:none"><div id="knob"></div></div>
 <button id="emoBtn" class="fab" style="display:none">😀</button>
-<button id="advBtn" class="fab wide" style="display:none"></button>
-<button id="actBtn" class="fab wide" style="display:none"></button>
+<button id="advBtn" class="fab wide" style="display:none">💬</button>
+<button id="actBtn" class="fab wide" style="display:none">⏎</button>
 <div id="hud"><h2 id="hname"></h2><p class="focus" id="hfocus"></p><p class="hint" id="hint"></p>
   <div class="lessons" id="hlessons" style="display:none"></div>
   <p class="hint" id="opCtl" style="display:none">🤖 scripted reference operator
@@ -6997,7 +7151,7 @@ body.open #bar > *:not(#guideBtn){pointer-events:none;opacity:.3}
 <div id="nogl"></div>
 <div id="cross">+</div>
 <div id="ov"></div>
-<aside id="panel"><button id="pclose"></button><div id="pbody"></div></aside>
+<aside id="panel"><button id="pclose">__L_ui.close__</button><div id="pbody"></div></aside>
 <script id="data" type="application/json">__DATA__</script>
 <script type="importmap">
 {"imports":{
@@ -9783,28 +9937,97 @@ let hallCost = null;
    one. The hue on the peg is the registry's, unchanged; only where it is
    stored moved, from a material to the vertices. */
 function toolGeo(tl) {
-  let geo;
+  /* Each render kind is drawn as the tool a reader would pick off the
+     board - a handle, a head, a working end - not a single block. The
+     registry's hue goes where a real crib puts it: on the grip, the case or
+     the body a trade colour-codes; the working steel stays steel and the
+     rubber stays black. Pieces are laid out in a FACE frame (x across the
+     board, y up, z out toward the reader) and the finished tool is turned
+     once to hang on the board, which faces -x. Still one merged geometry per
+     tool and one mesh per board: the parts only add triangles. */
+  const col = new THREE.Color().setHSL(tl.hue / 360, .5, .55);
+  const STEEL = new THREE.Color(0xaab3b7), GRIP = new THREE.Color(0x1f2225),
+        LCD = new THREE.Color(0x8fc9b8), LEAD = new THREE.Color(0xb23a2e);
+  const parts = [];
+  const put = (geo, c, x = 0, y = 0, z = 0, rx = 0, rz = 0) => {
+    if (rx) geo.rotateX(rx);
+    if (rz) geo.rotateZ(rz);
+    geo.translate(x, y, z);
+    const n = geo.attributes.position.count, arr = new Float32Array(n * 3);
+    for (let i = 0; i < n; i++) { arr[i * 3] = c.r; arr[i * 3 + 1] = c.g; arr[i * 3 + 2] = c.b; }
+    geo.setAttribute('color', new THREE.BufferAttribute(arr, 3));
+    parts.push(geo);
+  };
+  const B = (w, h, d) => new THREE.BoxGeometry(w, h, d);
+  // low segment counts on purpose: twelve tools hang in every hall, the
+  // board casts a shadow (so every triangle is paid twice) and a hall view
+  // is held to a triangle ceiling in web/eval_scene.mjs
+  const C = (r0, r1, h, seg = 6) => new THREE.CylinderGeometry(r0, r1, h, seg);
   switch (tl.shape) {
-    case 'bar': geo = new THREE.BoxGeometry(.05, .46, .05); break;
-    case 'blade': geo = new THREE.BoxGeometry(.02, .34, .16); break;
-    case 'cyl': geo = new THREE.CylinderGeometry(.035, .035, .4, 8); break;
-    case 'cone': geo = new THREE.ConeGeometry(.07, .3, 8); break;
-    case 'meter': geo = new THREE.BoxGeometry(.09, .26, .18); break;
-    case 'case': geo = new THREE.BoxGeometry(.12, .2, .3); break;
-    case 'coil': geo = new THREE.TorusGeometry(.13, .035, 8, 14); break;
-    case 'hook': geo = new THREE.TorusGeometry(.1, .04, 8, 12, Math.PI * 1.5); break;
-    default: {                                   // wrench: shaft + open head
-      const bar = new THREE.BoxGeometry(.045, .38, .045);
-      const head = new THREE.BoxGeometry(.05, .09, .14);
-      head.translate(0, .21, 0);
-      geo = mergeGeometries([bar, head]);
-      bar.dispose(); head.dispose();
+    case 'bar':      // pry bar / level: steel shaft, sleeved grip, chisel end
+      put(C(.018, .018, .40), STEEL, 0, .02, 0);
+      put(C(.027, .027, .17), col, 0, -.11, 0);
+      put(C(.03, .03, .012), GRIP, 0, -.2, 0);
+      put(new THREE.ConeGeometry(.018, .07, 4), STEEL, 0, .255, 0);
+      break;
+    case 'blade':    // trowel / knife / gauge: steel blade, ferrule, handle
+      put(B(.13, .19, .012), STEEL, 0, .07, 0);
+      put(new THREE.ConeGeometry(.065, .08, 4), STEEL, 0, .205, 0, 0, 0);
+      put(C(.018, .018, .03), STEEL, 0, -.04, 0);
+      put(C(.024, .02, .13), col, 0, -.12, 0);
+      break;
+    case 'cyl':      // driver / punch / gun: coloured body, rubber grip, steel tip
+      put(C(.034, .034, .2), col, 0, .03, 0);
+      put(C(.038, .038, .12), GRIP, 0, -.13, 0);
+      put(C(.012, .012, .08), STEEL, 0, .17, 0);
+      put(new THREE.ConeGeometry(.012, .04, 4), STEEL, 0, .23, 0);
+      break;
+    case 'cone':     // plumb bob on its line: point down, knurled cap, string
+      put(new THREE.ConeGeometry(.06, .2, 8), col, 0, -.06, 0, Math.PI);
+      put(C(.045, .06, .05, 8), STEEL, 0, .065, 0);
+      put(C(.004, .004, .14, 3), GRIP, 0, .16, 0);
+      break;
+    case 'meter': {  // meter in its rubber boot: display, rotary dial, two leads
+      put(B(.17, .27, .08), GRIP, 0, 0, 0);
+      put(B(.14, .24, .012), col, 0, 0, .042);
+      put(B(.1, .07, .006), LCD, 0, .065, .05);
+      put(C(.035, .035, .012, 8), GRIP, 0, -.04, .05, Math.PI / 2);
+      put(B(.006, .03, .004), STEEL, 0, -.03, .058);
+      for (const [x, c] of [[-.04, LEAD], [.04, GRIP]]) put(C(.008, .008, .13, 4), c, x, -.2, .01);
+      break;
+    }
+    case 'case':     // hard case: shell, parting line, carry handle, latches
+      put(B(.3, .2, .12), col, 0, 0, 0);
+      put(B(.305, .012, .125), GRIP, 0, .03, 0);
+      put(B(.14, .022, .03), GRIP, 0, .135, 0);
+      for (const x of [-.06, .06]) put(B(.02, .035, .02), GRIP, x, .115, 0);
+      for (const x of [-.1, .1]) put(B(.035, .04, .012), STEEL, x, .03, .066);
+      break;
+    case 'coil':     // reel of line / tape / sling: coil, hub, winding handle
+      put(new THREE.TorusGeometry(.12, .035, 6, 12), col, 0, 0, 0);
+      put(C(.06, .06, .05, 8), GRIP, 0, 0, 0, Math.PI / 2);
+      put(C(.01, .01, .06, 4), STEEL, 0, 0, .05, Math.PI / 2);
+      put(B(.1, .02, .02), GRIP, .04, 0, .08);
+      break;
+    case 'hook':     // shackle / clamp / puller: bow, legs, screw pin across
+      put(new THREE.TorusGeometry(.075, .018, 6, 8, Math.PI), col, 0, 0, 0);
+      for (const x of [-.075, .075]) put(C(.018, .018, .09), col, x, -.045, 0);
+      put(C(.014, .014, .21), STEEL, 0, -.1, 0, 0, Math.PI / 2);
+      put(new THREE.SphereGeometry(.024, 6, 4), STEEL, .11, -.1, 0);
+      break;
+    default: {       // wrench: open jaw, dipped grip, box-end ring
+      put(B(.034, .26, .014), STEEL, 0, 0, 0);
+      put(B(.046, .15, .024), col, 0, -.03, 0);
+      put(B(.09, .03, .018), STEEL, 0, .135, 0);
+      for (const x of [-.035, .035]) put(B(.02, .07, .018), STEEL, x, .18, 0);
+      put(new THREE.TorusGeometry(.034, .012, 4, 8), STEEL, 0, -.16, 0);
     }
   }
-  const col = new THREE.Color().setHSL(tl.hue / 360, .5, .55);
-  const n = geo.attributes.position.count, arr = new Float32Array(n * 3);
-  for (let i = 0; i < n; i++) { arr[i * 3] = col.r; arr[i * 3 + 1] = col.g; arr[i * 3 + 2] = col.b; }
-  geo.setAttribute('color', new THREE.BufferAttribute(arr, 3));
+  const geo = mergeGeometries(parts);
+  parts.forEach((ge) => ge.dispose());
+  if (!geo) throw new Error('tool ' + tl.id + ': its parts did not merge');
+  geo.rotateY(-Math.PI / 2);    // face frame -> the board's frame
+  geo.userData.parts = parts.length;
   return geo;
 }
 function buildCrib(h, rx, rz, rw, rd) {
@@ -13320,6 +13543,7 @@ function renderChrome() {
   document.documentElement.lang = loc;
   document.documentElement.dir = i.dir;
   document.getElementById('back').textContent = '← ' + t('nav.campus');
+  document.getElementById('ptitle').textContent = 'SmartCiti.X : Trade Craft Academy — ' + t('nav.page.campus');
   const hall = document.getElementById('hall');
   // ✓ stations complete · ▶ every bound seat passed · 🧰 district crib passed
   const mark = (h) => {
@@ -15306,6 +15530,14 @@ page = page.replace('__RESPOND_JS__', RESPOND_JS)
 page = page.replace('__AVATAR_JS__', AVATAR_JS)
 page = page.replace('__ADVISOR_JS__', ADVISOR_JS)
 page = page.replace('__GROUND_TRUTH_JS__', GROUND_TRUTH_JS)
+page = page.replace('__NAV_CSS__', NAV_CSS).replace('__NAV__', NAV)
+page = page.replace('__H1_TEXT__', I18N['en']['strings']['nav.page.campus'])
+# the bar's controls carry their English names in the markup, so every link
+# and button has an accessible name before the script runs; renderChrome()
+# and the view code then rewrite them in the reader's language. A key the
+# wire does not carry is a KeyError here, not a blank button.
+page = re.sub(r'__L_([a-zA-Z.]+)__', lambda m: I18N['en']['strings'][m.group(1)], page)
+assert '__L_' not in page, 'an unfilled control label is left in the page'
 
 # ---------------------------------------------------------- guide gate ---
 # The guide answers about wherever you are standing, and it routes by the

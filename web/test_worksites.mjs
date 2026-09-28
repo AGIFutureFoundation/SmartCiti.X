@@ -163,5 +163,15 @@ ok('no typed count: every data-fig on the page is one recomputed above', [...htm
 const hrefs = [...new Set([...html.matchAll(/href="([^"#?]+)(?:[#?][^"]*)?"/g)].map((x) => x[1]))].filter((h) => !/^(data:|https?:)/.test(h));
 ok(`every href on the page resolves to a file on disk (${hrefs.join(', ')})`, hrefs.length > 0 && hrefs.every((h) => existsSync(join(WEB, h))), hrefs.filter((h) => !existsSync(join(WEB, h))));
 
+{
+  const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]);
+  const dup = [...new Set(ids.filter((x, i) => ids.indexOf(x) !== i))];
+  ok('every id on the page is unique (one arrowhead marker per site plan, each arrow pointing at its own plan\'s)', dup.length === 0
+    && [...html.matchAll(/marker-end="url\(#([^)]+)\)"/g)].every((m) => ids.includes(m[1])), dup);
+  ok('every hand-off table sits in its own horizontal scroll wrapper, so a 390px screen does not cut its columns off',
+    (html.match(/<div class="tablewrap"><table class="sched">/g) || []).length === (html.match(/<table class="sched">/g) || []).length
+    && /\.tablewrap\{overflow-x:auto/.test(html), []);
+}
+
 console.log(`web/test_worksites: ${n} checks passed${bad ? `, ${bad} FAILED` : ''}`);
 process.exit(bad ? 1 : 0);

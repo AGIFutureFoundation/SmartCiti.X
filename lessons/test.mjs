@@ -784,6 +784,70 @@ const src = readFileSync(url('./build.py'));
 ok('the registry was built from the current builder source (stamp check)',
   reg.source_stamp === createHash('sha256').update(src).digest('hex').slice(0, 16));
 
+/* ------------------------------------------ the flow through the page --- */
+/* Added with the lesson-flow pass. Each reads the SHIPPED page's elements and
+   attributes, never its prose, and recomputes what they should say from this
+   registry. */
+const COURSE_ORDER = (() => {
+  const layerOf = {};
+  for (const [d, ids] of Object.entries(reg.ladder.layers)) for (const id of ids) layerOf[id] = Number(d);
+  const keys = Object.keys(reg.lessons);
+  const by = {};
+  for (const id of keys) (by[reg.lessons[id].hall] ||= []).push(id);
+  for (const h of Object.keys(by)) by[h].sort((a, b) => (layerOf[a] - layerOf[b]) || (keys.indexOf(a) - keys.indexOf(b)));
+  return by;
+})();
+ok((() => {
+  const bad = [];
+  for (const [lid, L] of lessons) {
+    const sec = SECTION[lid] || '';
+    const foot = sec.slice(sec.indexOf('<footer class="lfoot">'));
+    const acts = foot.match(/<a class="nextact" href="([^"]*)"/g) || [];
+    const ids = COURSE_ORDER[L.hall];
+    const i = ids.indexOf(lid);
+    const want = i + 1 < ids.length ? `#lesson-${ids[i + 1]}` : `trade_craft_progress.html?hall=${L.hall}`;
+    if (acts.length !== 1 || !acts[0].includes(`href="${esc(want)}"`)) bad.push(`${lid}: wants ${want}, has ${acts.length} [${acts.join(' ')}]`);
+  }
+  return 'after every lesson there is ONE next action, and it is the next lesson in that hall\'s '
+    + 'course order (ladder layer, then registry order) or, after the last, that hall\'s progress page'
+    + (bad.length ? ` — ${bad.length} wrong: ${bad.slice(0, 3).join(' | ')}` : '');
+})(), lessons.every(([lid, L]) => {
+  const sec = SECTION[lid] || '';
+  const foot = sec.slice(sec.indexOf('<footer class="lfoot">'));
+  const acts = foot.match(/<a class="nextact" href="([^"]*)"/g) || [];
+  const ids = COURSE_ORDER[L.hall];
+  const i = ids.indexOf(lid);
+  const want = i + 1 < ids.length ? `#lesson-${ids[i + 1]}` : `trade_craft_progress.html?hall=${L.hall}`;
+  return sec.includes('<footer class="lfoot">') && acts.length === 1 && acts[0].includes(`href="${esc(want)}"`);
+}));
+
+ok('every lesson carries a step navigator (step n of m, previous, next) whose m is the registry\'s own '
+  + 'step count, shipped hidden so a scripting-off reader meets no dead control',
+  lessons.every(([lid, L]) => {
+    const sec = SECTION[lid] || '';
+    const m = sec.match(/<div class="stepnav" hidden data-steps="(\d+)">([\s\S]*?)<\/div>/);
+    return m !== null && Number(m[1]) === L.steps.length
+      && m[2].includes('class="sprev"') && m[2].includes('class="snext"')
+      && m[2].includes(`<b class="sat">1</b> of ${L.steps.length}`);
+  }));
+
+{
+  const js = (learnerPage.match(/<script>([\s\S]*?)<\/script>\s*<\/body>/) || [, ''])[1];
+  ok('the learner\'s place (course, filter, lesson, step) is kept in the ADDRESS - ?hall, ?q, ?step and '
+    + '#lesson-<id> written with replaceState and read back at load - and the page still stores nothing',
+    /u\.set\('hall'/.test(js) && /u\.set\('q'/.test(js) && /u\.set\('step'/.test(js)
+    && /history\.replaceState\(/.test(js) && /params\.get\('q'\)/.test(js) && /params\.get\('step'\)/.test(js)
+    && /'#' \+ place\.a\.id/.test(js)
+    && !/localStorage|sessionStorage|indexedDB|document\.cookie/.test(learnerPage));
+}
+
+ok('no table on the lessons page stands outside a horizontal-scroll box, so a 390px screen never scrolls sideways',
+  (() => {
+    const tables = (learnerPage.match(/<table>/g) || []).length;
+    const wrapped = (learnerPage.match(/<div class="tscroll"><table>/g) || []).length;
+    return tables > 0 && tables === wrapped && /\.tscroll\{overflow-x:auto/.test(learnerPage);
+  })());
+
 console.log(`lessons/test: ${n} checks passed — ${reg.counts.lessons} walkable lessons, `
   + `${reg.counts.steps} steps in ${reg.counts.step_kinds} kinds, standing in `
   + `${reg.counts.rooms_stood_in} rooms across ${reg.counts.halls_covered} of `

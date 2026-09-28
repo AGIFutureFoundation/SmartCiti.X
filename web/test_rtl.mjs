@@ -107,4 +107,9 @@ ok('build_languages.py â€” the one page that actually renders per-locale today â
 ok('the map\'s sidebar/plan shell is a CSS grid (inline-axis-aware, so RTL reorders it without an explicit rule)',
   /\.shell\{\{display:grid;grid-template-columns:266px minmax\(0,1fr\);/.test(map));
 
+// found by web/smoke.mjs's overflow audit: the district name column never
+// wrapped, which pushed the languages page to 465px on a 390px phone
+ok('the languages page releases its no-wrap district names below a phone breakpoint',
+  /@media \(max-width:\d+px\)\{\{\.dn\{\{white-space:normal\}\}/.test(languages));
+
 console.log(`web/test_rtl: ${n} checks passed`);

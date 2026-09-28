@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Trade Craft Network Plan</title>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Trade Craft Network Plan</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C1113'/%3E%3Cpath d='M7 21 L16 7 L25 21 Z' fill='none' stroke='%23E8A33D' stroke-width='2.6' stroke-linejoin='round'/%3E%3Cpath d='M11 21 h10' stroke='%2341C4D4' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
 <!-- Self-hosted: nothing on this page is fetched from another origin at run time. See web/fetch_fonts.py. -->
 <link rel="stylesheet" href="vendor/fonts/fonts.css">
@@ -47,7 +47,7 @@ header .sheetmeta span{font-family:"IBM Plex Mono",monospace;font-size:9.5px;let
   text-transform:uppercase;color:var(--muted)}
 
 .shell{display:grid;grid-template-columns:266px minmax(0,1fr);gap:0;min-height:calc(100vh - 74px)}
-@media(max-width:900px){.shell{grid-template-columns:1fr}}
+@media(max-width:900px){.shell{grid-template-columns:minmax(0,1fr)}}
 
 aside{border-inline-end:1px solid var(--rule);padding:20px;display:flex;flex-direction:column;gap:20px;
   background:var(--panel)}
@@ -73,7 +73,7 @@ aside{border-inline-end:1px solid var(--rule);padding:20px;display:flex;flex-dir
 .key .swatch-sch{background:var(--steel)} .key .swatch-dra{background:var(--rule);border:1px solid var(--muted)}
 
 /* ---- the plan ---- */
-.plan{position:relative;padding:22px;display:grid;gap:0;align-content:start}
+.plan{position:relative;padding:22px;display:grid;grid-template-columns:minmax(0,1fr);gap:0;align-content:start}
 .planwrap{position:relative;border:1px solid var(--rule);border-radius:4px;background:var(--sunk);
   overflow-x:auto}
 svg.map{display:block;width:100%;height:auto;min-width:940px}
@@ -116,13 +116,17 @@ svg.map{display:block;width:100%;height:auto;min-width:940px}
 
 /* ---- detail card ---- */
 .detail{margin-top:18px;border:1px solid var(--rule);border-radius:4px;background:var(--panel);
-  padding:18px 20px;display:grid;gap:14px}
+  padding:18px 20px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
 .detail .dhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
 .detail h2{font-size:26px}
+/* the district colour is a swatch and a rule, never the text colour: the
+   light hues fail contrast as text on the light theme's panel */
+.detail h2.dname{color:var(--ink);border-inline-start:6px solid var(--rule);padding-inline-start:10px}
+.detail .dist .dsw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-inline-end:6px;vertical-align:-1px}
 .detail .ref{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);
   border:1px solid var(--rule);border-radius:2px;padding:3px 7px}
 .detail .dist{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;
-  text-transform:uppercase;margin-inline-start:auto}
+  text-transform:uppercase;margin-inline-start:auto;overflow-wrap:anywhere;min-width:0}
 /* ---- hall interior ---- */
 .plan2{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:22px;align-items:start}
 @media(max-width:860px){.plan2{grid-template-columns:1fr}}
@@ -170,20 +174,22 @@ svg.floor{display:block;width:100%;height:auto;background:var(--sunk);
 .layers label .lc{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;white-space:nowrap}
 .layers label[data-focus="true"] code{color:var(--mark)}
 .layers .lfocus{border:1px solid var(--rule);background:none;color:var(--muted);font:inherit;font-size:10px;
-  border-radius:2px;padding:1px 5px;cursor:pointer;grid-column:2/-1;justify-self:start}
+  border-radius:2px;padding:1px 8px;cursor:pointer;grid-column:2/-1;justify-self:start;min-height:24px;min-width:24px}
 .layers .lfocus[aria-pressed="true"]{border-color:var(--mark);color:var(--mark)}
 .hall .lm{stroke:var(--sunk);stroke-width:.8}
 svg.map[data-off~="lessons"] .lm[data-layer="lessons"],svg.map[data-off~="seats"] .lm[data-layer="seats"],
 svg.map[data-off~="units"] .lm[data-layer="units"],svg.map[data-off~="signoff"] .lm[data-layer="signoff"],
 svg.map[data-off~="completable"] .lm[data-layer="completable"],svg.map[data-off~="blocked"] .lm[data-layer="blocked"]{display:none}
 .hallpanel{border-top:1px solid var(--rule);padding-top:14px;display:grid;gap:12px}
-.hallpanel .hp-links{display:flex;flex-wrap:wrap;gap:6px 14px}
+.hallpanel .hp-links{display:flex;flex-wrap:wrap;gap:6px 14px;min-width:0}
+.hallpanel .hp-links a,.hallpanel .hp-row a{overflow-wrap:anywhere}
 .hallpanel a{color:var(--steel);text-decoration:none;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11.5px}
 .hallpanel a:hover{text-decoration:underline}
-.hallpanel .hp-row{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;align-items:baseline;font-size:12.5px}
+.hallpanel .hp-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 12px;align-items:baseline;font-size:12.5px}
 .hallpanel .hp-row>.hp-k{display:grid;gap:2px;line-height:1.2}
 .hallpanel .hp-row code{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10px;color:var(--muted);white-space:nowrap}
-.hallpanel .hp-row>div{display:grid;gap:5px}
+.hallpanel .hp-row>div{display:grid;gap:5px;min-width:0}
+.hallpanel .hp-row .lc,.hallpanel .hp-row em,.hallpanel .hp-row a{overflow-wrap:anywhere;min-width:0}
 .hallpanel .hp-row .lc{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px}
 .hallpanel .hp-row em{font-style:normal;color:var(--muted);font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10.5px;display:block}
 .hallpanel .hp-row .none{color:var(--muted);font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px}
@@ -198,15 +204,18 @@ footer p{max-width:78ch;margin:0 0 8px}
 .sheetnav a:hover{text-decoration:underline}
 :focus-visible{outline:2px solid var(--mark);outline-offset:2px}
 </style>
-<style>.sitenav{font:13px/1.45 system-ui,sans-serif;color:var(--ink,inherit);background:var(--panel,var(--surface,transparent));border-block-end:1px solid var(--rule,var(--line,currentColor));padding-block:6px;padding-inline:16px;box-sizing:border-box;max-width:100%;overflow-wrap:anywhere}.sitenav a{color:inherit;text-decoration:none}.sitenav a:hover,.sitenav a:focus-visible{text-decoration:underline}.sitenav-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px}.sitenav-home{font-weight:700;color:var(--mark,var(--accent,inherit))!important}.sitenav-group{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;min-width:0}.sitenav-g{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted,inherit)}.sitenav ul,.sitenav ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:2px 10px}.sitenav [aria-current="page"]{font-weight:700;text-decoration:underline;text-underline-offset:3px;color:var(--mark,var(--accent,inherit))}.sitenav-loop{margin-block-start:6px!important;padding-block-start:6px!important;border-block-start:1px dashed var(--rule,var(--line,currentColor));counter-reset:step;align-items:baseline}.sitenav-loop li{counter-increment:step;color:var(--muted,inherit)}.sitenav-loop li::before{content:counter(step) ". ";color:var(--muted,inherit)}.sitenav-loop [aria-current="step"]{font-weight:700;color:var(--mark,var(--accent,inherit));text-decoration:underline;text-underline-offset:3px}@media(max-width:480px){.sitenav{padding-inline:10px}.sitenav-row{gap:4px 12px}}</style>
+<style>.sitenav{--sn-ink:var(--ink,CanvasText);--sn-bg:var(--panel,var(--surface,Canvas));--sn-rule:var(--rule,var(--line,GrayText));--sn-mute:var(--muted,var(--ink,CanvasText));--sn-mark:var(--mark,var(--accent,LinkText));position:relative;z-index:40;font:500 13.5px/1.35 "IBM Plex Sans",system-ui,sans-serif;color:var(--sn-ink);background:var(--sn-bg);border-block-end:1px solid var(--sn-rule);padding-block:6px;padding-inline:16px;box-sizing:border-box;max-width:100%;overflow-wrap:anywhere}.sitenav *{box-sizing:border-box}.sitenav a{color:inherit;text-decoration:none;border-radius:6px;padding-block:4px;padding-inline:7px;display:inline-block}.sitenav a:hover{background:color-mix(in srgb,currentColor 11%,transparent)}.sitenav a:focus-visible,.sitenav summary:focus-visible{outline:2px solid var(--sn-mark);outline-offset:2px}.sitenav-row{display:flex;align-items:center;gap:6px 12px;min-width:0}.sitenav-home{font-weight:700;color:var(--sn-ink)!important;white-space:nowrap;border:1px solid var(--sn-rule);border-inline-start:3px solid var(--sn-mark)}.sitenav-menu{flex:1 1 auto;min-width:0}.sitenav-menu>summary{display:none}.sitenav-menu::details-content{content-visibility:visible;display:contents}@supports not selector(::details-content){.sitenav-menu>summary{display:inline-flex}}.sitenav-groups{display:flex;flex-wrap:wrap;align-items:center;gap:2px 0}.sitenav-group{display:flex;flex-wrap:wrap;align-items:center;gap:0 1px;min-width:0;padding-inline:8px;border-inline-start:1px solid var(--sn-rule)}.sitenav-group:first-child{border-inline-start:0}.sitenav-g{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--sn-mute);margin-inline-end:3px}.sitenav ul,.sitenav ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:0 1px}.sitenav [aria-current="page"]{font-weight:700;color:var(--sn-ink);background:color-mix(in srgb,currentColor 10%,transparent);box-shadow:inset 0 -3px 0 var(--sn-mark)}.sitenav-loop{margin-block-start:6px!important;padding-block-start:6px!important;border-block-start:1px solid var(--sn-rule);counter-reset:step;align-items:center;gap:4px 6px!important}.sitenav-loop li{counter-increment:step;color:var(--sn-mute);display:flex;align-items:center}.sitenav-loop li::before{content:counter(step);display:inline-grid;place-items:center;inline-size:1.5em;block-size:1.5em;border-radius:50%;font-size:11px;font-weight:700;border:1px solid var(--sn-rule);margin-inline-end:2px}.sitenav-loop a{color:var(--sn-ink)}.sitenav-loop [aria-current="step"]{font-weight:700;color:var(--sn-ink);background:color-mix(in srgb,currentColor 10%,transparent);box-shadow:inset 0 -3px 0 var(--sn-mark)}@media(max-width:720px){.sitenav{padding-inline:12px}.sitenav-row{justify-content:space-between}.sitenav-menu{flex:0 1 auto}.sitenav-menu::details-content{display:block;content-visibility:hidden}.sitenav-menu[open]::details-content{content-visibility:visible}.sitenav-menu>summary{display:inline-flex;align-items:center;gap:6px;cursor:pointer;list-style:none;padding-block:5px;padding-inline:10px;border:1px solid var(--sn-rule);border-radius:6px;font-weight:600;white-space:nowrap}.sitenav-menu>summary::-webkit-details-marker{display:none}.sitenav-menu>summary::after{content:"";inline-size:.45em;block-size:.45em;border-inline-end:2px solid currentColor;border-block-end:2px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform .15s}.sitenav-menu[open]>summary::after{transform:translateY(2px) rotate(-135deg)}.sitenav-menu[open]>.sitenav-groups{position:absolute;inset-inline:0;top:100%;display:grid;gap:0;background:var(--sn-bg);border-block-end:1px solid var(--sn-rule);box-shadow:0 12px 24px -12px rgba(0,0,0,.45);padding-block:4px 10px;padding-inline:12px}.sitenav-group{padding-inline:0;padding-block:6px;border-inline-start:0;border-block-start:1px solid var(--sn-rule)}.sitenav-group:first-child{border-block-start:0}.sitenav-g{flex:0 0 100%;margin-block-end:2px}.sitenav-loop{font-size:12.5px}}@media (prefers-reduced-motion:reduce){.sitenav *{transition:none!important}}</style>
 <nav class="sitenav" data-sitenav aria-label="Site pages">
 <div class="sitenav-row">
 <a class="sitenav-home" href="../index.html">Front door</a>
+<details class="sitenav-menu" data-sitenav-menu><summary>Site pages</summary>
+<div class="sitenav-groups">
 <div class="sitenav-group"><span class="sitenav-g">Learn</span><ul><li><a href="trade_craft_lessons.html">Lessons</a></li><li><a href="trade_craft_ladder.html">Ladder</a></li><li><a href="trade_craft_3d.html">Walk the campus</a></li></ul></div>
 <div class="sitenav-group"><span class="sitenav-g">Maps</span><ul><li><a href="trade_craft_map.html" aria-current="page">Layered map</a></li><li><a href="trade_craft_interactive.html">Interactive map</a></li><li><a href="trade_craft_geomap.html">Geomap</a></li><li><a href="trade_craft_fabric.html">Spatial fabric</a></li></ul></div>
 <div class="sitenav-group"><span class="sitenav-g">Records</span><ul><li><a href="trade_craft_progress.html">Progress</a></li><li><a href="trade_craft_verify.html">Verify a record</a></li><li><a href="trade_craft_contribute.html">Contribute</a></li></ul></div>
 <div class="sitenav-group"><span class="sitenav-g">Sites</span><ul><li><a href="trade_craft_spaces.html">Spaces</a></li><li><a href="trade_craft_worksites.html">Work sites</a></li></ul></div>
 <div class="sitenav-group"><span class="sitenav-g">About</span><ul><li><a href="trade_craft_landing.html">Overview</a></li><li><a href="trade_craft_dashboard.html">Dashboard</a></li><li><a href="trade_craft_languages.html">Languages</a></li><li><a href="trade_craft_signin.html">Sign in</a></li><li><a href="smartcitix_trade_craft_academy.html">Academy spec</a></li></ul></div>
+</div></details>
 </div>
 </nav>
 
@@ -413,15 +422,15 @@ function renderDetail(slug) {
   }).join('');
 
   const programme = I.rooms.map((r) => `<div class="pr">
-      <b style="color:${r.fixtures.length ? h.chip : 'var(--muted)'}">${r.label}</b>
+      <b style="${r.fixtures.length ? `color:var(--ink);box-shadow:inset 0 -3px 0 ${h.chip}` : 'color:var(--muted)'}">${r.label}</b>
       <span>${r.purpose}${r.fixtures.length ? `<em>${r.fixtures.join(' · ')}</em>` : ''}</span>
     </div>`).join('');
 
   document.getElementById('detail').innerHTML = `
     <div class="dhead">
-      <h2 style="color:${h.chip}">${h.name}</h2>
+      <h2 class="dname" style="border-inline-start-color:${h.chip}">${h.name}</h2>
       <span class="ref mono">${h.code} · GRID ${h.ref}</span>
-      <span class="dist" style="color:${h.chip}">${h.district_name} &#183; ${h.campus}</span>
+      <span class="dist"><i class="dsw" style="background:${h.chip}"></i>${h.district_name} &#183; ${h.campus}</span>
     </div>
     <p>${h.focus}.</p>
     <div class="stack">${seg('live')}${seg('calibrating')}${seg('schema_ok')}${seg('draft')}</div>

@@ -331,6 +331,20 @@ console.log(`fabric: page ${PAGE} (${html.length.toLocaleString('en-US')} bytes)
 
 /* ============================================ 2. the page against those facts */
 ok('[shipped] the page carries an embedded registry payload that parses', D !== null, ['the payload did not parse']);
+/* phone layout, held at the source (found by web/smoke.mjs's overflow audit: an
+   unwrapped quoted <pre> and a bare source URL widened the page to 1523px on a
+   390px phone). Every table scrolls inside its own .tscroll, every <pre> wraps. */
+{
+  const tables = (html.match(/<table\b/g) || []).length;
+  const wrapped = (html.match(/<div class="tscroll"><table\b/g) || []).length;
+  const css = (html.match(/<style>([\s\S]*?)<\/style>/) || ['', ''])[1];
+  ok(`[shipped] layout: all ${tables} tables sit in a .tscroll (overflow-x:auto), every <pre> wraps, source links break`,
+    tables > 0 && tables === wrapped && /\.tscroll\{overflow-x:auto\}/.test(css)
+    && /pre\[data-quote\]\{white-space:pre-wrap;overflow-wrap:anywhere/.test(css)
+    && /pre\.hj\{white-space:pre-wrap;overflow-wrap:anywhere/.test(css)
+    && /#sources a\{overflow-wrap:anywhere\}/.test(css),
+    [`${wrapped} of ${tables} tables wrapped, or a pre/link wrap rule is missing`]);
+}
 if (D !== null) {
   const off = [];
   const pairs = [

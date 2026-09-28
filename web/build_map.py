@@ -428,7 +428,7 @@ GRID = ''.join(
 
 NAV = nav_html('web/trade_craft_map.html', nav_labels('en'))
 
-PAGE = f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Trade Craft {S('map.page_title')}</title>
+PAGE = f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Trade Craft {S('map.page_title')}</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C1113'/%3E%3Cpath d='M7 21 L16 7 L25 21 Z' fill='none' stroke='%23E8A33D' stroke-width='2.6' stroke-linejoin='round'/%3E%3Cpath d='M11 21 h10' stroke='%2341C4D4' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
 <!-- Self-hosted: nothing on this page is fetched from another origin at run time. See web/fetch_fonts.py. -->
 <link rel="stylesheet" href="vendor/fonts/fonts.css">
@@ -477,7 +477,7 @@ header .sheetmeta span{{font-family:"IBM Plex Mono",monospace;font-size:9.5px;le
   text-transform:uppercase;color:var(--muted)}}
 
 .shell{{display:grid;grid-template-columns:266px minmax(0,1fr);gap:0;min-height:calc(100vh - 74px)}}
-@media(max-width:900px){{.shell{{grid-template-columns:1fr}}}}
+@media(max-width:900px){{.shell{{grid-template-columns:minmax(0,1fr)}}}}
 
 aside{{border-inline-end:1px solid var(--rule);padding:20px;display:flex;flex-direction:column;gap:20px;
   background:var(--panel)}}
@@ -503,7 +503,7 @@ aside{{border-inline-end:1px solid var(--rule);padding:20px;display:flex;flex-di
 .key .swatch-sch{{background:var(--steel)}} .key .swatch-dra{{background:var(--rule);border:1px solid var(--muted)}}
 
 /* ---- the plan ---- */
-.plan{{position:relative;padding:22px;display:grid;gap:0;align-content:start}}
+.plan{{position:relative;padding:22px;display:grid;grid-template-columns:minmax(0,1fr);gap:0;align-content:start}}
 .planwrap{{position:relative;border:1px solid var(--rule);border-radius:4px;background:var(--sunk);
   overflow-x:auto}}
 svg.map{{display:block;width:100%;height:auto;min-width:940px}}
@@ -546,13 +546,17 @@ svg.map{{display:block;width:100%;height:auto;min-width:940px}}
 
 /* ---- detail card ---- */
 .detail{{margin-top:18px;border:1px solid var(--rule);border-radius:4px;background:var(--panel);
-  padding:18px 20px;display:grid;gap:14px}}
+  padding:18px 20px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px}}
 .detail .dhead{{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}}
 .detail h2{{font-size:26px}}
+/* the district colour is a swatch and a rule, never the text colour: the
+   light hues fail contrast as text on the light theme's panel */
+.detail h2.dname{{color:var(--ink);border-inline-start:6px solid var(--rule);padding-inline-start:10px}}
+.detail .dist .dsw{{display:inline-block;width:10px;height:10px;border-radius:2px;margin-inline-end:6px;vertical-align:-1px}}
 .detail .ref{{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);
   border:1px solid var(--rule);border-radius:2px;padding:3px 7px}}
 .detail .dist{{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;
-  text-transform:uppercase;margin-inline-start:auto}}
+  text-transform:uppercase;margin-inline-start:auto;overflow-wrap:anywhere;min-width:0}}
 /* ---- hall interior ---- */
 .plan2{{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:22px;align-items:start}}
 @media(max-width:860px){{.plan2{{grid-template-columns:1fr}}}}
@@ -600,20 +604,22 @@ svg.floor{{display:block;width:100%;height:auto;background:var(--sunk);
 .layers label .lc{{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;white-space:nowrap}}
 .layers label[data-focus="true"] code{{color:var(--mark)}}
 .layers .lfocus{{border:1px solid var(--rule);background:none;color:var(--muted);font:inherit;font-size:10px;
-  border-radius:2px;padding:1px 5px;cursor:pointer;grid-column:2/-1;justify-self:start}}
+  border-radius:2px;padding:1px 8px;cursor:pointer;grid-column:2/-1;justify-self:start;min-height:24px;min-width:24px}}
 .layers .lfocus[aria-pressed="true"]{{border-color:var(--mark);color:var(--mark)}}
 .hall .lm{{stroke:var(--sunk);stroke-width:.8}}
 svg.map[data-off~="lessons"] .lm[data-layer="lessons"],svg.map[data-off~="seats"] .lm[data-layer="seats"],
 svg.map[data-off~="units"] .lm[data-layer="units"],svg.map[data-off~="signoff"] .lm[data-layer="signoff"],
 svg.map[data-off~="completable"] .lm[data-layer="completable"],svg.map[data-off~="blocked"] .lm[data-layer="blocked"]{{display:none}}
 .hallpanel{{border-top:1px solid var(--rule);padding-top:14px;display:grid;gap:12px}}
-.hallpanel .hp-links{{display:flex;flex-wrap:wrap;gap:6px 14px}}
+.hallpanel .hp-links{{display:flex;flex-wrap:wrap;gap:6px 14px;min-width:0}}
+.hallpanel .hp-links a,.hallpanel .hp-row a{{overflow-wrap:anywhere}}
 .hallpanel a{{color:var(--steel);text-decoration:none;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11.5px}}
 .hallpanel a:hover{{text-decoration:underline}}
-.hallpanel .hp-row{{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;align-items:baseline;font-size:12.5px}}
+.hallpanel .hp-row{{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 12px;align-items:baseline;font-size:12.5px}}
 .hallpanel .hp-row>.hp-k{{display:grid;gap:2px;line-height:1.2}}
 .hallpanel .hp-row code{{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10px;color:var(--muted);white-space:nowrap}}
-.hallpanel .hp-row>div{{display:grid;gap:5px}}
+.hallpanel .hp-row>div{{display:grid;gap:5px;min-width:0}}
+.hallpanel .hp-row .lc,.hallpanel .hp-row em,.hallpanel .hp-row a{{overflow-wrap:anywhere;min-width:0}}
 .hallpanel .hp-row .lc{{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px}}
 .hallpanel .hp-row em{{font-style:normal;color:var(--muted);font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10.5px;display:block}}
 .hallpanel .hp-row .none{{color:var(--muted);font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px}}
@@ -847,15 +853,15 @@ function renderDetail(slug) {{
   }}).join('');
 
   const programme = I.rooms.map((r) => `<div class="pr">
-      <b style="color:${{r.fixtures.length ? h.chip : 'var(--muted)'}}">${{r.label}}</b>
+      <b style="${{r.fixtures.length ? `color:var(--ink);box-shadow:inset 0 -3px 0 ${{h.chip}}` : 'color:var(--muted)'}}">${{r.label}}</b>
       <span>${{r.purpose}}${{r.fixtures.length ? `<em>${{r.fixtures.join(' · ')}}</em>` : ''}}</span>
     </div>`).join('');
 
   document.getElementById('detail').innerHTML = `
     <div class="dhead">
-      <h2 style="color:${{h.chip}}">${{h.name}}</h2>
+      <h2 class="dname" style="border-inline-start-color:${{h.chip}}">${{h.name}}</h2>
       <span class="ref mono">${{h.code}} · GRID ${{h.ref}}</span>
-      <span class="dist" style="color:${{h.chip}}">${{h.district_name}} &#183; ${{h.campus}}</span>
+      <span class="dist"><i class="dsw" style="background:${{h.chip}}"></i>${{h.district_name}} &#183; ${{h.campus}}</span>
     </div>
     <p>${{h.focus}}.</p>
     <div class="stack">${{seg('live')}}${{seg('calibrating')}}${{seg('schema_ok')}}${{seg('draft')}}</div>

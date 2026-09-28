@@ -482,5 +482,16 @@ ok(/An unverified signature presented as verified/.test(A.siwe.verification.if_t
      + 'never overwrite one');
 }
 
+/* phone layout (found by web/smoke.mjs's overflow audit: the method table
+   pushed the sign-in page to 807px on a 390px phone): every table scrolls in
+   its own labelled, keyboard-reachable region */
+{
+  const tables = (PAGE.match(/<table\b/g) || []).length;
+  const regions = [...PAGE.matchAll(/<div class="tw" role="region" aria-labelledby="([^"]+)" tabindex="0">\s*<table\b/g)];
+  ok(tables > 0 && regions.length === tables && regions.every((m) => PAGE.includes(`id="${m[1]}"`))
+     && /\.tw\{overflow-x:auto/.test(PAGE),
+    `every table on the sign-in page (${tables}) scrolls inside a labelled region, so a phone never scrolls sideways`);
+}
+
 console.log(`\n${pass} ok, ${fail} failed`);
 process.exit(fail ? 1 : 0);

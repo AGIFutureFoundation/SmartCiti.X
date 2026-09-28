@@ -107,7 +107,7 @@ gauge = """<svg viewBox="0 0 220 130" class="gauge" role="img" aria-label="Dial 
 
 NAV = nav_html('web/smartcitix_trade_craft_academy.html', nav_labels('en'))
 
-page = f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Adaptive Stack Protocol</title>
+page = f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Adaptive Stack Protocol</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C1113'/%3E%3Cpath d='M7 21 L16 7 L25 21 Z' fill='none' stroke='%23E8A33D' stroke-width='2.6' stroke-linejoin='round'/%3E%3Cpath d='M11 21 h10' stroke='%2341C4D4' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
 <!-- Self-hosted: nothing on this page is fetched from another origin at run time. See web/fetch_fonts.py. -->
 <link rel="stylesheet" href="vendor/fonts/fonts.css">
@@ -151,7 +151,10 @@ nav.mods {{ display:flex; flex-wrap:wrap; gap:8px; padding:20px 0 8px;
   border-bottom:1px solid var(--line); }}
 nav.mods a {{ font:500 12.5px/1 "IBM Plex Mono",monospace; color:var(--accent-ink);
   text-decoration:none; padding:7px 10px; border:1px solid var(--line); border-radius:3px; }}
-nav.mods a:hover, nav.mods a:focus-visible {{ border-color:var(--accent); color:var(--ink); outline:none; }}
+nav.mods a:hover, nav.mods a:focus-visible {{ border-color:var(--accent); color:var(--ink); }}
+nav.mods a:focus-visible {{ outline:2px solid var(--accent); outline-offset:2px; }}
+/* the shared nav marks links in --accent, 4.3:1 on this paper; the ink shade clears AA in both themes */
+nav.sitenav {{ --sn-mark:var(--accent-ink); }}
 h2 {{ font:700 24px/1.2 "Archivo",sans-serif; color:var(--head); margin:56px 0 16px;
   padding-top:20px; border-top:1px solid var(--line); text-wrap:balance; scroll-margin-top:16px; }}
 h3 {{ font:600 17px/1.3 "Archivo",sans-serif; color:var(--head); margin:32px 0 10px; }}

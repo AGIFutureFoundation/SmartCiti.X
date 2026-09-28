@@ -281,6 +281,63 @@ ok('[generator] build_geomap.py fails closed by name (need()) and takes no `.get
     'placeCampusLabels is missing, not hooked to load and zoomend, or no longer avoids restoration markers');
 }
 
+/* --- 9. map chrome and declutter (the opening Bay Area view) ---------------------- */
+{
+  const body = page.slice(page.indexOf('function placeCampusLabels'), page.indexOf("map.on('zoomend', placeCampusLabels)"));
+  ok('[shipped] only a pinned restoration site gets a marker (the unpinned one has lat/lng null, which MapLibre drew at 0,0)',
+    /for \(const s of D\.restorationSites\.filter\(\(x\) => x\.pin === true\)\)/.test(page)
+    && restoration.sites.some((s) => s.pin !== true && s.lat === null));
+  ok('[shipped] label placement computes every rectangle from map.project(), never measuring a marker right after setOffset()',
+    body.includes('map.project(ll)') && !/setOffset\(o\);\s*const r = c\.el\.getBoundingClientRect\(\)/.test(body)
+    && !body.includes('c.el.getBoundingClientRect()'));
+  ok('[shipped] restoration sites closer than one target fold into a counted cluster, rebuilt on every placement pass, that zooms to its own sites on click',
+    /function foldRestoration\(\)/.test(page) && body.includes('foldRestoration();')
+    && /className = 'rest-cluster'/.test(page) && /b\.textContent = String\(sites\.length\)/.test(page)
+    && /map\.fitBounds\(\[\[w, so\], \[e, n\]\]/.test(page));
+  ok('[shipped] a restoration name shows only where it collides with nothing placed; hover and keyboard focus always show it',
+    body.includes("classList.add('show-label')") && body.includes("classList.remove('show-label')")
+    && /\.restoration-marker:focus-visible \.rm-label\{display:block\}/.test(page.replace(/\s*\n\s*/g, '')) );
+  ok('[shipped] campus and restoration markers are <button>s (Enter/Space open the same popup) named after MapLibre stamps its generic "Map marker" label',
+    (page.match(/document\.createElement\('button'\)/g) || []).length >= 3
+    && /\.addTo\(map\) \}\);\s*el\.setAttribute\('aria-label', s\.name/.test(page)
+    && /el\.setAttribute\('aria-label', f\.properties\.name/.test(page));
+  ok('[shipped] one popup at a time: the opener shows a selected state, a keyboard open focuses the popup, Escape closes it',
+    /function showPopup\(/.test(page) && /\.campus-marker\.is-selected\{/.test(page)
+    && /if \(byKeyboard && closeBtn\) closeBtn\.focus\(\)/.test(page)
+    && /e\.key !== 'Escape'/.test(page) && /currentPopup\.remove\(\); return;/.test(page));
+  ok('[shipped] the find box lists every campus and pinned site from D (no typed name) and opens the one picked',
+    /<datalist id="findList"><\/datalist>/.test(page) && /FIND\.push\(\{ name: c\.f\.properties\.name/.test(page)
+    && /FIND\.push\(\{ name: r\.s\.name/.test(page)
+    && !Object.values(D.rollups).some((r) => outside.includes(`<option value="${r.name}"`)));
+  ok('[shipped] the bar sits in flow and the zoom control is top-left, so neither hides under the bar or the right-hand panels',
+    /#bar\{position:relative;/.test(page) && !/#bar\{position:fixed/.test(page)
+    && /NavigationControl\(\{ showCompass: false \}\), 'top-left'\)/.test(page) && /<div id="mapwrap">/.test(page));
+  ok('[shipped] the legend is a <details> (folded on a phone) with a row for the counted cluster it draws',
+    /<details id="legend" open>/.test(page) && /class="sw-cluster"/.test(page)
+    && /document\.getElementById\('legend'\)\.open = false/.test(page));
+}
+
+/* --- 10. the globe (MapLibre 5) ------------------------------------------------- */
+{
+  const body = page.slice(page.indexOf('function placeCampusLabels'), page.indexOf("map.on('zoomend', placeCampusLabels)"));
+  ok('[shipped] the style renders on a globe, and the opening view is framed on the campuses\' own coordinates (computed, not typed)',
+    /projection: \{ type: 'globe' \}/.test(page) && /bounds: NETWORK_BOUNDS, fitBoundsOptions: \{ padding: fitPadding\(\) \}/.test(page)
+    && /const CAMPUS_LL = D\.network\.features\.filter\(\(x\) => x\.properties\.slug\)/.test(page)
+    && /network: NETWORK_BOUNDS,/.test(page) && !/center: \[-106, 34\]/.test(page));
+  ok('[shipped] a pressed-state button switches globe <-> flat (mercator) with map.setProjection, and re-places the labels',
+    /<button class="barbtn" id="projBtn" aria-pressed="true"/.test(page)
+    && /map\.setProjection\(\{ type: projection \}\)/.test(page) && /projection === 'globe' \? 'mercator' : 'globe'/.test(page)
+    && /projBtn\.setAttribute\('aria-pressed'/.test(page) && /map\.once\('idle', placeCampusLabels\)/.test(page));
+  ok('[shipped] a marker on the far side of the globe is invisible and takes no click or Tab stop',
+    (page.match(/opacityWhenCovered: '0'/g) || []).length === 4
+    && /\.maplibregl-marker\.maplibregl-marker-covered\{visibility:hidden;pointer-events:none\}/.test(page)
+    && body.includes("classList.contains('maplibregl-marker-covered')) continue;"));
+  ok('[shipped] no campus label is placed under the open legend or the zoom control, or off the map\'s frame; a label with no clear slot folds to its initials',
+    body.includes("document.getElementById('legend'), document.querySelector('.maplibregl-ctrl-top-left')")
+    && body.includes('obstacles.some((q) => hit(r, q))') && body.includes('r.right > VW - 2')
+    && body.includes("c.el.classList.add('compact')") && /el\.dataset\.short = f\.properties\.name/.test(page));
+}
+
 if (failed) {
   console.error(`FAIL  web/test_geomap: ${failed} of ${n + failed} checks failed`);
   process.exit(1);

@@ -469,7 +469,7 @@ def step_html(lid, L, s, i, cpos):
                      f'href="trade_craft_3d.html?hall={E(need(L, "hall", f"{R}#lessons.{lid}"))}'
                      f'&amp;sim={E(seat)}">open this seat in the walkable world</a> '
                      f'<code>{E(seat)}</code></p>')
-    return (f'<li class="step" data-step="{E(str(n))}" data-course-step="{E(str(cpos))}">'
+    return (f'<li class="step" data-step="{E(str(n))}" data-course-step="{E(str(cpos))}" tabindex="-1">'
             f'<label class="markbox"><input type="checkbox" class="mark" '
             f'aria-label="mark step {E(str(n))} worked"><span class="sn">{E(str(n))}</span></label>'
             f'<div class="sbody">'
@@ -484,7 +484,28 @@ def step_html(lid, L, s, i, cpos):
             f'</div></li>')
 
 
-def lesson_html(lid, L, pos, of, cstep0):
+def next_action(lid, L, pos, of, nxt):
+    """The one thing to do after this lesson, decided from the course order.
+
+    The course order is the ladder's (see COURSE_OF), so "next" is READ, not
+    chosen here: the next lesson in this hall's course, or - after the last
+    one - the progress page for this hall, which reads what the device
+    actually recorded. A plain hash link, so it works with scripting off and
+    keeps the tab's marks (a query link would reload the page and drop them).
+    """
+    w = f'{R}#lessons.{lid}'
+    hall = need(L, 'hall', w)
+    if nxt is None:
+        return (f'<p class="lnext" data-next="progress"><span class="then">after this lesson</span> '
+                f'<a class="nextact" href="trade_craft_progress.html?hall={E(hall)}">'
+                f'last lesson in this course: see what this device has recorded</a></p>')
+    return (f'<p class="lnext" data-next="lesson" data-next-lesson="{E(nxt)}">'
+            f'<span class="then">after this lesson</span> '
+            f'<a class="nextact" href="#lesson-{E(nxt)}">next: lesson {pos + 1} of {of} \u2014 '
+            f'{E(need(LESSONS[nxt], "title", f"{R}#lessons.{nxt}"))}</a></p>')
+
+
+def lesson_html(lid, L, pos, of, cstep0, nxt):
     w = f'{R}#lessons.{lid}'
     hall = need(L, 'hall', w)
     campus = need(L, 'campus', w)
@@ -540,12 +561,22 @@ def lesson_html(lid, L, pos, of, cstep0):
             f'</header>'
             f'{pre_block}'
             f'<div class="steps"><h4>{len(steps)} steps, in this order '
-            f'<span class="done">not marked</span></h4>'
+            f'<span class="done" data-state="none">not marked</span></h4>'
             f'<ol class="steplist">'
             + ''.join(step_html(lid, L, s, i, cstep0 + i + 1)
                       for i, s in enumerate(steps))
-            + f'</ol></div>'
-            f'<footer class="lfoot"><p class="provrow">{prov_chips}</p></footer>'
+            + f'</ol>'
+            # The step navigator: hidden until the script runs, because with
+            # scripting off every step is already on the page in order and a
+            # pair of dead buttons would be a lie about what they do. It sits
+            # after the steps and sticks to the bottom of the screen while
+            # they scroll past, so it is in reach at step 4 as well as step 1.
+            f'<div class="stepnav" hidden data-steps="{len(steps)}">'
+            f'<button type="button" class="sprev">\u25c0 previous step</button>'
+            f'<span class="spos" aria-live="polite">step <b class="sat">1</b> of {len(steps)}</span>'
+            f'<button type="button" class="snext">next step \u25b6</button></div></div>'
+            f'<footer class="lfoot">{next_action(lid, L, pos, of, nxt)}'
+            f'<p class="provrow">{prov_chips}</p></footer>'
             f'</article>')
 
 
@@ -563,7 +594,8 @@ def course_html(c):
     blocks = ''
     cstep = 0
     for pos, lid in enumerate(ids, start=1):
-        blocks += lesson_html(lid, LESSONS[lid], pos, len(ids), cstep)
+        nxt = ids[pos] if pos < len(ids) else None
+        blocks += lesson_html(lid, LESSONS[lid], pos, len(ids), cstep, nxt)
         cstep += len(need(LESSONS[lid], 'steps', f'{R}#lessons.{lid}'))
     if cstep != c['steps']:
         raise AssertionError(
@@ -631,6 +663,7 @@ const filterEl = document.getElementById('filter');
 const shownEl = document.getElementById('shown');
 const pickEl = document.getElementById('course-pick');
 const noteEl = document.getElementById('course-note');
+const placeEl = document.getElementById('place');
 const lessonEls = Array.prototype.slice.call(listEl.querySelectorAll('article.lesson'));
 const courseEls = Array.prototype.slice.call(listEl.querySelectorAll('section.course'));
 
@@ -641,7 +674,10 @@ function tally(article) {
     const li = b.closest('li.step');
     if (b.checked) { done += 1; li.classList.add('marked'); } else { li.classList.remove('marked'); }
   });
-  article.querySelector('.done').textContent = done + ' of ' + boxes.length + ' marked';
+  const badge = article.querySelector('.done');
+  badge.dataset.state = done === 0 ? 'none' : (done === boxes.length ? 'all' : 'some');
+  badge.textContent = done === 0 ? 'not marked'
+    : (done === boxes.length ? 'all ' + boxes.length + ' marked' : done + ' of ' + boxes.length + ' marked');
 }
 
 listEl.addEventListener('change', function (ev) {
@@ -701,17 +737,134 @@ function setCourse(slug) {
   applyFilter();
 }
 
+/* the reader narrowed the list past their own place: the narrowing wins and
+   the place is let go, so the address never names a lesson nobody can see */
+function dropHiddenPlace() {
+  if (place === null || !place.a.hidden) return;
+  place.a.querySelectorAll('li.step.current').forEach(function (li) {
+    li.classList.remove('current'); li.removeAttribute('aria-current'); });
+  place = null;
+  placeEl.hidden = true;
+}
+
 pickEl.addEventListener('change', function () {
   setCourse(pickEl.value);
-  history.replaceState(null, '', pickEl.value === ''
-    ? location.pathname
-    : location.pathname + '?hall=' + encodeURIComponent(pickEl.value));
+  dropHiddenPlace();
+  writeUrl();
 });
 
-filterEl.addEventListener('input', applyFilter);
+/* ---- the place: which lesson and which step, kept in the ADDRESS ----
+   Not in storage: the page promises to store nothing, and it keeps that.
+   The address already carries the course (?hall=) and the lesson
+   (#lesson-<id>, the anchor the hall roster and the progress page link to);
+   the filter (?q=) and the step (?step=) join them, written with
+   replaceState so a reload, a bookmark or a shared link lands on the same
+   lesson, the same step and the same filter - and the back button is not
+   filled with one entry per keypress. */
+let place = null;   /* { a: <article>, n: <step number> } */
+
+function stepsOf(a) { return a.querySelectorAll('ol.steplist > li.step'); }
+
+function writeUrl() {
+  const u = new URLSearchParams();
+  if (course !== '') u.set('hall', course);
+  const q = filterEl.value.trim();
+  if (q !== '') u.set('q', q);
+  if (place !== null) u.set('step', String(place.n));
+  const qs = u.toString();
+  history.replaceState(null, '', location.pathname + (qs === '' ? '' : '?' + qs)
+    + (place !== null ? '#' + place.a.id : ''));
+}
+
+function setPlace(a, n, how) {
+  const lis = stepsOf(a);
+  const m = lis.length;
+  if (m === 0) return;
+  const k = Math.min(Math.max(1, n), m);
+  if (place !== null) {
+    place.a.querySelectorAll('li.step.current').forEach(function (li) {
+      li.classList.remove('current'); li.removeAttribute('aria-current');
+    });
+    place.a.querySelectorAll('.nextact.ready').forEach(function (x) { x.classList.remove('ready'); });
+  }
+  place = { a: a, n: k };
+  const li = lis[k - 1];
+  li.classList.add('current');
+  li.setAttribute('aria-current', 'step');
+  const nav = a.querySelector('.stepnav');
+  nav.querySelector('.sat').textContent = String(k);
+  /* hidden, never switched off: a switched-off control is the shape of a gate */
+  nav.querySelector('.sprev').hidden = k === 1;
+  nav.querySelector('.snext').hidden = k === m;
+  const next = a.querySelector('.nextact');
+  if (k === m) next.classList.add('ready');
+  const title = a.querySelector('.lhead h3').textContent;
+  placeEl.hidden = false;
+  placeEl.textContent = 'you are at step ' + k + ' of ' + m + ' in: ' + title;
+  writeUrl();
+  if (how === 'scroll') li.scrollIntoView({ block: 'center' });
+  /* focus is never dropped on the floor: at the last step the "next" button
+     goes away, so focus moves to the one thing left to do */
+  if (how === 'button') {
+    if (k === m) next.focus(); else if (k === 1) nav.querySelector('.snext').focus();
+    li.scrollIntoView({ block: 'nearest' });
+  }
+}
+
+listEl.addEventListener('click', function (ev) {
+  const t = ev.target;
+  const a = t.closest && t.closest('article.lesson');
+  if (!a) return;
+  if (t.closest('.sprev')) { setPlace(a, (place && place.a === a ? place.n : 1) - 1, 'button'); return; }
+  if (t.closest('.snext')) { setPlace(a, (place && place.a === a ? place.n : 1) + 1, 'button'); return; }
+  const li = t.closest('li.step');
+  if (li) setPlace(a, Number(li.dataset.step), 'none');
+});
+
+/* a lesson reached by a link that the current course or filter hides is not
+   a dead end: the course and the filter step aside and say so */
+function reveal(a) {
+  if (!a.hidden) return;
+  const hall = a.closest('section.course').dataset.hall;
+  if (course !== '' && course !== hall) setCourse(hall);
+  if (a.hidden) { filterEl.value = ''; applyFilter(); }
+}
+
+function fromHash(stepWanted) {
+  const id = decodeURIComponent(location.hash.slice(1));
+  const a = id.indexOf('lesson-') === 0 ? document.getElementById(id) : null;
+  if (a === null || !a.classList.contains('lesson')) return false;
+  reveal(a);
+  setPlace(a, stepWanted, 'none');
+  const target = place.n === 1 ? a : stepsOf(a)[place.n - 1];
+  const land = function () { target.scrollIntoView({ block: place.n === 1 ? 'start' : 'center' }); };
+  /* the browser's own jump to #lesson-<id> runs after this script and would
+     land on the lesson's head, not the step: land again once it has */
+  land();
+  if (document.readyState !== 'complete') window.addEventListener('load', function () { requestAnimationFrame(land); }, { once: true });
+  return true;
+}
+
+window.addEventListener('hashchange', function () { fromHash(1); });
+
+filterEl.addEventListener('input', function () { applyFilter(); dropHiddenPlace(); writeUrl(); });
+const toolbarEl = document.querySelector('.toolbar');
+function toolbarHeight() {
+  const stuck = getComputedStyle(toolbarEl).position === 'sticky';
+  document.documentElement.style.setProperty('--tbh', (stuck ? toolbarEl.offsetHeight : 0) + 'px');
+}
+toolbarHeight();
+window.addEventListener('resize', toolbarHeight);
 lessonEls.forEach(tally);
-const asked = new URLSearchParams(location.search).get('hall');
+lessonEls.forEach(function (a) { a.querySelector('.stepnav').hidden = false; });
+const params = new URLSearchParams(location.search);
+const asked = params.get('hall');
+const q0 = params.get('q');
+if (q0 !== null) filterEl.value = q0;
 setCourse(asked === null ? '' : asked);
+const s0 = Number(params.get('step'));
+fromHash(Number.isInteger(s0) && s0 > 0 ? s0 : 1);
+performance.mark('lessons:interactive');
 '''
 
 NAV = nav_html('web/trade_craft_lessons.html', nav_labels('en'))
@@ -785,11 +938,11 @@ code{{font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--mute
    tells a reader where the sequence starts and stops. */
 .course{{border:1px solid var(--rule);border-left:4px solid var(--steel);
   border-radius:10px;margin:22px 0;padding:2px 12px 10px;background:rgba(65,196,212,.04);
-  scroll-margin-top:86px}}
+  scroll-margin-top:calc(var(--tbh, 76px) + 10px)}}
 /* The toolbar is sticky, so anything jumped to by anchor has to reserve the
    toolbar's height or it lands underneath it - the course head did, and the
    fault was visible in a screenshot and invisible in the source. */
-.lesson{{scroll-margin-top:86px}}
+.lesson,li.step{{scroll-margin-top:calc(var(--tbh, 76px) + 10px)}}
 .course[hidden]{{display:none}}
 .chead{{padding:12px 4px 4px}}
 .ctitle{{margin:0;color:var(--ink)}}
@@ -848,6 +1001,43 @@ li.step.marked .do{{color:var(--muted);text-decoration:line-through}}
   border:1px solid var(--rule);margin:0 6px 4px 0;background:var(--sunk);color:var(--muted);
   letter-spacing:.04em}}
 .prov.names{{border-style:dashed}}
+/* ---- the flow through a lesson ------------------------------------ */
+.tscroll{{overflow-x:auto;max-width:100%}}
+td code,.sread code,.sseat code{{overflow-wrap:anywhere}}
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,
+li.step:focus-visible{{outline:3px solid var(--mark);outline-offset:2px}}
+.done{{border-radius:4px;padding:1px 8px;font-size:12px;border:1px solid var(--rule);
+  background:var(--sunk)}}
+.done[data-state="none"]{{color:var(--muted)}}
+.done[data-state="some"]{{color:var(--mark);border-color:var(--mark)}}
+.done[data-state="all"]{{color:var(--mark-ink);background:var(--steel);border-color:var(--steel)}}
+.stepnav{{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:6px 0 4px;position:sticky;bottom:0;
+  background:var(--panel);border-top:1px solid var(--rule);padding:8px 0;z-index:1}}
+.stepnav[hidden]{{display:none}}
+.stepnav button{{background:var(--sunk);color:var(--ink);border:1px solid var(--rule);
+  border-radius:6px;padding:6px 12px;font:inherit;font-size:14px;cursor:pointer;min-height:36px}}
+.stepnav button[hidden]{{display:none}}
+.spos{{color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums}}
+.spos b{{color:var(--ink)}}
+li.step.current{{background:rgba(232,163,61,.07);box-shadow:inset 3px 0 0 var(--mark);
+  padding-inline-start:8px;border-radius:4px}}
+.lnext{{margin:0 0 8px;display:flex;flex-wrap:wrap;gap:8px;align-items:baseline}}
+.lnext .then{{color:var(--muted);font-size:13px}}
+.nextact{{display:inline-block;border:1px solid var(--steel);border-radius:6px;padding:5px 12px;
+  text-decoration:none;font-weight:600}}
+.nextact.ready{{background:var(--steel);color:var(--mark-ink)}}
+#place{{margin:8px 0 0}}
+#place[hidden]{{display:none}}
+@media (max-width:520px){{
+  .lesson{{padding:12px 12px}}
+  .course{{padding:2px 6px 8px}}
+  li.step{{gap:8px}}
+  .toolbar .shown.tabonly{{flex-basis:100%}}
+  /* three wrapped rows pinned over a phone screen hide a quarter of it */
+  .toolbar{{position:static}}
+  .stepnav{{gap:6px}}
+  .stepnav button{{padding:6px 8px;font-size:13px}}
+}}
 footer.page{{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0;
   color:var(--muted);font-size:14px}}
 footer.page a{{margin-inline-end:10px}}
@@ -879,15 +1069,15 @@ footer.page a{{margin-inline-end:10px}}
 
 <section>
   <h2>The eight kinds of step, and what each one records</h2>
-  <table><tbody>{KIND_ROWS}</tbody></table>
+  <div class="tscroll"><table><tbody>{KIND_ROWS}</tbody></table></div>
   <h4>steps that happen outside a room</h4>
-  <table><tbody>{OFF_ROOM_ROWS}</tbody></table>
+  <div class="tscroll"><table><tbody>{OFF_ROOM_ROWS}</tbody></table></div>
 </section>
 
 <section>
   <h2>The ladder is advice, not a gate</h2>
   <p class="why">{E(need(LADDER, "enforcement", f"{R}#ladder"))}</p>
-  <table><tbody>{REASON_ROWS}</tbody></table>
+  <div class="tscroll"><table><tbody>{REASON_ROWS}</tbody></table></div>
   {LAYER_BLOCKS}
 </section>
 
@@ -907,6 +1097,10 @@ footer.page a{{margin-inline-end:10px}}
      that reads zero the whole course is walked, read and asked rather than
      driven.</p>
   <p class="chips courselist">{COURSE_LINKS}</p>
+  <p class="why" id="resume">Coming back? Your place in a lesson is kept in this page's
+     address, so a reload or a bookmark returns you to the same step. What a seat, station or
+     advisor actually recorded lives in <a href="trade_craft_progress.html">the progress page</a>,
+     which points you at the first lesson this device has started and not finished.</p>
   <p class="why">The number beside each trade is that course's step count.
      Every course is on this page already - picking one hides the others, and
      with scripting off you get all {len(COURSE_ROWS)} in full.</p>
@@ -924,9 +1118,10 @@ footer.page a{{margin-inline-end:10px}}
   <input id="filter" type="search" placeholder="filter by hall, strand, tier, campus or title"
          aria-label="filter the lessons">
   <span class="shown" id="shown"></span>
-  <span class="shown">marks live in this tab only: nothing here is stored, sent or recorded</span>
+  <span class="shown tabonly">marks live in this tab only: nothing here is stored, sent or recorded</span>
 </div>
 <p class="shown" id="course-note"></p>
+<p class="shown" id="place" hidden></p>
 
 <main id="lessons">
 {COURSE_BLOCKS}

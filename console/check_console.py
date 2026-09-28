@@ -84,5 +84,22 @@ if len(h1s) != 1 or re.search(r'hidden|sr-only|visually-hidden', h1s[0][0]) \
     print(f'BROKEN: the console must carry one visible <h1> stating its title {title!r}; found {len(h1s)}:',
           [re.sub(r'<[^>]+>', '', t).strip() for _, t in h1s])
     sys.exit(1)
+# Operator UX and honesty (found by the QA review behind web/smoke.mjs's audit):
+# the view switcher is a WAI-ARIA tablist a keyboard can drive, the content sits
+# in a <main> landmark, the gate table can be filtered, and no count is typed
+# into the page: halls, modules and the pack version are read from the slice.
+tabs = re.findall(r'<button role="tab" id="tab-([a-z]+)" aria-controls="view-\1"', html)
+panels = re.findall(r'<section id="view-([a-z]+)" role="tabpanel" aria-labelledby="tab-\1"', html)
+ux = []
+if not tabs or sorted(tabs) != sorted(panels): ux.append(f'tabs {tabs} and tabpanels {panels} do not pair up')
+if not all(k in html for k in ("ArrowRight:", "ArrowLeft:", "Home:", "End:")): ux.append('the tablist has no arrow/Home/End keys')
+if html.count('<main') != 1: ux.append('no single <main> landmark')
+if '<meta name="viewport" content="width=device-width' not in html: ux.append('no viewport meta: a phone lays the console out at 980px and shrinks it')
+if not re.search(r'<select id="gatefilter">', html) or "addEventListener('change', renderCert)" not in html:
+    ux.append('the skill-gate status filter is missing or not wired')
+typed = [t for t in ('11,000,000', '· 4 halls', 'pack v2.0') if t in app_src]
+if typed: ux.append(f'figures typed into console/build_app.py instead of read from the slice: {typed}')
+if ux:
+    print('BROKEN: console UX/honesty:'); [print('       ', u) for u in ux]; sys.exit(1)
 print(f'console is current (source stamp {have}; {len(paths)} slice paths read, all present; '
       f'{len(slice_doc["lessons"])} sample rows; slice embedded as built)')

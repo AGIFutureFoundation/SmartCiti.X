@@ -275,10 +275,14 @@ html,body{height:100%}
    map page positions, and its transform makes it the containing block
    for the bar, panels and legend, so they anchor below the nav */
 body{display:flex;flex-direction:column}
-#stage{position:relative;flex:1 1 auto;min-height:0;transform:translateZ(0)}
+#stage{position:relative;flex:1 1 auto;min-height:0;transform:translateZ(0);
+  display:flex;flex-direction:column}
+/* the bar sits in flow above the map, so nothing the map draws (its zoom
+   control, a panel, the legend) can hide underneath it at any width */
+#mapwrap{position:relative;flex:1 1 auto;min-height:0}
 body{margin:0;background:var(--plate);color:var(--ink);
   font:14px/1.5 "IBM Plex Sans",system-ui,sans-serif;overflow:hidden}
-#bar{position:fixed;top:0;left:0;right:0;z-index:5;display:flex;flex-wrap:wrap;
+#bar{position:relative;z-index:5;display:flex;flex-wrap:wrap;
   gap:8px 14px;align-items:center;padding:10px 16px;
   background:color-mix(in oklab, var(--plate) 88%, transparent);
   border-bottom:2px solid var(--mark);backdrop-filter:blur(6px)}
@@ -288,26 +292,67 @@ body{margin:0;background:var(--plate);color:var(--ink);
 .barbtn{background:var(--panel);color:var(--ink);border:1px solid var(--rule);
   border-radius:6px;padding:6px 11px;font:inherit;cursor:pointer;white-space:nowrap}
 .barbtn:hover{border-color:var(--mark)}
+.barbtn[aria-pressed="true"]{border-color:var(--mark);color:var(--mark)}
+#bar .tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+#find{background:var(--plate);color:var(--ink);border:1px solid var(--rule);border-radius:6px;
+  padding:6px 10px;font:inherit;min-height:32px;width:min(260px,100%)}
+#find:focus{border-color:var(--mark)}
+:focus-visible{outline:2px solid var(--mark);outline-offset:2px}
 #map{position:absolute;inset:0}
-#honesty{position:fixed;right:14px;bottom:12px;z-index:5;max-width:340px;
+#honesty{position:absolute;right:14px;bottom:12px;z-index:5;max-width:min(340px,calc(100% - 190px));
   color:var(--muted);font-size:10.5px;text-align:end;opacity:.9;
   pointer-events:none}
-#legend{position:fixed;left:14px;bottom:12px;z-index:5;
+#legend{position:absolute;left:14px;bottom:12px;z-index:5;
+  max-width:min(430px,calc(100% - 28px));max-height:calc(100% - 24px);overflow:auto;
   background:color-mix(in oklab, var(--panel) 90%, transparent);
   border:1px solid var(--rule);border-radius:9px;padding:9px 13px;
   font-size:12px;color:var(--muted)}
 #legend b{color:var(--ink)}
+#legend summary{cursor:pointer;min-height:24px;list-style-position:inside}
+#legend .lg-row{margin:3px 0;padding-inline-start:15px;text-indent:-15px}
+#legend .lg-row > :first-child{text-indent:0}
+.sw-cluster{display:inline-block;min-width:18px;height:14px;border-radius:999px;background:var(--good);
+  color:#0C1113;font:700 9.5px/14px "IBM Plex Sans",sans-serif;text-align:center;margin-inline-end:5px;
+  text-indent:0}
 .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-inline-end:5px}
 .campus-marker{background:var(--mark);color:#12181B;border-radius:999px;
   padding:2px 9px;font:600 12px "Barlow Condensed",sans-serif;white-space:nowrap;
-  border:1.5px solid #12181B;cursor:pointer;z-index:3}
+  border:1.5px solid #12181B;cursor:pointer;z-index:3;min-height:24px;line-height:18px}
+.campus-marker.compact{font-size:0;padding:2px 6px;min-width:24px}
+.campus-marker.compact::after{content:attr(data-short);font-size:11px}
+.campus-marker:hover{box-shadow:0 0 0 2px #12181B,0 0 0 4px var(--mark)}
+.campus-marker.is-selected{background:var(--ink);box-shadow:0 0 0 2px #12181B,0 0 0 4px var(--mark);z-index:4}
 .candidate-marker{background:transparent;color:var(--muted);border-radius:999px;
   padding:1px 8px;font:600 11px "Barlow Condensed",sans-serif;white-space:nowrap;
   border:1.5px dashed var(--muted);cursor:pointer}
-.restoration-marker{background:var(--good);color:#0C1113;border-radius:999px;
-  padding:2px 9px;font:600 12px "Barlow Condensed",sans-serif;white-space:nowrap;
-  border:1.5px solid #0C1113;cursor:pointer;z-index:2}
-.restoration-marker.env-monitoring{background:var(--steel)}
+/* a restoration site is a dot on its own point (a 24px target around a 12px
+   dot); its name shows when the declutter pass finds room for it, and always
+   on hover or keyboard focus. Sites closer than a target's width at the
+   current zoom fold into one counted cluster that zooms in on click. */
+.restoration-marker{background:none;border:0;padding:0;width:24px;height:24px;
+  display:grid;place-items:center;cursor:pointer;z-index:2;color:#0C1113;
+  font:600 12px "Barlow Condensed",sans-serif}
+.restoration-marker .rm-dot{width:12px;height:12px;border-radius:50%;background:var(--good);
+  border:1.5px solid #0C1113;box-shadow:0 0 0 1px var(--good)}
+.restoration-marker.env-monitoring .rm-dot{background:var(--steel);box-shadow:0 0 0 1px var(--steel)}
+.restoration-marker .rm-label{position:absolute;top:22px;left:50%;transform:translateX(-50%);
+  display:none;background:var(--good);border:1.5px solid #0C1113;border-radius:999px;
+  padding:1px 8px;white-space:nowrap}
+.restoration-marker.env-monitoring .rm-label{background:var(--steel)}
+.restoration-marker.show-label .rm-label,.restoration-marker:hover .rm-label,
+.restoration-marker:focus-visible .rm-label{display:block}
+.restoration-marker:hover,.restoration-marker:focus-visible{z-index:5}
+.restoration-marker.is-selected .rm-dot{box-shadow:0 0 0 3px var(--ink)}
+.restoration-marker.folded{display:none}
+.rest-cluster{min-width:26px;height:26px;border-radius:999px;background:var(--good);color:#0C1113;
+  border:1.5px solid #0C1113;box-shadow:0 0 0 3px color-mix(in oklab, var(--good) 35%, transparent);
+  font:700 12px "IBM Plex Sans",sans-serif;cursor:pointer;padding:0 7px;z-index:2}
+.rest-cluster:hover{box-shadow:0 0 0 4px var(--good)}
+.maplibregl-popup-close-button{min-width:24px;min-height:24px;color:var(--ink);font-size:18px}
+.maplibregl-ctrl-group button{width:32px;height:32px}
+/* a marker on the far side of the globe: MapLibre tags it covered; it must
+   neither show through the Earth nor take a click or a Tab stop */
+.maplibregl-marker.maplibregl-marker-covered{visibility:hidden;pointer-events:none}
 .maplibregl-popup-content{background:var(--panel)!important;color:var(--ink)!important;
   border:1px solid var(--rule);border-radius:9px;font:12.5px/1.45 "IBM Plex Sans",sans-serif;
   padding:10px 13px!important;max-width:270px}
@@ -320,7 +365,7 @@ body{margin:0;background:var(--plate);color:var(--ink);
 .src{color:var(--muted);font-size:10.5px}
 .roll{margin:4px 0 0;padding:0;list-style:none;font-size:11.5px;color:var(--muted)}
 .roll b{color:var(--ink)}
-.panel{position:fixed;top:58px;right:14px;z-index:6;width:min(380px,calc(100vw - 28px));
+.panel{position:absolute;top:12px;right:14px;z-index:6;width:min(380px,calc(100vw - 28px));
   max-height:calc(100% - 130px);overflow:auto;display:none;
   background:color-mix(in oklab, var(--panel) 94%, transparent);
   border:1px solid var(--rule);border-radius:9px;padding:10px 14px;font-size:12.5px}
@@ -338,6 +383,14 @@ body{margin:0;background:var(--plate);color:var(--ink);
 .anchor-swatch.rec{background:var(--steel)}
 .anchor-swatch.auth{background:#12181B;border:1.5px solid var(--steel)}
 @media(pointer:coarse){.barbtn{min-height:42px}#honesty{display:none}}
+@media(max-width:700px){
+  #bar{padding:8px 12px;gap:6px 10px}
+  #bar .brand{font-size:17px}
+  #bar .tools{flex-wrap:nowrap;overflow-x:auto;width:100%;padding-bottom:2px}
+  #find{flex:0 0 190px}
+  .campus-marker{font-size:11px;padding:2px 7px}
+  #honesty{left:14px;right:14px;max-width:none;bottom:54px;font-size:10px}
+}
 </style>
 <style>__SITENAV_CSS__</style>
 </head>
@@ -347,14 +400,21 @@ __SITENAV__<div id="stage">
   <h1 class="brand">SmartCiti<span class="x">.X</span> : Trade Craft Academy</h1>
   <a href="trade_craft_3d.html">⬡ 3D environment</a>
   <a href="trade_craft_interactive.html">▦ interactive map</a>
-  <button class="barbtn" data-fit="network">⌂ Network</button>
+  <div class="tools">
+  <input id="find" type="search" list="findList" autocomplete="off"
+    placeholder="Find a campus or site" aria-label="Find a campus or restoration site and open it on the map">
+  <datalist id="findList"></datalist>
+  <button class="barbtn" id="projBtn" aria-pressed="true" title="Switch between the globe and a flat (Web Mercator) map">🌐 Globe view</button>
+  <button class="barbtn" data-fit="network" title="Reset the view to the whole network">⌂ Network</button>
   <button class="barbtn" data-fit="bay">Bay Area</button>
   <button class="barbtn" data-fit="nola">New Orleans</button>
-  <button class="barbtn" id="satBtn">🛰️ Imagery</button>
+  <button class="barbtn" id="satBtn" aria-pressed="false">🛰️ Imagery</button>
   <button class="barbtn" id="parBtn">▦ Footprints</button>
-  <button class="barbtn" data-panel="campuses">☰ Campuses</button>
-  <button class="barbtn" data-panel="sites">🌿 Restoration sites</button>
+  <button class="barbtn" data-panel="campuses" aria-pressed="false" aria-controls="campuses">☰ Campuses</button>
+  <button class="barbtn" data-panel="sites" aria-pressed="false" aria-controls="sites">🌿 Restoration sites</button>
+  </div>
 </div>
+<div id="mapwrap">
 <div id="map"></div>
 <section class="panel" id="campuses" aria-label="campus rollups">
   <h2>The campuses, rolled up from the registries</h2>
@@ -366,19 +426,21 @@ __SITENAV__<div id="stage">
   <ul id="siteList">__SITE_ROWS__</ul>
   <p class="src">__RESTORATION_NOT_AFFILIATED__</p>
 </section>
-<div id="legend">
-  <b>The geo registry, drawn</b><br>
-  <span class="dot" style="background:var(--mark)"></span>campus — RECORDED/DERIVED for the __N_FLAGSHIP__ flagship campuses, AUTHORED for the __N_HUB__ hub campuses<br>
-  <span class="anchor-swatch rec"></span>anchor, <b>RECORDED</b> — <span data-anchor-count="RECORDED"></span> of <span data-anchor-count="total"></span>: the coordinate is copied from the source its popup cites<br>
-  <span class="anchor-swatch auth"></span>anchor, <b>AUTHORED</b> — <span data-anchor-count="AUTHORED"></span> of <span data-anchor-count="total"></span>: typed from public record, no source fetched; the popup states this plainly<br>
-  <span class="dot" style="background:none;border:1.5px dashed var(--mark);border-radius:0"></span>great-circle route — DERIVED<br>
-  <span class="dot" style="background:none;border:1px solid var(--steel);border-radius:0"></span>city frame — RECORDED for the __N_FLAGSHIP__ flagship campuses, AUTHORED for the __N_HUB__ hub campuses<br>
-  <span class="dot" style="background:none;border:1.5px dashed var(--muted)"></span>roadmap candidate — AUTHORED, not built<br>
-  <span class="dot" style="background:var(--good)"></span>Bay Restoration site (habitat-restoration) — real project, not affiliated with this bundle<br>
-  <span class="dot" style="background:var(--steel)"></span>Bay Restoration site (environmental-monitoring) — a real federal cleanup site (Hunters Point, NPL-listed and litigated; Treasure Island NSTI, a Navy BRAC cleanup, not NPL-listed); located but never rendered as a walkable scene<br>
-  <span style="display:inline-block;width:9px;height:9px;border:1px solid var(--muted);border-radius:2px;margin-inline-end:5px;vertical-align:-1px"></span><span title="__GEOPOSE_HONESTY__">every campus, anchor and pinned restoration marker on this map also holds a <b>GeoPose 1.0</b> pose (__N_POSES__ total — __N_CLAIMED__ claimed standard / __N_NOTCLAIMED__ not-claimed OMBI shapes; click a marker for its own pose line; hover for the height/heading honesty line)</span>
-</div>
+<details id="legend" open>
+  <summary><b>The geo registry, drawn</b></summary>
+  <div class="lg-row"><span class="dot" style="background:var(--mark)"></span>campus — RECORDED/DERIVED for the __N_FLAGSHIP__ flagship campuses, AUTHORED for the __N_HUB__ hub campuses</div>
+  <div class="lg-row"><span class="anchor-swatch rec"></span>anchor, <b>RECORDED</b> — <span data-anchor-count="RECORDED"></span> of <span data-anchor-count="total"></span>: the coordinate is copied from the source its popup cites</div>
+  <div class="lg-row"><span class="anchor-swatch auth"></span>anchor, <b>AUTHORED</b> — <span data-anchor-count="AUTHORED"></span> of <span data-anchor-count="total"></span>: typed from public record, no source fetched; the popup states this plainly</div>
+  <div class="lg-row"><span class="dot" style="background:none;border:1.5px dashed var(--mark);border-radius:0"></span>great-circle route — DERIVED</div>
+  <div class="lg-row"><span class="dot" style="background:none;border:1px solid var(--steel);border-radius:0"></span>city frame — RECORDED for the __N_FLAGSHIP__ flagship campuses, AUTHORED for the __N_HUB__ hub campuses</div>
+  <div class="lg-row"><span class="dot" style="background:none;border:1.5px dashed var(--muted)"></span>roadmap candidate — AUTHORED, not built</div>
+  <div class="lg-row"><span class="dot" style="background:var(--good)"></span>Bay Restoration site (habitat-restoration) — real project, not affiliated with this bundle</div>
+  <div class="lg-row"><span class="dot" style="background:var(--steel)"></span>Bay Restoration site (environmental-monitoring) — a real federal cleanup site (Hunters Point, NPL-listed and litigated; Treasure Island NSTI, a Navy BRAC cleanup, not NPL-listed); located but never rendered as a walkable scene</div>
+  <div class="lg-row"><span class="sw-cluster" aria-hidden="true">n</span>Bay Restoration sites too close to tell apart at this zoom, folded into one counted marker — click it to zoom in; names show where there is room, and on hover or focus</div>
+  <div class="lg-row"><span style="display:inline-block;width:9px;height:9px;border:1px solid var(--muted);border-radius:2px;margin-inline-end:5px;vertical-align:-1px"></span><span title="__GEOPOSE_HONESTY__">every campus, anchor and pinned restoration marker on this map also holds a <b>GeoPose 1.0</b> pose (__N_POSES__ total — __N_CLAIMED__ claimed standard / __N_NOTCLAIMED__ not-claimed OMBI shapes; click a marker for its own pose line; hover for the height/heading honesty line)</span></div>
+</details>
 <div id="honesty"></div>
+</div>
 </div>
 <script id="data" type="application/json">__DATA__</script>
 <script src="vendor/maplibre/maplibre-gl.js"></script>
@@ -403,11 +465,34 @@ for (let lat = -84; lat <= 84; lat += 2)
   grat.features.push({ type: 'Feature', properties: {},
     geometry: { type: 'LineString', coordinates: [[-180, lat], [180, lat]] } });
 
+/* the network's frame, computed from the campus features (never typed) */
+const CAMPUS_LL = D.network.features.filter((x) => x.properties.slug).map((x) => x.geometry.coordinates);
+const NETWORK_BOUNDS = [[Math.min(...CAMPUS_LL.map((c) => c[0])), Math.min(...CAMPUS_LL.map((c) => c[1]))],
+                        [Math.max(...CAMPUS_LL.map((c) => c[0])), Math.max(...CAMPUS_LL.map((c) => c[1]))]];
+document.getElementById('legend').addEventListener('toggle', () => {
+  if (typeof placeCampusLabels === 'function' && loaded) placeCampusLabels();
+});
+// a phone opens with the legend folded to its one-line summary
+const PHONE = matchMedia('(max-width: 700px)').matches;
+if (PHONE) document.getElementById('legend').open = false;
+/* every fit keeps its frame clear of the open legend (bottom-left) and of
+   the zoom control, so no campus label lands under either */
+function fitPadding() {
+  const lg = document.getElementById('legend');
+  const base = PHONE ? 30 : 60;
+  return { top: base + 20, right: PHONE ? 70 : base + 40, bottom: base + 20,
+           left: lg.open && !PHONE ? lg.offsetWidth + 40 : PHONE ? 70 : base + 20 };
+}
 const map = new maplibregl.Map({
   container: 'map',
   attributionControl: false,
   style: {
     version: 8,
+    // the Earth as a globe (MapLibre 5): every feature stays at its own
+    // registry lat/lng - the projection changes, the coordinates never do
+    projection: { type: 'globe' },
+    // a thin atmosphere at the globe's rim, fading out as you zoom in
+    sky: { 'atmosphere-blend': ['interpolate', ['linear'], ['zoom'], 0, 1, 5, 1, 7, 0] },
     sources: {
       // the public-domain federal orthoimagery, straight from its authority
       sat: { type: 'raster', tiles: [D.imagery.tiles],
@@ -459,20 +544,62 @@ const map = new maplibregl.Map({
                  'circle-stroke-color': '#0C1113', 'circle-stroke-width': 2 } },
     ],
   },
-  center: [-106, 34], zoom: 3.1,
+  // the opening view: the globe turned to the campus network, framed on the
+  // ten campuses' own coordinates and padded clear of the legend
+  bounds: NETWORK_BOUNDS, fitBoundsOptions: { padding: fitPadding() },
 });
-map.addControl(new maplibregl.NavigationControl({ showCompass: false }));
+// zoom in / out, top-left: the panels open on the right and the legend and
+// honesty line sit along the bottom, so the control is never under either
+map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-left');
 
-/* campus labels as DOM markers - no glyph server needed */
+/* one popup at a time, owned by the marker that opened it: that marker shows
+   a selected state while the popup is up, a keyboard open moves focus into
+   the popup (its close button), and closing hands focus back to the marker */
+let currentPopup = null, selectedEl = null;
+function showPopup(lngLat, htmlText, ownerEl, byKeyboard) {
+  if (currentPopup) currentPopup.remove();
+  const pop = new maplibregl.Popup({ closeButton: true, maxWidth: '290px' })
+    .setLngLat(lngLat).setHTML(htmlText).addTo(map);
+  currentPopup = pop;
+  if (selectedEl) selectedEl.classList.remove('is-selected');
+  selectedEl = ownerEl || null;
+  if (selectedEl) { selectedEl.classList.add('is-selected'); selectedEl.setAttribute('aria-expanded', 'true'); }
+  const closeBtn = pop.getElement().querySelector('.maplibregl-popup-close-button');
+  if (closeBtn) closeBtn.setAttribute('aria-label', 'Close this popup');
+  if (byKeyboard && closeBtn) closeBtn.focus();
+  pop.on('close', () => {
+    if (currentPopup === pop) currentPopup = null;
+    if (ownerEl) {
+      ownerEl.classList.remove('is-selected'); ownerEl.setAttribute('aria-expanded', 'false');
+      if (byKeyboard) ownerEl.focus();
+    }
+    if (selectedEl === ownerEl) selectedEl = null;
+  });
+  return pop;
+}
+// a click the keyboard made (Enter / Space on a button) carries detail 0
+const viaKeyboard = (ev) => ev.detail === 0;
+// the marker a click came from, read by popupFor / popupForRestoration
+let opener = { el: null, kbd: false };
+const openedBy = (el, ev) => { opener = { el, kbd: viaKeyboard(ev) }; };
+
+/* campus labels as DOM markers - no glyph server needed. Each is a real
+   <button>: Tab reaches it, Enter and Space open the same popup a click does */
 let markers = 0;
 const campusLabels = [];
+const campusEl = {};
 for (const f of D.network.features.filter((x) => x.properties.slug)) {
-  const el = document.createElement('div');
+  const el = document.createElement('button');
+  el.type = 'button';
   el.className = 'campus-marker';
   el.textContent = f.properties.name;
-  el.addEventListener('click', (ev) => { ev.stopPropagation(); popupFor(f); });
-  campusLabels.push({ el, m: new maplibregl.Marker({ element: el, anchor: 'bottom', offset: [0, -10] })
+  el.setAttribute('aria-expanded', 'false');
+  el.addEventListener('click', (ev) => { ev.stopPropagation(); openedBy(el, ev); popupFor(f); });
+  campusLabels.push({ el, f, m: new maplibregl.Marker({ element: el, opacityWhenCovered: '0', anchor: 'bottom', offset: [0, -10] })
     .setLngLat(f.geometry.coordinates).addTo(map) });
+  el.setAttribute('aria-label', f.properties.name + ' - campus');
+  el.dataset.short = f.properties.name.split(/\s+/).map((x) => x[0]).join('');
+  campusEl[f.properties.slug] = el;
   markers++;
 }
 
@@ -488,71 +615,185 @@ for (const [ck, c] of Object.entries(D.candidates)) {
   el.className = 'candidate-marker';
   el.textContent = c.name;
   el.addEventListener('click', (ev) => { ev.stopPropagation(); popupForCandidate(ck, c); });
-  new maplibregl.Marker({ element: el, anchor: 'bottom', offset: [0, -10] })
+  new maplibregl.Marker({ element: el, opacityWhenCovered: '0', anchor: 'bottom', offset: [0, -10] })
     .setLngLat([c.lng, c.lat]).addTo(map);
   candMarkers++;
 }
 function popupForCandidate(ck, c) {
-  new maplibregl.Popup({ closeButton: false })
-    .setLngLat([c.lng, c.lat])
-    .setHTML(`<b>${c.name}</b><br><span class="pv">AUTHORED</span>`
+  showPopup([c.lng, c.lat],
+    `<b>${c.name}</b><br><span class="pv">AUTHORED</span>`
       + `<span class="pv">proposed</span>`
       + `<br>${c.city}, ${c.region}<br>${c.why}`
-      + `<br><span class="src">${D.roadmapHonesty.not_a_claim_of_content}</span>`)
-    .addTo(map);
+      + `<br><span class="src">${D.roadmapHonesty.not_a_claim_of_content}</span>`);
 }
 
 /* Bay Restoration sites: real, independently-run projects - AUTHORED
    coordinates on this map's side only, each linking to its own real
    source page rather than anything this bundle claims to run */
 let restMarkers = 0;
-for (const s of D.restorationSites) {
-  const el = document.createElement('div');
+const restItems = [];
+/* only a PINNED site has a coordinate: the unpinned one (lat/lng null) used
+   to get a marker too, which MapLibre read as 0,0 - a green dot off West
+   Africa. Its refusal to be pinned is content, so it stays in the sites panel. */
+for (const s of D.restorationSites.filter((x) => x.pin === true)) {
+  const el = document.createElement('button');
+  el.type = 'button';
   el.className = 'restoration-marker' + (s.category === 'environmental-monitoring' ? ' env-monitoring' : '');
-  el.textContent = s.name;
-  el.addEventListener('click', (ev) => { ev.stopPropagation(); popupForRestoration(s); });
-  /* hung BELOW its point: a site that shares a campus's coordinates (Treasure
-     Island) would otherwise sit on the campus label and swallow its clicks */
-  new maplibregl.Marker({ element: el, anchor: 'top', offset: [0, 10] })
-    .setLngLat([s.lng, s.lat]).addTo(map);
+  el.setAttribute('aria-expanded', 'false');
+  el.innerHTML = '<span class="rm-dot"></span><span class="rm-label"></span>';
+  el.querySelector('.rm-label').textContent = s.name;
+  el.addEventListener('click', (ev) => { ev.stopPropagation(); openedBy(el, ev); popupForRestoration(s); });
+  /* the dot sits on its own point; the name hangs BELOW it, and the campus
+     label stands ABOVE its point and stacks higher: a site that shares a
+     campus's coordinates (Treasure Island) cannot cover the campus label */
+  restItems.push({ el, s, m: new maplibregl.Marker({ element: el, opacityWhenCovered: '0', anchor: 'top', offset: [0, -12] })
+    .setLngLat([s.lng, s.lat]).addTo(map) });
+  el.setAttribute('aria-label', s.name + ' - Bay Restoration site');
   restMarkers++;
 }
 
-/* campus labels that collide at the current zoom (Treasure Island and Oakland
-   Waterfront sit a few kilometres apart, one pixel apart at the opening zoom)
-   would leave one campus unclickable. Each label tries above its dot, then
-   below, right and left, and takes the first slot that overlaps no label
-   already placed and no restoration marker. When restoration markers fill
-   every slot (the Bay at the opening zoom), it takes the first slot clear of
-   other campus labels: campus labels stack above restoration markers, so only
-   another campus label can take a campus's clicks. Only the label moves: the
-   dot in the campuses layer stays on the campus's own coordinates. A label
-   with no slot clear of other campus labels keeps its first slot, and the
-   browser smoke reports it. */
-function placeCampusLabels() {
-  const hit = (r, q) => r.left < q.right && q.left < r.right && r.top < q.bottom && q.top < r.bottom;
-  const rest = [...document.querySelectorAll('.restoration-marker')].map((e) => e.getBoundingClientRect());
-  const placed = [];
-  for (const c of campusLabels) {
-    c.m.setOffset([0, -10]);
+/* sites closer on screen than one target's width fold into one counted
+   cluster (greedy, in registry order); a click on it zooms to just those
+   sites. Rebuilt after every zoom, so a site unfolds as soon as it has room. */
+let clusterMarkers = [];
+const FOLD_PX = 26;
+function foldRestoration() {
+  for (const c of clusterMarkers) c.remove();
+  clusterMarkers = [];
+  const pts = restItems.map((r) => map.project([r.s.lng, r.s.lat]));
+  const taken = new Array(restItems.length).fill(false);
+  for (let i = 0; i < restItems.length; i++) {
+    if (taken[i]) continue;
+    const group = [i];
+    for (let j = i + 1; j < restItems.length; j++)
+      if (!taken[j] && Math.hypot(pts[i].x - pts[j].x, pts[i].y - pts[j].y) < FOLD_PX) group.push(j);
+    for (const k of group) taken[k] = true;
+    for (const k of group) restItems[k].el.classList.toggle('folded', group.length > 1);
+    if (group.length < 2) continue;
+    const sites = group.map((k) => restItems[k].s);
+    const lng = sites.reduce((a, x) => a + x.lng, 0) / sites.length;
+    const lat = sites.reduce((a, x) => a + x.lat, 0) / sites.length;
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'rest-cluster';
+    b.textContent = String(sites.length);
+    b.dataset.sites = sites.map((x) => x.id).join(' ');
+    b.setAttribute('aria-label', sites.length + ' Bay Restoration sites here: '
+      + sites.map((x) => x.name).join('; ') + '. Zoom in to separate them');
+    b.title = sites.map((x) => x.name).join(' · ');
+    b.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      const w = Math.min(...sites.map((x) => x.lng)), e = Math.max(...sites.map((x) => x.lng));
+      const so = Math.min(...sites.map((x) => x.lat)), n = Math.max(...sites.map((x) => x.lat));
+      map.fitBounds([[w, so], [e, n]], { padding: 90, maxZoom: 14, duration: 700 });
+    });
+    /* hung below the point like a single site, so it never covers a campus label */
+    const aria = b.getAttribute('aria-label');
+    clusterMarkers.push(new maplibregl.Marker({ element: b, opacityWhenCovered: '0', anchor: 'top', offset: [0, -13] })
+      .setLngLat([lng, lat]).addTo(map));
+    b.setAttribute('aria-label', aria);
   }
-  for (const c of campusLabels) {
-    const w = c.el.offsetWidth, h = c.el.offsetHeight;
-    const slots = [[0, -10], [0, 10 + h], [w / 2 + 12, h / 2], [-(w / 2 + 12), h / 2]];
+}
+
+/* campus labels that collide at the current zoom (Treasure Island and Oakland
+   Waterfront sit a few kilometres apart, one pixel apart at the opening zoom;
+   Loop Rail and Motor City likewise) would leave one campus unclickable. Each
+   label tries above its dot, then below, right and left, then the four
+   diagonals, and takes the first slot that overlaps no label already placed
+   and no restoration dot. When dots fill every slot it takes the first slot
+   clear of other campus labels: campus labels stack above restoration
+   markers, so only another campus label can take a campus's clicks. Only the
+   label moves: the dot in the campuses layer stays on the campus's own
+   coordinates. Flagship campuses are placed first.
+   Every rectangle is COMPUTED from map.project() and the element's own
+   size, never measured after setOffset(): MapLibre applies a marker's new
+   offset on its next render, so a measured rectangle is the old slot (that
+   is how Loop Rail and Motor City used to end up on top of each other). */
+function placeCampusLabels() {
+  foldRestoration();
+  const hit = (r, q) => r.left < q.right && q.left < r.right && r.top < q.bottom && q.top < r.bottom;
+  const box = (ll, o, w, h, anchor) => {
+    const p = map.project(ll), cx = p.x + o[0], cy = p.y + o[1];
+    const top = anchor === 'bottom' ? cy - h : cy;
+    return { left: cx - w / 2, right: cx + w / 2, top, bottom: top + h };
+  };
+  for (const r of restItems) r.el.classList.remove('show-label');
+  const dots = [...document.querySelectorAll('.restoration-marker')]
+    .filter((e) => !e.classList.contains('folded'))
+    .map((e) => restItems.find((r) => r.el === e))
+    .map((r) => ({ r, rect: box([r.s.lng, r.s.lat], [0, -12], 24, 24, 'top') }));
+  const placed = [];
+  const VW = map.getContainer().clientWidth, VH = map.getContainer().clientHeight;
+  /* the map's own chrome is an obstacle too: no label slides under the open
+     legend or the zoom control, where it could not be read or clicked */
+  const cr = map.getContainer().getBoundingClientRect();
+  const chrome = [document.getElementById('legend'), document.querySelector('.maplibregl-ctrl-top-left')]
+    .filter((e) => e).map((e) => e.getBoundingClientRect()).filter((r) => r.width)
+    .map((r) => ({ left: r.left - cr.left - 4, right: r.right - cr.left + 4, top: r.top - cr.top - 4, bottom: r.bottom - cr.top + 4 }));
+  const obstacles = chrome.slice();
+  const scr = new Map(campusLabels.map((c) => [c, map.project(c.f.geometry.coordinates)]));
+  const crowd = (c) => campusLabels.filter((d) => d !== c
+    && Math.hypot(scr.get(c).x - scr.get(d).x, scr.get(c).y - scr.get(d).y) < 140).length;
+  const order = campusLabels.slice().sort((a, b) => crowd(b) - crowd(a)
+    || (D.rollups[b.f.properties.slug].flagship === true) - (D.rollups[a.f.properties.slug].flagship === true));
+  const trySlots = (c) => {
+    const w = c.el.offsetWidth, h = c.el.offsetHeight, ll = c.f.geometry.coordinates;
+    const slots = [[0, -10], [0, 10 + h], [w / 2 + 12, h / 2], [-(w / 2 + 12), h / 2],
+                   [w / 2 + 8, -6], [-(w / 2 + 8), -6], [w / 2 + 8, h + 6], [-(w / 2 + 8), h + 6],
+                   // a second ring, for a phone-sized frame of the whole network
+                   [0, -14 - h], [0, 14 + 2 * h], [w / 2 + 12, -h / 2 - 4], [-(w / 2 + 12), -h / 2 - 4],
+                   [w / 2 + 12, 3 * h / 2 + 4], [-(w / 2 + 12), 3 * h / 2 + 4]];
     let clearOfAll = null, clearOfCampus = null;
     for (const o of slots) {
-      c.m.setOffset(o);
-      const r = c.el.getBoundingClientRect();
-      if (placed.some((q) => hit(r, q))) continue;
+      const r = box(ll, o, w, h, 'bottom');
+      // a slot off the map's own frame is no slot: the label would be cut off
+      if (r.left < 2 || r.top < 2 || r.right > VW - 2 || r.bottom > VH - 2) continue;
+      if (placed.some((q) => hit(r, q)) || obstacles.some((q) => hit(r, q))) continue;
       if (clearOfCampus === null) clearOfCampus = o;
-      if (!rest.some((q) => hit(r, q))) { clearOfAll = o; break; }
+      if (!dots.some((d) => hit(r, d.rect))) { clearOfAll = o; break; }
     }
-    c.m.setOffset(clearOfAll !== null ? clearOfAll : clearOfCampus !== null ? clearOfCampus : slots[0]);
-    placed.push(c.el.getBoundingClientRect());
+    return { o: clearOfAll !== null ? clearOfAll : clearOfCampus, first: slots[0], w, h, ll };
+  };
+  for (const c of order) {
+    if (c.el.classList.contains('maplibregl-marker-covered')) continue;
+    c.el.classList.remove('compact');
+    let t = trySlots(c);
+    /* no slot clear of every other campus label: the label folds to its
+       initials (its accessible name and popup keep the full name) and tries
+       again, so no campus label ever sits on another's clicks */
+    if (t.o === null) { c.el.classList.add('compact'); t = trySlots(c); }
+    const o = t.o !== null ? t.o : t.first;
+    c.m.setOffset(o);
+    placed.push(box(t.ll, o, t.w, t.h, 'bottom'));
+  }
+  /* a cluster stands for sites spread over many kilometres, so it may step
+     aside from its centroid to keep clear of the campus labels */
+  for (const cm of clusterMarkers) {
+    const el = cm.getElement(), w = el.offsetWidth, h = el.offsetHeight, ll = cm.getLngLat();
+    const slots = [[0, -13], [0, 16], [w / 2 + 16, -13], [-(w / 2 + 16), -13], [0, 40], [0, -44]];
+    const o = slots.find((s) => !placed.some((q) => hit(box(ll, s, w, h, 'top'), q))) ?? slots[0];
+    cm.setOffset(o);
+    placed.push(box(ll, o, w, h, 'top'));
+  }
+  /* declutter by priority: campus labels and clusters are placed; a site's
+     name shows only where it overlaps no campus label, no cluster, no other
+     dot and no other shown name (walkable sites first); the rest keep their
+     dot, and show their name on hover or keyboard focus */
+  const byPriority = dots.slice().sort((a, b) => (b.r.s.walkable === true) - (a.r.s.walkable === true));
+  for (const d of byPriority) {
+    d.r.el.classList.add('show-label');
+    const lab = d.r.el.querySelector('.rm-label');
+    const lr = box([d.r.s.lng, d.r.s.lat], [0, 10], lab.offsetWidth, lab.offsetHeight, 'top');
+    if (placed.some((q) => hit(lr, q)) || dots.some((q) => q !== d && hit(lr, q.rect)))
+      d.r.el.classList.remove('show-label');
+    else placed.push(lr);
   }
 }
 map.on('load', placeCampusLabels);
 map.on('zoomend', placeCampusLabels);
+map.on('resize', placeCampusLabels);
+// on a globe a pan turns the Earth, so neighbours on screen change with it
+map.on('moveend', placeCampusLabels);
 // the spatial fabric's own pose for this exact point, when one exists —
 // campus/anchor features carry it inline (properties.geopose, joined at
 // build time); a restoration site's is looked up by ref, computed the
@@ -618,6 +859,8 @@ function rollupList(slug) {
     + `<li>flagship: <b>${r.flagship ? 'yes' : 'no'}</b></li></ul>`;
 }
 function popupForRestoration(s) {
+  const el = opener.el, byKeyboard = opener.kbd;
+  opener = { el: null, kbd: false };
   const wf = s.workforce
     ? `<br><b>Workforce pathway:</b> ${s.workforce_note}` : '';
   // environmental-monitoring sites point at real monitoring participation
@@ -632,19 +875,19 @@ function popupForRestoration(s) {
   // voice that it is NOT NPL-listed and which EPA ID is the other place
   const dis = s.disambiguation ? `<br><b>Note:</b> ${s.disambiguation}` : '';
   const pose = geoposeLine(D.geopose.byRef['restoration-site:' + s.id]);
-  new maplibregl.Popup({ closeButton: false })
-    .setLngLat([s.lng, s.lat])
-    .setHTML(`<b>${s.name}</b><br><span class="pv rec">real project</span>`
+  showPopup([s.lng, s.lat],
+    `<b>${s.name}</b><br><span class="pv rec">real project</span>`
       + `<span class="pv">AUTHORED coordinate</span>` + cat
       + `<br>${s.org}<br>${s.city}, ${s.county} · ${s.habitat}<br>${s.scale}`
       + dis + wf + pt + pose + `<br>` + walkLine(s)
       + `<br><a href="${s.source_url}" target="_blank" rel="noopener" class="src">${s.source_url}</a>`
       + `<br><span class="src">${D.restorationHonesty.not_affiliated}</span>`
-      + groundTruthButtons(s.lat, s.lng))
-    .addTo(map);
+      + groundTruthButtons(s.lat, s.lng), el, byKeyboard);
 }
 
 function popupFor(f, lngLat) {
+  const el = opener.el, byKeyboard = opener.kbd;
+  opener = { el: null, kbd: false };
   const p = f.properties;
   const at = lngLat ?? (f.geometry.type === 'Point'
     ? f.geometry.coordinates : map.getCenter());
@@ -663,16 +906,15 @@ function popupFor(f, lngLat) {
         : `<br><span class="pv auth">AUTHORED coordinate</span><span class="src">typed from public record; no source was fetched</span>`)
     : '';
   const flag = p.slug && D.rollups[p.slug].flagship ? `<span class="flag">FLAGSHIP</span>` : '';
-  new maplibregl.Popup({ closeButton: false })
-    .setLngLat(at)
-    .setHTML(`<b>${p.name ?? (p.kind === 'route'
+  showPopup(at,
+    `<b>${p.name ?? (p.kind === 'route'
         ? p.from + ' ↔ ' + p.to : 'city frame · ' + p.campus)}</b>${flag}<br>${chips}`
       + (p.halls ? `<br>${p.halls} halls · ${p.districts} districts · ${p.city}, ${p.region}` : '')
       + (p.slug ? rollupList(p.slug) : '')
       + (p.blurb ? `<br>${p.blurb}` : '')
       + geoposeLine(p.geopose) + anchorPv
-      + `<br><span class="src">source: ${p.source}</span>` + gt)
-    .addTo(map);
+      + `<br><span class="src">source: ${p.source}</span>` + gt,
+    el || (p.slug ? campusEl[p.slug] : null), byKeyboard);
 }
 for (const layer of ['campuses', 'anchors', 'routes', 'frames']) {
   map.on('click', layer, (e) => popupFor(e.features[0], e.lngLat));
@@ -694,10 +936,45 @@ document.querySelectorAll('[data-panel]').forEach((b) =>
     for (const s of document.querySelectorAll('.panel'))
       s.classList.toggle('open', s.id === id && openPanel !== id);
     openPanel = openPanel === id ? null : id;
+    for (const x of document.querySelectorAll('[data-panel]'))
+      x.setAttribute('aria-pressed', String(x.dataset.panel === openPanel));
   }));
 
+/* Escape closes the open popup first, then an open panel */
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape') return;
+  if (currentPopup) { currentPopup.remove(); return; }
+  if (openPanel) {
+    const b = document.querySelector(`[data-panel="${openPanel}"]`);
+    b.click(); b.focus();
+  }
+});
+
+/* find: every campus and every pinned restoration site, by its own name
+   from D - pick one and the map flies to it and opens its popup */
+const FIND = [];
+for (const c of campusLabels)
+  FIND.push({ name: c.f.properties.name, lngLat: c.f.geometry.coordinates, zoom: 11,
+              open: () => { opener = { el: c.el, kbd: true }; popupFor(c.f); } });
+for (const r of restItems)
+  FIND.push({ name: r.s.name, lngLat: [r.s.lng, r.s.lat], zoom: 13,
+              open: () => { opener = { el: r.el, kbd: true }; popupForRestoration(r.s); } });
+document.getElementById('findList').innerHTML = FIND
+  .map((x) => `<option value="${x.name.replace(/"/g, '&quot;')}"></option>`).join('');
+function findGo(q) {
+  const hit = FIND.find((x) => x.name.toLowerCase() === q.trim().toLowerCase())
+    ?? FIND.find((x) => q.trim().length > 1 && x.name.toLowerCase().includes(q.trim().toLowerCase()));
+  if (!hit) return false;
+  map.once('moveend', () => { placeCampusLabels(); hit.open(); });
+  map.flyTo({ center: hit.lngLat, zoom: Math.max(map.getZoom(), hit.zoom), duration: 800 });
+  return true;
+}
+const findEl = document.getElementById('find');
+findEl.addEventListener('change', () => findGo(findEl.value));
+findEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); findGo(findEl.value); } });
+
 const FITS = {
-  network: [[-126, 27], [-86, 41]],
+  network: NETWORK_BOUNDS,
   bay: [[D.city['treasure-island'].bounds.w, D.city['treasure-island'].bounds.s],
         [D.city['treasure-island'].bounds.e, D.city['treasure-island'].bounds.n]],
   nola: [[D.city['new-orleans'].bounds.w, D.city['new-orleans'].bounds.s],
@@ -705,7 +982,18 @@ const FITS = {
 };
 document.querySelectorAll('[data-fit]').forEach((b) =>
   b.addEventListener('click', () =>
-    map.fitBounds(FITS[b.dataset.fit], { padding: 60, duration: 700 })));
+    map.fitBounds(FITS[b.dataset.fit], { padding: fitPadding(), duration: 700 })));
+
+/* globe or flat: the same features, the same coordinates, two projections */
+let projection = 'globe';
+const projBtn = document.getElementById('projBtn');
+projBtn.addEventListener('click', () => {
+  projection = projection === 'globe' ? 'mercator' : 'globe';
+  map.setProjection({ type: projection });
+  projBtn.setAttribute('aria-pressed', String(projection === 'globe'));
+  projBtn.textContent = projection === 'globe' ? '🌐 Globe view' : '▭ Flat view';
+  map.once('idle', placeCampusLabels);
+});
 
 /* ---------------------------------------------------------------------
    The city's own records, and the sky's own picture of it. Both are
@@ -726,8 +1014,7 @@ document.getElementById('satBtn').addEventListener('click', () => {
   satOn = !satOn;
   satState = satOn ? 'requested' : 'off';
   map.setLayoutProperty('sat', 'visibility', satOn ? 'visible' : 'none');
-  document.getElementById('satBtn').style.borderColor =
-    satOn ? 'var(--mark)' : 'var(--rule)';
+  document.getElementById('satBtn').setAttribute('aria-pressed', String(satOn));
   status(satOn ? 'Imagery requested from ' + D.imagery.authority + '.'
     : 'Imagery off.');
 });
@@ -787,7 +1074,11 @@ let loaded = false;
 map.on('load', () => { loaded = true; });
 // test hook: state without poking MapLibre internals
 window.__geomap = () => ({
-  loaded, markers, candMarkers, restMarkers,
+  loaded, markers, candMarkers, restMarkers, projection: map.getProjection().type,
+  covered: [...document.querySelectorAll('.maplibregl-marker-covered')].length,
+  clusters: clusterMarkers.map((c) => c.getElement().dataset.sites.split(' ')),
+  restLabelsShown: restItems.filter((r) => r.el.classList.contains('show-label')).map((r) => r.s.id),
+  selected: selectedEl ? selectedEl.textContent || selectedEl.getAttribute('aria-label') : null,
   layers: map.getStyle().layers.map((l) => l.id),
   features: D.network.features.length,
   center: [Math.round(map.getCenter().lng * 10) / 10,

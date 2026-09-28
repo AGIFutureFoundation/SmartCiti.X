@@ -572,10 +572,13 @@ pre{background:var(--sunk);border:1px solid var(--rule);border-radius:6px;
 .issuer .when{color:var(--muted);font-size:13px;margin:8px 0 0}
 details summary{cursor:pointer;color:var(--muted);font-size:13px}
 details ul{color:var(--muted);font-size:13px;margin:8px 0 0}
-table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+.tw{overflow-x:auto;margin:12px 0}
+.tw:focus-visible{outline:2px solid var(--steel);outline-offset:2px}
+table{border-collapse:collapse;width:100%;margin:0;font-size:14px}
 th,td{border-top:1px solid var(--rule);padding:8px 10px;text-align:start;vertical-align:top}
 th{color:var(--muted);font-weight:600;font-size:12.5px;text-transform:uppercase;letter-spacing:.04em}
 td.m{font-weight:600;white-space:nowrap}
+@media (max-width:560px){td.m{white-space:normal;min-width:8em}th,td{padding:8px 6px}}
 td.f{text-align:center;font-variant-numeric:tabular-nums}
 td.f.yes{color:var(--steel)}
 td.f.no{color:var(--stop)}
@@ -662,11 +665,13 @@ page = '''<!doctype html>
   <p class="claim">These controls still answer a click, on purpose: the click runs the page&rsquo;s real identity writer and shows you what it refuses with. Nothing is stored.</p>
 </div>
 
-<h2>Every method, and what it claims</h2>
+<h2 id="methods-h">Every method, and what it claims</h2>
+<div class="tw" role="region" aria-labelledby="methods-h" tabindex="0">
 <table>
 <thead><tr><th>method</th><th>the flow it uses</th><th>works here</th><th>authenticates</th><th>gates anything</th></tr></thead>
 <tbody>''' + rows + '''</tbody>
 </table>
+</div>
 <p class="claim">''' + esc(H['what_would_make_this_real']) + '''</p>
 
 <footer>

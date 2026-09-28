@@ -1165,5 +1165,65 @@ if (!WANT_BROWSER) {
   ok(`[shipped] every paragraph in ${JOIN_SECTIONS.map((s) => '#' + s).join(', ')} starts each sentence uppercase and closes each before the next`, joinBad.length === 0, joinBad);
 }
 
+/* ------------------------------------ continue where you left off, in node */
+/* Added with the lesson-flow pass. continuePoint is lifted out of the built
+   page's own <script id="continue-js"> and run over completion records made by
+   the page's own buildCompletionRecord, so what is asserted is what ships. */
+{
+  const lessonsReg = readJSON('lessons/registry/lessons.json');
+  const data = JSON.parse(html.match(/<script type="application\/json" id="tcdata">([\s\S]*?)<\/script>/)[1]);
+  const cm = html.match(/<script id="continue-js">([\s\S]*?)<\/script>/);
+  const bm = html.match(/<script id="completion-js">([\s\S]*?)<\/script>/);
+  ok('[shipped] the page carries a <script id="continue-js"> block declaring continuePoint(record, lessons, ladder, unrecordedKinds), '
+    + 'a #continue panel, and paints it from the same record the export is built from',
+    cm !== null && /function continuePoint\(record, lessons, ladder, unrecordedKinds\)/.test(cm[1])
+    && /<section class="card" id="continue" data-continue="unpainted"/.test(html)
+    && /paintContinue\(continuePoint\(record, D\.lessons, D\.ladder, S\.self_reported_kinds\)\)/.test(html)
+    && /'trade_craft_lessons\.html\?hall=' \+ encodeURIComponent\(pt\.hall\)/.test(html));
+  if (cm !== null && bm !== null) {
+    if (!globalThis.crypto || !globalThis.crypto.subtle) globalThis.crypto = (await import('node:crypto')).webcrypto;
+    const C = new Function(bm[1] + '\n' + cm[1] + '\nreturn { buildCompletionRecord, summarizeRecord, continuePoint };')();
+    const meta = { product: data.product, pack_version: data.pack_version, step_kinds: data.step_kinds,
+      episode_kinds: data.episode_kinds, identity: null, training_state: 'absent', human_actor: data.human_actor };
+    const NOW = new Date('2026-09-26T12:00:00.000Z');
+    const L = lessonsReg.lessons;
+    const layerOf = {};
+    for (const [d, ids] of Object.entries(lessonsReg.ladder.layers)) for (const id of ids) layerOf[id] = Number(d);
+    const keys = Object.keys(L);
+    const courseOrder = keys.slice().sort((a, b) => (layerOf[a] - layerOf[b]) || (keys.indexOf(a) - keys.indexOf(b)));
+    const run = async (prog) => {
+      const rec = await C.buildCompletionRecord(prog, L, lessonsReg.ladder, meta, NOW, null);
+      const S = C.summarizeRecord(rec, data.step_kinds, data.episode_kinds);
+      return { pt: C.continuePoint(rec, L, lessonsReg.ladder, S.self_reported_kinds), S };
+    };
+    const empty = await run({});
+    /* the LAST lesson in course order that has a sim step and a second step a record can mark,
+       and one EARLIER in course order with a sim step too: passing both must pick the earlier */
+    const withSim = courseOrder.filter((id) => L[id].steps.some((st) => st.kind === 'sim'));
+    const early = withSim[0], late = withSim[withSim.length - 1];
+    const simOf = (id) => L[id].steps.find((st) => st.kind === 'sim');
+    const one = await run({ sims: { [simOf(late).sim]: { runs: 1, passed: true } } });
+    const both = await run({ sims: { [simOf(late).sim]: { runs: 1, passed: true }, [simOf(early).sim]: { runs: 1, passed: true } } });
+    const unrec = one.S.self_reported_kinds;
+    const firstOpen = (id, doneSims) => L[id].steps.find((st) => !unrec.includes(st.kind)
+      && !(st.kind === 'sim' && doneSims.includes(st.sim)));
+    /* a sim seat shared by other lessons marks their sim steps too; the earliest
+       started lesson in course order is the one continue must name */
+    const startedFirst = (sims) => courseOrder.find((id) => L[id].steps.some((st) => st.kind === 'sim' && sims.includes(st.sim))
+      && firstOpen(id, sims) !== undefined);
+    const wantOne = startedFirst([simOf(late).sim]);
+    const wantBoth = startedFirst([simOf(late).sim, simOf(early).sim]);
+    ok('[shipped] continuePoint over an EMPTY record points nowhere (null): no lesson is invented as "started"',
+      empty.pt === null, [`got ${JSON.stringify(empty.pt)}`]);
+    ok('[shipped] continuePoint names the first STARTED lesson in course order (ladder layer, then registry order) and, '
+      + 'in it, the first step a record could still mark - never a walk or placard step, which nothing records',
+      one.pt !== null && one.pt.lesson === wantOne && one.pt.step === firstOpen(wantOne, [simOf(late).sim]).n
+      && !unrec.includes(one.pt.kind) && unrec.includes('walk')
+      && both.pt !== null && both.pt.lesson === wantBoth
+      && courseOrder.indexOf(both.pt.lesson) <= courseOrder.indexOf(one.pt.lesson),
+      [`one=${JSON.stringify(one.pt)} want ${wantOne}`, `both=${JSON.stringify(both.pt)} want ${wantBoth}`, `unrecorded=${unrec}`]);
+  }
+}
+
 console.log(`\nprogress: ${n} checks, ${bad} failure${bad === 1 ? '' : 's'}`);
 process.exit(bad ? 1 : 0);

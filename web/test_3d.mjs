@@ -11,7 +11,10 @@
  * opens no browser); these hold the generator's source to the fixes so
  * the leak cannot come back quietly. A bug becomes a check.
  */
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 let n = 0;
 const ok = (m, c) => { if (!c) { console.error('FAIL', m); process.exit(1); } n++; console.log('  ok ', m); };
@@ -2540,5 +2543,146 @@ ok('the XR HUD speaks from the catalog: every XR string reaches the page through
       && used.every((k) => wire.includes(`'${k}'`) && typeof en[k] === 'string')
       && !/'XR session ended'|'XR session unavailable: '|'navigator\.xr is not offered|left stick walks, right stick snaps|'the seat is yours again'|'your hands on the seat'|'reference operator · '|'XR performance: '|not a walkable scene: |walkable in the city layer</.test(code);
   })());
+
+/* ------------------------------------------- page chrome: h1 and nav --- */
+// A browser smoke run found the page had no <h1> and did not carry the
+// site's shared navigation. Both are held here on the BUILT page and at
+// the source, together with what keeps them out of the scene's way: the
+// nav is fixed (no flow space, so the canvas keeps the whole window every
+// pointer and raycast sum divides by) and sits under the panel scrim.
+const built = readFileSync(new URL('./trade_craft_3d.html', import.meta.url), 'utf8');
+const bodyAt = built.indexOf('<body>');
+ok('the page has exactly one <h1>, visually hidden, naming the brand and the campus walk from the catalog - and renderChrome() re-reads it in the chosen language',
+  (built.match(/<h1\b/g) ?? []).length === 1
+  && /<h1 id="ptitle" class="vh">SmartCiti\.X : Trade Craft Academy — [^<]{4,}<\/h1>/.test(built)
+  && /\.vh\{position:absolute!important;width:1px;height:1px;[^}]*clip-path:inset\(50%\)/.test(built)
+  && /document\.getElementById\('ptitle'\)\.textContent = 'SmartCiti\.X : Trade Craft Academy — ' \+ t\('nav\.page\.campus'\);/.test(fnCode('renderChrome'))
+  && /'nav\.campus', 'nav\.page\.campus', 'language\.select'/.test(src)
+  && built.indexOf('<h1 id="ptitle"') > bodyAt && built.indexOf('<h1 id="ptitle"') < built.indexOf('<div id="bar">'));
+ok('the page carries the shared site nav: built by sitenav.nav_html() for its own path, first in the body, with NAV_CSS in the head and no nav markup typed here',
+  /^from sitenav import nav_html, labels as nav_labels, NAV_CSS/m.test(src)
+  && (src.match(/nav_html\('web\/trade_craft_3d\.html', nav_labels\('en'\)\)/g) ?? []).length === 1
+  && /page = page\.replace\('__NAV_CSS__', NAV_CSS\)\.replace\('__NAV__', NAV\)/.test(src)
+  && /<body>\n<nav class="sitenav" data-sitenav [^>]*>/.test(built)
+  && (built.match(/<nav class="sitenav" data-sitenav/g) ?? []).length === 1
+  && /aria-current="page">[^<]+<\/a>/.test(built.slice(bodyAt, built.indexOf('</nav>', bodyAt)))
+  && !/data-sitenav|class="sitenav/.test(src));
+ok('the nav stays out of the scene\'s way: fixed and folded to one row (open on hover or focus), over the bar and under the panel scrim, the bar and minimap moved down by its row, the canvas still sized to the whole window',
+  /nav\.sitenav\{position:fixed;top:0;inset-inline:0;z-index:8;height:var\(--navh\);\s*overflow:hidden;/.test(built)
+  && /nav\.sitenav:hover,nav\.sitenav:focus-within\{height:auto;/.test(built)
+  && /#ov\{position:fixed;inset:0;[^}]*z-index:9\}/.test(built)
+  && /#bar\{top:var\(--navh\)\}/.test(built) && /#mm\{top:calc\(62px \+ var\(--navh\)\)\}/.test(built)
+  && built.indexOf('<style>.sitenav{') < built.indexOf('nav.sitenav{position:fixed')
+  && /renderer\.setSize\(innerWidth, innerHeight\);/.test(code));
+
+ok('below the shared nav\'s breakpoint an OPEN "Site pages" menu is never clipped by the folded bar: the bar grows (height auto, scrolls within the viewport) whenever the disclosure is open, and the groups drop in flow inside it',
+  /nav\.sitenav:has\(\.sitenav-menu\[open\]\)\{height:auto;max-height:100dvh;overflow-y:auto;/.test(built)
+  && /nav\.sitenav \.sitenav-menu\[open\]>\.sitenav-groups\{position:static;/.test(built)
+  && /nav\.sitenav \.sitenav-menu\[open\]\{flex:1 1 100%;min-width:0;max-width:100%\}/.test(built)
+  && /nav\.sitenav \.sitenav-menu\[open\]>summary\{position:absolute;/.test(built)
+  && /<details class="sitenav-menu" data-sitenav-menu>[\s\S]*?<div class="sitenav-groups">/.test(built)
+  && /nav\.sitenav \.sitenav-menu > summary/.test(built));
+
+/* ------------------------------------------------- detail: crib tools --- */
+// Every render kind the tool registry uses is drawn as a tool - several
+// parts, the registry hue on the grip/body - not one block, and the board
+// is still one merged mesh (the existing crib check holds that half).
+{
+  const reg = JSON.parse(readFileSync(new URL('../tools/registry/toolcribs.json', import.meta.url), 'utf8'));
+  const shapes = [...new Set(Object.values(reg.cribs).flatMap((c) => c.tools.map((t) => t.shape)))];
+  const body = fnCode('toolGeo');
+  const cases = {};
+  const parts = body.split(/\n    (?=case '|default:)/).slice(1);
+  for (const c of parts) {
+    const k = (c.match(/^case '([a-z]+)'/) ?? [null, 'default'])[1];
+    cases[k] = { puts: (c.match(/\bput\(/g) ?? []).length, hue: /\bcol\b/.test(c), steelOrGrip: /\b(STEEL|GRIP)\b/.test(c) };
+  }
+  const missing = shapes.filter((sh) => sh !== 'wrench' && !(sh in cases));
+  ok(`every crib render kind the registry uses (${shapes.length}) is drawn as a tool of at least three parts with the registry hue on one of them and steel or rubber on another`,
+    missing.length === 0 && 'default' in cases
+    && Object.values(cases).every((c) => c.puts >= 3 && c.hue && c.steelOrGrip)
+    && Object.keys(cases).length >= 9);
+  ok('a crib tool is laid out in its face frame and turned once onto the board, merged into one geometry that fails loudly if the parts do not merge',
+    /const geo = mergeGeometries\(parts\);/.test(body)
+    && /geo\.rotateY\(-Math\.PI \/ 2\);/.test(body)
+    && /throw new Error\('tool ' \+ tl\.id \+ ': its parts did not merge'\)/.test(body)
+    && !/new THREE\.MeshStandardMaterial/.test(body));
+}
+
+/* ---------------------------------------------- detail: the excavator --- */
+ok('the excavator seat is dressed - sprocket, idler, rollers and grousers on the tracks; framed cab, work lights, exhaust and chevrons on the house; barrel-and-rod cylinders, joint pins and bucket teeth on the arm',
+  /excavatorDetail\(g, hg, boomG, stickG, L1, L2\);/.test(fnCode('excavatorSim'))
+  && [/drive sprocket/, /front idler/, /-1\.2 \+ i \* \.6/, /i < 12; i\+\+\) piece\(1\.14, \.05/, /cab pillars/, /work lights/,
+      /exhaust stack/, /counterweight chevrons/, /boom foot pin/, /boom-stick pin/, /stick-bucket pin/, /L2 \+ \.5, -\.62/]
+    .every((re) => re.test(fn('excavatorDetail')))
+  && (fnCode('excavatorDetail').match(/mat\.paint, [^)]*, (Bm|St), 'x'\)/g) ?? []).length === 3);
+ok('the excavator dress rides the group that moves each piece and costs one mesh per material per group: pooled through partCollector() and flushed by flushParts(), shared materials only',
+  /const \[U, H, Bm, St\] = pools\.map\(partCollector\);/.test(fnCode('excavatorDetail'))
+  && /\[g, hg, boomG, stickG\]\.forEach\(\(grp, i\) => flushParts\(pools\[i\], grp\)\);/.test(fnCode('excavatorDetail'))
+  && !/MeshStandardMaterial|MeshBasicMaterial|\.add\(new THREE\.Mesh/.test(fnCode('excavatorDetail'))
+  && !/\b(g|hg|boomG|stickG)\.add\(/.test(fnCode('excavatorDetail')));
+
+/* ---------------------------------------------- detail: avatar hands --- */
+ok('a person\'s hand is palm, four-finger mitt and thumb - with a gauntlet cuff when the locker says gloves - merged into ONE mesh that replaces the old ball one for one; paws stay paws',
+  /const mitt = new THREE\.CapsuleGeometry\(/.test(fnCode('handMesh'))
+  && /const thumb = new THREE\.CapsuleGeometry\(/.test(fnCode('handMesh'))
+  && /if \(gloved\) \{\s*const cuff = new THREE\.CylinderGeometry\(/.test(fnCode('handMesh'))
+  && /const geo = mergeGeometries\(parts\);/.test(fnCode('handMesh'))
+  && (fnCode('handMesh').match(/new THREE\.Mesh\(/g) ?? []).length === 1
+  && /else handMesh\(\.06, handM, cfg\.extras === 'gloves', hd\);/.test(fnCode('buildAvatarMesh'))
+  && /if \(APE \|\| ANIMAL \|\| cfg\.costume === 'mascot'\)\s*sphere\(/.test(fnCode('buildAvatarMesh')));
+
+/* ------------------------------------------------ the page parses --- */
+// Every check above reads the source as text, and none of them notices a
+// page that does not parse. One did not, while this file passed: a JS
+// string written as 'a hand\'s ...' inside the Python template lost its
+// backslash on the way out, the module died on a SyntaxError and the scene
+// never booted. So the BUILT module and each classic inline script are
+// handed to the JS parser itself (node --check; no browser, nothing run).
+{
+  const dir = mkdtempSync(join(tmpdir(), 'tc3d-parse-'));
+  const bad = [];
+  try {
+    const blocks = [...built.matchAll(/<script(\s[^>]*)?>([\s\S]*?)<\/script>/g)]
+      .filter((m) => !/type="(application\/json|importmap)"/.test(m[1] ?? ''));
+    blocks.forEach((m, i) => {
+      const file = join(dir, `s${i}.${/type="module"/.test(m[1] ?? '') ? 'mjs' : 'cjs'}`);
+      writeFileSync(file, m[2]);
+      try { execFileSync(process.execPath, ['--check', file], { stdio: 'pipe' }); }
+      catch (e) { bad.push(`script ${i}: ${String(e.stderr).split('\n').find((l) => /Error/.test(l))}`); }
+    });
+    ok(`every script the built page runs (${blocks.length}, the scene module among them) parses${bad.length ? ': ' + bad.join('; ') : ''}`,
+      blocks.length >= 2 && blocks.some((m) => /type="module"/.test(m[1] ?? '')) && bad.length === 0);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+}
+
+/* ------------------------------------- accessible names, and the wire --- */
+// A QA sweep found seven links and buttons on this page with no accessible
+// name: the bar's controls were empty elements the script filled in, so
+// before it ran (and to anything reading the markup) they were nameless.
+// Every <a> and <button> in the built markup outside the scripts now carries
+// visible text or an aria-label.
+{
+  const markup = built.replace(/<script\b[\s\S]*?<\/script>/g, '').replace(/<style\b[\s\S]*?<\/style>/g, '');
+  const els = [...markup.matchAll(/<(a|button)\b([^>]*)>([\s\S]*?)<\/\1>/g)];
+  const nameless = els.filter((m) => !/aria-label="[^"]+"/.test(m[2]) && !m[3].replace(/<[^>]*>/g, '').trim())
+    .map((m) => `<${m[1]}${(m[2].match(/ id="[^"]*"/) ?? [''])[0]}>`);
+  ok(`every link and button in the built page's markup (${els.length}) has an accessible name - text or aria-label - before any script runs${nameless.length ? ': nameless ' + nameless.join(', ') : ''}`,
+    els.length >= 30 && nameless.length === 0
+    && /page = re\.sub\(r'__L_\(\[a-zA-Z\.\]\+\)__', lambda m: I18N\['en'\]\['strings'\]\[m\.group\(1\)\], page\)/.test(src));
+}
+// The HUD's operator button read "sim.operator" in a browser: t() falls
+// back to the KEY when a string is not on the i18n wire, and that key was
+// used by the page and never put on it. Every t('<literal>') the page calls
+// is on the wire and in en.json.
+{
+  const used = [...new Set([...code.matchAll(/\bt\('([A-Za-z0-9_.]+)'\)/g)].map((m) => m[1]))];
+  const w0 = src.indexOf("'strings': {k: s[k] for k in (");
+  const wire = src.slice(w0, src.indexOf(')}', w0));
+  const en = JSON.parse(readFileSync(new URL('../i18n/locales/en.json', import.meta.url), 'utf8')).strings;
+  const off = used.filter((k) => !wire.includes(`'${k}'`) || typeof en[k] !== 'string');
+  ok(`every catalog key the page reads through t() (${used.length}) rides the i18n wire and is in en.json${off.length ? ': off the wire ' + off.join(', ') : ''}`,
+    used.length >= 40 && off.length === 0);
+}
 
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);

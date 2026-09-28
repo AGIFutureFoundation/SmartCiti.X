@@ -134,6 +134,8 @@ header p{{color:var(--muted);margin:6px 0 14px}}
 .districts{{border-collapse:collapse;width:100%;margin:14px 0}}
 .districts td{{border-top:1px solid var(--rule);padding:8px 10px;vertical-align:top}}
 .dn{{font-weight:600;white-space:nowrap}}
+.dt{{overflow-wrap:anywhere}}
+@media (max-width:560px){{.dn{{white-space:normal}}.districts td{{padding:8px 6px}}}}
 .dt{{color:var(--muted)}}
 .dc{{text-align:end;color:var(--steel);font-variant-numeric:tabular-nums}}
 .ladder{{color:var(--muted)}}

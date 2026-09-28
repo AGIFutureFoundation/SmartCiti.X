@@ -51,7 +51,7 @@ const listed = doc.components.map((c) => c['bom-ref']).sort();
 const SPDX = new Set(['MIT', 'BSD-3-Clause', 'OFL-1.1']);
 const PURLS = {
   three: 'pkg:npm/three@0.160.0',
-  'maplibre-gl': 'pkg:npm/maplibre-gl@4.7.1',
+  'maplibre-gl': 'pkg:npm/maplibre-gl@5.24.0',
   // The four self-hosted type families. Each is its own upstream under its
   // own copyright - collapsing them into one "webfonts" entry would
   // attribute three of them to authors who did not write them.
@@ -191,7 +191,7 @@ ok('every licence claim is backed by the banner in the file — or says plainly 
   }
   assert.ok(/no page contacts a font service/i.test(third),
     'THIRD_PARTY.md still has to say whether a page load reaches a font service');
-  for (const [name, ver] of [['Three.js', '0.160.0'], ['MapLibre GL JS', '4.7.1']]) {
+  for (const [name, ver] of [['Three.js', '0.160.0'], ['MapLibre GL JS', '5.24.0']]) {
     assert.ok(third.includes(`${name} ${ver}`), `THIRD_PARTY.md and the SBOM disagree on ${name} ${ver}`);
   }
   assert.ok(third.includes('sbom.cdx.json'), 'THIRD_PARTY.md points at the SBOM');

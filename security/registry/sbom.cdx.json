@@ -22,7 +22,7 @@
   "properties": [
    {
     "name": "smartcitix:source_stamp",
-    "value": "7b3e9ff22503a41e"
+    "value": "d9b598ece6514d36"
    },
    {
     "name": "smartcitix:scope",
@@ -2161,19 +2161,19 @@
    "type": "library",
    "bom-ref": "web/vendor/maplibre/maplibre-gl.css",
    "name": "maplibre-gl",
-   "version": "4.7.1",
-   "purl": "pkg:npm/maplibre-gl@4.7.1#dist/maplibre-gl.css",
+   "version": "5.24.0",
+   "purl": "pkg:npm/maplibre-gl@5.24.0#dist/maplibre-gl.css",
    "hashes": [
     {
      "alg": "SHA-256",
-     "content": "576b085fdd9487a65a19215328c1e086c07ce5bf6da09b666b3806d3d008dae9"
+     "content": "ab1e70d59ec40465bae7e7030da2f3ccf28133fd502e62bd598eefbadfd7a732"
     }
    ],
    "licenses": [
     {
      "license": {
       "id": "BSD-3-Clause",
-      "url": "https://github.com/maplibre/maplibre-gl-js/blob/v4.7.1/LICENSE.txt"
+      "url": "https://github.com/maplibre/maplibre-gl-js/blob/v5.24.0/LICENSE.txt"
      }
     }
    ],
@@ -2188,7 +2188,7 @@
     },
     {
      "type": "license",
-     "url": "https://github.com/maplibre/maplibre-gl-js/blob/v4.7.1/LICENSE.txt"
+     "url": "https://github.com/maplibre/maplibre-gl-js/blob/v5.24.0/LICENSE.txt"
     }
    ],
    "evidence": {
@@ -2222,19 +2222,19 @@
    "type": "library",
    "bom-ref": "web/vendor/maplibre/maplibre-gl.js",
    "name": "maplibre-gl",
-   "version": "4.7.1",
-   "purl": "pkg:npm/maplibre-gl@4.7.1#dist/maplibre-gl.js",
+   "version": "5.24.0",
+   "purl": "pkg:npm/maplibre-gl@5.24.0#dist/maplibre-gl.js",
    "hashes": [
     {
      "alg": "SHA-256",
-     "content": "be9633c4d870e26fb37f1cfe5c5a77181667114003ea16207ac7850d8da8add1"
+     "content": "45a9b07a9189ce56054c620a947ccf41e291e58c95e9b61533b740aaa65ee5cb"
     }
    ],
    "licenses": [
     {
      "license": {
       "id": "BSD-3-Clause",
-      "url": "https://github.com/maplibre/maplibre-gl-js/blob/v4.7.1/LICENSE.txt"
+      "url": "https://github.com/maplibre/maplibre-gl-js/blob/v5.24.0/LICENSE.txt"
      }
     }
    ],
@@ -2249,7 +2249,7 @@
     },
     {
      "type": "license",
-     "url": "https://github.com/maplibre/maplibre-gl-js/blob/v4.7.1/LICENSE.txt"
+     "url": "https://github.com/maplibre/maplibre-gl-js/blob/v5.24.0/LICENSE.txt"
     }
    ],
    "evidence": {
@@ -2260,7 +2260,7 @@
     ],
     "copyright": [
      {
-      "text": "/**\n * MapLibre GL JS\n * @license 3-Clause BSD. Full text of license: https://github.com/maplibre/maplibre-gl-js/blob/v4.7.1/LICENSE.txt\n */"
+      "text": "/**\n * MapLibre GL JS\n * @license 3-Clause BSD. Full text of license: https://github.com/maplibre/maplibre-gl-js/blob/v5.24.0/LICENSE.txt\n */"
      }
     ]
    },
@@ -2271,7 +2271,7 @@
     },
     {
      "name": "smartcitix:version_evidence",
-     "value": "var i=\"4.7.1\";"
+     "value": "var i=\"5.24.0\";"
     },
     {
      "name": "smartcitix:licence_evidence",

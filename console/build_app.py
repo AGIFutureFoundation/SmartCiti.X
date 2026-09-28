@@ -56,8 +56,8 @@ control = bundle_control()
 CSS = """
 :root{
   --steel:#EEF1F2; --panel:#F7F9F9; --sunk:#E3E8E9; --ink:#1B252A; --ink2:#5A6B71;
-  --line:#CCD6D8; --accent:#0090A0; --accent-ink:#046B78; --band:#C97A10;
-  --good:#2F7D4F; --warn:#B0771A; --crit:#B04432; --violet:#6A6FBF;
+  --line:#CCD6D8; --accent:#007A88; --accent-ink:#046B78; --band:#8F560A;
+  --good:#256B42; --warn:#8F5E12; --crit:#9A3A2A; --violet:#5A5FA8;
   --grid:#DCE3E4; --shadow:0 1px 2px rgba(20,40,45,.06),0 6px 18px rgba(20,40,45,.05);
   color-scheme:light dark;
 }
@@ -110,14 +110,20 @@ h1.title{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin:0;font
 .st-PINNED{background:var(--sunk);color:var(--ink2);border-color:var(--line)}
 
 /* ---------- nav ---------- */
-nav.views{display:flex;gap:4px;margin:18px 0 16px;border-bottom:1px solid var(--line);
+.views{display:flex;gap:4px;margin:18px 0 16px;border-bottom:1px solid var(--line);
   flex-wrap:wrap}
-nav.views button{appearance:none;background:none;border:none;cursor:pointer;
+.views button{appearance:none;background:none;border:none;cursor:pointer;
   font:600 13px/1 "Archivo",sans-serif;letter-spacing:.02em;color:var(--ink2);
   padding:10px 13px;border-bottom:2px solid transparent;margin-bottom:-1px}
-nav.views button:hover{color:var(--ink)}
-nav.views button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
-nav.views button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.views button:hover{color:var(--ink)}
+.views button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.views button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+[role=tabpanel]:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:8px}
+.filter{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--ink2)}
+.filter select{font:500 12.5px/1.2 "IBM Plex Sans",sans-serif;color:var(--ink);background:var(--panel);
+  border:1px solid var(--line);border-radius:5px;padding:5px 8px;min-height:30px}
+.filter select:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+tbody tr:hover td{background:color-mix(in srgb,var(--accent) 5%,transparent)}
 
 /* ---------- layout ---------- */
 .grid2{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:18px;align-items:start}
@@ -215,7 +221,7 @@ th:last-child,td:last-child{padding-right:0}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 """
 
-HTML_HEAD = """<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Trade Craft Adaptive Console</title>
+HTML_HEAD = """<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Trade Craft Adaptive Console</title>
 <link rel="icon" href="data:image/svg+xml,%%3Csvg xmlns=%%22http://www.w3.org/2000/svg%%22 viewBox=%%220 0 32 32%%22%%3E%%3Crect width=%%2232%%22 height=%%2232%%22 rx=%%226%%22 fill=%%22%%230C1113%%22/%%3E%%3Cpath d=%%22M7 21 L16 7 L25 21 Z%%22 fill=%%22none%%22 stroke=%%22%%23E8A33D%%22 stroke-width=%%222.6%%22 stroke-linejoin=%%22round%%22/%%3E%%3Cpath d=%%22M11 21 h10%%22 stroke=%%22%%2341C4D4%%22 stroke-width=%%222.6%%22 stroke-linecap=%%22round%%22/%%3E%%3C/svg%%3E">
 <!-- Self-hosted: nothing on this page is fetched from another origin at run time. See web/fetch_fonts.py. -->
 <link rel="stylesheet" href="../web/vendor/fonts/fonts.css">
@@ -228,20 +234,21 @@ BODY = """
     <h1 class="title"><span class="brand">SmartCiti<span class="x">.X</span><span class="colon">:</span>Trade Craft Academy</span>
       <span class="tagline">Adaptive Console &middot; powered by AGI&nbsp;Corp</span></h1>
     <div style="flex:1"></div>
-    <div class="pill" id="packpill">pack v2.0</div>
+    <div class="pill" id="packpill">pack v__PACK_VERSION__</div>
   </header>
 
   <div class="strip" id="strip"></div>
 
-  <nav class="views" role="tablist" aria-label="Views">
-    <button role="tab" data-view="learn" aria-selected="true">Learn</button>
-    <button role="tab" data-view="graph" aria-selected="false">Skill graph</button>
-    <button role="tab" data-view="cert" aria-selected="false">Certification</button>
-    <button role="tab" data-view="ops" aria-selected="false">Operations</button>
-  </nav>
+  <main id="main">
+  <div class="views" role="tablist" aria-label="Views">
+    <button role="tab" id="tab-learn" aria-controls="view-learn" data-view="learn" aria-selected="true" tabindex="0">Learn</button>
+    <button role="tab" id="tab-graph" aria-controls="view-graph" data-view="graph" aria-selected="false" tabindex="-1">Skill graph</button>
+    <button role="tab" id="tab-cert" aria-controls="view-cert" data-view="cert" aria-selected="false" tabindex="-1">Certification</button>
+    <button role="tab" id="tab-ops" aria-controls="view-ops" data-view="ops" aria-selected="false" tabindex="-1">Operations</button>
+  </div>
 
   <!-- ================= LEARN ================= -->
-  <section id="view-learn">
+  <section id="view-learn" role="tabpanel" aria-labelledby="tab-learn" tabindex="0">
     <div class="grid2">
       <div class="stack">
         <div class="panel">
@@ -292,7 +299,7 @@ BODY = """
   </section>
 
   <!-- ================= GRAPH ================= -->
-  <section id="view-graph" class="hidden">
+  <section id="view-graph" role="tabpanel" aria-labelledby="tab-graph" tabindex="0" class="hidden">
     <div class="panel">
       <div class="head"><h2>Skill graph</h2><span class="taskid" id="graphmeta"></span></div>
       <div class="body">
@@ -310,11 +317,22 @@ BODY = """
   </section>
 
   <!-- ================= CERT ================= -->
-  <section id="view-cert" class="hidden">
+  <section id="view-cert" role="tabpanel" aria-labelledby="tab-cert" tabindex="0" class="hidden">
     <div class="grid2">
       <div class="panel">
         <div class="head"><h2>Skill gates</h2><span class="taskid">tier 1 of 3</span></div>
-        <div class="body"><div class="tw"><table id="gatetable"></table></div>
+        <div class="body">
+          <div class="actions" style="justify-content:space-between;align-items:center;margin-bottom:10px">
+            <label class="filter">Status
+              <select id="gatefilter">
+                <option value="all">all skills</option>
+                <option value="certified">certified</option>
+                <option value="awaiting proof">awaiting proof</option>
+                <option value="in progress">in progress</option>
+              </select></label>
+            <span class="taskid" id="gatecount" aria-live="polite"></span>
+          </div>
+          <div class="tw"><table id="gatetable"></table></div>
           <p class="note">A gate needs mastery <b>believed</b> and <b>demonstrated</b>: three consecutive
           unaided successes served at gate difficulty. Ordinary practice sits at the band centre and
           cannot qualify &mdash; the sequencer serves deliberate verification runs instead.</p>
@@ -337,7 +355,7 @@ BODY = """
   </section>
 
   <!-- ================= OPS ================= -->
-  <section id="view-ops" class="hidden">
+  <section id="view-ops" role="tabpanel" aria-labelledby="tab-ops" tabindex="0" class="hidden">
     <div class="grid2">
       <div class="stack">
         <div class="panel">
@@ -345,7 +363,7 @@ BODY = """
           <div class="body"><div class="tw"><table id="ledgertable"></table></div></div>
         </div>
         <div class="panel">
-          <div class="head"><h2>Pipeline states</h2><span class="taskid">all 11,000,000 modules</span></div>
+          <div class="head"><h2>Pipeline states</h2><span class="taskid">all __N_MODULES__ modules</span></div>
           <div class="body"><div class="bars" id="pipebars"></div>
             <p class="note">Only <b>live</b> modules are eligible for normal selection. A <code>stretch</code>
             variant is never further along its pipeline than its <code>core</code> sibling.</p>
@@ -401,7 +419,7 @@ BODY = """
             sequencer and assessment gates &mdash; inlined verbatim from the modules the 60-check suite
             verifies. Task content comes from the registry pack: __N_HALLS__ union halls, __N_LESSONS__
             lessons generated by rule (the served hall's __N_SERVED__ are generated in this page at boot), __N_SKILLS__ skill nodes. Nothing here is mocked.</p>
-            <p class="note">What is <em>not</em> here: the enumerated ledger &mdash; at 11,000,000
+            <p class="note">What is <em>not</em> here: the enumerated ledger &mdash; at __N_MODULES__
             modules nothing enumerates it, the console generates lessons and variants on demand
             exactly as the pack's consumer library does &mdash; authored lesson prose (titles are
             placeholders composed from the generated row), and the two eval gates that need a cohort run.</p>
@@ -410,6 +428,7 @@ BODY = """
       </div>
     </div>
   </section>
+  </main>
 </div>
 """
 
@@ -801,17 +820,23 @@ function renderGraph() {
 
 /* ---------------- certification ---------------- */
 function renderCert() {
-  const rows = SKILL_IDS.map(id => {
+  const allRows = SKILL_IDS.map(id => {
     const st = S.profile.get(id);
     const g = checkSkillGate(S.profile, id, S.history);
-    return { id, st, g };
-  }).sort((a, b) => (b.st.gated_at !== undefined) - (a.st.gated_at !== undefined) || b.st.p_mastery - a.st.p_mastery)
-    .slice(0, 12);
+    const label = g.pass ? 'certified' : (st.p_mastery >= 0.95 ? 'awaiting proof' : 'in progress');
+    return { id, st, g, label };
+  }).sort((a, b) => (b.st.gated_at !== undefined) - (a.st.gated_at !== undefined) || b.st.p_mastery - a.st.p_mastery);
+  /* the status filter: the table lists the first 12 of the chosen status */
+  const want = $('#gatefilter').value;
+  const match = allRows.filter(r => want === 'all' || r.label === want);
+  const rows = match.slice(0, 12);
+  $('#gatecount').textContent = `${rows.length} shown of ${match.length} ${want === 'all' ? 'skills' : want}`;
   $('#gatetable').innerHTML =
-    `<thead><tr><th>Skill</th><th class="num">θ</th><th class="num">mastery</th><th>Status</th></tr></thead><tbody>` +
+    `<thead><tr><th scope="col">Skill</th><th scope="col" class="num">θ</th><th scope="col" class="num">mastery</th><th scope="col">Status</th></tr></thead><tbody>` +
+    (rows.length ? '' : `<tr><td colspan="4" class="empty">No skill is ${want} yet.</td></tr>`) +
     rows.map(r => {
-      const cls = r.g.pass ? 'g-pass' : (r.st.p_mastery >= 0.95 ? 'g-wait' : 'g-wait');
-      const label = r.g.pass ? 'certified' : (r.st.p_mastery >= 0.95 ? 'awaiting proof' : 'in progress');
+      const cls = r.g.pass ? 'g-pass' : 'g-wait';
+      const label = r.label;
       return `<tr><td>${shortSkill(r.id)}</td><td class="num">${fmt(r.st.theta)}</td>
         <td class="num">${fmt(r.st.p_mastery, 2)}</td>
         <td><span class="gatepill ${cls}">${label}</span>
@@ -876,7 +901,7 @@ async function renderMentorGates() {
   }
   const cell = (ok, txt) => `<span class="gatepill ${ok ? 'g-pass' : 'g-fail'}">${txt}</span>`;
   $('#mentorgates').innerHTML = `<div class="tw"><table>
-    <thead><tr><th>Mentor</th><th>Rung discipline</th><th>Scope</th><th>Persona</th></tr></thead>
+    <thead><tr><th scope="col">Mentor</th><th scope="col">Rung discipline</th><th scope="col">Scope</th><th scope="col">Persona</th></tr></thead>
     <tbody>${out.map(o => `<tr><td class="mono">${o.name}</td>
       <td>${cell(o.rung <= 0.10, `${(o.rung * 100).toFixed(0)}% over`)}</td>
       <td>${cell(o.viol === 0, `${o.viol} violations`)}</td>
@@ -923,7 +948,7 @@ function renderBus() {
 
 function renderOps() {
   const L = SLICE.ledger;
-  $('#ledgertable').innerHTML = `<thead><tr><th>Line</th><th>Computation</th><th class="num">Modules</th></tr></thead><tbody>
+  $('#ledgertable').innerHTML = `<thead><tr><th scope="col">Line</th><th scope="col">Computation</th><th scope="col" class="num">Modules</th></tr></thead><tbody>
     <tr><td>Core lessons</td><td class="mono">${L.halls} × ${L.levels_per_hall} × ${L.slots_per_level}</td><td class="num mono">${L.core_lessons.toLocaleString()}</td></tr>
     <tr><td>Dial variants</td><td class="mono">3 modalities × 3 bands</td><td class="num mono">× ${L.variants_per_lesson}</td></tr>
     <tr><td><b>Core modules</b></td><td></td><td class="num mono"><b>${L.core_modules.toLocaleString()}</b></td></tr>
@@ -959,13 +984,23 @@ function renderOps() {
 }
 
 /* ---------------- wiring ---------------- */
-document.querySelectorAll('nav.views button').forEach(b => {
-  b.addEventListener('click', () => {
-    document.querySelectorAll('nav.views button').forEach(o => o.setAttribute('aria-selected', String(o === b)));
-    ['learn', 'graph', 'cert', 'ops'].forEach(v =>
-      document.getElementById('view-' + v).classList.toggle('hidden', v !== b.dataset.view));
+const TABS = [...document.querySelectorAll('.views [role=tab]')];
+function selectTab(b, focus) {
+  TABS.forEach(o => { o.setAttribute('aria-selected', String(o === b)); o.tabIndex = o === b ? 0 : -1; });
+  TABS.forEach(o => document.getElementById(o.getAttribute('aria-controls')).classList.toggle('hidden', o !== b));
+  if (focus) b.focus();
+}
+TABS.forEach((b, i) => {
+  b.addEventListener('click', () => selectTab(b, false));
+  /* WAI-ARIA tabs: arrows move between tabs, Home/End jump to the ends */
+  b.addEventListener('keydown', (e) => {
+    const to = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: TABS.length - 1 }[e.key];
+    if (to === undefined) return;
+    e.preventDefault();
+    selectTab(TABS[(to + TABS.length) % TABS.length], true);
   });
 });
+$('#gatefilter').addEventListener('change', renderCert);
 $('#btn-solve').addEventListener('click', () => { step(true); advance(); });
 $('#btn-fail').addEventListener('click', () => { step(false); advance(); });
 $('#btn-run10').addEventListener('click', () => { for (let k = 0; k < 10; k++) step(null); advance(); });
@@ -1008,7 +1043,7 @@ $('#btn-violate').addEventListener('click', () => {
   renderBus();
 });
 
-$('#packpill').textContent = `pack v${SLICE.pack_version} · 4 halls`;
+$('#packpill').textContent = `pack v${SLICE.pack_version} · ${SLICE.unions.length} halls`;
 boot();
 renderMentorGates();
 """
@@ -1021,7 +1056,9 @@ _served = next(u for u in _slice['unions'] if u['slug'] == 'welders')
 _counts = {'__N_HALLS__': str(len(_slice['unions'])),
            '__N_LESSONS__': f"{sum(u['lessons'] for u in _slice['unions']):,}",
            '__N_SERVED__': f"{_served['lessons']:,}",
-           '__N_SKILLS__': str(len(_slice['skills']))}
+           '__N_SKILLS__': str(len(_slice['skills'])),
+           '__N_MODULES__': f"{_slice['ledger']['total_modules']:,}",
+           '__PACK_VERSION__': str(_slice['pack_version'])}
 page = (HTML_HEAD + BODY
         + f"<!-- control-plane-source-stamp: {STAMP} -->\n"
         + "<script type=\"module\">\n" + app + "\n</script>\n")

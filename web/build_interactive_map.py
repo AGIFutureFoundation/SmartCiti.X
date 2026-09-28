@@ -289,7 +289,7 @@ select{background:var(--panel);color:var(--ink);border:1px solid var(--rule);
   border-bottom:2px solid var(--mark);padding-bottom:6px;
   display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline}
 .campushdr em{color:var(--muted);font:400 13px "IBM Plex Sans",sans-serif}
-.campusbody{display:grid;grid-template-columns:repeat(auto-fill,minmax(430px,1fr));gap:18px}
+.campusbody{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(430px,100%),1fr));gap:18px}
 @media(max-width:480px){.campus{grid-template-columns:1fr}}
 .district{background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:14px 16px}
 .district h2{font:600 19px "Barlow Condensed",sans-serif;margin:0;

@@ -20,7 +20,11 @@ digits in anything it renders (page suites scan for typed counts). Hrefs
 are relative to the page being built, so the same declaration works from
 index.html at the root and from the pages under web/. The CSS uses only
 logical properties and each page's own custom properties (with fallbacks),
-so it mirrors under dir="rtl" and wraps at 360 px instead of scrolling.
+so it mirrors under dir="rtl". Below its one breakpoint the groups fold into
+a disclosure (summary = the nav's own `nav.site` label) that drops over the
+page, so a phone opens on content rather than on eight rows of links; with
+no script involved - a browser too old for ::details-content gets the menu
+button at every width rather than a header with links it cannot reach.
 """
 import html
 import json
@@ -117,12 +121,21 @@ def nav_html(current_path, labels):
         c = f' class="{cls}"' if cls else ''
         return f'<a{c} href="{html.escape(_rel(current_path, target))}"{cur}>{E(key)}</a>'
 
+    # The groups sit in a native disclosure, closed. On a wide screen NAV_CSS
+    # hides its summary and shows its content anyway (::details-content), so
+    # the header is one flat bar; on a narrow one the summary is the menu
+    # button. No script: page suites count and parse <script> tags, and a
+    # header has no business adding one to every page.
     out = [f'<nav class="sitenav" data-sitenav aria-label="{E("nav.site")}">',
            '<div class="sitenav-row">',
-           link(FRONT_DOOR, 'nav.home', 'sitenav-home')]
+           link(FRONT_DOOR, 'nav.home', 'sitenav-home'),
+           '<details class="sitenav-menu" data-sitenav-menu>'
+           f'<summary>{E("nav.site")}</summary>',
+           '<div class="sitenav-groups">']
     for gkey, items in GROUPS:
         out.append(f'<div class="sitenav-group"><span class="sitenav-g">{E(gkey)}</span><ul>'
                    + ''.join(f'<li>{link(p, k)}</li>' for p, k in items) + '</ul></div>')
+    out.append('</div></details>')
     out.append('</div>')
     steps = [p for p, _ in LOOP]
     if current_path in steps:
@@ -136,28 +149,77 @@ def nav_html(current_path, labels):
 
 
 NAV_CSS = (
-    '.sitenav{font:13px/1.45 system-ui,sans-serif;color:var(--ink,inherit);'
-    'background:var(--panel,var(--surface,transparent));'
-    'border-block-end:1px solid var(--rule,var(--line,currentColor));'
+    '.sitenav{--sn-ink:var(--ink,CanvasText);--sn-bg:var(--panel,var(--surface,Canvas));'
+    '--sn-rule:var(--rule,var(--line,GrayText));--sn-mute:var(--muted,var(--ink,CanvasText));'
+    '--sn-mark:var(--mark,var(--accent,LinkText));'
+    'position:relative;z-index:40;font:500 13.5px/1.35 "IBM Plex Sans",system-ui,sans-serif;'
+    'color:var(--sn-ink);background:var(--sn-bg);'
+    'border-block-end:1px solid var(--sn-rule);'
     'padding-block:6px;padding-inline:16px;box-sizing:border-box;max-width:100%;'
     'overflow-wrap:anywhere}'
-    '.sitenav a{color:inherit;text-decoration:none}'
-    '.sitenav a:hover,.sitenav a:focus-visible{text-decoration:underline}'
-    '.sitenav-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px}'
-    '.sitenav-home{font-weight:700;color:var(--mark,var(--accent,inherit))!important}'
-    '.sitenav-group{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;min-width:0}'
-    '.sitenav-g{font-size:11px;text-transform:uppercase;letter-spacing:.06em;'
-    'color:var(--muted,inherit)}'
+    '.sitenav *{box-sizing:border-box}'
+    '.sitenav a{color:inherit;text-decoration:none;border-radius:6px;'
+    'padding-block:4px;padding-inline:7px;display:inline-block}'
+    '.sitenav a:hover{background:color-mix(in srgb,currentColor 11%,transparent)}'
+    '.sitenav a:focus-visible,.sitenav summary:focus-visible{outline:2px solid var(--sn-mark);'
+    'outline-offset:2px}'
+    '.sitenav-row{display:flex;align-items:center;gap:6px 12px;min-width:0}'
+    # Text in the header is always the page's own ink on the page's own
+    # panel - the one pair every page already holds to AA. The accent marks
+    # things (a border, an underline bar) but never carries text, because an
+    # accent that reads on one page's surface fails on another's.
+    '.sitenav-home{font-weight:700;color:var(--sn-ink)!important;white-space:nowrap;'
+    'border:1px solid var(--sn-rule);border-inline-start:3px solid var(--sn-mark)}'
+    '.sitenav-menu{flex:1 1 auto;min-width:0}'
+    '.sitenav-menu>summary{display:none}'
+    '.sitenav-menu::details-content{content-visibility:visible;display:contents}'
+    # A browser without ::details-content cannot show a closed disclosure's
+    # content, so there the summary stays visible at every width: the menu
+    # button is the fallback, and no link is ever unreachable.
+    '@supports not selector(::details-content){.sitenav-menu>summary{display:inline-flex}}'
+    '.sitenav-groups{display:flex;flex-wrap:wrap;align-items:center;gap:2px 0}'
+    '.sitenav-group{display:flex;flex-wrap:wrap;align-items:center;gap:0 1px;min-width:0;'
+    'padding-inline:8px;border-inline-start:1px solid var(--sn-rule)}'
+    '.sitenav-group:first-child{border-inline-start:0}'
+    '.sitenav-g{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;'
+    'color:var(--sn-mute);margin-inline-end:3px}'
     '.sitenav ul,.sitenav ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;'
-    'gap:2px 10px}'
-    '.sitenav [aria-current="page"]{font-weight:700;text-decoration:underline;'
-    'text-underline-offset:3px;color:var(--mark,var(--accent,inherit))}'
+    'gap:0 1px}'
+    '.sitenav [aria-current="page"]{font-weight:700;color:var(--sn-ink);'
+    'background:color-mix(in srgb,currentColor 10%,transparent);'
+    'box-shadow:inset 0 -3px 0 var(--sn-mark)}'
     '.sitenav-loop{margin-block-start:6px!important;padding-block-start:6px!important;'
-    'border-block-start:1px dashed var(--rule,var(--line,currentColor));counter-reset:step;'
-    'align-items:baseline}'
-    '.sitenav-loop li{counter-increment:step;color:var(--muted,inherit)}'
-    '.sitenav-loop li::before{content:counter(step) ". ";color:var(--muted,inherit)}'
-    '.sitenav-loop [aria-current="step"]{font-weight:700;color:var(--mark,var(--accent,inherit));'
-    'text-decoration:underline;text-underline-offset:3px}'
-    '@media(max-width:480px){.sitenav{padding-inline:10px}.sitenav-row{gap:4px 12px}}'
+    'border-block-start:1px solid var(--sn-rule);counter-reset:step;align-items:center;'
+    'gap:4px 6px!important}'
+    '.sitenav-loop li{counter-increment:step;color:var(--sn-mute);display:flex;align-items:center}'
+    '.sitenav-loop li::before{content:counter(step);display:inline-grid;place-items:center;'
+    'inline-size:1.5em;block-size:1.5em;border-radius:50%;font-size:11px;font-weight:700;'
+    'border:1px solid var(--sn-rule);margin-inline-end:2px}'
+    '.sitenav-loop a{color:var(--sn-ink)}'
+    '.sitenav-loop [aria-current="step"]{font-weight:700;color:var(--sn-ink);'
+    'background:color-mix(in srgb,currentColor 10%,transparent);'
+    'box-shadow:inset 0 -3px 0 var(--sn-mark)}'
+    '@media(max-width:720px){'
+    '.sitenav{padding-inline:12px}'
+    '.sitenav-row{justify-content:space-between}'
+    '.sitenav-menu{flex:0 1 auto}'
+    '.sitenav-menu::details-content{display:block;content-visibility:hidden}'
+    '.sitenav-menu[open]::details-content{content-visibility:visible}'
+    '.sitenav-menu>summary{display:inline-flex;align-items:center;gap:6px;cursor:pointer;'
+    'list-style:none;padding-block:5px;padding-inline:10px;border:1px solid var(--sn-rule);'
+    'border-radius:6px;font-weight:600;white-space:nowrap}'
+    '.sitenav-menu>summary::-webkit-details-marker{display:none}'
+    '.sitenav-menu>summary::after{content:"";inline-size:.45em;block-size:.45em;'
+    'border-inline-end:2px solid currentColor;border-block-end:2px solid currentColor;'
+    'transform:translateY(-2px) rotate(45deg);transition:transform .15s}'
+    '.sitenav-menu[open]>summary::after{transform:translateY(2px) rotate(-135deg)}'
+    '.sitenav-menu[open]>.sitenav-groups{position:absolute;inset-inline:0;top:100%;'
+    'display:grid;gap:0;background:var(--sn-bg);border-block-end:1px solid var(--sn-rule);'
+    'box-shadow:0 12px 24px -12px rgba(0,0,0,.45);padding-block:4px 10px;padding-inline:12px}'
+    '.sitenav-group{padding-inline:0;padding-block:6px;border-inline-start:0;'
+    'border-block-start:1px solid var(--sn-rule)}'
+    '.sitenav-group:first-child{border-block-start:0}'
+    '.sitenav-g{flex:0 0 100%;margin-block-end:2px}'
+    '.sitenav-loop{font-size:12.5px}}'
+    '@media (prefers-reduced-motion:reduce){.sitenav *{transition:none!important}}'
 )

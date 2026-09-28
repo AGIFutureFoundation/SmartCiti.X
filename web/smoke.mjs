@@ -10,6 +10,10 @@
  *          (default: this repo). Point it at the frozen copy the server serves.
  * --shots  write the wiki screenshots (wiki/img/process-*.png names) into this dir
  * --json   print one JSON summary at the end as well
+ * --pages=<a,b>  only the pages whose path contains one of these substrings
+ *                (sections 1 and 1b; for iterating on a few pages)
+ * --audit-only   run only section 1b, the two-viewport audit, and skip the rest
+ * --no-audit     skip section 1b
  *
  * Every step prints one line, `ok <what>` or `FAIL <what>: <reason>`, and the
  * process exits 1 on any FAIL. Nothing here fixes a page; it reports.
@@ -36,6 +40,9 @@ const BASE = arg('base', 'http://127.0.0.1:8821').replace(/\/$/, '');
 const ROOT = resolve(arg('root', join(HERE, '..')));
 const SHOTS = arg('shots', null);
 const JSON_OUT = args.includes('--json');
+const ONLY = arg('pages', '').split(',').map((x) => x.trim()).filter(Boolean);
+const AUDIT_ONLY = args.includes('--audit-only');
+const NO_AUDIT = args.includes('--no-audit');
 const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 const LABEL = 'smoke - not a learner';
 const WORK = mkdtempSync(join(tmpdir(), 'tc-smoke-'));
@@ -49,7 +56,7 @@ const check = (what, cond, why) => (cond ? ok(what) : fail(what, why));
 /* ------------------------------------------------------------- the pages */
 const PAGES = ['index.html',
   ...readdirSync(join(ROOT, 'web')).filter((f) => f.endsWith('.html')).sort().map((f) => `web/${f}`),
-  'console/trade_craft_console.html'];
+  'console/trade_craft_console.html'].filter((u) => !ONLY.length || ONLY.some((o) => u.includes(o)));
 /* pages allowed to carry no single <h1>, each with its reason. Empty: none has
    documented one, so every page is held to exactly one. */
 const H1_EXEMPT = {};
@@ -106,7 +113,7 @@ const shot = async (name, target, full = false) => {
 
 /* ================================================== 1. every page, loaded */
 const fetched = new Map();
-for (const url of PAGES) {
+for (const url of AUDIT_ONLY ? [] : PAGES) {
   let o;
   try { o = await open(url, { settle: url.includes('3d') || url.includes('geomap') ? 4000 : 1500 }); }
   catch (e) { fail(`${url} loads`, e.message); continue; }
@@ -149,6 +156,237 @@ for (const url of PAGES) {
   await ctx.close();
 }
 
+/* ============================== 1b. every page, audited at two viewports
+   Named checks, each one line per page per viewport:
+     overflow   no horizontal scroll (documentElement.scrollWidth > clientWidth)
+     tap        links/buttons in the main content at least 24x24 CSS px
+                (WCAG 2.5.8: inline links inside a sentence are exempt, and so is
+                an undersized target whose centred 24x24 box touches no other target)
+     focus      the first 10 elements reached with the Tab key show a focus
+                indicator: computed outline or box-shadow differs from unfocused
+     img-alt    every <img>/<input type=image>/<area> carries an alt attribute
+     contrast   text meets WCAG AA (4.5:1 normal, 3:1 large = 24px, or 18.66px bold)
+                against the effective background, composited walking up the tree;
+                text over a canvas, video, image or background-image is skipped and
+                the count of skipped runs is printed
+     ids        no duplicate id attribute values
+     names      every link/button has an accessible name
+     warnings   no console warning (errors are already the "no page/console error" check);
+                the headless software GPU's own "GL Driver Message" performance notes are
+                counted and printed, not failed: they describe the test machine
+     viewport   at the phone size the layout viewport is the device width (a page with
+                no <meta name=viewport> lays out at 980px and is shrunk to fit)
+   ids, names and img-alt do not depend on the viewport and run at the desktop size only. */
+const VIEWPORTS = [['mobile', 390, 844], ['desktop', 1440, 900]];
+const AUDIT_JS = () => {
+  const out = {};
+  const vw = document.documentElement.clientWidth;
+  const desc = (e) => {
+    if (!e || !e.tagName) return '?';
+    let s = e.tagName.toLowerCase();
+    if (e.id) s += '#' + e.id;
+    else if (typeof e.className === 'string' && e.className.trim()) s += '.' + e.className.trim().split(/\s+/).slice(0, 2).join('.');
+    const t = (e.getAttribute('aria-label') || e.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 28);
+    return t ? `${s}"${t}"` : s;
+  };
+  const shown = (e) => {
+    const r = e.getBoundingClientRect();
+    if (r.width < 1 || r.height < 1) return false;
+    for (let a = e; a && a.nodeType === 1; a = a.parentElement) {
+      const cs = getComputedStyle(a);
+      if (cs.visibility === 'hidden' || cs.display === 'none' || Number(cs.opacity) === 0) return false;
+      if (a.getAttribute('aria-hidden') === 'true') return false;
+    }
+    return true;
+  };
+  const clipped = (e) => { // visually-hidden (sr-only) text
+    for (let a = e; a && a.nodeType === 1; a = a.parentElement) {
+      const cs = getComputedStyle(a);
+      if ((cs.clip && cs.clip !== 'auto') || (cs.clipPath && cs.clipPath.startsWith('inset(50%'))) return true;
+      const r = a.getBoundingClientRect();
+      if (r.width <= 1 && r.height <= 1 && cs.overflow === 'hidden') return true;
+    }
+    return false;
+  };
+  /* overflow: the widest elements that stick out past the right edge */
+  const sw = document.documentElement.scrollWidth;
+  const wide = [];
+  if (sw > vw) {
+    for (const e of document.body.querySelectorAll('*')) {
+      const r = e.getBoundingClientRect();
+      if (r.right > vw + 1 && r.width > 0) {
+        let inScroller = false;
+        for (let a = e.parentElement; a && a !== document.body; a = a.parentElement) {
+          const ox = getComputedStyle(a).overflowX;
+          if (ox !== 'visible') { inScroller = true; break; }
+        }
+        if (!inScroller && !(e.parentElement && e.parentElement.getBoundingClientRect().right > vw + 1)) wide.push(`${desc(e)} right=${Math.round(r.right)}`);
+      }
+    }
+  }
+  out.overflow = { sw, vw, wide: wide.slice(0, 4) };
+  /* tap targets */
+  const root = document.querySelector('main') || document.body;
+  const TSEL = 'a[href], button, [role=button], [role=link], summary, input[type=checkbox], input[type=radio], input[type=button], input[type=submit], select';
+  const inChrome = (e) => !document.querySelector('main') && e.closest('nav, header, footer, [role=navigation]');
+  const tgt = [...root.querySelectorAll(TSEL)].filter((e) => shown(e) && !inChrome(e)).map((e) => {
+    const lab = (e.tagName === 'INPUT') && e.closest('label');
+    const box = (lab && shown(lab) ? lab : e).getBoundingClientRect();
+    return { e, box };
+  });
+  const inline = (e) => {
+    if (e.tagName !== 'A') return false;
+    const cs = getComputedStyle(e);
+    if (!cs.display.startsWith('inline') || cs.display === 'inline-block' || cs.display === 'inline-flex') return false;
+    const p = e.parentElement; if (!p) return false;
+    const own = e.textContent.trim().length, all = p.textContent.trim().length;
+    return all > own + 3; // sits inside running text
+  };
+  const sq = (b) => { const cx = b.left + b.width / 2, cy = b.top + b.height / 2;
+    return { l: Math.min(b.left, cx - 12), r: Math.max(b.right, cx + 12), t: Math.min(b.top, cy - 12), b: Math.max(b.bottom, cy + 12) }; };
+  const hit = (a, b) => a.l < b.r && b.l < a.r && a.t < b.b && b.t < a.b;
+  const small = [];
+  for (const x of tgt) {
+    const b = x.box;
+    if (b.width >= 24 && b.height >= 24) continue;
+    if (inline(x.e)) continue;
+    const me = sq(b);
+    const crowd = tgt.some((y) => y !== x && !y.e.contains(x.e) && !x.e.contains(y.e) && hit(me, (y.box.width < 24 || y.box.height < 24) ? sq(y.box) : { l: y.box.left, r: y.box.right, t: y.box.top, b: y.box.bottom }));
+    if (crowd) small.push(`${desc(x.e)} ${Math.round(b.width)}x${Math.round(b.height)}`);
+  }
+  out.tap = { n: tgt.length, small };
+  /* images */
+  out.imgAlt = [...document.querySelectorAll('img, input[type=image], area')].filter((e) => !e.hasAttribute('alt')).map(desc);
+  /* duplicate ids */
+  const seen = new Map();
+  for (const e of document.querySelectorAll('[id]')) seen.set(e.id, (seen.get(e.id) || 0) + 1);
+  out.ids = [...seen].filter(([, n]) => n > 1).map(([k, n]) => `#${k} x${n}`);
+  /* accessible names */
+  const nameOf = (e) => {
+    const lb = e.getAttribute('aria-labelledby');
+    if (lb) { const t = lb.split(/\s+/).map((i) => document.getElementById(i)?.textContent || '').join(' ').trim(); if (t) return t; }
+    const al = (e.getAttribute('aria-label') || '').trim(); if (al) return al;
+    if (e.tagName === 'INPUT') { if ((e.value || '').trim()) return e.value; if (e.labels && [...e.labels].some((l) => l.textContent.trim())) return 'label'; }
+    const tx = (e.innerText || e.textContent || '').trim(); if (tx) return tx;
+    const im = [...e.querySelectorAll('img[alt], svg title, [aria-label]')].map((i) => (i.getAttribute('alt') || i.getAttribute('aria-label') || i.textContent || '').trim()).join('');
+    if (im) return im;
+    return (e.getAttribute('title') || '').trim();
+  };
+  out.names = [...document.querySelectorAll('a[href], button, [role=button], [role=link], input[type=button], input[type=submit], input[type=reset]')]
+    .filter((e) => e.getClientRects().length && !e.closest('[aria-hidden=true]') && !nameOf(e)).map(desc);
+  /* contrast */
+  const cv = document.createElement('canvas'); cv.width = cv.height = 1;
+  const cx = cv.getContext('2d', { willReadFrequently: true });
+  const cache = new Map();
+  const rgba = (s) => { if (cache.has(s)) return cache.get(s);
+    cx.clearRect(0, 0, 1, 1); cx.fillStyle = '#000'; cx.fillStyle = s; cx.fillRect(0, 0, 1, 1);
+    const d = cx.getImageData(0, 0, 1, 1).data; const v = [d[0], d[1], d[2], d[3] / 255]; cache.set(s, v); return v; };
+  const over = (top, bot) => { const a = top[3] + bot[3] * (1 - top[3]);
+    if (a === 0) return [0, 0, 0, 0];
+    return [0, 1, 2].map((i) => (top[i] * top[3] + bot[i] * bot[3] * (1 - top[3])) / a).concat(a); };
+  const lum = (c) => { const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+    return 0.2126 * f(c[0]) + 0.7152 * f(c[1]) + 0.0722 * f(c[2]); };
+  const media = [...document.querySelectorAll('canvas, video, img, iframe')].filter((m) => { const r = m.getBoundingClientRect(); return r.width > 40 && r.height > 20; });
+  const low = []; let checked = 0, skipped = 0;
+  const done = new Set();
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+    if (!n.nodeValue.trim()) continue;
+    const e = n.parentElement;
+    if (!e || done.has(e)) continue; done.add(e);
+    if (/^(SCRIPT|STYLE|NOSCRIPT|TEMPLATE|OPTION|TITLE)$/.test(e.tagName) || e.closest('svg')) continue;
+    if (!shown(e) || clipped(e)) continue;
+    const cs = getComputedStyle(e);
+    let fg = rgba(cs.color);
+    if (fg[3] === 0) continue;
+    const r = e.getBoundingClientRect(), mx = r.left + r.width / 2, my = r.top + r.height / 2;
+    let bg = [0, 0, 0, 0], behind = null, anc = e;
+    for (; anc; anc = anc.parentElement) {
+      const as = getComputedStyle(anc);
+      if (as.backgroundImage && as.backgroundImage !== 'none') { behind = `background-image on ${desc(anc).slice(0, 40)}`; break; }
+      bg = over(bg, rgba(as.backgroundColor));
+      if (bg[3] >= 0.99) break;
+    }
+    if (!behind) {
+      const ctxEl = anc || document.documentElement;
+      const m = media.find((m) => !e.contains(m) && ctxEl.contains(m) && !m.contains(e) && (() => { const q = m.getBoundingClientRect(); return mx >= q.left && mx <= q.right && my >= q.top && my <= q.bottom; })());
+      if (m) behind = m.tagName.toLowerCase();
+    }
+    if (behind) { skipped++; continue; }
+    if (bg[3] < 0.99) bg = over(bg, [255, 255, 255, 1]); // the canvas default
+    if (fg[3] < 1) fg = over(fg, bg);
+    const L1 = lum(fg), L2 = lum(bg), ratio = (Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05);
+    const px = parseFloat(cs.fontSize), bold = Number(cs.fontWeight) >= 700;
+    const large = px >= 24 || (bold && px >= 18.66);
+    const need = large ? 3 : 4.5;
+    checked++;
+    if (ratio + 0.005 < need) {
+      const hex = (c) => '#' + c.slice(0, 3).map((v) => Math.round(v).toString(16).padStart(2, '0')).join('');
+      low.push(`${desc(e)} ${ratio.toFixed(2)}:1<${need} (${hex(fg)} on ${hex(bg)}, ${px}px)`);
+    }
+  }
+  out.contrast = { checked, skipped, low };
+  /* focus: remember every tabbable element's unfocused outline and shadow */
+  const TAB = 'a[href], button:not([disabled]), input:not([disabled]):not([type=hidden]), select:not([disabled]), textarea:not([disabled]), summary, [tabindex]:not([tabindex="-1"]), iframe, [contenteditable=""], [contenteditable=true]';
+  const style = (e) => { const s = getComputedStyle(e); return { o: s.outlineStyle === 'none' || parseFloat(s.outlineWidth) === 0 ? 'none' : `${s.outlineStyle} ${s.outlineWidth} ${s.outlineColor}`, b: s.boxShadow }; };
+  window.__auditFocusBase = new Map([...document.querySelectorAll(TAB)].slice(0, 80).map((e) => [e, style(e)]));
+  window.__auditStyle = style; window.__auditDesc = desc;
+  return out;
+};
+const FOCUS_STEP = () => {
+  const e = document.activeElement;
+  if (!e || e === document.body) return null;
+  const base = window.__auditFocusBase.get(e);
+  const now = window.__auditStyle(e);
+  const d = window.__auditDesc(e);
+  if (!base) return { d, ok: now.o !== 'none' || (now.b !== 'none'), unknown: true };
+  const ok = (now.o !== 'none' && now.o !== base.o) || now.b !== base.b;
+  return { d, ok };
+};
+const clip = (a, n = 3) => a.slice(0, n).join('; ') + (a.length > n ? ` (+${a.length - n} more)` : '');
+async function auditPage(url) {
+  for (const [vname, w, h] of VIEWPORTS) {
+    const tag = `${url} @${vname} ${w}x${h}`;
+    let ctx;
+    try {
+      ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: vname === 'mobile', hasTouch: false });
+      const page = await ctx.newPage();
+      const warns = []; let driver = 0;
+      page.on('console', (m) => { if (m.type() !== 'warning') return;
+        if (/GL Driver Message/.test(m.text())) driver++; else warns.push(m.text().slice(0, 140)); });
+      await page.goto(`${BASE}/${url}`, { waitUntil: 'load', timeout: 60000 });
+      await page.waitForTimeout(url.includes('3d') || url.includes('geomap') ? 3000 : 700);
+      const a = await page.evaluate(AUDIT_JS);
+      if (vname === 'mobile') check(`${tag} viewport`, a.overflow.vw === w,
+        `layout viewport is ${a.overflow.vw}px on a ${w}px phone: no working <meta name="viewport" content="width=device-width">`);
+      check(`${tag} overflow`, a.overflow.sw <= a.overflow.vw,
+        `scrollWidth ${a.overflow.sw} > clientWidth ${a.overflow.vw}; sticking out: ${clip(a.overflow.wide) || '(no single element found)'}`);
+      check(`${tag} tap (${a.tap.n} targets)`, a.tap.small.length === 0, `${a.tap.small.length} under 24x24 and crowded: ${clip(a.tap.small)}`);
+      check(`${tag} contrast (${a.contrast.checked} text runs, ${a.contrast.skipped} over canvas/image skipped)`, a.contrast.low.length === 0,
+        `${a.contrast.low.length} below AA: ${clip(a.contrast.low)}`);
+      if (vname === 'desktop') {
+        check(`${tag} img-alt`, a.imgAlt.length === 0, `${a.imgAlt.length} without alt: ${clip(a.imgAlt)}`);
+        check(`${tag} ids`, a.ids.length === 0, `duplicate ids: ${clip(a.ids, 6)}`);
+        check(`${tag} names`, a.names.length === 0, `${a.names.length} links/buttons without an accessible name: ${clip(a.names)}`);
+      }
+      const noRing = []; const seenF = new Set(); let reached = 0;
+      await page.evaluate(() => { document.activeElement && document.activeElement.blur && document.activeElement.blur(); window.scrollTo(0, 0); });
+      for (let i = 0; i < 10; i++) {
+        await page.keyboard.press('Tab');
+        const f = await page.evaluate(FOCUS_STEP);
+        if (!f || seenF.has(f.d)) continue;
+        seenF.add(f.d); reached++;
+        if (!f.ok) noRing.push(f.d);
+      }
+      check(`${tag} focus (${reached} tab stops)`, noRing.length === 0, `${noRing.length} with no outline/box-shadow change on focus: ${clip(noRing)}`);
+      check(`${tag} warnings${driver ? ` (${driver} software-GPU driver notes not counted)` : ''}`, warns.length === 0, `${warns.length} console warning(s): ${clip([...new Set(warns)], 2)}`);
+    } catch (e) { fail(`${tag} audit runs`, e.message.split('\n')[0]); }
+    finally { if (ctx) await ctx.close(); }
+  }
+}
+if (!NO_AUDIT) for (const url of PAGES) await auditPage(url);
+
+if (!AUDIT_ONLY) {
 /* ================================== 2. end-to-end: pages <-> the verifiers */
 const node = (script, file) => {
   const r = spawnSync(process.execPath, [join(ROOT, script), file], { cwd: ROOT, encoding: 'utf8' });
@@ -320,7 +558,7 @@ for (const [url, regPath, list, name] of [
     const name = (await mk.textContent()).trim();
     try { await mk.click({ timeout: 3000 }); }
     catch (e) {
-      const by = (e.message.match(/<div[^>]*class="([^"]*)"[^>]*>([^<]*)<\/div> intercepts pointer events/) || []);
+      const by = (e.message.match(/<(?:div|button|span|a)\b[^>]*class="([^"]*)"[^>]*>([^<]*)<\/(?:div|button|span|a)> intercepts pointer events/) || []);
       covered.push(`${name} (covered by .${(by[1] || '?').split(' ')[0]} "${(by[2] || '').slice(0, 40)}")`);
       continue;
     }
@@ -333,6 +571,8 @@ for (const [url, regPath, list, name] of [
   check('geomap: no error', errors.length === 0, errLine(errors));
   await ctx.close();
 }
+
+} // !AUDIT_ONLY
 
 await browser.close();
 const bad = results.filter((r) => !r.ok);

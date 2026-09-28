@@ -1763,6 +1763,31 @@ paintSessions(readRecord());
 /* ---- the completion record: built from the progress record and the lesson
    definitions the page carries, summarised on the page from the record itself,
    and downloaded on request. No figure below is typed. */
+/* ---- continue where you left off: one link, computed from the record above */
+function paintContinue(pt) {
+  const box = document.getElementById('continue');
+  const line = document.getElementById('continue-line');
+  clear(line);
+  if (pt === null) {
+    box.setAttribute('data-continue', 'none');
+    line.appendChild(document.createTextNode('No lesson has a recorded step on this device yet. '));
+    line.appendChild(elem('a', { href: 'trade_craft_lessons.html', text: 'Choose a trade and start a lesson' }));
+    return;
+  }
+  const L = D.lessons[pt.lesson];
+  box.setAttribute('data-continue', 'lesson');
+  box.setAttribute('data-continue-lesson', pt.lesson);
+  box.setAttribute('data-continue-step', String(pt.step));
+  const a = elem('a', { href: 'trade_craft_lessons.html?hall=' + encodeURIComponent(pt.hall)
+    + '&step=' + pt.step + '#lesson-' + encodeURIComponent(pt.lesson),
+    text: 'Continue: ' + L.title + ' \u2014 step ' + pt.step + ' of ' + pt.of });
+  a.className = 'contlink';
+  line.appendChild(a);
+  line.appendChild(document.createTextNode(' ' + pt.done + ' of ' + pt.of + ' steps carry evidence on this device; step '
+    + pt.step + ' (' + pt.kind + ') is the first one a record here could still mark done. '
+    + 'The first lesson you started, in course order.'));
+}
+
 async function paintCompletion() {
   const rec = readRecord();
   const box = document.getElementById('completion-summary');
@@ -1772,6 +1797,7 @@ async function paintCompletion() {
   if (rec.progress.state !== 'present' || !rec.progress.value || typeof rec.progress.value !== 'object'
       || Array.isArray(rec.progress.value)) {
     btn.disabled = true;
+    paintContinue(null);
     box.appendChild(elem('p', { text: rec.progress.state === 'absent'
       ? 'This device holds no progress record under ' + KEYS.progress + ', so there is nothing to export.'
       : 'The progress record under ' + KEYS.progress + ' is ' + rec.progress.state
@@ -1789,6 +1815,7 @@ async function paintCompletion() {
     episode_kinds: D.episode_kinds, identity: claimed, training_state: rec.training.state, human_actor: D.human_actor };
   const record = await buildCompletionRecord(rec.progress.value, D.lessons, D.ladder, meta, new Date(), training);
   const S = summarizeRecord(record, D.step_kinds, D.episode_kinds);
+  paintContinue(continuePoint(record, D.lessons, D.ladder, S.self_reported_kinds));
   const figs = [
     ['lessons complete (every step done)', S.complete, 'complete-lessons'],
     ['of which evidence-backed', S.evidence_backed, 'evidence-backed'],
@@ -1877,6 +1904,41 @@ async function paintCompletion() {
 }
 paintCompletion();
 '''
+
+# ------------------------------------------------------- continue where you left off
+# A pure function over the completion record the page already builds from what
+# this device stored (tc-progress, tc-training): no new storage key and no
+# second evidence rule. It walks the lessons in COURSE order - ladder layer,
+# then the registry's own key order, exactly how web/build_lessons.py orders a
+# course - and returns the first lesson this device has started (one step or
+# more carries evidence) and not finished, and in it the first step that a
+# record here could still mark done. Kinds nothing records (walk, placard) are
+# never "the next step": the page could never see them done, so pointing a
+# learner at one would be a loop. It invents no step and no lesson: with
+# nothing started it returns null and the page says so.
+CONTINUE_JS = r"""
+function continuePoint(record, lessons, ladder, unrecordedKinds) {
+  if (!record || !Array.isArray(record.lessons)) throw new Error('continue: no completion record');
+  if (!ladder || !ladder.layers || typeof ladder.layers !== 'object') throw new Error('continue: the ladder has no layers');
+  if (!Array.isArray(unrecordedKinds)) throw new Error('continue: unrecordedKinds must be a list');
+  const keyOrder = Object.keys(lessons);
+  const layerOf = {};
+  for (const depth of Object.keys(ladder.layers)) for (const id of ladder.layers[depth]) layerOf[id] = Number(depth);
+  const byId = {};
+  for (const l of record.lessons) byId[l.lesson] = l;
+  const order = keyOrder.slice().sort((a, b) => (layerOf[a] - layerOf[b]) || (keyOrder.indexOf(a) - keyOrder.indexOf(b)));
+  for (const id of order) {
+    const r = byId[id];
+    if (!r) throw new Error('continue: the record holds no entry for lesson ' + id);
+    const done = r.steps.filter((s) => s.done).length;
+    if (done === 0 || r.complete) continue;
+    const open = r.steps.find((s) => !s.done && !unrecordedKinds.includes(s.kind));
+    if (!open) continue;
+    return { lesson: id, hall: r.hall, step: open.step, kind: open.kind, done, of: r.steps.length };
+  }
+  return null;
+}
+"""
 
 # --------------------------------------------------------- the completion record
 # One pure function builds the record a learner can carry off this device. It
@@ -2205,6 +2267,10 @@ td.num{{font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--st
   white-space:nowrap}}
 td.muted{{color:var(--muted)}}
 .tscroll{{overflow-x:auto}}
+#continue{{margin:16px 0}}
+#continue h2{{margin-top:0}}
+.contlink{{font-weight:600}}
+a:focus-visible,button:focus-visible,select:focus-visible{{outline:3px solid var(--mark);outline-offset:2px}}
 @media (max-width:640px){{td.k,td.num{{white-space:normal}}}}
 code{{font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted)}}
 pre{{background:var(--sunk);border:1px solid var(--rule);border-radius:6px;padding:10px 12px;
@@ -2283,6 +2349,11 @@ footer.page a{{margin-inline-end:10px}}
 </section>
 
 <section class="figs">{FIGS}</section>
+
+<section class="card" id="continue" data-continue="unpainted" aria-live="polite">
+  <h2>Continue where you left off</h2>
+  <p class="why" id="continue-line">Reading what this device recorded…</p>
+</section>
 
 <section>
   <h2>Where your record comes from</h2>
@@ -2497,6 +2568,8 @@ footer.page a{{margin-inline-end:10px}}
 {SESSIONS_JS}</script>
 <script id="completion-js">
 {COMPLETION_JS}</script>
+<script id="continue-js">
+{CONTINUE_JS}</script>
 <script type="module">
 {SCRIPT}</script>
 </body>

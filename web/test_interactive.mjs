@@ -278,5 +278,8 @@ function fnSlice(name) {
   return JS.slice(i, j + 1);
 }
 
+ok('[shipped] the campus grid tracks shrink to the screen (min(430px,100%)), so a 390px screen does not scroll sideways',
+  /\.campusbody\{[^}]*minmax\(min\(430px,100%\),1fr\)/.test(html));
+
 if (bad) { console.error(`web/test_interactive: ${bad} FAILED, ${n} passed`); process.exit(1); }
 console.log(`web/test_interactive: ${n} checks passed`);

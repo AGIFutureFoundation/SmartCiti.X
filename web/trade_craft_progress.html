@@ -47,6 +47,10 @@ td.num{font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ste
   white-space:nowrap}
 td.muted{color:var(--muted)}
 .tscroll{overflow-x:auto}
+#continue{margin:16px 0}
+#continue h2{margin-top:0}
+.contlink{font-weight:600}
+a:focus-visible,button:focus-visible,select:focus-visible{outline:3px solid var(--mark);outline-offset:2px}
 @media (max-width:640px){td.k,td.num{white-space:normal}}
 code{font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted)}
 pre{background:var(--sunk);border:1px solid var(--rule);border-radius:6px;padding:10px 12px;
@@ -100,17 +104,20 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   color:var(--muted);font-size:14px}
 footer.page a{margin-inline-end:10px}
 </style>
-<style>.sitenav{font:13px/1.45 system-ui,sans-serif;color:var(--ink,inherit);background:var(--panel,var(--surface,transparent));border-block-end:1px solid var(--rule,var(--line,currentColor));padding-block:6px;padding-inline:16px;box-sizing:border-box;max-width:100%;overflow-wrap:anywhere}.sitenav a{color:inherit;text-decoration:none}.sitenav a:hover,.sitenav a:focus-visible{text-decoration:underline}.sitenav-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px}.sitenav-home{font-weight:700;color:var(--mark,var(--accent,inherit))!important}.sitenav-group{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;min-width:0}.sitenav-g{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted,inherit)}.sitenav ul,.sitenav ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:2px 10px}.sitenav [aria-current="page"]{font-weight:700;text-decoration:underline;text-underline-offset:3px;color:var(--mark,var(--accent,inherit))}.sitenav-loop{margin-block-start:6px!important;padding-block-start:6px!important;border-block-start:1px dashed var(--rule,var(--line,currentColor));counter-reset:step;align-items:baseline}.sitenav-loop li{counter-increment:step;color:var(--muted,inherit)}.sitenav-loop li::before{content:counter(step) ". ";color:var(--muted,inherit)}.sitenav-loop [aria-current="step"]{font-weight:700;color:var(--mark,var(--accent,inherit));text-decoration:underline;text-underline-offset:3px}@media(max-width:480px){.sitenav{padding-inline:10px}.sitenav-row{gap:4px 12px}}</style>
+<style>.sitenav{--sn-ink:var(--ink,CanvasText);--sn-bg:var(--panel,var(--surface,Canvas));--sn-rule:var(--rule,var(--line,GrayText));--sn-mute:var(--muted,var(--ink,CanvasText));--sn-mark:var(--mark,var(--accent,LinkText));position:relative;z-index:40;font:500 13.5px/1.35 "IBM Plex Sans",system-ui,sans-serif;color:var(--sn-ink);background:var(--sn-bg);border-block-end:1px solid var(--sn-rule);padding-block:6px;padding-inline:16px;box-sizing:border-box;max-width:100%;overflow-wrap:anywhere}.sitenav *{box-sizing:border-box}.sitenav a{color:inherit;text-decoration:none;border-radius:6px;padding-block:4px;padding-inline:7px;display:inline-block}.sitenav a:hover{background:color-mix(in srgb,currentColor 11%,transparent)}.sitenav a:focus-visible,.sitenav summary:focus-visible{outline:2px solid var(--sn-mark);outline-offset:2px}.sitenav-row{display:flex;align-items:center;gap:6px 12px;min-width:0}.sitenav-home{font-weight:700;color:var(--sn-ink)!important;white-space:nowrap;border:1px solid var(--sn-rule);border-inline-start:3px solid var(--sn-mark)}.sitenav-menu{flex:1 1 auto;min-width:0}.sitenav-menu>summary{display:none}.sitenav-menu::details-content{content-visibility:visible;display:contents}@supports not selector(::details-content){.sitenav-menu>summary{display:inline-flex}}.sitenav-groups{display:flex;flex-wrap:wrap;align-items:center;gap:2px 0}.sitenav-group{display:flex;flex-wrap:wrap;align-items:center;gap:0 1px;min-width:0;padding-inline:8px;border-inline-start:1px solid var(--sn-rule)}.sitenav-group:first-child{border-inline-start:0}.sitenav-g{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--sn-mute);margin-inline-end:3px}.sitenav ul,.sitenav ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:0 1px}.sitenav [aria-current="page"]{font-weight:700;color:var(--sn-ink);background:color-mix(in srgb,currentColor 10%,transparent);box-shadow:inset 0 -3px 0 var(--sn-mark)}.sitenav-loop{margin-block-start:6px!important;padding-block-start:6px!important;border-block-start:1px solid var(--sn-rule);counter-reset:step;align-items:center;gap:4px 6px!important}.sitenav-loop li{counter-increment:step;color:var(--sn-mute);display:flex;align-items:center}.sitenav-loop li::before{content:counter(step);display:inline-grid;place-items:center;inline-size:1.5em;block-size:1.5em;border-radius:50%;font-size:11px;font-weight:700;border:1px solid var(--sn-rule);margin-inline-end:2px}.sitenav-loop a{color:var(--sn-ink)}.sitenav-loop [aria-current="step"]{font-weight:700;color:var(--sn-ink);background:color-mix(in srgb,currentColor 10%,transparent);box-shadow:inset 0 -3px 0 var(--sn-mark)}@media(max-width:720px){.sitenav{padding-inline:12px}.sitenav-row{justify-content:space-between}.sitenav-menu{flex:0 1 auto}.sitenav-menu::details-content{display:block;content-visibility:hidden}.sitenav-menu[open]::details-content{content-visibility:visible}.sitenav-menu>summary{display:inline-flex;align-items:center;gap:6px;cursor:pointer;list-style:none;padding-block:5px;padding-inline:10px;border:1px solid var(--sn-rule);border-radius:6px;font-weight:600;white-space:nowrap}.sitenav-menu>summary::-webkit-details-marker{display:none}.sitenav-menu>summary::after{content:"";inline-size:.45em;block-size:.45em;border-inline-end:2px solid currentColor;border-block-end:2px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform .15s}.sitenav-menu[open]>summary::after{transform:translateY(2px) rotate(-135deg)}.sitenav-menu[open]>.sitenav-groups{position:absolute;inset-inline:0;top:100%;display:grid;gap:0;background:var(--sn-bg);border-block-end:1px solid var(--sn-rule);box-shadow:0 12px 24px -12px rgba(0,0,0,.45);padding-block:4px 10px;padding-inline:12px}.sitenav-group{padding-inline:0;padding-block:6px;border-inline-start:0;border-block-start:1px solid var(--sn-rule)}.sitenav-group:first-child{border-block-start:0}.sitenav-g{flex:0 0 100%;margin-block-end:2px}.sitenav-loop{font-size:12.5px}}@media (prefers-reduced-motion:reduce){.sitenav *{transition:none!important}}</style>
 </head>
 <body>
 <nav class="sitenav" data-sitenav aria-label="Site pages">
 <div class="sitenav-row">
 <a class="sitenav-home" href="../index.html">Front door</a>
+<details class="sitenav-menu" data-sitenav-menu><summary>Site pages</summary>
+<div class="sitenav-groups">
 <div class="sitenav-group"><span class="sitenav-g">Learn</span><ul><li><a href="trade_craft_lessons.html">Lessons</a></li><li><a href="trade_craft_ladder.html">Ladder</a></li><li><a href="trade_craft_3d.html">Walk the campus</a></li></ul></div>
 <div class="sitenav-group"><span class="sitenav-g">Maps</span><ul><li><a href="trade_craft_map.html">Layered map</a></li><li><a href="trade_craft_interactive.html">Interactive map</a></li><li><a href="trade_craft_geomap.html">Geomap</a></li><li><a href="trade_craft_fabric.html">Spatial fabric</a></li></ul></div>
 <div class="sitenav-group"><span class="sitenav-g">Records</span><ul><li><a href="trade_craft_progress.html" aria-current="page">Progress</a></li><li><a href="trade_craft_verify.html">Verify a record</a></li><li><a href="trade_craft_contribute.html">Contribute</a></li></ul></div>
 <div class="sitenav-group"><span class="sitenav-g">Sites</span><ul><li><a href="trade_craft_spaces.html">Spaces</a></li><li><a href="trade_craft_worksites.html">Work sites</a></li></ul></div>
 <div class="sitenav-group"><span class="sitenav-g">About</span><ul><li><a href="trade_craft_landing.html">Overview</a></li><li><a href="trade_craft_dashboard.html">Dashboard</a></li><li><a href="trade_craft_languages.html">Languages</a></li><li><a href="trade_craft_signin.html">Sign in</a></li><li><a href="smartcitix_trade_craft_academy.html">Academy spec</a></li></ul></div>
+</div></details>
 </div>
 <ol class="sitenav-loop" data-sitenav-loop aria-label="Training loop">
 <li><a href="trade_craft_signin.html">Sign in</a></li>
@@ -143,6 +150,11 @@ footer.page a{margin-inline-end:10px}
 </section>
 
 <section class="figs"><div class="fig" data-fig="control-lines"><b>1,198</b><span>lines of control plane this page runs, across 6 modules</span></div><div class="fig" data-fig="control-checks"><b>56</b><span>checks those modules pass in this repo</span></div><div class="fig" data-fig="app-hits"><b>0</b><span>times web/build_3d.py names any of them</span></div><div class="fig" data-fig="cells"><b>33</b><span>cells on one hall&#x27;s ladder</span></div><div class="fig" data-fig="halls"><b>111</b><span>halls the ladder is drawn for</span></div><div class="fig" data-fig="sims"><b>11</b><span>simulator seats that can write a record</span></div><div class="fig" data-fig="unbound-halls"><b>66</b><span>halls with no seat, and so no way to record anything</span></div></section>
+
+<section class="card" id="continue" data-continue="unpainted" aria-live="polite">
+  <h2>Continue where you left off</h2>
+  <p class="why" id="continue-line">Reading what this device recorded…</p>
+</section>
 
 <section>
   <h2>Where your record comes from</h2>
@@ -763,6 +775,30 @@ function summarizeRecord(record, stepKinds, episodeKinds) {
   };
 }
 /* COMPLETION:END */
+</script>
+<script id="continue-js">
+
+function continuePoint(record, lessons, ladder, unrecordedKinds) {
+  if (!record || !Array.isArray(record.lessons)) throw new Error('continue: no completion record');
+  if (!ladder || !ladder.layers || typeof ladder.layers !== 'object') throw new Error('continue: the ladder has no layers');
+  if (!Array.isArray(unrecordedKinds)) throw new Error('continue: unrecordedKinds must be a list');
+  const keyOrder = Object.keys(lessons);
+  const layerOf = {};
+  for (const depth of Object.keys(ladder.layers)) for (const id of ladder.layers[depth]) layerOf[id] = Number(depth);
+  const byId = {};
+  for (const l of record.lessons) byId[l.lesson] = l;
+  const order = keyOrder.slice().sort((a, b) => (layerOf[a] - layerOf[b]) || (keyOrder.indexOf(a) - keyOrder.indexOf(b)));
+  for (const id of order) {
+    const r = byId[id];
+    if (!r) throw new Error('continue: the record holds no entry for lesson ' + id);
+    const done = r.steps.filter((s) => s.done).length;
+    if (done === 0 || r.complete) continue;
+    const open = r.steps.find((s) => !s.done && !unrecordedKinds.includes(s.kind));
+    if (!open) continue;
+    return { lesson: id, hall: r.hall, step: open.step, kind: open.kind, done, of: r.steps.length };
+  }
+  return null;
+}
 </script>
 <script type="module">
 /* ---- control/lpa.mjs ---- carried in verbatim; see build_progress.py control_module() */
@@ -2917,6 +2953,31 @@ paintSessions(readRecord());
 /* ---- the completion record: built from the progress record and the lesson
    definitions the page carries, summarised on the page from the record itself,
    and downloaded on request. No figure below is typed. */
+/* ---- continue where you left off: one link, computed from the record above */
+function paintContinue(pt) {
+  const box = document.getElementById('continue');
+  const line = document.getElementById('continue-line');
+  clear(line);
+  if (pt === null) {
+    box.setAttribute('data-continue', 'none');
+    line.appendChild(document.createTextNode('No lesson has a recorded step on this device yet. '));
+    line.appendChild(elem('a', { href: 'trade_craft_lessons.html', text: 'Choose a trade and start a lesson' }));
+    return;
+  }
+  const L = D.lessons[pt.lesson];
+  box.setAttribute('data-continue', 'lesson');
+  box.setAttribute('data-continue-lesson', pt.lesson);
+  box.setAttribute('data-continue-step', String(pt.step));
+  const a = elem('a', { href: 'trade_craft_lessons.html?hall=' + encodeURIComponent(pt.hall)
+    + '&step=' + pt.step + '#lesson-' + encodeURIComponent(pt.lesson),
+    text: 'Continue: ' + L.title + ' \u2014 step ' + pt.step + ' of ' + pt.of });
+  a.className = 'contlink';
+  line.appendChild(a);
+  line.appendChild(document.createTextNode(' ' + pt.done + ' of ' + pt.of + ' steps carry evidence on this device; step '
+    + pt.step + ' (' + pt.kind + ') is the first one a record here could still mark done. '
+    + 'The first lesson you started, in course order.'));
+}
+
 async function paintCompletion() {
   const rec = readRecord();
   const box = document.getElementById('completion-summary');
@@ -2926,6 +2987,7 @@ async function paintCompletion() {
   if (rec.progress.state !== 'present' || !rec.progress.value || typeof rec.progress.value !== 'object'
       || Array.isArray(rec.progress.value)) {
     btn.disabled = true;
+    paintContinue(null);
     box.appendChild(elem('p', { text: rec.progress.state === 'absent'
       ? 'This device holds no progress record under ' + KEYS.progress + ', so there is nothing to export.'
       : 'The progress record under ' + KEYS.progress + ' is ' + rec.progress.state
@@ -2943,6 +3005,7 @@ async function paintCompletion() {
     episode_kinds: D.episode_kinds, identity: claimed, training_state: rec.training.state, human_actor: D.human_actor };
   const record = await buildCompletionRecord(rec.progress.value, D.lessons, D.ladder, meta, new Date(), training);
   const S = summarizeRecord(record, D.step_kinds, D.episode_kinds);
+  paintContinue(continuePoint(record, D.lessons, D.ladder, S.self_reported_kinds));
   const figs = [
     ['lessons complete (every step done)', S.complete, 'complete-lessons'],
     ['of which evidence-backed', S.evidence_backed, 'evidence-backed'],

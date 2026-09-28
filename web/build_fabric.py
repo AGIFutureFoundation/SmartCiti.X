@@ -654,6 +654,10 @@ section{margin:0 0 10px}
 .lead pre.hj{white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.45 ui-monospace,Menlo,monospace;
   color:var(--muted);margin:4px 0 0;background:var(--sunk);border:1px solid var(--rule);
   border-radius:6px;padding:8px 10px}
+pre[data-quote]{white-space:pre-wrap;overflow-wrap:anywhere;font:12.5px/1.5 ui-monospace,Menlo,monospace;
+  color:var(--muted);background:var(--sunk);border:1px solid var(--rule);border-radius:6px;padding:8px 10px}
+#sources a{overflow-wrap:anywhere}
+.tscroll:focus-visible{outline:2px solid var(--steel);outline-offset:2px}
 .consumer{background:var(--sunk);border:1px solid var(--rule);border-radius:6px;padding:10px 12px;
   color:var(--ink);margin:0 0 10px}
 .figs{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
@@ -721,7 +725,7 @@ ul.nodes li b{color:var(--ink);font-weight:500}
 ul.nodes li .kind{display:inline-block;min-width:88px;color:var(--steel);
   font:11px ui-monospace,Menlo,monospace;text-transform:uppercase}
 ul.nodes li .unplaced{color:var(--crit)}
-details>summary{cursor:pointer;color:var(--steel);font-size:13px;margin:6px 0}
+details>summary{cursor:pointer;color:var(--steel);font-size:13px;margin:6px 0;padding:3px 0;min-height:24px}
 .doorline{margin-top:4px;font-size:12.5px}
 footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px;
   color:var(--muted);font-size:14px}

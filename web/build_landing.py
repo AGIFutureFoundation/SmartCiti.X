@@ -51,13 +51,13 @@ CSS = """
 }
 @media (prefers-color-scheme:light){:root:not([data-theme="dark"]){
   --plate:#F1F4F3; --panel:#FFFFFF; --sunk:#E4EAE9; --ink:#141D20; --muted:#54646A;
-  --rule:#CBD6D6; --mark:#9F680B; --steel:#0A7E8C; --steel-ink:#065A66;
-  --good:#2C7A50; --warn:#9A6408; --crit:#A8432F;
+  --rule:#CBD6D6; --mark:#87570A; --steel:#0A7E8C; --steel-ink:#065A66;
+  --good:#2C7A50; --warn:#87570A; --crit:#A8432F;
 }}
 :root[data-theme="light"]{
   --plate:#F1F4F3; --panel:#FFFFFF; --sunk:#E4EAE9; --ink:#141D20; --muted:#54646A;
-  --rule:#CBD6D6; --mark:#9F680B; --steel:#0A7E8C; --steel-ink:#065A66;
-  --good:#2C7A50; --warn:#9A6408; --crit:#A8432F;
+  --rule:#CBD6D6; --mark:#87570A; --steel:#0A7E8C; --steel-ink:#065A66;
+  --good:#2C7A50; --warn:#87570A; --crit:#A8432F;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--plate);color:var(--ink);
@@ -76,7 +76,7 @@ a{color:var(--steel-ink)}
 nav.top{display:flex;align-items:center;gap:18px;flex-wrap:wrap;
   padding:18px 0;border-bottom:1px solid var(--rule)}
 .logo{font:700 19px/1 "Barlow Condensed",sans-serif;letter-spacing:.02em;text-transform:uppercase}
-.logo .x{color:var(--steel)} .logo .sep{color:var(--mark);padding:0 .18em}
+.logo .x{color:var(--steel-ink)} .logo .sep{color:var(--mark);padding:0 .18em}
 nav.top .links{margin-inline-start:auto;display:flex;gap:20px;flex-wrap:wrap}
 nav.top a{font:600 12.5px/1 "Barlow Condensed",sans-serif;letter-spacing:.12em;
   text-transform:uppercase;color:var(--muted);text-decoration:none;padding:6px 0}
@@ -138,7 +138,9 @@ ul.ticks.steel li::before{background:var(--steel)}
 dl.terms{display:grid;grid-template-columns:auto 1fr;gap:9px 20px;margin:0;font-size:14.5px}
 dl.terms dt{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--muted);
   letter-spacing:.02em;padding-top:2px}
-dl.terms dd{margin:0}
+dl.terms dd{margin:0;min-width:0;overflow-wrap:anywhere}
+@media(max-width:560px){dl.terms{grid-template-columns:1fr;gap:2px 0}
+  dl.terms dd{margin-block-end:10px}}
 
 /* ---------- status table ---------- */
 .tw{overflow-x:auto}
@@ -167,6 +169,7 @@ th:last-child,td:last-child{padding-inline-end:0}
 .note{font-size:13.5px;color:var(--muted);line-height:1.6;max-width:70ch}
 footer{padding:46px 0 64px;color:var(--muted);font-size:13.5px}
 footer .frow{display:flex;gap:26px;flex-wrap:wrap;align-items:baseline}
+footer a{display:inline-block;padding-block:3px}
 @media (prefers-reduced-motion:no-preference){
   html{scroll-behavior:smooth}
   .herorule{transform-origin:left;animation:draw .7s cubic-bezier(.2,.7,.3,1) both}
@@ -382,6 +385,7 @@ BODY = f"""
 """
 
 page = ('<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Trade Craft Academy</title>\n'
+        '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
         '<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%230C1113%22/%3E%3Cpath d=%22M7 21 L16 7 L25 21 Z%22 fill=%22none%22 stroke=%22%23E8A33D%22 stroke-width=%222.6%22 stroke-linejoin=%22round%22/%3E%3Cpath d=%22M11 21 h10%22 stroke=%22%2341C4D4%22 stroke-width=%222.6%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">\n'
         '<!-- Self-hosted: nothing on this page is fetched from another '
         'origin at run time. See web/fetch_fonts.py. -->\n'
