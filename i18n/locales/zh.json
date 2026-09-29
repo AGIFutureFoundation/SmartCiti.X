@@ -1150,7 +1150,13 @@
   "wild.close": "关闭",
   "wild.seen": "已拍摄",
   "wild.off_season": "不在游戏季节内 - 仍可练习各个步骤",
-  "nav.page.smiles": "Unspoken Smiles 世界"
+  "nav.page.smiles": "Unspoken Smiles 世界",
+  "hud.toggle.fish": "钓鱼面板",
+  "hud.toggle.fields": "季节看板",
+  "hud.toggle.drive": "驾驶面板",
+  "hud.open.fish": "钓鱼与小龙虾",
+  "veg.honesty": "树木、植物与街道细节：按一般名称的地区植物和通用街道设施的 AUTHORED 布置（按土地用途和与水的距离设定规则）——不是树木调查、物种地图或数量统计。",
+  "elev.legend.authored": "地形起伏：AUTHORED - 公园街区中的程序化小丘和 AUTHORED 水道旁的堤岸，最多几米；本世界不含真实高程数据。"
  },
  "districts": {
   "structural": {

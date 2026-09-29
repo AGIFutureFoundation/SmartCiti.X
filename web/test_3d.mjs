@@ -2556,11 +2556,14 @@ ok('the XR HUD speaks from the catalog: every XR string reaches the page through
 // pointer and raycast sum divides by) and sits under the panel scrim.
 const built = readFileSync(new URL('./trade_craft_3d.html', import.meta.url), 'utf8');
 const bodyAt = built.indexOf('<body>');
-ok('the page has exactly one <h1>, visually hidden, naming the brand and the campus walk from the catalog - and renderChrome() re-reads it in the chosen language',
+ok('the page has exactly one <h1>, visually hidden, naming the PAGE (nav.page.campus, en catalog) with the brand as the kicker line just above it - and renderChrome() re-reads it in the chosen language',
   (built.match(/<h1\b/g) ?? []).length === 1
-  && /<h1 id="ptitle" class="vh">SmartCiti\.X : Trade Craft Academy — [^<]{4,}<\/h1>/.test(built)
+  && built.includes('<p id="pkicker" class="vh" lang="en" dir="ltr">SmartCiti.X : Trade Craft Academy</p>\n<h1 id="ptitle" class="vh">'
+    + JSON.parse(readFileSync(new URL('../i18n/locales/en.json', import.meta.url), 'utf8')).strings['nav.page.campus'] + '</h1>')
+  && !/<h1[^>]*>[^<]*SmartCiti/.test(built)
   && /\.vh\{position:absolute!important;width:1px;height:1px;[^}]*clip-path:inset\(50%\)/.test(built)
-  && /document\.getElementById\('ptitle'\)\.textContent = 'SmartCiti\.X : Trade Craft Academy — ' \+ t\('nav\.page\.campus'\);/.test(fnCode('renderChrome'))
+  && /document\.getElementById\('ptitle'\)\.textContent = t\('nav\.page\.campus'\);/.test(fnCode('renderChrome'))
+  && !/ptitle[^;]*SmartCiti/.test(fnCode('renderChrome'))
   && /'nav\.campus', 'nav\.page\.campus', 'language\.select'/.test(src)
   && built.indexOf('<h1 id="ptitle"') > bodyAt && built.indexOf('<h1 id="ptitle"') < built.indexOf('<div id="bar">'));
 ok('the page carries the shared site nav: built by sitenav.nav_html() for its own path, first in the body, with NAV_CSS in the head and no nav markup typed here',
@@ -3151,6 +3154,105 @@ ok('phone HUD: under 640 px the bar is ONE row that scrolls sideways (no wrap, n
     && /if \(wayAt\.some\(\(\[qx, qz\]\) => Math\.hypot\(x - qx, z - qz\) < WAY_GAP_M\)\) return;/.test(code)
     && /const l = label\(text, 'AUTHORED', 1\.4, \{ kind: 'schematic' \}\);\s*l\.position\.set\(x, 6, z\); campusGroup\.add\(l\); wayAt\.push\(\[x, z\]\);/.test(code)
     && /\+ \('campusplan\.parking', 'campusplan\.yard'\) \+ tuple\(TQKIT_I18N_KEYS\)/.test(src));
+}
+
+// wave 13 (item 3): the campus view's signs, BAYOU's two campus eggs, and time-to-ready by phase
+{
+  const cw = fnCode('cityWater');
+  ok('SF Bay tag on open water: the Bay\'s name stands on the R + 110 ring at the middle of the widest gap between the city anchors\' DRAWN bearings (cityPlace) within BAY_TAG_ARC of north, never at a fixed bearing an anchor can be pushed under',
+    /const BAY_TAG_ARC = 75 \* Math\.PI \/ 180;/.test(code)
+    && /const bays = pois\.map\(\(p\) => \{ const \[px, pz\] = cityPlace\(p\); return Math\.atan2\(px, -pz\); \}\)\s*\.filter\(\(b\) => Math\.abs\(b\) <= BAY_TAG_ARC\)\.sort\(\(a, b\) => a - b\);/.test(cw)
+    && /const edges = \[-BAY_TAG_ARC, \.\.\.bays, BAY_TAG_ARC\];/.test(cw)
+    && /tag\('San Francisco Bay', \(R \+ 110\) \* Math\.sin\(bayAt\), -\(R \+ 110\) \* Math\.cos\(bayAt\)\);/.test(cw)
+    && !/tag\('San Francisco Bay', 0, -\(R \+ 110\)\)/.test(cw)
+    && /tag\('San Francisco Bay', -\(R \+ 90\), 0\);/.test(cw));
+  // the rule itself, run on the page's own anchors for the flagship: the tag's bearing clears every drawn anchor
+  const Dp = JSON.parse(built.match(/<script id="data" type="application\/json">([\s\S]*?)<\/script>/)[1]);
+  const pois = Dp.geo.cityPois['treasure-island'], planTI = Dp.campusplan['treasure-island'];
+  const cp = (p) => { const km = Math.hypot(p.e, p.n) || .001; const r = 96 + 95 * Math.log10(1 + p.km); return [p.e / km * r, -p.n / km * r]; };
+  const base = pois.map((p) => { const [x, z] = cp(p); return { p, x, z, len: Math.hypot(x, z) || .001 }; });
+  const off = Math.max(0, planTI.radius_m + 30 - Math.min(...base.map((b) => b.len)));
+  const placed = [], drawn = [];
+  base.sort((a, b) => a.len - b.len).forEach((b) => {
+    const at = (e) => [b.x / b.len * (b.len + off + e), b.z / b.len * (b.len + off + e)];
+    let e = 0; while (placed.some(([qx, qz]) => Math.hypot(at(e)[0] - qx, at(e)[1] - qz) < 160)) e += 80;
+    placed.push(at(e)); drawn.push(Math.atan2(at(e)[0], -at(e)[1]));
+  });
+  const ARC = 75 * Math.PI / 180, bs = drawn.filter((b) => Math.abs(b) <= ARC).sort((a, b) => a - b);
+  const ed = [-ARC, ...bs, ARC]; let gap = 0, mid = 0;
+  for (let i = 1; i < ed.length; i++) if (ed[i] - ed[i - 1] > gap) { gap = ed[i] - ed[i - 1]; mid = (ed[i] + ed[i - 1]) / 2; }
+  const clearDeg = Math.min(...drawn.map((b) => Math.abs(b - mid))) * 180 / Math.PI;
+  ok(`SF Bay tag on the flagship: the open-water bearing is ${(mid * 180 / Math.PI).toFixed(1)} deg, ${clearDeg.toFixed(1)} deg clear of the nearest of ${drawn.length} drawn anchors (the old due-north tag sat ${Math.min(...drawn.map((b) => Math.abs(b))) * 180 / Math.PI < 12 ? 'within 12 deg of one' : 'clear'}) - at least 20 deg`,
+    drawn.length >= 10 && clearDeg >= 20);
+
+  const wp = fnCode('wayPlace'), bc = fnCode('buildCampus'), sc = fnCode('showCampus');
+  ok('wayfinding placement: every sign wayPut() keeps is remembered, and wayPlace() runs once per campus after every campus sign stands (after buildRestorationSites), only on a planned campus',
+    /l\.position\.set\(x, 6, z\); campusGroup\.add\(l\); wayAt\.push\(\[x, z\]\);\s*waySigns\.push\(l\);/.test(bc)
+    && /waySigns = \[\];\s*const wayAt = /.test(bc)
+    && /buildRestorationSites\(campusGroup\);\s*if \(plan\) wayPlace\(campusGroup, RS, plan\);/.test(bc));
+  const ls = fnCode('lblSettle'), br = fnCode('buildRegion'), sr = fnCode('showRegion');
+  ok('sign settling asks the page\'s own questions: the pose the view opens on (showCampus: 300 cf up, 350 cf back, same cf rule; showRegion: (0,225,235) at (10,0,0)), this renderer\'s viewport, labelStep\'s min_frac/max_frac clamp, each kind\'s hide_beyond_m, lblOverlap() and the declutter\'s own cover_hide - no second threshold',
+    /const cf = Math\.max\(1, R \/ 330\);/.test(wp) && /const cf = Math\.max\(1, campusR \/ 330\);/.test(sc)
+    && /lblSettle\(g, \[0, 300 \* cf, 350 \* cf\], \[0, 0, 0\], waySigns\.map\(/.test(wp)
+    && /camera\.position\.set\(0, 300 \* cf, 350 \* cf\); controls\.target\.set\(0, 0, 0\);/.test(sc)
+    && /lblSettle\(regionGroup, \[0, 225, 235\], \[10, 0, 0\], routeMovers\);\s*scene\.add\(regionGroup\);/.test(br)
+    && /camera\.position\.set\(0, 225, 235\); controls\.target\.set\(10, 0, 0\);/.test(sr)
+    && /cam\.position\.set\(eye\[0\], eye\[1\], eye\[2\]\); cam\.lookAt\(tgt\[0\], tgt\[1\], tgt\[2\]\);/.test(ls)
+    && /new THREE\.PerspectiveCamera\(camera\.fov, vw \/ vh, camera\.near, camera\.far\)/.test(ls)
+    && /if \(u\.hide && d > u\.hide\) return null;/.test(ls)
+    && /LFOCUS\.screen\.max_frac \* vh, Math\.max\(LFOCUS\.screen\.min_frac \* vh, u\.base\.y \/ span \* vh\)/.test(ls)
+    && /const cv = lblOverlap\(pad, q\); if \(cv > 0\) c \+= cv > LDECL\.cover_hide \? 1 : WAY_PAIR_COST;/.test(ls)
+    && /const WAY_LOT_FRAC = \.45, WAY_PAD_PX = 2, WAY_PAIR_COST = 4;/.test(code));
+  ok('sign settling only MOVES a sign to one of its own candidates (a wayfinding sign inside its own AUTHORED lot, centre first; a route distance along its own arc, t .5 - the old spot - first, at the old height): it never hides, drops, fades or re-ranks one, and a sign on no lot stops the build',
+    /const lot = lots\.find\(\(l\) => l\.x === sp\.position\.x && l\.z === sp\.position\.z\);/.test(wp)
+    && /if \(!lot\) throw new Error\(/.test(wp)
+    && /\[\[0, 0\], \[-1, 0\], \[1, 0\], \[0, -1\], \[0, 1\], \[-1, -1\], \[1, -1\], \[-1, 1\], \[1, 1\]\]/.test(wp)
+    && /lot\.x \+ fx \* WAY_LOT_FRAC \* lot\.w, sp\.position\.y, lot\.z \+ fz \* WAY_LOT_FRAC \* lot\.d/.test(wp)
+    && /routeMovers\.push\(\{ sp: kl, cands: \[\.5, \.42, \.58, \.34, \.66\]\.map\(\(tt\) => \{\s*const q = curve\.getPoint\(tt\); return \[q\.x, mid\.y \+ 5, q\.z\]; \}\) \}\);/.test(br)
+    && /if \(!best \|\| c < best\.c\)/.test(ls) && /sp\.position\.copy\(best\.p\);/.test(ls)
+    && !/\.visible\s*=|opacity|labelSet\.splice|\.remove\(|rank\s*=|cover_hide\s*=/.test(ls + wp));
+  // the scoring rule, run here on synthetic plates: a partial pair costs more than a clean step-back, clear is free
+  const coverHide = Dp.labels.declutter.cover_hide;
+  const lov = (a, b) => { const w = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x), h = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y);
+    return w <= 0 || h <= 0 ? 0 : w * h / Math.min(a.w * a.h, b.w * b.h); };
+  const costOf = (r, stand) => stand.reduce((c, q) => { const cv = lov({ x: r.x - 2, y: r.y - 2, w: r.w + 4, h: r.h + 4 }, q); return c + (cv > 0 ? (cv > coverHide ? 1 : 4) : 0); }, 0);
+  const marquee = { x: 541, y: 372, w: 197, h: 27 };
+  ok('wayfinding scoring (the page\'s rule on the w11 measured marquee): a Parking plate 7 px into the marquee costs more than one stepped wholly behind it, and one 3 px clear costs nothing',
+    costOf({ x: 497, y: 366, w: 51, h: 27 }, [marquee]) === 4 && costOf({ x: 560, y: 372, w: 51, h: 27 }, [marquee]) === 1
+    && costOf({ x: 487, y: 366, w: 51, h: 27 }, [marquee]) === 0);
+
+  // BAYOU's campus eggs (GAMES_CONTRACT v1): hidden hooks handed out by questkit.egg_attr, bound by the quest engine
+  const qreg = JSON.parse(readFileSync(new URL('../quests/registry/quests.json', import.meta.url), 'utf8')).quests;
+  const eggIds = ['egg-bayou-campus-hardhatbird', 'egg-bayou-campus-swale'];
+  const qScript = built.slice(built.indexOf('<script data-tc-quests>'));
+  const hooksAt = built.indexOf('<div class="tc-hooks" hidden data-egg-hooks="campus">');
+  ok(`BAYOU campus eggs: both (${eggIds.join(', ')}) resolve in quests/registry as campus eggs with a typed trigger, and the built page carries each once as a hidden hook with the registry's own trigger, inside <main>, before the quest engine that binds them`,
+    eggIds.every((id) => {
+      const q = qreg.find((x) => x.id === id);
+      return q && q.kind === 'egg' && q.world === 'campus' && /^typed:[a-z]{3,24}$/.test(q.trigger)
+        && built.split(`data-tc-egg="${id}"`).length === 2
+        && built.includes(`<span hidden data-tc-egg="${id}" data-tc-trigger="${q.trigger}"></span>`)
+        && qScript.includes(`"id":"${id}"`);
+    })
+    && hooksAt > built.indexOf('<main id="main">') && hooksAt < built.indexOf('</main>')
+    && hooksAt < built.indexOf('<script data-tc-quests>')
+    && /from questkit import egg_attr/.test(src) && /CAMPUS_EGG_HOOKS = \('egg-bayou-campus-hardhatbird', 'egg-bayou-campus-swale'\)/.test(src)
+    && /''\.join\(f'<span hidden \{egg_attr\(_eid\)\}><\/span>' for _eid in CAMPUS_EGG_HOOKS\)/.test(src));
+  ok('BAYOU campus eggs: the engine binds typed triggers on document keydown (questkit glue carried in the page), and nothing in the page stops a keydown from reaching it',
+    /trig === 'konami' \|\| trig\.startsWith\('typed:'\)/.test(qScript) && /document\.addEventListener\('keydown'/.test(qScript)
+    && !/stopImmediatePropagation/.test(code));
+
+  // time-to-ready, split by phase
+  ok('boot phases: window.__tc3dBoot() reports ms-since-navigation marks in build order - module, data, lights, sky, surfaces, chrome, view, ready (the line before window.__tc3d exists) and frame1 (+ the program count) after the first drawn frame',
+    /const BOOT = \{ module: Math\.round\(performance\.now\(\)\), frames: \[\] \};/.test(code) && /window\.__tc3dBoot = \(\) => \(\{ \.\.\.BOOT \}\);/.test(code)
+    && ['data', 'lights', 'sky', 'surfaces', 'chrome', 'view', 'ready'].every((k, i, a) => i === 0 || code.indexOf(`bootMark('${a[i - 1]}')`) < code.indexOf(`bootMark('${k}')`))
+    && /bootMark\('ready'\);\nwindow\.__tc3d = \(\) => \(\{/.test(src)
+    && /xrRender\(\);\s*if \(!\('frame1' in BOOT\)\) \{ bootMark\('frame1'\); BOOT\.programs = renderer\.info\.programs\.length; \}/.test(code));
+  ok('boot sky: while the module builds setSky() only records the request (no canvas, no PMREM); right after the first view stands, and before window.__tc3d, the LAST request is drawn once with its own arguments (a view that asked for none stops the boot)',
+    /let skyBoot = \{ ask: null, n: 0 \};\s*function setSky\(stops, opts = \{\}\) \{\s*if \(skyBoot\) \{ skyBoot\.ask = \[stops, opts\]; skyBoot\.n\+\+; return; \}/.test(code)
+    && /else showRegion\(\);\s*bootMark\('view'\);\s*\{ const ask = skyBoot\.ask; BOOT\.skyAsks = skyBoot\.n; skyBoot = null;\s*if \(!ask\) throw new Error\('boot: no view asked for a sky'\); setSky\(ask\[0\], ask\[1\]\); \}\s*bootMark\('skyDrawn'\);/.test(code)
+    && code.indexOf("bootMark('skyDrawn')") < code.indexOf("bootMark('ready')")
+    && (code.match(/skyBoot = null/g) ?? []).length === 1);
 }
 
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);

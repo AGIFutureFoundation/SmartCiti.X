@@ -1150,7 +1150,13 @@
   "wild.close": "Schließen",
   "wild.seen": "fotografiert",
   "wild.off_season": "Außerhalb der Spielsaison - die Schritte kannst du trotzdem üben",
-  "nav.page.smiles": "Unspoken-Smiles-Welt"
+  "nav.page.smiles": "Unspoken-Smiles-Welt",
+  "hud.toggle.fish": "Angel-Anzeige",
+  "hud.toggle.fields": "Saison-Tafel",
+  "hud.toggle.drive": "Fahr-Anzeige",
+  "hud.open.fish": "Angeln und Flusskrebse",
+  "veg.honesty": "Bäume, Pflanzen und Straßendetails: AUTHORED platzierte, allgemein benannte regionale Pflanzen und generisches Straßenmobiliar (Regeln nach Flächennutzung und Abstand zum Wasser) – keine Baumerhebung, keine Artenkarte und keine Zählung.",
+  "elev.legend.authored": "Relief: AUTHORED - prozedurale Hügel in Parkvierteln und Deiche an AUTHORED-Kanälen, höchstens wenige Meter; für diese Welt liegen keine echten Höhendaten vor."
  },
  "districts": {
   "structural": {

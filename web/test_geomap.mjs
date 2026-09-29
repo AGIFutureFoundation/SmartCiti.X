@@ -269,8 +269,13 @@ ok('[generator] build_geomap.py fails closed by name (need()) and takes no `.get
     zc !== null && zr !== null && zc > zr && !!restAnchor && !!campAnchor
     && restAnchor[1] === 'top' && campAnchor[1] === 'bottom',
     `campus z ${zc}, restoration z ${zr}, anchors ${campAnchor && campAnchor[1]}/${restAnchor && restAnchor[1]}`);
-  ok('[shipped] the page has exactly one <h1>, and it is the brand line the bar already shows',
-    (page.match(/<h1[\s>]/g) || []).length === 1 && /<h1 class="brand">/.test(page));
+  ok('[shipped] the page has exactly one <h1>, it names the page (its nav label), and the brand is the kicker above it',
+    (page.match(/<h1[\s>]/g) || []).length === 1
+    && page.includes(`<div class="pagehead"><p class="kicker">SmartCiti<span class="x">.X</span> : Trade Craft Academy</p><h1 class="pagename">${JSON.parse(readFileSync(new URL('../i18n/locales/en.json', import.meta.url), 'utf8')).strings['nav.page.geomap']}</h1></div>`)
+    && !/<h1 class="brand">/.test(page));
+  ok('[shipped] the saved style applies from <head>: STYLE_HEAD_JS once, before the first <style> and the site nav',
+    (page.match(/<script id="style-head-js">/g) || []).length === 1 && page.indexOf('<script id="style-head-js">') < page.indexOf('<style')
+    && page.indexOf('<script id="style-head-js">') < page.search(/<nav\b[^>]*\bdata-sitenav\b/) && page.indexOf('<script id="style-head-js">') < page.indexOf('</head>'));
 }
 {
   // campus labels that collide at the opening zoom must be re-placed, at load and after every zoom,

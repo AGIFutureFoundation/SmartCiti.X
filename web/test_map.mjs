@@ -322,6 +322,16 @@ ok('[shipped] the district map is intact: every hall pad, district band and the 
     && /\.plan\{[^}]*grid-template-columns:minmax\(0,1fr\)/.test(html)
     && /\.detail\{[^}]*grid-template-columns:minmax\(0,1fr\)/.test(html)
     && /\.hallpanel \.hp-row\{[^}]*grid-template-columns:auto minmax\(0,1fr\)/.test(html));
+  // POLISH w13 (audit row 15): on a phone the sheet comes first - the district list folds into ONE horizontal chip row
+  // right above the plan, and the key + layer switches follow the plan (the aside unwraps into the one-column shell)
+  const phone = (html.match(/@media\(max-width:600px\)\{([\s\S]*?)\n\}/) || ['', ''])[1];
+  const rule = (sel) => (phone.match(new RegExp(sel.replace(/[.*+?^${}()|[\]\\>]/g, '\\$&') + '\\{([^}]*)\\}')) || ['', null])[1];
+  ok('[shipped] phone (<=600px): sheet first - district chips (order 0, one scrolling row, >=44px, descriptions folded), then the plan (order 1), then key + layers (order 2)',
+    rule('.shell>aside') === 'display:contents' && /order:0/.test(rule('.shell>aside>div:first-child') || '')
+    && /order:2/.test(rule('.shell>aside>div') || '') && /order:1/.test(rule('.shell>.plan') || '')
+    && /flex-direction:row;overflow-x:auto/.test(rule('.dlist') || '') && /flex:none;[^}]*min-block-size:44px/.test(rule('.dlist>.dbtn') || '')
+    && rule('.dlist>.dbtn small') === 'display:none' && /flex-wrap:nowrap;overflow-x:auto/.test(rule('.sheetnav') || '')
+    && /<aside>\s*<div>\s*<p class="kicker">[^<]*<\/p>\s*<div class="dlist" id="dlist"><\/div>/.test(html));
   ok('[shipped] the layer focus buttons are at least 24px tall and wide (touch target)',
     /\.layers \.lfocus\{[^}]*min-height:24px;min-width:24px/.test(html));
   ok('[shipped] the hall heading is ink on the panel; the district colour is a swatch and a rule, never the text colour',

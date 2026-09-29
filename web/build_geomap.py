@@ -21,7 +21,7 @@ ROOT = HERE.parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
 from seo import apply_seo  # noqa: E402  head tags only
-from sitenav import nav_html, labels as nav_labels, NAV_CSS, STYLE_JS  # noqa: E402
+from sitenav import nav_html, labels as nav_labels, NAV_CSS, STYLE_JS, STYLE_HEAD_JS  # noqa: E402
 from groundtruth import GROUND_TRUTH_JS  # noqa: E402
 from pagehero import theme  # noqa: E402  the enterprise theme layer, canvas mode (THEME_CONTRACT v1: no hero band here)
 THEME_CSS, _THEME_JS = theme('canvas')
@@ -468,6 +468,7 @@ page = '''<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script id="style-head-js">__STYLE_HEAD_JS__</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C1113'/%3E%3Cpath d='M7 21 L16 7 L25 21 Z' fill='none' stroke='%23E8A33D' stroke-width='2.6' stroke-linejoin='round'/%3E%3Cpath d='M11 21 h10' stroke='%2341C4D4' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
 <title>SmartCiti.X : Trade Craft Academy — network geomap</title>
 <link rel="stylesheet" href="vendor/maplibre/maplibre-gl.css">
@@ -493,8 +494,12 @@ body{margin:0;background:var(--plate);color:var(--ink);
   gap:8px 14px;align-items:center;padding:10px 16px;
   background:color-mix(in oklab, var(--plate) 88%, transparent);
   border-bottom:2px solid var(--mark);backdrop-filter:blur(6px)}
-#bar .brand{margin:0;font:700 19px/1 "Barlow Condensed",system-ui,sans-serif;white-space:nowrap}
-#bar .brand .x{color:var(--mark)}
+/* POLISH w13: the h1 names the page (its nav label); the brand is the kicker line above it */
+#bar .pagehead{display:grid;gap:3px;min-width:0}
+#bar .kicker{margin:0;font:600 10px/1.1 "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);white-space:nowrap}
+#bar .kicker .x{color:var(--mark)}
+#bar .pagename{margin:0;font:700 19px/1 "Barlow Condensed",system-ui,sans-serif;white-space:nowrap}
 #bar a{color:var(--steel);text-decoration:none;font-size:13px}
 .barbtn{background:var(--panel);color:var(--ink);border:1px solid var(--rule);
   border-radius:6px;padding:6px 11px;font:inherit;cursor:pointer;white-space:nowrap}
@@ -611,7 +616,7 @@ body{margin:0;background:var(--plate);color:var(--ink);
 @media(pointer:coarse){.barbtn{min-height:42px}#honesty{display:none}}
 @media(max-width:700px){
   #bar{padding:8px 12px;gap:6px 10px}
-  #bar .brand{font-size:17px}
+  #bar .pagename{font-size:17px}
   #bar .tools{flex-wrap:nowrap;overflow-x:auto;width:100%;padding-bottom:2px}
   #find{flex:0 0 190px}
   .campus-marker{font-size:11px;padding:2px 7px}
@@ -635,7 +640,7 @@ body.tc-theme-canvas .panel.tc-panel,body.tc-theme-canvas #legend.tc-panel{borde
 <body class="tc-theme-canvas">
 __SITENAV__<div id="stage">
 <div id="bar">
-  <h1 class="brand">SmartCiti<span class="x">.X</span> : Trade Craft Academy</h1>
+  <div class="pagehead"><p class="kicker">SmartCiti<span class="x">.X</span> : Trade Craft Academy</p><h1 class="pagename">__PAGE_NAME__</h1></div>
   <a href="trade_craft_3d.html">⬡ 3D environment</a>
   <a href="trade_craft_interactive.html">▦ interactive map</a>
   <div class="tools">
@@ -1708,6 +1713,10 @@ out = HERE / 'trade_craft_geomap.html'
 _n_hub = sum(1 for c in geo['campuses'].values() if c['provenance'] == 'AUTHORED')
 _n_flag = len(geo['campuses']) - _n_hub
 assert _n_hub > 0 and _n_flag > 0
+# POLISH w13: the saved style applies from <head> before first paint (STYLE_HEAD_JS, as every other nav page); the
+# h1 is the page's own nav label (en catalog, fail closed), the brand its kicker
+_EN = json.loads((ROOT / 'i18n/locales/en.json').read_text(encoding='utf-8'))['strings']
+page = page.replace('__STYLE_HEAD_JS__', STYLE_HEAD_JS).replace('__PAGE_NAME__', html.escape(_EN['nav.page.geomap']))
 page = page.replace('__STYLE_JS__', STYLE_JS).replace('__THEME_CSS__', THEME_CSS).replace('__SITENAV_CSS__', NAV_CSS).replace('__SITENAV__', NAV).replace('__QUEST_TAIL__', QUEST_TAIL)
 page = (page.replace('__N_FLAGSHIP__', str(_n_flag)).replace('__N_HUB__', str(_n_hub))
         .replace('__N_POSES__', str(spatial['counts']['total']))

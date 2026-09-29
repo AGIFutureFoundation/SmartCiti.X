@@ -94,6 +94,7 @@ await page.goto(URL_BASE, { waitUntil: 'load' });
 await page.waitForFunction(() => document.documentElement.dataset.parishesReady === '1', null, { timeout: 60000 });
 
 const rows = [];
+const perfRows = [];   // PERF w13
 let bad = 0;
 const fail = (row, msg) => { row.fails.push(msg); };
 for (const pid of PROBE) {
@@ -140,6 +141,25 @@ for (const pid of PROBE) {
       if (st.triangles > base.tris * TRI_HEADROOM) fail(row, `tris ${st.triangles} > ${Math.round(base.tris * TRI_HEADROOM)}`);
       if (ms > base.ms * MS_HEADROOM) fail(row, `frame ${ms} ms > ${(base.ms * MS_HEADROOM).toFixed(1)}`);
       if (base.fabric !== null && fabric < base.fabric * FABRIC_FLOOR) fail(row, `fabric ${fabric} < floor ${Math.round(base.fabric * FABRIC_FLOOR)}`);
+    }
+    /* PERF w13 DIAG (not a target): where this border walk frame goes, by kit (__parishes.kitCost: hide each group, renderer.info
+       difference + a render forced to completion by a 1-pixel readPixels; one rep, so the ms split is noisy under load) */
+    if (v === 'border') row.kitCost = await page.evaluate(() => window.__parishes.kitCost(1));
+    /* PERF w13 NEW row (perfcull): the draw-list culls change nothing the rows count - fabric, chunks, fleetVisible - and only
+       remove calls: the same view with DIAG.noCull (culls off) vs on, read back to back */
+    if (v === 'border' || (v === 'overview' && pid === '22071')) {
+      const ab = await page.evaluate(async (ov) => { const P = window.__parishes, w = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+        P.diag({ noCull: true, ovAlways: ov }); await w(); const a = P.stats(), ca = P.camProbe();
+        P.diag({ ovAlways: ov }); await w(); const b = P.stats(), cb = P.camProbe(); P.diag({});
+        return { offCalls: a.calls, onCalls: b.calls, offTris: a.triangles, onTris: b.triangles, offFabric: a.instances.block + a.instances.tree, onFabric: b.instances.block + b.instances.tree,
+          chunks: [a.chunks, b.chunks], fleetVisible: [a.fleetVisible, b.fleetVisible], fleetDrawn: [ca.fleetDrawn, cb.fleetDrawn], npcVisible: [ca.npcVisible, cb.npcVisible] }; }, v === 'overview');
+      const pr = { probe: 'perfcull', parish: pid, view: v, ...ab, fails: [] };
+      if (ab.onCalls > ab.offCalls) fail(pr, `culls ADD draw calls (${ab.offCalls} -> ${ab.onCalls})`);
+      if (ab.onFabric !== ab.offFabric || ab.chunks[0] !== ab.chunks[1]) fail(pr, `culls changed what the rows count: fabric ${ab.offFabric} -> ${ab.onFabric}, chunks ${ab.chunks}`);
+      if (v !== 'overview' && ab.fleetVisible[1] !== true) fail(pr, 'the fleet group is hidden in a walk view');
+      if (v === 'overview' && ab.npcVisible[1] !== false) fail(pr, 'NPC guide meshes are still drawn in the overview');
+      if (pr.fails.length) bad++;
+      perfRows.push(pr);
     }
     if (SHOTS && v !== 'border') await page.screenshot({ path: `${SHOTS}/WILDS-w6-${pid}-${v}.png` });
     if (row.fails.length) bad++;
@@ -412,6 +432,101 @@ const lakeDiag = await page.evaluate(async () => {
   const s = P.stats(); return { skippedWater: s.skipped.water - a, reseated: s.skipped.reseated - ar, fabric: s.instances.block + s.instances.tree, pending: s.pending };
 });
 
+/* WORLDS w13 (ADDED row; no target changed): FIELDS' AUTHORED plots (seasons/registry/seasons.json) stay free of
+   generated fabric. The page builds each plot's covering chunks fresh (__parishes.plotProbe, pure, not drawn) with its plot
+   clearance on - and off, to measure what the rule removes; THIS eval judges overlap with its own geometry: an oriented
+   building box vs the plot rectangle (separating axes), a tree crown disc vs the rectangle, a lamp point in the bed. */
+const plotD = await page.evaluate(() => ({ probe: window.__parishes.plotProbe(), n: JSON.parse(document.getElementById('parishes-data').textContent).plots_clear.length }));
+function plotHits(p, f) {
+  const box = ([x, z, w, , d, , yaw]) => { const u = [Math.cos(yaw), -Math.sin(yaw)], v = [Math.sin(yaw), Math.cos(yaw)], c = [x - p.x, z - p.z];
+    return [[1, 0], [0, 1], u, v].every((a) => Math.abs(c[0] * a[0] + c[1] * a[1]) < p.hw * Math.abs(a[0]) + p.hd * Math.abs(a[1]) + (w / 2) * Math.abs(u[0] * a[0] + u[1] * a[1]) + (d / 2) * Math.abs(v[0] * a[0] + v[1] * a[1])); };
+  const disc = ([x, z, s]) => Math.hypot(Math.max(0, Math.abs(x - p.x) - p.hw), Math.max(0, Math.abs(z - p.z) - p.hd)) < 2.2 * s;
+  const pt = ([x, z]) => Math.abs(x - p.x) < p.hw + 0.5 && Math.abs(z - p.z) < p.hd + 0.5;
+  return { b: f.block.filter(box).length, t: f.tree.filter(disc).length, l: f.lamp.filter(pt).length };
+}
+const plotRow = { probe: 'plots', plots: plotD.probe.length, onLand: plotD.probe.filter((p) => p.land).length, buildingsOn: 0, treesOn: 0, lampsOn: 0, plotsWithBuildingWithoutRule: 0, buildingsWithoutRule: 0, fails: [] };
+for (const p of plotD.probe) {
+  const on = plotHits(p, p.on), off = plotHits(p, p.off);
+  plotRow.buildingsOn += on.b; plotRow.treesOn += on.t; plotRow.lampsOn += on.l; plotRow.buildingsWithoutRule += off.b; if (off.b) plotRow.plotsWithBuildingWithoutRule++;
+  if (on.b + on.t + on.l) fail(plotRow, `${p.id}: ${on.b} buildings, ${on.t} trees, ${on.l} lamps stand on the plot bed`);
+}
+if (!(plotD.n > 0 && plotD.probe.length === plotD.n)) fail(plotRow, `${plotD.probe.length} plots probed of ${plotD.n} embedded`);
+if (plotRow.fails.length) bad++;
+/* WORLDS w13 (ADDED row; no target changed): street furniture by AUTHORED district in the 22071 origin walk view -
+   residential streets carry street trees (one per 76 m, verge) and every second lamp, commercial streets a lamp every
+   80 m; same tree and lamp InstancedMeshes (familyCalls <= 1, calls and tris judged by the view rows above) */
+const streetD = await page.evaluate(async () => { const P = window.__parishes; P.view('origin', '22071'); await new Promise((r) => setTimeout(r, 900));
+  const s = P.stats(); return { sd: s.streetDetail, pending: s.pending, calls: s.calls, tris: s.triangles, fc: P.familyCalls() }; });
+const sdR = streetD.sd.residential, sdC = streetD.sd.commercial;
+const streetRow = { probe: 'streets', view: '22071 origin', residential: sdR, commercial: sdC, industrial: streetD.sd.industrial, park: streetD.sd.park, calls: streetD.calls, tris: streetD.tris, fails: [] };
+if (streetD.pending) fail(streetRow, `${streetD.pending} chunks pending`);
+if (!(sdR.m > 0 && sdC.m > 0)) fail(streetRow, 'the view holds no residential or no commercial street metres');
+if (!(sdR.treesPerKm > sdC.treesPerKm && sdR.trees > 0)) fail(streetRow, `residential street trees ${sdR.treesPerKm}/km not denser than commercial ${sdC.treesPerKm}/km`);
+if (!(sdC.lampsPerKm > sdR.lampsPerKm)) fail(streetRow, `commercial lamps ${sdC.lampsPerKm}/km not denser than residential ${sdR.lampsPerKm}/km`);
+if (!(streetD.fc.tree <= 1 && streetD.fc.lamp <= 1)) fail(streetRow, `tree/lamp families cost ${streetD.fc.tree}/${streetD.fc.lamp} draw calls`);
+if (streetRow.fails.length) bad++;
+/* BEGIN VEG w14 (VEG·Vegetation & Detail; ADDED row, no target changed): regional vegetation and street detail
+   (web/florakit.py, flora/registry/flora.json) in the 22071 origin walk view: families present with instances > 0, the kit's own
+   draw calls (page calls with flora on minus off, same frame) <= the registry's draw_calls_max and its triangles <= tris_max;
+   in the overview the kit draws 0 calls and the page's calls are the same with flora on and off. The view rows above
+   already judge the page's calls/tris WITH flora mounted (it is on by default). */
+const vegD = await page.evaluate(async () => {
+  const P = window.__parishes, F = window.__flora, sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const frames = (k) => new Promise((res) => { let i = 0; const f = () => (++i >= k ? res() : requestAnimationFrame(f)); requestAnimationFrame(f); });
+  if (!F) return null;
+  for (let i = 0; i < 100 && window.__floraLC && window.__floraLC() === 'loading'; i++) await sleep(100);   // RECORDED land cover (VEG w14)
+  P.view('origin', '22071');
+  for (let i = 0; i < 80; i++) { if (P.stats().pending === 0 && F.stats().queue === 0 && i > 5) break; await sleep(150); }
+  await frames(4); const on = P.stats(), fs = F.stats(); F.setEnabled(false); await frames(4); const off = P.stats(); F.setEnabled(true); await frames(4);
+  P.view('overview', '22071'); await sleep(600); await frames(4); const ovOn = P.stats(), fo = F.stats(); F.setEnabled(false); await frames(4); const ovOff = P.stats(); F.setEnabled(true);
+  P.view('origin', '22071'); await sleep(300);
+  return { lcState: window.__floraLC ? window.__floraLC() : 'not mounted', on: on.calls, off: off.calls, trisOn: on.triangles, trisOff: off.triangles, fs, ovCalls: fo.drawCalls, ovOn: ovOn.calls, ovOff: ovOff.calls, budgets: F.budgets };
+});
+const vegRow = { probe: 'vegetation', view: '22071 origin', fails: [] };
+if (!vegD) fail(vegRow, 'window.__flora is not mounted');
+else {
+  Object.assign(vegRow, { families: Object.fromEntries(Object.entries(vegD.fs.families).filter(([, c]) => c > 0)), species: vegD.fs.species, kitCalls: vegD.on - vegD.off,
+    kitTris: vegD.trisOn - vegD.trisOff, floraTris: vegD.fs.tris, overviewKitCalls: vegD.ovCalls, overviewCalls: `${vegD.ovOn}/${vegD.ovOff}` });
+  vegRow.landcover = { grid: vegD.lcState, ...vegD.fs.landcover };   // share of drawn plants placed by a RECORDED WorldCover class; the rest AUTHORED (counted)
+  if (vegD.lcState !== 'RECORDED') fail(vegRow, `RECORDED land cover not loaded: ${vegD.lcState}`);
+  else if (!(vegD.fs.landcover.plantsRecorded > 0)) fail(vegRow, 'no plant placed by a RECORDED land-cover class');
+  const fam = Object.keys(vegRow.families);
+  if (fam.length < 2 || !Object.values(vegRow.families).every((c) => c > 0)) fail(vegRow, `flora families present ${JSON.stringify(vegD.fs.families)} (want >= 2 with instances)`);
+  if (!Object.keys(vegD.fs.species).some((s) => !['mailbox', 'fence', 'bench', 'bus_shelter', 'bollard', 'planter'].includes(s))) fail(vegRow, 'no plant species drawn');
+  if (vegRow.kitCalls < 1 || vegRow.kitCalls > vegD.budgets.draw_calls_max) fail(vegRow, `flora draw calls ${vegRow.kitCalls} (want 1..${vegD.budgets.draw_calls_max})`);
+  if (vegD.fs.tris > vegD.budgets.tris_max) fail(vegRow, `flora triangles ${vegD.fs.tris} > tris_max ${vegD.budgets.tris_max}`);
+  if (vegD.ovCalls !== 0 || vegD.ovOn !== vegD.ovOff) fail(vegRow, `overview: flora calls ${vegD.ovCalls}, page calls on/off ${vegD.ovOn}/${vegD.ovOff}`);
+}
+if (vegRow.fails.length) bad++;
+/* END VEG w14 */
+/* DIAG (WORLDS w13, not a target): the 22103 border view rebuilt from a fresh walk - lots seated from wholly-wet neighbour
+   chunks, and how much of the view's fabric (blocks + trees) is w13 street trees */
+const crossDiag = await page.evaluate(async () => { const P = window.__parishes; P.view('origin', '22071'); await new Promise((r) => setTimeout(r, 600));
+  const a = P.stats().skipped; P.view('border', '22103'); await new Promise((r) => setTimeout(r, 900));
+  const s = P.stats(); return { cross: s.skipped.cross - a.cross, reseated: s.skipped.reseated - a.reseated, blocks: s.instances.block, trees: s.instances.tree, streetTrees: s.streetDetail.residential.trees, pending: s.pending }; });
+
+/* PERF w13 NEW row (drivecam), wave 13 item 4 "flat grey 3D view while driving": ride the first parked land vehicle (the drive
+   probe's case), let the world stream in, then sample 4 points of the drawn frame (in the frame, before compositing). A flat
+   view (all 4 within 6/255) fails; the camera's distance to the car is printed. The same ride with the
+   old camera path (DIAG.noChase: fixed 1/60 s easing, no occluder pull-in) runs first and prints as DIAG - not judged. */
+const drivecam = await page.evaluate(async () => {
+  const P = window.__parishes, sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const pix = () => new Promise((res) => requestAnimationFrame(() => requestAnimationFrame(() => {
+    const c = document.getElementById('view'), gl = c.getContext('webgl2') || c.getContext('webgl'), out = [];
+    for (const [fx, fy] of [[0.5, 0.9], [0.5, 0.5], [0.5, 0.1], [0.1, 0.5]]) { const a = new Uint8Array(4); gl.readPixels(Math.floor(c.width * fx), Math.floor(c.height * fy), 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, a); out.push([...a]); }
+    res(out); })));
+  const flat = (px) => px.every((q) => q.every((v, i) => Math.abs(v - px[0][i]) <= 6));
+  const settle = async () => { for (let i = 0; i < 60; i++) { const s = P.stats(); if (s.pending === 0 && s.loaded.every((id) => s.ground.ready.includes(id))) return; await sleep(100); } };
+  const one = async (d) => { P.view('origin', '22071'); await sleep(300); P.diag(d); const r = P.ride('land', 2); await settle(); await sleep(400);
+    const px = await pix(), cam = P.camProbe(); P.exit(); P.diag({}); return { id: r.id, flat: flat(px), px: px.map((q) => q.join(',')), camToCar: cam.camToCar, pulls: cam.chasePulls, chase: cam.riding.L * 1.2 + 4 }; };
+  const old = await one({ noChase: true }), now = await one({});
+  return { probe: 'drivecam', old, now, fails: [] };
+});
+if (drivecam.now.flat) fail(drivecam, `the drive view is one flat colour (${drivecam.now.px.join(' | ')})`);
+/* (PERF w13 run 4, before landing: a second criterion 'camera within chase distance + 0.5 m' was dropped - a car still coasting
+   after ride() legitimately trails its easing camera (12.6 m vs 8.8 m rest); cam->car is printed, not judged) */
+if (drivecam.fails.length) bad++;
+
 /* styles: the panels follow the Style switcher (tokens only) */
 if (SHOTS) {
   for (const s of ['hivis', 'enterprise']) {
@@ -420,9 +535,17 @@ if (SHOTS) {
     await page.screenshot({ path: `${SHOTS}/WILDS-w6-style-${s}.png` });
   }
 }
+/* BEGIN ELEV w14 relief row (web/eval_relief.mjs, NEW): ?relief=on - RECORDED USGS 3DEP in use with its legend, relief present,
+   max slope <= the page's declared max_slope, N buildings/lots/trees/lamps/parked vehicles on the ground within 0.1 m, draw calls
+   equal to relief off at the start view, water level unchanged. Relief is default OFF, so every row above judges the flat page. */
+const { reliefRow } = await import('./eval_relief.mjs');
+const elevRow = await reliefRow(browser, URL_BASE, { shots: SHOTS, name: 'parish' });
+if (elevRow.fails.length) bad++;
+if (!JSON_OUT) console.log(`${elevRow.fails.length ? 'FAIL' : '  ok'} relief ${JSON.stringify(Object.fromEntries(Object.entries(elevRow).filter(([k]) => k !== 'fails' && k !== 'probe')))}${elevRow.fails.length ? ' :: ' + elevRow.fails.join('; ') : ''}`);
+/* END ELEV w14 */
 await browser.close();
 
-const out = { rows, cross, ride: rideRows, npcs: npcRow, satellite: satRow, ground: groundRow, atmosphere: atmRow, satrace: raceRow, ridemode: rmRow, world: worldRows, ambient: ambRow, detail: detRow, underwater: deepRow, errors, bad: bad + errors.length };
+const out = { plots: plotRow, streets: streetRow, crossDiag, rows, perf: perfRows, drivecam, cross, ride: rideRows, npcs: npcRow, satellite: satRow, ground: groundRow, atmosphere: atmRow, satrace: raceRow, ridemode: rmRow, world: worldRows, ambient: ambRow, detail: detRow, underwater: deepRow, errors, bad: bad + errors.length };
 if (JSON_OUT) console.log(JSON.stringify(out, null, 1));
 else {
   for (const r of rows) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.parish} ${r.view.padEnd(8)} calls ${r.calls} tris ${r.tris} ms ${r.ms} chunks ${r.chunks} fabric ${r.fabric} lamps ${r.lamps} loaded ${r.loaded}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
@@ -434,12 +557,19 @@ else {
   for (const r of rows.filter((x) => x.kit)) console.log(`${r.fails.length ? 'FAIL' : '  ok'} kit ${r.parish} ${r.view.padEnd(8)} buildings ${JSON.stringify(r.kit)} calls/family ${JSON.stringify(r.familyCalls)}`);
   for (const r of [groundRow, atlasRow, atmRow, raceRow, rmRow]) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.probe} ${JSON.stringify(Object.fromEntries(Object.entries(r).filter(([k]) => k !== 'fails' && k !== 'probe')))}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
   for (const r of [...worldRows, ambRow, detRow, deepRow]) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.probe} ${JSON.stringify(Object.fromEntries(Object.entries(r).filter(([k]) => k !== 'fails' && k !== 'probe')))}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
+  for (const r of perfRows) console.log(`${r.fails.length ? 'FAIL' : '  ok'} perfcull ${r.parish} ${r.view.padEnd(8)} calls ${r.offCalls} -> ${r.onCalls} tris ${r.offTris} -> ${r.onTris} fabric ${r.offFabric} -> ${r.onFabric} fleet drawn ${r.fleetDrawn.join(' -> ')} npc drawn ${r.npcVisible.join(' -> ')} (culls off -> on)${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
+  console.log(`${drivecam.fails.length ? 'FAIL' : '  ok'} drivecam ${drivecam.now.id} flat ${drivecam.now.flat} px ${drivecam.now.px.join(' | ')} cam->car ${drivecam.now.camToCar} m (chase ${drivecam.now.chase}) pulls ${drivecam.now.pulls}${drivecam.fails.length ? ' :: ' + drivecam.fails.join('; ') : ''}`);
+  console.log(`  -- DIAG drivecam (PERF w13): the OLD camera path (fixed 1/60 s easing, no pull-in) on the same first ride: flat ${drivecam.old.flat} px ${drivecam.old.px.join(' | ')} cam->car ${drivecam.old.camToCar} m - diagnosis, not a target`);
+  for (const r of rows.filter((x) => x.kitCost)) console.log(`  -- DIAG ${r.parish} border walk frame by kit (PERF w13): all ${r.kitCost.all.calls} calls ${r.kitCost.all.tris} tris ${r.kitCost.all.ms} ms render, js ${r.kitCost.jsMs} ms; ` + Object.entries(r.kitCost.groups).filter(([, g]) => g.calls).sort((a, b) => b[1].tris - a[1].tris).map(([k, g]) => `${k} ${g.calls}c/${g.tris}t/${g.ms}ms`).join(', ') + ' - diagnosis, not a target');
   console.log(`  -- DIAG 22103 border: ${lakeDiag.skippedWater} lots not built in AUTHORED water while building this view (fabric ${lakeDiag.fabric}, pending ${lakeDiag.pending}) - diagnosis, not a target`);
   console.log(`  -- DIAG 22103 border (WORLDS w11): ${lakeDiag.reseated} of those lots re-seated onto the nearest empty dry cell of their chunk (diagnosis, not a target)`);
   console.log(`  -- DIAG 22071 overview split at 0.6: all ${ovSplit.all} ms, render skipped ${ovSplit.noRender} ms, labels+minimap skipped ${ovSplit.noLabelsMini} ms (diagnosis, not a target)`);
   console.log(`  -- DIAG 22071 overview land share at 0.6 (WORLDS w11): own parish land only ${ovSplit.ownLand} ms, land only (all else hidden) ${ovSplit.onlyLand} ms, no land ${ovSplit.noLand} ms (diagnosis, not a target)`);
   console.log(`  -- DIAG 22071 overview (WORLDS w11): rendered EVERY frame ${ovSplit.ovAlways} ms vs on demand ${ovSplit.all} ms - the overview rows judge the every-frame render (diagnosis, not a target)`);
   console.log(`  -- DIAG 22071 overview median frame: scale 1 ${diag[1]} ms, scale 0.6 ${diag[0.6]} ms (diagnosis, not a target)`);
+  for (const r of [plotRow, streetRow]) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.probe} ${JSON.stringify(Object.fromEntries(Object.entries(r).filter(([k]) => k !== 'fails' && k !== 'probe')))}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
+  console.log(`  -- DIAG 22103 border (WORLDS w13): ${crossDiag.cross} lots seated from wholly-wet neighbour chunks (w11 same-chunk re-seats ${crossDiag.reseated}); fabric = ${crossDiag.blocks} blocks + ${crossDiag.trees} trees, of which ${crossDiag.streetTrees} are w13 residential street trees (pending ${crossDiag.pending}) - diagnosis, not a target`);
+  /* BEGIN VEG w14 */ console.log(`${vegRow.fails.length ? 'FAIL' : '  ok'} ${vegRow.probe} ${JSON.stringify(Object.fromEntries(Object.entries(vegRow).filter(([k]) => k !== 'fails' && k !== 'probe')))}${vegRow.fails.length ? ' :: ' + vegRow.fails.join('; ') : ''}`); /* END VEG w14 */
   for (const e of errors) console.log('FAIL page error: ' + e);
   console.log(bad + errors.length ? `eval_parishes: ${bad + errors.length} FAIL` : 'eval_parishes: all rows within target');
 }

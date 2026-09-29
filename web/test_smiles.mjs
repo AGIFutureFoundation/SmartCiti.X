@@ -52,7 +52,13 @@ ok('atlas cells are cut only after the atlas image loads (no texture update with
 ok('no Math.random, no network in the page scripts', !page.includes('Math.random') && !/fetch\(|XMLHttpRequest|sendBeacon/.test(page.split('<script id="sm-kit">')[1]));
 ok('three.js comes from the vendored module, nothing external', page.includes("import * as THREE from './vendor/three.module.min.js'") && !/src="https?:/.test(page));
 ok('eggs reach TCQuests only when the quest registry carries all of them', W.quests === (page.includes('QUEST_CORE:BEGIN'))
-  && page.includes('if (W.quests) { const T = window.TCQuests; if (T && T.data && T.data.quests.some((q) => q.id === g.id)) T.find(g.id); }'));
+  && page.includes('const T = W.quests ? window.TCQuests : null;') && page.includes('if (T && T.data && T.data.quests.some((q) => q.id === g.id)) { T.find(g.id);'));
+{ // POLISH w13 (item 5): one toast per egg find - the quest engine's (carrying the page's reveal line) or the page's, never both
+  const fe = (page.match(/const findEggs = [\s\S]*?\} \} \};/) || [''])[0];
+  ok('one toast per egg find: with quests on the quest engine toast carries the reveal line, else the page toast (never both)',
+    /if \(T && T\.data && T\.data\.quests\.some\(\(q\) => q\.id === g\.id\)\) \{ T\.find\(g\.id\); T\.toast\(said\); \} else toast\(said\);/.test(fe)
+    && (fe.match(/\btoast\(/g) || []).length === 2 && (fe.match(/T\.toast\(/g) || []).length === 1 && /const said = `\$\{t\('smiles\.egg\.got'\)\}: \$\{g\.title\} - \$\{g\.badge\}\. \$\{g\.reveal\}`/.test(fe));
+}
 ok('no fabricated sugar figures on the page (categories only)', !/\d\s*(grams?|tsp|teaspoons?)\b/i.test(page.split('id="sm-data">')[1].split('</script>')[0]));
 
 // physics: the page's walls are the registry walls, made solid with the page's own copy of web/physkit.py (run here)

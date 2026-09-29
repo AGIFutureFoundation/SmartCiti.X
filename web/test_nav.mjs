@@ -381,7 +381,7 @@ const TAIL_ONLY = new Set(Object.entries(sty.mem).filter(([, m]) => m === 'tail'
 // takes the head script only: a saved style applies there, a choice made there lasts for the visit.
 const STYLE_NO_TAIL = new Map([['web/trade_craft_signin.html', 'auth/test.mjs allows one storage write on the page']]);
 // Pages whose builder is not UX's and has not adopted the head script yet (logged as NEEDS for the owner).
-const STYLE_HEAD_PENDING = new Map([['web/trade_craft_geomap.html', 'build_geomap.py carries STYLE_JS only (NEEDS geomap owner)']]);
+const STYLE_HEAD_PENDING = new Map();   // POLISH w13: geomap adopted STYLE_HEAD_JS; the list is empty (the liveness check stays)
 const styleHeadMiss = [];
 const styleTailMiss = [];
 let styleMenus = 0;
@@ -407,7 +407,8 @@ ok('the style exemptions are live: each pending page really lacks the head scrip
 /* ------------------------------------------ the page says which page -- */
 // AUDIT row 8: with this many pages the heading must name the page, not the brand (the brand is the kicker line).
 // Pages whose h1 is exactly their own nav label (en catalog):
-const H1_IS_NAV = ['web/trade_craft_interactive.html', 'web/trade_craft_signin.html', 'web/trade_craft_verify.html', 'web/trade_craft_wilds.html'];
+const H1_IS_NAV = ['web/trade_craft_interactive.html', 'web/trade_craft_signin.html', 'web/trade_craft_verify.html', 'web/trade_craft_wilds.html',
+  'web/trade_craft_geomap.html'];
 const h1Bad = [];
 for (const page of H1_IS_NAV) {
   const hs = [...readFileSync(join(ROOT, page), 'utf8').matchAll(/<h1\b[^>]*>([\s\S]*?)<\/h1>/g)].map((m) => textOf(m[1]));

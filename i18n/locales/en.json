@@ -1150,7 +1150,13 @@
   "wild.close": "Close",
   "wild.seen": "photographed",
   "wild.off_season": "Outside the game season - you can still practise the steps",
-  "nav.page.smiles": "Unspoken Smiles world"
+  "nav.page.smiles": "Unspoken Smiles world",
+  "hud.toggle.fish": "Fishing panel",
+  "hud.toggle.fields": "Season board",
+  "hud.toggle.drive": "Driving panel",
+  "hud.open.fish": "Fishing and crawfish",
+  "veg.honesty": "Trees, plants and street details: AUTHORED placement of generally named regional plants and generic street furniture (rules by land use and distance to water) - not a tree survey, species map or count.",
+  "elev.legend.authored": "relief: AUTHORED - procedural knolls in park districts and levee banks beside AUTHORED channels, a few metres at most; no real elevation is held for this world."
  },
  "districts": {
   "structural": {

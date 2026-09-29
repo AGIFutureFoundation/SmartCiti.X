@@ -37,6 +37,7 @@
  * legibility bought by taking signage away is not legibility.
  */
 import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { readFileSync } from 'node:fs';
 
 const URL_BASE = process.env.TC_URL ?? 'http://127.0.0.1:8811/web/trade_craft_3d.html';
 const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
@@ -229,6 +230,17 @@ const VIEWS = [
 
 const pct = (v, lim) => `${((v / lim) * 100).toFixed(0)}%`;
 
+/* TIME TO READY (wave 13 row, ADDED - no target above moved). The page's own boot marks
+   (window.__tc3dBoot(), ms since navigation start) are read once the first frame has been drawn.
+   `frame1` - the end of the first drawn frame - is what a learner waits for; `ready` is the line
+   before window.__tc3d exists. MEASURED-HERE 2026-09-29, this browser, 1280x800, rung high, one page
+   open, load average 5.0 on 4 CPUs (other agents' browsers running): ready 1,127 ms, frame1 1,632 ms,
+   before the boot sky was drawn once instead of three times. Wall-clock time on a shared SwiftShader
+   box moves with load, so the ceiling is twice the measurement and the load average is printed beside
+   it; a borderline reading is re-run, never re-targeted. */
+const BOOT_BASE = { frame1: 1632 };
+const BOOT_HEADROOM = 2;
+
 async function main() {
   const b = await chromium.launch({
     executablePath: CHROME,
@@ -242,6 +254,9 @@ async function main() {
   await pg.goto(URL_BASE, { waitUntil: 'load' });
   await pg.waitForFunction(() => window.__tc3d, null, { timeout: 90_000 });
   await pg.waitForTimeout(3000);
+  const boot = await pg.evaluate(() => (typeof window.__tc3dBoot === 'function' ? window.__tc3dBoot() : null));
+  if (!boot || !(boot.frame1 > 0)) throw new Error('the page reports no boot marks (__tc3dBoot) or no first frame, so time to ready cannot be measured');
+  const loadAvg = readFileSync('/proc/loadavg', 'utf8').split(' ').slice(0, 3).join(' ');
 
   const rows = [];
   for (const v of VIEWS) {
@@ -315,6 +330,9 @@ async function main() {
 
   let bad = 0;
   const line = [];
+  const bootMax = Math.round(BOOT_BASE.frame1 * BOOT_HEADROOM);
+  const bootFail = boot.frame1 > bootMax;
+  if (bootFail) bad++;
   for (const r of rows) {
     const fails = [];
     if (r.calls > r.maxCalls) fails.push(`draw calls ${r.calls} > ${r.maxCalls}`);
@@ -329,7 +347,7 @@ async function main() {
   }
 
   if (JSON_OUT) {
-    console.log(JSON.stringify({ rows: line, errors: errs, failing: bad }, null, 1));
+    console.log(JSON.stringify({ rows: line, boot: { ...boot, max: bootMax, load: loadAvg }, errors: errs, failing: bad }, null, 1));
   } else {
     console.log('\nscene eval — measured in Chromium, one frame per view\n');
     console.log(`${'view'.padEnd(9)} ${'calls'.padStart(6)} ${'of'.padStart(5)} `
@@ -357,6 +375,9 @@ async function main() {
       console.log('\npage errors:');
       for (const e of errs.slice(0, 6)) console.log('  ' + e);
     }
+    console.log(`\ntime to ready: first frame ${boot.frame1} ms of ${bootMax} (${pct(boot.frame1, bootMax)}), `
+      + `module ${boot.module} -> ready ${boot.ready} ms, view built ${boot.view} ms, ${boot.programs} programs, `
+      + `load average ${loadAvg}` + (bootFail ? `   <<< first frame ${boot.frame1} ms > ${bootMax}` : ''));
     console.log(`\n${line.length} views scored, ${bad} over a declared limit`
       + `${errs.length ? `, ${errs.length} page error(s)` : ', no page errors'}`);
   }

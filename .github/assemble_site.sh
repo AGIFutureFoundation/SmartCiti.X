@@ -47,6 +47,12 @@ rm -rf _site/bayarea/maps/tiles    # the pages load one ground atlas per county 
 cp underwater/registry/underwater.json _site/underwater/registry/underwater.json
 # The Unspoken Smiles world loads its 4k map and one ground atlas at run time (paths from smiles/registry).
 mkdir -p _site/smiles && cp -r smiles/maps _site/smiles/maps
+# The parish and Bay worlds fetch the vendored USGS 3DEP grids at run time when relief is on (elevation/vendor).
+mkdir -p _site/elevation/vendor && cp elevation/vendor/*.u16.gz elevation/vendor/manifest.json elevation/vendor/USGS_3DEP_USE_CONSTRAINTS.txt _site/elevation/vendor/
+# ... and the vendored ESA WorldCover land-cover grids (CC BY 4.0, attribution beside them) that place the vegetation.
+mkdir -p _site/landcover/vendor && cp landcover/vendor/*.u8.gz landcover/vendor/manifest.json landcover/vendor/WORLDCOVER_ATTRIBUTION.txt landcover/vendor/LICENSE_CC-BY-4.0.txt _site/landcover/vendor/
+for f in landcover/vendor/parishes.u8.gz landcover/vendor/bayarea.u8.gz; do [ -f "_site/$f" ] || { echo "assemble: $f missing from _site"; exit 1; }; done
+for f in elevation/vendor/parishes.u16.gz elevation/vendor/bayarea.u16.gz; do [ -f "_site/$f" ] || { echo "assemble: $f missing from _site"; exit 1; }; done
 for f in smiles/maps/district-4k.webp smiles/maps/atlas.webp; do [ -f "_site/$f" ] || { echo "assemble: $f missing from _site"; exit 1; }; done
 python3 - <<'PY'
 import json, pathlib, sys

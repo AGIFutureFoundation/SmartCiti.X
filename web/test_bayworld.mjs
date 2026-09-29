@@ -113,5 +113,23 @@ ok(!/(?:fetch\(\s*|src\s*=\s*|\bfrom\s+|import\(\s*|new URL\(\s*)['"`]https?:\/\
     `[atlas] the Bay page names ${want.length} county ground atlases (files present) and no per-tile path`);
 }
 
+/* WORLDS w13: the Bay page keeps FIELDS' bay plots free of generated fabric (browser proof: web/eval_bayworld.mjs plots row) */
+{
+  const SEA = JSON.parse(readFileSync(join(ROOT, 'seasons/registry/seasons.json'), 'utf8')).plots;
+  const want = Object.entries(SEA).filter(([, w]) => w.region === 'bay').flatMap(([f, w]) => w.plots.map((q) => [q.id, f, q.x, q.z, q.size_m[0], q.size_m[1]]));
+  const D = JSON.parse((html.match(/<script type="application\/json" id="parishes-data">([\s\S]*?)<\/script>/) || [, 'null'])[1]);
+  ok(want.length > 0 && D && JSON.stringify(D.plots_clear) === JSON.stringify(want) && html.includes('if (PLOTS.length && !plotClearOff) {'),
+    `[plots] the Bay page embeds exactly the ${want.length} bay plots of seasons.json and runs the plot clearance`);
+}
+/* WORLDS w13 (REVIEW13): no two landmark labels of a county stand on one point - the RECORDED Oakland city anchor merged into
+   the Oakland campus landmark as a second label line (its own source cited in the note) */
+{
+  const D = JSON.parse((html.match(/<script type="application\/json" id="parishes-data">([\s\S]*?)<\/script>/) || [, 'null'])[1]);
+  const dup = D.parishes.flatMap((p) => p.landmarks.filter((l, i) => p.landmarks.findIndex((m) => m.x === l.x && m.z === l.z) !== i).map((l) => p.id + ':' + l.name));
+  const oak = D.parishes.find((p) => p.id === '06001').landmarks.filter((l) => /Oakland campus/.test(l.name));
+  ok(dup.length === 0 && oak.length === 1 && oak[0].name.split('\n').length === 2 && oak[0].name.split('\n')[1] === 'Oakland'
+    && /\| Oakland \(city, RECORDED\): /.test(oak[0].note) && html.includes('.lbl.lm b{white-space:pre-line}'),
+    `[labels] no two landmarks of a county share a point (${dup.length} duplicates); the Oakland campus label carries the RECORDED city name as its second line`);
+}
 console.log(`\n${pass} ok, ${fail} FAIL`);
 process.exit(fail ? 1 : 0);

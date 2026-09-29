@@ -1,0 +1,979 @@
+{
+ "budgets": {
+  "chunks_per_tick": 1,
+  "draw_calls_max": 7,
+  "kerb_probe_m": 4,
+  "near_m": 60,
+  "refill_m": 10,
+  "sample_m": 20,
+  "shore_m": 12,
+  "tris_max": 9000,
+  "water_lattice_m": 10
+ },
+ "counts": {
+  "details": 6,
+  "families": 7,
+  "per_region": {
+   "bay": 7,
+   "louisiana": 8,
+   "smiles": 3
+  },
+  "species": 18,
+  "worst_case_tris": 9000
+ },
+ "details": {
+  "bench": {
+   "boxes": [
+    [
+     0,
+     0.42,
+     0,
+     1.8,
+     0.08,
+     0.5,
+     "#7a5a3a"
+    ],
+    [
+     0,
+     0.5,
+     0.22,
+     1.8,
+     0.45,
+     0.06,
+     "#7a5a3a"
+    ],
+    [
+     0,
+     0,
+     0,
+     1.6,
+     0.42,
+     0.08,
+     "#3a3a3a"
+    ]
+   ],
+   "name": "bench",
+   "setback_m": 1.6
+  },
+  "bollard": {
+   "boxes": [
+    [
+     0,
+     0,
+     0,
+     0.22,
+     0.95,
+     0.22,
+     "#4a4a4a"
+    ]
+   ],
+   "name": "bollard",
+   "setback_m": 0.8
+  },
+  "bus_shelter": {
+   "boxes": [
+    [
+     0,
+     2.4,
+     0,
+     3.6,
+     0.12,
+     1.6,
+     "#5e6a72"
+    ],
+    [
+     0,
+     0,
+     0.75,
+     3.6,
+     2.4,
+     0.06,
+     "#a9c4d0"
+    ],
+    [
+     -1.75,
+     0,
+     0,
+     0.08,
+     2.4,
+     1.5,
+     "#5e6a72"
+    ],
+    [
+     0,
+     0.45,
+     0.55,
+     2.6,
+     0.08,
+     0.4,
+     "#5e6a72"
+    ]
+   ],
+   "name": "bus shelter",
+   "setback_m": 2.4
+  },
+  "fence": {
+   "boxes": [
+    [
+     0,
+     0,
+     0,
+     6.0,
+     0.9,
+     0.08,
+     "#e8e2d4"
+    ],
+    [
+     -3.0,
+     0,
+     0,
+     0.12,
+     1.1,
+     0.12,
+     "#e8e2d4"
+    ],
+    [
+     3.0,
+     0,
+     0,
+     0.12,
+     1.1,
+     0.12,
+     "#e8e2d4"
+    ]
+   ],
+   "name": "picket fence run",
+   "setback_m": 2.2
+  },
+  "mailbox": {
+   "boxes": [
+    [
+     0,
+     0,
+     0,
+     0.1,
+     1.0,
+     0.1,
+     "#5a4a3a"
+    ],
+    [
+     0,
+     1.0,
+     0,
+     0.45,
+     0.28,
+     0.25,
+     "#3a4a6a"
+    ]
+   ],
+   "name": "mailbox",
+   "setback_m": 1.2
+  },
+  "planter": {
+   "boxes": [
+    [
+     0,
+     0,
+     0,
+     1.2,
+     0.55,
+     1.2,
+     "#8a7a66"
+    ],
+    [
+     0,
+     0.55,
+     0,
+     1.0,
+     0.45,
+     1.0,
+     "#4f7c3a"
+    ]
+   ],
+   "name": "planter",
+   "setback_m": 1.4
+  }
+ },
+ "families": {
+  "broadleaf": {
+   "cap": 110,
+   "lod_m": 260,
+   "material": "solid",
+   "shape": "trunk4+icosa",
+   "tris": 28
+  },
+  "conifer": {
+   "cap": 80,
+   "lod_m": 320,
+   "material": "solid",
+   "shape": "trunk4+cone6",
+   "tris": 14
+  },
+  "detail": {
+   "cap": 140,
+   "lod_m": 90,
+   "material": "solid",
+   "shape": "box5",
+   "tris": 10
+  },
+  "moss": {
+   "cap": 40,
+   "lod_m": 140,
+   "material": "double",
+   "shape": "drape3",
+   "tris": 6
+  },
+  "palm": {
+   "cap": 50,
+   "lod_m": 260,
+   "material": "double",
+   "shape": "trunk4+fronds6",
+   "tris": 20
+  },
+  "reed": {
+   "cap": 200,
+   "lod_m": 120,
+   "material": "double",
+   "shape": "blades3",
+   "tris": 6
+  },
+  "shrub": {
+   "cap": 120,
+   "lod_m": 150,
+   "material": "solid",
+   "shape": "octa",
+   "tris": 8
+  }
+ },
+ "honesty": {
+  "details": "fences, mailboxes, benches, bus shelters, bollards and planters are AUTHORED street furniture, not a record of real fixtures",
+  "landcover": "where ESA WorldCover 2021 v200 land cover (RECORDED, ~90 m majority cells) is loaded, its class chooses what grows (null = nothing drawn); species, sizes and exact positions stay AUTHORED; cells with no RECORDED class use the AUTHORED land-use rules (counted)",
+  "page_line": "Trees, plants and street details: AUTHORED placement of generally named regional plants and generic street furniture (rules by land use and distance to water) - not a tree survey, species map or count.",
+  "placement": "AUTHORED rules on AUTHORED land-use districts and distance to AUTHORED water - not a planting survey",
+  "species": "real regional plants named generally (no cultivar, no named tree, no location claim)"
+ },
+ "inputs": [
+  "flora/build.py",
+  "flora/authored/flora.json"
+ ],
+ "moss": {
+  "colour": "#a3ab8f",
+  "name": "Spanish moss",
+  "on": [
+   "live_oak"
+  ],
+  "water": [
+   "shore",
+   "near"
+  ]
+ },
+ "provenance": "AUTHORED",
+ "regions": {
+  "bay": {
+   "details": {
+    "commercial": {
+     "mix": {
+      "bench": 3,
+      "bollard": 3,
+      "bus_shelter": 1,
+      "planter": 2
+     },
+     "p_kerb": 0.6
+    },
+    "industrial": {
+     "mix": {
+      "bollard": 2,
+      "fence": 3
+     },
+     "p_kerb": 0.3
+    },
+    "park": {
+     "mix": {
+      "bench": 3,
+      "planter": 1
+     },
+     "p_kerb": 0.3
+    },
+    "residential": {
+     "mix": {
+      "fence": 3,
+      "mailbox": 4,
+      "planter": 1
+     },
+     "p_kerb": 0.45
+    }
+   },
+   "land_uses": [
+    "residential",
+    "commercial",
+    "industrial",
+    "park"
+   ],
+   "landcover": {
+    "10": {
+     "mix": {
+      "coast_live_oak": 3,
+      "eucalyptus": 2,
+      "monterey_cypress": 1
+     },
+     "per_ha": 12
+    },
+    "100": null,
+    "20": {
+     "mix": {
+      "coastal_scrub": 1
+     },
+     "per_ha": 12
+    },
+    "30": {
+     "mix": {
+      "bay_grass": 3,
+      "coastal_scrub": 1
+     },
+     "per_ha": 10
+    },
+    "40": null,
+    "50": null,
+    "60": null,
+    "70": null,
+    "80": null,
+    "90": {
+     "mix": {
+      "coastal_scrub": 1,
+      "salt_marsh_grass": 5
+     },
+     "per_ha": 30
+    },
+    "95": {
+     "mix": {
+      "coastal_scrub": 1,
+      "salt_marsh_grass": 5
+     },
+     "per_ha": 30
+    }
+   },
+   "rules": [
+    {
+     "land_use": "*",
+     "mix": {
+      "coastal_scrub": 2,
+      "salt_marsh_grass": 6
+     },
+     "per_ha": 36,
+     "water": "shore"
+    },
+    {
+     "land_use": "*",
+     "mix": {
+      "coast_live_oak": 1,
+      "coastal_scrub": 3,
+      "monterey_cypress": 3
+     },
+     "per_ha": 6,
+     "water": "near"
+    },
+    {
+     "land_use": "park",
+     "mix": {
+      "coast_live_oak": 3,
+      "coastal_scrub": 3,
+      "redwood": 3
+     },
+     "per_ha": 14,
+     "water": "far"
+    },
+    {
+     "land_use": "residential",
+     "mix": {
+      "coast_live_oak": 2,
+      "eucalyptus": 1
+     },
+     "per_ha": 5,
+     "water": "far"
+    },
+    {
+     "land_use": "commercial",
+     "mix": {
+      "coast_live_oak": 1
+     },
+     "per_ha": 2,
+     "water": "far"
+    },
+    {
+     "land_use": "industrial",
+     "mix": {
+      "coastal_scrub": 1,
+      "eucalyptus": 3
+     },
+     "per_ha": 3,
+     "water": "far"
+    }
+   ],
+   "species": [
+    "bay_grass",
+    "coast_live_oak",
+    "coastal_scrub",
+    "eucalyptus",
+    "monterey_cypress",
+    "redwood",
+    "salt_marsh_grass"
+   ]
+  },
+  "louisiana": {
+   "details": {
+    "commercial": {
+     "mix": {
+      "bench": 3,
+      "bollard": 3,
+      "bus_shelter": 1,
+      "planter": 2
+     },
+     "p_kerb": 0.6
+    },
+    "industrial": {
+     "mix": {
+      "bollard": 2,
+      "fence": 3
+     },
+     "p_kerb": 0.3
+    },
+    "park": {
+     "mix": {
+      "bench": 3,
+      "planter": 1
+     },
+     "p_kerb": 0.3
+    },
+    "residential": {
+     "mix": {
+      "fence": 3,
+      "mailbox": 4,
+      "planter": 1
+     },
+     "p_kerb": 0.45
+    }
+   },
+   "land_uses": [
+    "residential",
+    "commercial",
+    "industrial",
+    "park"
+   ],
+   "landcover": {
+    "10": {
+     "mix": {
+      "bald_cypress": 2,
+      "live_oak": 5,
+      "sabal_palmetto": 1
+     },
+     "per_ha": 14
+    },
+    "100": null,
+    "20": {
+     "mix": {
+      "palmetto_shrub": 3,
+      "sabal_palmetto": 1
+     },
+     "per_ha": 10
+    },
+    "30": {
+     "mix": {
+      "field_grass": 1
+     },
+     "per_ha": 12
+    },
+    "40": null,
+    "50": null,
+    "60": null,
+    "70": null,
+    "80": null,
+    "90": {
+     "mix": {
+      "bald_cypress": 1,
+      "cattail": 3,
+      "marsh_grass": 5
+     },
+     "per_ha": 30
+    },
+    "95": {
+     "mix": {
+      "bald_cypress": 2,
+      "cattail": 2,
+      "marsh_grass": 3
+     },
+     "per_ha": 30
+    }
+   },
+   "rules": [
+    {
+     "land_use": "*",
+     "mix": {
+      "bald_cypress": 2,
+      "cattail": 3,
+      "marsh_grass": 5
+     },
+     "per_ha": 40,
+     "water": "shore"
+    },
+    {
+     "land_use": "park",
+     "mix": {
+      "bald_cypress": 3,
+      "live_oak": 4,
+      "palmetto_shrub": 2,
+      "sabal_palmetto": 1
+     },
+     "per_ha": 16,
+     "water": "near"
+    },
+    {
+     "land_use": "park",
+     "mix": {
+      "live_oak": 5,
+      "palmetto_shrub": 2,
+      "sabal_palmetto": 2
+     },
+     "per_ha": 14,
+     "water": "far"
+    },
+    {
+     "land_use": "residential",
+     "mix": {
+      "crape_myrtle": 2,
+      "live_oak": 3
+     },
+     "per_ha": 6,
+     "water": "near"
+    },
+    {
+     "land_use": "residential",
+     "mix": {
+      "crape_myrtle": 3,
+      "live_oak": 1,
+      "sabal_palmetto": 1
+     },
+     "per_ha": 5,
+     "water": "far"
+    },
+    {
+     "land_use": "commercial",
+     "mix": {
+      "crape_myrtle": 1,
+      "sabal_palmetto": 2
+     },
+     "per_ha": 2,
+     "water": "*"
+    },
+    {
+     "land_use": "industrial",
+     "mix": {
+      "live_oak": 1,
+      "palmetto_shrub": 2
+     },
+     "per_ha": 2,
+     "water": "*"
+    }
+   ],
+   "species": [
+    "bald_cypress",
+    "cattail",
+    "crape_myrtle",
+    "field_grass",
+    "live_oak",
+    "marsh_grass",
+    "palmetto_shrub",
+    "sabal_palmetto"
+   ]
+  },
+  "smiles": {
+   "details": {
+    "civic": {
+     "mix": {
+      "bench": 1,
+      "bollard": 2,
+      "planter": 1
+     },
+     "p_kerb": 0.3
+    },
+    "commercial": {
+     "mix": {
+      "bench": 2,
+      "bus_shelter": 1,
+      "planter": 2
+     },
+     "p_kerb": 0.45
+    },
+    "open": {
+     "mix": {
+      "bollard": 1
+     },
+     "p_kerb": 0.1
+    },
+    "park": {
+     "mix": {
+      "bench": 3,
+      "planter": 1
+     },
+     "p_kerb": 0.45
+    },
+    "residential": {
+     "mix": {
+      "fence": 3,
+      "mailbox": 3
+     },
+     "p_kerb": 0.45
+    },
+    "school": {
+     "mix": {
+      "bench": 2,
+      "bollard": 2,
+      "fence": 2
+     },
+     "p_kerb": 0.45
+    }
+   },
+   "land_uses": [
+    "park",
+    "school",
+    "civic",
+    "residential",
+    "commercial",
+    "open"
+   ],
+   "landcover": null,
+   "rules": [
+    {
+     "land_use": "park",
+     "mix": {
+      "hedge": 2,
+      "shade_tree": 4
+     },
+     "per_ha": 9,
+     "water": "*"
+    },
+    {
+     "land_use": "school",
+     "mix": {
+      "hedge": 2,
+      "school_tree": 3
+     },
+     "per_ha": 4,
+     "water": "*"
+    },
+    {
+     "land_use": "civic",
+     "mix": {
+      "hedge": 2,
+      "shade_tree": 1
+     },
+     "per_ha": 2,
+     "water": "*"
+    },
+    {
+     "land_use": "residential",
+     "mix": {
+      "hedge": 1,
+      "shade_tree": 1
+     },
+     "per_ha": 2,
+     "water": "*"
+    },
+    {
+     "land_use": "commercial",
+     "mix": {
+      "hedge": 1
+     },
+     "per_ha": 0.5,
+     "water": "*"
+    },
+    {
+     "land_use": "open",
+     "mix": {
+      "shade_tree": 1
+     },
+     "per_ha": 1,
+     "water": "*"
+    }
+   ],
+   "species": [
+    "hedge",
+    "school_tree",
+    "shade_tree"
+   ]
+  }
+ },
+ "schema": "FLORA v1",
+ "source_stamp": "e575b0b2a7535f01",
+ "species": {
+  "bald_cypress": {
+   "colour": "#6f8c4a",
+   "crown_m": [
+    5,
+    8
+   ],
+   "family": "conifer",
+   "height_m": [
+    15,
+    24
+   ],
+   "moss_near_water": false,
+   "name": "bald cypress",
+   "region": "louisiana"
+  },
+  "bay_grass": {
+   "colour": "#a8a864",
+   "crown_m": [
+    1.2,
+    2.4
+   ],
+   "family": "reed",
+   "height_m": [
+    0.3,
+    0.8
+   ],
+   "moss_near_water": false,
+   "name": "grass clump (generic)",
+   "region": "bay"
+  },
+  "cattail": {
+   "colour": "#6f7f3a",
+   "crown_m": [
+    1.5,
+    3.0
+   ],
+   "family": "reed",
+   "height_m": [
+    1.5,
+    2.4
+   ],
+   "moss_near_water": false,
+   "name": "cattail",
+   "region": "louisiana"
+  },
+  "coast_live_oak": {
+   "colour": "#476a36",
+   "crown_m": [
+    10,
+    16
+   ],
+   "family": "broadleaf",
+   "height_m": [
+    8,
+    14
+   ],
+   "moss_near_water": false,
+   "name": "coast live oak",
+   "region": "bay"
+  },
+  "coastal_scrub": {
+   "colour": "#7d8a5c",
+   "crown_m": [
+    1.2,
+    2.6
+   ],
+   "family": "shrub",
+   "height_m": [
+    0.6,
+    1.8
+   ],
+   "moss_near_water": false,
+   "name": "coastal scrub",
+   "region": "bay"
+  },
+  "crape_myrtle": {
+   "colour": "#c46b98",
+   "crown_m": [
+    3,
+    5
+   ],
+   "family": "broadleaf",
+   "height_m": [
+    4,
+    7
+   ],
+   "moss_near_water": false,
+   "name": "crape myrtle",
+   "region": "louisiana"
+  },
+  "eucalyptus": {
+   "colour": "#7e9c8a",
+   "crown_m": [
+    6,
+    10
+   ],
+   "family": "broadleaf",
+   "height_m": [
+    20,
+    32
+   ],
+   "moss_near_water": false,
+   "name": "eucalyptus",
+   "region": "bay"
+  },
+  "field_grass": {
+   "colour": "#8fae5a",
+   "crown_m": [
+    1.2,
+    2.4
+   ],
+   "family": "reed",
+   "height_m": [
+    0.4,
+    0.9
+   ],
+   "moss_near_water": false,
+   "name": "grass clump (generic)",
+   "region": "louisiana"
+  },
+  "hedge": {
+   "colour": "#3f6e3a",
+   "crown_m": [
+    1.2,
+    2.0
+   ],
+   "family": "shrub",
+   "height_m": [
+    0.8,
+    1.4
+   ],
+   "moss_near_water": false,
+   "name": "hedge shrub (generic)",
+   "region": "smiles"
+  },
+  "live_oak": {
+   "colour": "#3f6a36",
+   "crown_m": [
+    14,
+    22
+   ],
+   "family": "broadleaf",
+   "height_m": [
+    9,
+    15
+   ],
+   "moss_near_water": true,
+   "name": "live oak",
+   "region": "louisiana"
+  },
+  "marsh_grass": {
+   "colour": "#9aa55a",
+   "crown_m": [
+    1.5,
+    3.0
+   ],
+   "family": "reed",
+   "height_m": [
+    0.8,
+    1.5
+   ],
+   "moss_near_water": false,
+   "name": "marsh grass",
+   "region": "louisiana"
+  },
+  "monterey_cypress": {
+   "colour": "#2f5836",
+   "crown_m": [
+    9,
+    14
+   ],
+   "family": "conifer",
+   "height_m": [
+    10,
+    18
+   ],
+   "moss_near_water": false,
+   "name": "Monterey cypress",
+   "region": "bay"
+  },
+  "palmetto_shrub": {
+   "colour": "#4f7c3a",
+   "crown_m": [
+    1.4,
+    2.4
+   ],
+   "family": "shrub",
+   "height_m": [
+    0.8,
+    1.6
+   ],
+   "moss_near_water": false,
+   "name": "palmetto (low)",
+   "region": "louisiana"
+  },
+  "redwood": {
+   "colour": "#2b4a2c",
+   "crown_m": [
+    6,
+    9
+   ],
+   "family": "conifer",
+   "height_m": [
+    30,
+    48
+   ],
+   "moss_near_water": false,
+   "name": "redwood",
+   "region": "bay"
+  },
+  "sabal_palmetto": {
+   "colour": "#5f8a3c",
+   "crown_m": [
+    4,
+    6
+   ],
+   "family": "palm",
+   "height_m": [
+    8,
+    14
+   ],
+   "moss_near_water": false,
+   "name": "sabal palmetto",
+   "region": "louisiana"
+  },
+  "salt_marsh_grass": {
+   "colour": "#8f9a54",
+   "crown_m": [
+    1.5,
+    3.0
+   ],
+   "family": "reed",
+   "height_m": [
+    0.5,
+    1.2
+   ],
+   "moss_near_water": false,
+   "name": "salt marsh grass",
+   "region": "bay"
+  },
+  "school_tree": {
+   "colour": "#5b8a40",
+   "crown_m": [
+    5,
+    8
+   ],
+   "family": "broadleaf",
+   "height_m": [
+    5,
+    9
+   ],
+   "moss_near_water": false,
+   "name": "schoolyard tree (generic)",
+   "region": "smiles"
+  },
+  "shade_tree": {
+   "colour": "#4a7a3c",
+   "crown_m": [
+    7,
+    11
+   ],
+   "family": "broadleaf",
+   "height_m": [
+    7,
+    12
+   ],
+   "moss_near_water": false,
+   "name": "park shade tree (generic)",
+   "region": "smiles"
+  }
+ }
+}

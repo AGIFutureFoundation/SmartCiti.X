@@ -1150,7 +1150,13 @@
   "wild.close": "Fechar",
   "wild.seen": "fotografado",
   "wild.off_season": "Fora da temporada do jogo - ainda pode praticar os passos",
-  "nav.page.smiles": "Mundo Unspoken Smiles"
+  "nav.page.smiles": "Mundo Unspoken Smiles",
+  "hud.toggle.fish": "Painel de pesca",
+  "hud.toggle.fields": "Quadro da estação",
+  "hud.toggle.drive": "Painel de condução",
+  "hud.open.fish": "Pesca e lagostins",
+  "veg.honesty": "Árvores, plantas e detalhes de rua: colocação AUTHORED de plantas regionais nomeadas de forma geral e mobiliário urbano genérico (regras por uso do solo e distância à água) – não é um levantamento de árvores, um mapa de espécies nem uma contagem.",
+  "elev.legend.authored": "relevo: AUTHORED - colinas procedurais nos distritos de parques e diques junto aos canais AUTHORED, de poucos metros no máximo; este mundo não contém elevação real."
  },
  "districts": {
   "structural": {

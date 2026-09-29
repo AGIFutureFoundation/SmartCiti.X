@@ -14,6 +14,23 @@ const VENDOR = join(ROOT, 'web', 'vendor');
 // the second vendor root (data): us-atlas, vendored by parishes/fetch_usatlas.py
 const PARISH_VENDOR = join(ROOT, 'parishes', 'vendor');
 const USATLAS = JSON.parse(readFileSync(join(PARISH_VENDOR, 'us-atlas', 'manifest.json'), 'utf8'));
+// the data vendor roots (wave 14): RECORDED rasters redistributed in derived
+// form, each pinned file by file in its own manifest.json by its fetcher
+const DATA_ROOTS = {
+  'elevation/vendor': { name: 'usgs-3dep-1-arc-second', licence: 'LicenseRef-US-Government-Public-Domain',
+    registry: 'elevation/registry/elevation.json', texts: ['USGS_3DEP_USE_CONSTRAINTS.txt'], credit: 'USGS 3DEP' },
+  'landcover/vendor': { name: 'esa-worldcover', licence: 'CC-BY-4.0',
+    registry: 'landcover/registry/landcover.json',
+    texts: ['LICENSE_CC-BY-4.0.txt', 'WORLDCOVER_ATTRIBUTION.txt'], credit: 'ESA WorldCover' },
+};
+const DATA_MAN = Object.fromEntries(Object.keys(DATA_ROOTS).map((r) =>
+  [r, JSON.parse(readFileSync(join(ROOT, r, 'manifest.json'), 'utf8'))]));
+const ROOTS = ['web/vendor', 'parishes/vendor', ...Object.keys(DATA_ROOTS)];
+const licId = (c) => {
+  const l = c.licenses[0].license;
+  assert.ok(('id' in l) !== ('name' in l), `${c['bom-ref']}: a licence must carry exactly one of id / name`);
+  return 'id' in l ? l.id : l.name;
+};
 let n = 0; const ok = (m) => { n++; console.log(`  ok  ${m}`); };
 const sha = (buf) => createHash('sha256').update(buf).digest('hex');
 const prop = (o, name) => (o.properties ?? []).find((p) => p.name === name)?.value;
@@ -42,17 +59,31 @@ const walk = (dir) => readdirSync(dir).flatMap((f) => {
   return statSync(p).isDirectory() ? walk(p) : [p];
 });
 const vendored = walk(VENDOR).map((p) => 'web/vendor/' + relative(VENDOR, p).split('\\').join('/'))
-  .concat(walk(PARISH_VENDOR).map((p) => 'parishes/vendor/' + relative(PARISH_VENDOR, p).split('\\').join('/'))).sort();
+  .concat(walk(PARISH_VENDOR).map((p) => 'parishes/vendor/' + relative(PARISH_VENDOR, p).split('\\').join('/')))
+  .concat(Object.keys(DATA_ROOTS).flatMap((r) =>
+    walk(join(ROOT, r)).map((p) => `${r}/` + relative(join(ROOT, r), p).split('\\').join('/')))).sort();
 const listed = doc.components.map((c) => c['bom-ref']).sort();
 
 {
   assert.deepEqual(listed, vendored,
-    'the SBOM must list every file under web/vendor/ and parishes/vendor/ and nothing else');
+    `the SBOM must list every file under ${ROOTS.join('/, ')}/ and nothing else`);
   assert.ok(vendored.length >= 2, 'the vendor tree is not empty');
-  ok(`the SBOM lists exactly the ${vendored.length} files under web/vendor/ and parishes/vendor/ — no more, no fewer`);
+  // each data root: the manifest accounts for every file in the tree and
+  // every manifest entry is a file in the tree (both directions)
+  for (const [r, man] of Object.entries(DATA_MAN)) {
+    const inTree = vendored.filter((f) => f.startsWith(`${r}/`)).map((f) => f.slice(r.length + 1));
+    for (const f of inTree) {
+      assert.ok(f === 'manifest.json' || f in man.files, `${r}/${f} is in ${r}/ but ${r}/manifest.json does not account for it`);
+    }
+    for (const f of Object.keys(man.files)) {
+      assert.ok(inTree.includes(f), `${r}/manifest.json pins ${f} but it is not in the tree`);
+    }
+  }
+  ok(`the SBOM lists exactly the ${vendored.length} files under ${ROOTS.join('/, ')}/ — no more, no fewer`);
 }
 
-const SPDX = new Set(['MIT', 'BSD-3-Clause', 'OFL-1.1', 'ISC', 'Apache-2.0']);
+const CC_BY_FIELDS = ['author', 'title', 'source_url', 'license_id', 'license_url'];
+const SPDX = new Set(['MIT', 'BSD-3-Clause', 'OFL-1.1', 'ISC', 'Apache-2.0', 'CC-BY-4.0']);
 const PURLS = {
   three: 'pkg:npm/three@0.160.0',
   'maplibre-gl': 'pkg:npm/maplibre-gl@5.24.0',
@@ -69,6 +100,9 @@ const PURLS = {
   '@reactor-team/js-sdk': 'pkg:npm/%40reactor-team/js-sdk@3.0.2',
   // the parish outlines: Census cartographic boundaries as packaged by us-atlas (data)
   'us-atlas': 'pkg:npm/us-atlas@3.0.1',
+  // the data vendor roots: RECORDED rasters, derived grids (not code)
+  'usgs-3dep-1-arc-second': 'pkg:generic/usgs-3dep-1-arc-second@current',
+  'esa-worldcover': 'pkg:generic/esa-worldcover@v200',
 };
 const ICONS = JSON.parse(readFileSync(join(ROOT, 'web/vendor/icons/manifest.json'), 'utf8'));
 // A font is a binary; decoding one as UTF-8 produces mojibake that the
@@ -100,6 +134,41 @@ for (const c of doc.components) {
 
   libs++;
   const text = isBinary(c['bom-ref']) ? '' : bytes.toString('utf8');
+  const dataRoot = Object.keys(DATA_ROOTS).find((r) => c['bom-ref'].startsWith(`${r}/`));
+  if (dataRoot) {
+    // data, not code: licence, version and bytes all rest on the root's
+    // manifest and the registry of the pack that fetched it
+    const spec = DATA_ROOTS[dataRoot], man = DATA_MAN[dataRoot];
+    const sub = c['bom-ref'].slice(dataRoot.length + 1);
+    assert.equal(c.type, 'data', `${c['bom-ref']}: a vendored raster is CycloneDX type data`);
+    assert.equal(c.name, spec.name, `${c['bom-ref']}: component name is not ${spec.name}`);
+    assert.equal(licId(c), spec.licence, `${c['bom-ref']}: licence is ${licId(c)}, not ${spec.licence}`);
+    if (spec.licence.startsWith('LicenseRef-')) assert.ok(!('id' in c.licenses[0].license), `${c['bom-ref']}: a LicenseRef is not an SPDX id`);
+    else assert.ok(SPDX.has(c.licenses[0].license.id), `${c['bom-ref']}: licence is not an SPDX id we recognise`);
+    const reg = JSON.parse(readFileSync(join(ROOT, spec.registry), 'utf8'));
+    assert.equal(reg.attribution.license_id, spec.licence, `${spec.registry}: attribution.license_id disagrees with the SBOM`);
+    assert.ok(sub in man.files, `${c['bom-ref']}: not in ${dataRoot}/manifest.json`);
+    assert.equal(man.files[sub].sha256, sha(bytes), `${c['bom-ref']}: bytes differ from ${dataRoot}/manifest.json`);
+    assert.equal(c.purl, `${PURLS[c.name]}#${sub}`, `${c['bom-ref']}: purl ${c.purl} is not ${PURLS[c.name]}#${sub}`);
+    assert.ok(c.purl.includes(`@${c.version}`), 'purl and version agree');
+    assert.ok(prop(c, 'smartcitix:version_evidence').includes(dataRoot + '/manifest.json'),
+      `${c['bom-ref']}: version evidence does not cite ${dataRoot}/manifest.json`);
+    assert.ok(/^no licence banner in this file/.test(prop(c, 'smartcitix:licence_evidence')));
+    for (const t of spec.texts) assert.ok(t in man.files, `${dataRoot}/${t}: the licence/attribution text is not pinned`);
+    if (spec.licence === 'CC-BY-4.0') {
+      const legal = readFileSync(join(ROOT, dataRoot, 'LICENSE_CC-BY-4.0.txt'), 'utf8');
+      assert.ok(/^Creative Commons Attribution 4\.0 International/.test(legal.trim()),
+        `${dataRoot}/LICENSE_CC-BY-4.0.txt: does not read as the CC BY 4.0 legal code`);
+      const at = prop(c, 'smartcitix:attribution');
+      assert.ok(at, `${c['bom-ref']}: a redistributed CC-BY file carries no attribution`);
+      for (const f of CC_BY_FIELDS) assert.ok(at.includes(reg.attribution[f]), `${c['bom-ref']}: attribution omits ${f}`);
+      assert.ok(/REDISTRIBUTED/.test(at) && !/NOT REDISTRIBUTED/.test(at), `${c['bom-ref']}: attribution must say REDISTRIBUTED`);
+    } else {
+      const uc = readFileSync(join(ROOT, dataRoot, spec.texts[0]), 'utf8');
+      assert.ok(/public domain/i.test(uc) && /17 U\.S\.C\. 105/.test(uc), `${dataRoot}/${spec.texts[0]}: does not state U.S. public domain`);
+    }
+    continue;
+  }
   assert.equal(c.type, 'library');
   assert.ok(SPDX.has(c.licenses[0].license.id), `${c['bom-ref']}: licence is not an SPDX id we recognise`);
   assert.ok(c.purl === PURLS[c.name] || c.purl.startsWith(PURLS[c.name] + '#'),
@@ -177,7 +246,7 @@ for (const c of doc.components) {
 }
 assert.ok(libs > 0 && own > 0, 'both third-party and first-party entries are present');
 ok(`every self-hosted font is tied to the URL it came from and to a full OFL committed in the tree (${own} first-party files listed separately, claiming no upstream)`);
-ok('every hash matches the file bytes right now, every licence is an SPDX id, every purl is upstream\'s');
+ok('every hash matches the file bytes right now, every licence is an SPDX id (or, for U.S. public-domain data, a declared LicenseRef), every purl is upstream\'s');
 ok('every version claim is backed by a version string found verbatim in a vendored file');
 ok('every licence claim is backed by the banner in the file — or says plainly that the file has none');
 
@@ -218,6 +287,14 @@ ok('every licence claim is backed by the banner in the file — or says plainly 
       const rec = ICONS.files[base];
       assert.ok(rec || base === 'manifest.json', `${f} is in web/vendor/icons/ but the icon manifest does not account for it`);
       if (rec) assert.equal(sha(readFileSync(join(ROOT, f))), rec.sha256, `${f}: bytes differ from the icon manifest`);
+      continue;
+    }
+    const dr = Object.keys(DATA_ROOTS).find((r) => f.startsWith(`${r}/`));
+    if (dr) {
+      assert.ok(third.includes(`${dr}/`) && third.includes(DATA_ROOTS[dr].credit),
+        `THIRD_PARTY.md must name ${DATA_ROOTS[dr].credit} and where it is vendored (${dr}/)`);
+      for (const t of DATA_ROOTS[dr].texts) assert.ok(third.includes(t), `THIRD_PARTY.md does not name ${dr}/${t}`);
+      assert.ok(base === 'manifest.json' || base in DATA_MAN[dr].files, `${f} is in ${dr}/ but its manifest does not account for it`);
       continue;
     }
     if (f.startsWith('parishes/vendor/')) {
@@ -272,7 +349,6 @@ ok('every licence claim is backed by the banner in the file — or says plainly 
 // pack registry carrying an `attribution` block whose `license_id` is a
 // CC-BY licence. A pack that measures something next month is in this set
 // the moment it declares one, without anybody remembering to add it here.
-const CC_BY_FIELDS = ['author', 'title', 'source_url', 'license_id', 'license_url'];
 const registries = readdirSync(ROOT, { withFileTypes: true })
   .filter((d) => d.isDirectory() && existsSync(join(ROOT, d.name, 'registry')))
   .flatMap((d) => readdirSync(join(ROOT, d.name, 'registry'))
@@ -283,6 +359,7 @@ assert.ok(registries.length >= 10,
   `only ${registries.length} pack registries found — the attribution walk is broken, `
   + 'and a walk that finds nothing credits nothing');
 const measured = [];
+const redistributed = [];   // CC-BY works whose derived bytes ship under a data vendor root
 for (const rel of registries) {
   let reg;
   try { reg = JSON.parse(readFileSync(join(ROOT, rel), 'utf8')); } catch { continue; }
@@ -293,8 +370,15 @@ for (const rel of registries) {
   for (const f of CC_BY_FIELDS) {
     assert.ok(f in a && String(a[f]).trim(), `${rel}: attribution.${f} is missing or empty`);
   }
+  const packVendor = `${rel.split('/')[0]}/vendor`;
+  if (packVendor in DATA_ROOTS) { redistributed.push([rel, a]); continue; }
+  assert.ok(!existsSync(join(ROOT, packVendor, 'manifest.json')),
+    `${rel}: a CC-BY work whose pack vendors files under ${packVendor}/manifest.json is redistributed, `
+    + 'not measured — it must be an SBOM vendor root, never MEASURED, NOT REDISTRIBUTED');
   measured.push([rel, a]);
 }
+assert.ok(redistributed.some(([rel]) => rel === 'landcover/registry/landcover.json'),
+  'landcover/registry/landcover.json is not seen as a REDISTRIBUTED CC-BY work');
 
 {
   const third = readFileSync(join(ROOT, 'THIRD_PARTY.md'), 'utf8');
@@ -308,15 +392,32 @@ for (const rel of registries) {
       `THIRD_PARTY.md credits the work measured in ${rel} but never says where the `
       + 'measurements are, so a reader cannot check the credit against the registry');
   }
-  ok(`THIRD_PARTY.md credits every CC-BY work the bundle measures (${measured.length}), `
-    + 'field by field, out of the registry that measured it');
+  for (const [rel, a] of redistributed) {
+    for (const f of [...CC_BY_FIELDS, 'text']) {
+      assert.ok(third.includes(a[f]),
+        `THIRD_PARTY.md does not credit the ${a.license_id} work REDISTRIBUTED from ${rel}: `
+        + `its attribution.${f} — "${a[f]}" — appears nowhere in the file`);
+    }
+    assert.ok(third.includes(rel), `THIRD_PARTY.md credits the work in ${rel} but never points at that registry`);
+    const measuredTable = third.slice(third.indexOf('## Measured, not redistributed'));
+    const row = measuredTable.split('\n').find((l) => l.startsWith('|') && l.includes(a.title));
+    assert.ok(!row, `THIRD_PARTY.md lists the REDISTRIBUTED work ${a.title} in the measured-not-redistributed table`);
+    const root = `${rel.split('/')[0]}/vendor`;
+    const comps = doc.components.filter((c) => c['bom-ref'].startsWith(`${root}/`) && c.type !== 'file');
+    assert.ok(comps.length >= 1, `the REDISTRIBUTED ${a.license_id} work in ${rel} is not a component in the SBOM`);
+    for (const c of comps) {
+      assert.equal(licId(c), a.license_id, `${c['bom-ref']}: SBOM licence is not the ${a.license_id} of ${rel}`);
+    }
+  }
+  ok(`THIRD_PARTY.md credits every CC-BY work the bundle measures (${measured.length}) or redistributes `
+    + `(${redistributed.length}), field by field, out of the registry that holds it`);
 }
 
 {
   // In metadata, where a statement about the bundle belongs — never in
   // components, where a statement about shipped bytes belongs.
   assert.ok(Array.isArray(doc.metadata.properties), 'the SBOM metadata carries properties');
-  assert.ok(doc.components.every((c) => c['bom-ref'].startsWith('web/vendor/') || c['bom-ref'].startsWith('parishes/vendor/')),
+  assert.ok(doc.components.every((c) => ROOTS.some((r) => c['bom-ref'].startsWith(`${r}/`))),
     'a measured work is not a component: nothing of it ships, so nothing of it is listed');
   const named = doc.metadata.properties
     .filter((p) => p.name === 'smartcitix:measurement_sources').map((p) => p.value);
@@ -331,6 +432,10 @@ for (const rel of registries) {
     assert.ok(v.includes(rel), `smartcitix:measurement_sources does not point at ${rel}`);
     assert.match(v, /MEASURED, NOT REDISTRIBUTED/,
       `smartcitix:measurement_sources for ${rel} does not say the work is not redistributed`);
+  }
+  for (const [rel, a] of redistributed) {
+    assert.ok(!named.some((x) => x.includes(a.title) || x.includes(rel)),
+      `the REDISTRIBUTED work in ${rel} must not be labelled MEASURED, NOT REDISTRIBUTED in the SBOM`);
   }
   ok('every measured CC-BY work is named in the SBOM metadata and in none of its components');
 }

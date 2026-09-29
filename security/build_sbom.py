@@ -45,6 +45,31 @@ USATLAS = {
 }
 MANIFEST = json.loads((ROOT / 'pack' / 'manifest.json').read_text())
 
+# Two more data vendor roots (wave 14): RECORDED rasters REDISTRIBUTED in
+# derived form (block-mean / majority-class grids), each with a manifest.json
+# its fetcher wrote (sha256 per file). Modelled like parishes/vendor: one
+# component per file, every file must be in the manifest with the same hash
+# or the build stops. Nothing below is typed that the manifest or the pack's
+# registry does not hold, except the licence id and the purl name.
+DATA_VENDORS = {
+    'elevation/vendor': {
+        'fetcher': 'elevation/fetch_dem.py',
+        'registry': 'elevation/registry/elevation.json',
+        'name': 'usgs-3dep-1-arc-second',
+        'license_ref': 'LicenseRef-US-Government-Public-Domain',
+        'licence_file': 'USGS_3DEP_USE_CONSTRAINTS.txt',
+    },
+    'landcover/vendor': {
+        'fetcher': 'landcover/fetch_landcover.py',
+        'registry': 'landcover/registry/landcover.json',
+        'name': 'esa-worldcover',
+        'license_id': 'CC-BY-4.0',
+        'licence_file': 'LICENSE_CC-BY-4.0.txt',
+        'attribution_file': 'WORLDCOVER_ATTRIBUTION.txt',
+    },
+}
+VENDOR_ROOTS = ('web/vendor', 'parishes/vendor', *DATA_VENDORS)
+
 # What we know about each upstream, stated once. The version is not written
 # here — it is READ from the file and checked against the purl below.
 UPSTREAMS = {
@@ -264,7 +289,7 @@ def measurement_sources():
 
     Not components, and deliberately so: no byte of such a work is vendored,
     fetched or shipped, nothing derived from it runs, and `test_sbom.mjs`
-    holds the component list to `web/vendor/` exactly. But a BOM is where a
+    holds the component list to the vendor roots exactly. But a BOM is where a
     downstream reader looks for the obligations that ride along with the
     bundle, and publishing measurements of a CC-BY work carries one. So the
     work is named in metadata, where a statement about the bundle belongs,
@@ -296,6 +321,13 @@ def measurement_sources():
                 raise SystemExit(f'{rel}: attribution.{field} is missing or empty; '
                                  'CC-BY asks for the author, the work, the licence '
                                  'and an indication of changes')
+        if f"{rel.split('/')[0]}/vendor" in DATA_VENDORS:
+            # REDISTRIBUTED, not measured: its files are components above,
+            # each carrying the attribution; never labelled MEASURED here.
+            continue
+        if (ROOT / rel.split('/')[0] / 'vendor' / 'manifest.json').exists():
+            raise SystemExit(f"{rel}: a CC-BY work whose pack vendors files under a manifest cannot be "
+                             'called MEASURED, NOT REDISTRIBUTED - add its vendor root to DATA_VENDORS')
         out.append((rel, attr))
     return out
 
@@ -354,6 +386,107 @@ def parish_vendor_components():
                      'parishes/vendor/us-atlas/LICENSE; the Census outlines it packages are public domain')},
                 {'name': 'smartcitix:data_origin', 'value': man['data_origin']},
             ],
+        })
+    return out
+
+
+def data_vendor_components(root):
+    """Components for elevation/vendor/ or landcover/vendor/. Fail closed: a
+    file not in the manifest, a hash that differs, a manifest entry with no
+    file, or a licence the manifest does not state stops the build by name."""
+    spec = DATA_VENDORS[root]
+    base = ROOT / root
+    man_path = base / 'manifest.json'
+    man = json.loads(man_path.read_text(encoding='utf-8'))
+    reg = json.loads((ROOT / spec['registry']).read_text(encoding='utf-8'))
+    attr = reg['attribution']
+    lic_id = spec['license_ref'] if 'license_ref' in spec else spec['license_id']
+    if attr['license_id'] != lic_id:
+        raise SystemExit(f"{spec['registry']}: attribution.license_id {attr['license_id']!r} "
+                         f'is not {lic_id!r}, the licence this SBOM would claim for {root}/')
+    if 'license_id' in spec and man['licence'] != spec['license_id']:
+        raise SystemExit(f"{root}/manifest.json: licence {man['licence']!r} is not {spec['license_id']!r}")
+    if 'license_ref' in spec and 'public domain' not in man['licence']:
+        raise SystemExit(f'{root}/manifest.json: licence does not state public domain')
+    if spec['name'] == 'esa-worldcover':
+        m = re.search(r'\b(v\d+)$', man['source'])
+        if not m:
+            raise SystemExit(f"{root}/manifest.json: no version in source {man['source']!r}")
+        version = m.group(1)
+        ver_ev = (f"no version string in this file; version read from {root}/manifest.json "
+                  f"source \"{man['source']}\", written by {spec['fetcher']}")
+        dist = man['bucket']
+    else:
+        m = re.search(r'/(current)/$', man['base_url'])
+        if not m:
+            raise SystemExit(f"{root}/manifest.json: base_url {man['base_url']!r} is not the staged 'current' tree")
+        version = m.group(1)
+        ver_ev = (f"no version string in this file; USGS stages the 1 arc-second DEM under "
+                  f"{man['base_url']} (no release number), and {root}/manifest.json records each "
+                  'source tile\'s title, pubdate and sha256 under regions[*].tiles')
+        dist = man['base_url']
+    on_disk = sorted(q for q in base.rglob('*') if q.is_file())
+    names = {q.relative_to(base).as_posix() for q in on_disk}
+    for f in man['files']:
+        if f not in names:
+            raise SystemExit(f'{root}/{f}: listed in {root}/manifest.json but not in the tree')
+    for f in (spec['licence_file'], *([spec['attribution_file']] if 'attribution_file' in spec else [])):
+        if f not in man['files']:
+            raise SystemExit(f'{root}/{f}: the licence/attribution text is not pinned in the manifest')
+    lic = {'license': ({'id': lic_id, 'url': attr['license_url']} if 'license_id' in spec
+                       else {'name': lic_id})}
+    out = []
+    for p in on_disk:
+        rel = p.relative_to(ROOT).as_posix()
+        sub = p.relative_to(base).as_posix()
+        digest = hashlib.sha256(p.read_bytes()).hexdigest()
+        if p == man_path:
+            out.append({
+                'type': 'file', 'bom-ref': rel, 'name': f'smartcitix/{rel}',
+                'version': MANIFEST['pack_version'],
+                'hashes': [{'alg': 'SHA-256', 'content': digest}],
+                'evidence': {'occurrences': [{'location': rel}]},
+                'properties': [
+                    {'name': 'smartcitix:vendored_path', 'value': rel},
+                    {'name': 'smartcitix:first_party', 'value': f"generated by {spec['fetcher']}; it records "
+                     'where each vendored file came from and its sha256 rather than being one'},
+                ],
+            })
+            continue
+        if sub not in man['files']:
+            raise SystemExit(f'{rel}: not in {root}/manifest.json - run {spec["fetcher"]} '
+                             'rather than dropping a file in by hand')
+        if digest != man['files'][sub]['sha256']:
+            raise SystemExit(f'{rel}: bytes differ from the hash recorded at fetch time')
+        if sub == spec['licence_file']:
+            lic_ev = f"it IS the licence text for this data ({man['licence']})"
+        elif sub == spec.get('attribution_file'):
+            lic_ev = 'it IS the attribution, licence and citation text, copied verbatim from the source'
+        else:
+            lic_ev = (f"binary grid, no banner; licence per {root}/manifest.json ({man['licence']}), "
+                      f"its text committed beside it at {root}/{spec['licence_file']}")
+        props = [
+            {'name': 'smartcitix:vendored_path', 'value': rel},
+            {'name': 'smartcitix:version_evidence', 'value': ver_ev},
+            {'name': 'smartcitix:licence_evidence', 'value': 'no licence banner in this file; ' + lic_ev},
+            {'name': 'smartcitix:data_origin', 'value': f"{man['source']} ({man['provenance']}); "
+                                                       f"derived by {spec['fetcher']}"},
+        ]
+        if str(attr['license_id']).startswith('CC-BY'):
+            props.append({'name': 'smartcitix:attribution',
+                          'value': ' | '.join(f'{k}: {attr[k]}' for k in (*CC_BY_FIELDS, 'text'))
+                                   + f" | REDISTRIBUTED (modified: {attr['changes']}); credited in THIRD_PARTY.md"})
+        refs = [{'type': 'distribution', 'url': dist}, {'type': 'website', 'url': attr['source_url']}]
+        if 'license_id' in spec:
+            refs.append({'type': 'license', 'url': attr['license_url']})
+        out.append({
+            'type': 'data', 'bom-ref': rel, 'name': spec['name'], 'version': version,
+            'purl': f"pkg:generic/{spec['name']}@{version}#{sub}",
+            'hashes': [{'alg': 'SHA-256', 'content': digest}],
+            'licenses': [lic],
+            'externalReferences': refs,
+            'evidence': {'occurrences': [{'location': rel}], 'copyright': []},
+            'properties': props,
         })
     return out
 
@@ -469,10 +602,12 @@ def build():
         comps.append(comp)
 
     comps.extend(parish_vendor_components())
+    for root in DATA_VENDORS:
+        comps.extend(data_vendor_components(root))
 
     stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest()[:16]
     measured = measurement_sources()
-    first_party = ('everything outside web/vendor/ and parishes/vendor/ is original to '
+    first_party = ('everything outside ' + ', '.join(f'{r}/' for r in VENDOR_ROOTS) + ' is original to '
                    'the bundle; orbis/runner-*/ carry their own '
                    'LICENSE files and are first-party')
     if measured:
@@ -490,14 +625,14 @@ def build():
                 'bom-ref': 'smartcitix-trade-craft-academy',
                 'name': 'SmartCiti.X : Trade Craft Academy',
                 'version': MANIFEST['pack_version'],
-                'description': 'the implementation bundle; every pack outside web/vendor and parishes/vendor is first-party '
+                'description': 'the implementation bundle; every pack outside ' + ', '.join(VENDOR_ROOTS) + ' is first-party '
                                'with zero runtime dependencies',
             },
             'tools': {'components': [{'type': 'application', 'name': 'security/build_sbom.py',
                                       'version': MANIFEST['pack_version']}]},
             'properties': [
                 {'name': 'smartcitix:source_stamp', 'value': stamp},
-                {'name': 'smartcitix:scope', 'value': 'every file under web/vendor/ and parishes/vendor/, and nothing else — '
+                {'name': 'smartcitix:scope', 'value': 'every file under ' + ', '.join(f'{r}/' for r in VENDOR_ROOTS) + ', and nothing else — '
                                                       'the test walks the tree and holds the list to it'},
                 {'name': 'smartcitix:first_party', 'value': first_party},
                 {'name': 'smartcitix:ci_scanning', 'value': 'dependency and container scanning in CI: not '
@@ -533,10 +668,11 @@ if __name__ == '__main__':
     # so it prints one line per upstream with a file count, and names the
     # first-party entries separately rather than listing them as libraries.
     from collections import Counter
-    libs = [c for c in doc['components'] if c['type'] == 'library']
-    mine = [c for c in doc['components'] if c['type'] != 'library']
+    libs = [c for c in doc['components'] if c['type'] in ('library', 'data')]
+    mine = [c for c in doc['components'] if c['type'] == 'file']
     per = Counter((c['name'], c['version'],
-                   c['licenses'][0]['license']['id']) for c in libs)
+                   c['licenses'][0]['license']['id'] if 'id' in c['licenses'][0]['license']
+                   else c['licenses'][0]['license']['name']) for c in libs)
     for (name, ver, lic), n in sorted(per.items()):
         print(f'  {name:18} {ver:9} {lic:12} {n:2} file' + ('s' if n != 1 else ''))
     for c in mine:

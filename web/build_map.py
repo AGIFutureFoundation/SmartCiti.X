@@ -654,6 +654,24 @@ footer p{{max-width:78ch;margin:0 0 8px}}
 .sheetnav a{{color:var(--steel);text-decoration:none;font-size:12px;
   font-family:"IBM Plex Mono",monospace;letter-spacing:.04em}}
 .sheetnav a:hover{{text-decoration:underline}}
+/* POLISH w13 (audit row 15): on a phone the SHEET comes first - the header figures tighten, the sheet links keep one
+   scrolling row, the district list folds into one horizontal row of chips right above the plan (descriptions fold
+   away; the hall panel still says them), and the pipeline key + layer switches follow the plan. The aside unwraps
+   (display:contents) so its three blocks are ordered around the plan inside the one-column shell. */
+@media(max-width:600px){{
+  header.sheet{{gap:10px 14px;padding:12px 16px}}
+  header .sheetmeta{{gap:14px}}
+  .sheetnav{{flex-wrap:nowrap;overflow-x:auto;padding:8px 16px;scrollbar-width:thin}}
+  .sheetnav a{{flex:none;white-space:nowrap}}
+  .shell{{align-content:start;min-height:0}}
+  .shell>aside{{display:contents}}
+  .shell>aside>div{{order:2;padding:12px 16px;background:var(--panel)}}
+  .shell>aside>div:first-child{{order:0;padding-block:10px 4px}}
+  .shell>.plan{{order:1;padding:10px 16px}}
+  .dlist{{flex-direction:row;overflow-x:auto;gap:6px;padding-block-end:6px;scrollbar-width:thin}}
+  .dlist>.dbtn{{flex:none;width:auto;min-block-size:44px;align-items:center;border-color:var(--rule)}}
+  .dlist>.dbtn small{{display:none}}
+}}
 :focus-visible{{outline:2px solid var(--mark);outline-offset:2px}}
 </style>
 <style>{NAV_CSS}</style>

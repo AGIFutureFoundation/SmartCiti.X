@@ -95,9 +95,10 @@ def _T(k):
     return f'<span data-fk-i18n="{k}">{html.escape(fields_catalog()["en"]["strings"][k])}</span>'
 
 
-# compact 'none': the board needs no host-catalogue key (UX owns hud.*); under 600 px its list folds away by CSS and
-# only the month + the link to the section stay (NEEDS UX: a hud.open.fields key would let it fold to an icon)
-FIELDS_HUD_PANEL = {'id': 'fields', 'kind': 'panel', 'sel': '#fk-board', 'slot': 'te', 'order': 2, 'compact': 'none'}
+# compact 'icon' (POLISH w13): under 600 px of stage the board folds to hudkit's 44 px leaf launcher (label
+# hud.toggle.fields, hudkit KIT_FOLD); opened, its list stays folded by CSS and the month + the link to the section show
+FIELDS_HUD_PANEL = {'id': 'fields', 'kind': 'panel', 'sel': '#fk-board', 'slot': 'te', 'order': 2, 'compact': 'icon',
+                    'icon': 'leaf', 'label': 'hud.toggle.fields'}
 
 
 def fields_board_html():

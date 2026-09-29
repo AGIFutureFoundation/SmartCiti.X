@@ -1150,7 +1150,13 @@
   "wild.close": "Fermer",
   "wild.seen": "photographié",
   "wild.off_season": "Hors de la saison de jeu - vous pouvez quand même vous entraîner aux étapes",
-  "nav.page.smiles": "Monde Unspoken Smiles"
+  "nav.page.smiles": "Monde Unspoken Smiles",
+  "hud.toggle.fish": "Panneau de pêche",
+  "hud.toggle.fields": "Tableau des saisons",
+  "hud.toggle.drive": "Panneau de conduite",
+  "hud.open.fish": "Pêche et écrevisses",
+  "veg.honesty": "Arbres, plantes et détails de rue : placement AUTHORED de plantes régionales nommées de façon générale et de mobilier urbain générique (règles selon l’usage du sol et la distance à l’eau) ; ce n’est ni un inventaire d’arbres, ni une carte des espèces, ni un comptage.",
+  "elev.legend.authored": "relief : AUTHORED - buttes procédurales dans les quartiers de parcs et levées le long des chenaux AUTHORED, quelques mètres au plus ; aucune altitude réelle n’est détenue pour ce monde."
  },
  "districts": {
   "structural": {

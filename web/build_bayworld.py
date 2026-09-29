@@ -58,6 +58,31 @@ def offshore_pins(reg):
 T.KEYS = {f'parishes.{k}': f'bay.{k}' for k in ('title', 'lede', 'canvas_label', 'minimap_label', 'help', 'h.quests',
                                                 'quests_pending')}
 T.OFFSHORE = offshore_pins(T.REG)
+# BEGIN WORLDS w13 co-located labels (REVIEW13): a RECORDED city anchor standing on EXACTLY the point of a RECORDED
+# campus landmark of the same county (Oakland: the campus point is the city point) drew two labels on top of each other.
+# It becomes ONE landmark: the campus keeps its id, mesh and family; its label gets the city name as a second line and
+# its note cites the city's own source. Fail closed: >1 landmark on the point, or differing provenance/lat-lng, stops.
+def merge_colocated(reg):
+    merged = []
+    for f, p in reg['parishes'].items():
+        keep = []
+        for an in p['anchors']:
+            hits = [lm for lm in p['landmarks'] if lm['world_m'] == an['world_m']]
+            if not hits:
+                keep.append(an)
+                continue
+            if len(hits) != 1:
+                raise SystemExit(f'build_bayworld: {len(hits)} landmarks of {f} stand on the point of anchor {an["name"]!r}')
+            lm = hits[0]
+            if lm['provenance'] != 'RECORDED' or an['provenance'] != 'RECORDED' or [lm['lat'], lm['lng']] != [an['lat'], an['lng']]:
+                raise SystemExit(f'build_bayworld: anchor {an["name"]!r} shares the point of {lm["name"]!r} without the same RECORDED lat/lng')
+            lm['name'] = lm['name'] + '\n' + an['name']
+            lm['note'] = f'{lm["note"]} | {an["name"]} ({an["kind"]}, RECORDED): {an["source"]}'
+            merged.append((f, an['name']))
+        p['anchors'] = keep
+    return merged
+T.MERGED = merge_colocated(T.REG)
+# END WORLDS w13 co-located labels
 T.DEEP_WORLD = 'bay'   # DEEP's underwater.json bodies for this world (world == 'bay')
 T.FAMILY_OF = [('campus', 'hall'), ('city', 'tower'), ('restoration', 'other')]
 T.KITS_OFF = {'npcs': 'npcs/registry/npcs.json places guides in the New Orleans parishes only - no Bay county entries',
@@ -127,6 +152,17 @@ def finish(page, states, why):
 
 
 T.finish = finish
+# BEGIN WORLDS w13 co-located labels: a merged landmark label shows its second line (only merged names hold a newline)
+_finish_w12 = T.finish
+def _finish_w13(page, states, why):
+    page = _finish_w12(page, states, why)
+    if T.MERGED:
+        if '.lbl.lm .note{' not in page:
+            raise SystemExit('build_bayworld: the landmark label css anchor .lbl.lm .note{ is gone')
+        page = page.replace('.lbl.lm .note{', '.lbl.lm b{white-space:pre-line}.lbl.lm .note{', 1)
+    return page
+T.finish = _finish_w13
+# END WORLDS w13 co-located labels
 sys.modules['__world_target__'] = T
 
 EDITS = [

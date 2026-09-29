@@ -230,8 +230,13 @@ if (renderer) {
     if (gs.length) h += gs.map((g) => `<button type="button" data-play="${g}">${P.esc(t('smiles.playhere'))}: ${P.esc(t('smiles.g.' + g))}</button>`).join('');
     box.innerHTML = h; box.querySelectorAll('[data-play]').forEach((b) => b.addEventListener('click', () => { P.games.open(b.dataset.play); $('#sm-games').scrollIntoView({ block: 'start' }); })); };
   const findEggs = () => { for (const g of W.eggs) { if (state.found.has(g.id)) continue; if (Math.hypot(g.at[0] - state.pos.x, g.at[1] - state.pos.z) < 3) {
-      state.found.add(g.id); eggMesh[g.id].visible = false; saveEggs(); shelf(); toast(`${t('smiles.egg.got')}: ${g.title} - ${g.badge}. ${g.reveal}`);
-      if (W.quests) { const T = window.TCQuests; if (T && T.data && T.data.quests.some((q) => q.id === g.id)) T.find(g.id); } } } };
+      state.found.add(g.id); eggMesh[g.id].visible = false; saveEggs(); shelf();
+      // POLISH w13 (item 5): ONE toast per find. With quests on, the quest engine records the find and its toast is
+      // the one shown - carrying this page's translated reveal line (T.toast replaces the text in the same task);
+      // with quests off, the page's own #sm-toast says it.
+      const said = `${t('smiles.egg.got')}: ${g.title} - ${g.badge}. ${g.reveal}`;
+      const T = W.quests ? window.TCQuests : null;
+      if (T && T.data && T.data.quests.some((q) => q.id === g.id)) { T.find(g.id); T.toast(said); } else toast(said); } } };
   const WALK_MS = 9;   // AUTHORED arcade walking pace for an 1200 m district (play, not a real speed)
   function step(dt) { const f = (keys.has('arrowup') || keys.has('w') ? 1 : 0) - (keys.has('arrowdown') || keys.has('s') ? 1 : 0) + pad.f + state.auto;
     const tr = (keys.has('arrowleft') || keys.has('a') ? 1 : 0) - (keys.has('arrowright') || keys.has('d') ? 1 : 0) + pad.t;
@@ -381,6 +386,36 @@ a{{color:var(--tc-link)}}
 </body>
 </html>
 '''
+# BEGIN VEG w14 (VEG·Vegetation & Detail): the district's park and schoolyard trees, hedges and street details come from
+# web/florakit.py (region 'smiles', flora/registry/flora.json): generic trees placed by AUTHORED rules on the district's
+# AUTHORED zones, instanced (one InstancedMesh per family, <= 7 draw calls) - it REPLACES the 24 park cones + trunks that
+# were 48 separate meshes (48 draw calls). Plants keep off streets, rooms, zone solids and walls; details stand at kerbs.
+if (ROOT / 'flora/registry/flora.json').exists() and (HERE / 'florakit.py').exists():
+    import florakit as _fk  # noqa: E402
+    _VEG_OLD = ("  for (let i = 0; i < 24; i++) { const tx = park[0] + 12 + ((i * 53) % (park[2] - 24)), tz = park[1] + 12 + ((i * 29) % (park[3] - 60));\n"
+                "    const tr = new THREE.Mesh(new THREE.ConeGeometry(3, 9, 8), new THREE.MeshLambertMaterial({ color: 0x3f7f45 })); tr.position.set(tx, 5.5, tz); scene.add(tr); addBox(tx, tz, 0.8, 1.2, 0.8, 0x7a5230); }\n")
+    _VEG_ADAPT = (
+        "  /* VEG w14 adapters: AUTHORED zone kinds -> flora land uses; streets, rooms, zone solids and walls stay clear */\n"
+        "  const VEG_USE = { park: 'park', playground: 'park', garden: 'park', sports: 'park', school: 'school', clinic: 'civic', library: 'civic',\n"
+        "    community: 'civic', residential: 'residential', market: 'commercial', shop: 'commercial', vanlot: 'commercial', busstop: 'commercial' };\n"
+        "  const vegSeg = (x, z, a, b) => { const dx = b[0] - a[0], dz = b[1] - a[1], L2 = dx * dx + dz * dz; const u = L2 ? Math.max(0, Math.min(1, ((x - a[0]) * dx + (z - a[1]) * dz) / L2)) : 0; return Math.hypot(x - a[0] - u * dx, z - a[1] - u * dz); };\n"
+        "  const vegRoad = (x, z) => W.streets.some((st) => vegSeg(x, z, st.from, st.to) < st.width_m / 2);\n"
+        "  const vegGround = (x, z) => x > 3 && z > 3 && x < SW - 3 && z < SH - 3 && !W.rooms.some((r) => inRect(x, z, r.rect))\n"
+        "    && !W.zones.some((zn) => zn.solids.some(([sx, sz, sw, sd]) => x > sx - 2 && x < sx + sw + 2 && z > sz - 2 && z < sz + sd + 2)) && !W.walls.some((w) => vegSeg(x, z, w.from, w.to) < 4);\n"
+        "  const vegUse = (x, z) => { const zn = W.zones.find((q) => inRect(x, z, q.rect)); if (!zn) return 'open'; const u = VEG_USE[zn.kind]; if (!u) throw new Error('VEG: zone kind ' + zn.kind + ' has no flora land use'); return u; };\n")
+    _VEG_MOUNT = _fk.flora_mount_js('smiles', seed='20260929', chunk_m='250', is_ground='vegGround', is_road='vegRoad',
+                                    is_water='() => false', land_use='vegUse', eye='{ x: state.pos.x, z: state.pos.z }',
+                                    overview='false')
+    _VEG_MOUNT += "  window.__floraRenderInfo = () => ({ calls: renderer.info.render.calls, tris: renderer.info.render.triangles });\n"
+    _VEG_REG = _fk.flora_data()
+    if any(c in _VEG_REG['honesty']['page_line'] for c in '<>&"'):
+        raise SystemExit('build_smiles: VEG flora honesty.page_line carries markup characters')
+    _VEG_LEG = f'<p class="help" data-flora-honesty lang="en" data-flora-stamp="{_VEG_REG["source_stamp"]}">{_VEG_REG["honesty"]["page_line"]}</p>\n'
+    for _a, _b in ((_VEG_OLD, _VEG_ADAPT + _VEG_MOUNT), ('<p class="help" data-legend>', _VEG_LEG + '<p class="help" data-legend>')):
+        if page.count(_a) != 1:
+            raise SystemExit(f'build_smiles: VEG anchor found {page.count(_a)}x: {_a[:60]!r}')
+        page = page.replace(_a, _b)
+# END VEG w14
 flow_anchors_present(HUD_PANELS, page)
 TITLE = 'SmartCiti.X : Trade Craft Academy — ' + EN['smiles.nav']
 page = apply_seo(page, PAGE, TITLE, EN['smiles.seo.desc'], 'page')

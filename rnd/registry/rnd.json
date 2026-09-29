@@ -21,11 +21,11 @@
   "measured_elsewhere": 51,
   "computed_from_registry": 12,
   "measured_source_files": 11,
-  "registries_scanned": 83,
+  "registries_scanned": 86,
   "app_renderers_scanned": 33,
   "doc_renderers_scanned": 3,
-  "builders_scanned": 67,
-  "suites_scanned": 121,
+  "builders_scanned": 70,
+  "suites_scanned": 126,
   "declared_unbuilt": 7,
   "declared_unbuilt_by_their_own_words": 2,
   "declared_unbuilt_not_drawn": 6,
@@ -38,13 +38,13 @@
   "budget_views": 6,
   "budget_currencies": 2,
   "budget_agreements": 7,
-  "suites_run": 121,
-  "suite_checks_declared": 5948,
+  "suites_run": 126,
+  "suite_checks_declared": 6209,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 372
+  "files_read": 387
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -1809,12 +1809,16 @@
    ],
    "doc_renderers": [],
    "builders": [
+    "elevation/build.py",
+    "landcover/build.py",
     "outdoors/build.py",
     "quests/build.py",
     "seasons/build.py",
     "underwater/build.py"
    ],
    "suites": [
+    "elevation/test.mjs",
+    "landcover/test.mjs",
     "outdoors/test.mjs",
     "parishes/test.mjs",
     "quests/test.mjs",
@@ -2051,6 +2055,22 @@
     "ei/test.mjs"
    ]
   },
+  "elevation/registry/elevation.json": {
+   "app_renderers": [
+    "web/build_parishes.py"
+   ],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [
+    "security/test_sbom.mjs",
+    "web/test_terrainkit.mjs"
+   ],
+   "own_pack": [
+    "elevation/build.py",
+    "elevation/sample.py",
+    "elevation/test.mjs"
+   ]
+  },
   "evals/registry/evals.json": {
    "app_renderers": [
     "web/build_3d.py",
@@ -2108,6 +2128,21 @@
    "own_pack": [
     "fleet/build.py",
     "fleet/test.mjs"
+   ]
+  },
+  "flora/registry/flora.json": {
+   "app_renderers": [
+    "web/build_parishes.py",
+    "web/build_smiles.py"
+   ],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [
+    "web/test_florakit.mjs"
+   ],
+   "own_pack": [
+    "flora/build.py",
+    "flora/test.mjs"
    ]
   },
   "geo/registry/campuses_geo.json": {
@@ -2244,6 +2279,22 @@
    "own_pack": [
     "labels/build.py",
     "labels/test.mjs"
+   ]
+  },
+  "landcover/registry/landcover.json": {
+   "app_renderers": [
+    "web/build_parishes.py"
+   ],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [
+    "security/test_sbom.mjs",
+    "web/test_florakit.mjs"
+   ],
+   "own_pack": [
+    "landcover/build.py",
+    "landcover/sample.py",
+    "landcover/test.mjs"
    ]
   },
   "layers/registry/layers.json": {
@@ -2646,7 +2697,9 @@
     "campusplan/build.py",
     "cognitionx/build.py",
     "economy/build.py",
+    "elevation/build.py",
     "holodeck/build.py",
+    "landcover/build.py",
     "layers/build.py",
     "npcs/build.py",
     "seasons/build.py",
@@ -2657,8 +2710,10 @@
     "campusplan/test.mjs",
     "cognitionx/test.mjs",
     "economy/test.mjs",
+    "elevation/test.mjs",
     "fleet/test.mjs",
     "holodeck/test.mjs",
+    "landcover/test.mjs",
     "layers/test.mjs",
     "npcs/test.mjs",
     "physics/test.mjs",
@@ -2981,7 +3036,9 @@
    "doc_renderers": [],
    "builders": [],
    "suites": [
-    "web/test_fieldkit.mjs"
+    "web/test_bayworld.mjs",
+    "web/test_fieldkit.mjs",
+    "web/test_parishes.mjs"
    ],
    "own_pack": [
     "seasons/build.py",
@@ -3119,9 +3176,13 @@
    ],
    "doc_renderers": [],
    "builders": [
+    "elevation/build.py",
+    "landcover/build.py",
     "quests/build.py"
    ],
    "suites": [
+    "elevation/test.mjs",
+    "landcover/test.mjs",
     "quests/test.mjs",
     "web/test_smiles.mjs",
     "web/test_smileskit.mjs"
@@ -3812,15 +3873,18 @@
    "datashare/build.py",
    "economy/build.py",
    "ei/build.py",
+   "elevation/build.py",
    "evals/build.py",
    "facades/build.py",
    "fleet/build.py",
+   "flora/build.py",
    "geo/build.py",
    "geo3d/build.py",
    "guide/build.py",
    "holodeck/build.py",
    "kit/build.py",
    "labels/build.py",
+   "landcover/build.py",
    "layers/build.py",
    "lessons/build.py",
    "media/build.py",
@@ -3890,10 +3954,12 @@
    "datashare/test.mjs",
    "economy/test.mjs",
    "ei/test.mjs",
+   "elevation/test.mjs",
    "evals/test.mjs",
    "fabric/test.mjs",
    "facades/test.mjs",
    "fleet/test.mjs",
+   "flora/test.mjs",
    "geo/test.mjs",
    "geo3d/test.mjs",
    "guide/test.mjs",
@@ -3901,6 +3967,7 @@
    "i18n/test.mjs",
    "kit/test.mjs",
    "labels/test.mjs",
+   "landcover/test.mjs",
    "layers/test.mjs",
    "lessons/test.mjs",
    "media/test.mjs",
@@ -3953,6 +4020,7 @@
    "web/test_fieldkit.mjs",
    "web/test_fishkit.mjs",
    "web/test_fleet.mjs",
+   "web/test_florakit.mjs",
    "web/test_geomap.mjs",
    "web/test_gltf.mjs",
    "web/test_home.mjs",
@@ -3975,6 +4043,7 @@
    "web/test_smiles.mjs",
    "web/test_smileskit.mjs",
    "web/test_spaces.mjs",
+   "web/test_terrainkit.mjs",
    "web/test_tqkit.mjs",
    "web/test_verify.mjs",
    "web/test_wildkit.mjs",
@@ -4993,14 +5062,14 @@
    {
     "suite": "web/test_geomap.mjs",
     "pack": "web",
-    "readme_checks": 92,
+    "readme_checks": 93,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_map.mjs",
     "pack": "web",
-    "readme_checks": 48,
+    "readme_checks": 49,
     "declared": true,
     "in_readme_table": true
    },
@@ -5056,7 +5125,7 @@
    {
     "suite": "web/test_3d.mjs",
     "pack": "web",
-    "readme_checks": 364,
+    "readme_checks": 374,
     "declared": true,
     "in_readme_table": true
    },
@@ -5168,7 +5237,7 @@
    {
     "suite": "web/test_parishes.mjs",
     "pack": "web",
-    "readme_checks": 110,
+    "readme_checks": 117,
     "declared": true,
     "in_readme_table": true
    },
@@ -5259,7 +5328,7 @@
    {
     "suite": "web/test_bayworld.mjs",
     "pack": "web",
-    "readme_checks": 21,
+    "readme_checks": 23,
     "declared": true,
     "in_readme_table": true
    },
@@ -5287,7 +5356,7 @@
    {
     "suite": "web/test_hudkit.mjs",
     "pack": "web",
-    "readme_checks": 31,
+    "readme_checks": 42,
     "declared": true,
     "in_readme_table": true
    },
@@ -5385,7 +5454,7 @@
    {
     "suite": "web/test_smiles.mjs",
     "pack": "web",
-    "readme_checks": 25,
+    "readme_checks": 26,
     "declared": true,
     "in_readme_table": true
    },
@@ -5395,21 +5464,56 @@
     "readme_checks": 17,
     "declared": true,
     "in_readme_table": true
+   },
+   {
+    "suite": "elevation/test.mjs",
+    "pack": "elevation",
+    "readme_checks": 52,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "landcover/test.mjs",
+    "pack": "landcover",
+    "readme_checks": 49,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_terrainkit.mjs",
+    "pack": "web",
+    "readme_checks": 57,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "flora/test.mjs",
+    "pack": "flora",
+    "readme_checks": 28,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_florakit.mjs",
+    "pack": "web",
+    "readme_checks": 42,
+    "declared": true,
+    "in_readme_table": true
    }
   ],
-  "suites_run": 121,
-  "suites_declaring_a_count": 119,
+  "suites_run": 126,
+  "suites_declaring_a_count": 124,
   "suites_without_a_count": [
    "control/soak.mjs",
    "restoration/test_scenarios.mjs"
   ],
-  "declared_total": 5948,
-  "readme_headline": 5983,
+  "declared_total": 6209,
+  "readme_headline": 6244,
   "unaccounted_for": 35,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
-  "max": 364,
-  "median": 40,
+  "max": 374,
+  "median": 41.5,
   "thinnest": [
    {
     "suite": "ops/fuzz.mjs",
@@ -5439,7 +5543,7 @@
   "thickest": [
    {
     "suite": "web/test_3d.mjs",
-    "checks": 364
+    "checks": 374
    },
    {
     "suite": "web/test_worksites.mjs",
@@ -5454,12 +5558,12 @@
     "checks": 118
    },
    {
-    "suite": "worksites/test.mjs",
-    "checks": 116
+    "suite": "web/test_parishes.mjs",
+    "checks": 117
    },
    {
-    "suite": "ei/test.mjs",
-    "checks": 112
+    "suite": "worksites/test.mjs",
+    "checks": 116
    }
   ],
   "note": "a thin suite is not automatically a bad one - tools/ has 13 checks over a registry of twelve hand tools - but a thin suite over a large surface is where an unfound defect is most likely to be sitting, and this table is the only place the two are shown side by side."
@@ -5735,6 +5839,11 @@
   "ei/build.py",
   "ei/registry/ei.json",
   "ei/test.mjs",
+  "elevation/build.py",
+  "elevation/fetch_dem.py",
+  "elevation/registry/elevation.json",
+  "elevation/sample.py",
+  "elevation/test.mjs",
   "evals/build.py",
   "evals/registry/evals.json",
   "evals/test.mjs",
@@ -5745,6 +5854,9 @@
   "fleet/build.py",
   "fleet/registry/fleet.json",
   "fleet/test.mjs",
+  "flora/build.py",
+  "flora/registry/flora.json",
+  "flora/test.mjs",
   "geo/build.py",
   "geo/registry/campuses_geo.json",
   "geo/test.mjs",
@@ -5773,6 +5885,11 @@
   "labels/build.py",
   "labels/registry/labels.json",
   "labels/test.mjs",
+  "landcover/build.py",
+  "landcover/fetch_landcover.py",
+  "landcover/registry/landcover.json",
+  "landcover/sample.py",
+  "landcover/test.mjs",
   "layers/build.py",
   "layers/paths.py",
   "layers/registry/layers.json",
@@ -5983,6 +6100,7 @@
   "web/test_fieldkit.mjs",
   "web/test_fishkit.mjs",
   "web/test_fleet.mjs",
+  "web/test_florakit.mjs",
   "web/test_geomap.mjs",
   "web/test_gltf.mjs",
   "web/test_home.mjs",
@@ -6005,6 +6123,7 @@
   "web/test_smiles.mjs",
   "web/test_smileskit.mjs",
   "web/test_spaces.mjs",
+  "web/test_terrainkit.mjs",
   "web/test_tqkit.mjs",
   "web/test_verify.mjs",
   "web/test_wildkit.mjs",

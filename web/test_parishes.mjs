@@ -324,6 +324,43 @@ check('[i18n] tr() throws by name (no fallback)', /throw new Error\(`parishes i1
     && html.includes('data-i18n="deep.honesty"') && /AUTHORED/.test(CAT.en.strings['deep.honesty']) && /not dive training/.test(CAT.en.strings['deep.honesty']));
   check('[deep] dive is gated on physkit water states (walk mode only)', main.includes("waterState: () => (mode === 'walk' && av ? av.water : 'dry')"));
 }
+// WORLDS w13: FIELDS' AUTHORED plots stay free of generated fabric (browser proof: web/eval_parishes.mjs plots row)
+{
+  const SEA = JSON.parse(read('seasons/registry/seasons.json')).plots;
+  const want = Object.entries(SEA).filter(([, w]) => w.region === 'louisiana').flatMap(([f, w]) => w.plots.map((q) => [q.id, f, q.x, q.z, q.size_m[0], q.size_m[1]]));
+  check(`[plots] the page embeds exactly the ${want.length} louisiana plots of seasons/registry/seasons.json (id, parish, x, z, size) for the clearance`,
+    want.length > 0 && JSON.stringify(D.plots_clear) === JSON.stringify(want));
+  const bsrc = read('web/build_parishes.py');
+  check('[plots] the builder fails closed: missing seasons.json, a plot region the page lacks, a bad size and no plots are named errors',
+    /seasons\/registry\/seasons\.json is missing \(WORLDS keeps FIELDS plot cells free/.test(bsrc) && /names a region this page does not hold/.test(bsrc)
+    && /size_m must be two positive metres/.test(bsrc) && /holds no \{_sea_region\} plots for this page/.test(bsrc) && /throw new Error\('parishes: FIELDS plot ' \+ id/.test(main));
+  check('[plots] every chunk drops buildings (box radius + 2 m), trees (crown + 2 m) and lamps (3 m) that meet a plot bed, counted in skipped.plot',
+    /if \(PLOTS\.length && !plotClearOff\) \{/.test(main) && /out\.block = out\.block\.filter\(\(l\) => !hit\(l\[0\], l\[1\], Math\.hypot\(l\[2\], l\[4\]\) \/ 2 \+ 2\)\);/.test(main)
+    && /out\.tree = out\.tree\.filter\(\(t\) => !hit\(t\[0\], t\[1\], 2\.2 \* t\[2\] \+ 2\)\);/.test(main) && /out\.lamp = out\.lamp\.filter\(\(t\) => !hit\(t\[0\], t\[1\], 3\)\);/.test(main)
+    && main.indexOf('/* BEGIN WORLDS w13 plot clearance') > main.indexOf('/* END WORLDS w11 re-seat */') && /skipped\.plot \+= nb - out\.block\.length;/.test(main));
+}
+// WORLDS w13: a wholly-wet chunk hands its lake lots to ONE neighbour (most dry cells, fixed order), seated on that neighbour's empty dry cells
+check('[fabric] cross-chunk re-seat: donors are wholly AUTHORED water, one receiver each (strictly most dry cells), lots join the receiver\'s w11 re-seat',
+  /return w\.dry === 0 && w\.wet\.length > 0;/.test(main) && /if \(d > bd\) \{ bd = d; best = \[ci \+ a, cj \+ b\]; \}/.test(main)
+  && /if \(r && r\[0\] === ci && r\[1\] === cj\) for \(const w of chunkWet\(ci \+ a, cj \+ b\)\.wet\) if \(!lmNear\(w\[0\], w\[1\]\)\) wet\.push\(w\);/.test(main)
+  && main.indexOf('/* END WORLDS w13 cross-chunk re-seat */') < main.indexOf('/* BEGIN WORLDS w11 re-seat') && /skipped\.cross \+= Math\.max\(0, out\.block\.length - nb0 - ownWet\);/.test(main));
+// WORLDS w13: street furniture by AUTHORED district (browser: web/eval_parishes.mjs streets row)
+check('[streets] commercial streets add a mid-span lamp, residential keep every second lamp and gain a verge tree every 2 x FURN_M (never at a lamp), same meshes',
+  /if \(mid \? use !== 'commercial' : use === 'residential' && \(k \/ 2\) % 2 === 1\) continue;/.test(main) && /const STREET_STEP = 20, STREET_TREE_M = 2 \* FURN_M;/.test(main)
+  && /if \(landUse\(px, pz\) !== 'residential'\) continue;/.test(main) && /for \(const tr of c\.tree\) if \(tr\[4\] === 'street'\) t\[landUse\(tr\[0\], tr\[1\]\)\]\[1\]\+\+;/.test(main) && /out\.lamp\.some\(\(l\) => Math\.hypot\(l\[0\] - px, l\[1\] - pz\) < 3\)/.test(main)
+  && /streetDetail: streetDetail\(\), plots: \{ clear: PLOTS\.length \},/.test(main) && (main.match(/new THREE\.InstancedMesh\(treeGeo/g) || []).length === 1);
+// PERF w13 (REVIEW13): a refused Drive/Boat (E) press never shows the boat-only "no water" line; that line stays in setMode('boat')
+check('[drive] a refused Drive/Boat (E) press never shows the boat "no water within 60 m" line (REVIEW13)',
+  !/if \(!enterExit\(\)\) toast\(tr\('parishes\.boat\.nowater'\)\)/.test(html)
+  && (html.match(/tr\('parishes\.boat\.nowater'\)/g) || []).length === 1
+  && /nearest\(eye\.x, eye\.z, true\); if \(!w\) \{ toast\(tr\('parishes\.boat\.nowater'\)\)/.test(html)
+  && (!('parishes.novehicle' in CAT.en.strings) || html.includes("if (!v) { toast(tr('parishes.novehicle')); return false; }")));
+// PERF w13: the render-loop culls and the chase-camera fix are wired once, after the camera is placed
+check('[perf] fleet families beyond the fog and overview NPC meshes are culled once per frame; the chase camera eases by the real frame step and is pulled in front of occluders',
+  (html.match(/perfCull\(over\);/g) || []).length === 1 && /placeCamera\(\);\n(?:.*\n)?  perfCull\(over\);/.test(html)
+  && html.includes('const R2 = scene.fog.far * scene.fog.far') && html.includes("fl.group.getObjectByName('fleet:' + v.h.family)")
+  && html.includes('fleetChaseCamera(camera, riding.st, riding.spec, DIAG.noChase ? 1 / 60 : camDt,') && html.includes('if (!DIAG.noChase) chaseClear(riding.st, riding.spec);')
+  && html.includes('camDt = dt;'));
 // [build] the page is what the builder writes today
 const sha = createHash('sha256').update(html).digest('hex').slice(0, 16);
 check('[build] page carries the builder banner and one importmap', (html.match(/<script type="importmap">/g) || []).length === 1);

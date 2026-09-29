@@ -147,10 +147,73 @@ for (const o of off) {
   if (!MEASURE_ONLY && BASE && o.calls > Math.ceil(BASE['06075'].origin.calls * CALL_HEADROOM)) fail(offRow, `${o.calls} calls with the pin > the 06075 origin headroom`);
 }
 if (offRow.fails.length) bad++;
+/* WORLDS w13 (ADDED row; no target changed): FIELDS' AUTHORED plots (seasons/registry/seasons.json) stay free of
+   generated fabric. The page builds each plot's covering chunks fresh (__parishes.plotProbe, pure, not drawn) with its plot
+   clearance on - and off, to measure what the rule removes; THIS eval judges overlap with its own geometry: an oriented
+   building box vs the plot rectangle (separating axes), a tree crown disc vs the rectangle, a lamp point in the bed. */
+const plotD = await page.evaluate(() => ({ probe: window.__parishes.plotProbe(), n: JSON.parse(document.getElementById('parishes-data').textContent).plots_clear.length }));
+function plotHits(p, f) {
+  const box = ([x, z, w, , d, , yaw]) => { const u = [Math.cos(yaw), -Math.sin(yaw)], v = [Math.sin(yaw), Math.cos(yaw)], c = [x - p.x, z - p.z];
+    return [[1, 0], [0, 1], u, v].every((a) => Math.abs(c[0] * a[0] + c[1] * a[1]) < p.hw * Math.abs(a[0]) + p.hd * Math.abs(a[1]) + (w / 2) * Math.abs(u[0] * a[0] + u[1] * a[1]) + (d / 2) * Math.abs(v[0] * a[0] + v[1] * a[1])); };
+  const disc = ([x, z, s]) => Math.hypot(Math.max(0, Math.abs(x - p.x) - p.hw), Math.max(0, Math.abs(z - p.z) - p.hd)) < 2.2 * s;
+  const pt = ([x, z]) => Math.abs(x - p.x) < p.hw + 0.5 && Math.abs(z - p.z) < p.hd + 0.5;
+  return { b: f.block.filter(box).length, t: f.tree.filter(disc).length, l: f.lamp.filter(pt).length };
+}
+const plotRow = { probe: 'plots', plots: plotD.probe.length, onLand: plotD.probe.filter((p) => p.land).length, buildingsOn: 0, treesOn: 0, lampsOn: 0, plotsWithBuildingWithoutRule: 0, buildingsWithoutRule: 0, fails: [] };
+for (const p of plotD.probe) {
+  const on = plotHits(p, p.on), off = plotHits(p, p.off);
+  plotRow.buildingsOn += on.b; plotRow.treesOn += on.t; plotRow.lampsOn += on.l; plotRow.buildingsWithoutRule += off.b; if (off.b) plotRow.plotsWithBuildingWithoutRule++;
+  if (on.b + on.t + on.l) fail(plotRow, `${p.id}: ${on.b} buildings, ${on.t} trees, ${on.l} lamps stand on the plot bed`);
+}
+if (!(plotD.n > 0 && plotD.probe.length === plotD.n)) fail(plotRow, `${plotD.probe.length} plots probed of ${plotD.n} embedded`);
+if (plotRow.fails.length) bad++;
+/* BEGIN VEG w14 (VEG·Vegetation & Detail; ADDED row, no target changed): regional vegetation and street detail
+   (web/florakit.py, flora/registry/flora.json) in the 06075 origin walk view: families present with instances > 0, the kit's own
+   draw calls (page calls with flora on minus off, same frame) <= the registry's draw_calls_max and its triangles <= tris_max;
+   in the overview the kit draws 0 calls and the page's calls are the same with flora on and off. The view rows above
+   already judge the page's calls/tris WITH flora mounted (it is on by default). */
+const vegD = await page.evaluate(async () => {
+  const P = window.__parishes, F = window.__flora, sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const frames = (k) => new Promise((res) => { let i = 0; const f = () => (++i >= k ? res() : requestAnimationFrame(f)); requestAnimationFrame(f); });
+  if (!F) return null;
+  for (let i = 0; i < 100 && window.__floraLC && window.__floraLC() === 'loading'; i++) await sleep(100);   // RECORDED land cover (VEG w14)
+  P.view('origin', '06075');
+  for (let i = 0; i < 80; i++) { if (P.stats().pending === 0 && F.stats().queue === 0 && i > 5) break; await sleep(150); }
+  await frames(4); const on = P.stats(), fs = F.stats(); F.setEnabled(false); await frames(4); const off = P.stats(); F.setEnabled(true); await frames(4);
+  P.view('overview', '06075'); await sleep(600); await frames(4); const ovOn = P.stats(), fo = F.stats(); F.setEnabled(false); await frames(4); const ovOff = P.stats(); F.setEnabled(true);
+  P.view('origin', '06075'); await sleep(300);
+  return { lcState: window.__floraLC ? window.__floraLC() : 'not mounted', on: on.calls, off: off.calls, trisOn: on.triangles, trisOff: off.triangles, fs, ovCalls: fo.drawCalls, ovOn: ovOn.calls, ovOff: ovOff.calls, budgets: F.budgets };
+});
+const vegRow = { probe: 'vegetation', view: '06075 origin', fails: [] };
+if (!vegD) fail(vegRow, 'window.__flora is not mounted');
+else {
+  Object.assign(vegRow, { families: Object.fromEntries(Object.entries(vegD.fs.families).filter(([, c]) => c > 0)), species: vegD.fs.species, kitCalls: vegD.on - vegD.off,
+    kitTris: vegD.trisOn - vegD.trisOff, floraTris: vegD.fs.tris, overviewKitCalls: vegD.ovCalls, overviewCalls: `${vegD.ovOn}/${vegD.ovOff}` });
+  vegRow.landcover = { grid: vegD.lcState, ...vegD.fs.landcover };   // share of drawn plants placed by a RECORDED WorldCover class; the rest AUTHORED (counted)
+  if (vegD.lcState !== 'RECORDED') fail(vegRow, `RECORDED land cover not loaded: ${vegD.lcState}`);
+
+  const fam = Object.keys(vegRow.families);
+  /* Bay 06075 origin: RECORDED WorldCover says built-up (50) around the San Francisco frame origin, where the flora rules draw
+     street details only (plants: street trees of the page's own AUTHORED fabric) - so plants are reported, not required here */
+  if (fam.length < 1) fail(vegRow, `flora families present ${JSON.stringify(vegD.fs.families)} (want >= 1 with instances)`);
+  if (vegRow.kitCalls < 1 || vegRow.kitCalls > vegD.budgets.draw_calls_max) fail(vegRow, `flora draw calls ${vegRow.kitCalls} (want 1..${vegD.budgets.draw_calls_max})`);
+  if (vegD.fs.tris > vegD.budgets.tris_max) fail(vegRow, `flora triangles ${vegD.fs.tris} > tris_max ${vegD.budgets.tris_max}`);
+  if (vegD.ovCalls !== 0 || vegD.ovOn !== vegD.ovOff) fail(vegRow, `overview: flora calls ${vegD.ovCalls}, page calls on/off ${vegD.ovOn}/${vegD.ovOff}`);
+}
+if (vegRow.fails.length) bad++;
+/* END VEG w14 */
+/* BEGIN ELEV w14 relief row (web/eval_relief.mjs, NEW): ?relief=on - RECORDED USGS 3DEP in use with its legend, relief present,
+   max slope <= the page's declared max_slope, N buildings/lots/trees/lamps/parked vehicles on the ground within 0.1 m, draw calls
+   equal to relief off at the start view, water level unchanged. Relief is default OFF, so every row above judges the flat page. */
+const { reliefRow } = await import('./eval_relief.mjs');
+const elevRow = await reliefRow(browser, URL_BASE, { shots: SHOTS, name: 'bay' });
+if (elevRow.fails.length) bad++;
+if (!JSON_OUT) console.log(`${elevRow.fails.length ? 'FAIL' : '  ok'} relief ${JSON.stringify(Object.fromEntries(Object.entries(elevRow).filter(([k]) => k !== 'fails' && k !== 'probe')))}${elevRow.fails.length ? ' :: ' + elevRow.fails.join('; ') : ''}`);
+/* END ELEV w14 */
 const errRow = { probe: 'errors', count: errors.length, first: errors.slice(0, 3), readyMs, fails: [] };
 if (errors.length) { fail(errRow, `${errors.length} page errors`); bad++; }
 await browser.close();
-const out = { page: URL_BASE, measure: MEASURE_ONLY, rows, cross, fleet: fleetRow, offshore: offRow, errors: errRow, bad };
+const out = { page: URL_BASE, measure: MEASURE_ONLY, plots: plotRow, rows, cross, fleet: fleetRow, offshore: offRow, errors: errRow, bad };
 if (JSON_OUT) console.log(JSON.stringify(out, null, 1));
 else {
   for (const r of rows) console.log(`${r.fails.length ? 'FAIL' : '  ok'}  ${r.county} ${r.view.padEnd(8)} calls ${r.calls} tris ${r.tris} ${r.ms} ms chunks ${r.chunks} fabric ${r.fabric} loaded ${r.loaded}${r.fails.length ? ' | ' + r.fails.join('; ') : ''}`);
@@ -158,6 +221,8 @@ else {
   console.log(`${fleetRow.fails.length ? 'FAIL' : '  ok'}  fleet parked ${fleetRow.parked} (land ${fleetRow.land}, water ${fleetRow.water})`);
   console.log(`${offRow.fails.length ? 'FAIL' : '  ok'}  offshore ${JSON.stringify(offRow.pins)}${offRow.fails.length ? ' | ' + offRow.fails.join('; ') : ''}`);
   console.log(`${errRow.fails.length ? 'FAIL' : '  ok'}  page errors ${errRow.count}, ready in ${readyMs} ms ${errRow.first.join(' || ')}`);
+  console.log(`${plotRow.fails.length ? 'FAIL' : '  ok'}  plots ${JSON.stringify(Object.fromEntries(Object.entries(plotRow).filter(([k]) => k !== 'fails' && k !== 'probe')))}${plotRow.fails.length ? ' | ' + plotRow.fails.join('; ') : ''}`);
+  /* BEGIN VEG w14 */ console.log(`${vegRow.fails.length ? 'FAIL' : '  ok'} ${vegRow.probe} ${JSON.stringify(Object.fromEntries(Object.entries(vegRow).filter(([k]) => k !== 'fails' && k !== 'probe')))}${vegRow.fails.length ? ' :: ' + vegRow.fails.join('; ') : ''}`); /* END VEG w14 */
   console.log(`\n${bad ? bad + ' rows FAIL' : 'all rows hold'}${MEASURE_ONLY ? ' (measure mode: no targets applied)' : ''}`);
 }
 process.exit(bad ? 1 : 0);

@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script id="style-head-js">(()=>{try{var s=localStorage.getItem('tc-style');if(/^(enterprise|midnight|blueprint|hivis|studio)$/.test(s||''))document.documentElement.setAttribute('data-style',s)}catch(e){}})();</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C1113'/%3E%3Cpath d='M7 21 L16 7 L25 21 Z' fill='none' stroke='%23E8A33D' stroke-width='2.6' stroke-linejoin='round'/%3E%3Cpath d='M11 21 h10' stroke='%2341C4D4' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
 <title>SmartCiti.X : Trade Craft Academy — network geomap</title>
 <meta name="description" content="The network geomap: every campus, anchor and city frame on a WGS84 globe, with provenance in every popup and no basemap tiles unless you ask.">
@@ -47,8 +48,12 @@ body{margin:0;background:var(--plate);color:var(--ink);
   gap:8px 14px;align-items:center;padding:10px 16px;
   background:color-mix(in oklab, var(--plate) 88%, transparent);
   border-bottom:2px solid var(--mark);backdrop-filter:blur(6px)}
-#bar .brand{margin:0;font:700 19px/1 "Barlow Condensed",system-ui,sans-serif;white-space:nowrap}
-#bar .brand .x{color:var(--mark)}
+/* POLISH w13: the h1 names the page (its nav label); the brand is the kicker line above it */
+#bar .pagehead{display:grid;gap:3px;min-width:0}
+#bar .kicker{margin:0;font:600 10px/1.1 "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);white-space:nowrap}
+#bar .kicker .x{color:var(--mark)}
+#bar .pagename{margin:0;font:700 19px/1 "Barlow Condensed",system-ui,sans-serif;white-space:nowrap}
 #bar a{color:var(--steel);text-decoration:none;font-size:13px}
 .barbtn{background:var(--panel);color:var(--ink);border:1px solid var(--rule);
   border-radius:6px;padding:6px 11px;font:inherit;cursor:pointer;white-space:nowrap}
@@ -165,7 +170,7 @@ body{margin:0;background:var(--plate);color:var(--ink);
 @media(pointer:coarse){.barbtn{min-height:42px}#honesty{display:none}}
 @media(max-width:700px){
   #bar{padding:8px 12px;gap:6px 10px}
-  #bar .brand{font-size:17px}
+  #bar .pagename{font-size:17px}
   #bar .tools{flex-wrap:nowrap;overflow-x:auto;width:100%;padding-bottom:2px}
   #find{flex:0 0 190px}
   .campus-marker{font-size:11px;padding:2px 7px}
@@ -223,7 +228,7 @@ body.tc-theme-canvas .panel.tc-panel,body.tc-theme-canvas #legend.tc-panel{borde
 <span id="tc-main" class="sitenav-skip-target" tabindex="-1"></span>
 <div id="stage">
 <div id="bar">
-  <h1 class="brand">SmartCiti<span class="x">.X</span> : Trade Craft Academy</h1>
+  <div class="pagehead"><p class="kicker">SmartCiti<span class="x">.X</span> : Trade Craft Academy</p><h1 class="pagename">Geomap</h1></div>
   <a href="trade_craft_3d.html">⬡ 3D environment</a>
   <a href="trade_craft_interactive.html">▦ interactive map</a>
   <div class="tools">

@@ -11,7 +11,7 @@
   "halls": "3807e54afe6abfe6",
   "completion": "a95de65feb282e76",
   "manifest": "169fa4e75499d00e",
-  "build_3d": "5f0302fe3fc2a20b",
+  "build_3d": "dade931f7d2ce13a",
   "hall_signoff": "e67ba161ef70d996",
   "roadmap": "edb0a399213e9e56",
   "completion_fixture": "55c31b9c5b7ce667",
@@ -58,15 +58,15 @@
  },
  "placard_rule": {
   "hangs_when": {
-   "line": 11259,
+   "line": 11277,
    "read": "if (rc.ppe.length) { const plac = label(rc.ppe.join(' · '), ..., { kind: 'placard', items: rc.ppe })"
   },
   "rc_is": {
-   "line": 11213,
+   "line": 11231,
    "read": "const rc = condOf(h.slug, r.strand);"
   },
   "condOf": {
-   "line": 15135,
+   "line": 15247,
    "read": "return D.condOver[hallSlug]?.[strand], else D.baseCond[strand]"
   },
   "condOver": {

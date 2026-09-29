@@ -7426,7 +7426,9 @@ body.tc-theme-canvas #panel a.tc-btn{min-block-size:40px;padding:8px 16px}
 </head>
 <body>
 __NAV__<main id="main">
-<h1 id="ptitle" class="vh">SmartCiti.X : Trade Craft Academy — __H1_TEXT__</h1>
+<p id="pkicker" class="vh" lang="en" dir="ltr">SmartCiti.X : Trade Craft Academy</p>
+<h1 id="ptitle" class="vh">__H1_TEXT__</h1>
+__EGG_HOOKS__
 <script>
 // the nav's folded row, measured (see --navh in the stylesheet)
 (function () {
@@ -7547,7 +7549,14 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
+/* BOOT PHASES (wave 13, AUDIT row 6: the slowest page to ready). Milliseconds since navigation start at
+   each step of the build, read by a harness through window.__tc3dBoot(), so time-to-ready is a measured
+   row split by phase rather than one number nobody can act on. Presentation-free: nothing reads it. */
+const BOOT = { module: Math.round(performance.now()), frames: [] };
+const bootMark = (k) => { if (!(k in BOOT)) BOOT[k] = Math.round(performance.now()); };
+window.__tc3dBoot = () => ({ ...BOOT });
 const D = JSON.parse(document.getElementById('data').textContent);
+bootMark('data');
 // inflate the deduped payload: rooms from the per-depth layout and the
 // per-strand defs, finishes from the 12 distinct maps - one truth per
 // fact on the wire, the full shape everywhere downstream
@@ -7989,7 +7998,14 @@ function skyCanvas(stops, opts) {
    target itself allocated, and the leak check caught exactly that - eight
    textures per view cycle, climbing and never returned. */
 let skyEnvRT = null, pmrem = null;
+/* TIME-TO-READY (wave 13, measured by __tc3dBoot): the module asked for the sky THREE times before the first
+   frame - the placeholder below, setWeather()'s reAtmos() and the first view's applyAtmos() - and each one
+   painted a sky canvas and ran a PMREM pass, two of them thrown away unseen. While the module builds, setSky()
+   only records what was asked; the first view's LAST request is drawn once, right after that view stands and
+   before window.__tc3d exists, with exactly the arguments it was called with. Nothing renders in between. */
+let skyBoot = { ask: null, n: 0 };
 function setSky(stops, opts = {}) {
+  if (skyBoot) { skyBoot.ask = [stops, opts]; skyBoot.n++; return; }
   scene.background?.dispose?.();
   const t = new THREE.CanvasTexture(skyCanvas(stops, opts));
   t.mapping = THREE.EquirectangularReflectionMapping;
@@ -8301,7 +8317,9 @@ fill.position.set(-30, 20, -30);
 scene.add(fill);
 
 // the first sky, now that the light it draws the sun from exists
+bootMark('lights');
 setSky(['#0c141c', '#1a2a36', '#33404a', '#463a2a'], { cloud: .18 });
+bootMark('sky');
 
 /* ------------------------------------------------------- atmosphere ----- */
 // Authored ambience per campus and six weather states, both read from the
@@ -12807,6 +12825,80 @@ async function satGround() {
 }
 document.getElementById('satBtn').addEventListener('click', satGround);
 
+/* WAYFINDING SIGNS, PLACED FOR THE VIEW THAT OPENS ON THEM (wave 13, eval_scene campus row: 5 overlapping
+   label pairs > 4, four of them a parking or yard sign a few pixels into the campus marquee, a district
+   banner or each other). Which signs stand is decided exactly as before (wayPut, WAY_GAP_M, world metres);
+   this only chooses WHERE on its own lot each one stands. It asks the page's own questions: the campus
+   camera pose showCampus() opens on (300 cf up, 350 cf back, looking at the commons), this renderer's
+   viewport, the clamp labelStep() puts on a plate's height (screen.min_frac .. max_frac) and lblOverlap().
+   Nine points of the lot - the centre first, then its edges and corners at WAY_LOT_FRAC of the half-size -
+   are scored against every sign already standing on the campus: a plate it would cover PARTLY (up to
+   cover_hide, so both would stay up as an overlapping pair) costs WAY_PAIR_COST, one it would cover past
+   cover_hide (the declutter steps the lower one back, as it always has) costs 1, a clear one nothing, with
+   WAY_PAD_PX of air. The cheapest point wins, ties keep the centre. Nothing is dropped, hidden or re-ranked,
+   and no threshold moves: a sign only walks inside its own AUTHORED lot. */
+let waySigns = [];
+const WAY_LOT_FRAC = .45, WAY_PAD_PX = 2, WAY_PAIR_COST = 4;
+function wayPlace(g, R, plan) {
+  if (!waySigns.length) return;
+  const lots = plan.parking.concat(plan.lots.filter((l) => l.yard).map((l) => l.yard));
+  const cf = Math.max(1, R / 330);            // showCampus's own pose, for the same campusR
+  lblSettle(g, [0, 300 * cf, 350 * cf], [0, 0, 0], waySigns.map((sp) => {
+    const lot = lots.find((l) => l.x === sp.position.x && l.z === sp.position.z);
+    if (!lot) throw new Error('wayfinding sign "' + sp.userData.lbl.text + '" stands on no plan lot');
+    return { sp, cands: [[0, 0], [-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [1, -1], [-1, 1], [1, 1]]
+      .map(([fx, fz]) => [lot.x + fx * WAY_LOT_FRAC * lot.w, sp.position.y, lot.z + fz * WAY_LOT_FRAC * lot.d]) };
+  }));
+}
+/* The one settling pass both of those use (and the region board's route labels, below): for each mover in
+   order, the cheapest of its own candidate points against every sign already standing in group g, seen from
+   the pose the view opens on. A sign past its kind's hide_beyond_m from that eye is not on screen and is not
+   an obstacle. Candidates are the caller's; this never hides, fades, drops or re-ranks anything. */
+function lblSettle(g, eye, tgt, movers) {
+  if (!movers.length) return;
+  const el = renderer.domElement;
+  const vw = el.clientWidth || el.width, vh = el.clientHeight || el.height;
+  const cam = new THREE.PerspectiveCamera(camera.fov, vw / vh, camera.near, camera.far);
+  cam.position.set(eye[0], eye[1], eye[2]); cam.lookAt(tgt[0], tgt[1], tgt[2]);
+  cam.updateMatrixWorld(); cam.updateProjectionMatrix();
+  const tanH = Math.tan(cam.fov * Math.PI / 360), v = new THREE.Vector3();
+  const rectOf = (sp, p) => {
+    const u = sp.userData.lbl, d = p.distanceTo(cam.position), span = 2 * d * tanH;
+    if (u.hide && d > u.hide) return null;         // past its kind's reading distance: not on screen
+    const hPx = Math.min(LFOCUS.screen.max_frac * vh, Math.max(LFOCUS.screen.min_frac * vh, u.base.y / span * vh));
+    const wPx = hPx * u.base.x / u.base.y;
+    v.copy(p).project(cam);
+    if (v.z < -1 || v.z > 1) return null;          // behind the eye or past the far plane
+    return { x: (v.x + 1) / 2 * vw - wPx / 2, y: (1 - v.y) / 2 * vh - hPx / 2, w: wPx, h: hPx };
+  };
+  g.updateMatrixWorld(true);
+  const mine = new Set(movers.map((m) => m.sp)), stand = [];
+  for (const sp of labelSet) {
+    if (mine.has(sp)) continue;
+    let o = sp.parent; while (o && o !== g) o = o.parent;
+    if (!o) continue;                              // not a sign of this group
+    const r = rectOf(sp, sp.getWorldPosition(new THREE.Vector3()));
+    if (r) stand.push(r);
+  }
+  const cost = (r) => {
+    const pad = { x: r.x - WAY_PAD_PX, y: r.y - WAY_PAD_PX, w: r.w + 2 * WAY_PAD_PX, h: r.h + 2 * WAY_PAD_PX };
+    let c = 0;
+    for (const q of stand) { const cv = lblOverlap(pad, q); if (cv > 0) c += cv > LDECL.cover_hide ? 1 : WAY_PAIR_COST; }
+    return c;
+  };
+  for (const { sp, cands } of movers) {
+    let best = null;
+    for (const [x, y, z] of cands) {
+      const p = new THREE.Vector3(x, y, z), r = rectOf(sp, p);
+      if (!r) continue;
+      const c = cost(r);
+      if (!best || c < best.c) best = { c, p, r };
+    }
+    if (!best) continue;                           // off the opening view: stays where it was put
+    sp.position.copy(best.p);
+    stand.push(best.r);
+  }
+}
 function buildCity(g, R) {
   const pois = D.geo.cityPois?.[campusKey] ?? [];
   cityOff = 0; cityExtra = new Map();
@@ -12903,6 +12995,7 @@ function buildCity(g, R) {
 }
 
 /* Schematic water and crossings per city - drawn, labelled SCHEMATIC. */
+const BAY_TAG_ARC = 75 * Math.PI / 180;   // the arc about north the campus camera looks across
 function cityWater(g, key, R, pois) {
   const tag = (name, x, z) => {
     const l = label(name, 'SCHEMATIC', 1.6, { kind: 'schematic' });
@@ -12927,7 +13020,17 @@ function cityWater(g, key, R, pois) {
     const bay = new THREE.Mesh(
       new THREE.RingGeometry(R + 52, 430, 72), mat.water);
     bay.rotation.x = -Math.PI / 2; bay.position.y = .06; g.add(bay);
-    tag('San Francisco Bay', 0, -(R + 110));
+    /* The Bay's name stands on OPEN WATER (wave 13, eval_scene campus row: at due north it sat on Richmond's
+       plate, 14% of the smaller one). Same R + 110 ring; the bearing is the middle of the widest gap between
+       the city anchors' drawn bearings (cityPlace) on the side the campus camera faces - north, within
+       BAY_TAG_ARC of it - so no anchor can stand under it however the anchors are pushed out. */
+    const bays = pois.map((p) => { const [px, pz] = cityPlace(p); return Math.atan2(px, -pz); })
+      .filter((b) => Math.abs(b) <= BAY_TAG_ARC).sort((a, b) => a - b);
+    const edges = [-BAY_TAG_ARC, ...bays, BAY_TAG_ARC];
+    let bayGap = 0, bayAt = 0;
+    for (let i = 1; i < edges.length; i++)
+      if (edges[i] - edges[i - 1] > bayGap) { bayGap = edges[i] - edges[i - 1]; bayAt = (edges[i] + edges[i - 1]) / 2; }
+    tag('San Francisco Bay', (R + 110) * Math.sin(bayAt), -(R + 110) * Math.cos(bayAt));
     const sf = pois.find((p) => p.name === 'San Francisco');
     const spans = [];
     if (sf) {
@@ -13164,12 +13267,14 @@ function buildCampus(key) {
        sims yard or another such sign (measured: unspaced, seven of them
        made seven overlapping pairs in the campus view). */
     const cpS = D.i18n[loc].strings;
+    waySigns = [];
     const wayAt = [[0, 0], [plan.sims_yard.x, plan.sims_yard.z]]
       .concat(Object.values(plan.blocks).map((b) => [b.x, b.z]));
     const wayPut = (text, x, z) => {
       if (wayAt.some(([qx, qz]) => Math.hypot(x - qx, z - qz) < WAY_GAP_M)) return;
       const l = label(text, 'AUTHORED', 1.4, { kind: 'schematic' });
       l.position.set(x, 6, z); campusGroup.add(l); wayAt.push([x, z]);
+      waySigns.push(l);
     };
     for (const r of plan.parking) wayPut(cpS['campusplan.parking'], r.x, r.z);
     for (const lot of plan.lots) if (lot.yard) wayPut(cpS['campusplan.yard'], lot.yard.x, lot.yard.z);
@@ -13196,6 +13301,7 @@ function buildCampus(key) {
   buildTrainingYard(campusGroup, RS, plan ? plan.sims_yard : null);
   buildCity(campusGroup, RS);
   buildRestorationSites(campusGroup);
+  if (plan) wayPlace(campusGroup, RS, plan);
   flushDashes(campusGroup);
   walkLim = cityPois ? (cityLog ? 536 : 350) : campusR + 85;
   if (plan) walkLim = Math.max(walkLim, RS + 20);   // every lot, and the ring, on foot
@@ -13467,7 +13573,7 @@ function buildRegion() {
   }
   // glowing routes between the campuses
   const lineMat = new THREE.LineBasicMaterial({ color: 0xE8A33D, transparent: true, opacity: .65 });
-  const pairs = [];
+  const pairs = [], routeMovers = [];
   const pkeys = Object.keys(D.campuses);
   for (let i = 0; i < pkeys.length; i++)
     for (let j = i + 1; j < pkeys.length; j++) pairs.push([pkeys[i], pkeys[j]]);
@@ -13485,11 +13591,16 @@ function buildRegion() {
       { kind: 'route' });
       kl.position.copy(mid).setY(mid.y + 5);
       regionGroup.add(kl);
+      // wave 13 (REVIEW13 row 3): a route's distance may stand anywhere on the middle of its OWN arc
+      routeMovers.push({ sp: kl, cands: [.5, .42, .58, .34, .66].map((tt) => {
+        const q = curve.getPoint(tt); return [q.x, mid.y + 5, q.z]; }) });   // t .5 IS the old spot
     }
   }
   const sign = label('SmartCiti.X : Trade Craft Academy', 'powered by AGI Corp',
     3.6, { kind: 'brand' });
   sign.position.set(0, 44, 10); regionGroup.add(sign);
+  // the route distances settle last, against every other sign on the board, for showRegion's own pose
+  lblSettle(regionGroup, [0, 225, 235], [10, 0, 0], routeMovers);
   scene.add(regionGroup);
 }
 
@@ -14198,7 +14309,8 @@ function renderChrome() {
   document.documentElement.lang = loc;
   document.documentElement.dir = i.dir;
   document.getElementById('back').textContent = '← ' + t('nav.campus');
-  document.getElementById('ptitle').textContent = 'SmartCiti.X : Trade Craft Academy — ' + t('nav.page.campus');
+  // AUDIT row 8 (wave 13): the h1 names the PAGE, in the reader's language; the brand is the kicker line above it
+  document.getElementById('ptitle').textContent = t('nav.page.campus');
   const hall = document.getElementById('hall');
   // ✓ stations complete · ▶ every bound seat passed · 🧰 district crib passed
   const mark = (h) => {
@@ -15776,11 +15888,17 @@ addEventListener('resize', () => {
   renderer.setSize(innerWidth, innerHeight);
 });
 
+bootMark('surfaces');
 cfgInit();
 renderChrome();
+bootMark('chrome');
 if (D.halls.some(h => h.slug === params.get('hall'))) showHall(params.get('hall'));
 else if (D.campuses[params.get('campus')]) showCampus(params.get('campus'));
 else showRegion();
+bootMark('view');
+{ const ask = skyBoot.ask; BOOT.skyAsks = skyBoot.n; skyBoot = null;
+  if (!ask) throw new Error('boot: no view asked for a sky'); setSky(ask[0], ask[1]); }
+bootMark('skyDrawn');
 /* ...and then, if the link named a seat, take it. This runs AFTER the view
    above so the seat opens onto a world that is already standing: startSim()
    hides whichever group that call built and reads campusKey for the
@@ -15913,6 +16031,7 @@ window.__tc3dSim = {
     seed: opRun.seed, step: opRun.step, phase: opRun.id, sweep: opRun.sweep,
     result: opRun.result } : null,
 };
+bootMark('ready');
 window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.length,
   // Every hall's slug, so a harness can measure ALL of them instead of
   // whichever one happens to be first. eval_scene scored only D.halls[0]
@@ -16178,6 +16297,9 @@ renderer.setAnimationLoop(() => {
   // and the box would lag the view by one frame at every turn.
   trackSun();
   xrRender();
+  if (!('frame1' in BOOT)) { bootMark('frame1'); BOOT.programs = renderer.info.programs.length; }
+  // and the next few frames, each with the programs compiled so far: a slow second frame is a compile, not a draw
+  else if (BOOT.frames.length < 12) BOOT.frames.push([Math.round(performance.now()), renderer.info.programs.length, qLevel]);
 });
 </script>
 </body>
@@ -16678,6 +16800,19 @@ page = page.replace('__NAV_CSS__', NAV_CSS).replace('__NAV__', NAV)
 page = page.replace('__THEME_CSS__', THEME_CSS)
 page = page.replace('__STYLE_HEAD_JS__', STYLE_HEAD_JS).replace('__STYLE_JS__', STYLE_JS)
 page = page.replace('__H1_TEXT__', I18N['en']['strings']['nav.page.campus'])
+# GAMES_CONTRACT v1 (wave 13): BAYOU's two campus eggs are typed triggers with no scene object, so the page
+# carries them as hidden hooks handed out by questkit.egg_attr (which fails the build on an unknown id or a
+# world outside this page's scope); quest_js('campus') below binds them. Each must be a campus egg with a
+# typed trigger in the registry - read off it, never retyped here.
+from questkit import egg_attr   # noqa: E402 - the quest contract's hook helper
+CAMPUS_EGG_HOOKS = ('egg-bayou-campus-hardhatbird', 'egg-bayou-campus-swale')
+for _eid in CAMPUS_EGG_HOOKS:
+    _eq = _qreg[_eid]
+    assert _eq['kind'] == 'egg' and _eq['world'] == 'campus', f'campus egg hook: {_eid} is not a campus egg'
+    assert re.fullmatch(r'typed:[a-z]{3,24}', _eq['trigger']), f'campus egg hook: {_eid} has no typed trigger'
+page = page.replace('__EGG_HOOKS__', '<div class="tc-hooks" hidden data-egg-hooks="campus">'
+                    + ''.join(f'<span hidden {egg_attr(_eid)}></span>' for _eid in CAMPUS_EGG_HOOKS) + '</div>', 1)
+assert '__EGG_HOOKS__' not in page, 'the campus egg hooks slot is left in the page'
 # the bar's controls carry their English names in the markup, so every link
 # and button has an accessible name before the script runs; renderChrome()
 # and the view code then rewrite them in the reader's language. A key the

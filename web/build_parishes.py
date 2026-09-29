@@ -288,6 +288,28 @@ else:
     WORLD = None
     DATA['world'] = None
     STATES['world'], WHY['world'] = 'stub', 'parishes/registry/world.json is not built (PARISH v1.4)'
+# BEGIN WORLDS w13 plots: FIELDS' AUTHORED plots (seasons/registry/seasons.json) of this page's region stay free of
+# generated buildings, trees and lamps - the page's buildChunk drops fabric whose footprint meets a plot bed. Fail closed:
+# the registry, every plot field and every plot's region on this page are required (named errors, no defaults).
+_SEA = ROOT / 'seasons/registry/seasons.json'
+if not _SEA.exists():
+    raise BuildError('build_parishes: seasons/registry/seasons.json is missing (WORLDS keeps FIELDS plot cells free of generated buildings)')
+_sea_region = 'bay' if PAGE.endswith('trade_craft_bay.html') else 'louisiana'
+_ids = {p['id'] for p in DATA['parishes']}
+DATA['plots_clear'] = []
+for _f, _w in sorted(need(json.loads(_SEA.read_text()), 'plots', 'seasons.json').items()):
+    if need(_w, 'region', f'seasons.json plots.{_f}') != _sea_region:
+        continue
+    if _f not in _ids:
+        raise BuildError(f'build_parishes: seasons.json plots.{_f} ({_sea_region}) names a region this page does not hold')
+    for _q in need(_w, 'plots', f'seasons.json plots.{_f}'):
+        _sz = need(_q, 'size_m', f'seasons.json plot in {_f}')
+        if len(_sz) != 2 or min(_sz) <= 0:
+            raise BuildError(f'build_parishes: seasons.json plot {_q.get("id")} size_m must be two positive metres')
+        DATA['plots_clear'].append([need(_q, 'id', f'seasons.json plot in {_f}'), _f, need(_q, 'x', _q['id']), need(_q, 'z', _q['id']), _sz[0], _sz[1]])
+if not DATA['plots_clear']:
+    raise BuildError(f'build_parishes: seasons.json holds no {_sea_region} plots for this page')
+# END WORLDS w13 plots
 # PHYS (PHYS_CONTRACT v1): physics/registry/physics.json embedded verbatim, physkit pasted into the module
 if (ROOT / 'physics/registry/physics.json').exists() and (HERE / 'physkit.py').exists():
     from physkit import phys_inline  # noqa: E402
@@ -303,6 +325,51 @@ if (ROOT / 'physics/registry/physics.json').exists() and (HERE / 'physkit.py').e
     STATES['physics'] = 'wired'
 else:
     PHYS_BLOCK, PHYS_EMBED = 'const PHYS_ON = false;\n', ''
+# BEGIN ELEV w14 relief (ELEV·Terrain & Elevation): web/terrainkit.py pasted after physkit; AUTHORED ground relief
+# (knolls in park districts, levee banks beside AUTHORED channels) on a 10 m lattice that the land mesh, the walker
+# (physkit ground), vehicles (fleet ground adapter) and building/tree/lamp bases all read - nothing floats or sinks,
+# the water keeps its level. No elevation dataset is held for these worlds, so the relief is AUTHORED, never "real
+# elevation". Page switch: ?relief=off draws the flat 0 m world.
+from terrainkit import terrain_inline  # noqa: E402
+ELEV_WORLD = 'bay' if PAGE.endswith('trade_craft_bay.html') else 'parishes'
+# RECORDED (ELEV_CONTRACT v1, GEO): USGS 3DEP 1 arc-second cell means from elevation/ (public domain), FETCHED by the
+# page (never embedded) and sampled with terrainDem - the JS twin of elevation/sample.py (tested against its pins).
+# LEAD decision 09:37: heights shown RELATIVE to the median RECORDED land height of this world's outlines, water planes
+# unchanged, land never drawn below its water plane; None cells fall back to AUTHORED relief and are counted.
+_EREG = json.loads((ROOT / 'elevation/registry/elevation.json').read_text())
+_ER = 'bayarea' if ELEV_WORLD == 'bay' else 'parishes'
+_EG = need(need(_EREG, 'grids', 'elevation.json'), _ER, 'elevation.json#grids')
+_EE = need(_EG, 'encoding', f'elevation.json#grids.{_ER}')
+if need(_EREG, 'provenance', 'elevation.json') != 'RECORDED':
+    raise BuildError('build_parishes: elevation.json is not RECORDED')
+if not (ROOT / 'elevation/vendor' / need(_EG, 'file', 'elevation grid')).exists():
+    raise BuildError(f'build_parishes: the RECORDED elevation grid elevation/vendor/{_EG["file"]} is missing')
+_ECAP = 12.0 if ELEV_WORLD == 'bay' else 3.0   # AUTHORED clamp: metres above the median drawn at most
+DATA['relief'] = {
+    'mode': 'RECORDED', 'world': ELEV_WORLD, 'switch': 'relief=on', 'cell_m': 10, 'patch_r_m': 400, 'lift_m': 0.03,
+    'max_slope': 0.25 if ELEV_WORLD == 'bay' else 0.15, 'cap_m': _ECAP,   # Bay: RECORDED 3DEP cell-mean gradients reach 0.168 within 2.5 km of the Oakland campus (node, 09:47, before any Bay relief row ran); parish 0.15 (run 2: 0.140)
+    'ref_step_m': 100, 'ref_r_m': 1500,
+    'legend': ('Ground relief: USGS 3DEP (RECORDED), shown relative to local median land; water level AUTHORED. '
+               f'The median is of RECORDED land heights within 1.5 km of where you stood when the grid arrived (sampled every 100 m, then fixed); heights are '
+               f'~150-185 m cell means (levees and street grades finer than a cell are not shown as measured), clamped to '
+               f'0-{_ECAP:g} m above the median (lower land is drawn at the median, never below its water plane) and '
+               f'flattened to street level near meshed streets, landmarks, stations and plots (AUTHORED); cells with no '
+               f'RECORDED height use AUTHORED knolls and levees (counted). ' + need(need(_EREG, 'attribution', 'elevation.json'), 'text', 'attribution')),
+    'note': 'AUTHORED relief - procedural knolls in park districts and levee banks beside AUTHORED channels; not real elevation',
+    'dem': {'path': 'elevation/vendor/' + _EG['file'], 'sha256': need(_EG, 'sha256', 'elevation grid'),
+            'w_arcsec': _EG['bounds_arcsec']['w'], 'n_arcsec': _EG['bounds_arcsec']['n'], 'cell_arcsec': need(_EG, 'cell_arcsec', 'grid'),
+            'rows': need(_EG, 'rows', 'grid'), 'cols': need(_EG, 'cols', 'grid'), 'nodata': need(_EE, 'nodata_value', 'encoding'),
+            'scale_m': need(_EE, 'scale_m', 'encoding'), 'offset_m': need(_EE, 'offset_m', 'encoding'), 'R_m': need(REG['frames'], 'R_m', 'frames'),
+            'source': 'elevation/registry/elevation.json#grids.' + _ER + ' (USGS 3DEP 1 arc-second, public domain)',
+            'origin': need(need(REG['frames'], 'world', 'frames'), 'origin', 'frames.world')},
+    'knoll': ({'r': [90, 130], 'peak': [3.0, 6.0]} if ELEV_WORLD == 'bay' else {'r': [45, 80], 'peak': [0.8, 1.6]}),
+    'levee': {'toe0': 3, 'crest': 16, 'toe1': 40, 'peak': 0.8 if ELEV_WORLD == 'bay' else 1.0, 'kinds': ['bayou', 'canal', 'stream']},
+    # fades to 0 near what stands at 0 m; each width >= 10 x the tallest relief it cuts (smoothstep slope <= 0.15)
+    'fade_m': ({'kerb': [3, 133], 'landmark': [50, 180], 'plot': [4, 134], 'station': [20, 150]} if ELEV_WORLD == 'bay'
+               else {'kerb': [3, 33], 'landmark': [50, 80], 'plot': [4, 34], 'station': [20, 50]}),
+}
+PHYS_BLOCK = PHYS_BLOCK + '\n' + terrain_inline() + '\n'
+# END ELEV w14 relief
 # DEEP (wave 9): underwater regions (web/deepkit.py; underwater/registry/underwater.json is FETCHED on the first
 # Dive/ROV press, never embedded: page weight and the overview are unchanged). AUTHORED depths; game camera only.
 if (ROOT / 'underwater/registry/underwater.json').exists() and (HERE / 'deepkit.py').exists():
@@ -477,6 +544,12 @@ quest_block = (f'<ul class="quests">{"".join(QUEST_ROWS)}</ul><div data-tc-quest
 _wl = [(k, DATA['honesty'][k]) for k in ('water_world', 'roads', 'physics', 'ambient') if k in DATA['honesty']]
 world_legend = ('<ul class="help" data-world-legend>' + ''.join(f'<li data-legend="{esc(k)}" lang="en">{esc(v)}</li>' for k, v in _wl)
                 + f'<li data-legend="help">{TS("parishes.world.help")}</li></ul>')
+# BEGIN ELEV w14 legend: 'relief: AUTHORED' next to the 3D view (the page un-hides it when the relief is on, and hides the
+# flat-0 m line then; ?relief=off keeps the flat line)
+if world_legend.count('<li data-legend="help">') != 1:
+    raise BuildError('build_parishes: ELEV legend anchor <li data-legend="help"> must occur exactly once')
+world_legend = world_legend.replace('<li data-legend="help">', f'<li data-legend="relief" lang="en" hidden>{esc(DATA["relief"]["legend"])}</li><li data-legend="help">', 1)   # NEEDS lead: switch to TS("elev.legend.authored") (8 locales) once test_parishes [i18n] counts elev.* keys
+# END ELEV w14 legend
 honesty_rows = ''.join(f'<li data-honesty-key="{esc(k)}">{esc(v)}</li>' for k, v in sorted(DATA['honesty'].items()))
 embedded = json.dumps(DATA, sort_keys=True, ensure_ascii=False).replace('</', '<\\/')
 finds_embedded = json.dumps(FINDS, sort_keys=True)
@@ -596,6 +669,149 @@ function segDist(px, pz, [ax, az], [bx, bz]) {
 function longest(segs) { let b = segs[0], bl = -1; for (const sg of segs) { let l = 0; for (let i = 1; i < sg.length; i++) l += Math.hypot(sg[i][0] - sg[i - 1][0], sg[i][1] - sg[i - 1][1]); if (l > bl) { bl = l; b = sg; } } return b; }
 function lineDist(x, z, pts) { let d = Infinity; for (let i = 1; i < pts.length; i++) d = Math.min(d, segDist(x, z, pts[i - 1], pts[i])); return d; }
 
+/* BEGIN ELEV w14 relief (web/terrainkit.py): one AUTHORED height field, sampled on a 10 m lattice, is what the land
+   mesh draws (a displaced patch merged INTO each parish's land mesh near the eye: no extra draw call) and what the
+   walker, vehicles and building/tree/lamp bases stand on. Relief is 0 on water banks, meshed kerbs, landmarks, plots
+   and stations, so everything that stands at 0 m still stands on the ground; the water keeps its level. */
+let ELEV_ST = null;
+function elevState() {
+  if (ELEV_ST) return ELEV_ST;
+  const R = D.relief, on = /[?&]relief=on\b/.test(location.search);   // default OFF (the eval 'ground' row holds the flat world); ?relief=on
+  const K = R.knoll, LV = R.levee, F = R.fade_m, kinds = new Set(LV.kinds);
+  const knolls = (x, z) => {
+    if (landUse(x, z) !== 'park') return [];
+    const a = Math.floor(x / DISTRICT_M), b = Math.floor(z / DISTRICT_M);
+    const hx = wildsHash(a, b, SEED, 21), hz = wildsHash(a, b, SEED, 22), hr = wildsHash(a, b, SEED, 23), hp = wildsHash(a, b, SEED, 24);
+    return [{ x: (a + 0.35 + 0.3 * hx) * DISTRICT_M, z: (b + 0.35 + 0.3 * hz) * DISTRICT_M, r: K.r[0] + (K.r[1] - K.r[0]) * hr, peak: K.peak[0] + (K.peak[1] - K.peak[0]) * hp }];
+  };
+  const levees = (x, z) => {
+    let d = Infinity;
+    for (const id of loaded) {
+      const net = waterNet.get(id); if (!net) continue;
+      if (!net.elevSeg) {   // bank segments of AUTHORED channels, bucketed by 64 m (built once per loaded water net)
+        const bk = new Map();
+        for (const f of net.feats) if (kinds.has(f.kind)) for (let i = 0, j = f.ring.length - 1; i < f.ring.length; j = i++) {
+          const s = [f.ring[j][0], f.ring[j][1], f.ring[i][0], f.ring[i][1]], m = LV.toe1;
+          for (let bx = Math.floor((Math.min(s[0], s[2]) - m) / 64); bx <= Math.floor((Math.max(s[0], s[2]) + m) / 64); bx++)
+            for (let bz = Math.floor((Math.min(s[1], s[3]) - m) / 64); bz <= Math.floor((Math.max(s[1], s[3]) + m) / 64); bz++) { const k = bx + ',' + bz; if (!bk.has(k)) bk.set(k, []); bk.get(k).push(s); }
+        }
+        net.elevSeg = bk;
+      }
+      const list = net.elevSeg.get(Math.floor(x / 64) + ',' + Math.floor(z / 64)); if (!list) continue;
+      for (const s of list) d = Math.min(d, segDist(x, z, [s[0], s[1]], [s[2], s[3]]));
+    }
+    return d < LV.toe1 ? [{ d, spec: LV }] : [];
+  };
+  const sm = (e0, e1, v) => terrainSmooth(e0, e1, v);
+  const fade = (x, z) => {
+    if (!parishAt(x, z) || inWaterAt(x, z)) return 0;
+    let f = 1;
+    const rn = roadNear(x, z, F.kerb[1] + 30); if (rn) f = Math.min(f, sm(F.kerb[0], F.kerb[1], rn.edge));
+    for (const id of loaded) { const P = PAR.get(id); for (const l of P.landmarks) { const dd = Math.hypot(l.x - x, l.z - z); if (dd < F.landmark[1]) f = Math.min(f, sm(F.landmark[0], F.landmark[1], dd)); }
+      if (PATHS[id]) for (const st of PATHS[id].stations) { const dd = Math.hypot(st.world_m[0] - x, -st.world_m[1] - z); if (dd < F.station[1]) f = Math.min(f, sm(F.station[0], F.station[1], dd)); } }
+    for (const p of PLOTS) { const dd = Math.max(Math.abs(x - p.x) - p.hw, Math.abs(z - p.z) - p.hd); if (dd < F.plot[1]) f = Math.min(f, sm(F.plot[0], F.plot[1], dd)); }
+    return f;
+  };
+  const authored = terrainAuthored({ note: R.note, floor: 0, fade, knolls, levees });
+  /* RECORDED: 0 until the grid has loaded; then fade x clamp(3DEP - median, 0, cap); a None cell -> AUTHORED (counted) */
+  const rec = { height: (x, z) => { const S = ELEV_ST; if (!S.dem) return S.demFailed ? authored.height(x, z) : 0; const f = fade(x, z); if (f <= 0) return 0;
+    const h = S.dem.height(x, z); if (h === null) { S.none++; return authored.height(x, z); } S.rec++; return f * Math.max(0, Math.min(R.cap_m, h - S.ref)); }, provenance: 'RECORDED', source: R.dem.source };
+  const sampler = on ? rec : { height: () => 0, provenance: 'AUTHORED', source: 'flat 0 m (relief off)' };
+  const lat = terrainLattice(sampler, R.cell_m, 400000);
+  const sun = new THREE.Vector3().copy(SUN);
+  for (const el of document.querySelectorAll('[data-legend="relief"]')) el.hidden = !on;
+  for (const el of document.querySelectorAll('[data-no-elevation]')) el.hidden = on;
+  ELEV_ST = { dem: null, demFailed: null, ref: null, refN: 0, none: 0, rec: 0, R, on, lat, sampler, ver: '', cellKey: '', quads: 0, verts: 0, rebuilds: 0, ms: 0, sun, uSun: { value: sun } };
+  if (on) elevLoadDem();
+  return ELEV_ST;
+}
+/* fetch the RECORDED grid (gzip, sha256-pinned), decompress in the browser, fix the reference, restart the relief */
+function elevLoadDem() {
+  const E = ELEV_ST, M = E.R.dem;
+  fetch('../' + M.path).then((r) => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.arrayBuffer(); }).then(async (gz) => {
+    const hex = [...new Uint8Array(await crypto.subtle.digest('SHA-256', gz))].map((b) => b.toString(16).padStart(2, '0')).join('');
+    if (hex !== M.sha256) throw new Error('sha256 ' + hex.slice(0, 16) + ' is not the pinned grid');
+    const raw = new Uint8Array(await new Response(new Blob([gz]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer());
+    const dem = terrainDem(M, raw, M.origin), hs = [];
+    /* run 3 (Bay): a whole-county median (183 m) left the Oakland flats flat - the reference is LOCAL: land within ref_r_m of the eye */
+    const st = E.R.ref_step_m, rr = E.R.ref_r_m, cx = Math.round(eye.x / st) * st, cz = Math.round(eye.z / st) * st;
+    for (let x = cx - rr; x <= cx + rr; x += st) for (let z = cz - rr; z <= cz + rr; z += st) {
+      if ((x - cx) ** 2 + (z - cz) ** 2 > rr * rr) continue; const p = parishAt(x, z); if (!p || !loaded.has(p.id) || inWaterAt(x, z)) continue; const h = dem.height(x, z); if (h !== null) hs.push(h); }
+    if (!hs.length) throw new Error('no RECORDED land height inside the outlines');
+    hs.sort((a, b) => a - b); E.ref = hs[hs.length >> 1]; E.refN = hs.length; E.dem = dem; elevRestart();
+  }).catch((e) => { E.demFailed = String(e.message || e); elevLegend(); elevRestart(); });
+}
+function elevRestart() {
+  const E = ELEV_ST; E.lat.clear(); E.cellKey = ''; E.none = 0; E.rec = 0; elevLegend(); clearChunks(); markPhys();
+  elevReseat();
+}
+function elevLegend() {
+  const E = ELEV_ST;
+  for (const el of document.querySelectorAll('[data-legend="relief"]')) el.textContent = E.demFailed ? 'relief: AUTHORED - the RECORDED USGS 3DEP grid did not load (' + E.demFailed + '); ' + E.R.note : E.R.legend;
+}
+/* the relief's inputs (streets, water) arrive by fetch: when they change the lattice restarts and the patch rebuilds */
+function elevSync() {
+  const E = elevState(); if (!E.on) return E;
+  let v = ''; for (const id of loaded) v += id + (roadNet.get(id) ? 'r' : '') + (waterNet.get(id) ? 'w' : '') + ';';
+  if (v !== E.ver) { E.ver = v; E.lat.clear(); E.cellKey = ''; elevReseat(); }
+  return E;
+}
+/* parked land vehicles stand where the CURRENT relief is (eval run 2: 4 of 52 kept a stale height after a street/water net arrived) */
+function elevReseat() { let list, rd; try { list = parked; rd = riding; } catch (e) { return; }   // not declared yet during start-up (TDZ)
+  for (const p of list) if (p.medium === 'land' && (!rd || rd.st !== p.st)) { p.st.y = elevY(p.st.x, p.st.z); p.h.set(p.st); }
+}
+function elevHud() { const E = elevState(); if (!E.on) return null; return E.demFailed ? 'relief AUTHORED (RECORDED grid did not load)' : E.dem ? `relief RECORDED USGS 3DEP +${elevY(eye.x, eye.z).toFixed(1)} m above median land (${E.ref.toFixed(1)} m NAVD88)` : 'relief RECORDED USGS 3DEP (loading)'; }
+function elevY(x, z) { const E = elevState(); return E.on ? E.lat.height(x, z) : 0; }
+function elevSeat(x, z, w, d, yaw) { const E = elevState(); return E.on ? terrainSeat(E.lat, x, z, w, d, yaw) : 0; }
+function elevGround() { const E = elevSync(); return E.on ? terrainGround(E.lat) : () => 0; }
+function elevFleetGround(flat, isWater) { const E = elevState(); return E.on ? terrainFleetGround(E.lat, 0, isWater) : flat; }
+/* the land patch: lattice quads with relief within patch_r of the eye, grouped by the parish whose dry land holds all
+   four corners, merged into that parish's land mesh (same material: atlas, painted streets, hill shade) */
+function elevRefresh(x, z, force) {
+  const E = elevSync(); if (!E.on) return;
+  const key = Math.floor(x / 200) + ',' + Math.floor(z / 200);   // run 2: a RECORDED rebuild costs ~97 ms (6,000 quads), so every 200 m
+  if (!force && key === E.cellKey) return;
+  E.cellKey = key; const t0 = performance.now(), c = E.R.cell_m, r = E.R.patch_r_m, lat = E.lat;
+  const dry = (i, j) => { const px = i * c, pz = j * c, p = parishAt(px, pz); return p && !inWaterAt(px, pz) ? p.id : null; };
+  const groups = terrainPatch(lat, x - r, z - r, x + r, z + r, (i, j) => {
+    if (Math.max(lat.at(i, j), lat.at(i + 1, j), lat.at(i + 1, j + 1), lat.at(i, j + 1)) <= 0.001) return null;
+    const a = dry(i, j); if (!a || !loaded.has(a) || dry(i + 1, j) !== a || dry(i + 1, j + 1) !== a || dry(i, j + 1) !== a) return null;
+    return a;
+  }, E.R.lift_m);
+  E.quads = 0; E.verts = 0;
+  for (const id of loaded) {
+    const m = landMesh.get(id); if (!m) continue;
+    if (m.geometry !== m.userData.elevMerged) m.userData.elevFlat = m.geometry;   // cutWater replaced the flat mesh
+    const flat = m.userData.elevFlat, gp = groups.get(id);
+    if (!gp) { if (m.geometry !== flat) { m.geometry.dispose(); m.geometry = flat; m.userData.elevMerged = null; } continue; }
+    const pg = new THREE.BufferGeometry();
+    pg.setAttribute('position', new THREE.BufferAttribute(gp.position, 3)); pg.setAttribute('normal', new THREE.BufferAttribute(gp.normal, 3)); pg.setAttribute('uv', new THREE.BufferAttribute(gp.uv, 2)); pg.setIndex(new THREE.BufferAttribute(gp.index, 1));
+    const f2 = flat.clone(); f2.clearGroups();
+    const merged = mergeGeometries([f2, pg]); f2.dispose(); pg.dispose();
+    if (!merged) throw new Error('parishes: ELEV could not merge the relief patch into ' + id);
+    if (m.geometry !== flat) m.geometry.dispose();
+    m.geometry = merged; m.userData.elevMerged = merged; E.quads += gp.quads; E.verts += gp.position.length / 3;
+  }
+  E.rebuilds++; E.ms = +(performance.now() - t0).toFixed(1);
+}
+/* eval: sample N kit buildings / trees / lamps / parked vehicles and the slope around the eye */
+function elevProbe(n) {
+  const E = elevSync(), items = [];
+  for (const c of chunkData.values()) for (const [x, z, w, h, d, , yaw] of c.block) { if (items.length >= n) break; items.push({ id: 'b' + items.length, x, z, w, d, yaw, y: elevSeat(x, z, w, d, yaw) }); }
+  const trees = [], lampsL = [];
+  for (const c of chunkData.values()) { for (const [x, z] of c.tree) if (trees.length < n) trees.push({ id: 't' + trees.length, x, z, w: 0.5, d: 0.5, yaw: 0, y: elevY(x, z) }); for (const [x, z] of c.lamp) if (lampsL.length < n) lampsL.push({ id: 'l' + lampsL.length, x, z, w: 0.2, d: 0.2, yaw: 0, y: elevY(x, z) }); }
+  const veh = parked.filter((p) => p.medium === 'land').slice(0, n).map((p, i) => ({ id: 'v' + i, x: p.st.x, z: p.st.z, w: 0.1, d: 0.1, yaw: 0, y: p.st.y }));
+  const drawn = [];   // the instance matrices as drawn (buildings: KIT families), so the row checks what is on screen
+  for (const m of Object.values(KIT)) for (let i = 0; i < m.count && drawn.length < n; i++) { m.getMatrixAt(i, M4); M4.decompose(V, Q, S); const yaw = 2 * Math.atan2(Q.y, Q.w); drawn.push({ id: 'k' + drawn.length, x: V.x, z: V.z, w: S.x, d: S.z, yaw, y: V.y }); }
+  let hmax = 0, relief = 0; const r = E.R.patch_r_m;
+  for (let x = eye.x - r; x < eye.x + r; x += 20) for (let z = eye.z - r; z < eye.z + r; z += 20) { const h = elevY(x, z); hmax = Math.max(hmax, h); if (h > 0.05) relief++; }
+  const sl = E.on ? terrainSlope(E.lat, eye.x - r, eye.z - r, eye.x + r, eye.z + r, E.R.cell_m) : { max: 0, at: null };
+  return { on: E.on, mode: E.R.mode, provenance: E.sampler.provenance, demLoaded: !!E.dem, demFailed: E.demFailed, ref: E.ref, refN: E.refN, noneCells: E.none, recCells: E.rec, capM: E.R.cap_m, cell: E.R.cell_m, maxSlopeCap: E.R.max_slope, hmax: +hmax.toFixed(2), reliefSamples: relief,
+    slope: +sl.max.toFixed(4), slopeAt: sl.at, quads: E.quads, verts: E.verts, rebuilds: E.rebuilds, ms: E.ms,
+    buildings: terrainAudit(E.lat, drawn, 0.1), lots: terrainAudit(E.lat, items, 0.1), trees: terrainAudit(E.lat, trees, 0.1), lamps: terrainAudit(E.lat, lampsL, 0.1), vehicles: terrainAudit(E.lat, veh, 0.1),
+    avatar: av ? { y: +av.y.toFixed(3), ground: +elevY(av.x, av.z).toFixed(3) } : null, waterY: WORLD ? WORLD.surface_y : null, waterPlaneY: water.position.y };
+}
+/* END ELEV w14 relief */
 /* ---- ground (wave 6): the AUTHORED street grid that buildChunk leaves open (every 4th 25 m cell) is painted on
    the flat land in the fragment shader - carriageway, walkways and a dashed centre line - at no extra draw call or
    triangle; it fades out with distance so the overview does not shimmer. NOT the real street grid. ---- */
@@ -634,13 +850,13 @@ function groundTexture(p, onReady) {
 const groundFailed = [], groundReady = new Set();
 function streetMat(c, p) {
   const m = new THREE.MeshBasicMaterial({ color: c });   // unlit: FLAT_LIGHT is applied in the shader below
-  const u = { uFlat: { value: FLAT_LIGHT }, uGround: { value: groundTexture(p, () => { u.uOn.value = 1; groundReady.add(p.id); }) }, uOn: { value: 0 }, uGrid: { value: 1 },
+  const u = { uElevSun: elevState().uSun /* ELEV w14 hill shade */, uFlat: { value: FLAT_LIGHT }, uGround: { value: groundTexture(p, () => { u.uOn.value = 1; groundReady.add(p.id); }) }, uOn: { value: 0 }, uGrid: { value: 1 },
     uBox: { value: new THREE.Vector4(p.map_world[0], p.map_world[1], p.map_world[2] - p.map_world[0], p.map_world[3] - p.map_world[1]) } };
   m.onBeforeCompile = (sh) => {
     Object.assign(sh.uniforms, u);
-    sh.vertexShader = 'varying vec2 vGroundXZ; varying float vGroundDist;\n' + sh.vertexShader.replace('#include <project_vertex>', '#include <project_vertex>\n  vGroundXZ = position.xz; vGroundDist = -mvPosition.z;');
-    sh.fragmentShader = 'uniform vec3 uFlat; uniform sampler2D uGround; uniform float uOn; uniform float uGrid; uniform vec4 uBox; varying vec2 vGroundXZ; varying float vGroundDist;\n' + sh.fragmentShader.replace('#include <color_fragment>', '#include <color_fragment>\n' +
-      '{ vec2 guv = (vGroundXZ - uBox.xy) / uBox.zw; diffuseColor.rgb = mix(diffuseColor.rgb, texture2D(uGround, guv).rgb, uOn); }\n' + STREET_GLSL + '\ndiffuseColor.rgb *= uFlat;');
+    sh.vertexShader = 'varying vec2 vGroundXZ; varying float vGroundDist; varying vec3 vElevN;\n' + sh.vertexShader.replace('#include <project_vertex>', '#include <project_vertex>\n  vGroundXZ = position.xz; vGroundDist = -mvPosition.z; vElevN = normal;');
+    sh.fragmentShader = 'uniform vec3 uElevSun; varying vec3 vElevN; uniform vec3 uFlat; uniform sampler2D uGround; uniform float uOn; uniform float uGrid; uniform vec4 uBox; varying vec2 vGroundXZ; varying float vGroundDist;\n' + sh.fragmentShader.replace('#include <color_fragment>', '#include <color_fragment>\n' +
+      '{ vec2 guv = (vGroundXZ - uBox.xy) / uBox.zw; diffuseColor.rgb = mix(diffuseColor.rgb, texture2D(uGround, guv).rgb, uOn); }\n' + STREET_GLSL + '\ndiffuseColor.rgb *= uFlat;' + '\ndiffuseColor.rgb *= clamp(dot(normalize(vElevN), uElevSun) / max(uElevSun.y, 0.05), 0.5, 1.4);');   // ELEV w14: flat land (normal +y) x 1 exactly; relief shaded by the sun
   };
   m.customProgramCacheKey = () => 'parish-ground';
   m.userData.grid = u.uGrid;
@@ -1167,6 +1383,16 @@ function buildChunk(ci, cj) {
     else if (h < 0.8) out.tree.push([x, z, 0.8 + jz * 0.6, 0]);
     else open.push([ix, iz, x, z, jx, jz, use, null]);
   }
+  /* BEGIN WORLDS w13 cross-chunk re-seat: a chunk that is WHOLLY AUTHORED water (no dry in-parish cell) has nowhere to
+     re-seat its lake lots, so it hands them to ONE neighbour - the one of its 8 neighbours with the most dry in-parish
+     cells (first in fixed a/b order on a tie). That receiver adds them to its own wet list before the w11 re-seat below,
+     so they land on ITS empty dry lot cells (inside the receiver, never on the water). Every term is a pure function of
+     cell hashes and AUTHORED geometry, so every view builds the same boxes and physkit ids stay receiverKey:i. */
+  const ownWet = wet.length, nb0 = out.block.length;
+  for (let a = -1; a <= 1; a++) for (let b = -1; b <= 1; b++) {
+    if ((a || b) && wetDonor(ci + a, cj + b)) { const r = wetReceiver(ci + a, cj + b); if (r && r[0] === ci && r[1] === cj) for (const w of chunkWet(ci + a, cj + b).wet) if (!lmNear(w[0], w[1])) wet.push(w); }
+  }
+  /* END WORLDS w13 cross-chunk re-seat */
   /* BEGIN WORLDS w11 re-seat: a lot that falls in AUTHORED water is not dropped - it re-seats onto the EMPTY dry lot cell
      of the same chunk nearest the water (cells that would stand nothing: no street, no park, no landmark, h >= 0.8), one
      lot per cell, nearest first; the cell's own hashes size it, exactly as if the rule had kept it. Chunk-local, so every
@@ -1182,16 +1408,97 @@ function buildChunk(ci, cj) {
     }
   }
   /* END WORLDS w11 re-seat */
+  skipped.cross += Math.max(0, out.block.length - nb0 - ownWet);   // WORLDS w13: lots this chunk seated beyond its own lake lots
   // wave 7: a lamp standard every LAMP_M along each meshed street, on its sidewalk, alternating sides (AUTHORED furniture)
   const x0 = ci * CHUNK_M, z0 = cj * CHUNK_M;
-  for (const s of segsNear(x0 + CHUNK_M / 2, z0 + CHUNK_M / 2, CHUNK_M * 0.75)) for (let k = 1; k * LAMP_M < s.L; k++) {
-    const sd = k % 2 ? 1 : -1, off = sd * (s.cw + s.sw * 0.4), px = s.ax + s.dx * k * LAMP_M - s.dz * off, pz = s.az + s.dz * k * LAMP_M + s.dx * off;
-    if (px < x0 || px >= x0 + CHUNK_M || pz < z0 || pz >= z0 + CHUNK_M) continue;
-    out.lamp.push([px, pz, Math.atan2(sd * s.dx, sd * s.dz)]);
+  /* BEGIN WORLDS w13 street detail by district: the AUTHORED land use at each lamp point sets the furniture - commercial
+     streets get a second lamp mid-span (every LAMP_M / 2), residential streets every second lamp (2 x LAMP_M) and a street
+     tree every STREET_TREE_M on the kerb verge between the w8 furniture slots (FURN_M lattice); industrial and park keep
+     LAMP_M. Same two InstancedMeshes (0 draw calls); street items carry a 'street' tag and out.street counts street metres per
+     district; streetDetail() classifies each STANDING tagged tree / lamp by the land use at its own position (not the branch
+     that placed it), so the eval's streets row cannot be satisfied by a mislabelled count. */
+  const inC = (px, pz) => px >= x0 && px < x0 + CHUNK_M && pz >= z0 && pz < z0 + CHUNK_M;
+  out.street = { residential: [0, 0, 0], commercial: [0, 0, 0], industrial: [0, 0, 0], park: [0, 0, 0] };
+  for (const s of segsNear(x0 + CHUNK_M / 2, z0 + CHUNK_M / 2, CHUNK_M * 0.75)) {
+    for (let u = STREET_STEP / 2; u < s.L; u += STREET_STEP) { const px = s.ax + s.dx * u, pz = s.az + s.dz * u; if (inC(px, pz)) out.street[landUse(px, pz)][0] += STREET_STEP; }
+    for (let k = 1; k * LAMP_M / 2 < s.L; k++) {
+      const u0 = k * LAMP_M / 2, use = landUse(s.ax + s.dx * u0, s.az + s.dz * u0), mid = k % 2 === 1;
+      if (mid ? use !== 'commercial' : use === 'residential' && (k / 2) % 2 === 1) continue;
+      const sd = (mid ? (k + 1) / 2 : k / 2) % 2 ? 1 : -1;
+      /* a mid-span lamp moves to the middle of its side's w8 furniture slots (+ side at FURN_M n, - side at FURN_M n + FURN_M / 2) */
+      const u = mid ? (sd > 0 ? Math.round((u0 - FURN_M / 2) / FURN_M) * FURN_M + FURN_M / 2 : Math.round(u0 / FURN_M) * FURN_M) : u0;
+      const off = sd * (s.cw + s.sw * 0.4), px = s.ax + s.dx * u - s.dz * off, pz = s.az + s.dz * u + s.dx * off;
+      if (!inC(px, pz) || u <= 0 || u >= s.L) continue;
+      out.lamp.push([px, pz, Math.atan2(sd * s.dx, sd * s.dz), 'street']);
+    }
+    for (let k = 1; k * STREET_TREE_M < s.L - 4; k++) {
+      const sd = k % 2 ? -1 : 1, u = sd > 0 ? k * STREET_TREE_M + FURN_M / 2 : k * STREET_TREE_M;
+      if (u >= s.L - 4 || Math.abs(u - Math.round(u / (LAMP_M / 2)) * (LAMP_M / 2)) < 6) continue;   // never at a lamp standard
+      const off = sd * (s.cw + 0.8), px = s.ax + s.dx * u - s.dz * off, pz = s.az + s.dz * u + s.dx * off;
+      if (landUse(px, pz) !== 'residential') continue;
+      if (!inC(px, pz) || !parishAt(px, pz) || inWaterAt(px, pz) || out.lamp.some((l) => Math.hypot(l[0] - px, l[1] - pz) < 3)) continue;
+      out.tree.push([px, pz, 0.7 + wildsHash(Math.round(px), Math.round(pz), SEED, 12) * 0.35, 0, 'street']);
+    }
   }
+  /* END WORLDS w13 street detail by district */
+  /* BEGIN WORLDS w13 plot clearance: no generated building, tree or lamp stands on a FIELDS plot bed (+2 m) */
+  if (PLOTS.length && !plotClearOff) {
+    const near = PLOTS.filter((p) => p.x + p.hw + 40 > x0 && p.x - p.hw - 40 < x0 + CHUNK_M && p.z + p.hd + 40 > z0 && p.z - p.hd - 40 < z0 + CHUNK_M);
+    if (near.length) {
+      const hit = (x, z, r) => near.some((p) => Math.abs(x - p.x) < p.hw + r && Math.abs(z - p.z) < p.hd + r);
+      const nb = out.block.length, nt = out.tree.length, nl = out.lamp.length;
+      out.block = out.block.filter((l) => !hit(l[0], l[1], Math.hypot(l[2], l[4]) / 2 + 2));
+      out.tree = out.tree.filter((t) => !hit(t[0], t[1], 2.2 * t[2] + 2));
+      out.lamp = out.lamp.filter((t) => !hit(t[0], t[1], 3));
+      skipped.plot += nb - out.block.length; skipped.plotFabric += nt - out.tree.length + nl - out.lamp.length;
+    }
+  }
+  /* END WORLDS w13 plot clearance */
   return out;
 }
 const skipped = { water: 0, road: 0, reseated: 0 };   // lots not built (counted per chunk build; eval reads the view's share)
+/* BEGIN WORLDS w13 helpers (cross-chunk re-seat, street detail, plot clearance) */
+Object.assign(skipped, { cross: 0, plot: 0, plotFabric: 0 });   // w13: lots seated from wholly-wet neighbours; lots / trees+lamps kept off FIELDS plots
+const STREET_STEP = 20, STREET_TREE_M = 2 * FURN_M;   // w13: street metres sampled every 20 m; a residential street tree every 76 m (alternating sides)
+const PLOTS = D.plots_clear.map(([id, f, x, z, w, d]) => {
+  const P = PAR.get(f); if (!P) throw new Error('parishes: FIELDS plot ' + id + ' names ' + f + ', which this page does not hold');
+  return { id, x: P.origin_m[0] + x, z: P.origin_m[1] + z, hw: w / 2, hd: d / 2 };
+});
+let plotClearOff = false;   // eval only (plotProbe): builds a chunk WITHOUT the plot clearance to measure what it removes
+const wetInfo = new Map();
+/* a chunk's AUTHORED-water census (pure: cell hashes + geometry): dry in-parish cells and the lots that stand in water */
+function chunkWet(ci, cj) {
+  const key = ci + ',' + cj; let r = wetInfo.get(key); if (r) return r;
+  const n = CHUNK_M / CELL; let dry = 0; const wet = [];
+  for (let a = 0; a < n; a++) for (let b = 0; b < n; b++) {
+    const ix = ci * n + a, iz = cj * n + b, jx = wildsHash(ix, iz, SEED, 2), jz = wildsHash(ix, iz, SEED, 3);
+    const x = (ix + 0.2 + 0.6 * jx) * CELL, z = (iz + 0.2 + 0.6 * jz) * CELL;
+    if (!parishAt(x, z)) continue;
+    if (inWaterAt(x, z)) { if (wildsHash(ix, iz, SEED, 1) < 0.55) wet.push([x, z]); } else dry++;
+  }
+  r = { dry, wet }; if (wetInfo.size > 4096) wetInfo.clear(); wetInfo.set(key, r); return r;
+}
+/* a donor is wholly AUTHORED water: its centre is wet or off-land (cheap reject), then no dry in-parish cell and >= 1 wet lot */
+function wetDonor(ci, cj) {
+  const cx = (ci + 0.5) * CHUNK_M, cz = (cj + 0.5) * CHUNK_M;
+  if (parishAt(cx, cz) && !inWaterAt(cx, cz)) return false;
+  const w = chunkWet(ci, cj); return w.dry === 0 && w.wet.length > 0;
+}
+function wetReceiver(ci, cj) {
+  let best = null, bd = 0;
+  for (let a = -1; a <= 1; a++) for (let b = -1; b <= 1; b++) { if (!a && !b) continue; const d = chunkWet(ci + a, cj + b).dry; if (d > bd) { bd = d; best = [ci + a, cj + b]; } }
+  return best;
+}
+function streetDetail() {
+  const t = { residential: [0, 0, 0], commercial: [0, 0, 0], industrial: [0, 0, 0], park: [0, 0, 0] };
+  for (const c of chunkData.values()) {
+    if (c.street) for (const [k, v] of Object.entries(c.street)) t[k][0] += v[0];
+    for (const tr of c.tree) if (tr[4] === 'street') t[landUse(tr[0], tr[1])][1]++;
+    for (const l of c.lamp) if (l[3] === 'street') t[landUse(l[0], l[1])][2]++;
+  }
+  return Object.fromEntries(Object.entries(t).map(([k, [m, tr, l]]) => [k, { m, trees: tr, lamps: l, treesPerKm: m ? +(tr / m * 1000).toFixed(2) : 0, lampsPerKm: m ? +(l / m * 1000).toFixed(2) : 0 }]));
+}
+/* END WORLDS w13 helpers */
 const LAMP_M = 160;   // w7: at 45 m the lamps alone cost ~35k triangles (985 x 36); at 120 m 22071 origin was still 1k over its tris headroom (eval run 2)
 function wantedChunks(x, z) {
   const ci = Math.floor(x / CHUNK_M), cj = Math.floor(z / CHUNK_M), s = new Set();
@@ -1210,16 +1517,17 @@ const M4 = new THREE.Matrix4(), Q = new THREE.Quaternion(), V = new THREE.Vector
 const UP = new THREE.Vector3(0, 1, 0);
 function refillFabric() {
   let nb = 0, nt = 0, nl = 0;
+  elevSync();   // ELEV w14: bases read the current relief lattice
   const kn = { house: 0, midrise: 0 };
   for (const c of chunkData.values()) {
     for (const [x, z, w, h, d, fam, yaw, col, use] of c.block) {
       if (nb >= CAP.block) break;   // CAP.block bounds the buildings of all kit families together
       const m = KIT[fam]; if (!m) throw new Error('parishes: unknown building family ' + fam);
       m.geometry.attributes.kitUse.array[kn[fam]] = use;
-      M4.compose(V.set(x, 0, z), Q.setFromAxisAngle(UP, yaw), S.set(w, h, d)); m.setMatrixAt(kn[fam], M4); m.setColorAt(kn[fam]++, KC.set(col)); nb++;
+      M4.compose(V.set(x, elevSeat(x, z, w, d, yaw), z), Q.setFromAxisAngle(UP, yaw), S.set(w, h, d));   /* ELEV w14 seat */ m.setMatrixAt(kn[fam], M4); m.setColorAt(kn[fam]++, KC.set(col)); nb++;
     }
-    for (const [x, z, s] of c.tree) { if (nt >= CAP.tree) break; M4.compose(V.set(x, 0, z), Q.identity(), S.set(s, s, s)); trees.setMatrixAt(nt++, M4); }
-    for (const [x, z, r] of c.lamp) { if (nl >= CAP.lamp) break; M4.compose(V.set(x, 0, z), Q.setFromAxisAngle(UP, r), S.set(1, 1, 1)); lamps.setMatrixAt(nl++, M4); }
+    for (const [x, z, s] of c.tree) { if (nt >= CAP.tree) break; M4.compose(V.set(x, elevY(x, z), z), Q.identity(), S.set(s, s, s)); trees.setMatrixAt(nt++, M4); }
+    for (const [x, z, r] of c.lamp) { if (nl >= CAP.lamp) break; M4.compose(V.set(x, elevY(x, z), z), Q.setFromAxisAngle(UP, r), S.set(1, 1, 1)); lamps.setMatrixAt(nl++, M4); }
   }
   for (const [f, m] of Object.entries(KIT)) { m.count = kn[f]; m.instanceMatrix.needsUpdate = true; m.instanceColor.needsUpdate = true; m.geometry.attributes.kitUse.needsUpdate = true; }
   trees.count = nt; lamps.count = nl; Q.identity();
@@ -1275,7 +1583,7 @@ function refillMarkers() {
   for (const id of loaded) for (const nb of PAR.get(id).neighbours) {
     const key = [id, nb.id].sort().join('|'); if (seen.has(key) || n >= CAP.marker) continue; seen.add(key);
     const pts = longest(nb.segments), mid = pts[Math.floor(pts.length / 2)];
-    M4.compose(V.set(mid[0], 0, mid[1]), Q.identity(), S.set(1, 1, 1)); markers.setMatrixAt(n++, M4);
+    M4.compose(V.set(mid[0], elevY(mid[0], mid[1]), mid[1]), Q.identity(), S.set(1, 1, 1)); markers.setMatrixAt(n++, M4);
     const el = document.createElement('span'); el.className = 'lbl border'; el.dataset.border = key;
     el.textContent = `${tr('parishes.border')}: ${PAR.get(id).name} | ${PAR.get(nb.id).name}`;
     labelsEl.append(el); labelItems.push({ kind: 'border', el, x: mid[0], y: 11, z: mid[1] });
@@ -1400,6 +1708,45 @@ function control(dt) {
   if (mode === 'walk' && W) walkPhys(f, dt);
   else if (f) step(f, 0, dt);
 }
+/* BEGIN PERF w13 (PERF·Map Performance) item 4 of wave 13, the "flat grey 3D view while driving": the chase camera
+   eased toward its spot with a FIXED 1/60 s step per frame, so at SwiftShader's ~8-10 frames/s it trailed 6x longer than
+   designed (w13 probe: 14.5 m behind the car instead of 8.8 m, seconds after ride()), and it has no notion of what
+   stands between it and the car - a building wall or a tree canopy (open cone, DoubleSide) at eye height then fills the
+   whole view with one colour. Now the easing uses the real frame step (camDt), and the camera is pulled in along the
+   car -> camera line to just short of the first building box (taller than the camera) or canopy it would look through.
+   The car, the physics and the vehicle state are untouched: this moves the camera only. DIAG.noChase = the old path. */
+let camDt = 1 / 60, chasePulls = 0;
+function chaseClear(st, spec) {
+  const p = camera.position, dx = p.x - st.x, dz = p.z - st.z, L = Math.hypot(dx, dz);
+  if (L < 1) return;
+  const list = [], seen = new Set();
+  for (const [x, z] of [[st.x, st.z], [p.x, p.z]]) {
+    const k = Math.floor(x / CHUNK_M) + ',' + Math.floor(z / CHUNK_M); if (seen.has(k)) continue; seen.add(k);
+    const c = chunkData.get(k); if (c) list.push(c);
+  }
+  let hit = 1;
+  for (let i = 1, n = Math.ceil(L / 0.5); i <= n && hit === 1; i++) {
+    const t = i / n, x = st.x + dx * t, z = st.z + dz * t;
+    for (const c of list) {
+      for (const b of c.block) {
+        if (b[3] < p.y - 0.2) continue;   // lower than the camera: it looks over the roof
+        const cs = Math.cos(b[6]), sn = Math.sin(b[6]), lx = cs * (x - b[0]) - sn * (z - b[1]), lz = sn * (x - b[0]) + cs * (z - b[1]);
+        if (Math.abs(lx) < b[2] / 2 + 0.3 && Math.abs(lz) < b[4] / 2 + 0.3) { hit = t; break; }
+      }
+      if (hit < 1) break;
+      for (const tr of c.tree) {
+        if (p.y > 8 * tr[2] || p.y < 2 * tr[2] - 0.5) continue;   // above the canopy's tip / below its skirt
+        if (Math.hypot(x - tr[0], z - tr[1]) < 2.2 * tr[2] + 0.4) { hit = t; break; }
+      }
+      if (hit < 1) break;
+    }
+  }
+  if (hit === 1) return;
+  const k = Math.max(hit - 0.7 / L, Math.min(1, (spec.L * 0.5 + 1.2) / L));
+  p.x = st.x + dx * k; p.z = st.z + dz * k; chasePulls++;
+  camera.lookAt(st.x, st.y + spec.H * 0.6, st.z);
+}
+/* END PERF w13 */
 function placeCamera() {
   if (mode === 'overview') {
     const p = current || [...PAR.values()][0], b = p.bbox, span = Math.max(b[2] - b[0], b[3] - b[1]);
@@ -1408,7 +1755,7 @@ function placeCamera() {
     scene.fog.far = span * 4; return;
   }
   scene.fog.far = 4200;
-  if (riding) { fleetChaseCamera(camera, riding.st, riding.spec, 1 / 60, { snap: !!riding.snap }); riding.snap = false; water.position.x = eye.x; water.position.z = eye.z; return; }
+  if (riding) { fleetChaseCamera(camera, riding.st, riding.spec, DIAG.noChase ? 1 / 60 : camDt, { snap: !!riding.snap }); riding.snap = false; if (!DIAG.noChase) chaseClear(riding.st, riding.spec); water.position.x = eye.x; water.position.z = eye.z; return; }
   camera.position.set(eye.x, EYE[mode] + (mode === 'walk' && av && W ? av.y : 0), eye.z);
   camera.rotation.set(eye.pitch, eye.yaw, 0, 'YXZ');
   water.position.x = eye.x; water.position.z = eye.z;
@@ -1434,7 +1781,7 @@ function hud() {
   const lx = Math.round(eye.x - current.origin_m[0]), lz = Math.round(eye.z - current.origin_m[1]);
   whereEl.textContent = current.name;
   if (mapLabel.dataset.parish !== current.id) { mapLabel.dataset.parish = current.id; mapLabel.textContent = `${current.map_label} · ${current.map_fabric}`; }
-  hudEl.textContent = `x ${lx} m · z ${lz} m · ${tr('parishes.ground')}`;
+  hudEl.textContent = `x ${lx} m · z ${lz} m · ${elevHud() || tr('parishes.ground')}`;   // ELEV w14: the relief line replaces 'flat ground' while relief is on
 }
 function teleport(x, z, yaw) {
   // a jump is not a crossing: step out of any vehicle, adopt the parish under the new spot silently
@@ -1519,7 +1866,7 @@ satBtn.addEventListener('click', () => showSatellite(satBtn.getAttribute('aria-p
 
 /* ---- FLEET: parked vehicles per parish, enter/exit with E; boats on water only ---- */
 const FLEETREG = JSON.parse(document.getElementById('fleet-registry').textContent);
-const fground = fleetFlatGround(0, 0, (x, z) => parishAt(x, z) === null);
+const fground = elevFleetGround(fleetFlatGround(0, 0, (x, z) => parishAt(x, z) === null), (x, z) => parishAt(x, z) === null);   // ELEV w14: land rides the relief, water keeps its level
 const parked = [];                     // {st, spec, h, medium}
 let riding = null;
 let fl = null;
@@ -1564,7 +1911,7 @@ function enterExit() {
   stage.dataset.mode = mode; enterBtn.setAttribute('aria-pressed', String(!!riding));
   return true;
 }
-enterBtn.addEventListener('click', () => { if (!enterExit()) toast(tr('parishes.boat.nowater')); });
+enterBtn.addEventListener('click', () => enterExit());   // PERF w13 (REVIEW13): enterExit toasts its own reason; the boat 'no water' line belongs to setMode('boat') only
 /* E / T: no key-repeat, no modifier chords, not while typing (REVIEW wave 6) */
 const plainKey = (e) => !e.repeat && !e.ctrlKey && !e.metaKey && !e.altKey && !(e.target.closest && e.target.closest('input,textarea,select'));
 addEventListener('keydown', (e) => { if ((e.key === 'e' || e.key === 'E') && plainKey(e)) enterExit(); });
@@ -1599,6 +1946,7 @@ let labelT = 0, econParish = null;
 const diagHidden = [];   // WORLDS w11: objects the onlyLand DIAG switch hid, with their prior visibility
 const DIAG = {};   // eval-only switches (__parishes.diag): which per-frame work costs the overview its frame
 let last = performance.now(), info = { calls: 0, triangles: 0 }, frameMs = 0, miniT = 0, cell = '';
+let jsMs = 0;   // PERF w13: frame() work outside renderer.render (eval DIAG kitCost)
 /* BEGIN WORLDS w11 overview on demand: the overview is a still picture (the camera is fixed by the parish's bbox; water,
    fabric, vehicles, guides and ambience are hidden there), so it re-renders only when what it shows changes - the parish,
    the canvas size, a ground/water/parish load, the marker/landmark/station counts, the visible object set or a DIAG
@@ -1615,7 +1963,30 @@ function ovNeedsRender(now) {
   return false;
 }
 /* END WORLDS w11 overview on demand */
+/* BEGIN PERF w13 (PERF·Map Performance): two draw-list cuts, measured by web/eval_parishes.mjs (kit DIAG + rows).
+   1. Fleet family meshes (FLEET: one InstancedMesh per family, 70 parked vehicles over 13 parishes) are drawn only
+      while one of that family's vehicles stands nearer than the fog's far distance: beyond it every fragment is the
+      fog colour, the same colour as the sky's horizon band behind it - nothing visible is removed. The wheel mesh
+      group stays (fleetVisible keeps its meaning); the wheel mesh (all wheels in one) is drawn while ANY vehicle is inside
+      the fog; the families' instances are untouched.
+   2. The NPC guides' part meshes are hidden in the overview (guides are sub-pixel there and not updated - the
+      overview comment above already said so; w13 kitCost found their 5 calls / 10,080 triangles still drawn).
+   DIAG.noCull (eval only) turns both off for a same-load before/after. */
+const npcParts = [];
+let flFam = null;
+function perfCull(over) {
+  if (!npcParts.length) for (const c of scene.children) if (c.userData.npcPart) npcParts.push(c);
+  for (const m of npcParts) m.visible = !over || !!DIAG.noCull;
+  if (!fl || over) return;
+  if (!flFam) { flFam = new Map(); for (const v of parked) flFam.set(v.h.family, fl.group.getObjectByName('fleet:' + v.h.family)); }
+  const R2 = scene.fog.far * scene.fog.far, near = new Set();
+  for (const v of parked) { const dx = v.st.x - eye.x, dz = v.st.z - eye.z; if (dx * dx + dz * dz < R2) near.add(v.h.family); }
+  for (const [f, m] of flFam) if (m) m.visible = !!DIAG.noCull || near.has(f);
+  fl.wheels.visible = !!DIAG.noCull || near.size > 0;   // the ONE wheel mesh (every vehicle's wheels, 10,080 triangles): off only when no vehicle is inside the fog
+}
+/* END PERF w13 */
 function frame(now) {
+  const tf0 = performance.now();   // PERF w13
   const dt = Math.min(0.1, (now - last) / 1000); last = now;
   /* the overview does not move the player: no parish check there (it would also pull the camera back to
      the player's parish and fire a false border find after view('overview', other)) */
@@ -1630,19 +2001,23 @@ function frame(now) {
   if (!over) { if (c !== cell) { cell = c; updateChunks(eye.x, eye.z); } pump(BUILD_PER_FRAME); if (dirty) refillFabric(); }
   const rc = Math.floor(eye.x / 200) + ',' + Math.floor(eye.z / 200);   // meshed streets re-gather every 200 m of travel
   if (!over && rc !== roadCell) { roadCell = rc; refillRoads(eye.x, eye.z); }
+  if (!over) elevRefresh(eye.x, eye.z);   // ELEV w14: the relief patch follows the eye (rebuilt per 200 m cell)
   if (!over && physDirty && now - physT > 400) { physT = now; rebuildPhysics(); }
   if (!over) { stepSplash(dt); if (smoke && smoke.mesh.visible) smoke.update(dt); }
   if (amb) { amb.setOverview(over); if (!over) amb.update(dt, { x: eye.x, z: eye.z }, riding ? [{ x: riding.st.x, z: riding.st.z }] : []); }
   if (!over && !DIAG.noEcon && window.TCEcon && current) { if (econParish !== current.id) { econParish = current.id; window.TCEcon.mountEcon(null, { parish: current.id }); } window.TCEcon.onPlayerMove(current.id, eye.x - current.origin_m[0], eye.z - current.origin_m[1]); }
   matWater.emissiveIntensity = 0.06 + 0.05 * Math.sin(now / 900);   // water shimmer: one uniform, no extra draw
   waterU.uTime.value = now / 1000;
+  camDt = dt;   // PERF w13: the chase camera eases by the real frame step
   placeCamera();
   if (deep) deep.update(dt, over);   // DEEP: dive/ROV camera + underwater look (0 draw calls above the surface and in the overview)
+  perfCull(over);   // PERF w13 (after placeCamera: fog.far is the view's)
   const t0 = performance.now(); if (!DIAG.noRender && ovNeedsRender(now)) renderer.render(scene, camera); frameMs = performance.now() - t0;
   info = { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles };
   if (!DIAG.noLabels && (!over || now - labelT > 250)) { labelT = now; placeLabels(); }
   if (!DIAG.noMini && now - miniT > 200) { miniT = now; drawMinimap(); hud(); }
   if (!toastEl.hidden && now > toastT) toastEl.hidden = true;
+  jsMs = performance.now() - tf0 - frameMs;   // PERF w13
   requestAnimationFrame(frame);
 }
 
@@ -1684,8 +2059,10 @@ function markPhys() { physDirty = true; }
 function rebuildPhysics() {
   if (!PHYS_REG) return;
   W = createPhysics({ reg: PHYS_REG, cell: 16, ground: () => 0, water: waterAt });
+  if (elevState().on) W = createPhysics({ reg: PHYS_REG, cell: 16, ground: elevGround(), water: waterAt });   // ELEV w14: the walker stands on the relief
   const list = [];
   for (const c of chunkData.values()) for (const [x, z, w, h, d, , yaw] of c.block) list.push({ id: 'b' + list.length, cx: x, cz: z, hx: w / 2, hz: d / 2, yaw, y0: 0, y1: h, kind: 'building' });
+  if (elevState().on) for (const b of list) { const y = elevSeat(b.cx, b.cz, b.hx * 2, b.hz * 2, b.yaw); b.y0 += y; b.y1 += y; }   // ELEV w14: each box stands where its mesh stands
   for (const b of curbBoxes) list.push(b);
   W.addBoxes(list); physBoxes = list.length; physDirty = false;
 }
@@ -1739,6 +2116,13 @@ function borderApproach(a, b) {
 /* the start spot: 90 m south of the parish's first landmark (facing it), else the frame origin when on land, else an outline vertex */
 function startSpot(p) { const l = p.landmarks[0]; if (l && parishAt(l.x, l.z + 90) === p) return [l.x, l.z + 90]; return parishAt(p.origin_m[0], p.origin_m[1]) === p ? p.origin_m : p.rings_m[0][0]; }
 window.__parishes = {
+  elev: { probe: (n) => elevProbe(n), refresh: () => elevRefresh(eye.x, eye.z, true),
+    goRelief: (minH, maxR) => { const E = elevState(); if (!E.on) return null; let best = null;   // eval/screenshot: nearest walkable spot with relief >= minH
+      for (let r = 50; r <= maxR && !best; r += 50) for (let k = 0; k < 64 && !best; k++) { const a = k / 64 * 2 * Math.PI, x = eye.x + r * Math.cos(a), z = eye.z + r * Math.sin(a);
+        if (parishAt(x, z) && loaded.has(parishAt(x, z).id) && !inWaterAt(x, z) && elevY(x, z) >= minH) best = { x: +x.toFixed(1), z: +z.toFixed(1), h: +elevY(x, z).toFixed(2), r }; }
+      if (best) { if (mode !== 'walk') setMode('walk'); teleport(best.x, best.z, eye.yaw); } return best; },
+ state: () => { const E = elevState(); return { on: E.on, mode: E.R.mode, quads: E.quads, rebuilds: E.rebuilds, ms: E.ms }; },
+    sun: (y) => { const E = elevState(); E.sun.set(SUN.x, y, SUN.z).normalize(); return E.sun.toArray(); } },   // ELEV w14 (sun: the hill shade's sun only, for a low-sun screenshot)
   ids: () => [...PAR.keys()],
   pairs: () => [...PAR.values()].flatMap((p) => p.neighbours.map((n) => [p.id, n.id])).filter(([a, b]) => a < b),
   current: () => current && current.id, loaded: () => [...loaded].sort(), mode: () => mode,
@@ -1788,6 +2172,14 @@ window.__parishes = {
     return { id: v.id, moved: Math.hypot(v.st.x - x0, v.st.z - z0), wrongMediumSteps: wet, steps: n, mode, refused: v.st.refused };
   },
   exit: () => { const ok = riding ? enterExit() : false; return { ok, mode, riding: riding && riding.id }; },
+  /* WORLDS w13 (eval only): every FIELDS plot's covering chunks built fresh (pure, not added to the scene) with the plot
+     clearance on and, for comparison, off - the raw block / tree / lamp lists, so the eval judges overlap with its own
+     geometry; the plot rectangles in scene metres */
+  plotProbe: () => PLOTS.map((p) => {
+    const ks = new Set(); for (const sx of [-1, 1]) for (const sz of [-1, 1]) ks.add(Math.floor((p.x + sx * (p.hw + 30)) / CHUNK_M) + ',' + Math.floor((p.z + sz * (p.hd + 30)) / CHUNK_M));
+    const build = (off) => { plotClearOff = off; const sk = { ...skipped }; try { const o = { block: [], tree: [], lamp: [] }; for (const k of ks) { const [a, b] = k.split(',').map(Number), c = buildChunk(a, b); o.block.push(...c.block); o.tree.push(...c.tree); o.lamp.push(...c.lamp); } return o; } finally { plotClearOff = false; Object.assign(skipped, sk); } };
+    return { id: p.id, x: p.x, z: p.z, hw: p.hw, hd: p.hd, land: !!parishAt(p.x, p.z), on: build(false), off: build(true) };
+  }),
   stats: () => ({
     mode, current: current && current.id, loaded: [...loaded].sort(), calls: info.calls, triangles: info.triangles,
     chunks: chunkData.size, pending: queue.length, frameMs,
@@ -1802,6 +2194,7 @@ window.__parishes = {
     kitUse: Object.fromEntries(Object.entries(KIT).map(([k, m]) => { const a = m.geometry.attributes.kitUse.array, c = [0, 0, 0]; for (let i = 0; i < m.count; i++) c[Math.floor(a[i] + 0.01)]++; return [k, c]; })),
     landLit: [...landMesh.values()].every((m) => m.material.isMeshBasicMaterial && m.renderOrder === -1),
     phys: { on: !!PHYS_REG, boxes: physBoxes, curbs: curbBoxes.length, y: av ? +av.y.toFixed(3) : null, water: av ? av.water : null, log: { ...physLog }, smoke: smoke ? smoke.mesh.visible : null, splash: splash.visible },
+    streetDetail: streetDetail(), plots: { clear: PLOTS.length },   // WORLDS w13
     skipped: { ...skipped }, ambient: amb ? amb.stats() : null, econ: !!(window.TCEcon && document.querySelector('[data-tc-econ]')),
     water: { cut: [...waterCut].sort(), failed: waterFailed.slice(), feats: Object.fromEntries([...waterNet.entries()].filter(([, v]) => v).map(([k, v]) => [k, v.feats.length])) },
     atmosphere: { skyCss: getComputedStyle(canvas).backgroundImage.startsWith('linear-gradient'), clearAlpha: renderer.getClearAlpha(), fog: scene.fog.color.getHex(), horizon: HORIZON, sun: SUN.toArray().map((v) => +v.toFixed(3)) },
@@ -1862,6 +2255,45 @@ window.__parishes = {
     return out;
   },
   renderScale: (k) => { if (k !== undefined) applyPR(k); return { prScale, pixelRatio: renderer.getPixelRatio() }; },
+  /* BEGIN PERF w13 (PERF·Map Performance) eval DIAG only, not a target: where a frame of the current view goes, BY KIT.
+     Each group of scene objects is hidden in turn: calls/tris = the renderer.info difference, ms = the difference of a
+     render forced to completion (a 1-pixel readPixels waits for it; min of reps) = SwiftShader's raster + vertex work for that group.
+     jsMs = the page's own frame() work outside renderer.render (the kits' own rAF loops are not in it). */
+  kitCost(reps = 3) {
+    const gl = renderer.getContext(), px1 = new Uint8Array(4);
+    const timed = () => { let best = Infinity, c = 0, t = 0; for (let i = 0; i < reps; i++) { const t0 = performance.now(); renderer.render(scene, camera); gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px1); best = Math.min(best, performance.now() - t0); c = renderer.info.render.calls; t = renderer.info.render.triangles; } return { ms: best, calls: c, tris: t }; };
+    const known = new Map(), tag = (o, k) => { if (o) known.set(o, k); };
+    for (const m of landMesh.values()) tag(m, 'land');
+    tag(water, 'water'); tag(roads, 'streets+facades'); tag(houses, 'fabric:house'); tag(blocks, 'fabric:midrise'); tag(trees, 'fabric:tree'); tag(lamps, 'lamps');
+    tag(markers, 'markers'); tag(stations, 'stations'); for (const m of Object.values(lmMeshes)) tag(m, 'landmarks'); if (fl) tag(fl.group, 'fleet'); tag(splash, 'splash');
+    const groups = {};
+    for (const c of scene.children) {
+      if (c.isLight) continue;
+      let k = known.get(c);
+      if (!k) { const n = c.name || ''; k = n.startsWith('tc-facades') ? 'facade-signs' : n.startsWith('fish') ? 'fish' : n.startsWith('fields') ? 'fields' : n.startsWith('tc-ambient') ? 'ambient' : n.startsWith('deep') ? 'deep' : c.userData.npcPart ? 'npc' : 'other:' + (n || c.type); }
+      (groups[k] = groups[k] || []).push(c);
+    }
+    timed();   // warm-up: the first render after a view change carries one-time uploads (eval run 4: 700+ ms)
+    const all = timed(), out = { all: { calls: all.calls, tris: all.tris, ms: +all.ms.toFixed(1) }, jsMs: +jsMs.toFixed(1), groups: {} };
+    for (const [k, list] of Object.entries(groups)) {
+      const vis = list.map((o) => o.visible);
+      if (!vis.some(Boolean)) { out.groups[k] = { calls: 0, tris: 0, ms: 0, n: list.length, hidden: true }; continue; }
+      for (const o of list) o.visible = false;
+      const r = timed(); list.forEach((o, i) => { o.visible = vis[i]; });
+      out.groups[k] = { calls: all.calls - r.calls, tris: all.tris - r.tris, ms: +(all.ms - r.ms).toFixed(1), n: list.length };
+    }
+    const vs = scene.children.map((o) => o.visible); for (const o of scene.children) if (!o.isLight) o.visible = false;
+    const e = timed(); scene.children.forEach((o, i) => { o.visible = vs[i]; });
+    out.empty = { calls: e.calls, ms: +e.ms.toFixed(1) };
+    return out;
+  },
+  /* where the camera is (item 4 of wave 13: the grey view while driving) */
+  camProbe: () => { const d = new THREE.Vector3(); camera.getWorldDirection(d); const r = (v) => +v.toFixed(2);
+    return { mode, cam: camera.position.toArray().map(r), dir: d.toArray().map(r), eye: [r(eye.x), r(eye.z)], fogFar: scene.fog.far,
+      riding: riding ? { id: riding.id, st: [r(riding.st.x), r(riding.st.y), r(riding.st.z), r(riding.st.yaw)], L: riding.spec.L, H: riding.spec.H } : null,
+      fleetDrawn: fl ? fl.drawCalls() : null, npcVisible: npcParts.some((m) => m.visible), chasePulls,
+      camToCar: riding ? +Math.hypot(camera.position.x - riding.st.x, camera.position.z - riding.st.z).toFixed(2) : null }; },
+  /* END PERF w13 */
 };
 /* ---- DEEP (wave 9): underwater regions - web/deepkit.py. The registry is fetched on the first Dive/ROV press;
    seafloor + 3 habitat families (<= 4 draw calls), none above the surface or in the overview. Depths/habitats are
@@ -1884,6 +2316,16 @@ document.documentElement.dataset.parishesReady = '1';
 
 # CLASS (wave 8): the class session HUD + lesson moments at mapped places (web/classkit.py; play only, local,
 # never a completion record). Mounted folded (compact) so it never covers the world's own controls.
+# BEGIN PERF w13 (PERF·Map Performance) REVIEW13: a Drive/Boat (E) press with no parked vehicle within reach names that
+# reason (parishes.novehicle) once all 8 locales carry the key (NEEDS i18n, logged); until then the press is refused
+# without the wrong boat message. The key joins the used set, so a locale without it stops the build by name (fail closed).
+if 'parishes.novehicle' in json.loads((ROOT / 'i18n/locales/en.json').read_text(encoding='utf-8'))['strings']:
+    JS_KEYS.append('parishes.novehicle'); _USED.add('parishes.novehicle')   # _USED builds the run-time catalogue
+    _pv = '    const v = fleetNearest({ x: eye.x, z: eye.z }, parked, 2.5);\n    if (!v) return false;\n'
+    if JS.count(_pv) != 1:
+        raise BuildError('build_parishes: PERF enterExit anchor (fleetNearest ... if (!v) return false;) must occur exactly once')
+    JS = JS.replace(_pv, _pv.replace('if (!v) return false;', "if (!v) { toast(tr('parishes.novehicle')); return false; }"), 1)
+# END PERF w13
 # BEGIN FACADE w11 (FACADE·Exteriors & Signs): AUTHORED facade details on the kit buildings nearest the eye and PLAY
 # signs on the economy/ commercial lots (web/facadekit.py, facades/registry/facades.json) - ONE InstancedMesh, one draw
 # call, hidden in the overview; the glue reads the streamed chunks and never changes them (details are not solid).
@@ -2162,7 +2604,7 @@ if FLEET_REG:
       "/* DRIVE w11: handling classes, driving HUD, phone controls */\n"
       "const DRIVE_CLS = FLEETREG ? fleetFamilyHandling(FLEETREG) : null;\n"
       "const driveHud = FLEETREG ? fleetDriveHud(document, document.getElementById('fleet-hud'), Object.fromEntries(FLEET_HUD_LABELS.map((k) => [k, tr(k === 'exit' ? 'fleet.hud.exit_e' : 'fleet.hud.' + k)]))) : null;\n"
-      "const driveTouch = FLEETREG ? fleetTouchControls(document, stage, Object.fromEntries(['group', 'stick', 'throttle', 'brake', 'enter', 'exit'].map((k) => [k, tr('fleet.touch.' + k)])), () => { if (!enterExit()) toast(tr('parishes.boat.nowater')); }) : null;\n"
+      "const driveTouch = FLEETREG ? fleetTouchControls(document, stage, Object.fromEntries(['group', 'stick', 'throttle', 'brake', 'enter', 'exit'].map((k) => [k, tr('fleet.touch.' + k)])), () => enterExit()) : null;\n"   # PERF w13 (REVIEW13): no boat 'no water' toast on a refused enter
       "const driveCls = (sp) => DRIVE_CLS.get(sp.id.split('.')[0]).cls;\n"),
      ("  stage.dataset.mode = mode; enterBtn.setAttribute('aria-pressed', String(!!riding));\n",
       "  stage.dataset.mode = mode; enterBtn.setAttribute('aria-pressed', String(!!riding));\n"
@@ -2265,6 +2707,69 @@ if (ROOT / 'wildlife/registry/wildlife.json').exists() and (HERE / 'wildkit.py')
     HUD_PANELS.append({'id': 'wild', 'kind': 'panel', 'sel': '#wild-panel', 'slot': 'bs', 'order': 2, 'compact': 'none'})
     page = page.replace(_WILD_OLD_LAYER, hud_layer(HUD_PANELS, TS, TA))
 # END BAYOU w12
+
+# BEGIN VEG w14 (VEG·Vegetation & Detail): regional vegetation and street detail (web/florakit.py, flora/registry/flora.json)
+# on this world - region 'louisiana' here, 'bay' on web/trade_craft_bay.html (this builder, run by build_bayworld.py).
+# Real regional plants named generally, placed by AUTHORED rules on the page's AUTHORED land use (landUse) and distance to
+# AUTHORED water (inWaterAt); generic street furniture on kerb samples beside the carriageway (isRoadAt). One InstancedMesh
+# per family (<= 7 calls, registry budgets), nearest-cap LOD per family, frustum-culled; hidden in the overview (0 calls).
+# Ground: the page's ELEV w14 elevY(x, z) when mounted, else globalThis.TCTERRAIN.heightAt(x, z), else the flat y = 0.
+if (ROOT / 'flora/registry/flora.json').exists() and (HERE / 'florakit.py').exists():
+    import florakit as _fk  # noqa: E402
+    _FLORA_REGION = 'bay' if PAGE.endswith('trade_craft_bay.html') else 'louisiana'
+    # VEG w14 RECORDED land cover (LANDCOVER_CONTRACT v1, GEO): the page fetches the vendored ESA WorldCover grid itself,
+    # checks its pinned sha256, unzips it (DecompressionStream) and samples the containing ~90 m cell (never interpolated)
+    # with the same frame as landcover/sample.py; until it arrives, or where a cell is nodata / outside, landClass is null
+    # and the AUTHORED rules place plants (counted in stats().landcover). On arrival the kit re-places (flora.reset()).
+    _LREG = json.loads((ROOT / 'landcover/registry/landcover.json').read_text(encoding='utf-8'))
+    if need(_LREG, 'provenance', 'landcover.json') != 'RECORDED':
+        raise BuildError('build_parishes: VEG landcover.json is not RECORDED')
+    _LG = need(need(_LREG, 'grids', 'landcover.json'), 'bayarea' if _FLORA_REGION == 'bay' else 'parishes', 'landcover.json#grids')
+    _LA = need(_LREG, 'attribution', 'landcover.json')
+    if not (ROOT / 'landcover/vendor' / need(_LG, 'file', 'landcover grid')).exists():
+        raise BuildError(f'build_parishes: VEG the RECORDED land-cover grid landcover/vendor/{_LG["file"]} is missing')
+    _LWO = need(need(REG['frames'], 'world', 'frames'), 'origin', 'frames.world')
+    _LM = {'path': 'landcover/vendor/' + _LG['file'], 'sha256': need(_LG, 'sha256', 'landcover grid'),
+           'w': need(_LG, 'bounds_arcsec', 'grid')['w'], 'n': _LG['bounds_arcsec']['n'], 'c': need(_LG, 'cell_arcsec', 'grid'),
+           'rows': need(_LG, 'rows', 'grid'), 'cols': need(_LG, 'cols', 'grid'),
+           'nodata': need(need(_LG, 'encoding', 'grid'), 'nodata_value', 'grid.encoding'), 'R': need(REG['frames'], 'R_m', 'frames'),
+           'lat0': need(_LWO, 'lat', 'frames.world.origin'), 'lng0': need(_LWO, 'lng', 'frames.world.origin')}
+    _FLORA_LC_JS = ('const FLORA_LC = ' + json.dumps(_LM) + ';\n'
+        "let floraLC = null, floraLCState = 'loading';\n"
+        "const floraClass = (x, z) => { if (!floraLC) return null; const M = FLORA_LC, lat = M.lat0 + (-z / M.R) * 180 / Math.PI, lng = M.lng0 + (x / (M.R * Math.cos(M.lat0 * Math.PI / 180))) * 180 / Math.PI;\n"
+        "  const fy = (M.n - lat * 3600) / M.c, fx = (lng * 3600 - M.w) / M.c; if (!(fy >= 0 && fy <= M.rows && fx >= 0 && fx <= M.cols)) return null;\n"
+        "  const v = floraLC[Math.min(Math.floor(fy), M.rows - 1) * M.cols + Math.min(Math.floor(fx), M.cols - 1)]; return v === M.nodata ? null : v; };\n")
+    _FLORA_LC_LOAD = ("fetch('../' + FLORA_LC.path).then((r) => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.arrayBuffer(); }).then(async (gz) => {\n"
+        "  const hex = [...new Uint8Array(await crypto.subtle.digest('SHA-256', gz))].map((b) => b.toString(16).padStart(2, '0')).join('');\n"
+        "  if (hex !== FLORA_LC.sha256) throw new Error('sha256 ' + hex.slice(0, 16) + ' is not the pinned land-cover grid');\n"
+        "  const raw = new Uint8Array(await new Response(new Blob([gz]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer());\n"
+        "  if (raw.length !== FLORA_LC.rows * FLORA_LC.cols) throw new Error('land-cover grid is ' + raw.length + ' bytes');\n"
+        "  floraLC = raw; floraLCState = 'RECORDED'; flora.reset(); }).catch((e) => { floraLCState = 'failed: ' + (e.message || e); });\n"
+        "window.__floraLC = () => floraLCState;\n")
+    _FLORA_HOST = _FLORA_LC_JS + _fk.flora_mount_js(_FLORA_REGION, seed='SEED', chunk_m='CHUNK_M', land_class='floraClass',
+                                     is_ground='(x, z) => !!parishAt(x, z) && !inWaterAt(x, z)', is_road='isRoadAt',
+                                     is_water='(x, z) => inWaterAt(x, z)', land_use='landUse',
+                                     eye='{ x: eye.x, z: eye.z }', overview="mode === 'overview'",
+                                     # ELEV w14's relief (elevY: AUTHORED knolls/levees, 0 on flat ground) when mounted
+                                     ground_y='(x, z) => elevY(x, z)' if 'function elevY(x, z)' in page else None)
+    _FLORA_HOST += _FLORA_LC_LOAD
+    _FLORA_REG = _fk.flora_data()   # the honesty line is the registry's own (English, lang=en - like the FACADE legend line)
+    if any(c in _FLORA_REG['honesty']['page_line'] for c in '<>&"'):
+        raise BuildError('build_parishes: VEG flora honesty.page_line carries markup characters')
+    _FLORA_LI = f'<li data-flora-honesty lang="en" data-flora-stamp="{_FLORA_REG["source_stamp"]}">{_FLORA_REG["honesty"]["page_line"]}</li>'
+    _FLORA_LC_LINE = (f'Vegetation placed on {need(_LA, "title", "attribution")} land cover (RECORDED, ~90 m majority cells, '
+                      f'{need(_LA, "license_id", "attribution").replace("-", " ").replace("CC BY 4.0", "CC BY 4.0")}); modified: {need(_LA, "changes", "attribution")}; '
+                      f'species and exact positions AUTHORED; cells with no RECORDED class use the AUTHORED rules. {need(_LA, "text", "attribution")}')
+    if any(c in _FLORA_LC_LINE for c in '<>&"'):
+        raise BuildError('build_parishes: VEG land-cover legend carries markup characters')
+    _FLORA_LI += f'\n<li data-flora-landcover lang="en" data-flora-lc-sha="{_LM["sha256"][:16]}">{_FLORA_LC_LINE}</li>'
+    for _a, _b in (('window.__parishes = {', _FLORA_HOST + 'window.__parishes = {'),
+                   ('<li data-fleet-honesty>', _FLORA_LI + '\n<li data-fleet-honesty>')):
+        if page.count(_a) != 1:
+            raise BuildError(f'build_parishes: VEG anchor found {page.count(_a)}x: {_a[:60]!r}')
+        page = page.replace(_a, _b)
+    STATES['flora'] = 'wired'
+# END VEG w14
 
 I18N_CAT = {}
 for _f in sorted((ROOT / 'i18n/locales').glob('*.json')):

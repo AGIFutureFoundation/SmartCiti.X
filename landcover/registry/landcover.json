@@ -1,0 +1,1205 @@
+{
+ "attribution": {
+  "author": "Zanaga, D., Van De Kerchove, R., Daems, D., De Keersmaecker, W., Brockmann, C., Kirches, G., Wevers, J., Cartus, O., Santoro, M., Fritz, S., Lesiv, M., Herold, M., Tsendbazar, N.E., Xu, P., Ramoino, F., Arino, O.",
+  "changes": "majority class per 3 arc-second cell (9 x 9 source pixels), under-half-classified cells set to nodata, clipped to the parish and Bay registry bounds (landcover/fetch_landcover.py)",
+  "license_id": "CC-BY-4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0/",
+  "modified": true,
+  "source_url": "https://doi.org/10.5281/zenodo.7254221",
+  "text": "© ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium",
+  "title": "ESA WorldCover 10 m 2021 v200"
+ },
+ "classes": {
+  "10": "tree cover",
+  "100": "moss and lichen",
+  "20": "shrubland",
+  "30": "grassland",
+  "40": "cropland",
+  "50": "built-up",
+  "60": "bare / sparse vegetation",
+  "70": "snow and ice",
+  "80": "permanent water bodies",
+  "90": "herbaceous wetland",
+  "95": "mangroves"
+ },
+ "contract": "LANDCOVER_CONTRACT v1",
+ "grids": {
+  "bayarea": {
+   "bounds_arcsec": {
+    "e": -436350,
+    "n": 139914,
+    "s": 132828,
+    "w": -444726
+   },
+   "bounds_deg": {
+    "e": -121.208333,
+    "n": 38.865,
+    "s": 36.896667,
+    "w": -123.535
+   },
+   "bounds_from": "bayarea/registry/bayarea.json#counties[*].bbox_wgs84 (union, snapped outward)",
+   "bytes": 607031,
+   "cell_arcsec": 3,
+   "cell_deg": 0.000833333,
+   "cell_size_m": {
+    "east_west_at_mid_lat": 73.1,
+    "north_south": 92.7
+   },
+   "classes_over_grid": {
+    "cells": {
+     "10": 1545247,
+     "20": 12826,
+     "30": 1446974,
+     "40": 578275,
+     "50": 466341,
+     "60": 24861,
+     "80": 1540434,
+     "90": 53985
+    },
+    "classified_cells": 5668943,
+    "nodata_cells": 925761,
+    "share": {
+     "10": 0.2726,
+     "20": 0.0023,
+     "30": 0.2552,
+     "40": 0.102,
+     "50": 0.0823,
+     "60": 0.0044,
+     "80": 0.2717,
+     "90": 0.0095
+    }
+   },
+   "cols": 2792,
+   "encoding": {
+    "cell_value": "majority WorldCover class code of the 10 m pixels in the cell (ties -> lower code); 0 when fewer than half the pixels carry a class",
+    "compression": "gzip (mtime 0)",
+    "dtype": "uint8",
+    "nodata_value": 0,
+    "order": "row-major, rows north->south, cols west->east"
+   },
+   "file": "bayarea.u8.gz",
+   "rows": 2362,
+   "sha256": "5024923876b501f8361fe162c6aeebcbb817cc80dcb8c1b7e14f1667428d8d99",
+   "tiles": [
+    "N36W126",
+    "N36W123"
+   ],
+   "what": "the 9 San Francisco Bay Area counties of the Bay world, California"
+  },
+  "parishes": {
+   "bounds_arcsec": {
+    "e": -319734,
+    "n": 111600,
+    "s": 104145,
+    "w": -328809
+   },
+   "bounds_deg": {
+    "e": -88.815,
+    "n": 31.0,
+    "s": 28.929167,
+    "w": -91.335833
+   },
+   "bounds_from": "parishes/registry/parishes.json#parishes[*].bbox_wgs84 (union, snapped outward)",
+   "bytes": 594510,
+   "cell_arcsec": 3,
+   "cell_deg": 0.000833333,
+   "cell_size_m": {
+    "east_west_at_mid_lat": 80.3,
+    "north_south": 92.7
+   },
+   "classes_over_grid": {
+    "cells": {
+     "10": 2667957,
+     "30": 573917,
+     "40": 149432,
+     "50": 118992,
+     "60": 14416,
+     "80": 3159293,
+     "90": 815039,
+     "95": 639
+    },
+    "classified_cells": 7499685,
+    "nodata_cells": 17440,
+    "share": {
+     "10": 0.3557,
+     "30": 0.0765,
+     "40": 0.0199,
+     "50": 0.0159,
+     "60": 0.0019,
+     "80": 0.4213,
+     "90": 0.1087,
+     "95": 0.0001
+    }
+   },
+   "cols": 3025,
+   "encoding": {
+    "cell_value": "majority WorldCover class code of the 10 m pixels in the cell (ties -> lower code); 0 when fewer than half the pixels carry a class",
+    "compression": "gzip (mtime 0)",
+    "dtype": "uint8",
+    "nodata_value": 0,
+    "order": "row-major, rows north->south, cols west->east"
+   },
+   "file": "parishes.u8.gz",
+   "rows": 2485,
+   "sha256": "a9d37b8ca93b45393093114df1e7b8a9478ed5241866f10775c491fa5d27f0da",
+   "tiles": [
+    "N27W093",
+    "N27W090",
+    "N30W093",
+    "N30W090"
+   ],
+   "what": "the 13 parishes of the parish worlds, Louisiana"
+  }
+ },
+ "honesty": [
+  "a cell is the MAJORITY class of about 80 x 90 m of 10 m pixels: a street tree, a single yard or a narrow levee strip inside another class is not represented",
+  "WorldCover is a 2021 satellite classification, not a survey or a species map: it says tree cover, never which trees; species stay AUTHORED (named generally) on this RECORDED class",
+  "open ocean beyond the product coverage is nodata (None), never filled"
+ ],
+ "licence": "CC BY 4.0 - legal code vendored in landcover/vendor/LICENSE_CC-BY-4.0.txt; attribution and citation verbatim in landcover/vendor/WORLDCOVER_ATTRIBUTION.txt",
+ "manifest_sha256": "2db656335f1e677ca8943a0963bde7679345624d7d3910aba78667cf2922cb06",
+ "members": {
+  "bayarea": {
+   "06001": {
+    "bbox_wgs84": [
+     -122.332405,
+     37.454066,
+     -121.470975,
+     37.905931
+    ],
+    "classes_over_bbox": {
+     "cells": {
+      "10": 127461,
+      "20": 1425,
+      "30": 226760,
+      "40": 23972,
+      "50": 93251,
+      "60": 3774,
+      "80": 78478,
+      "90": 5307
+     },
+     "classified_cells": 560428,
+     "nodata_cells": 0,
+     "share": {
+      "10": 0.2274,
+      "20": 0.0025,
+      "30": 0.4046,
+      "40": 0.0428,
+      "50": 0.1664,
+      "60": 0.0067,
+      "80": 0.14,
+      "90": 0.0095
+     }
+    },
+    "frame_origin": {
+     "lat": 37.645694,
+     "lng": -121.888216
+    },
+    "frame_origin_class": 30,
+    "name": "Alameda"
+   },
+   "06013": {
+    "bbox_wgs84": [
+     -122.429316,
+     37.719515,
+     -121.535582,
+     38.095783
+    ],
+    "classes_over_bbox": {
+     "cells": {
+      "10": 92668,
+      "20": 1441,
+      "30": 160180,
+      "40": 37549,
+      "50": 85814,
+      "60": 3216,
+      "80": 90801,
+      "90": 12875
+     },
+     "classified_cells": 484544,
+     "nodata_cells": 0,
+     "share": {
+      "10": 0.1912,
+      "20": 0.003,
+      "30": 0.3306,
+      "40": 0.0775,
+      "50": 0.1771,
+      "60": 0.0066,
+      "80": 0.1874,
+      "90": 0.0266
+     }
+    },
+    "frame_origin": {
+     "lat": 37.919527,
+     "lng": -121.929038
+    },
+    "frame_origin_class": 30,
+    "name": "Contra Costa"
+   },
+   "06041": {
+    "bbox_wgs84": [
+     -123.010782,
+     37.819166,
+     -122.436495,
+     38.320857
+    ],
+    "classes_over_bbox": {
+     "cells": {
+      "10": 112928,
+      "20": 826,
+      "30": 135025,
+      "40": 13781,
+      "50": 14627,
+      "60": 1029,
+      "80": 134940,
+      "90": 1622
+     },
+     "classified_cells": 414778,
+     "nodata_cells": 0,
+     "share": {
+      "10": 0.2723,
+      "20": 0.002,
+      "30": 0.3255,
+      "40": 0.0332,
+      "50": 0.0353,
+      "60": 0.0025,
+      "80": 0.3253,
+      "90": 0.0039
+     }
+    },
+    "frame_origin": {
+     "lat": 38.07502,
+     "lng": -122.724299
+    },
+    "frame_origin_class": 30,
+    "name": "Marin"
+   },
+   "06055": {
+    "bbox_wgs84": [
+     -122.644674,
+     38.155058,
+     -122.063208,
+     38.864642
+    ],
+    "classes_over_bbox": {
+     "cells": {
+      "10": 283463,
+      "20": 2890,
+      "30": 235599,
+      "40": 31060,
+      "50": 16971,
+      "60": 476,
+      "80": 20422,
+      "90": 3815
+     },
+     "classified_cells": 594696,
+     "nodata_cells": 0,
+     "share": {
+      "10": 0.4767,
+      "20": 0.0049,
+      "30": 0.3962,
+      "40": 0.0522,
+      "50": 0.0285,
+      "60": 0.0008,
+      "80": 0.0343,
+      "90": 0.0064
+     }
+    },
+    "frame_origin": {
+     "lat": 38.506651,
+     "lng": -122.331322
+    },
+    "frame_origin_class": 10,
+    "name": "Napa"
+   },
+   "06075": {
+    "bbox_wgs84": [
+     -122.515459,
+     37.708347,
+     -122.328816,
+     37.811434
+    ],
+    "classes_over_bbox": {
+     "cells": {
+      "10": 2408,
+      "30": 1054,
+      "40": 1,
+      "50": 13726,
+      "60": 320,
+      "80": 10262,
+      "90": 5
+     },
+     "classified_cells": 27776,
+     "nodata_cells": 0,
+     "share": {
+      "10": 0.0867,
+      "30": 0.0379,
+      "40": 0.0,
+      "50": 0.4942,
+      "60": 0.0115,
+      "80": 0.3695,
+      "90": 0.0002
+     }
+    },
+    "frame_origin": {
+     "lat": 37.754584,
+     "lng": -122.440049
+    },
+    "frame_origin_class": 50,
+    "name": "San Francisco"
+   },
+   "06081": {
+    "bbox_wgs84": [
+     -122.519049,
+     37.107005,
+     -122.109869,
+     37.708347
+    ],
+    "classes_over_bbox": {
+     "cells": {
+      "10": 147225,
+      "20": 389,
+      "30": 37453,
+      "40": 1597,
+      "50": 36771,
+      "60": 2148,
+      "80": 125887,
+      "90": 3032
+     },
+     "classified_cells": 354502,
+     "nodata_cells": 0,
+     "share": {
+      "10": 0.4153,
+      "20": 0.0011,
+      "30": 0.1056,
+      "40": 0.0045,
+      "50": 0.1037,
+      "60": 0.0061,
+      "80": 0.3551,
+      "90": 0.0086
+     }
+    },
+    "frame_origin": {
+     "lat": 37.424548,
+     "lng": -122.330845
+    },
+    "frame_origin_class": 10,
+    "name": "San Mateo"
+   },
+   "06085": {
+    "bbox_wgs84": [
+     -122.203191,
+     36.897395,
+     -121.208956,
+     37.483274
+    ],
+    "classes_over_bbox": {
+     "cells": {
+      "10": 373955,
+      "20": 3726,
+      "30": 283566,
+      "40": 30507,
+      "50": 95336,
+      "60": 2360,
+      "80": 47328,
+      "90": 1901
+     },
+     "classified_cells": 838679,
+     "nodata_cells": 0,
+     "share": {
+      "10": 0.4459,
+      "20": 0.0044,
+      "30": 0.3381,
+      "40": 0.0364,
+      "50": 0.1137,
+      "60": 0.0028,
+      "80": 0.0564,
+      "90": 0.0023
+     }
+    },
+    "frame_origin": {
+     "lat": 37.232517,
+     "lng": -121.697129
+    },
+    "frame_origin_class": 30,
+    "name": "Santa Clara"
+   },
+   "06095": {
+    "bbox_wgs84": [
+     -122.407781,
+     38.031354,
+     -121.593011,
+     38.538199
+    ],
+    "classes_over_bbox": {
+     "cells": {
+      "10": 112446,
+      "20": 3539,
+      "30": 215664,
+      "40": 116283,
+      "50": 36714,
+      "60": 2025,
+      "80": 69535,
+      "90": 37810
+     },
+     "classified_cells": 594016,
+     "nodata_cells": 0,
+     "share": {
+      "10": 0.1893,
+      "20": 0.006,
+      "30": 0.3631,
+      "40": 0.1958,
+      "50": 0.0618,
+      "60": 0.0034,
+      "80": 0.1171,
+      "90": 0.0637
+     }
+    },
+    "frame_origin": {
+     "lat": 38.270618,
+     "lng": -121.932984
+    },
+    "frame_origin_class": 30,
+    "name": "Solano"
+   },
+   "06097": {
+    "bbox_wgs84": [
+     -123.534819,
+     38.109528,
+     -122.350352,
+     38.852615
+    ],
+    "classes_over_bbox": {
+     "cells": {
+      "10": 534926,
+      "20": 2503,
+      "30": 308134,
+      "40": 39004,
+      "50": 27812,
+      "60": 1359,
+      "80": 303122,
+      "90": 2079
+     },
+     "classified_cells": 1218939,
+     "nodata_cells": 49485,
+     "share": {
+      "10": 0.4388,
+      "20": 0.0021,
+      "30": 0.2528,
+      "40": 0.032,
+      "50": 0.0228,
+      "60": 0.0011,
+      "80": 0.2487,
+      "90": 0.0017
+     }
+    },
+    "frame_origin": {
+     "lat": 38.528522,
+     "lng": -122.888207
+    },
+    "frame_origin_class": 10,
+    "name": "Sonoma"
+   }
+  },
+  "parishes": {
+   "22005": {
+    "bbox_wgs84": [
+     -91.105548,
+     30.062716,
+     -90.631761,
+     30.345347
+    ],
+    "classes_over_bbox": {
+     "cells": {
+      "10": 128049,
+      "30": 31196,
+      "40": 17037,
+      "50": 6456,
+      "60": 947,
+      "80": 7178,
+      "90": 2028
+     },
+     "classified_cells": 192891,
+     "nodata_cells": 0,
+     "share": {
+      "10": 0.6638,
+      "30": 0.1617,
+      "40": 0.0883,
+      "50": 0.0335,
+      "60": 0.0049,
+      "80": 0.0372,
+      "90": 0.0105
+     }
+    },
+    "frame_origin": {
+     "lat": 30.202946,
+     "lng": -90.912536
+    },
+    "frame_origin_class": 10,
+    "name": "Ascension"
+   },
+   "22051": {
+    "bbox_wgs84": [
+     -90.28001,
+     29.16414,
+     -89.903134,
+     30.189857
+    ],
+    "classes_over_bbox": {
+     "cells": {
+      "10": 46153,
+      "30": 33468,
+      "40": 1282,
+      "50": 41873,
+      "60": 1068,
+      "80": 300158,
+      "90": 132402,
+      "95": 8
+     },
+     "classified_cells": 556412,
+     "nodata_cells": 0,
+     "share": {
+      "10": 0.0829,
+      "30": 0.0601,
+      "40": 0.0023,
+      "50": 0.0753,
+      "60": 0.0019,
+      "80": 0.5395,
+      "90": 0.238,
+      "95": 0.0
+     }
+    },
+    "frame_origin": {
+     "lat": 29.741878,
+     "lng": -90.112935
+    },
+    "frame_origin_class": 10,
+    "name": "Jefferson"
+   },
+   "22057": {
+    "bbox_wgs84": [
+     -91.005047,
+     29.06363,
+     -90.000045,
+     29.92183
+    ],
+    "classes_over_bbox": {
+     "cells": {
+      "10": 216813,
+      "30": 109477,
+      "40": 37206,
+      "50": 19638,
+      "60": 1482,
+      "80": 519215,
+      "90": 337822,
+      "95": 527
+     },
+     "classified_cells": 1242180,
+     "nodata_cells": 0,
+     "share": {
+      "10": 0.1745,
+      "30": 0.0881,
+      "40": 0.03,
+      "50": 0.0158,
+      "60": 0.0012,
+      "80": 0.418,
+      "90": 0.272,
+      "95": 0.0004
+     }
+    },
+    "frame_origin": {
+     "lat": 29.558251,
+     "lng": -90.418832
+    },
+    "frame_origin_class": 90,
+    "name": "Lafourche"
+   },
+   "22063": {
+    "bbox_wgs84": [
+     -90.99069,
+     30.175253,
+     -90.4846,
+     30.650313
+    ],
+    "classes_over_bbox": {
+     "cells": {
+      "10": 264228,
+      "30": 45529,
+      "40": 684,
+      "50": 7029,
+      "60": 948,
+      "80": 23432,
+      "90": 4140
+     },
+     "classified_cells": 345990,
+     "nodata_cells": 0,
+     "share": {
+      "10": 0.7637,
+      "30": 0.1316,
+      "40": 0.002,
+      "50": 0.0203,
+      "60": 0.0027,
+      "80": 0.0677,
+      "90": 0.012
+     }
+    },
+    "frame_origin": {
+     "lat": 30.439521,
+     "lng": -90.728657
+    },
+    "frame_origin_class": 30,
+    "name": "Livingston"
+   },
+   "22071": {
+    "bbox_wgs84": [
+     -90.140028,
+     29.867709,
+     -89.623169,
+     30.198447
+    ],
+    "classes_over_bbox": {
+     "cells": {
+      "10": 18746,
+      "30": 16325,
+      "40": 114,
+      "50": 25267,
+      "60": 479,
+      "80": 144775,
+      "90": 40434
+     },
+     "classified_cells": 246140,
+     "nodata_cells": 0,
+     "share": {
+      "10": 0.0762,
+      "30": 0.0663,
+      "40": 0.0005,
+      "50": 0.1027,
+      "60": 0.0019,
+      "80": 0.5882,
+      "90": 0.1643
+     }
+    },
+    "frame_origin": {
+     "lat": 30.070098,
+     "lng": -89.927224
+    },
+    "frame_origin_class": 10,
+    "name": "Orleans"
+   },
+   "22075": {
+    "bbox_wgs84": [
+     -90.068242,
+     28.929616,
+     -89.002221,
+     29.895199
+    ],
+    "classes_over_bbox": {
+     "cells": {
+      "10": 31326,
+      "30": 22620,
+      "40": 1503,
+      "50": 4491,
+      "60": 1254,
+      "80": 1163869,
+      "90": 241378,
+      "95": 8
+     },
+     "classified_cells": 1466449,
+     "nodata_cells": 14633,
+     "share": {
+      "10": 0.0214,
+      "30": 0.0154,
+      "40": 0.001,
+      "50": 0.0031,
+      "60": 0.0009,
+      "80": 0.7937,
+      "90": 0.1646,
+      "95": 0.0
+     }
+    },
+    "frame_origin": {
+     "lat": 29.433573,
+     "lng": -89.623085
+    },
+    "frame_origin_class": 90,
+    "name": "Plaquemines"
+   },
+   "22087": {
+    "bbox_wgs84": [
+     -90.010813,
+     29.652085,
+     -88.815578,
+     30.161508
+    ],
+    "classes_over_bbox": {
+     "cells": {
+      "10": 28470,
+      "30": 16194,
+      "40": 391,
+      "50": 7490,
+      "60": 558,
+      "80": 665784,
+      "90": 157263,
+      "95": 24
+     },
+     "classified_cells": 876174,
+     "nodata_cells": 0,
+     "share": {
+      "10": 0.0325,
+      "30": 0.0185,
+      "40": 0.0004,
+      "50": 0.0085,
+      "60": 0.0006,
+      "80": 0.7599,
+      "90": 0.1795,
+      "95": 0.0
+     }
+    },
+    "frame_origin": {
+     "lat": 29.875819,
+     "lng": -89.541465
+    },
+    "frame_origin_class": 80,
+    "name": "St. Bernard"
+   },
+   "22089": {
+    "bbox_wgs84": [
+     -90.549207,
+     29.691602,
+     -90.168742,
+     30.163226
+    ],
+    "classes_over_bbox": {
+     "cells": {
+      "10": 69554,
+      "30": 31179,
+      "40": 5210,
+      "50": 15627,
+      "60": 497,
+      "80": 81864,
+      "90": 54731
+     },
+     "classified_cells": 258662,
+     "nodata_cells": 0,
+     "share": {
+      "10": 0.2689,
+      "30": 0.1205,
+      "40": 0.0201,
+      "50": 0.0604,
+      "60": 0.0019,
+      "80": 0.3165,
+      "90": 0.2116
+     }
+    },
+    "frame_origin": {
+     "lat": 29.905405,
+     "lng": -90.358338
+    },
+    "frame_origin_class": 10,
+    "name": "St. Charles"
+   },
+   "22093": {
+    "bbox_wgs84": [
+     -90.961976,
+     29.889186,
+     -90.642529,
+     30.166662
+    ],
+    "classes_over_bbox": {
+     "cells": {
+      "10": 82762,
+      "30": 14539,
+      "40": 19634,
+      "50": 1965,
+      "60": 755,
+      "80": 5951,
+      "90": 1933
+     },
+     "classified_cells": 127539,
+     "nodata_cells": 0,
+     "share": {
+      "10": 0.6489,
+      "30": 0.114,
+      "40": 0.1539,
+      "50": 0.0154,
+      "60": 0.0059,
+      "80": 0.0467,
+      "90": 0.0152
+     }
+    },
+    "frame_origin": {
+     "lat": 30.026879,
+     "lng": -90.796157
+    },
+    "frame_origin_class": 40,
+    "name": "St. James"
+   },
+   "22095": {
+    "bbox_wgs84": [
+     -90.68919,
+     29.884891,
+     -90.157974,
+     30.294662
+    ],
+    "classes_over_bbox": {
+     "cells": {
+      "10": 106264,
+      "30": 20706,
+      "40": 8801,
+      "50": 17435,
+      "60": 778,
+      "80": 132298,
+      "90": 27122
+     },
+     "classified_cells": 313404,
+     "nodata_cells": 0,
+     "share": {
+      "10": 0.3391,
+      "30": 0.0661,
+      "40": 0.0281,
+      "50": 0.0556,
+      "60": 0.0025,
+      "80": 0.4221,
+      "90": 0.0865
+     }
+    },
+    "frame_origin": {
+     "lat": 30.12647,
+     "lng": -90.470816
+    },
+    "frame_origin_class": 10,
+    "name": "St. John the Baptist"
+   },
+   "22103": {
+    "bbox_wgs84": [
+     -90.254885,
+     30.15034,
+     -89.526258,
+     30.712165
+    ],
+    "classes_over_bbox": {
+     "cells": {
+      "10": 366383,
+      "30": 54221,
+      "40": 1274,
+      "50": 9267,
+      "60": 1460,
+      "80": 128182,
+      "90": 29163
+     },
+     "classified_cells": 589950,
+     "nodata_cells": 0,
+     "share": {
+      "10": 0.621,
+      "30": 0.0919,
+      "40": 0.0022,
+      "50": 0.0157,
+      "60": 0.0025,
+      "80": 0.2173,
+      "90": 0.0494
+     }
+    },
+    "frame_origin": {
+     "lat": 30.410254,
+     "lng": -89.957388
+    },
+    "frame_origin_class": 10,
+    "name": "St. Tammany"
+   },
+   "22105": {
+    "bbox_wgs84": [
+     -90.567154,
+     30.234528,
+     -90.161563,
+     30.99995
+    ],
+    "classes_over_bbox": {
+     "cells": {
+      "10": 291315,
+      "30": 64609,
+      "40": 4520,
+      "50": 4143,
+      "60": 1269,
+      "80": 53037,
+      "90": 28660
+     },
+     "classified_cells": 447553,
+     "nodata_cells": 0,
+     "share": {
+      "10": 0.6509,
+      "30": 0.1444,
+      "40": 0.0101,
+      "50": 0.0093,
+      "60": 0.0028,
+      "80": 0.1185,
+      "90": 0.064
+     }
+    },
+    "frame_origin": {
+     "lat": 30.626271,
+     "lng": -90.404976
+    },
+    "frame_origin_class": 10,
+    "name": "Tangipahoa"
+   },
+   "22109": {
+    "bbox_wgs84": [
+     -91.335262,
+     29.040435,
+     -90.376921,
+     29.77579
+    ],
+    "classes_over_bbox": {
+     "cells": {
+      "10": 173497,
+      "30": 73692,
+      "40": 19615,
+      "50": 8460,
+      "60": 1059,
+      "80": 450829,
+      "90": 286834,
+      "95": 314
+     },
+     "classified_cells": 1014300,
+     "nodata_cells": 0,
+     "share": {
+      "10": 0.1711,
+      "30": 0.0727,
+      "40": 0.0193,
+      "50": 0.0083,
+      "60": 0.001,
+      "80": 0.4445,
+      "90": 0.2828,
+      "95": 0.0003
+     }
+    },
+    "frame_origin": {
+     "lat": 29.41015,
+     "lng": -90.864829
+    },
+    "frame_origin_class": 80,
+    "name": "Terrebonne"
+   }
+  }
+ },
+ "not_gridded": {
+  "smiles": {
+   "provenance": "AUTHORED",
+   "vegetation": "AUTHORED rules only, labelled AUTHORED",
+   "why": "no real anchor to sample: AUTHORED game district - not a real place, not surveyed; Unspoken Smiles is named only as the programme the clinic stations belong to (no endorsement, partnership or clinical claim)."
+  }
+ },
+ "pack": "landcover",
+ "pack_version": "3.2.0",
+ "pins": [
+  {
+   "class": 10,
+   "id": "22005.frame_origin",
+   "lat": 30.202946,
+   "lng": -90.912536,
+   "point_provenance": "DERIVED - parishes/registry/parishes.json#22005.frame.origin (area-weighted centroid)",
+   "region": "parishes"
+  },
+  {
+   "class": 10,
+   "id": "22051.frame_origin",
+   "lat": 29.741878,
+   "lng": -90.112935,
+   "point_provenance": "DERIVED - parishes/registry/parishes.json#22051.frame.origin (area-weighted centroid)",
+   "region": "parishes"
+  },
+  {
+   "class": 90,
+   "id": "22057.frame_origin",
+   "lat": 29.558251,
+   "lng": -90.418832,
+   "point_provenance": "DERIVED - parishes/registry/parishes.json#22057.frame.origin (area-weighted centroid)",
+   "region": "parishes"
+  },
+  {
+   "class": 30,
+   "id": "22063.frame_origin",
+   "lat": 30.439521,
+   "lng": -90.728657,
+   "point_provenance": "DERIVED - parishes/registry/parishes.json#22063.frame.origin (area-weighted centroid)",
+   "region": "parishes"
+  },
+  {
+   "class": 10,
+   "id": "22071.frame_origin",
+   "lat": 30.070098,
+   "lng": -89.927224,
+   "point_provenance": "DERIVED - parishes/registry/parishes.json#22071.frame.origin (area-weighted centroid)",
+   "region": "parishes"
+  },
+  {
+   "class": 90,
+   "id": "22075.frame_origin",
+   "lat": 29.433573,
+   "lng": -89.623085,
+   "point_provenance": "DERIVED - parishes/registry/parishes.json#22075.frame.origin (area-weighted centroid)",
+   "region": "parishes"
+  },
+  {
+   "class": 80,
+   "id": "22087.frame_origin",
+   "lat": 29.875819,
+   "lng": -89.541465,
+   "point_provenance": "DERIVED - parishes/registry/parishes.json#22087.frame.origin (area-weighted centroid)",
+   "region": "parishes"
+  },
+  {
+   "class": 10,
+   "id": "22089.frame_origin",
+   "lat": 29.905405,
+   "lng": -90.358338,
+   "point_provenance": "DERIVED - parishes/registry/parishes.json#22089.frame.origin (area-weighted centroid)",
+   "region": "parishes"
+  },
+  {
+   "class": 40,
+   "id": "22093.frame_origin",
+   "lat": 30.026879,
+   "lng": -90.796157,
+   "point_provenance": "DERIVED - parishes/registry/parishes.json#22093.frame.origin (area-weighted centroid)",
+   "region": "parishes"
+  },
+  {
+   "class": 10,
+   "id": "22095.frame_origin",
+   "lat": 30.12647,
+   "lng": -90.470816,
+   "point_provenance": "DERIVED - parishes/registry/parishes.json#22095.frame.origin (area-weighted centroid)",
+   "region": "parishes"
+  },
+  {
+   "class": 10,
+   "id": "22103.frame_origin",
+   "lat": 30.410254,
+   "lng": -89.957388,
+   "point_provenance": "DERIVED - parishes/registry/parishes.json#22103.frame.origin (area-weighted centroid)",
+   "region": "parishes"
+  },
+  {
+   "class": 10,
+   "id": "22105.frame_origin",
+   "lat": 30.626271,
+   "lng": -90.404976,
+   "point_provenance": "DERIVED - parishes/registry/parishes.json#22105.frame.origin (area-weighted centroid)",
+   "region": "parishes"
+  },
+  {
+   "class": 80,
+   "id": "22109.frame_origin",
+   "lat": 29.41015,
+   "lng": -90.864829,
+   "point_provenance": "DERIVED - parishes/registry/parishes.json#22109.frame.origin (area-weighted centroid)",
+   "region": "parishes"
+  },
+  {
+   "class": 50,
+   "id": "world.origin",
+   "lat": 29.975,
+   "lng": -90.09,
+   "point_provenance": "parishes/registry/parishes.json#frames.world.origin (the shared scene frame of every world file)",
+   "region": "parishes"
+  },
+  {
+   "class": 30,
+   "id": "06001.frame_origin",
+   "lat": 37.645694,
+   "lng": -121.888216,
+   "point_provenance": "DERIVED - bayarea/registry/bayarea.json#06001.frame.origin (area-weighted centroid)",
+   "region": "bayarea"
+  },
+  {
+   "class": 30,
+   "id": "06013.frame_origin",
+   "lat": 37.919527,
+   "lng": -121.929038,
+   "point_provenance": "DERIVED - bayarea/registry/bayarea.json#06013.frame.origin (area-weighted centroid)",
+   "region": "bayarea"
+  },
+  {
+   "class": 30,
+   "id": "06041.frame_origin",
+   "lat": 38.07502,
+   "lng": -122.724299,
+   "point_provenance": "DERIVED - bayarea/registry/bayarea.json#06041.frame.origin (area-weighted centroid)",
+   "region": "bayarea"
+  },
+  {
+   "class": 10,
+   "id": "06055.frame_origin",
+   "lat": 38.506651,
+   "lng": -122.331322,
+   "point_provenance": "DERIVED - bayarea/registry/bayarea.json#06055.frame.origin (area-weighted centroid)",
+   "region": "bayarea"
+  },
+  {
+   "class": 50,
+   "id": "06075.frame_origin",
+   "lat": 37.754584,
+   "lng": -122.440049,
+   "point_provenance": "DERIVED - bayarea/registry/bayarea.json#06075.frame.origin (area-weighted centroid)",
+   "region": "bayarea"
+  },
+  {
+   "class": 10,
+   "id": "06081.frame_origin",
+   "lat": 37.424548,
+   "lng": -122.330845,
+   "point_provenance": "DERIVED - bayarea/registry/bayarea.json#06081.frame.origin (area-weighted centroid)",
+   "region": "bayarea"
+  },
+  {
+   "class": 30,
+   "id": "06085.frame_origin",
+   "lat": 37.232517,
+   "lng": -121.697129,
+   "point_provenance": "DERIVED - bayarea/registry/bayarea.json#06085.frame.origin (area-weighted centroid)",
+   "region": "bayarea"
+  },
+  {
+   "class": 30,
+   "id": "06095.frame_origin",
+   "lat": 38.270618,
+   "lng": -121.932984,
+   "point_provenance": "DERIVED - bayarea/registry/bayarea.json#06095.frame.origin (area-weighted centroid)",
+   "region": "bayarea"
+  },
+  {
+   "class": 10,
+   "id": "06097.frame_origin",
+   "lat": 38.528522,
+   "lng": -122.888207,
+   "point_provenance": "DERIVED - bayarea/registry/bayarea.json#06097.frame.origin (area-weighted centroid)",
+   "region": "bayarea"
+  },
+  {
+   "class": 80,
+   "id": "world.origin",
+   "lat": 37.72,
+   "lng": -122.27,
+   "point_provenance": "bayarea/registry/bayarea.json#frames.world.origin (the shared scene frame of every world file)",
+   "region": "bayarea"
+  }
+ ],
+ "provenance": "RECORDED",
+ "provenance_note": "every class is RECORDED from the vendored ESA WorldCover 2021 grids; the point it is sampled at keeps its own registry provenance; anything placed where a grid says None is AUTHORED",
+ "sampler": {
+  "functions": [
+   "load_grid(region)",
+   "class_at(grid, lat, lng)",
+   "landcover_at(grid, origin, x, z)",
+   "resample_world(grid, origin, x0, z0, dx, dz, cols, rows)"
+  ],
+  "js_twin": "landcover/test.mjs classAt() - must agree with every pin",
+  "module": "landcover/sample.py",
+  "rule": "the class of the cell containing the point (no interpolation); None for nodata or outside the grid; never a default class"
+ },
+ "sampler_stamp": "a20d5ac6d8be15a6",
+ "source": "ESA WorldCover 10 m 2021 v200",
+ "source_stamp": "3acd166dfa4c4f16",
+ "source_url": "https://esa-worldcover.s3.eu-central-1.amazonaws.com/"
+}
