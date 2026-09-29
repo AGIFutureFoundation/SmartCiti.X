@@ -228,7 +228,7 @@ for (const k of keys) {
   const en = cat.en['path.' + k];
   const copies = LOCS.filter((l) => l !== 'en' && cat[l]['path.' + k] === en);
   if (copies.length) badL.push(`path.${k} is an English copy in ${copies}`);
-  const m = new RegExp(k + ": '([^']*)'").exec(kit ? kit.js : '');
+  const m = new RegExp("(?:^|[\\s{,])'?" + k.replace('.', '\\.') + "'?: '([^']*)'").exec(kit ? kit.js : '');
   if (!m || m[1] !== en) badL.push(`PATH_JS English default for ${k} differs from en.json`);
 }
 for (const p of P) for (const path of p.paths) if (cat.en['path.' + path.id] !== path.label) badL.push(`en path.${path.id} differs from the registry label ${path.label}`);
@@ -257,6 +257,172 @@ try {
 } catch (e) { remount = { error: String(e) }; }
 ok('mounting the same element 6 times leaves one click, one keydown and one found listener; one click = one find',
   remount && remount.click === 1 && remount.keydown === 1 && remount.found === 1 && remount.finds === 1 && remount.unmount === 'function', JSON.stringify(remount));
+
+// ---- wave 7: seven adventure paths + side stories (layers/registry/paths.json, PATHS_CONTRACT v1)
+const P7 = json('layers/registry/paths.json');
+const PIDS = ['trades', 'k12', 'responders', 'un', 'relief', 'teachers', 'roam'];
+const q7reg = json('quests/registry/quests.json');
+const q7ById = new Map(q7reg.quests.map((q) => [q.id, q]));
+{
+  const bad = [];
+  if (JSON.stringify(P7.path_ids) !== JSON.stringify(PIDS)) bad.push('path_ids ' + P7.path_ids);
+  if (JSON.stringify(P7.parishes.map((p) => p.fips)) !== JSON.stringify(P.map((p) => p.fips))) bad.push('parishes differ from layers');
+  const by = Object.fromEntries(PIDS.map((k) => [k, 0]));
+  let stories = 0;
+  for (const p of P7.parishes) {
+    if (JSON.stringify(p.paths.map((x) => x.id)) !== JSON.stringify(PIDS)) bad.push(`${p.fips}: paths ${p.paths.map((x) => x.id)}`);
+    for (const x of p.paths) { by[x.id] += x.steps.length; if (x.gated !== false) bad.push(`${p.fips}.${x.id} gated`); }
+    if (JSON.stringify(p.stories.map((x) => x.path)) !== JSON.stringify(PIDS)) bad.push(`${p.fips}: one story per path`);
+    stories += p.stories.length;
+  }
+  if (JSON.stringify(by) !== JSON.stringify(P7.counts.steps_by_path) || stories !== P7.counts.stories) bad.push('counts ' + JSON.stringify(by));
+  ok(`paths7: ${P7.parishes.length} parishes x 7 paths (${PIDS.join(', ')}), one side story each (${stories}); counts recomputed`, bad.length === 0 && stories === 7 * P.length, bad);
+}
+{
+  const bad = [];
+  for (const p of P7.parishes) {
+    const lp = P.find((q) => q.fips === p.fips), st = new Map(lp.stations.map((s) => [s.id, s]));
+    for (const x of p.paths) for (const s of x.steps) {
+      if (s.kind === 'station') {
+        if (!st.has(s.id)) bad.push(`${s.id}: no such station`);
+        else if (x.id === 'trades' && !['trade-sim', 'task'].includes(st.get(s.id).layer)) bad.push(`${s.id}: trades step on layer ${st.get(s.id).layer}`);
+        else if (x.id === 'k12' && !['k12-unit', 'lesson'].includes(st.get(s.id).layer)) bad.push(`${s.id}: k12 step on layer ${st.get(s.id).layer}`);
+        else if (st.get(s.id).title !== s.title) bad.push(`${s.id}: title differs from layers`);
+      } else if (s.kind === 'quest') { if (!q7ById.has(s.id)) bad.push(`${s.id}: no such quest`); }
+      else if (s.kind === 'quote') { if (!st.has(s.station)) bad.push(`${s.id}: anchor ${s.station} is no station`); }
+      else bad.push(`${s.id}: kind ${s.kind}`);
+    }
+    for (const story of p.stories) {
+      const side = q7ById.get(story.quest), want = story.steps.map((x) => x.quest);
+      if (!side || side.kind !== 'side' || JSON.stringify(side.requires.quests) !== JSON.stringify(want)) bad.push(`${story.quest}: side quest must require exactly its steps`);
+      if (story.steps.length < 3 || story.steps.length > 5) bad.push(`${story.id}: ${story.steps.length} steps (3..5)`);
+      if (story.steps[0].do !== 'talk' || story.steps[story.steps.length - 1].do !== 'talk') bad.push(`${story.id}: must start and end with the NPC`);
+      story.steps.forEach((x, i) => {
+        const q = q7ById.get(x.quest);
+        if (!q || q.kind !== 'treasure' || q.world !== `parish:${p.fips}`) bad.push(`${x.quest}: not a parish treasure`);
+        else if (JSON.stringify(q.requires.quests) !== JSON.stringify(i ? [story.steps[i - 1].quest] : [])) bad.push(`${x.quest}: must require only the previous step`);
+        if (x.station && !st.has(x.station)) bad.push(`${x.quest}: station ${x.station} missing`);
+      });
+    }
+  }
+  ok('paths7: every station / quest / story step id resolves (layers stations, quests.json); stories talk -> ... -> talk, in order', bad.length === 0, bad);
+}
+{
+  const walk = (src) => {
+    const [rel, path] = src.split('#');
+    let cur = json(rel);
+    for (const part of path.match(/[^.[\]]+|\[\d+\]/g)) {
+      const k = part.startsWith('[') ? +part.slice(1, -1) : part;
+      if (cur == null || !(k in Object(cur))) return undefined;
+      cur = cur[k];
+    }
+    return cur;
+  };
+  const bad = []; let n = 0;
+  const allowed = { responders: /^respond\/registry\/respond\.json#scenario_frames\[\d+\]\.situation$/,
+    un: /^respond\/registry\/respond\.json#(competencies|scenario_frames)\[\d+\]\.(what_it_is|situation)$/,
+    relief: /^(respond\/registry\/respond\.json#(competencies|scenario_frames)\[\d+\]\.(what_it_is|situation)|restoration\/registry\/restoration\.json#tracks\[\d+\]\.what)$/,
+    teachers: /^schools\/registry\/schools\.json#model\.(loop|stages\[\d+\]\.what)$/ };
+  for (const p of P7.parishes) for (const x of p.paths) for (const s of x.steps) {
+    if (s.kind !== 'quote') continue;
+    n++;
+    if (walk(s.source) !== s.quote) bad.push(`${s.id}: quote is not verbatim ${s.source}`);
+    if (walk(s.title_source) !== s.title) bad.push(`${s.id}: title is not verbatim ${s.title_source}`);
+    if (!allowed[x.id] || !allowed[x.id].test(s.source)) bad.push(`${s.id}: source ${s.source} not allowed on ${x.id}`);
+    if (!s.source.startsWith(s.registry + '#')) bad.push(`${s.id}: registry/source mismatch`);
+  }
+  ok(`paths7: all ${n} quotes are verbatim at their source json path (and titles), from the registries each path may quote`, bad.length === 0 && n > 0, bad);
+}
+{
+  const bad = [];
+  const DIS = 'not affiliated with or endorsed by the United Nations';
+  if (P7.un_disclaimer !== DIS || !P7.honesty.un.includes(DIS)) bad.push('registry disclaimer');
+  const en = json('i18n/locales/en.json').strings;
+  if (!en['path.p7.unNote'].includes(DIS)) bad.push('en path.p7.unNote lacks the disclaimer');
+  if (!new RegExp("'p7\\.unNote': '[^']*" + DIS).test(kit.js)) bad.push('PATH_JS default unNote lacks the disclaimer');
+  const UNOK = ['em.mass-care-coordination', 'em.access-functional-needs', 'em.volunteer-donations', 'resp.s.shelter-operations'];
+  for (const p of P7.parishes) {
+    const un = p.paths.find((x) => x.id === 'un');
+    if (un.status !== 'PROPOSED' || !/PROPOSED/.test(un.label)) bad.push(`${p.fips}: un not PROPOSED`);
+    for (const s of un.steps) {
+      if (!UNOK.includes(s.ref_id)) bad.push(`${s.id}: ${s.ref_id} is not a humanitarian-theme item`);
+      if (/united nations|\bUN\b|UNHCR|UNICEF|OCHA|WFP/i.test(s.quote + s.title)) bad.push(`${s.id}: quotes a UN name`);
+    }
+    for (const x of p.paths) if (x.id !== 'un' && x.status !== 'AVAILABLE') bad.push(`${p.fips}.${x.id}: status ${x.status}`);
+  }
+  ok('paths7 UN: PROPOSED module, disclaimer "' + DIS + '" in registry + en.json + PATH_JS, only humanitarian respond/ items, no UN names', bad.length === 0, bad);
+}
+{
+  const bad = [];
+  if (!/PROPOSED partners/.test(P7.honesty.k12)) bad.push('honesty.k12');
+  if (!/PROPOSED/.test(json('i18n/locales/en.json').strings['path.p7.k12Note'])) bad.push('en path.p7.k12Note');
+  if (!/unverified general practice/.test(P7.honesty.lessons)) bad.push('honesty.lessons');
+  for (const p of P7.parishes) if (!/PROPOSED partner/.test(p.paths.find((x) => x.id === 'k12').what)) bad.push(`${p.fips}: k12 what`);
+  ok('paths7 K-12: districts stay PROPOSED partners (registry, en.json, every parish), lessons unverified general practice', bad.length === 0, bad);
+}
+{
+  const bad = [];
+  const CR = /crash|collid|wreck/i;
+  for (const p of P7.parishes) for (const story of p.stories) for (const x of story.steps) {
+    if (CR.test(JSON.stringify(x))) bad.push(`${x.quest}: mentions a crash`);
+    if (x.hook && /hit|crash|collid|wreck/i.test(x.hook)) bad.push(`${x.quest}: hook ${x.hook}`);
+    const q = q7ById.get(x.quest);
+    if (q && CR.test(q.title + ' ' + q.hint + ' ' + q.reward.label)) bad.push(`${x.quest}: quest text rewards a crash`);
+  }
+  for (const h of P7.ambient_hooks) if (!/^ambient\.(pet-found|litter-picked)$/.test(h)) bad.push('hook ' + h);
+  ok('paths7: no side-story step, hook or quest rewards crashing; ambient hooks are pet-found / litter-picked only', bad.length === 0, bad);
+}
+{
+  let r = null;
+  try {
+    const f = P[4].fips;
+    const d = JSON.parse(execFileSync('python3', ['-c', 'import json,sys;sys.path.insert(0,"web");import pathkit as k;print(json.dumps(k.path_data(sys.argv[1])))', f], { cwd: ROOT, encoding: 'utf8' }));
+    const got = {};
+    const node = () => ({ hidden: true, innerHTML: '', setAttribute() {}, focus() {}, querySelector: () => node(), classList: { add() {} } });
+    const root = Object.assign(node(), { addEventListener() {}, querySelector: () => node(), querySelectorAll: () => [] });
+    const win = { localStorage: { getItem: () => null, setItem() {} },
+      TCQuests: { state: () => ({ found: { ...got }, done: {} }), find: (id) => { got[id] = 't'; }, on() {} } };
+    new Function('window', 'document', kit.js)(win, { dir: 'ltr', activeElement: null });
+    win.TCPaths.mount(root, d, { hrefPrefix: '' });
+    const html = {};
+    for (const pid of PIDS) { win.TCPaths.adventure(pid); html[pid] = root.innerHTML; }
+    const radios = (html.un.match(/role="radio" data-pk-adv="/g) || []).length;
+    const prop = (html.un.match(/class="pk-prop"/g) || []).length;
+    const roam = d.adventure.stories.find((s) => s.path === 'roam');
+    const lot = roam.steps.find((x) => x.hook === 'econ.lot-rented').lots[0];
+    const seq = [win.TCPaths.hook('ambient.pet-found').length, win.TCPaths.talk('host').length,
+      win.TCPaths.hook('ambient.litter-picked').length, win.TCPaths.hook('ambient.pet-found').length,
+      win.TCPaths.hook('ambient.litter-picked').length, win.TCPaths.hook('econ.lot-rented', { lotId: 'lot-00000-r01' }).length,
+      win.TCPaths.hook('econ.lot-rented').length, win.TCPaths.hook('econ.lot-rented', { lotId: lot }).length, win.TCPaths.talk('host').length];
+    let crashThrew = false; try { win.TCPaths.hook('vehicle.crash'); } catch (e) { crashThrew = /crash/.test(e.message); }
+    r = { radios, prop, unNote: html.un.includes('data-pk-un') && html.un.includes('not affiliated with or endorsed by the United Nations'),
+      k12Note: /PROPOSED partners/.test(html.k12), quote: html.responders.includes('<blockquote>') && html.responders.includes('respond/registry/respond.json#'),
+      story: /data-pk-story="story-/.test(html.relief), seq: seq.join(''), roamDone: win.TCPaths.story('roam').steps.every((x) => x.found), crashThrew };
+  } catch (e) { r = { error: String(e) }; }
+  ok('pathkit adventure: 7 radios, 1 PROPOSED badge (un), UN disclaimer + K-12 note shown, quotes with source, story advances only in order (talk, pet, litter, rent one of its lots, talk; wrong/missing lot refused), hook("...crash") throws',
+    r && r.radios === 7 && r.prop === 1 && r.unNote && r.k12Note && r.quote && r.story && r.seq === '010110011' && r.roamDone && r.crashThrew, JSON.stringify(r));
+}
+
+{
+  const bad = [];
+  const eco = json('economy/registry/economy.json');
+  const WANT = { trades: ['econ.shop-opened', 'shop'], roam: ['econ.lot-rented', 'home'] };
+  const EVENTS = /^econ\.(shop-opened|lot-rented|first-shop-opened|first-rent-paid|rent-paid|lot-bought|staff-hired|skill-unlocked)$/;
+  for (const p of P7.parishes) {
+    const lots = new Map(eco.parishes[p.fips].lots.map((l) => [l.id, l]));
+    for (const story of p.stories) {
+      const ec = story.steps.filter((x) => x.do === 'econ' || /^econ\./.test(x.hook || ''));
+      if (!WANT[story.path]) { if (ec.length) bad.push(`${story.id}: unexpected city-life step`); continue; }
+      if (ec.length !== 1) { bad.push(`${story.id}: ${ec.length} city-life steps`); continue; }
+      const x = ec[0];
+      if (x.hook !== WANT[story.path][0] || !EVENTS.test(x.hook)) bad.push(`${x.quest}: hook ${x.hook}`);
+      if (!x.lots.length || x.lots.some((l) => !lots.has(l) || !lots.get(l).allowed.includes(WANT[story.path][1]))) bad.push(`${x.quest}: lot ids not ${WANT[story.path][1]} lots of ${p.fips} in economy.json`);
+      if (!/play coins, not money/.test(x.text)) bad.push(`${x.quest}: text must say play coins, not money`);
+    }
+  }
+  if (!/PLAY COINS only, never money/.test(P7.honesty.econ)) bad.push('honesty.econ');
+  ok('paths7 econ: trades (shop opened) and roam (lot rented) stories carry one city-life step per parish, hooks are ECON_CONTRACT events, lots are that parish\'s economy.json shop/home lots, play coins not money', bad.length === 0, bad);
+}
 
 console.log(fails ? `layers/test: ${fails} FAILED` : 'layers/test: all passed');
 process.exit(fails ? 1 : 0);

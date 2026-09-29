@@ -30,6 +30,7 @@ from design_kit import STYLE_HEAD_JS  # noqa: E402
 from seo import apply_seo  # noqa: E402
 from pagehero import theme  # noqa: E402
 from fleetkit import fleet_inline, BEGIN as KIT_BEGIN, END as KIT_END  # noqa: E402
+from physkit import phys_inline, BEGIN as PHYS_BEGIN, END as PHYS_END  # noqa: E402
 
 THEME_CSS, THEME_JS = theme('canvas')
 if THEME_JS:
@@ -37,6 +38,10 @@ if THEME_JS:
 
 PAGE = 'web/trade_craft_fleet.html'
 REG = json.loads((ROOT / 'fleet/registry/fleet.json').read_text())
+PHYSREG = json.loads((ROOT / 'physics/registry/physics.json').read_text())
+for k in ('source_stamp', 'honesty', 'coeffs', 'pedestrian_classes'):
+    if k not in PHYSREG:
+        raise SystemExit(f'build_fleet: physics/registry/physics.json has no {k}')
 for k in ('source_stamp', 'honesty', 'colours', 'counts', 'families', 'fleet'):
     if k not in REG:
         raise SystemExit(f'build_fleet: fleet/registry/fleet.json has no {k!r}')
@@ -82,6 +87,9 @@ NAV = nav_html(PAGE, nav_labels('en'))
 FAMILY_OPTS = ''.join(f'<option value="{html.escape(f["id"])}" data-medium="{f["medium"]}" lang="en">'
                       f'{html.escape(f["name"])} ({f["count"]})</option>' for f in REG['families'])
 KIT = fleet_inline()
+PKIT = phys_inline()
+if PKIT.count(PHYS_BEGIN) != 1 or PKIT.count(PHYS_END) != 1:
+    raise SystemExit('build_fleet: physkit inline block must hold one PHYS_KIT block')
 if KIT.count(KIT_BEGIN) != 1 or KIT.count(KIT_END) != 1:
     raise SystemExit('build_fleet: fleetkit inline block must hold one FLEET_KIT block')
 ICON = ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' "
@@ -91,8 +99,9 @@ ICON = ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0
 JS = r'''
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-''' + KIT + r'''
+''' + KIT + '\n' + PKIT + r'''
 const REG = JSON.parse(document.getElementById('fleet-registry').textContent);
+const PHYSREG = JSON.parse(document.getElementById('physics-registry').textContent);
 const I18N = JSON.parse(document.getElementById('fleet-i18n').textContent);
 function pickLocale() {
   const q = new URLSearchParams(location.search).get('lang');
@@ -147,11 +156,53 @@ table.position.y = 0.2; lot.add(table);
 const plinth = new THREE.Mesh(new THREE.CylinderGeometry(8, 8, 0.3, 48), new THREE.MeshStandardMaterial({ color: 0x6b7178, roughness: 0.5 }));
 plinth.position.y = 0.55; lot.add(plinth);
 
-const cap = Object.fromEntries(REG.families.map((f) => [f.id, f.count + 1]));
+const BUMP_FAMILY = 'compact-car';   // two parked cars on the pad to bump into (crash play)
+const cap = Object.fromEntries(REG.families.map((f) => [f.id, f.count + 1 + (f.id === BUMP_FAMILY ? 2 : 0)]));
 const FL = fleetCreate(THREE, REG, cap);
 scene.add(FL.group);
 const wake = fleetWake(THREE, 96); scene.add(wake.mesh);
 fleetLights(FL, 1);
+/* crash play on the test pad (wave 7): AUTHORED barriers, a curb and two parked cars; arcade physics from
+   physics/registry/physics.json - play, never a crash test. Vehicles never strike people (none on this pad). */
+const PW = createPhysics({ reg: PHYSREG, cell: 16, ground: () => 0, water: (x, z) => (inPond(x, z) ? { surface: 0, bed: -3 } : null) });
+const BARRIERS = [
+  { id: 'barrier-ahead', cx: PAD.x - PAD.half + 20, cz: PAD.z + 45, hx: 9, hz: 0.3, yaw: 0, y0: 0, y1: 1.1, kind: 'barrier' },
+  { id: 'barrier-east', cx: PAD.x + 70, cz: PAD.z - 30, hx: 0.3, hz: 14, yaw: 0.35, y0: 0, y1: 1.1, kind: 'barrier' },
+  { id: 'curb-west', cx: PAD.x - PAD.half + 20, cz: PAD.z + 20, hx: 6, hz: 0.25, yaw: 0, y0: 0, y1: 0.15, kind: 'curb' },
+];
+PW.addBoxes(BARRIERS);
+{
+  const bm = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshStandardMaterial({ color: 0xd9a441, roughness: 0.7 }), BARRIERS.length);
+  const m = new THREE.Matrix4(), q = new THREE.Quaternion(), up = new THREE.Vector3(0, 1, 0);
+  BARRIERS.forEach((b, i) => bm.setMatrixAt(i, m.compose(new THREE.Vector3(b.cx, (b.y0 + b.y1) / 2, b.cz), q.setFromAxisAngle(up, b.yaw), new THREE.Vector3(b.hx * 2, b.y1 - b.y0, b.hz * 2))));
+  bm.name = 'phys:barriers'; lot.add(bm);
+}
+const smoke = fleetSmoke(THREE, 96); scene.add(smoke.mesh);
+let audio = null, crashes = 0, bumpers = [];
+function thud(ev) {   // the sound hook: a short low tone shaped by fleetCrashTone (silent where WebAudio is unavailable)
+  const t = fleetCrashTone(ev);
+  if (typeof AudioContext === 'undefined') return;
+  audio = audio || new AudioContext();
+  const o = audio.createOscillator(), g = audio.createGain(), now = audio.currentTime;
+  o.type = 'triangle'; o.frequency.setValueAtTime(t.low ? 70 : 110, now); o.frequency.exponentialRampToValueAtTime(40, now + t.seconds);
+  g.gain.setValueAtTime(0.25 * t.gain, now); g.gain.exponentialRampToValueAtTime(0.001, now + t.seconds);
+  o.connect(g).connect(audio.destination); o.start(now); o.stop(now + t.seconds);
+}
+function onCrash(ev) {
+  if (ev.type !== 'crash') return;
+  crashes++;
+  if (ev.smoke) smoke.puff(ev.x, ev.y, ev.z, Math.min(1, ev.speed / 20));
+  thud(ev);
+}
+const physCtx = (self) => ({ coeffs: PHYSREG, world: PW, people: [], onEvent: onCrash,
+  others: [...(drv && drv !== self ? [drv] : []), ...bumpers.filter((b) => b !== self)] });
+function spawnBumpers() {
+  const e = REG.fleet.find((x) => x.family === BUMP_FAMILY), spec = fleetSpec(e);
+  bumpers = [[PAD.x - PAD.half + 45, PAD.z + 10, 0.4], [PAD.x - PAD.half + 60, PAD.z + 30, -1.2]].map(([x, z, yaw]) => {
+    const st = fleetState(spec, GROUND, x, z, yaw); return { e, spec, st, h: FL.spawn(e.id, st) };
+  });
+}
+function dropBumpers() { for (const b of bumpers) b.h.despawn(); bumpers = []; }
 /* ambient traffic demo: AUTHORED lanes on the pad (a cell grid) and rings on the pond - not real streets */
 let traffic = null, trafficOn = false, camMode = 'chase';
 function makeTraffic() {
@@ -268,6 +319,7 @@ function startDrive() {
   if (!ok.ok) throw new Error('fleet: ' + ok.reason);
   const st = fleetState(spec, GROUND, at.x, at.z, at.yaw);
   drv = { e, spec, st, h: FL.spawn(e.id, st), refusedShown: 0 };
+  if (e.medium === 'land') spawnBumpers();
   mode = e.medium === 'land' ? 'drive' : 'float';
   orbit.enabled = false;
   fleetChaseCamera(camera, st, spec, 0, { snap: true });
@@ -278,7 +330,7 @@ function startDrive() {
 }
 function exitDrive() {
   if (!drv) return;
-  drv.h.despawn(); drv = null; mode = 'turntable';
+  drv.h.despawn(); drv = null; mode = 'turntable'; dropBumpers();
   orbit.enabled = true; document.body.dataset.fleetMode = mode;
   $('#btn-exit').hidden = true; $('#drive-help').hidden = true; $('#btn-cam').hidden = true; $('#toast').textContent = '';
   touch.setAboard(false);
@@ -295,8 +347,9 @@ function input() {
   return { throttle: big(kb.throttle, t.throttle), steer: big(kb.steer, t.steer), brake: Math.max(kb.brake, t.brake) };
 }
 function driveTick(dt, inp) {
-  fleetStep(drv.st, drv.spec, inp, GROUND, dt);
+  fleetPhysStep(drv.st, drv.spec, inp, GROUND, dt, physCtx(drv));
   drv.h.set(drv.st);
+  for (const b of bumpers) { fleetPhysStep(b.st, b.spec, { throttle: 0, steer: 0, brake: 0 }, GROUND, dt, physCtx(b)); b.h.set(b.st); }
   if (drv.spec.medium === 'water') { wake.emit(drv.st, drv.spec, dt); }
   if (drv.st.refused > drv.refusedShown) { drv.refusedShown = drv.st.refused; $('#toast').textContent = tr('refused'); }
   if (camMode === 'driver') fleetDriverCamera(camera, drv.st, drv.spec); else fleetChaseCamera(camera, drv.st, drv.spec, dt);
@@ -348,8 +401,9 @@ function frame(t) {
   const dt = Math.min(0.05, (t - last) / 1000); last = t;
   if (mode === 'turntable') { placeTable(dt); orbit.update(); }
   else driveTick(dt, input());
-  if (traffic && trafficOn) traffic.update(dt, drv ? drv.st : { x: camera.position.x, z: camera.position.z });
-  wake.update(dt);
+  if (traffic && trafficOn) traffic.update(dt, drv ? drv.st : { x: camera.position.x, z: camera.position.z },
+    { coeffs: PHYSREG, people: [], others: drv ? [drv] : [], onEvent: onCrash });
+  wake.update(dt); smoke.update(dt);
   renderer.info.reset();
   renderer.render(scene, camera);
   calls = renderer.info.render.calls;
@@ -379,6 +433,8 @@ window.__fleet = {
   touch: (show) => { touch.show(show); return touch.state(); },
   input: () => input(),
   brake: () => (drv ? drv.h.brakeLevel() : null),
+  crash: () => ({ crashes, dent: drv ? drv.st.dent : null, crumple: drv ? drv.st.crumple : null, smoke: smoke.update(0), boxes: PW.boxes.length,
+    bumpers: bumpers.map((b) => ({ x: b.st.x, z: b.st.z, v: b.st.v, dent: b.st.dent })), z: drv ? drv.st.z : null, barrierZ: BARRIERS[0].cz }),
 };
 const h0 = decodeURIComponent(location.hash.slice(1));
 if (BY.has(h0)) sel = h0;
@@ -479,7 +535,9 @@ body[data-fleet-mode="drive"] .fl-spec,body[data-fleet-mode="float"] .fl-spec{{d
   </section>
 </main>
 <p class="fl-honesty">{TS("honesty")} <span lang="en" dir="ltr">Registry: fleet/registry/fleet.json (stamp {REG["source_stamp"]}): {C["land"]} land vehicles, {C["water"]} watercraft, {C["families"]} families, {C["linked_to_seat"]} linked to an existing training seat.</span></p>
+<p class="fl-honesty" lang="en" dir="ltr">{html.escape(PHYSREG["honesty"])} Registry: physics/registry/physics.json (stamp {PHYSREG["source_stamp"]}).</p>
 <script type="application/json" id="fleet-registry">__FLEET_REG__</script>
+<script type="application/json" id="physics-registry">__PHYS_REG__</script>
 <script type="application/json" id="fleet-i18n">__FLEET_I18N__</script>
 <script type="importmap">
 {{"imports":{{
@@ -509,10 +567,11 @@ for _f in sorted((ROOT / 'i18n/locales').glob('*.json')):
     I18N_CAT[_c['locale']] = {'dir': _c['dir'], 'language': _c['language'], 'strings': _s}
 if len(I18N_CAT) != 8 or 'en' not in I18N_CAT or not any(v['dir'] == 'rtl' for v in I18N_CAT.values()):
     raise SystemExit(f'build_fleet: expected 8 locales incl. en and an rtl one, found {sorted(I18N_CAT)}')
-for ph in ('__FLEET_REG__', '__FLEET_I18N__', '__FLEET_JS__'):
+for ph in ('__FLEET_REG__', '__PHYS_REG__', '__FLEET_I18N__', '__FLEET_JS__'):
     if page.count(ph) != 1:
         raise SystemExit(f'build_fleet: placeholder {ph} must appear exactly once')
 page = (page.replace('__FLEET_REG__', json.dumps(REG, sort_keys=True).replace('</', '<\\/'))
+        .replace('__PHYS_REG__', json.dumps(PHYSREG, ensure_ascii=False).replace('</', '<\\/'))
         .replace('__FLEET_I18N__', json.dumps(I18N_CAT, ensure_ascii=False, sort_keys=True).replace('</', '<\\/'))
         .replace('__FLEET_JS__', JS))
 page = apply_seo(page, PAGE, 'The fleet showroom — SmartCiti.X : Trade Craft Academy',

@@ -22,6 +22,8 @@ const CAT = json('parishes-i18n');
 const REG = JSON.parse(read('parishes/registry/parishes.json'));
 const main = (html.match(/<script type="module" id="parishes-main">([\s\S]*?)<\/script>/) || [, ''])[1];
 
+// wave 7: the label key list is pathkit's own PATH_LABEL_KEYS (18 in wave 6, 32 with the seven-path chooser)
+const PATH_KEYS = [...(read('web/pathkit.py').match(/PATH_LABEL_KEYS = \(([\s\S]*?)\)/) || [, ''])[1].matchAll(/'([^']+)'/g)].map((m) => m[1]);
 const locs = ['ar', 'de', 'en', 'es', 'fr', 'hi', 'pt', 'zh'];
 // [page] chrome the team rules require
 check('[page] exactly one <h1>', (html.match(/<h1[\s>]/g) || []).length === 1);
@@ -114,7 +116,7 @@ if (NR && NR.places_status === 'PARISH+LAYERS') {
 const bsrc = read('web/build_parishes.py');
 check('[nav] an undeclared page stops the build (no sibling-nav fallback)', /if PAGE not in sitenav\.PAGES:\n    raise BuildError/.test(bsrc) && (bsrc.match(/nav_html\(/g) || []).length === 1 && !bsrc.includes("nav_html('web/trade_craft_wilds.html'"));
 const PL = json('parish-path-labels');
-check('[layers] pathkit labels from pathkit.path_labels in all 8 locales, picked by the page locale', /labels: PATH_L/.test(main) && /const PATH_L = JSON\.parse\(document\.getElementById\('parish-path-labels'\)\.textContent\)\[LOC\];/.test(main) && PL && ['ar', 'de', 'en', 'es', 'fr', 'hi', 'pt', 'zh'].every((l) => PL[l] && Object.keys(PL[l]).length === 18 && Object.values(PL[l]).every((v) => typeof v === 'string' && v.trim())));
+check('[layers] pathkit labels from pathkit.path_labels in all 8 locales, picked by the page locale', /labels: PATH_L/.test(main) && /const PATH_L = JSON\.parse\(document\.getElementById\('parish-path-labels'\)\.textContent\)\[LOC\];/.test(main) && PL && ['ar', 'de', 'en', 'es', 'fr', 'hi', 'pt', 'zh'].every((l) => PL[l] && Object.keys(PL[l]).length === PATH_KEYS.length && PATH_KEYS.every((k) => k in PL[l]) && Object.values(PL[l]).every((v) => typeof v === 'string' && v.trim())));
 check('[quests] no click-to-find button for finds the world fires by play', !/data-tc-egg="treasure-(parish-\d+-(arrive|lm-)|guide-|station-)/.test(html));
 const FI = json('parish-finds');
 if (FI) {
@@ -167,6 +169,54 @@ check('[review] E/T keys ignore key-repeat, modifier chords and typing (REVIEW w
 check('[review] riding + overview: every mode change goes through applyMode; a mode button returns to the ride (REVIEW wave 6)',
   /riding = null; applyMode\('walk'\);/.test(main) && /riding\.snap = true; applyMode\(/.test(main) && /if \(mode !== 'overview'\) return false;\s*applyMode\(riding\.medium === 'water' \? 'boat' : 'drive'\); return true;/.test(main)
   && !/(?<!let |\.)\bmode = (?!m;)/.test(main));
+
+// wave 7: world layer, physics, ambience, city life, seven paths - each kit present, mounted, and honest
+const WREG = existsSync(ROOT + 'parishes/registry/world.json') ? JSON.parse(read('parishes/registry/world.json')) : null;
+const liOf = (k) => (html.match(new RegExp(`<li data-legend="${k}" lang="en">([^<]*)</li>`)) || [, null])[1];
+const unesc = (t) => t && t.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#x27;/g, "'");
+check('[world] PARISH v1.4 wired: every parish carries its world file and the streets path with arterial/collector/local cross-sections',
+  !!WREG && /<li data-contract="world" data-state="wired">/.test(html) && D.parishes.every((p) => p.world === WREG.parishes[p.id].path && p.roads
+    && p.roads.path === REG.parishes[p.id].map.streets.path && ['arterial', 'collector', 'local'].every((c) => { const q = p.roads.classes[c], w = WREG.roads.classes[c];
+      return q && q.carriageway_m === w.carriageway_m && q.curb_height_m === w.curb_height_m && JSON.stringify(q.sidewalk_m) === JSON.stringify(w.sidewalk_m); })));
+check('[roads] streets meshed as ONE merged mesh (carriageway, kerb faces, both sidewalks); the painted grid switches off where meshed',
+  /const roads = new THREE\.Mesh\(roadGeo, matRoad\);/.test(main) && /ROAD_COL\.asphalt/.test(main) && /ROAD_COL\.kerb/.test(main) && /ROAD_COL\.walk/.test(main)
+  && /far \*= uGrid;/.test(main) && /m\.material\.userData\.grid\.value = 0;/.test(main) && (main.match(/new THREE\.Mesh\(roadGeo/g) || []).length === 1);
+check('[roads] lots stand back from the meshed kerbs and face their street; lamps stand on the sidewalks',
+  /rn\.edge < Math\.hypot\(lot\[2\], lot\[4\]\) \/ 2 \+ 0\.5/.test(main) && /lot\[6\] = Math\.atan2\(-rn\.nx, -rn\.nz\);/.test(main) && /out\.lamp\.push\(\[px, pz,/.test(main));
+check('[water] AUTHORED water legend verbatim from world.json, never RECORDED; water is cut out of the land (no new mesh)',
+  !!WREG && unesc(liOf('water_world')) === WREG.water_note && /AUTHORED water - procedural, NOT the real lakes, rivers or bayous/.test(liOf('water_world') || '')
+  && !/RECORDED/.test(liOf('water_world') || '') && /shapes\[k\]\.holes\.push\(/.test(main) && D.world && D.world.surface_y === WREG.water_levels.surface_y_m);
+check('[phys] physkit mounted: registry embedded verbatim, page boxes (buildings + kerbs) handed to createPhysics, walk and drive stepped by it',
+  json('physics-registry') !== null && JSON.stringify(json('physics-registry')) === JSON.stringify(JSON.parse(read('physics/registry/physics.json')))
+  && /PHYS_KIT:BEGIN/.test(main) && /createPhysics\(\{ reg: PHYS_REG, cell: 16, ground: \(\) => 0, water: waterAt \}\)/.test(main)
+  && /y0: 0, y1: h, kind: 'building' \}\);/.test(main) && /y0: 0, y1: ROAD_Y \+ s\.kh, kind: 'curb' \}\);/.test(main) && /W\.addBoxes\(list\);/.test(main) && /W\.stepAvatar\(av, \{/.test(main) && /fleetPhysStep\(riding\.st, riding\.spec, input, fground, dt, \{/.test(main)
+  && /<li data-contract="physics" data-state="wired">/.test(html));
+check('[phys] honesty: arcade physics line verbatim; vehicles never strike people; help says no injury is depicted; no "realistic" crash claim',
+  unesc(liOf('physics')) === JSON.parse(read('physics/registry/physics.json')).honesty && /Vehicles never strike people, NPCs, pets or animals\./.test(liOf('physics') || '')
+  && /no injury is depicted/.test(JSON.parse(read('i18n/locales/en.json')).strings['parishes.world.help'] || '') && /no injury is depicted/.test((html.match(/<li data-legend="help"><span data-i18n="parishes\.world\.help">([^<]*)</) || [, ''])[1]) && /<li data-legend="help">/.test(html) && !/realistic crash|crash[- ]test(?!,)/i.test(html.replace(/not a crash test/g, ''))
+  && /people: people\(\)/.test(main) && /cls: 'npc'/.test(main) && /out\.push\(\.\.\.amb\.people\(\)\)/.test(main));
+check('[phys] splash visual and crash smoke are drawn only while they play (0 draw calls idle)',
+  /splash\.visible = false;/.test(main) && /if \(t > 0\.8\) splash\.visible = false;/.test(main) && /fleetSmoke\(THREE, 48\)/.test(main) && /smoke\.puff\(/.test(main));
+check('[ambient] ambientkit mounted OFF by default behind the Living world button; hidden in the overview; its page line verbatim',
+  /function createAmbient\(/.test(main) && /let amb = null;/.test(main) && /<button type="button" class="tc-btn tc-btn-ghost" id="amb" aria-pressed="false">/.test(html)
+  && /amb\.setOverview\(over\)/.test(main) && /amb\.onChunkLoad\(a, b, landUse\)/.test(main) && /amb\.onChunkUnload\(a, b\)/.test(main)
+  && existsSync(ROOT + 'ambient/registry/ambient.json') && unesc(liOf('ambient')) === JSON.parse(read('ambient/registry/ambient.json')).honesty.page_line
+  && /<li data-contract="ambient" data-state="wired">/.test(html));
+check('[econ] city-life panel mounted per parish: play coins - not money; local state only; no payments or Stripe in its script',
+  /<section class="tc-econ" id="tc-econ" data-tc-econ/.test(html) && /<script data-tc-econ-kit>/.test(html) && /TCEcon\.mountEcon\(null, \{ parish: current\.id \}\)/.test(main)
+  && /TCEcon\.onPlayerMove\(current\.id/.test(main) && /play coins - not money/i.test(html)
+  && !/stripe|payments\//i.test((html.match(/<script data-tc-econ-kit>([\s\S]*?)<\/script>/) || [, 'x stripe'])[1]) && /<li data-contract="economy" data-state="wired">/.test(html));
+{
+  const PD = json('parish-paths'), ids = ['trades', 'k12', 'responders', 'un', 'relief', 'teachers', 'roam'];
+  check('[paths] seven-path chooser data in every parish (fixed order), UN path PROPOSED with its disclaimer on the page',
+    !!PD && D.parishes.every((p) => PD[p.id] && PD[p.id].adventure && JSON.stringify(PD[p.id].adventure.paths.map((q) => q.id)) === JSON.stringify(ids)
+      && PD[p.id].adventure.paths.find((q) => q.id === 'un').status === 'PROPOSED' && PD[p.id].adventure.un_disclaimer === 'not affiliated with or endorsed by the United Nations')
+    && /not affiliated with or endorsed by the United Nations/.test(html));
+}
+
+check('[perf] the painted-grid shader block runs only nearer than its fade on unmeshed land; the overview skips splash, smoke and city-life work',
+  /if \(vGroundDist < 420\.0 && uGrid > 0\.5\) \{ vec2 q = mod\(vGroundXZ, 100\.0\);/.test(main) && /if \(!over\) \{ stepSplash\(dt\); if \(smoke && smoke\.mesh\.visible\) smoke\.update\(dt\); \}/.test(main)
+  && /if \(!over && !DIAG\.noEcon && window\.TCEcon && current\)/.test(main));
 
 // [contracts] stubs are named
 for (const k of ['fleet', 'npcs', 'layers']) {

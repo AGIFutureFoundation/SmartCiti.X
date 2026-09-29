@@ -87,6 +87,14 @@ def fail(msg):
     raise SystemExit(f'layers/build: {msg}')
 
 
+def story_paths():
+    """layers/paths.py: the seven adventure paths + side stories (wave 7) -> layers/registry/paths.json."""
+    spec = importlib.util.spec_from_file_location('layers_paths', HERE / 'paths.py')
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
 def need(d, k, where):
     if not isinstance(d, dict) or k not in d:
         fail(f'{where} has no "{k}"')
@@ -411,9 +419,11 @@ def main():
         if not OUT.exists() or OUT.read_text(encoding='utf-8') != text:
             sys.exit(f'{OUT.relative_to(ROOT)} is stale: run python3 layers/build.py')
         print(f'{OUT.relative_to(ROOT)} is current')
+        story_paths().run(doc, text, True)
         return
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(text, encoding='utf-8')
+    story_paths().run(doc, text, False)
     print(f'wrote {OUT.relative_to(ROOT)}: {counts} from {parish_source}; parishes: '
           + ', '.join(f'{p["fips"]} {p["name"]}' for p in out))
 

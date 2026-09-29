@@ -1,0 +1,730 @@
+{
+ "counts": {
+  "by_kind": {
+   "k12": 1,
+   "path": 7,
+   "system": 3,
+   "union": 10,
+   "world": 2
+  },
+  "packs": 23,
+  "proposed": 1,
+  "shipping": 22
+ },
+ "honesty": {
+  "certification": "no pack certifies, qualifies or licenses anybody; lessons stay unverified general practice",
+  "contents": "every figure is counted at build time from the registry named in sources; nothing is estimated",
+  "partners": "no pack names a partner; K-12 districts stay PROPOSED partners with no agreement",
+  "price": "no pack carries a price; plans stay set by the operator and payments are not live",
+  "status": "SHIPPING only when the content exists in this repo; otherwise PROPOSED with every count 0"
+ },
+ "kinds": [
+  "union",
+  "k12",
+  "path",
+  "world",
+  "system"
+ ],
+ "pack": "smartcitix-holodeck-packs",
+ "packs": [
+  {
+   "contents": {
+    "ladder_cells": 30,
+    "lessons": 8,
+    "seats": 4,
+    "trades": 5
+   },
+   "id": "union-lift-and-signal-crew",
+   "kind": "union",
+   "open": "web/trade_craft_3d.html",
+   "requires": [],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "bundles/registry/bundles.json",
+     "sha256": "a5e6e6ed448d3b51"
+    },
+    {
+     "path": "pack/registry/halls.json",
+     "sha256": "3807e54afe6abfe6"
+    },
+    {
+     "path": "unions/registry/unions.json",
+     "sha256": "619bc8ea7328f5ea"
+    },
+    {
+     "path": "sims/registry/sims.json",
+     "sha256": "987a9d4812b4c73b"
+    },
+    {
+     "path": "lessons/registry/lessons.json",
+     "sha256": "e905659b0a718ab6"
+    }
+   ],
+   "status": "SHIPPING",
+   "title": "Lift & Signal Crew",
+   "title_from": "bundles/registry/bundles.json#packages.lift-and-signal-crew.name"
+  },
+  {
+   "contents": {
+    "ladder_cells": 24,
+    "lessons": 3,
+    "seats": 1,
+    "trades": 4
+   },
+   "id": "union-trench-and-locate",
+   "kind": "union",
+   "open": "web/trade_craft_3d.html",
+   "requires": [],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "bundles/registry/bundles.json",
+     "sha256": "a5e6e6ed448d3b51"
+    },
+    {
+     "path": "pack/registry/halls.json",
+     "sha256": "3807e54afe6abfe6"
+    },
+    {
+     "path": "unions/registry/unions.json",
+     "sha256": "619bc8ea7328f5ea"
+    },
+    {
+     "path": "sims/registry/sims.json",
+     "sha256": "987a9d4812b4c73b"
+    },
+    {
+     "path": "lessons/registry/lessons.json",
+     "sha256": "e905659b0a718ab6"
+    }
+   ],
+   "status": "SHIPPING",
+   "title": "Trench & Locate",
+   "title_from": "bundles/registry/bundles.json#packages.trench-and-locate.name"
+  },
+  {
+   "contents": {
+    "ladder_cells": 42,
+    "lessons": 4,
+    "seats": 1,
+    "trades": 7
+   },
+   "id": "union-hot-work-bay",
+   "kind": "union",
+   "open": "web/trade_craft_3d.html",
+   "requires": [],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "bundles/registry/bundles.json",
+     "sha256": "a5e6e6ed448d3b51"
+    },
+    {
+     "path": "pack/registry/halls.json",
+     "sha256": "3807e54afe6abfe6"
+    },
+    {
+     "path": "unions/registry/unions.json",
+     "sha256": "619bc8ea7328f5ea"
+    },
+    {
+     "path": "sims/registry/sims.json",
+     "sha256": "987a9d4812b4c73b"
+    },
+    {
+     "path": "lessons/registry/lessons.json",
+     "sha256": "e905659b0a718ab6"
+    }
+   ],
+   "status": "SHIPPING",
+   "title": "Hot Work Bay",
+   "title_from": "bundles/registry/bundles.json#packages.hot-work-bay.name"
+  },
+  {
+   "contents": {
+    "ladder_cells": 54,
+    "lessons": 7,
+    "seats": 2,
+    "trades": 9
+   },
+   "id": "union-access-at-height",
+   "kind": "union",
+   "open": "web/trade_craft_3d.html",
+   "requires": [],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "bundles/registry/bundles.json",
+     "sha256": "a5e6e6ed448d3b51"
+    },
+    {
+     "path": "pack/registry/halls.json",
+     "sha256": "3807e54afe6abfe6"
+    },
+    {
+     "path": "unions/registry/unions.json",
+     "sha256": "619bc8ea7328f5ea"
+    },
+    {
+     "path": "sims/registry/sims.json",
+     "sha256": "987a9d4812b4c73b"
+    },
+    {
+     "path": "lessons/registry/lessons.json",
+     "sha256": "e905659b0a718ab6"
+    }
+   ],
+   "status": "SHIPPING",
+   "title": "Access at Height",
+   "title_from": "bundles/registry/bundles.json#packages.access-at-height.name"
+  },
+  {
+   "contents": {
+    "ladder_cells": 18,
+    "lessons": 3,
+    "seats": 2,
+    "trades": 3
+   },
+   "id": "union-coatings-and-containment",
+   "kind": "union",
+   "open": "web/trade_craft_3d.html",
+   "requires": [],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "bundles/registry/bundles.json",
+     "sha256": "a5e6e6ed448d3b51"
+    },
+    {
+     "path": "pack/registry/halls.json",
+     "sha256": "3807e54afe6abfe6"
+    },
+    {
+     "path": "unions/registry/unions.json",
+     "sha256": "619bc8ea7328f5ea"
+    },
+    {
+     "path": "sims/registry/sims.json",
+     "sha256": "987a9d4812b4c73b"
+    },
+    {
+     "path": "lessons/registry/lessons.json",
+     "sha256": "e905659b0a718ab6"
+    }
+   ],
+   "status": "SHIPPING",
+   "title": "Coatings & Containment",
+   "title_from": "bundles/registry/bundles.json#packages.coatings-and-containment.name"
+  },
+  {
+   "contents": {
+    "ladder_cells": 30,
+    "lessons": 5,
+    "seats": 1,
+    "trades": 5
+   },
+   "id": "union-yard-logistics",
+   "kind": "union",
+   "open": "web/trade_craft_3d.html",
+   "requires": [],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "bundles/registry/bundles.json",
+     "sha256": "a5e6e6ed448d3b51"
+    },
+    {
+     "path": "pack/registry/halls.json",
+     "sha256": "3807e54afe6abfe6"
+    },
+    {
+     "path": "unions/registry/unions.json",
+     "sha256": "619bc8ea7328f5ea"
+    },
+    {
+     "path": "sims/registry/sims.json",
+     "sha256": "987a9d4812b4c73b"
+    },
+    {
+     "path": "lessons/registry/lessons.json",
+     "sha256": "e905659b0a718ab6"
+    }
+   ],
+   "status": "SHIPPING",
+   "title": "Yard Logistics",
+   "title_from": "bundles/registry/bundles.json#packages.yard-logistics.name"
+  },
+  {
+   "contents": {
+    "ladder_cells": 36,
+    "lessons": 5,
+    "seats": 1,
+    "trades": 6
+   },
+   "id": "union-shop-floor-move",
+   "kind": "union",
+   "open": "web/trade_craft_3d.html",
+   "requires": [],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "bundles/registry/bundles.json",
+     "sha256": "a5e6e6ed448d3b51"
+    },
+    {
+     "path": "pack/registry/halls.json",
+     "sha256": "3807e54afe6abfe6"
+    },
+    {
+     "path": "unions/registry/unions.json",
+     "sha256": "619bc8ea7328f5ea"
+    },
+    {
+     "path": "sims/registry/sims.json",
+     "sha256": "987a9d4812b4c73b"
+    },
+    {
+     "path": "lessons/registry/lessons.json",
+     "sha256": "e905659b0a718ab6"
+    }
+   ],
+   "status": "SHIPPING",
+   "title": "Shop Floor Move",
+   "title_from": "bundles/registry/bundles.json#packages.shop-floor-move.name"
+  },
+  {
+   "contents": {
+    "ladder_cells": 33,
+    "lessons": 2,
+    "seats": 1,
+    "trades": 1
+   },
+   "id": "union-one-hall-ladder",
+   "kind": "union",
+   "open": "web/trade_craft_3d.html",
+   "requires": [],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "bundles/registry/bundles.json",
+     "sha256": "a5e6e6ed448d3b51"
+    },
+    {
+     "path": "pack/registry/halls.json",
+     "sha256": "3807e54afe6abfe6"
+    },
+    {
+     "path": "unions/registry/unions.json",
+     "sha256": "619bc8ea7328f5ea"
+    },
+    {
+     "path": "sims/registry/sims.json",
+     "sha256": "987a9d4812b4c73b"
+    },
+    {
+     "path": "lessons/registry/lessons.json",
+     "sha256": "e905659b0a718ab6"
+    }
+   ],
+   "status": "SHIPPING",
+   "title": "One Hall, Whole Ladder",
+   "title_from": "bundles/registry/bundles.json#packages.one-hall-ladder.name"
+  },
+  {
+   "contents": {
+    "ladder_cells": 111,
+    "lessons": 34,
+    "seats": 0,
+    "trades": 111
+   },
+   "id": "union-safety-first-rung",
+   "kind": "union",
+   "open": "web/trade_craft_3d.html",
+   "requires": [],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "bundles/registry/bundles.json",
+     "sha256": "a5e6e6ed448d3b51"
+    },
+    {
+     "path": "pack/registry/halls.json",
+     "sha256": "3807e54afe6abfe6"
+    },
+    {
+     "path": "unions/registry/unions.json",
+     "sha256": "619bc8ea7328f5ea"
+    },
+    {
+     "path": "sims/registry/sims.json",
+     "sha256": "987a9d4812b4c73b"
+    },
+    {
+     "path": "lessons/registry/lessons.json",
+     "sha256": "e905659b0a718ab6"
+    }
+   ],
+   "status": "SHIPPING",
+   "title": "Safety, First Rung, Every Trade",
+   "title_from": "bundles/registry/bundles.json#packages.safety-first-rung.name"
+  },
+  {
+   "contents": {
+    "ladder_cells": 66,
+    "lessons": 8,
+    "seats": 0,
+    "trades": 11
+   },
+   "id": "union-environmental-control",
+   "kind": "union",
+   "open": "web/trade_craft_3d.html",
+   "requires": [],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "bundles/registry/bundles.json",
+     "sha256": "a5e6e6ed448d3b51"
+    },
+    {
+     "path": "pack/registry/halls.json",
+     "sha256": "3807e54afe6abfe6"
+    },
+    {
+     "path": "unions/registry/unions.json",
+     "sha256": "619bc8ea7328f5ea"
+    },
+    {
+     "path": "sims/registry/sims.json",
+     "sha256": "987a9d4812b4c73b"
+    },
+    {
+     "path": "lessons/registry/lessons.json",
+     "sha256": "e905659b0a718ab6"
+    }
+   ],
+   "status": "SHIPPING",
+   "title": "Environmental & Site Control",
+   "title_from": "bundles/registry/bundles.json#packages.environmental-control.name"
+  },
+  {
+   "contents": {
+    "bands": 4,
+    "lessons": 58,
+    "stations": 26,
+    "units": 45
+   },
+   "id": "cognition-x-k12",
+   "kind": "k12",
+   "open": "web/trade_craft_schools.html",
+   "requires": [],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "schools/registry/schools.json",
+     "sha256": "f16f95c0a1c639c5"
+    },
+    {
+     "path": "lessons/registry/lessons.json",
+     "sha256": "e905659b0a718ab6"
+    },
+    {
+     "path": "layers/registry/layers.json",
+     "sha256": "43b8d5e41175baee"
+    }
+   ],
+   "status": "SHIPPING",
+   "title": "Cognition.X K-12",
+   "title_from": "layers/registry/layers.json#layers.k12-unit.label"
+  },
+  {
+   "contents": {
+    "parishes": 13,
+    "steps": 52,
+    "stories": 13
+   },
+   "id": "path-trades",
+   "kind": "path",
+   "open": "web/trade_craft_parishes.html",
+   "requires": [
+    "parish-worlds"
+   ],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "layers/registry/paths.json",
+     "sha256": "49d9e3937df170a4"
+    }
+   ],
+   "status": "SHIPPING",
+   "title": "Union trades",
+   "title_from": "layers/registry/paths.json#parishes[].paths[trades].label",
+   "title_key": "packs.path.trades"
+  },
+  {
+   "contents": {
+    "parishes": 13,
+    "steps": 52,
+    "stories": 13
+   },
+   "id": "path-k12",
+   "kind": "path",
+   "open": "web/trade_craft_parishes.html",
+   "requires": [
+    "parish-worlds"
+   ],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "layers/registry/paths.json",
+     "sha256": "49d9e3937df170a4"
+    }
+   ],
+   "status": "SHIPPING",
+   "title": "Cognition.X K-12",
+   "title_from": "layers/registry/paths.json#parishes[].paths[k12].label",
+   "title_key": "packs.path.k12"
+  },
+  {
+   "contents": {
+    "parishes": 13,
+    "steps": 26,
+    "stories": 13
+   },
+   "id": "path-responders",
+   "kind": "path",
+   "open": "web/trade_craft_parishes.html",
+   "requires": [
+    "parish-worlds"
+   ],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "layers/registry/paths.json",
+     "sha256": "49d9e3937df170a4"
+    }
+   ],
+   "status": "SHIPPING",
+   "title": "First responders",
+   "title_from": "layers/registry/paths.json#parishes[].paths[responders].label",
+   "title_key": "packs.path.responders"
+  },
+  {
+   "contents": {
+    "parishes": 13,
+    "steps": 52,
+    "stories": 13
+   },
+   "id": "path-un",
+   "kind": "path",
+   "open": null,
+   "requires": [
+    "parish-worlds"
+   ],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "layers/registry/paths.json",
+     "sha256": "49d9e3937df170a4"
+    }
+   ],
+   "status": "PROPOSED",
+   "title": "UN training (PROPOSED module)",
+   "title_from": "layers/registry/paths.json#parishes[].paths[un].label",
+   "title_key": "packs.path.un"
+  },
+  {
+   "contents": {
+    "parishes": 13,
+    "steps": 39,
+    "stories": 13
+   },
+   "id": "path-relief",
+   "kind": "path",
+   "open": "web/trade_craft_parishes.html",
+   "requires": [
+    "parish-worlds"
+   ],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "layers/registry/paths.json",
+     "sha256": "49d9e3937df170a4"
+    }
+   ],
+   "status": "SHIPPING",
+   "title": "Disaster relief",
+   "title_from": "layers/registry/paths.json#parishes[].paths[relief].label",
+   "title_key": "packs.path.relief"
+  },
+  {
+   "contents": {
+    "parishes": 13,
+    "steps": 65,
+    "stories": 13
+   },
+   "id": "path-teachers",
+   "kind": "path",
+   "open": "web/trade_craft_parishes.html",
+   "requires": [
+    "parish-worlds"
+   ],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "layers/registry/paths.json",
+     "sha256": "49d9e3937df170a4"
+    }
+   ],
+   "status": "SHIPPING",
+   "title": "Teachers",
+   "title_from": "layers/registry/paths.json#parishes[].paths[teachers].label",
+   "title_key": "packs.path.teachers"
+  },
+  {
+   "contents": {
+    "parishes": 13,
+    "steps": 47,
+    "stories": 13
+   },
+   "id": "path-roam",
+   "kind": "path",
+   "open": "web/trade_craft_parishes.html",
+   "requires": [
+    "parish-worlds"
+   ],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "layers/registry/paths.json",
+     "sha256": "49d9e3937df170a4"
+    }
+   ],
+   "status": "SHIPPING",
+   "title": "Just roam",
+   "title_from": "layers/registry/paths.json#parishes[].paths[roam].label",
+   "title_key": "packs.path.roam"
+  },
+  {
+   "contents": {
+    "landmarks": 21,
+    "maps": 13,
+    "parishes": 13,
+    "stations": 104
+   },
+   "id": "parish-worlds",
+   "kind": "world",
+   "open": "web/trade_craft_parishes.html",
+   "requires": [],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "parishes/registry/parishes.json",
+     "sha256": "de34075e54a82b8f"
+    },
+    {
+     "path": "layers/registry/layers.json",
+     "sha256": "43b8d5e41175baee"
+    }
+   ],
+   "status": "SHIPPING",
+   "title_key": "packs.pack.parish-worlds"
+  },
+  {
+   "contents": {
+    "business_types": 14,
+    "lots": 130,
+    "rentals": 2
+   },
+   "id": "city-life",
+   "kind": "world",
+   "open": "web/trade_craft_parishes.html",
+   "requires": [
+    "parish-worlds"
+   ],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "economy/registry/economy.json",
+     "sha256": "864da3d800ae0f9c"
+    }
+   ],
+   "status": "SHIPPING",
+   "title_key": "packs.pack.city-life"
+  },
+  {
+   "contents": {
+    "families": 34,
+    "land": 50,
+    "vehicles": 70,
+    "water": 20
+   },
+   "id": "fleet",
+   "kind": "system",
+   "open": "web/trade_craft_fleet.html",
+   "requires": [],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "fleet/registry/fleet.json",
+     "sha256": "5f029b9981dcb730"
+    }
+   ],
+   "status": "SHIPPING",
+   "title_key": "packs.pack.fleet"
+  },
+  {
+   "contents": {
+    "land_uses": 4,
+    "litter": 5,
+    "species": 8,
+    "vegetation": 4
+   },
+   "id": "living-world",
+   "kind": "system",
+   "open": "web/trade_craft_parishes.html",
+   "requires": [
+    "parish-worlds"
+   ],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "ambient/registry/ambient.json",
+     "sha256": "6b7980308d1d35df"
+    }
+   ],
+   "status": "SHIPPING",
+   "title_key": "packs.pack.living-world"
+  },
+  {
+   "contents": {
+    "coefficients": 38,
+    "pedestrian_classes": 4
+   },
+   "id": "physics",
+   "kind": "system",
+   "open": "web/trade_craft_parishes.html",
+   "requires": [],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "physics/registry/physics.json",
+     "sha256": "7053d9c8a40774db"
+    }
+   ],
+   "status": "SHIPPING",
+   "title_key": "packs.pack.physics"
+  }
+ ],
+ "paths": [
+  "trades",
+  "k12",
+  "responders",
+  "un",
+  "relief",
+  "teachers",
+  "roam"
+ ],
+ "series": "SmartCiti.X Powered by AGI Corp",
+ "source_stamp": "4864f941709c70c6"
+}

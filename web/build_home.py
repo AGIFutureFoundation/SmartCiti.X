@@ -1684,6 +1684,58 @@ PW_CSS = """
 """
 
 
+# ---- the holodeck packs band (PACKS, wave 7): one band, figures from holodeck/registry/packs.json ----
+PK_PAGE = 'web/trade_craft_packs.html'
+PK_PATH = 'holodeck/registry/packs.json'
+if PK_PAGE not in PAGES:
+    raise SystemExit(f'build_home: the packs band links {PK_PAGE}, which web/sitenav.py does not declare')
+_pk = R(PK_PATH)
+PK_SERIES = need(_pk, 'series', PK_PATH)
+assert PK_SERIES == 'SmartCiti.X Powered by AGI Corp', 'build_home: the holodeck series name must stay exactly the user\'s words'
+_pk_rows = need(_pk, 'packs', PK_PATH)
+_pk_kinds = need(_pk, 'kinds', PK_PATH)
+PK_TOTAL = len(_pk_rows)
+PK_SHIP = len([p for p in _pk_rows if need(p, 'status', f'{PK_PATH}#packs[]') == 'SHIPPING'])
+PK_PROP = len([p for p in _pk_rows if need(p, 'status', f'{PK_PATH}#packs[]') == 'PROPOSED'])
+assert PK_SHIP + PK_PROP == PK_TOTAL, 'build_home: a holodeck pack is neither SHIPPING nor PROPOSED'
+assert PK_TOTAL == need(need(_pk, 'counts', PK_PATH), 'packs', f'{PK_PATH}#counts'), 'build_home: packs count differs from the list'
+PK_BY_KIND = [(k, len([p for p in _pk_rows if need(p, 'kind', f'{PK_PATH}#packs[]') == k])) for k in _pk_kinds]
+_EN_ALL = R('i18n/locales/en.json')['strings']
+
+
+def _pk_t(k):
+    if k not in _EN_ALL:
+        raise KeyError(f'build_home: i18n key {k!r} is missing from en.json')
+    return esc(_EN_ALL[k])
+
+
+def packs_html():
+    stats = ''.join(f'<div class="stat" data-pk-stat="{k}" data-src="{PK_PATH}#packs"><dt>{_pk_t("packs.stat." + k)}</dt>'
+                    f'<dd>{n(v)}</dd></div>' for k, v in (('packs', PK_TOTAL), ('shipping', PK_SHIP), ('proposed', PK_PROP)))
+    kinds = ''.join(f'<li data-pk-kind="{k}"><b>{n(v)}</b> {_pk_t("packs.kind." + k)}</li>' for k, v in PK_BY_KIND)
+    return f'''<section id="packs" class="pk-band" aria-labelledby="pk-h">
+  <div class="sec-head"><span class="eyebrow">{_pk_t('packs.home.kicker')}</span>
+    <h2 id="pk-h">{_pk_t('packs.home.title')}</h2>
+    <p class="lede">{_pk_t('packs.home.lede')}</p>
+    <p class="pk-series" data-pk-series>{_pk_t('packs.series')}: <b>{esc(PK_SERIES)}</b></p></div>
+  <dl class="stats pk-stats">{stats}</dl>
+  <ul class="pk-kinds">{kinds}</ul>
+  <ul class="pk-honest"><li data-honest="pk-status">{_pk_t('packs.honest.status')}</li>
+    <li data-honest="pk-price">{_pk_t('packs.honest.price')}</li></ul>
+  <p><a class="btn btn-primary" href="{PK_PAGE}">{_pk_t('packs.home.cta')}<span aria-hidden="true"> →</span></a></p>
+</section>'''
+
+
+PK_CSS = """
+.pk-band{background:var(--panel);border:1px solid var(--rule);border-radius:var(--r-lg);padding:var(--s5);color:var(--ink)}
+.pk-band .lede,.pk-honest,.pk-series{color:var(--muted)}
+.pk-series b{color:var(--ink)}
+.pk-stats{margin:var(--s3) 0}
+.pk-kinds{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s4);list-style:none;margin:var(--s3) 0;padding:0}
+.pk-kinds b{color:var(--ink)}
+.pk-honest{margin:var(--s3) 0;padding-inline-start:1.1rem;font-size:var(--fs-sm)}
+"""
+
 STATS_HTML = ''.join(
     f'<div class="stat" data-stat="{k}" data-src="{esc(src)}"><dt>{esc(label)}</dt>'
     f'<dd>{n(v)}</dd></div>' for k, v, label, src in STATS)
@@ -1766,6 +1818,8 @@ BODY = f"""<body>
 </section>
 
 {parishes_html()}
+
+{packs_html()}
 
 <section id="loop">
   <div class="sec-head"><span class="eyebrow">How it works</span>
@@ -1998,6 +2052,8 @@ _DERIVED |= {f for s in (need(START_L, 'title', START_W),
 # The parish band's figures: each counted from its list above.
 _DERIVED |= {v for v in (PW_PARISHES, PW_VEHICLES, PW_LAND, PW_WATER, PW_GUIDES, PW_ROLES,
     PW_STATIONS, PW_K12_STATIONS, PW_K12_UNITS, PW_PLANS, PW_MAP_PX, PW_PREVIEW_PX)}
+# The holodeck packs band's figures: each counted from holodeck/registry/packs.json's list.
+_DERIVED |= {PK_TOTAL, PK_SHIP, PK_PROP} | {v for _, v in PK_BY_KIND}
 _loose = _figures_in(BODY) - _DERIVED
 BODY_Q = BODY.replace('</body>', QUEST_TAIL + '</body>')  # quests: engine carried after the prose lint
 assert not _loose, (
@@ -2024,7 +2080,7 @@ page = ('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
         '<link rel="stylesheet" href="web/vendor/fonts/fonts.css">\n'
         f'<style>{CSS}</style>\n<style>{NAV_CSS}</style>\n'
         f'<style>{HERO_VIDEO_CSS}{SEARCH_CSS}{UX_CSS}</style>\n'
-        f'<style>{SECTION_VIDEO_CSS}{MOTION_CSS}{POLISH_CSS}{PW_CSS}{STYLE_BRIDGE_CSS}</style>\n</head>\n{BODY_Q}\n</html>\n')
+        f'<style>{SECTION_VIDEO_CSS}{MOTION_CSS}{POLISH_CSS}{PW_CSS}{PK_CSS}{STYLE_BRIDGE_CSS}</style>\n</head>\n{BODY_Q}\n</html>\n')
 # The palette's index (registry titles, which may hold figures of their own)
 # and the two small scripts join the page after the prose gate above, like
 # the quest engine: the gate is about typed prose, and these are data.

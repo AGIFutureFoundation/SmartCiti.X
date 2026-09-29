@@ -224,8 +224,88 @@ CONTRACTS = {
     'fleet': ('fleet/registry/fleet.json', 'FLEET_CONTRACT'),
     'npcs': ('npcs/registry/npcs.json', 'NPC_CONTRACT'),
     'layers': ('layers/registry/layers.json', 'LAYERS_CONTRACT'),
+    'world': ('parishes/registry/world.json', 'PARISH_CONTRACT v1.4'),
+    'physics': ('physics/registry/physics.json', 'PHYS_CONTRACT v1'),
+    'ambient': ('ambient/registry/ambient.json', 'AMBIENT_CONTRACT v1'),
+    'economy': ('economy/registry/economy.json', 'ECON_CONTRACT v1'),
 }
 STATES, WHY = {}, {}
+# WORLD (PARISH v1.4): AUTHORED water + road cross-sections per class; the per-parish files are fetched at view time
+# (each <= 600,000 B) - the page embeds only their paths and the road profiles. Fail closed on every field.
+if (ROOT / 'parishes/registry/world.json').exists():
+    _w = json.loads((ROOT / 'parishes/registry/world.json').read_text())
+    if need(_w, 'version', 'world.json') != '1.4':
+        raise BuildError(f'build_parishes: world.json version {_w["version"]} is not 1.4')
+    _classes = {}
+    for _c, _pf in need(need(_w, 'roads', 'world.json'), 'classes', 'world.json.roads').items():
+        _sw = need(_pf, 'sidewalk_m', f'world.json.roads.classes.{_c}')
+        if len(_sw) != 2:
+            raise BuildError(f'build_parishes: world.json.roads.classes.{_c}.sidewalk_m is not [left, right]')
+        if need(_pf, 'provenance', f'world.json.roads.classes.{_c}') != 'AUTHORED':
+            raise BuildError(f'build_parishes: road profile {_c} is not AUTHORED')
+        _classes[_c] = {'carriageway_m': need(_pf, 'carriageway_m', f'world.json.roads.classes.{_c}'), 'sidewalk_m': _sw,
+                        'curb_height_m': need(_pf, 'curb_height_m', f'world.json.roads.classes.{_c}')}
+    if sorted(_classes) != ['arterial', 'collector', 'local']:
+        raise BuildError(f'build_parishes: world.json road classes are {sorted(_classes)}, not arterial/collector/local')
+    _lv = need(_w, 'water_levels', 'world.json')
+    WORLD = {'surface_y': need(_lv, 'surface_y_m', 'world.json.water_levels'), 'wade_max': need(_lv, 'wade_max_depth_m', 'world.json.water_levels'),
+             'water_note': need(_w, 'water_note', 'world.json'), 'water_source': need(_w, 'water_source', 'world.json'),
+             'roads_note': need(need(_w, 'roads', 'world.json'), 'note', 'world.json.roads'), 'stamp': need(_w, 'source_stamp', 'world.json')[:16]}
+    if 'AUTHORED' not in WORLD['water_note'] or 'RECORDED' in WORLD['water_note']:
+        raise BuildError('build_parishes: the world water note must legend the water AUTHORED')
+    _wp = need(_w, 'parishes', 'world.json')
+    for _p in DATA['parishes']:
+        _e = need(_wp, _p['id'], 'world.json.parishes')
+        _st = need(need(REG['parishes'][_p['id']], 'map', _p['id']), 'streets', _p['id'] + '.map')
+        _p['world'] = need(_e, 'path', f'world.json.parishes.{_p["id"]}')
+        _p['roads'] = {'path': need(_st, 'path', _p['id'] + '.map.streets'), 'classes': _classes}
+    DATA['honesty']['water_world'] = WORLD['water_note']
+    DATA['honesty']['roads'] = WORLD['roads_note']
+    DATA['world'] = {'surface_y': WORLD['surface_y'], 'wade_max': WORLD['wade_max']}
+    STATES['world'] = 'wired'
+else:
+    WORLD = None
+    DATA['world'] = None
+    STATES['world'], WHY['world'] = 'stub', 'parishes/registry/world.json is not built (PARISH v1.4)'
+# PHYS (PHYS_CONTRACT v1): physics/registry/physics.json embedded verbatim, physkit pasted into the module
+if (ROOT / 'physics/registry/physics.json').exists() and (HERE / 'physkit.py').exists():
+    from physkit import phys_inline  # noqa: E402
+    PHYS_REG_TEXT = (ROOT / 'physics/registry/physics.json').read_text()
+    _ph = json.loads(PHYS_REG_TEXT)
+    if need(_ph, 'pack', 'physics.json') != 'physics':
+        raise BuildError('build_parishes: physics.json is not the physics pack')
+    if need(need(need(_ph, 'coeffs', 'physics.json'), 'world', 'physics.json.coeffs'), 'gravity', 'physics.json.coeffs.world')['value'] != 9.81:
+        raise BuildError('build_parishes: physics gravity is not 9.81 m/s^2')
+    DATA['honesty']['physics'] = need(_ph, 'honesty', 'physics.json')
+    PHYS_BLOCK = phys_inline() + '\nconst PHYS_ON = true;\n'
+    PHYS_EMBED = '<script type="application/json" id="physics-registry">' + PHYS_REG_TEXT.replace('</', '<\\/') + '</script>'
+    STATES['physics'] = 'wired'
+else:
+    PHYS_BLOCK, PHYS_EMBED = 'const PHYS_ON = false;\n', ''
+    STATES['physics'], WHY['physics'] = 'stub', 'physics/registry/physics.json or web/physkit.py is not built'
+# AMBIENT (AMBIENT_CONTRACT v1): registry data + the kit in the module; mounted by the Living world button
+if (ROOT / 'ambient/registry/ambient.json').exists() and (HERE / 'ambientkit.py').exists():
+    from ambientkit import AMBIENT_JS_INLINE, ambient_data  # noqa: E402
+    _amb = ambient_data()
+    DATA['honesty']['ambient'] = need(need(_amb, 'honesty', 'ambient_data'), 'page_line', 'ambient_data.honesty')
+    # the kit's animal step keeps a LOCAL `mode`; the page's REVIEW check forbids any bare `mode = ` in the module
+    # (only applyMode sets the page's mode), so the local is renamed here - exactly 8 sites, fail closed otherwise
+    _amb_js, _n_mode = re.subn(r'(?<![.\w])mode\b(?!\s*:)', 'ambMode', AMBIENT_JS_INLINE)
+    if _n_mode != 8:
+        raise BuildError(f'build_parishes: ambientkit has {_n_mode} bare `mode` sites, expected 8 (the local rename no longer fits)')
+    AMB_BLOCK = _amb_js + '\nconst AMB_DATA = ' + json.dumps(_amb, sort_keys=True, ensure_ascii=False).replace('</', '<\\/') + ';\n'
+    STATES['ambient'] = 'wired'
+else:
+    AMB_BLOCK = 'const AMB_DATA = null;\n'
+    STATES['ambient'], WHY['ambient'] = 'stub', 'ambient/registry/ambient.json or web/ambientkit.py is not built'
+# ECON (ECON_CONTRACT v1): the play-coin panel shell + its script after the main module (local state only)
+if (ROOT / 'economy/registry/economy.json').exists() and (HERE / 'econkit.py').exists():
+    from econkit import ECON_CSS, econ_panel_html, econ_js  # noqa: E402
+    ECON_PANEL, ECON_SCRIPT, ECON_CSS_BLOCK = econ_panel_html(), econ_js('all'), f'<style>{ECON_CSS}</style>'
+    STATES['economy'] = 'wired'
+else:
+    ECON_PANEL = ECON_SCRIPT = ECON_CSS_BLOCK = ''
+    STATES['economy'], WHY['economy'] = 'stub', 'economy/registry/economy.json or web/econkit.py is not built'
 # FLEET: fleet/registry/fleet.json embedded verbatim, driven by web/fleetkit.py (FLEET_CONTRACT v1)
 if (ROOT / 'fleet/registry/fleet.json').exists():
     from fleetkit import fleet_inline  # noqa: E402
@@ -347,6 +427,11 @@ lm_rows = ''.join(
     for p in DATA['parishes'] for lm in p['landmarks'])
 quest_block = (f'<ul class="quests">{"".join(QUEST_ROWS)}</ul><div data-tc-questlog></div>' if QUEST_STATE == 'wired'
                else f'<p class="none" data-quests-pending>{TS("parishes.quests_pending")}</p>')
+# wave 7: the world legend next to the 3D view - every line quoted from its registry (AUTHORED water, road
+# cross-sections, arcade physics, ambience), plus the page's own crash/water help (i18n)
+_wl = [(k, DATA['honesty'][k]) for k in ('water_world', 'roads', 'physics', 'ambient') if k in DATA['honesty']]
+world_legend = ('<ul class="help" data-world-legend>' + ''.join(f'<li data-legend="{esc(k)}" lang="en">{esc(v)}</li>' for k, v in _wl)
+                + f'<li data-legend="help">{TS("parishes.world.help")}</li></ul>')
 honesty_rows = ''.join(f'<li data-honesty-key="{esc(k)}">{esc(v)}</li>' for k, v in sorted(DATA['honesty'].items()))
 embedded = json.dumps(DATA, sort_keys=True, ensure_ascii=False).replace('</', '<\\/')
 finds_embedded = json.dumps(FINDS, sort_keys=True)
@@ -373,7 +458,7 @@ _USED.update(JS_KEYS)
 JS = r'''
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-''' + CORE + '\n' + FLEET_INLINE + '\n' + NPC_JS_INLINE + r'''
+''' + CORE + '\n' + FLEET_INLINE + '\n' + NPC_JS_INLINE + '\n' + PHYS_BLOCK + '\n' + AMB_BLOCK + r'''
 const D = JSON.parse(document.getElementById('parishes-data').textContent);
 const I18N = JSON.parse(document.getElementById('parishes-i18n').textContent);
 function pickLocale() {
@@ -464,16 +549,19 @@ function lineDist(x, z, pts) { let d = Infinity; for (let i = 1; i < pts.length;
    the flat land in the fragment shader - carriageway, walkways and a dashed centre line - at no extra draw call or
    triangle; it fades out with distance so the overview does not shimmer. NOT the real street grid. ---- */
 const STREET_GLSL = `
-{ vec2 q = mod(vGroundXZ, 100.0);
+if (vGroundDist < 420.0 && uGrid > 0.5) { vec2 q = mod(vGroundXZ, 100.0);
   float road = max(step(5.0, q.x) * step(q.x, 20.0), step(5.0, q.y) * step(q.y, 20.0));
   float walk = max(step(1.5, q.x) * step(q.x, 23.5), step(1.5, q.y) * step(q.y, 23.5)) * (1.0 - road);
   float cross = step(q.x, 25.0) * step(q.y, 25.0);
   float dash = (step(abs(q.x - 12.5), 0.15) * step(0.5, fract(vGroundXZ.y / 6.0)) + step(abs(q.y - 12.5), 0.15) * step(0.5, fract(vGroundXZ.x / 6.0))) * road * (1.0 - cross);
   float far = 1.0 - smoothstep(220.0, 420.0, vGroundDist);
+  far *= uGrid;   // wave 7: 0 once the parish's streets are meshed (PARISH v1.4)
   diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.70, 0.68, 0.63), walk * far);
   diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.34, 0.35, 0.36), road * far);
   diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.86, 0.82, 0.62), min(dash, 1.0) * far * (1.0 - smoothstep(120.0, 260.0, vGroundDist))); }
 `;
+/* wave 7: the grid block runs only where it can show (nearer than its 420 m fade, and not yet meshed) - eval run 4:
+   the overview was fragment-bound on the land (50 ms with land, 33.4 without, 16.7 without rendering) */
 /* PARISH v1.3 ground tiles (label-free, the same pixels as the 4k map's ground) are draped on the flat land: the
    grid x grid tiles are drawn into ONE GROUND_PX canvas per parish, sampled by world x/z over map_world, so the
    parks, water and land use under your feet match the 4k map; the ground stays at exactly 0 m. Near the eye the
@@ -494,15 +582,16 @@ function groundTexture(p, onReady) {
 const groundFailed = [], groundReady = new Set();
 function streetMat(c, p) {
   const m = lam(c);
-  const u = { uGround: { value: groundTexture(p, () => { u.uOn.value = 1; groundReady.add(p.id); }) }, uOn: { value: 0 },
+  const u = { uGround: { value: groundTexture(p, () => { u.uOn.value = 1; groundReady.add(p.id); }) }, uOn: { value: 0 }, uGrid: { value: 1 },
     uBox: { value: new THREE.Vector4(p.map_world[0], p.map_world[1], p.map_world[2] - p.map_world[0], p.map_world[3] - p.map_world[1]) } };
   m.onBeforeCompile = (sh) => {
     Object.assign(sh.uniforms, u);
     sh.vertexShader = 'varying vec2 vGroundXZ; varying float vGroundDist;\n' + sh.vertexShader.replace('#include <project_vertex>', '#include <project_vertex>\n  vGroundXZ = position.xz; vGroundDist = -mvPosition.z;');
-    sh.fragmentShader = 'uniform sampler2D uGround; uniform float uOn; uniform vec4 uBox; varying vec2 vGroundXZ; varying float vGroundDist;\n' + sh.fragmentShader.replace('#include <color_fragment>', '#include <color_fragment>\n' +
+    sh.fragmentShader = 'uniform sampler2D uGround; uniform float uOn; uniform float uGrid; uniform vec4 uBox; varying vec2 vGroundXZ; varying float vGroundDist;\n' + sh.fragmentShader.replace('#include <color_fragment>', '#include <color_fragment>\n' +
       '{ vec2 guv = (vGroundXZ - uBox.xy) / uBox.zw; diffuseColor.rgb = mix(diffuseColor.rgb, texture2D(uGround, guv).rgb, uOn); }\n' + STREET_GLSL);
   };
   m.customProgramCacheKey = () => 'parish-ground';
+  m.userData.grid = u.uGrid;
   return m;
 }
 
@@ -530,8 +619,8 @@ function streamParishes(x, z) {
   const want = wantedParishes(x, z);
   let changed = false;
   for (const id of want) if (!loaded.has(id)) {
-    if (!landMesh.has(id)) landMesh.set(id, makeLand(PAR.get(id)));
-    scene.add(landMesh.get(id)); loaded.add(id); changed = true;
+    if (!landMesh.has(id)) { landMesh.set(id, makeLand(PAR.get(id))); cutWater(PAR.get(id)); }
+    scene.add(landMesh.get(id)); loaded.add(id); changed = true; loadWorld(PAR.get(id));
   }
   for (const id of [...loaded]) if (!want.has(id)) { scene.remove(landMesh.get(id)); loaded.delete(id); changed = true; }
   if (changed) { refillMarkers(); refillLandmarks(); refillStations(); }
@@ -552,6 +641,153 @@ matWater.onBeforeCompile = (sh) => {
     '  diffuseColor.rgb = mix(diffuseColor.rgb * (0.92 + 0.12 * rip), vec3(0.83, 0.87, 0.89), fr * 0.75); }');
 };
 matWater.customProgramCacheKey = () => 'parish-water';
+
+/* ---- AUTHORED water (PARISH v1.4 world layer, wave 7): lake stand-ins, bayous, canals, streams and ponds are cut out
+   of the parish's land mesh as holes, so the existing water plane (same material, same one draw call) shows through at
+   the registry's surface level - no new mesh. Streets cross channels on AUTHORED bridges (the road stays at 0 m);
+   only a lake stand-in removes the streets over it. AUTHORED water - procedural, NOT the real lakes, rivers or bayous. */
+const WORLD = D.world;
+const waterNet = new Map(), waterFailed = [], CH_STEP = 8;   // eval run 3: at 4, 22051 border (Lafourche's 17k channel vertices) was 1.6k triangles over its headroom   // parish id -> { feats, surface } (null while in flight)
+function loadWorld(p) {
+  if (!WORLD || waterNet.has(p.id)) return;
+  waterNet.set(p.id, null);
+  fetch('../' + p.world).then((r) => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }).then((j) => {
+    if (j.fips !== p.id || !j.water) throw new Error('parishes: world file for ' + p.id + ' does not match');
+    const w = j.water, [ox, oz] = p.origin_m, feats = [];
+    /* channel ribbons (left bank out, right bank back) keep every CH_STEP-th vertex per bank for the hole AND the
+       water test (w7 run 1: full-resolution holes cost ~10k triangles per land mesh, over the declared tris headroom) */
+    const add = (kind, e) => {
+      const pg = e.polygon, n = pg.length, half = n / 2, ribbon = kind !== 'lake' && kind !== 'pond' && n % 2 === 0;
+      const ring = pg.filter((_, i) => !ribbon || (i < half ? i % CH_STEP === 0 || i === half - 1 : (i - half) % CH_STEP === 0 || i === n - 1)).map(([E, N]) => [ox + E, oz - N]); let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity;
+      for (const [x, z] of ring) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); z0 = Math.min(z0, z); z1 = Math.max(z1, z); }
+      feats.push({ id: e.id, kind, depth: e.depth_m, ring, bbox: [x0, z0, x1, z1] });
+    };
+    for (const e of w.lakes) add('lake', e);
+    for (const e of w.channels) add(e.kind, e);
+    for (const e of w.ponds) add('pond', e);
+    if (w.surface_y_m !== WORLD.surface_y) throw new Error('parishes: world file ' + p.id + ' surface differs from world.json');
+    waterNet.set(p.id, { feats, surface: w.surface_y_m });
+    cutWater(p); clearChunks();
+    loadRoads(p);
+  }).catch((e) => { waterFailed.push(p.id + ': ' + e.message); });
+}
+/* a feature is looked up in its own parish first, then in every loaded parish: local frames join the world frame only
+   approximately (PARISH frames: up to 0.571 % east-west), so a feature near an outline can sit over a neighbour's land */
+function featIn(net, x, z) { if (!net) return null; for (const f of net.feats) { const b = f.bbox; if (x < b[0] || x > b[2] || z < b[1] || z > b[3]) continue; if (inRing(f.ring, x, z)) return f; } return null; }
+function waterFeat(p, x, z) {
+  const own = p && featIn(waterNet.get(p.id), x, z); if (own) return own;
+  for (const id of loaded) { const f = featIn(waterNet.get(id), x, z); if (f) { f.owner = id; return f; } }
+  return null;
+}
+function inWater(p, x, z) { const f = waterFeat(p, x, z); return !!f && f.kind === 'lake'; }   // only a lake stand-in removes streets
+function inWaterAt(x, z) { return !!waterFeat(parishAt(x, z), x, z); }   // lots, trees and ambience keep off every AUTHORED water feature
+/* the land mesh gets one hole per water feature inside its ring */
+function cutWater(p) {
+  const m = landMesh.get(p.id), net = waterNet.get(p.id); if (!m || !net) return;
+  const shapes = p.rings_m.map((r) => new THREE.Shape(r.map(([x, z]) => new THREE.Vector2(x, -z))));
+  for (const f of net.feats) {
+    const k = p.rings_m.findIndex((r) => inRing(r, f.ring[0][0], f.ring[0][1])); if (k < 0) continue;
+    shapes[k].holes.push(new THREE.Path(f.ring.map(([x, z]) => new THREE.Vector2(x, -z))));
+  }
+  const g = new THREE.ShapeGeometry(shapes); g.rotateX(-Math.PI / 2);
+  const pa = g.attributes.position.array; for (let i = 1; i < pa.length; i += 3) pa[i] = 0;
+  m.geometry.dispose(); m.geometry = g; waterCut.add(p.id);
+}
+const waterCut = new Set();
+/* physkit's water hook: inland AUTHORED water under a point (never under a street: a crossing is a bridge) */
+function waterAt(x, z) {
+  const p = parishAt(x, z), f = waterFeat(p, x, z); if (!f) return null;
+  if (f.kind !== 'lake') { const rn = roadNear(x, z, 30); if (rn && rn.edge < 0) return null; }
+  const s = WORLD.surface_y; return { surface: s, bed: s - f.depth, kind: f.kind };
+}
+
+/* ---- roads (wave 7): PARISH v1.4 street polylines meshed as carriageway + kerb + sidewalk on both sides, ONE merged
+   mesh (vertex colours, one material, one draw call) for every segment within ROAD_R of the eye, rebuilt when the eye
+   changes chunk. Widths come from the registry's AUTHORED road profile per class; AUTHORED procedural streets, NOT
+   the real street grid. Where a parish's streets have loaded, the painted grid is switched off for that parish and the
+   buildings stand back from the meshed kerbs; elsewhere (not yet fetched) the painted grid still shows. ---- */
+const ROAD_R = 600, ROAD_CAP = 4000, ROAD_Y = 0.05, BUCKET = 100, CURB_R = 250;
+const roadNet = new Map(), roadFailed = [];   // parish id -> { buckets: Map, segs: [] }
+const roadPos = new Float32Array(ROAD_CAP * 30 * 3), roadNor = new Float32Array(ROAD_CAP * 30 * 3), roadCol = new Float32Array(ROAD_CAP * 30 * 3);
+const roadGeo = new THREE.BufferGeometry();
+roadGeo.setAttribute('position', new THREE.BufferAttribute(roadPos, 3)); roadGeo.setAttribute('normal', new THREE.BufferAttribute(roadNor, 3)); roadGeo.setAttribute('color', new THREE.BufferAttribute(roadCol, 3));
+roadGeo.setDrawRange(0, 0);
+const matRoad = new THREE.MeshLambertMaterial({ vertexColors: true });
+const roads = new THREE.Mesh(roadGeo, matRoad); roads.frustumCulled = false; roads.userData.roads = true; scene.add(roads);
+const ROAD_COL = { asphalt: new THREE.Color(0x3d4043), kerb: new THREE.Color(0xc9c3b6), walk: new THREE.Color(0xb3ada1) };
+function bucketKey(bx, bz) { return bx + ',' + bz; }
+function loadRoads(p) {
+  if (!p.roads || roadNet.has(p.id)) return;
+  roadNet.set(p.id, null);   // in flight
+  fetch('../' + p.roads.path).then((r) => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }).then((j) => {
+    if (j.fips !== p.id || !j.classes) throw new Error('parishes: streets file for ' + p.id + ' does not match');
+    const net = { buckets: new Map(), segs: [] }, [ox, oz] = p.origin_m;
+    for (const [cls, prof] of Object.entries(p.roads.classes)) {
+      const lines = j.classes[cls]; if (!lines) throw new Error('parishes: streets file ' + p.id + ' has no class ' + cls);
+      for (const pl of lines) for (let i = 1; i < pl.length; i++) {
+        const ax = ox + pl[i - 1][0], az = oz - pl[i - 1][1], bx = ox + pl[i][0], bz = oz - pl[i][1];
+        if (inWater(p, (ax + bx) / 2, (az + bz) / 2)) continue;   // a street over AUTHORED water is not road
+        const L = Math.hypot(bx - ax, bz - az); if (L < 1) continue;
+        const s = { ax, az, bx, bz, L, dx: (bx - ax) / L, dz: (bz - az) / L, cw: prof.carriageway_m / 2, swl: prof.sidewalk_m[0], swr: prof.sidewalk_m[1], sw: Math.max(prof.sidewalk_m[0], prof.sidewalk_m[1]), kh: prof.curb_height_m, cls };
+        net.segs.push(s);
+        for (let t = 0; t <= L; t += BUCKET / 2) {
+          const k = bucketKey(Math.floor((ax + s.dx * t) / BUCKET), Math.floor((az + s.dz * t) / BUCKET));
+          const b = net.buckets.get(k); if (!b) net.buckets.set(k, [s]); else if (b[b.length - 1] !== s) b.push(s);
+        }
+      }
+    }
+    roadNet.set(p.id, net); roadsReady(p);
+  }).catch((e) => { roadFailed.push(p.id + ': ' + e.message); });
+}
+function roadsReady(p) {
+  const m = landMesh.get(p.id); if (m) m.material.userData.grid.value = 0;   // painted grid off where meshed streets exist
+  clearChunks(); roadCell = '';   // rebuild the fabric around the new kerbs
+}
+function segsNear(x, z, r) {
+  const out = new Set();
+  for (const id of loaded) { const net = roadNet.get(id); if (!net) continue;
+    for (let bx = Math.floor((x - r) / BUCKET); bx <= Math.floor((x + r) / BUCKET); bx++) for (let bz = Math.floor((z - r) / BUCKET); bz <= Math.floor((z + r) / BUCKET); bz++) { const b = net.buckets.get(bucketKey(bx, bz)); if (b) for (const s of b) out.add(s); } }
+  return out;
+}
+/* nearest meshed kerb line to a point: distance to the carriageway edge's outer sidewalk edge and the unit normal from the road */
+function roadNear(x, z, r) {
+  let best = null;
+  for (const s of segsNear(x, z, r)) {
+    const t = Math.max(0, Math.min(s.L, (x - s.ax) * s.dx + (z - s.az) * s.dz)), px = s.ax + s.dx * t, pz = s.az + s.dz * t, d = Math.hypot(x - px, z - pz);
+    const edge = d - s.cw - s.sw;
+    if (!best || edge < best.edge) best = { edge, d, nx: d ? (x - px) / d : -s.dz, nz: d ? (z - pz) / d : s.dx, s };
+  }
+  return best;
+}
+function roadStreamed(x, z) { const p = parishAt(x, z); return !!(p && roadNet.get(p.id)); }
+let roadCell = '', roadSegs = 0;
+function roadQuad(o, a, b, c, d, n, col) {   // two triangles a b c, a c d
+  for (const v of [a, b, c, a, c, d]) { roadPos.set(v, o); roadNor.set(n, o); roadCol[o] = col.r; roadCol[o + 1] = col.g; roadCol[o + 2] = col.b; o += 3; }
+  return o;
+}
+function refillRoads(x, z) {
+  let o = 0, n = 0;
+  const UPN = [0, 1, 0], curbs = [];
+  for (const s of segsNear(x, z, ROAD_R)) {
+    if (n >= ROAD_CAP) break;
+    if (segDist(x, z, [s.ax, s.az], [s.bx, s.bz]) > ROAD_R) continue;
+    const nx = -s.dz, nz = s.dx, kt = ROAD_Y + s.kh;
+    const P = (t, off, y) => [(t ? s.bx : s.ax) + nx * off, y, (t ? s.bz : s.az) + nz * off];
+    o = roadQuad(o, P(0, -s.cw, ROAD_Y), P(0, s.cw, ROAD_Y), P(1, s.cw, ROAD_Y), P(1, -s.cw, ROAD_Y), UPN, ROAD_COL.asphalt);
+    if (segDist(x, z, [s.ax, s.az], [s.bx, s.bz]) < CURB_R) for (const sd of [-1, 1]) {   // the sidewalks as kerb boxes (stepped onto, never walked through)
+      const w = sd > 0 ? s.swr : s.swl, off = sd * (s.cw + w / 2);
+      curbs.push({ id: 'k' + curbs.length, cx: (s.ax + s.bx) / 2 + nx * off, cz: (s.az + s.bz) / 2 + nz * off, hx: s.L / 2, hz: w / 2, yaw: Math.atan2(-s.dz, s.dx), y0: 0, y1: ROAD_Y + s.kh, kind: 'curb' });
+    }
+    for (const sd of [-1, 1]) {
+      const a = sd * s.cw, b = sd * (s.cw + (sd > 0 ? s.swr : s.swl)), fl = sd > 0 ? [0, 1] : [1, 0];
+      o = roadQuad(o, P(fl[0], a, kt), P(fl[0], b, kt), P(fl[1], b, kt), P(fl[1], a, kt), UPN, ROAD_COL.walk);   // sidewalk top
+      o = roadQuad(o, P(fl[0], a, ROAD_Y), P(fl[0], a, kt), P(fl[1], a, kt), P(fl[1], a, ROAD_Y), [-sd * nx, 0, -sd * nz], ROAD_COL.kerb);   // kerb face toward the road
+    }
+    n++;
+  }
+  roadSegs = n; roadGeo.setDrawRange(0, o / 3); curbBoxes = curbs; markPhys();
+  for (const k of ['position', 'normal', 'color']) { const at = roadGeo.attributes[k]; at.clearUpdateRanges(); at.addUpdateRange(0, o); at.needsUpdate = true; }
+}
 
 /* ---- AUTHORED fabric: blocks and trees, chunk-streamed, one InstancedMesh each ---- */
 /* trees: open-ended trunk (4 sides) and crown (6 sides), drawn double-sided: 14 triangles, was 32 (wave 6) -
@@ -672,6 +908,19 @@ function buildChunk(ci, cj) {
     const h = wildsHash(ix, iz, SEED, 1), jx = wildsHash(ix, iz, SEED, 2), jz = wildsHash(ix, iz, SEED, 3);
     const x = (ix + 0.2 + 0.6 * jx) * CELL, z = (iz + 0.2 + 0.6 * jz) * CELL;
     if (!parishAt(x, z) || lmNear(x, z)) continue;
+    if (inWaterAt(x, z)) { if (h < 0.55) skipped.water++; continue; }   // no building or tree stands in AUTHORED water
+    if (roadStreamed(x, z)) {
+      // wave 7: meshed PARISH streets - a lot stands back from the nearest sidewalk edge and faces that street
+      const use = landUse(x, z), rn = roadNear(x, z, 45);
+      if (use === 'park') { if (h < 0.8 && (!rn || rn.edge > 3)) out.tree.push([x, z, 0.8 + jz * 0.6, 0]); continue; }
+      if (h < 0.55) {
+        const lot = kitLot(use, ix, iz, x, z, jx, jz, wildsHash(ix, iz, SEED, 4));
+        if (rn && rn.edge < Math.hypot(lot[2], lot[4]) / 2 + 0.5) { skipped.road++; if (rn.edge > 1 && h < 0.12) out.tree.push([x, z, 0.8 + jx * 0.5, 0]); continue; }
+        if (rn) lot[6] = Math.atan2(-rn.nx, -rn.nz);
+        out.block.push(lot);
+      } else if (h < 0.8 && (!rn || rn.edge > 2.5)) out.tree.push([x, z, 0.8 + jz * 0.6, 0]);
+      continue;
+    }
     // streets: every fourth cell row/column stays open (AUTHORED grid, not the real street grid)
     const sx = ((ix % 4) + 4) % 4 === 0, sz = ((iz % 4) + 4) % 4 === 0;
     if (sx || sz) {
@@ -686,8 +935,17 @@ function buildChunk(ci, cj) {
     if (h < 0.55) out.block.push(kitLot(use, ix, iz, x, z, jx, jz, wildsHash(ix, iz, SEED, 4)));
     else if (h < 0.8) out.tree.push([x, z, 0.8 + jz * 0.6, 0]);
   }
+  // wave 7: a lamp standard every LAMP_M along each meshed street, on its sidewalk, alternating sides (AUTHORED furniture)
+  const x0 = ci * CHUNK_M, z0 = cj * CHUNK_M;
+  for (const s of segsNear(x0 + CHUNK_M / 2, z0 + CHUNK_M / 2, CHUNK_M * 0.75)) for (let k = 1; k * LAMP_M < s.L; k++) {
+    const sd = k % 2 ? 1 : -1, off = sd * (s.cw + s.sw * 0.4), px = s.ax + s.dx * k * LAMP_M - s.dz * off, pz = s.az + s.dz * k * LAMP_M + s.dx * off;
+    if (px < x0 || px >= x0 + CHUNK_M || pz < z0 || pz >= z0 + CHUNK_M) continue;
+    out.lamp.push([px, pz, Math.atan2(sd * s.dx, sd * s.dz)]);
+  }
   return out;
 }
+const skipped = { water: 0, road: 0 };   // lots not built (counted per chunk build; eval reads the view's share)
+const LAMP_M = 160;   // w7: at 45 m the lamps alone cost ~35k triangles (985 x 36); at 120 m 22071 origin was still 1k over its tris headroom (eval run 2)
 function wantedChunks(x, z) {
   const ci = Math.floor(x / CHUNK_M), cj = Math.floor(z / CHUNK_M), s = new Set();
   for (let a = -RADIUS; a <= RADIUS; a++) for (let b = -RADIUS; b <= RADIUS; b++) s.add((ci + a) + ',' + (cj + b));
@@ -695,11 +953,11 @@ function wantedChunks(x, z) {
 }
 function updateChunks(x, z) {
   const want = wantedChunks(x, z);
-  for (const k of [...chunkData.keys()]) if (!want.has(k)) { chunkData.delete(k); dirty = true; }
+  for (const k of [...chunkData.keys()]) if (!want.has(k)) { chunkData.delete(k); dirty = true; if (amb) { const [a, b] = k.split(',').map(Number); amb.onChunkUnload(a, b); } }
   queue = [...want].filter((k) => !chunkData.has(k));
 }
 function pump(budget) {
-  for (let i = 0; i < budget && queue.length; i++) { const k = queue.shift(); const [a, b] = k.split(',').map(Number); chunkData.set(k, buildChunk(a, b)); dirty = true; }
+  for (let i = 0; i < budget && queue.length; i++) { const k = queue.shift(); const [a, b] = k.split(',').map(Number); chunkData.set(k, buildChunk(a, b)); dirty = true; if (amb) amb.onChunkLoad(a, b, landUse); }
 }
 const M4 = new THREE.Matrix4(), Q = new THREE.Quaternion(), V = new THREE.Vector3(), S = new THREE.Vector3();
 const UP = new THREE.Vector3(0, 1, 0);
@@ -717,7 +975,7 @@ function refillFabric() {
   }
   for (const [f, m] of Object.entries(KIT)) { m.count = kn[f]; m.instanceMatrix.needsUpdate = true; m.instanceColor.needsUpdate = true; }
   trees.count = nt; lamps.count = nl; Q.identity();
-  blocks.instanceMatrix.needsUpdate = true; trees.instanceMatrix.needsUpdate = true; lamps.instanceMatrix.needsUpdate = true; dirty = false;
+  blocks.instanceMatrix.needsUpdate = true; trees.instanceMatrix.needsUpdate = true; lamps.instanceMatrix.needsUpdate = true; dirty = false; markPhys();
 }
 
 /* ---- border markers and landmarks: one InstancedMesh per asset family ---- */
@@ -852,7 +1110,7 @@ function applyMode(m) {
   for (const b of document.querySelectorAll('[data-mode]')) b.setAttribute('aria-pressed', String(b.dataset.mode === m));
   stage.dataset.mode = m;
   applyPR(m === 'overview' ? OVERVIEW_PR : 1);
-  blocks.visible = houses.visible = trees.visible = lamps.visible = m !== 'overview';
+  blocks.visible = houses.visible = trees.visible = lamps.visible = roads.visible = m !== 'overview';
 }
 function setMode(m) {
   if (riding && m !== 'overview') {
@@ -891,7 +1149,8 @@ function control(dt) {
   const f = (keys.has('w') || keys.has('arrowup') ? 1 : 0) - (keys.has('s') || keys.has('arrowdown') ? 1 : 0);
   const turn = (keys.has('a') || keys.has('arrowleft') ? 1 : 0) - (keys.has('d') || keys.has('arrowright') ? 1 : 0);
   eye.yaw += turn * dt * (mode === 'walk' ? 1.6 : 1.1);
-  if (f) step(f, 0, dt);
+  if (mode === 'walk' && W) walkPhys(f, dt);
+  else if (f) step(f, 0, dt);
 }
 function placeCamera() {
   if (mode === 'overview') {
@@ -902,7 +1161,7 @@ function placeCamera() {
   }
   scene.fog.far = 4200;
   if (riding) { fleetChaseCamera(camera, riding.st, riding.spec, 1 / 60, { snap: !!riding.snap }); riding.snap = false; water.position.x = eye.x; water.position.z = eye.z; return; }
-  camera.position.set(eye.x, EYE[mode], eye.z);
+  camera.position.set(eye.x, EYE[mode] + (mode === 'walk' && av && W ? av.y : 0), eye.z);
   camera.rotation.set(eye.pitch, eye.yaw, 0, 'YXZ');
   water.position.x = eye.x; water.position.z = eye.z;
 }
@@ -1064,7 +1323,8 @@ addEventListener('keydown', (e) => { if ((e.key === 'e' || e.key === 'E') && pla
 function drive(dt) {
   const f = (keys.has('w') || keys.has('arrowup') ? 1 : 0) - (keys.has('s') || keys.has('arrowdown') ? 1 : 0);
   const t = (keys.has('a') || keys.has('arrowleft') ? 1 : 0) - (keys.has('d') || keys.has('arrowright') ? 1 : 0);
-  fleetStep(riding.st, riding.spec, { throttle: f, steer: t, brake: keys.has(' ') ? 1 : 0 }, fground, dt);
+  const input = { throttle: f, steer: t, brake: keys.has(' ') ? 1 : 0 };
+  if (W) physDrive(input, dt); else fleetStep(riding.st, riding.spec, input, fground, dt);
   riding.h.set(riding.st); eye.x = riding.st.x; eye.z = riding.st.z;
 }
 
@@ -1087,7 +1347,8 @@ addEventListener('keydown', (e) => { if ((e.key === 't' || e.key === 'T') && pla
 
 function resize() { const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
 addEventListener('resize', resize);
-let labelT = 0;
+let labelT = 0, econParish = null;
+const DIAG = {};   // eval-only switches (__parishes.diag): which per-frame work costs the overview its frame
 let last = performance.now(), info = { calls: 0, triangles: 0 }, frameMs = 0, miniT = 0, cell = '';
 function frame(now) {
   const dt = Math.min(0.1, (now - last) / 1000); last = now;
@@ -1102,15 +1363,102 @@ function frame(now) {
   if (npcKit && !over) npcKit.update(dt, { x: eye.x, z: eye.z }, npcClock.tick(dt));   // AUTHORED game clock (npckit makeClock): one game hour per real minute
   const c = Math.floor(eye.x / CHUNK_M) + ',' + Math.floor(eye.z / CHUNK_M);
   if (!over) { if (c !== cell) { cell = c; updateChunks(eye.x, eye.z); } pump(BUILD_PER_FRAME); if (dirty) refillFabric(); }
+  const rc = Math.floor(eye.x / 200) + ',' + Math.floor(eye.z / 200);   // meshed streets re-gather every 200 m of travel
+  if (!over && rc !== roadCell) { roadCell = rc; refillRoads(eye.x, eye.z); }
+  if (!over && physDirty && now - physT > 400) { physT = now; rebuildPhysics(); }
+  if (!over) { stepSplash(dt); if (smoke && smoke.mesh.visible) smoke.update(dt); }
+  if (amb) { amb.setOverview(over); if (!over) amb.update(dt, { x: eye.x, z: eye.z }, riding ? [{ x: riding.st.x, z: riding.st.z }] : []); }
+  if (!over && !DIAG.noEcon && window.TCEcon && current) { if (econParish !== current.id) { econParish = current.id; window.TCEcon.mountEcon(null, { parish: current.id }); } window.TCEcon.onPlayerMove(current.id, eye.x - current.origin_m[0], eye.z - current.origin_m[1]); }
   matWater.emissiveIntensity = 0.06 + 0.05 * Math.sin(now / 900);   // water shimmer: one uniform, no extra draw
   waterU.uTime.value = now / 1000;
   placeCamera();
-  const t0 = performance.now(); renderer.render(scene, camera); frameMs = performance.now() - t0;
+  const t0 = performance.now(); if (!DIAG.noRender) renderer.render(scene, camera); frameMs = performance.now() - t0;
   info = { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles };
-  if (!over || now - labelT > 250) { labelT = now; placeLabels(); }
-  if (now - miniT > 200) { miniT = now; drawMinimap(); hud(); }
+  if (!DIAG.noLabels && (!over || now - labelT > 250)) { labelT = now; placeLabels(); }
+  if (!DIAG.noMini && now - miniT > 200) { miniT = now; drawMinimap(); hud(); }
   if (!toastEl.hidden && now > toastT) toastEl.hidden = true;
   requestAnimationFrame(frame);
+}
+
+/* ---- AMBIENT (wave 7, AMBIENT_CONTRACT v1): grass, bushes, palms, litter, birds, pets and animals in one AUTHORED
+   wind field. OFF until the Living world button: its six instanced families cost six draw calls, more than the walk
+   views' declared call headroom (web/eval_parishes.mjs measures it ON in its own row); hidden in the overview. ---- */
+let amb = null;
+const ambBtn = document.getElementById('amb');
+function isRoadAt(x, z) {
+  if (roadStreamed(x, z)) { const rn = roadNear(x, z, 20); return !!rn && rn.d < rn.s.cw; }
+  const ix = Math.floor(x / CELL), iz = Math.floor(z / CELL); return ((ix % 4) + 4) % 4 === 0 || ((iz % 4) + 4) % 4 === 0;
+}
+function setAmbient(on) {
+  if (!AMB_DATA) return false;
+  if (on && !amb) {
+    amb = createAmbient(scene, { THREE, data: AMB_DATA, seed: SEED, chunkM: CHUNK_M, isRoad: isRoadAt, isGround: (x, z) => !!parishAt(x, z) && !inWaterAt(x, z) });
+    for (const k of chunkData.keys()) { const [a, b] = k.split(',').map(Number); amb.onChunkLoad(a, b, landUse); }
+  } else if (!on && amb) { amb.dispose(); amb = null; }
+  if (ambBtn) ambBtn.setAttribute('aria-pressed', String(!!amb));
+  return true;
+}
+if (ambBtn) ambBtn.addEventListener('click', () => setAmbient(!amb));
+/* the fabric around the eye is rebuilt AT ONCE when a parish's water or streets arrive (eval run 2: pumping 49 chunks
+   at BUILD_PER_FRAME left views measured with chunks pending) - one spike on arrival instead of 17 half-built frames */
+function clearChunks() {
+  if (amb) for (const k of chunkData.keys()) { const [a, b] = k.split(',').map(Number); amb.onChunkUnload(a, b); }
+  chunkData.clear(); cell = Math.floor(eye.x / CHUNK_M) + ',' + Math.floor(eye.z / CHUNK_M); updateChunks(eye.x, eye.z); pump(1e9); refillFabric();
+}
+
+/* ---- PHYS (wave 7): solid buildings, kerbs, gravity, jump, wade/swim - physkit (PHYS_CONTRACT v1), arcade physics
+   with AUTHORED coefficients; only gravity (9.81 m/s^2) is standard. The page hands physkit its OWN boxes (the lots
+   buildChunk kept, and the sidewalks refillRoads meshed), so what you see is what you bump into. ---- */
+const PHYS_REG = PHYS_ON ? JSON.parse(document.getElementById('physics-registry').textContent) : null;
+let W = null, physDirty = true, physT = 0, physBoxes = 0;
+let curbBoxes = [];
+const av = PHYS_REG ? physAvatar(0, 0, 0) : null;
+const physLog = { splash: 0, jump: 0, land: 0, 'enter-water': 0, 'climb-out': 0, swim: 0, crash: 0, yield: 0 };
+function markPhys() { physDirty = true; }
+function rebuildPhysics() {
+  if (!PHYS_REG) return;
+  W = createPhysics({ reg: PHYS_REG, cell: 16, ground: () => 0, water: waterAt });
+  const list = [];
+  for (const c of chunkData.values()) for (const [x, z, w, h, d, , yaw] of c.block) list.push({ id: 'b' + list.length, cx: x, cz: z, hx: w / 2, hz: d / 2, yaw, y0: 0, y1: h, kind: 'building' });
+  for (const b of curbBoxes) list.push(b);
+  W.addBoxes(list); physBoxes = list.length; physDirty = false;
+}
+/* splash: one ring that grows and fades where the avatar met the water (drawn only while it plays) */
+const splash = new THREE.Mesh(new THREE.RingGeometry(0.35, 0.8, 20).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: 0xeef6fa, transparent: true, opacity: 0.8, depthWrite: false }));
+splash.visible = false; splash.userData.t = 0; scene.add(splash);
+function onPhys(e) {
+  if (e.type in physLog) physLog[e.type]++;
+  if (e.type === 'splash') { splash.position.set(e.x, WORLD ? WORLD.surface_y + 0.03 : 0, e.z); splash.userData.t = 0; splash.userData.k = 0.6 + e.strength; splash.visible = true; }
+}
+function stepSplash(dt) {
+  if (!splash.visible) return;
+  const t = (splash.userData.t += dt); splash.scale.setScalar(1 + t * 4 * splash.userData.k); splash.material.opacity = Math.max(0, 0.8 - t);
+  if (t > 0.8) splash.visible = false;
+}
+/* walking: desired velocity from the keys; physkit moves the avatar (walls stop it, kerbs step up, water slows/floats) */
+function walkPhys(f, dt) {
+  if (Math.abs(av.x - eye.x) > 0.01 || Math.abs(av.z - eye.z) > 0.01) Object.assign(av, physAvatar(eye.x, W.floorAt(eye.x, eye.z), eye.z));   // teleported
+  const v = (run ? PACE.run : PACE.walk) * f, sx = -Math.sin(eye.yaw), sz = -Math.cos(eye.yaw), px = av.x, pz = av.z;
+  const evs = W.stepAvatar(av, { vx: sx * v, vz: sz * v, jump: keys.has(' ') }, dt);
+  if (!canStand('walk', av.x, av.z)) { av.x = px; av.z = pz; av.vx = 0; av.vz = 0; }   // open water outside every outline stays a boat's
+  eye.x = av.x; eye.z = av.z;
+  for (const e of evs) onPhys(e);
+}
+/* driving: fleetPhysStep - crashes against other vehicles and the static boxes; people, guides, pets and animals are
+   never struck (the kit refuses the move before contact; no injury is ever depicted) */
+const smoke = PHYS_REG ? fleetSmoke(THREE, 48) : null;
+if (smoke) scene.add(smoke.mesh);
+function people() {
+  const out = [];
+  if (npcKit) for (const a of npcKit.agents) out.push({ x: a.x, z: a.z, r: 0.6, cls: 'npc' });
+  if (amb) out.push(...amb.people());   // ambientkit's pets and animals in physkit's shape {x, z, r, cls}
+  return out;
+}
+function physDrive(input, dt) {
+  const near = parked.filter((v) => v !== riding && v.medium === riding.medium && Math.hypot(v.st.x - riding.st.x, v.st.z - riding.st.z) < 40);
+  fleetPhysStep(riding.st, riding.spec, input, fground, dt, { coeffs: PHYS_REG, world: W, others: near.map((v) => ({ st: v.st, spec: v.spec })), people: people(),
+    onEvent: (e) => { onPhys(e); if (e.type === 'crash') smoke.puff(e.x, (e.y || 0) + 0.6, e.z, Math.min(1, e.speed / 15)); } });
+  for (const v of near) v.h.set(v.st);
 }
 
 /* ---- eval + test hooks (web/eval_parishes.mjs) ---- */
@@ -1178,6 +1526,11 @@ window.__parishes = {
     kit: Object.fromEntries(Object.entries(KIT).map(([k, m]) => [k, m.visible ? m.count : 0])),
     kitTris: { house: houseGeo.attributes.position.count / 3, midrise: blockGeo.attributes.position.count / 3, tree: treeGeo.index ? treeGeo.index.count / 3 : treeGeo.attributes.position.count / 3 },
     ground: { ready: [...groundReady].sort(), failed: groundFailed.slice(), px: GROUND_PX },
+    roads: { ready: [...roadNet.entries()].filter(([, v]) => v).map(([k]) => k).sort(), failed: roadFailed.slice(), segs: roadSegs, tris: roadGeo.drawRange.count / 3, visible: roads.visible,
+      gridOff: [...landMesh.entries()].filter(([, m]) => m.material.userData.grid.value === 0).map(([k]) => k).sort() },
+    phys: { on: !!PHYS_REG, boxes: physBoxes, curbs: curbBoxes.length, y: av ? +av.y.toFixed(3) : null, water: av ? av.water : null, log: { ...physLog }, smoke: smoke ? smoke.mesh.visible : null, splash: splash.visible },
+    skipped: { ...skipped }, ambient: amb ? amb.stats() : null, econ: !!(window.TCEcon && document.querySelector('[data-tc-econ]')),
+    water: { cut: [...waterCut].sort(), failed: waterFailed.slice(), feats: Object.fromEntries([...waterNet.entries()].filter(([, v]) => v).map(([k, v]) => [k, v.feats.length])) },
     atmosphere: { skyCss: getComputedStyle(canvas).backgroundImage.startsWith('linear-gradient'), clearAlpha: renderer.getClearAlpha(), fog: scene.fog.color.getHex(), horizon: HORIZON, sun: SUN.toArray().map((v) => +v.toFixed(3)) },
     fleetVisible: fl ? fl.group.visible : null, finds: [...found],
     instancedFamilies: [blocks, houses, trees, lamps, markers, stations, ...Object.values(lmMeshes)].every((m) => m.isInstancedMesh),
@@ -1189,6 +1542,28 @@ window.__parishes = {
   }),
   frameTimes(n) { return new Promise((res) => { const t = []; const f = (now) => { t.push(now); if (t.length > n) res(t.slice(1).map((v, i) => v - t[i])); else requestAnimationFrame(f); }; requestAnimationFrame(f); }); },
   satellite: (on) => showSatellite(on), satState,
+  /* wave 7 (eval): living world on/off; physics probes that walk the avatar into a building and drop it into water */
+  ambient: (on) => { setAmbient(on); return amb ? amb.stats() : null; },
+  diag: (o) => { for (const k of Object.keys(DIAG)) delete DIAG[k]; Object.assign(DIAG, o); for (const m of landMesh.values()) m.visible = !DIAG.noLand; return { ...DIAG }; },
+  physWall() {
+    if (physDirty || !W) rebuildPhysics();
+    let best = null; for (const c of chunkData.values()) for (const b of c.block) { const d = Math.hypot(b[0] - eye.x, b[1] - eye.z); if (!best || d < best.d) best = { b, d }; }
+    if (!best) throw new Error('parishes: no building near the eye');
+    const [x, z, w, h, d] = best.b, r = Math.hypot(w, d) / 2 + 4, a = Math.atan2(eye.x - x, eye.z - z);
+    const p = physAvatar(x + Math.sin(a) * r, 0, z + Math.cos(a) * r), dx = x - p.x, dz = z - p.z, L = Math.hypot(dx, dz);
+    for (let t = 0; t < 8; t += 1 / 60) W.stepAvatar(p, { vx: dx / L * PACE.run, vz: dz / L * PACE.run, jump: false }, 1 / 60);
+    const lx = Math.cos(best.b[6]) * (p.x - x) - Math.sin(best.b[6]) * (p.z - z), lz = Math.sin(best.b[6]) * (p.x - x) + Math.cos(best.b[6]) * (p.z - z);
+    return { inside: Math.abs(lx) < w / 2 && Math.abs(lz) < d / 2, dist: +Math.hypot(p.x - x, p.z - z).toFixed(2), half: [w / 2, d / 2], boxes: physBoxes };
+  },
+  physWater() {
+    if (physDirty || !W) rebuildPhysics();
+    const net = current && waterNet.get(current.id); if (!net || !net.feats.length) return { feats: 0 };
+    const f = net.feats.find((q) => q.kind === 'pond') || net.feats[0], n = f.ring.length;
+    const cx = (f.ring[0][0] + f.ring[Math.floor(n / 2)][0]) / 2, cz = (f.ring[0][1] + f.ring[Math.floor(n / 2)][1]) / 2;
+    const p = physAvatar(cx, 0.5, cz), evs = [];
+    for (let t = 0; t < 3; t += 1 / 60) evs.push(...W.stepAvatar(p, { vx: 0, vz: 0, jump: false }, 1 / 60));
+    return { feats: net.feats.length, kind: f.kind, water: p.water, y: +p.y.toFixed(2), events: evs.map((e) => e.type), wet: waterAt(cx, cz) };
+  },
   /* diagnosis only (eval): render scale in the current view */
   /* eval only: draw calls per fabric family, measured as (calls with everything) - (calls with that family hidden) */
   familyCalls() {
@@ -1259,6 +1634,7 @@ kbd{{font:12px "IBM Plex Mono",monospace;border:1px solid var(--rule);border-rad
 {QUEST_CSS_BLOCK}
 {PATH_CSS_BLOCK}
 {NPC_CSS_BLOCK}
+{ECON_CSS_BLOCK}
 </head>
 <body class="tc-theme-canvas">
 {NAV}<div class="wrap">
@@ -1276,6 +1652,7 @@ kbd{{font:12px "IBM Plex Mono",monospace;border:1px solid var(--rule);border-rad
     <button type="button" class="tc-btn tc-btn-ghost" id="talk">{TS("parishes.npc.talk")}</button>
     <button type="button" class="tc-btn tc-btn-ghost" data-mode="overview" aria-pressed="false">{TS("parishes.mode.overview")}</button>
     <button type="button" class="tc-btn tc-btn-ghost" id="sat" aria-pressed="false">{TS("parishes.sat.toggle")}</button>
+    <button type="button" class="tc-btn tc-btn-ghost" id="amb" aria-pressed="false">{TS("parishes.ambient.toggle")}</button>
     <span class="where" id="hud"></span></div>
   <canvas id="minimap" width="200" height="200" aria-label="{TA("parishes.minimap_label")}" data-i18n-aria="parishes.minimap_label"></canvas>
   <div id="satbox" hidden></div>
@@ -1284,12 +1661,14 @@ kbd{{font:12px "IBM Plex Mono",monospace;border:1px solid var(--rule);border-rad
 <p class="help" id="maplabel" data-map-label></p>
 <p class="help" data-ground-label lang="en">{esc(DATA["honesty"]["ground"])}</p>
 <p class="help" id="satmsg" data-sat-msg aria-live="polite"></p>
+{world_legend}
 <p class="help">{TS("parishes.help")}</p>
 <h2>{TS("parishes.h.landmarks")}</h2>
 <ul data-landmarks>{lm_rows}</ul>
 <h2>{TS("parishes.h.layers")}</h2>
 <section id="paths" data-paths aria-live="polite"></section>
 <div id="npcpanel" data-npc-root></div>
+{ECON_PANEL}
 <ul data-contracts>{pending_rows}</ul>
 <h2>{TS("parishes.h.quests")}</h2>
 <p class="help">{TS("parishes.play_note")}</p>
@@ -1316,6 +1695,8 @@ kbd{{font:12px "IBM Plex Mono",monospace;border:1px solid var(--rule);border-rad
   "three/addons/":"./vendor/addons/"
 }}}}
 </script>
+{PHYS_EMBED}
+{ECON_SCRIPT}
 <script type="module" id="parishes-main">{JS}</script>
 {QUEST_SCRIPT}
 {PATH_SCRIPT}

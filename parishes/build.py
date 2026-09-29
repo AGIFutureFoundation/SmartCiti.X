@@ -451,6 +451,9 @@ def main():
     out = ROOT / 'parishes' / 'registry' / 'parishes.json'
     out.write_text(json.dumps(reg, indent=1, ensure_ascii=False) + '\n')
     print(f'wrote {out.relative_to(ROOT)}: {reg["counts"]} stamp {stamp[:16]}')
+    # v1.4 (wave 7): the world layer is derived from the registry + streets just written, so rebuild it here
+    import build_world
+    build_world.main()
 
 
 if __name__ == '__main__':

@@ -1,8 +1,8 @@
 {
  "pack": "layers",
- "source_stamp": "c3c3fb693db80800",
+ "source_stamp": "cc14f36764fd8865",
  "sources": {
-  "parishes/registry/parishes.json": "54e8e702ebae5ef3",
+  "parishes/registry/parishes.json": "de34075e54a82b8f",
   "sims/registry/sims.json": "987a9d4812b4c73b",
   "tasks/registry/tasks.json": "a24bf254c0336ca4",
   "lessons/registry/lessons.json": "e905659b0a718ab6",
@@ -12,7 +12,7 @@
   "web/build_3d.py": "5f40778c7fb8308f",
   "web/build_lessons.py": "fa758b5beb245fde",
   "web/build_schools.py": "37826064907a1643",
-  "layers/build.py": "0ffabb2e6aad5a89"
+  "layers/build.py": "b5790249cf69f67f"
  },
  "parish_source": "parishes/registry/parishes.json",
  "honesty": {

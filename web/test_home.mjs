@@ -704,6 +704,32 @@ const escLikeHome = (t) => String(t).split(/\s+/).join(' ').trim()
     + 'or a placeholder labelled as one',
     loopWrong.length === 0, loopWrong);
 
+  /* -- wave 7: the holodeck packs band (PACKS) ---------------------------- */
+  {
+    const reg = JSON.parse(rf(join(ROOT, 'holodeck/registry/packs.json'), 'utf8'));
+    const en7 = JSON.parse(rf(join(ROOT, 'i18n/locales/en.json'), 'utf8')).strings;
+    const e7 = (x) => x.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;');
+    const band = (home.match(/<section id="packs" class="pk-band"[\s\S]*?<\/section>/) || [''])[0];
+    const all = home.match(/<section id="packs"/g) || [];
+    const want = { packs: reg.packs.length, shipping: reg.packs.filter((p) => p.status === 'SHIPPING').length,
+      proposed: reg.packs.filter((p) => p.status === 'PROPOSED').length };
+    const got = Object.fromEntries([...band.matchAll(/data-pk-stat="([^"]+)"[^>]*><dt>[^<]*<\/dt><dd>([^<]*)<\/dd>/g)]
+      .map((m) => [m[1], Number(m[2].replace(/,/g, ''))]));
+    ok(`[shipped] index.html: exactly one holodeck packs band, its figures recounted from holodeck/registry/packs.json (${JSON.stringify(want)})`,
+      all.length === 1 && JSON.stringify(got) === JSON.stringify(want), [JSON.stringify(got)]);
+    const kinds = Object.fromEntries([...band.matchAll(/data-pk-kind="([^"]+)"><b>([^<]+)<\/b>/g)].map((m) => [m[1], Number(m[2])]));
+    const wantK = Object.fromEntries(reg.kinds.map((k) => [k, reg.packs.filter((p) => p.kind === k).length]));
+    ok('[shipped] index.html: the packs band counts each kind (union / K-12 / path / world / system) from the registry',
+      JSON.stringify(kinds) === JSON.stringify(wantK), [JSON.stringify(kinds)]);
+    ok('[shipped] index.html: the packs band names the series exactly "SmartCiti.X Powered by AGI Corp" and links the packs catalogue page',
+      reg.series === 'SmartCiti.X Powered by AGI Corp' && band.includes('<b>SmartCiti.X Powered by AGI Corp</b>')
+        && band.includes('href="web/trade_craft_packs.html"') && existsSync(join(ROOT, 'web/trade_craft_packs.html')));
+    const txt = band.replace(/<[^>]+>/g, ' ');
+    ok('[shipped] index.html: the packs band says SHIPPING vs PROPOSED and no price, and shows no currency or purchase',
+      band.includes(e7(en7['packs.honest.status'])) && band.includes(e7(en7['packs.honest.price']))
+        && !/[$€£¥₹]\s?\d|\bbuy\b|\bpurchase\b|\bdownload\b/i.test(txt));
+  }
+
   /* -- wave 6: the New Orleans parishes band ----------------------------- */
   {
     const J = (p) => JSON.parse(rf(join(ROOT, p), 'utf8'));

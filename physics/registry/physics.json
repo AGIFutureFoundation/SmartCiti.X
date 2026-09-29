@@ -1,0 +1,253 @@
+{
+ "pack": "physics",
+ "source_stamp": "9fb11b4e4bec8666",
+ "honesty": "Physics is an arcade approximation: gravity 9.81 m/s^2; friction, restitution, mass, buoyancy, drag and damage are AUTHORED. Crashes are play - not a crash test, not safety or engineering advice. Vehicles never strike people, NPCs, pets or animals.",
+ "units": "SI: metres, seconds, kilograms; angles in radians",
+ "provenance_rule": "world.gravity RECORDED (standard gravity); every other coefficient AUTHORED for play",
+ "pedestrian_classes": [
+  "person",
+  "npc",
+  "pet",
+  "animal"
+ ],
+ "coeffs": {
+  "world": {
+   "gravity": {
+    "value": 9.81,
+    "unit": "m/s^2",
+    "provenance": "RECORDED",
+    "note": "standard acceleration of gravity 9.80665 m/s^2, used rounded to 9.81"
+   },
+   "max_substep_frac": {
+    "value": 0.5,
+    "unit": "avatar radii",
+    "provenance": "AUTHORED",
+    "note": "no sub-step moves more than this fraction of the radius"
+   }
+  },
+  "avatar": {
+   "radius": {
+    "value": 0.3,
+    "unit": "m",
+    "provenance": "AUTHORED",
+    "note": "collision circle of the walker"
+   },
+   "height": {
+    "value": 1.75,
+    "unit": "m",
+    "provenance": "AUTHORED",
+    "note": "capsule height for box overlap"
+   },
+   "step_up": {
+    "value": 0.25,
+    "unit": "m",
+    "provenance": "AUTHORED",
+    "note": "tallest ledge (curb) walked onto without a jump"
+   },
+   "jump_speed": {
+    "value": 4.2,
+    "unit": "m/s",
+    "provenance": "AUTHORED",
+    "note": "take-off speed (about 0.9 m apex under 9.81)"
+   },
+   "air_control": {
+    "value": 0.35,
+    "unit": "fraction",
+    "provenance": "AUTHORED",
+    "note": "share of steering kept while airborne"
+   },
+   "ground_accel": {
+    "value": 30.0,
+    "unit": "m/s^2",
+    "provenance": "AUTHORED",
+    "note": "how fast walking speed follows input"
+   },
+   "max_fall_speed": {
+    "value": 55.0,
+    "unit": "m/s",
+    "provenance": "AUTHORED",
+    "note": "terminal speed cap (arcade)"
+   },
+   "land_event_speed": {
+    "value": 4.0,
+    "unit": "m/s",
+    "provenance": "AUTHORED",
+    "note": "falls faster than this emit a land event"
+   }
+  },
+  "water": {
+   "wade_min": {
+    "value": 0.1,
+    "unit": "m",
+    "provenance": "AUTHORED",
+    "note": "water depth at the feet from which the walker wades"
+   },
+   "swim_depth": {
+    "value": 1.0,
+    "unit": "m",
+    "provenance": "AUTHORED",
+    "note": "water depth at the feet from which the walker swims (= PARISH world.json wade_max_depth_m)"
+   },
+   "climb_out_m": {
+    "value": 0.6,
+    "unit": "m",
+    "provenance": "AUTHORED",
+    "note": "tallest bank above the water surface a wader or swimmer climbs out onto"
+   },
+   "wade_speed": {
+    "value": 0.6,
+    "unit": "fraction",
+    "provenance": "AUTHORED",
+    "note": "walking speed multiplier while wading"
+   },
+   "swim_speed": {
+    "value": 0.45,
+    "unit": "fraction",
+    "provenance": "AUTHORED",
+    "note": "walking speed multiplier while swimming"
+   },
+   "float_depth": {
+    "value": 1.35,
+    "unit": "m",
+    "provenance": "AUTHORED",
+    "note": "a swimmer floats with the feet this far under the surface (head stays above)"
+   },
+   "float_rate": {
+    "value": 3.0,
+    "unit": "1/s",
+    "provenance": "AUTHORED",
+    "note": "how fast a swimmer eases to the float depth"
+   },
+   "splash_speed": {
+    "value": 2.0,
+    "unit": "m/s",
+    "provenance": "AUTHORED",
+    "note": "entering water faster than this (down or across) splashes"
+   },
+   "body_buoyancy": {
+    "value": 1.6,
+    "unit": "fraction of g",
+    "provenance": "AUTHORED",
+    "note": "upward push on a submerged generic body"
+   },
+   "water_drag": {
+    "value": 2.5,
+    "unit": "1/s",
+    "provenance": "AUTHORED",
+    "note": "velocity damping in water for bodies"
+   }
+  },
+  "body": {
+   "restitution": {
+    "value": 0.35,
+    "unit": "ratio",
+    "provenance": "AUTHORED",
+    "note": "bounce of a generic rigid body"
+   },
+   "friction": {
+    "value": 0.6,
+    "unit": "ratio",
+    "provenance": "AUTHORED",
+    "note": "tangential damping on contact"
+   },
+   "air_drag": {
+    "value": 0.02,
+    "unit": "1/s",
+    "provenance": "AUTHORED",
+    "note": "linear damping in air"
+   },
+   "sleep_speed": {
+    "value": 0.05,
+    "unit": "m/s",
+    "provenance": "AUTHORED",
+    "note": "below this at rest a body sleeps"
+   }
+  },
+  "crash": {
+   "restitution_vehicle": {
+    "value": 0.25,
+    "unit": "ratio",
+    "provenance": "AUTHORED",
+    "note": "vehicle-vs-vehicle bounce"
+   },
+   "restitution_static": {
+    "value": 0.15,
+    "unit": "ratio",
+    "provenance": "AUTHORED",
+    "note": "vehicle-vs-building/curb/barrier bounce"
+   },
+   "spin_gain": {
+    "value": 1.0,
+    "unit": "ratio",
+    "provenance": "AUTHORED",
+    "note": "scales the yaw spin an off-centre impulse gives"
+   },
+   "max_spin": {
+    "value": 2.5,
+    "unit": "rad/s",
+    "provenance": "AUTHORED",
+    "note": "largest yaw spin a crash leaves (arcade cap)"
+   },
+   "slide_decay": {
+    "value": 2.2,
+    "unit": "1/s",
+    "provenance": "AUTHORED",
+    "note": "knock-back slide and yaw spin fade"
+   },
+   "dent_min_ms": {
+    "value": 2.0,
+    "unit": "m/s",
+    "provenance": "AUTHORED",
+    "note": "impacts slower than this leave no dent"
+   },
+   "dent_per_ms": {
+    "value": 0.04,
+    "unit": "1/(m/s)",
+    "provenance": "AUTHORED",
+    "note": "dent added per m/s of impact speed above dent_min_ms"
+   },
+   "crumple_max": {
+    "value": 0.12,
+    "unit": "fraction",
+    "provenance": "AUTHORED",
+    "note": "largest drawn squash of length at dent 1 (display only)"
+   },
+   "wheel_step": {
+    "value": 0.2,
+    "unit": "m",
+    "provenance": "AUTHORED",
+    "note": "boxes this low or lower are driven over (curbs), taller ones are struck"
+   },
+   "drop_m": {
+    "value": 0.5,
+    "unit": "m",
+    "provenance": "AUTHORED",
+    "note": "ground falling away by more than this under a moving vehicle makes it airborne"
+   },
+   "tumble_rate": {
+    "value": 0.08,
+    "unit": "rad/s per m/s",
+    "provenance": "AUTHORED",
+    "note": "pitch/roll rate per m/s of speed when leaving a drop"
+   },
+   "reset_s": {
+    "value": 6.0,
+    "unit": "s",
+    "provenance": "AUTHORED",
+    "note": "a crashed or blocked traffic agent resets after this long"
+   },
+   "yield_margin": {
+    "value": 1.5,
+    "unit": "m",
+    "provenance": "AUTHORED",
+    "note": "extra clearance a vehicle keeps from any person, NPC, pet or animal"
+   },
+   "smoke_min_ms": {
+    "value": 3.0,
+    "unit": "m/s",
+    "provenance": "AUTHORED",
+    "note": "impacts faster than this puff smoke"
+   }
+  }
+ }
+}

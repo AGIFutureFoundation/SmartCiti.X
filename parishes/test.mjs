@@ -9,7 +9,7 @@
  */
 import { readFileSync, existsSync, statSync } from 'node:fs';
 import { createHash } from 'node:crypto';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { dirname, join } from 'node:path';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -339,6 +339,104 @@ const webpSize = (b) => {
   ok(size.length === 0 && total <= 13 * 1500000, `[streets] byte budget: each streets file <= 1,500,000 bytes (total ${total})${size.length ? ' [' + size.join('; ') + ']' : ''}`);
   ok(cls.length === 0, `[streets] ${nPl} polylines / ${nV} vertices: classes arterial|collector|local with matching counts, integer metres, every parish has arterials and collectors, labelled AUTHORED / NOT the real street grid${cls.length ? ' [' + cls.slice(0, 4).join('; ') + ']' : ''}`);
   ok(out.length === 0, `[streets] every polyline vertex lies inside its parish's RECORDED outline (local metres, holes honoured); inland water not cut out is recorded in inside_rule${out.length ? ' [outside: ' + out.slice(0, 4).join('; ') + ']' : ''}`);
+}
+
+/* ---- wave 7 (contract v1.4): the WORLD LAYER - AUTHORED water, road profiles, building page-rule ---- */
+{
+  const WREG = 'parishes/registry/world.json';
+  const have = existsSync(join(ROOT, WREG));
+  ok(have, '[world] parishes/registry/world.json exists (python3 parishes/build_world.py)');
+  const W = have ? J(WREG) : { parishes: {}, roads: { classes: {} }, buildings: {}, water_levels: { depth_m: {} } };
+  // stamp: recomputed from the bytes it claims to cover
+  const h = createHash('sha256'); h.update(buf(REG));
+  for (const f of IDS) h.update(buf(P[f].map.streets.path));
+  h.update(buf('parishes/build_world.py'));
+  const stamp = h.digest('hex');
+  const bad = [], size = [], prov = [], geo = [], lk = [], pd = [], rd = [];
+  let nCh = 0, nV = 0, nPond = 0, total = 0;
+  if (W.version !== '1.4' || W.source_stamp !== stamp) bad.push(`registry stamp ${String(W.source_stamp).slice(0, 16)} vs ${stamp.slice(0, 16)}`);
+  if (JSON.stringify(Object.keys(W.parishes).sort()) !== JSON.stringify(IDS)) bad.push('parish set');
+  const DEP = W.water_levels.depth_m, WID = { bayou: [14, 30], canal: [18, 24], stream: [4, 8] };
+  const R0 = 6371008.8, rad = Math.PI / 180;
+  for (const f of IDS) {
+    const E = W.parishes[f];
+    if (!E || E.path !== `parishes/maps/world/${f}.json` || !existsSync(join(ROOT, E.path))) { bad.push(`${f} missing`); continue; }
+    const B = buf(E.path); total += B.length;
+    if (sha(B) !== E.sha256 || B.length !== E.bytes) bad.push(`${f} sha/bytes`);
+    if (B.length > 600000 || E.max_bytes !== 600000) size.push(`${f} ${B.length} B`);
+    const D = JSON.parse(B.toString());
+    if (D.source_stamp !== stamp.slice(0, 16) || D.fips !== f || D.version !== '1.4') bad.push(`${f} stamp ${D.source_stamp}`);
+    if (JSON.stringify(D.counts) !== JSON.stringify(E.counts)) bad.push(`${f} counts`);
+    // provenance: every water feature AUTHORED, nothing RECORDED
+    if (D.water.provenance !== 'AUTHORED' || !/NOT the real lakes, rivers or bayous/.test(D.water.note)) prov.push(`${f} water label`);
+    for (const x of [...D.water.lakes, ...D.water.channels, ...D.water.ponds]) if (x.provenance !== 'AUTHORED') prov.push(`${f} ${x.id} ${x.provenance}`);
+    if (/"RECORDED"/.test(B.toString())) prov.push(`${f} RECORDED tag`);
+    // channels: kind, width, depth, integer centre inside the outline, ribbon = 2 x centre
+    const kc = { bayou: 0, canal: 0, stream: 0 };
+    for (const c of D.water.channels) {
+      nCh++;
+      if (!(c.kind in WID) || c.width_m < WID[c.kind][0] || c.width_m > WID[c.kind][1] || c.depth_m !== DEP[c.kind]) geo.push(`${f} ${c.id} kind/width/depth`);
+      else kc[c.kind]++;
+      if (c.centre.length < 3 || c.polygon.length !== 2 * c.centre.length) geo.push(`${f} ${c.id} ribbon`);
+      for (const q of c.centre) { nV++; if (!Number.isInteger(q[0]) || !Number.isInteger(q[1]) || !inPolys(q, P[f].outline_local_m)) { geo.push(`${f} ${c.id} [${q}]`); break; } }
+    }
+    for (const k of Object.keys(kc)) if (kc[k] !== D.counts[k] || kc[k] === 0) geo.push(`${f} ${k} count ${kc[k]}`);
+    if (D.counts.channel_vertices !== D.water.channels.reduce((a, c) => a + c.centre.length, 0)) geo.push(`${f} channel_vertices`);
+    // lakes: only where registry water.labels puts a named lake in THIS outline; centre = LTP of the label point
+    const want = R.water.labels.filter((L) => L.inside_outline_of.includes(f));
+    if (D.water.lakes.length !== want.length || D.counts.lakes !== want.length) lk.push(`${f} ${D.water.lakes.length} vs ${want.length}`);
+    D.water.lakes.forEach((L, i) => {
+      const w = want[i]; if (!w) return;
+      const o = P[f].frame.origin;
+      const e = R0 * Math.cos(o.lat * rad) * (w.lng - o.lng) * rad, n = R0 * (w.lat - o.lat) * rad;
+      if (L.name !== w.name || Math.hypot(L.centre[0] - e, L.centre[1] - n) > 1 || !inPolys(L.centre, P[f].outline_local_m)
+          || !/AUTHORED, NOT the shoreline/.test(L.basis) || L.depth_m !== DEP.lake) lk.push(`${f} ${L.name}`);
+    });
+    // ponds: centre inside, no street segment closer than the radius (they sit in the gaps the maps leave)
+    const segs = [];
+    const S = J(P[f].map.streets.path);
+    for (const k of Object.keys(S.classes)) for (const pl of S.classes[k]) for (let i = 1; i < pl.length; i++) segs.push([pl[i - 1], pl[i]]);
+    const dseg = (p, a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], L2 = dx * dx + dy * dy || 1; const t = Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / L2)); return Math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy); };
+    for (const q of D.water.ponds) {
+      nPond++;
+      if (!inPolys(q.centre, P[f].outline_local_m) || q.depth_m !== DEP.pond || q.polygon.length < 8) { pd.push(`${f} ${q.id}`); continue; }
+      for (const [a, b] of segs) if (dseg(q.centre, a, b) <= q.radius_m) { pd.push(`${f} ${q.id} street at <= r`); break; }
+    }
+    if (D.water.ponds.length !== D.counts.ponds) pd.push(`${f} pond count`);
+    // roads: the file's profile = the registry's, and it points at the v1.3 streets file by sha
+    if (JSON.stringify(D.roads.classes) !== JSON.stringify(W.roads.classes) || D.roads.streets_path !== P[f].map.streets.path
+        || D.roads.streets_sha256 !== P[f].map.streets.sha256 || D.roads.profile_version !== W.roads.profile_version) rd.push(`${f} roads ref`);
+    if (D.buildings.mode !== 'page-rule') rd.push(`${f} buildings mode`);
+  }
+  if (!/NO water feature is RECORDED/.test(W.water_source) || !/@geo-maps\/\* excluded/.test(W.water_source)) prov.push('water_source statement');
+  if (existsSync(join(ROOT, 'parishes/vendor/@geo-maps')) || existsSync(join(ROOT, 'parishes/vendor/geo-maps'))) prov.push('ODbL @geo-maps vendored');
+  for (const [k, c] of Object.entries(W.roads.classes)) {
+    const need = ['lanes', 'lane_width_m', 'parking_lanes', 'parking_width_m', 'carriageway_m', 'curb_height_m', 'sidewalk_m', 'corridor_m', 'provenance'];
+    if (need.some((x) => !(x in c)) || c.provenance !== 'AUTHORED') { rd.push(`${k} fields`); continue; }
+    if (Math.abs(c.carriageway_m - (c.lanes * c.lane_width_m + c.parking_lanes * c.parking_width_m)) > 0.01) rd.push(`${k} carriageway`);
+    if (c.sidewalk_m.length !== 2 || Math.abs(c.corridor_m - (c.carriageway_m + c.sidewalk_m[0] + c.sidewalk_m[1])) > 0.01) rd.push(`${k} corridor`);
+    if (!(c.lanes >= 1 && c.curb_height_m > 0 && c.curb_height_m <= 0.3 && c.sidewalk_m[0] > 0 && c.sidewalk_m[1] > 0)) rd.push(`${k} ranges`);
+  }
+  if (JSON.stringify(Object.keys(W.roads.classes)) !== '["arterial","collector","local"]') rd.push('road classes');
+  ok(bad.length === 0, `[world] registry v1.4 source_stamp recomputed from parishes.json + streets + build_world.py; every parishes/maps/world/<fips>.json matches its sha256/bytes/counts and carries the stamp${bad.length ? ' [' + bad.slice(0, 4).join('; ') + ']' : ''}`);
+  ok(size.length === 0, `[world] byte budget: each world file <= 600,000 bytes (total ${total})${size.length ? ' [' + size.join('; ') + ']' : ''}`);
+  ok(prov.length === 0, `[world] water provenance: no public-domain source verified, so every lake/channel/pond is AUTHORED, nothing RECORDED, water legend "NOT the real lakes, rivers or bayous", no ODbL @geo-maps vendored${prov.length ? ' [' + prov.slice(0, 4).join('; ') + ']' : ''}`);
+  ok(geo.length === 0, `[world] ${nCh} channels / ${nV} centre vertices: bayou|canal|stream with AUTHORED width range and depth, integer centre inside the RECORDED outline, ribbon polygon 2x centre${geo.length ? ' [' + geo.slice(0, 4).join('; ') + ']' : ''}`);
+  ok(lk.length === 0, `[world] lake stand-ins only where registry water.labels names a lake inside the outline, centred on the label's LTP point (<= 1 m), basis "AUTHORED, NOT the shoreline"${lk.length ? ' [' + lk.slice(0, 4).join('; ') + ']' : ''}`);
+  ok(pd.length === 0, `[world] ${nPond} ponds inside the outline with no street segment within their radius${pd.length ? ' [' + pd.slice(0, 4).join('; ') + ']' : ''}`);
+  ok(rd.length === 0, `[world] road profiles arterial|collector|local AUTHORED: carriageway = lanes*lane + parking, corridor = carriageway + both sidewalks, curb 0-0.3 m; each world file references its streets file by sha256${rd.length ? ' [' + rd.slice(0, 4).join('; ') + ']' : ''}`);
+  // buildings: the published rule matches the page and the hash
+  const page = buf('web/build_parishes.py').toString(), C = W.buildings.constants || {};
+  const { wildsHash } = await import(pathToFileURL(join(ROOT, 'wilds/core.mjs')).href);
+  const vec = (W.buildings.hash_vectors || []).filter((v) => wildsHash(...v.args) === v.value);
+  const pageOk = new RegExp(`CHUNK_M = ${C.CHUNK_M}\\b`).test(page) && new RegExp(`CELL = ${C.CELL}\\b`).test(page)
+    && new RegExp(`DISTRICT_M = ${C.DISTRICT_M}\\b`).test(page) && new RegExp(`SEED = ${C.SEED}\\b`).test(page)
+    && /h < 0\.55\) out\.block\.push\(kitLot\(/.test(page) && /function kitLot\(/.test(page);
+  ok(W.buildings.mode === 'page-rule' && pageOk && vec.length >= 6 && vec.length === W.buildings.hash_vectors.length && /h < 0\.55/.test(W.buildings.rule),
+    `[world] building rule: constants CELL/CHUNK_M/DISTRICT_M/SEED and the h < 0.55 kitLot rule match web/build_parishes.py; ${vec.length} wildsHash vectors reproduce wilds/core.mjs`);
+  const bw = buf('parishes/build_world.py').toString();
+  ok(!/\.get\(/.test(bw) && !/\?\?/.test(bw) && /raise SystemExit\(f'build_world: missing/.test(bw),
+    '[world] build_world.py fails closed: no .get() defaults, missing fields raise a named error');
 }
 
 console.log(`\n${pass} ok, ${fail} FAIL`);

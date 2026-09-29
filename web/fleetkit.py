@@ -435,7 +435,8 @@ function fleetCreate(THREE, reg, capacity) {
         if (!h.alive) throw new Error('fleetkit: set on a despawned ' + id);
         const k = 'scale' in p ? p.scale : 1;   // display-only multiplier (a showroom lineup); physics never sets it
         e3.set('pitch' in p ? p.pitch : 0, p.yaw, 'roll' in p ? p.roll : 0, 'YXZ'); q.setFromEuler(e3);
-        m4.compose(v3.set(p.x, p.y, p.z), q, s3.set(scale[0] * k, scale[1] * k, scale[2] * k));
+        const cr = 'crumple' in p ? p.crumple : 0;   // crash dent: squash along the length (display only)
+        m4.compose(v3.set(p.x, p.y, p.z), q, s3.set(scale[0] * k, scale[1] * k * (1 - cr * 0.3), scale[2] * k * (1 - cr)));
         F.mesh.setMatrixAt(slot, m4); F.mesh.instanceMatrix.needsUpdate = true;
         if ('brake' in p) h.brake(p.brake);
         if (!wslots.length) return;
@@ -514,7 +515,8 @@ function fleetCanSpawn(spec, ground, x, z, yaw) {
 function fleetState(spec, ground, x, z, yaw) {
   const c = fleetCanSpawn(spec, ground, x, z);
   if (!c.ok) throw new Error('fleetkit: cannot place ' + spec.id + ' here - ' + c.reason);
-  const st = { x, z, yaw, y: 0, v: 0, steer: 0, brake: 0, pitch: 0, roll: 0, t: 0, refused: 0, wake: 0, spin: 0, phase: (x * 0.37 + z * 0.11) % 6.283 };
+  const st = { x, z, yaw, y: 0, v: 0, steer: 0, brake: 0, pitch: 0, roll: 0, t: 0, refused: 0, wake: 0, spin: 0, phase: (x * 0.37 + z * 0.11) % 6.283,
+    kvx: 0, kvz: 0, yawRate: 0, dent: 0, crumple: 0, air: false, vy: 0, pitchRate: 0, rollRate: 0 };
   st.y = spec.medium === 'land' ? ground.height(x, z) : ground.waterLevel(x, z) - spec.draft;
   return st;
 }
@@ -816,7 +818,8 @@ function fleetTraffic(THREE, reg, routes, ground, opts) {
       if (!e) continue;
       const dir = r.loop ? 1 : (rnd() < 0.5 ? 1 : -1);
       agents.push({ e, spec, ri, s: rnd() * g.len, dir, cruise: Math.min(spec.top * opts.speedFactor, 14), v: 0, brake: 0, h: null,
-        x: 0, y: 0, z: 0, yaw: 0, steer: 0, spin: 0, pitch: 0, roll: 0, t: rnd() * 10, phase: rnd() * 6.28 });
+        x: 0, y: 0, z: 0, yaw: 0, steer: 0, spin: 0, pitch: 0, roll: 0, t: rnd() * 10, phase: rnd() * 6.28,
+        crashT: 0, ghostT: 0, wait: 0, dent: 0, crumple: 0, crashes: 0, resets: 0 });
     }
   });
   for (const a of agents) need[a.e.family] = Math.min(need[a.e.family] + 1, 64);
@@ -832,8 +835,14 @@ function fleetTraffic(THREE, reg, routes, ground, opts) {
     if (a.spec.medium === 'land') { a.y = ground.height(a.x, a.z); a.spin = (a.spin + a.v * dt / a.spec.wheelR) % (Math.PI * 2); }
     else { a.t += dt; a.y = ground.waterLevel(a.x, a.z) - a.spec.draft + 0.06 * Math.sin(a.t * 1.3 + a.phase); }
   }
-  function update(dt, eye) {
+  /* ctx (optional) = {coeffs: physics.json, people: [{x, z, r, cls}], others: [{st, spec}] (player vehicles), onEvent(ev)}:
+     agents stop for people (never touch one), a player vehicle that hits an agent crashes it (stop, dent, event), and a
+     crashed or blocked agent resets after crash.reset_s and ghosts past its blocker, so traffic never jams forever */
+  function update(dt, eye, ctx) {
     const t0 = (typeof performance !== 'undefined' ? performance : Date).now();
+    const C = ctx ? fleetCrashCoeffs(fleetNeed(ctx, 'coeffs', 'traffic ctx')) : null;
+    const people = ctx ? fleetNeed(ctx, 'people', 'traffic ctx') : [], others = ctx ? fleetNeed(ctx, 'others', 'traffic ctx') : [];
+    if (C) { fleetNeed(ctx, 'onEvent', 'traffic ctx'); fleetPeopleCheck(people, C); }
     // following: per route and direction, slow down behind the agent ahead
     const lanes = new Map();
     for (const a of agents) { const k = a.ri + ':' + a.dir; if (!lanes.has(k)) lanes.set(k, []); lanes.get(k).push(a); }
@@ -843,21 +852,38 @@ function fleetTraffic(THREE, reg, routes, ground, opts) {
       for (let i = 0; i < list.length; i++) {
         const a = list[i], ahead = list[i + 1] || (routes[a.ri].loop && list.length > 1 ? list[0] : null);
         let gap = Infinity;
-        if (ahead) { gap = (ahead.s - a.s) * a.dir; if (gap < 0) gap += g.len; gap -= (a.spec.L + ahead.spec.L) / 2; }
+        if (ahead && !(a.ghostT > 0)) { gap = (ahead.s - a.s) * a.dir; if (gap < 0) gap += g.len; gap -= (a.spec.L + ahead.spec.L) / 2; }
         let want = gap < 6 ? 0 : gap < 20 ? a.cruise * (gap - 6) / 14 : a.cruise;
         if (!routes[a.ri].loop) { const toEnd = a.dir > 0 ? g.len - a.s : a.s; if (toEnd < 30) want = Math.min(want, Math.max(1.5, a.cruise * toEnd / 30)); }   // slow for the turn-around
+        let person = false;
+        if (C) {
+          if (a.crashT > 0) want = 0;
+          if (people.length && fleetYieldCheck({ x: a.x, z: a.z, yaw: a.yaw, v: Math.max(a.v, 0.1) }, a.spec, people, C)) { want = 0; person = true; }
+        }
         a.brake = want < a.v - 0.2 ? 1 : 0;
         a.v += Math.max(-a.spec.accel * 3 * dt, Math.min(a.spec.accel * dt, want - a.v));
         a.v = Math.max(0, a.v);
+        if (C) {   // never jam forever: a crashed agent resets, a blocked one ghosts past its blocker (people are always yielded to)
+          if (a.ghostT > 0) a.ghostT -= dt;
+          if (a.crashT > 0) { a.v = 0; a.brake = 1; a.crashT -= dt; if (a.crashT <= 0) { a.crashT = 0; a.dent = 0; a.crumple = 0; a.ghostT = C.reset_s / 2; a.resets++; } }
+          else if (want < 0.1 && a.v < 0.1 && !person) { a.wait += dt; if (a.wait > C.reset_s) { a.wait = 0; a.ghostT = C.reset_s / 2; a.resets++; } }
+          else a.wait = 0;
+        }
       }
     }
     drawn = 0;
     for (const a of agents) {
-      const g = geoms[a.ri];
+      const g = geoms[a.ri], prev = C ? { s: a.s, dir: a.dir, x: a.x, y: a.y, z: a.z, yaw: a.yaw } : null;
       a.s += a.dir * a.v * dt;
       if (routes[a.ri].loop) a.s = ((a.s % g.len) + g.len) % g.len;
       else if (a.s > g.len) { a.s = g.len; a.dir = -1; } else if (a.s < 0) { a.s = 0; a.dir = 1; }
       place(a, dt);
+      if (C && people.length && fleetPeopleHit(a, a.spec, people, 0)) { Object.assign(a, prev); a.v = 0; }   // never touches a person
+      if (C && !(a.ghostT > 0)) for (const o of others) {
+        const pseudo = fleetCrashInit({ x: a.x, y: a.y, z: a.z, yaw: a.yaw, v: a.v, dent: a.dent, crumple: a.crumple });
+        const e = fleetCollideVehicles(o.st, o.spec, pseudo, a.spec, C, ground);
+        if (e && a.crashT <= 0) { a.crashT = C.reset_s; a.v = 0; a.dent = pseudo.dent; a.crumple = pseudo.crumple; a.crashes++; ctx.onEvent(e); }
+      }
       const near = Math.hypot(a.x - eye.x, a.z - eye.z) <= opts.radius;
       if (near && !a.h) a.h = fl.spawn(a.e.id, a);
       else if (!near && a.h) { a.h.despawn(); a.h = null; }
@@ -867,9 +893,245 @@ function fleetTraffic(THREE, reg, routes, ground, opts) {
   }
   return {
     group: fl.group, agents, routes, fleet: fl, update,
-    stats: () => ({ agents: agents.length, drawn, drawCalls: fl.drawCalls(), families: new Set(agents.map((a) => a.e.family)).size,
+    stats: () => ({ agents: agents.length, drawn, crashed: agents.filter((a) => a.crashT > 0).length, drawCalls: fl.drawCalls(), families: new Set(agents.map((a) => a.e.family)).size,
       lastMs, avgMs: frames ? sumMs / frames : 0, budget: FLEET_TRAFFIC_BUDGET }),
   };
+}
+/* ------------------------------------------- crash response (wave 7, PHYS) --- */
+/* Arcade crash play driven by physics/registry/physics.json (AUTHORED coefficients,
+   gravity 9.81): vehicle-vs-vehicle and vehicle-vs-static only. A vehicle is NEVER
+   moved into contact with a person, NPC, pet or animal: it yields, and if a move
+   would still touch one the move is refused. No injury is ever depicted. */
+const FLEET_CRASH_KEYS = ['restitution_vehicle', 'restitution_static', 'spin_gain', 'max_spin', 'slide_decay', 'dent_min_ms', 'dent_per_ms',
+  'crumple_max', 'wheel_step', 'drop_m', 'tumble_rate', 'reset_s', 'yield_margin', 'smoke_min_ms'];
+const fleetCrashCache = new WeakMap();
+function fleetCrashCoeffs(reg) {
+  if (fleetCrashCache.has(reg)) return fleetCrashCache.get(reg);
+  if (fleetNeed(reg, 'pack', 'physics registry') !== 'physics') throw new Error('fleetkit: crash coeffs need physics/registry/physics.json');
+  const cs = fleetNeed(reg, 'coeffs', 'physics registry'), cr = fleetNeed(cs, 'crash', 'physics coeffs'), out = {};
+  for (const k of FLEET_CRASH_KEYS) out[k] = fleetNeed(fleetNeed(cr, k, 'coeffs.crash'), 'value', 'coeffs.crash.' + k);
+  out.g = fleetNeed(fleetNeed(fleetNeed(cs, 'world', 'physics coeffs'), 'gravity', 'coeffs.world'), 'value', 'coeffs.world.gravity');
+  out.peds = fleetNeed(reg, 'pedestrian_classes', 'physics registry');
+  fleetCrashCache.set(reg, out);
+  return out;
+}
+function fleetCrashInit(st) {
+  for (const k of ['kvx', 'kvz', 'yawRate', 'dent', 'crumple', 'vy', 'pitchRate', 'rollRate']) if (!(k in st)) st[k] = 0;
+  if (!('air' in st)) st.air = false;
+  return st;
+}
+/* a vehicle's footprint as an oriented box (same convention as physkit: local z = heading (sin yaw, cos yaw)) */
+function fleetBox(st, spec) { return { cx: st.x, cz: st.z, hx: spec.W / 2, hz: spec.L / 2, c: Math.cos(st.yaw), s: Math.sin(st.yaw) }; }
+function fleetBoxCorners(b) {
+  const out = [];
+  for (const [lx, lz] of [[-1, -1], [1, -1], [1, 1], [-1, 1]]) out.push([b.cx + lx * b.hx * b.c + lz * b.hz * b.s, b.cz - lx * b.hx * b.s + lz * b.hz * b.c]);
+  return out;
+}
+function fleetInBox(b, x, z, pad) {
+  const dx = x - b.cx, dz = z - b.cz;
+  return Math.abs(dx * b.c - dz * b.s) <= b.hx + pad && Math.abs(dx * b.s + dz * b.c) <= b.hz + pad;
+}
+/* separating-axis test of two oriented boxes: null, or {nx, nz (unit, from a to b), depth, px, pz (contact)} */
+function fleetSat(a, b) {
+  const dx = b.cx - a.cx, dz = b.cz - a.cz;
+  const rad = (o, ux, uz) => o.hx * Math.abs(ux * o.c - uz * o.s) + o.hz * Math.abs(ux * o.s + uz * o.c);
+  let best = null;
+  for (const [ux, uz] of [[a.c, -a.s], [a.s, a.c], [b.c, -b.s], [b.s, b.c]]) {
+    const d = dx * ux + dz * uz, ov = rad(a, ux, uz) + rad(b, ux, uz) - Math.abs(d);
+    if (ov <= 0) return null;
+    if (!best || ov < best.depth) best = { nx: d < 0 ? -ux : ux, nz: d < 0 ? -uz : uz, depth: ov };
+  }
+  const pts = [...fleetBoxCorners(a).filter((p) => fleetInBox(b, p[0], p[1], 1e-6)), ...fleetBoxCorners(b).filter((p) => fleetInBox(a, p[0], p[1], 1e-6))];
+  if (pts.length) { best.px = pts.reduce((t, p) => t + p[0], 0) / pts.length; best.pz = pts.reduce((t, p) => t + p[1], 0) / pts.length; }
+  else { best.px = (a.cx + b.cx) / 2; best.pz = (a.cz + b.cz) / 2; }
+  return best;
+}
+/* world velocity of a vehicle = heading speed + knock-back slide; and back */
+function fleetVel(st) { return [Math.sin(st.yaw) * st.v + st.kvx, Math.cos(st.yaw) * st.v + st.kvz]; }
+function fleetSetVel(st, vx, vz) {
+  const fx = Math.sin(st.yaw), fz = Math.cos(st.yaw);
+  st.v = vx * fx + vz * fz; st.kvx = vx - st.v * fx; st.kvz = vz - st.v * fz;
+}
+function fleetSpin(st, spec, rx, rz, jx, jz, C) {   // yaw spin from an impulse J applied at r from the centre
+  const I = spec.mass * (spec.L * spec.L + spec.W * spec.W) / 12;
+  st.yawRate = Math.max(-C.max_spin, Math.min(C.max_spin, st.yawRate + C.spin_gain * (rz * jx - rx * jz) / I));
+}
+function fleetDent(st, speed, C) {
+  st.dent = Math.min(1, st.dent + Math.max(0, speed - C.dent_min_ms) * C.dent_per_ms);
+  st.crumple = C.crumple_max * st.dent;
+}
+/* vehicle a vs vehicle b: equal and opposite impulse (linear momentum conserved), spin, dents; returns an event or null */
+function fleetCollideVehicles(a, sa, b, sb, C, ground) {
+  fleetCrashInit(a); fleetCrashInit(b);
+  if (Math.abs(a.y - b.y) > Math.max(sa.H, sb.H)) return null;   // one flies over the other
+  const hit = fleetSat(fleetBox(a, sa), fleetBox(b, sb));
+  if (!hit) return null;
+  const ma = sa.mass, mb = sb.mass, { nx, nz, depth } = hit;
+  const [avx, avz] = fleetVel(a), [bvx, bvz] = fleetVel(b);
+  const vrel = (bvx - avx) * nx + (bvz - avz) * nz;
+  let j = 0;
+  if (vrel < 0) {
+    j = -(1 + C.restitution_vehicle) * vrel / (1 / ma + 1 / mb);
+    fleetSetVel(a, avx - j * nx / ma, avz - j * nz / ma);
+    fleetSetVel(b, bvx + j * nx / mb, bvz + j * nz / mb);
+    fleetSpin(a, sa, hit.px - a.x, hit.pz - a.z, -j * nx, -j * nz, C);
+    fleetSpin(b, sb, hit.px - b.x, hit.pz - b.z, j * nx, j * nz, C);
+    fleetDent(a, -vrel, C); fleetDent(b, -vrel, C);
+  }
+  // separate by mass share, never onto the wrong medium
+  const pa = [a.x - nx * depth * mb / (ma + mb), a.z - nz * depth * mb / (ma + mb)], pb = [b.x + nx * depth * ma / (ma + mb), b.z + nz * depth * ma / (ma + mb)];
+  if (fleetMediumOk(sa, ground, pa[0], pa[1])) { a.x = pa[0]; a.z = pa[1]; }
+  if (fleetMediumOk(sb, ground, pb[0], pb[1])) { b.x = pb[0]; b.z = pb[1]; }
+  const speed = Math.max(0, -vrel);
+  return { type: 'crash', with: 'vehicle', a: sa.id, b: sb.id, speed, impulse: j, x: hit.px, y: (a.y + b.y) / 2 + Math.min(sa.H, sb.H) / 2, z: hit.pz,
+    dent: Math.max(a.dent, b.dent), smoke: speed >= C.smoke_min_ms };
+}
+/* vehicle vs the static boxes of a physkit world (buildings, barriers; curbs <= wheel_step are driven over) */
+function fleetCollideStatic(st, spec, world, C) {
+  fleetCrashInit(st);
+  let ev = null;
+  for (const box of world.query(st.x, st.z, Math.hypot(spec.L, spec.W) / 2)) {
+    if (box.y1 - st.y <= C.wheel_step || st.y >= box.y1 || st.y + spec.H <= box.y0) continue;
+    const hit = fleetSat(fleetBox(st, spec), box);
+    if (!hit) continue;
+    st.x -= hit.nx * hit.depth; st.z -= hit.nz * hit.depth;
+    const [vx, vz] = fleetVel(st), vn = vx * hit.nx + vz * hit.nz;   // > 0: moving into the box
+    if (vn > 0) {
+      const j = (1 + C.restitution_static) * vn * spec.mass;
+      fleetSetVel(st, vx - j * hit.nx / spec.mass, vz - j * hit.nz / spec.mass);
+      fleetSpin(st, spec, hit.px - st.x, hit.pz - st.z, -j * hit.nx, -j * hit.nz, C);
+      fleetDent(st, vn, C);
+      ev = { type: 'crash', with: 'static', kind: box.kind, box: box.id, a: spec.id, speed: vn, impulse: j, x: hit.px, y: st.y + spec.H / 2, z: hit.pz,
+        dent: st.dent, smoke: vn >= C.smoke_min_ms };
+    }
+  }
+  return ev;
+}
+/* people = [{x, z, r, cls}], cls in the registry's pedestrian_classes (else THROWS) */
+function fleetPeopleCheck(people, C) {
+  for (const p of people) {
+    for (const k of ['x', 'z', 'r', 'cls']) fleetNeed(p, k, 'person');
+    if (!C.peds.includes(p.cls)) throw new Error('fleetkit: unknown pedestrian class ' + p.cls + ' (' + C.peds.join('/') + ')');
+  }
+}
+/* the first person whose circle touches the vehicle's footprint grown by pad, or null */
+function fleetPeopleHit(st, spec, people, pad) {
+  const b = fleetBox(st, spec);
+  for (const p of people) {
+    const dx = p.x - b.cx, dz = p.z - b.cz, lx = dx * b.c - dz * b.s, lz = dx * b.s + dz * b.c;
+    const qx = Math.max(-b.hx, Math.min(b.hx, lx)), qz = Math.max(-b.hz, Math.min(b.hz, lz));
+    if (Math.hypot(lx - qx, lz - qz) < p.r + pad) return p;
+  }
+  return null;
+}
+/* the first person in the stopping corridor ahead of the direction of travel, or null */
+function fleetYieldCheck(st, spec, people, C) {
+  const dir = st.v >= 0 ? 1 : -1, stop = st.v * st.v / (2 * spec.accel * 2.5);
+  const b = fleetBox(st, spec);
+  for (const p of people) {
+    const dx = p.x - b.cx, dz = p.z - b.cz, lx = dx * b.c - dz * b.s, lz = (dx * b.s + dz * b.c) * dir;
+    if (Math.abs(lx) <= b.hx + p.r + C.yield_margin * 0.5 && lz > 0 && lz <= b.hz + p.r + C.yield_margin + stop) return p;
+  }
+  return null;
+}
+/* one substep of fleetPhysStep */
+function fleetPhysSub(st, spec, input, ground, h, ctx, C, evs) {
+  const people = ctx.people, pre = { x: st.x, z: st.z, yaw: st.yaw };
+  const who = fleetYieldCheck(st, spec, people, C);
+  let inp = input;
+  if (who) { inp = { throttle: 0, steer: input.steer, brake: 1 }; if (!st.yielding) evs.push({ type: 'yield', cls: who.cls, a: spec.id }); st.yielding = true; }
+  else st.yielding = false;
+  const prevY = st.y, prevPitch = st.pitch, prevRoll = st.roll;
+  fleetStep(st, spec, inp, ground, h);
+  // knock-back slide and spin (decay), kept on the vehicle's medium
+  if (st.kvx || st.kvz || st.yawRate) {
+    const nx = st.x + st.kvx * h, nz = st.z + st.kvz * h;
+    if (fleetMediumOk(spec, ground, nx, nz)) { st.x = nx; st.z = nz; } else { st.kvx = 0; st.kvz = 0; }
+    st.yaw += st.yawRate * h;
+    const d = Math.exp(-C.slide_decay * h); st.kvx *= d; st.kvz *= d; st.yawRate *= d;
+    if (Math.hypot(st.kvx, st.kvz) < 0.02) { st.kvx = 0; st.kvz = 0; }
+    if (Math.abs(st.yawRate) < 0.01) st.yawRate = 0;
+  }
+  // drops: ground falling away under a moving land vehicle -> airborne, tumble, land upright
+  if (spec.medium === 'land') {
+    const gh = st.y;
+    if (st.air) {
+      st.vy -= C.g * h;
+      const y = prevY + st.vy * h;
+      if (y <= gh) {
+        const impact = -st.vy; st.air = false; st.y = gh; st.vy = 0; st.pitchRate = 0; st.rollRate = 0;
+        fleetDent(st, impact, C);
+        if (impact > C.dent_min_ms) evs.push({ type: 'crash', with: 'ground', a: spec.id, speed: impact, impulse: impact * spec.mass, x: st.x, y: gh, z: st.z, dent: st.dent, smoke: impact >= C.smoke_min_ms });
+      } else { st.y = y; st.pitch = prevPitch + st.pitchRate * h; st.roll = prevRoll + st.rollRate * h; }
+    } else if (prevY - gh > C.drop_m && Math.abs(st.v) > 1) {
+      st.air = true; st.vy = Math.max(0, st.vy) - C.g * h; st.y = prevY + st.vy * h;
+      st.pitchRate = C.tumble_rate * Math.abs(st.v) * 0.5 * Math.sign(st.v); st.rollRate = C.tumble_rate * Math.abs(st.v) * 0.3 * (st.steer < 0 ? -1 : 1);
+      st.pitch = prevPitch; st.roll = prevRoll;
+    } else st.vy = (gh - prevY) / h;
+  }
+  if (ctx.world) { const e = fleetCollideStatic(st, spec, ctx.world, C); if (e) evs.push(e); }
+  for (const o of ctx.others) {
+    if (o.st === st) continue;
+    const op = { x: o.st.x, z: o.st.z }, wasClear = !fleetPeopleHit(o.st, o.spec, people, 0);
+    const e = fleetCollideVehicles(st, spec, o.st, o.spec, C, ground);
+    if (!e) continue;
+    evs.push(e);
+    // the struck vehicle is never pushed into a person either
+    if (wasClear && fleetPeopleHit(o.st, o.spec, people, 0)) { o.st.x = op.x; o.st.z = op.z; o.st.v = 0; o.st.kvx = 0; o.st.kvz = 0; o.st.yawRate = 0; }
+  }
+  // absolute rule: never in contact with a person/NPC/pet/animal - refuse the move (the vehicle stays where it was)
+  if (fleetPeopleHit(st, spec, people, 0)) {
+    st.x = pre.x; st.z = pre.z; st.yaw = pre.yaw; st.v = 0; st.kvx = 0; st.kvz = 0; st.yawRate = 0; st.refused++;
+  }
+}
+/* fleetStep + crash + drops + people guard; ctx = {coeffs: physics.json, world: physkit world | null, others: [{st, spec}],
+   people: [{x, z, r, cls}], onEvent(ev)}. Sub-stepped so a move never exceeds a quarter of the vehicle's width. */
+function fleetPhysStep(st, spec, input, ground, dt, ctx) {
+  const C = fleetCrashCoeffs(fleetNeed(ctx, 'coeffs', 'phys ctx'));
+  for (const k of ['world', 'others', 'people', 'onEvent']) fleetNeed(ctx, k, 'phys ctx');
+  fleetPeopleCheck(ctx.people, C);
+  fleetCrashInit(st);
+  const reach = Math.max(Math.abs(st.v) + spec.accel * dt, Math.hypot(st.kvx, st.kvz)) * dt;
+  const n = Math.min(64, Math.max(1, Math.ceil(reach / (Math.min(spec.W, spec.L) / 4))));
+  const evs = [];
+  for (let i = 0; i < n; i++) fleetPhysSub(st, spec, input, ground, dt / n, ctx, C, evs);
+  for (const e of evs) ctx.onEvent(e);
+  return evs;
+}
+/* a sound hook's parameters for a crash event (pure): loudness 0..1 and a thud length; the page plays it */
+function fleetCrashTone(ev) {
+  const gain = Math.min(1, fleetNeed(ev, 'speed', 'crash event') / 20);
+  return { gain, seconds: 0.12 + 0.4 * gain, low: ev.with === 'static' || ev.with === 'ground' };
+}
+/* smoke puffs: ONE InstancedMesh (one draw call), grey, rising and fading (drawn only) */
+function fleetSmoke(THREE, cap) {
+  const geo = new THREE.IcosahedronGeometry(1, 0);
+  const mat = new THREE.MeshBasicMaterial({ color: 0x8a8a8a, transparent: true, opacity: 0.45, depthWrite: false });
+  const mesh = new THREE.InstancedMesh(geo, mat, cap);
+  mesh.name = 'fleet:smoke'; mesh.frustumCulled = false; mesh.visible = false;
+  const zero = new THREE.Matrix4().makeScale(0, 0, 0), m4 = new THREE.Matrix4();
+  for (let i = 0; i < cap; i++) mesh.setMatrixAt(i, zero);
+  const P = Array.from({ length: cap }, () => ({ life: 0, age: 0, x: 0, y: 0, z: 0, s: 0 }));
+  let next = 0, seed = 7;
+  const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+  function puff(x, y, z, strength) {
+    const k = Math.max(0, Math.min(1, strength)), n = 2 + Math.round(4 * k);
+    for (let i = 0; i < n; i++) { const p = P[next]; next = (next + 1) % cap;
+      p.x = x + (rnd() - 0.5) * 1.2; p.y = y + rnd() * 0.4; p.z = z + (rnd() - 0.5) * 1.2; p.s = 0.3 + 0.5 * k; p.age = 0; p.life = 1.2 + 1.3 * k; }
+    mesh.visible = true;
+  }
+  function update(dt) {
+    let alive = 0;
+    P.forEach((p, i) => {
+      if (p.age >= p.life) { if (p.life) { mesh.setMatrixAt(i, zero); p.life = 0; } return; }
+      p.age += dt; p.y += 0.8 * dt; alive++;
+      const s = p.s * (1 + 1.5 * p.age / p.life) * Math.max(0, 1 - p.age / p.life);
+      m4.makeScale(s, s, s).setPosition(p.x, p.y, p.z); mesh.setMatrixAt(i, m4);
+    });
+    mesh.instanceMatrix.needsUpdate = true; mesh.visible = alive > 0;
+    return alive;
+  }
+  return { mesh, puff, update };
 }
 /* ----------------------------------------------- touch (phone) driving --- */
 /* The stick's pure mapping (tested in node): drag (dx right, dy down, px) inside
@@ -954,7 +1216,8 @@ export { FLEET_API, FLEET_SLOTS, FLEET_MIN_WET_M, FLEET_KEEL_CLEAR_M, fleetFamil
   fleetGroundFromWilds, fleetFlatGround, fleetDepth, fleetSpec, fleetCanSpawn, fleetState, fleetLandStep, fleetBoatStep,
   fleetStep, fleetNearest, fleetExitPoint, fleetChaseCamera, fleetWake, fleetWheelLayout, fleetLights, fleetDriverEye,
   fleetDriverCamera, FLEET_TRAFFIC_BUDGET, FLEET_STEER_VIS, fleetGridLanes, fleetRingLane, fleetTraffic,
-  FLEET_BRAKE_GAIN, fleetCabParts, FLEET_DETAIL, fleetDetailOf, fleetStreetRoutes, fleetParishStreets, fleetStickInput, FLEET_TOUCH_CSS, fleetTouchControls };
+  FLEET_BRAKE_GAIN, fleetCabParts, FLEET_DETAIL, fleetDetailOf, fleetStreetRoutes, fleetParishStreets, fleetStickInput, FLEET_TOUCH_CSS, fleetTouchControls,
+  fleetCrashCoeffs, fleetBox, fleetSat, fleetVel, fleetCollideVehicles, fleetCollideStatic, fleetPeopleHit, fleetYieldCheck, fleetPhysStep, fleetCrashTone, fleetSmoke };
 '''
 
 EXPORTS = re.findall(r'export \{([^}]*)\}', FLEET_JS)[0].replace('\n', ' ').split(',')

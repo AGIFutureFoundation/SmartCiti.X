@@ -104,7 +104,13 @@ NAME_WORDS = ('Egret', 'Heron', 'Cypress', 'Tupelo', 'Willow', 'Juniper',
               'Bittern', 'Gallinule', 'Loon', 'Teal', 'Grebe', 'Alder',
               'Birch', 'Rush', 'Fern')
 ROLE_TITLE = {'mentor': 'Mentor', 'k12-guide': 'Guide', 'ranger': 'Ranger',
-              'pilot': 'Pilot', 'host': 'Host'}
+              'pilot': 'Pilot', 'host': 'Host', 'responder': 'Responder',
+              'relief-coordinator': 'Coordinator', 'teacher': 'Teacher',
+              'humanitarian-trainer': 'Trainer'}
+# wave 7 (PATHS_CONTRACT v1): one NPC per parish for each quote path; lines = that path's quote steps
+PATHS_REG = 'layers/registry/paths.json'
+PATH_ROLES = {'responders': 'responder', 'relief': 'relief-coordinator', 'teachers': 'teacher',
+              'un': 'humanitarian-trainer'}
 
 # ---------------------------------------------------- appearance (avatars/) --
 AV = REG['avatars']
@@ -169,6 +175,26 @@ ROLE_WARDROBE = {
               'vest': ['life-vest'], 'tools': ['none'], 'extras': ['radio', 'sunglasses'],
               'outer': ['none', 'rain-slicker', 'windbreaker'], 'pants': ['rain-pants', 'cargo', 'khaki-work'],
               'pantscolor': ['slate', 'navy', 'charcoal'], 'shoes': ['rubber-yellow', 'rubber-green', 'wellington']},
+    'responder': {'headwear': ['hard-cap', 'ball-cap'], 'headcolor': ['navy', 'slate', 'hi-vis-yellow'],
+                  'top': ['polo', 'work-shirt', 'long-sleeve'], 'topcolor': ['navy', 'slate', 'charcoal'],
+                  'vest': ['hi-vis-2', 'hi-vis-1'], 'tools': ['none'], 'extras': ['radio', 'id-badge'],
+                  'outer': ['none', 'rain-slicker'], 'pants': ['cargo', 'khaki-work'],
+                  'pantscolor': ['navy', 'charcoal', 'slate'], 'shoes': ['steel-toe-black', 'hiker']},
+    'relief-coordinator': {'headwear': ['ball-cap', 'bucket'], 'headcolor': ['sand', 'navy', 'olive'],
+                           'top': ['long-sleeve', 'work-shirt', 'rain-shell'], 'topcolor': ['sand', 'navy', 'olive', 'slate'],
+                           'vest': ['hi-vis-1', 'rain-vest'], 'tools': ['none'], 'extras': ['radio', 'id-badge'],
+                           'outer': ['none', 'rain-slicker', 'anorak'], 'pants': ['cargo', 'rain-pants'],
+                           'pantscolor': ['sand', 'navy', 'olive'], 'shoes': ['wellington', 'hiker', 'rubber-green']},
+    'teacher': {'headwear': ['none', 'none', 'visor'], 'headcolor': ['navy', 'teal'],
+                'top': ['polo', 'henley', 'fleece', 'long-sleeve'], 'topcolor': ['teal', 'crimson', 'forest', 'navy'],
+                'vest': ['none'], 'tools': ['none'], 'extras': ['id-badge'], 'outer': ['none', 'softshell'],
+                'pants': ['chinos', 'jeans', 'khaki-work'], 'pantscolor': ['stone', 'navy', 'charcoal'],
+                'shoes': ['sneaker-black', 'slip-on', 'sneaker-white']},
+    'humanitarian-trainer': {'headwear': ['none', 'ball-cap', 'bucket'], 'headcolor': ['sand', 'white', 'steel-blue'],
+                             'top': ['polo', 'long-sleeve', 'sun-hoodie'], 'topcolor': ['white', 'steel-blue', 'sand'],
+                             'vest': ['hi-vis-1', 'none'], 'tools': ['none'], 'extras': ['id-badge', 'radio'],
+                             'outer': ['none', 'windbreaker'], 'pants': ['cargo', 'khaki-work', 'chinos'],
+                             'pantscolor': ['sand', 'navy', 'stone'], 'shoes': ['hiker', 'sneaker-blue']},
     'host': {'headwear': ['hard-cap', 'vented-cap', 'full-brim'], 'headcolor': ['white', 'hi-vis-yellow', 'royal'],
              'top': ['polo', 'work-shirt', 'hi-vis-tee'], 'topcolor': ['teal', 'navy', 'royal', 'slate'],
              'vest': ['hi-vis-2', 'hi-vis-1', 'surveyor'], 'tools': ['none'], 'extras': ['id-badge', 'radio'],
@@ -425,6 +451,43 @@ def host_task(tid):
             'not_certification': quote('tasks', 'honesty.not_certification')}
 
 
+def path_npcs(fips):
+    """Wave 7: responder / relief coordinator / teacher / humanitarian trainer, one each per parish. Lines are
+    the path's quote steps in paths.json, each re-read from its registry here (verbatim or the build fails)."""
+    doc = load(PATHS_REG)
+    par = [p for p in doc['parishes'] if p['fips'] == fips]
+    if len(par) != 1:
+        raise NPCBuildError(f'{PATHS_REG}: parish {fips} missing: run python3 layers/build.py')
+    out = []
+    for path in par[0]['paths']:
+        pid = path['id']
+        if pid not in PATH_ROLES:
+            continue
+        if path['npc_role'] != PATH_ROLES[pid]:
+            raise NPCBuildError(f'{PATHS_REG}#{fips}.{pid}: npc_role {path["npc_role"]} != {PATH_ROLES[pid]}')
+        lines = []
+        for st in path['steps']:
+            rel, jp = st['source'].split('#', 1)
+            text = resolve(rel, jp)
+            if text != st['quote']:
+                raise NPCBuildError(f'{st["id"]}: quote is not verbatim {st["source"]}')
+            lines.append({'text': text, 'source': st['source']})
+        for st in path['steps']:   # a path with fewer than 3 quotes adds each frame's decision pressure
+            if len(lines) >= 3:
+                break
+            if st['source'].endswith('.situation'):
+                rel, jp = st['source'].split('#', 1)
+                jp2 = jp[:-len('situation')] + 'decision_pressure'
+                lines.append({'text': resolve(rel, jp2), 'source': f'{rel}#{jp2}'})
+        if not path['steps']:
+            raise NPCBuildError(f'{PATHS_REG}#{fips}.{pid}: no steps for the {PATH_ROLES[pid]}')
+        home = path['steps'][0]['station']
+        k = {'crew': AV['defaults']['crew'], 'lines': lines, 'points_to': {'kind': 'path', 'id': pid},
+             'not_certification': quote('tasks', 'honesty.not_certification')}
+        out.append((PATH_ROLES[pid], pid, k, home, home))
+    return out
+
+
 def real_parish(fips, par, lay):
     """(specs, places) for one parish from PARISH + LAYERS. Placement rules in NPC_CONTRACT."""
     pi = [q['fips'] for q in lay['parishes']].index(fips)
@@ -493,6 +556,7 @@ def real_parish(fips, par, lay):
     pl_ = next((pid for pid, l in lms if PILOT_KINDS.search(l['kind'])), None)
     if pl_ is not None:
         specs.append(('pilot', 'pilot', pilot(), pl_, pl_))
+    specs += path_npcs(fips)
     return specs, places, {'families_present': sorted(fam_home),
                            'ranger': rl is not None, 'pilot': pl_ is not None}
 
@@ -551,6 +615,8 @@ def build():
         pt = n['points_to']
         if pt['kind'] == 'lesson' and pt['id'] not in LES:
             raise NPCBuildError(f'{n["id"]}: lesson {pt["id"]} missing')
+        if pt['kind'] == 'path' and pt['id'] not in PATH_ROLES:
+            raise NPCBuildError(f'{n["id"]}: path {pt["id"]} has no NPC role')
         if pt['kind'] == 'task' and pt['id'] not in TIDX:
             raise NPCBuildError(f'{n["id"]}: task {pt["id"]} missing')
     sources = dict(SOURCES)
@@ -558,6 +624,7 @@ def build():
     if real is not None:
         sources['parishes'] = PARISH_REG
         sources['layers'] = LAYERS_REG
+        sources['paths'] = PATHS_REG
     stamp_src = pathlib.Path(__file__).read_bytes() + b''.join(
         (ROOT / sources[k]).read_bytes() for k in sorted(sources))
     return {

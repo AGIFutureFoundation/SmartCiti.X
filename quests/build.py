@@ -23,6 +23,7 @@ nothing. The registry says so in `honesty`.
 """
 import hashlib
 import json
+import re
 import pathlib
 import sys
 
@@ -391,6 +392,30 @@ add('main-cartographer', 'main', 'Every cache on the map', QUEST_PAGE, req(quest
     'Find the hidden cache at the foot of every page.', 'Cartographer', band='K-5')
 
 # ----------------------------------------------------------------- resolve + unlock text
+
+# wave 7 side stories (layers/registry/paths.json, PATHS_CONTRACT v1): each step a treasure, the story a side quest
+PATHS_REG = 'layers/registry/paths.json'
+_paths = load(PATHS_REG)
+if [need(p, 'fips', PATHS_REG) for p in need(_paths, 'parishes', PATHS_REG)] != _fips_all:
+    raise ValueError(f'{PATHS_REG} parishes are not the layers parishes in order: run python3 layers/build.py')
+for p in need(_paths, 'parishes', PATHS_REG):
+    fips = p['fips']
+    pname = need(p, 'name', f'{PATHS_REG}#{fips}')
+    for story in need(p, 'stories', f'{PATHS_REG}#{fips}'):
+        sid = need(story, 'id', f'{PATHS_REG}#{fips}.stories')
+        title = need(story, 'title', sid)
+        step_q = []
+        for st in need(story, 'steps', sid):
+            qid = need(st, 'quest', sid)
+            if re.search(r'crash|collide|wreck', json.dumps(st), re.I):
+                raise ValueError(f'{sid}: step {qid} mentions a crash; no quest rewards crashing')
+            add(qid, 'treasure', f'{title} - step {need(st, "n", qid)}', f'parish:{fips}', req(quests=step_q[-1:]),
+                need(st, 'text', qid), f'Story step: {pname}', place=f'{sid}-{st["n"]}')
+            step_q.append(qid)
+        add(need(story, 'quest', sid), 'side', f'{title} in {pname}', f'parish:{fips}', req(quests=step_q),
+            f'Follow every step of this side story in {pname}.', f'{title}: {pname}', place=sid)
+
+
 ids = [q['id'] for q in Q]
 dupes = sorted({i for i in ids if ids.count(i) > 1})
 if dupes:
@@ -465,13 +490,14 @@ stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()
                        + (ROOT / LESSONS_PATH).read_bytes() + (ROOT / SIMS_PATH).read_bytes()
                        + (ROOT / CAMPUS_SRC).read_bytes() + (ROOT / LAYERS_PATH).read_bytes()
                        + ((ROOT / FLEET_PATH).read_bytes() if (ROOT / FLEET_PATH).exists() else b'')
-                       + ((ROOT / WILDS_PATH).read_bytes() if (ROOT / WILDS_PATH).exists() else b'')).hexdigest()[:16]
+                       + ((ROOT / WILDS_PATH).read_bytes() if (ROOT / WILDS_PATH).exists() else b'')
+                       + (ROOT / PATHS_REG).read_bytes()).hexdigest()[:16]
 doc = {
     'pack': 'quests',
     'product': need(lessons_reg, 'product', LESSONS_PATH),
     'pack_version': need(lessons_reg, 'pack_version', LESSONS_PATH),
     'source_stamp': stamp,
-    'reads': [LESSONS_PATH, HALLS_PATH, SIMS_PATH, CRIBS_PATH, WILDS_PATH, CAMPUS_SRC, LAYERS_PATH, FLEET_PATH],
+    'reads': [LESSONS_PATH, HALLS_PATH, SIMS_PATH, CRIBS_PATH, WILDS_PATH, CAMPUS_SRC, LAYERS_PATH, FLEET_PATH, PATHS_REG],
     'parishes': _fips_all,
     'honesty': HONESTY,
     'counts': counts,

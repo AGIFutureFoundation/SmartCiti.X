@@ -52,6 +52,7 @@ function resolvePath(ref) {
 const REG = 'npcs/registry/npcs.json';
 const reg = readJSON(REG);
 const npcs = reg.npcs;
+const PATHROLE = { responders: 'responder', relief: 'relief-coordinator', teachers: 'teacher', un: 'humanitarian-trainer' };
 
 // ---------------------------------------------------------------- stamp --
 {
@@ -128,13 +129,14 @@ const npcs = reg.npcs;
     for (const q of [...x.knowledge, x.not_certification]) {
       checked++;
       if (typeof q.source !== 'string' || typeof q.text !== 'string') { miss.push(`${x.id}: source/text missing`); continue; }
-      if (!allowed.has(q.source.split('#')[0])) foreign.push(`${x.id}: ${q.source}`);
+      const isPathRole = ['responder', 'relief-coordinator', 'humanitarian-trainer'].includes(x.role);
+      if (!allowed.has(q.source.split('#')[0]) && !(isPathRole && q.source.startsWith('respond/registry/respond.json#'))) foreign.push(`${x.id}: ${q.source}`);
       const v = resolvePath(q.source);
       if (typeof v !== 'string' || v !== q.text) miss.push(`${x.id}: ${q.source}`);
     }
   }
   ok(`quote: all ${checked} lines match their source field verbatim`, miss.length === 0, miss);
-  ok('quote: every line comes from unions/schools/lessons/tasks/restoration', foreign.length === 0, foreign);
+  ok('quote: every line comes from unions/schools/lessons/tasks/restoration (+ respond/ for responder, relief, UN-trainer roles)', foreign.length === 0, foreign);
   const k12bad = npcs.filter((x) => x.role === 'k12-guide').filter((x) => x.layer !== 'Cognition.X K-12'
     || x.knowledge.some((q) => !/^(schools|lessons)\/registry\//.test(q.source))).map((x) => x.id);
   ok('quote: Cognition.X K-12 guides quote only schools/ and lessons/', k12bad.length === 0, k12bad);
@@ -168,7 +170,8 @@ const npcs = reg.npcs;
     const t = readFileSync(f, 'utf8');
     for (const m of t.matchAll(/\b([A-Z][a-z]+)\s+([A-Z][a-z]+)\b/g)) pairs.add(m[1] + ' ' + m[2]);
   }
-  const TITLES = { mentor: 'Mentor', 'k12-guide': 'Guide', ranger: 'Ranger', pilot: 'Pilot', host: 'Host' };
+  const TITLES = { mentor: 'Mentor', 'k12-guide': 'Guide', ranger: 'Ranger', pilot: 'Pilot', host: 'Host',
+    responder: 'Responder', 'relief-coordinator': 'Coordinator', teacher: 'Teacher', 'humanitarian-trainer': 'Trainer' };
   const words = new Set(reg.name_words);
   const shape = [], deny = [], inReg = [];
   for (const x of npcs) {
@@ -246,8 +249,28 @@ const npcs = reg.npcs;
   const les = readJSON('lessons/registry/lessons.json').lessons;
   const tids = new Set(readJSON('tasks/registry/tasks.json').tasks.map((t) => t.id));
   const badPt = npcs.filter((x) => !((x.points_to.kind === 'lesson' && x.points_to.id in les)
-    || (x.points_to.kind === 'task' && tids.has(x.points_to.id)))).map((x) => x.id);
-  ok('points_to: every NPC points to a real lesson or task', badPt.length === 0, badPt);
+    || (x.points_to.kind === 'task' && tids.has(x.points_to.id))
+    || (x.points_to.kind === 'path' && PATHROLE[x.points_to.id] === x.role))).map((x) => x.id);
+  ok('points_to: every NPC points to a real lesson, task or (path roles) its own path', badPt.length === 0, badPt);
+  // wave 7 path roles (PATHS_CONTRACT v1): one per parish per quote path; lines == that path's quotes, in order
+  const P7 = readJSON('layers/registry/paths.json');
+  const badRole = [];
+  for (const pp of P7.parishes) {
+    for (const [pid, role] of Object.entries(PATHROLE)) {
+      const here = npcs.filter((x) => x.parish === pp.fips && x.role === role);
+      const path = pp.paths.find((q) => q.id === pid);
+      if (here.length !== 1 || !path) { badRole.push(`${pp.fips}: ${here.length} ${role}`); continue; }
+      const want = path.steps.map((st) => `${st.source}|${st.quote}`);
+      const got = here[0].knowledge.slice(0, want.length).map((q) => `${q.source}|${q.text}`);
+      if (JSON.stringify(got) !== JSON.stringify(want)) badRole.push(`${here[0].id}: lines are not its path's quotes`);
+      if (here[0].knowledge.length < 3) badRole.push(`${here[0].id}: fewer than 3 lines`);
+    }
+  }
+  ok(`path roles: responder, relief coordinator, teacher, humanitarian trainer - one each in all ${P7.parishes.length} parishes, lines = the path's verbatim quotes`, badRole.length === 0 && P7.parishes.length > 0, badRole);
+  const unBad = npcs.filter((x) => x.role === 'humanitarian-trainer').flatMap((x) => x.knowledge)
+    .filter((q) => !/^respond\/registry\/respond\.json#(competencies|scenario_frames)\[\d+\]\.(what_it_is|situation)$/.test(q.source)
+      || /united nations|\bUN\b/i.test(q.text)).map((q) => q.source);
+  ok('path roles: the humanitarian trainer quotes only respond/ competencies and frames, and never a UN name or course', unBad.length === 0, unBad);
   const av = readJSON('avatars/registry/avatars.json');
   const opts = Object.fromEntries(av.sections.map((s) => [s.id, new Set(s.options.map((o) => o.id))]));
   const badCfg = [];
@@ -395,17 +418,18 @@ const K = await import(pathToFileURL(join(tmp, 'kit.mjs')).href);
 // dialogue (pure) + kit integration with real three and a fake DOM
 // labels come from the site catalogue (npc.* keys), exactly as a page passes them
 const LOC = ['en', 'ar', 'de', 'es', 'fr', 'hi', 'pt', 'zh'];
+
 const cat = Object.fromEntries(LOC.map((l) => [l, readJSON(`i18n/locales/${l}.json`).strings]));
 const trOf = (l) => (k) => { if (!(k in cat[l])) throw new Error('i18n missing ' + l + ':' + k); return cat[l][k]; };
 const LBL = K.labelsFrom(trOf('en'));
 {
   const bad = [];
   for (const l of LOC) { try { K.labelsFrom(trOf(l)); } catch (e) { bad.push(e.message); } }
-  ok('i18n: labelsFrom(tr) builds every dialogue label + 5 role titles in all 8 locales', bad.length === 0, bad);
+  ok('i18n: labelsFrom(tr) builds every dialogue label + 9 role titles in all 8 locales', bad.length === 0, bad);
   const keys = execFileSync('python3', ['-c', `import sys; sys.path.insert(0, ${JSON.stringify(join(ROOT, 'web'))}); from npckit import NPC_I18N_KEYS; print('\\n'.join(NPC_I18N_KEYS))`], { encoding: 'utf8' }).trim().split('\n');
   const same = [];
   for (const l of LOC.slice(1)) for (const k of keys) if (cat[l][k] === cat.en[k] && !/^(\/|Source :)$/.test(cat[l][k])) same.push(`${l}:${k}`);
-  ok(`i18n: the ${keys.length} npc.* keys are real translations (no English copies)`, keys.length === 16 && same.length === 0, same);
+  ok(`i18n: the ${keys.length} npc.* keys are real translations (no English copies)`, keys.length === 20 && same.length === 0, same);
   const lang = LOC.filter((l) => !/[(（]/.test(cat[l]['npc.quotelang']));
   ok('i18n: every locale says quoted lines stay verbatim in their source language', lang.length === 0 && /verbatim/.test(cat.en['npc.quotelang']), lang);
   let t = ''; try { K.labelsFrom((k) => (k === 'npc.role.pilot' ? '' : cat.en[k])); } catch (e) { t = e.message; }

@@ -49,6 +49,7 @@ GROUPS = [
         ('web/trade_craft_wilds.html', 'nav.page.wilds'),
         ('web/trade_craft_parishes.html', 'nav.page.parishes'),
         ('web/trade_craft_fleet.html', 'nav.page.fleet'),
+        ('web/trade_craft_packs.html', 'nav.page.packs'),
     ]),
     ('nav.group.maps', [
         ('web/trade_craft_map.html', 'nav.page.map'),

@@ -35,6 +35,22 @@ ok('the registry is embedded verbatim', emb && JSON.stringify(emb) === JSON.stri
 ok('the page embeds exactly 50 land + 20 water', emb && emb.fleet.filter((e) => e.medium === 'land').length === 50 && emb.fleet.filter((e) => e.medium === 'water').length === 20);
 const kit = execFileSync('python3', ['-c', 'import sys; sys.path.insert(0, sys.argv[1]); import fleetkit; sys.stdout.write(fleetkit.fleet_inline())', join(ROOT, 'web')]).toString();
 ok('the page carries web/fleetkit.py byte-for-byte between its FLEET_KIT markers', page.includes(kit) && page.split('/* FLEET_KIT:BEGIN').length === 2);
+// crash play (wave 7, PHYS): physics registry + physkit embedded, driving and traffic routed through the crash response
+const physReg = JSON.parse(readFileSync(join(ROOT, 'physics/registry/physics.json'), 'utf8'));
+const pemb = block('physics-registry');
+ok('crash: the physics registry is embedded verbatim', pemb && JSON.stringify(pemb) === JSON.stringify(physReg));
+const pkit = execFileSync('python3', ['-c', 'import sys; sys.path.insert(0, sys.argv[1]); import physkit; sys.stdout.write(physkit.phys_inline())', join(ROOT, 'web')]).toString();
+ok('crash: the page carries web/physkit.py byte-for-byte between its PHYS_KIT markers', page.includes(pkit) && page.split('/* PHYS_KIT:BEGIN').length === 2);
+const tick = (page.match(/function driveTick\(dt, inp\) \{([\s\S]*?)\n\}/) || [, ''])[1];
+ok('crash: the drive loop steps through fleetPhysStep with the physics registry and the pad world (no bare fleetStep)',
+  /fleetPhysStep\(drv\.st, drv\.spec, inp, GROUND, dt, physCtx\(drv\)\)/.test(tick) && !/(^|[^.\w])fleetStep\(/.test(tick)
+  && /const physCtx = \(self\) => \(\{ coeffs: PHYSREG, world: PW, people: \[\], onEvent: onCrash,/.test(page)
+  && /const PW = createPhysics\(\{ reg: PHYSREG,/.test(page) && /PW\.addBoxes\(BARRIERS\)/.test(page));
+ok('crash: events puff fleetSmoke and call the fleetCrashTone sound hook; smoke is in the scene and updated per frame',
+  /if \(ev\.smoke\) smoke\.puff\(/.test(page) && /const t = fleetCrashTone\(ev\)/.test(page) && /const smoke = fleetSmoke\(THREE, \d+\); scene\.add\(smoke\.mesh\)/.test(page) && /smoke\.update\(dt\)/.test(page));
+ok('crash: ambient traffic gets the crash ctx (player vehicle as others, people list) so a hit agent crashes and resets',
+  /traffic\.update\(dt, drv \? drv\.st : \{ x: camera\.position\.x, z: camera\.position\.z \},\s*\{ coeffs: PHYSREG, people: \[\], others: drv \? \[drv\] : \[\], onEvent: onCrash \}\)/.test(page));
+ok('crash: the physics honesty line is shown verbatim (arcade, AUTHORED, never strikes people)', page.includes(`<p class="fl-honesty" lang="en" dir="ltr">${physReg.honesty} Registry: physics/registry/physics.json (stamp ${physReg.source_stamp}).</p>`));
 ok('exactly one <h1>', (page.match(/<h1[\s>]/g) || []).length === 1);
 ok('apply_seo head tags: description, canonical, og:title', /<meta name="description"/.test(page) && /<link rel="canonical"/.test(page) && /property="og:title"/.test(page));
 ok('brand icon link', /<link rel="icon" href="data:image\/svg\+xml/.test(page));
@@ -157,6 +173,13 @@ if (base) {
   await p.waitForFunction(() => document.documentElement.dataset.fleetReady === '1', null, { timeout: 30000 });
   ok('browser: ?lang=ar renders rtl Arabic chrome and the #id deep link selects', await F(() => document.documentElement.dir === 'rtl'
     && document.querySelector('h1').textContent.includes('الأسطول') && window.__fleet.selected() === 'ferry.vehicle-ferry'));
+  // crash play: drive the sedan straight at the barrier 45 m ahead; it stops at the barrier, dents, puffs smoke
+  const cr = await F(() => { window.__fleet.exit(); window.__fleet.select('compact-car.sedan'); window.__fleet.drive();
+    window.__fleet.steps(420, { throttle: 1, steer: 0, brake: 0 }); return window.__fleet.crash(); });
+  ok(`browser crash: the sedan hits the pad barrier (${cr.crashes} crash events), stays short of it (front ${(cr.z).toFixed(1)} vs ${cr.barrierZ}), dents ${cr.dent.toFixed(2)}, smoke ${cr.smoke}`,
+    cr.crashes > 0 && cr.z < cr.barrierZ && cr.dent > 0 && cr.crumple > 0 && cr.smoke > 0 && cr.boxes === 3 && cr.bumpers.length === 2, [JSON.stringify(cr)]);
+  if (shots) await p.screenshot({ path: `${shots}/PHYS-crash.png` });
+  await F(() => window.__fleet.exit());
   ok('browser: zero page errors', errs.length === 0, errs);
   await b.close();
 }

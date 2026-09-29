@@ -33,7 +33,12 @@ QUESTS_PATH = 'quests/registry/quests.json'
 LESSONS_PATH = 'lessons/registry/lessons.json'
 PATH_STORE = 'tc-path'
 PATH_LABEL_KEYS = ('choose', 'note', 'launch', 'close', 'suggested', 'source', 'found', 'of', 'noLaunch',
-                   'region', 'badges', 'borders', 'rides', 'guides', 'local', 'trade', 'k12', 'explorer')
+                   'region', 'badges', 'borders', 'rides', 'guides', 'local', 'trade', 'k12', 'explorer',
+                   'p7.choose', 'p7.trades', 'p7.k12', 'p7.responders', 'p7.un', 'p7.relief', 'p7.teachers',
+                   'p7.roam', 'p7.proposed', 'p7.unNote', 'p7.k12Note', 'p7.story', 'p7.empty', 'p7.steps')
+PATHS7_PATH = 'layers/registry/paths.json'
+PATH7_IDS = ('trades', 'k12', 'responders', 'un', 'relief', 'teachers', 'roam')
+UN_DISCLAIMER = 'not affiliated with or endorsed by the United Nations'
 
 
 def path_labels(strings):
@@ -102,6 +107,7 @@ def path_data(fips):
     if not region['rides']:
         raise KeyError(f'pathkit: {QUESTS_PATH} has no treasure-ride-* entries')
     return {
+        'adventure': adventure_data(fips, by_id, quests),
         'fips': fips, 'name': _need(p, 'name', fips), 'stations': stations, 'region': region,
         'paths': p['paths'], 'steps': steps, 'lessons': lesson_titles,
         'layers': {k: _need(v, 'label', k) for k, v in _need(layers, 'layers', LAYERS_PATH).items()},
@@ -109,6 +115,35 @@ def path_data(fips):
         'k12_districts': _need(layers, 'k12_districts', LAYERS_PATH),
         'store': {'quests': QUEST_STORE, 'path': PATH_STORE},
     }
+
+
+def adventure_data(fips, stations_by_id, quests):
+    """The seven paths + side stories of one parish (PATHS_CONTRACT v1); every id resolves or this fails by name."""
+    doc = _load(PATHS7_PATH)
+    if tuple(_need(doc, 'path_ids', PATHS7_PATH)) != PATH7_IDS:
+        raise KeyError(f'pathkit: {PATHS7_PATH} path_ids are not {PATH7_IDS}')
+    if UN_DISCLAIMER not in _need(_need(doc, 'honesty', PATHS7_PATH), 'un', PATHS7_PATH):
+        raise KeyError(f'pathkit: {PATHS7_PATH} honesty.un lacks the UN disclaimer')
+    hit = [p for p in _need(doc, 'parishes', PATHS7_PATH) if _need(p, 'fips', PATHS7_PATH) == fips]
+    if len(hit) != 1:
+        raise KeyError(f'pathkit: {PATHS7_PATH} holds no parish {fips!r}; run python3 layers/build.py')
+    p = hit[0]
+    for path in _need(p, 'paths', fips):
+        for st in _need(path, 'steps', f'{fips}.{path["id"]}'):
+            k = _need(st, 'kind', st.get('id') if isinstance(st, dict) else fips)
+            if k == 'station' and _need(st, 'id', fips) not in stations_by_id:
+                raise KeyError(f'pathkit: adventure step {st["id"]!r} is not a station of {fips}')
+            if k == 'quest' and _need(st, 'id', fips) not in quests:
+                raise KeyError(f'pathkit: adventure step {st["id"]!r} is not in {QUESTS_PATH}')
+            if k == 'quote' and _need(st, 'station', st['id']) not in stations_by_id:
+                raise KeyError(f'pathkit: adventure quote {st["id"]} anchor is not a station of {fips}')
+    for story in _need(p, 'stories', fips):
+        for st in _need(story, 'steps', story['id']):
+            if _need(st, 'quest', story['id']) not in quests:
+                raise KeyError(f'pathkit: story step {st["quest"]!r} is not in {QUESTS_PATH}; rebuild quests')
+    return {'paths': p['paths'], 'stories': p['stories'], 'honesty': _need(doc, 'honesty', PATHS7_PATH),
+            'un_disclaimer': _need(doc, 'un_disclaimer', PATHS7_PATH),
+            'ambient_hooks': _need(doc, 'ambient_hooks', PATHS7_PATH)}
 
 
 PATH_CSS = """
@@ -148,6 +183,16 @@ PATH_CSS = """
 .pk-card dl{display:grid;grid-template-columns:1fr auto;gap:2px 12px;margin:0}
 .pk-card dt{color:var(--muted)}
 .pk-card dd{margin:0;font-weight:600;font-variant-numeric:tabular-nums}
+.pk-adv{margin:10px 0;border-top:1px solid var(--rule);padding-top:10px}
+.pk-adv button[data-pk-adv]{min-height:44px;padding:4px 10px;border-radius:22px;border:1px solid var(--rule);
+  background:var(--surface);color:var(--ink);font:inherit;cursor:pointer}
+.pk-adv button[aria-checked="true"]{border-color:var(--mark);background:var(--raised);font-weight:600}
+.pk-adv button[data-pk-adv]{max-width:100%;min-width:0;text-align:start;overflow-wrap:anywhere}
+.pk-adv .pk-count,.pk-adv .pk-prop{white-space:nowrap;overflow-wrap:normal}
+.pk-prop{display:inline-block;font-size:10px;letter-spacing:.04em;border:1px solid var(--muted);color:var(--muted);
+  border-radius:4px;padding:0 4px;margin-inline-start:4px}
+.pk-adv blockquote{margin:4px 0;padding:0 0 0 8px;border-inline-start:3px solid var(--rule)}
+.pk-adv h3{font-size:14px;margin:8px 0 4px}
 """
 
 PATH_JS = r"""
@@ -165,6 +210,12 @@ PATH_JS = r"""
     launch: 'Launch', close: 'Close', suggested: 'Suggested first (never a lock):', source: 'Source:',
     found: 'visited', of: 'of', noLaunch: 'No launch link:',
     region: 'Region card', badges: 'Badges earned', borders: 'Borders crossed', rides: 'Rides (land, water)',
+    'p7.choose': 'Choose your adventure', 'p7.trades': 'Union trades', 'p7.k12': 'K-12 schools (Cognition.X)',
+    'p7.responders': 'First responders', 'p7.un': 'UN training (PROPOSED module)', 'p7.relief': 'Disaster relief',
+    'p7.teachers': 'Teachers', 'p7.roam': 'Just roam', 'p7.proposed': 'PROPOSED',
+    'p7.unNote': 'A PROPOSED module of this game: not affiliated with or endorsed by the United Nations. No UN emblem, no UN course.',
+    'p7.k12Note': 'School districts stay PROPOSED partners: no district has reviewed or agreed.',
+    'p7.story': 'Side story', 'p7.empty': '0 steps in this parish.', 'p7.steps': 'steps',
     guides: 'Guide talked to', trade: 'Trade path', k12: 'K-12 path', explorer: 'Explorer / free play', local: 'Counted on this device only, from your own play. There is no leaderboard: no server, no accounts.'
   };
   /* No region leaderboard, by design: there is no server and there are no accounts, so play is never sent
@@ -240,8 +291,103 @@ PATH_JS = r"""
           esc(t.title) + '</button>' + mark + '</li>';
       }
     });
-    h += '</ol><div class="pk-panel" role="region" aria-live="polite" hidden></div>';
+    h += '</ol>' + adventure(got) + '<div class="pk-panel" role="region" aria-live="polite" hidden></div>';
     S.root.innerHTML = h;
+  }
+  /* The seven adventure paths (PATHS_CONTRACT v1): a second radiogroup; quotes are verbatim with their source;
+     PROPOSED shown where so; the UN path carries its disclaimer. Play only: nothing here gates anything. */
+  function advPath(pid) {
+    var A = S.data.adventure, r = null;
+    A.paths.forEach(function (p) { if (p.id === pid) r = p; });
+    if (!r) throw new Error('pathkit: no adventure path ' + pid);
+    return r;
+  }
+  function storyOf(pid) {
+    var r = null;
+    S.data.adventure.stories.forEach(function (s) { if (s.path === pid) r = s; });
+    if (!r) throw new Error('pathkit: no side story for ' + pid);
+    return r;
+  }
+  function adventure(got) {
+    var A = S.data.adventure;
+    if (!A) return '';
+    var cur = advPath(S.adv), h = '<section class="pk-adv" aria-labelledby="pk-adv-h"><h2 id="pk-adv-h">' + esc(L('p7.choose')) +
+      '</h2><div class="pk-choose" role="radiogroup" aria-labelledby="pk-adv-h">';
+    A.paths.forEach(function (p) {
+      var on = p.id === S.adv;
+      h += '<button type="button" role="radio" data-pk-adv="' + esc(p.id) + '" aria-checked="' + on + '" tabindex="' + (on ? 0 : -1) +
+        '">' + esc(L('p7.' + p.id)) + (p.status === 'PROPOSED' ? '<span class="pk-prop">' + esc(L('p7.proposed')) + '</span>' : '') +
+        ' <span class="pk-count">' + p.steps.length + ' ' + esc(L('p7.steps')) + '</span></button>';
+    });
+    h += '</div>';
+    if (cur.id === 'un') h += '<p class="pk-note" data-pk-un>' + esc(L('p7.unNote')) + ' ' + esc(A.honesty.un) + '</p>';
+    if (cur.id === 'k12') h += '<p class="pk-note">' + esc(L('p7.k12Note')) + ' ' + esc(A.honesty.k12) + '</p>';
+    if (!cur.steps.length) h += '<p class="pk-note">' + esc(L('p7.empty')) + '</p>';
+    h += '<ol class="pk-steps" aria-label="' + esc(L('p7.' + cur.id)) + '">';
+    cur.steps.forEach(function (s) {
+      if (s.kind === 'station') {
+        h += '<li><button type="button" data-pk-open="' + esc(s.id) + '">' + esc(s.title) + '</button>' +
+          (stationById(s.id).treasure in got ? '<span class="pk-got" aria-label="' + esc(L('found')) + '">&#10003;</span>' : '') + '</li>';
+      } else if (s.kind === 'quest') {
+        h += '<li><b>' + esc(S.data.steps[s.id].title) + '</b>' + (s.id in got ? '<span class="pk-got" aria-label="' +
+          esc(L('found')) + '">&#10003;</span>' : '') + '</li>';
+      } else {
+        h += '<li><b>' + esc(s.title) + '</b><blockquote>' + esc(s.quote) + '</blockquote><p class="pk-src">' + esc(L('source')) +
+          ' <code>' + esc(s.source) + '</code></p></li>';
+      }
+    });
+    var st = storyOf(cur.id);
+    h += '</ol><h3>' + esc(L('p7.story')) + '</h3><ol class="pk-steps" data-pk-story="' + esc(st.id) + '">';
+    st.steps.forEach(function (x) {
+      h += '<li>' + esc(x.text) + (x.quest in got ? '<span class="pk-got" aria-label="' + esc(L('found')) + '">&#10003;</span>' : '') + '</li>';
+    });
+    return h + '</ol><p class="pk-note">' + esc(A.honesty.play) + '</p></section>';
+  }
+  /* a story advances in order: only each story's NEXT unfound step can be found (the quests registry gates the same way) */
+  function findSteps(pred) {
+    var A = S.data && S.data.adventure, out = [];
+    if (!A) return out;
+    var st = playState(), got = Object.assign({}, st.found || {}, st.done || {});
+    A.stories.forEach(function (story) {
+      var next = null;
+      for (var i = 0; i < story.steps.length && !next; i++) if (!(story.steps[i].quest in got)) next = story.steps[i];
+      if (next && pred(next)) out.push(next.quest);
+    });
+    if (window.TCQuests && typeof window.TCQuests.find === 'function') out.forEach(function (q) { window.TCQuests.find(q); });
+    return out;
+  }
+  /* hook(name, detail): AMBIENT 'ambient.pet-found' | 'ambient.litter-picked'; city life (ECON_CONTRACT) 'econ.shop-opened' |
+     'econ.lot-rented' with detail.lotId, which must be one of the step's AUTHORED game lots (play coins, never money). */
+  function hook(name, detail) {
+    if (/crash|collide|wreck|hit/i.test(String(name))) throw new Error('pathkit: no story step rewards a crash (' + name + ')');
+    return findSteps(function (x) {
+      if (x.hook !== name) return false;
+      if (!x.lots) return true;
+      return !!(detail && typeof detail.lotId === 'string' && x.lots.indexOf(detail.lotId) >= 0);
+    });
+  }
+  var ECON_BOUND = false;
+  function bindEcon() {   /* econkit dispatches window CustomEvent "tc-econ" {detail:{name, lotId, ...}} */
+    if (ECON_BOUND || typeof window.addEventListener !== 'function') return;
+    ECON_BOUND = true;
+    window.addEventListener('tc-econ', function (e) {
+      var d = e && e.detail;
+      if (!S.root || !d || (d.name !== 'shop-opened' && d.name !== 'lot-rented')) return;
+      hook('econ.' + d.name, d);
+    });
+  }
+  function talk(role) { return findSteps(function (x) { return x.do === 'talk' && x.npc_role === role; }); }
+  function visit(sid) { return findSteps(function (x) { return (x.do === 'visit' || x.do === 'open-station') && x.station === sid; }); }
+  function story(pid) {
+    var st = playState(), got = Object.assign({}, st.found || {}, st.done || {}), s = storyOf(pid);
+    return { id: s.id, quest: s.quest, steps: s.steps.map(function (x) { return { n: x.n, quest: x.quest, found: x.quest in got }; }) };
+  }
+  function selectAdv(pid, focus) {
+    advPath(pid);
+    S.adv = pid;
+    try { window.localStorage.setItem(PSTORE + '7', pid); } catch (e) { /* storage unavailable: lasts this visit */ }
+    render();
+    if (focus) S.root.querySelector('[data-pk-adv="' + pid + '"]').focus();
   }
   function panel(st) {
     var d = S.data, el = S.root.querySelector('.pk-panel'), h = '';
@@ -266,6 +412,7 @@ PATH_JS = r"""
     var st = stationById(id);
     S.opener = id;   /* the step button is re-rendered below; focus returns to its successor on close */
     if (window.TCQuests && typeof window.TCQuests.find === 'function') window.TCQuests.find(st.treasure);
+    visit(id);
     render();
     panel(st);
     if (typeof S.opts.onStation === 'function') S.opts.onStation(st);
@@ -296,26 +443,35 @@ PATH_JS = r"""
     var saved = null;
     try { saved = window.localStorage.getItem(PSTORE); } catch (e) { saved = null; }
     S.path = data.paths.some(function (p) { return p.id === saved; }) ? saved : data.paths[0].id;
+    if (data.adventure) {
+      var sa = null;
+      try { sa = window.localStorage.getItem(PSTORE + '7'); } catch (e) { sa = null; }
+      S.adv = data.adventure.paths.some(function (p) { return p.id === sa; }) ? sa : data.adventure.paths[0].id;
+    }
     render();
     root.addEventListener('click', function (e) {
-      var t = e.target.closest('[data-pk-path],[data-pk-open],[data-pk-close]');
+      var t = e.target.closest('[data-pk-path],[data-pk-open],[data-pk-close],[data-pk-adv]');
       if (!t) return;
-      if (t.hasAttribute('data-pk-path')) select(t.getAttribute('data-pk-path'), true);
+      if (t.hasAttribute('data-pk-adv')) selectAdv(t.getAttribute('data-pk-adv'), true);
+      else if (t.hasAttribute('data-pk-path')) select(t.getAttribute('data-pk-path'), true);
       else if (t.hasAttribute('data-pk-open')) open(t.getAttribute('data-pk-open'));
       else close();
     }, sig);
     root.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && !root.querySelector('.pk-panel').hidden) { e.preventDefault(); close(); return; }
-      var t = e.target.closest('[data-pk-path]');
+      var t = e.target.closest('[data-pk-path],[data-pk-adv]');
       if (!t) return;
-      var ids = S.data.paths.map(function (p) { return p.id; }), i = ids.indexOf(t.getAttribute('data-pk-path'));
+      var adv = t.hasAttribute('data-pk-adv');
+      var ids = (adv ? S.data.adventure.paths : S.data.paths).map(function (p) { return p.id; });
+      var i = ids.indexOf(t.getAttribute(adv ? 'data-pk-adv' : 'data-pk-path'));
       var k = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
       if (document.dir === 'rtl' && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) k = -k;
       if (e.key === 'Home') k = -i; if (e.key === 'End') k = ids.length - 1 - i;
       if (k === undefined) return;
       e.preventDefault();
-      select(ids[(i + k + ids.length) % ids.length], true);
+      (adv ? selectAdv : select)(ids[(i + k + ids.length) % ids.length], true);
     }, sig);
+    bindEcon();
     if (!FOUND_BOUND && window.TCQuests && typeof window.TCQuests.on === 'function') {
       FOUND_BOUND = true;
       window.TCQuests.on('found', function () {
@@ -326,6 +482,7 @@ PATH_JS = r"""
     return window.TCPaths;
   }
   window.TCPaths = { mount: mount, select: function (p) { select(p, false); }, open: open, close: close, progress: progress, region: region,
+    adventure: function (p) { selectAdv(p, false); }, story: story, hook: hook, talk: talk, visit: visit,
     unmount: function () { unmount(); S.root = null; } };
 })();
 """

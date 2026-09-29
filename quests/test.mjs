@@ -196,5 +196,24 @@ try {
 ok(`questkit scope 'parishes' holds exactly the parish-world entries (${pq.length}) and binds to web/trade_craft_parishes.html`,
   scope && JSON.stringify(scope.ids) === JSON.stringify(pq.map((q) => q.id).sort()) && scope.page === 'web/trade_craft_parishes.html' && scope.js);
 
+// wave 7: side-story entries ride as compact rows + one text table; the page's own script must rebuild them exactly
+{
+  let r = null;
+  try {
+    const py = 'import json,sys;sys.path.insert(0,"web");import questkit as k\n'
+      + 'js=k.quest_js("parishes");head=js.index("const QD = ");g=js.index(k.GLUE_JS)\n'
+      + 'print(json.dumps({"prefix":js[js.index(chr(34)+"use strict"+chr(34)+";")+13:g],"full":k._data("parishes","web/trade_craft_parishes.html"),"size":len(js.encode()),'
+      + '"campus":"QD.story" in k.quest_js("campus")}))';
+    const o = JSON.parse(execFileSync('python3', ['-c', py], { cwd: ROOT, encoding: 'utf8', maxBuffer: 64 << 20 }));
+    const QD = new Function(o.prefix + '\nreturn QD;')();
+    const sortT = (m) => JSON.stringify(Object.keys(m).sort().map((k) => [k, m[k]]));
+    const nStory = o.full.quests.filter((q) => /^(treasure|side)-story-/.test(q.id)).length;
+    r = { same: JSON.stringify(QD.quests) === JSON.stringify(o.full.quests), titles: sortT(QD.titles.quests) === sortT(o.full.titles.quests),
+      compacted: o.prefix.includes('"story":{"t":['), nStory, size: o.size, campus: o.campus };
+  } catch (e) { r = { error: String(e).slice(0, 300) }; }
+  ok(`questkit: the parish page's ${r.nStory} side-story entries ride compact (${r.size} bytes) and its script rebuilds every entry and title exactly; other scopes unchanged`,
+    r.same === true && r.titles === true && r.compacted && r.nStory > 0 && r.campus === false, JSON.stringify(r));
+}
+
 console.log(fails ? `quests/test: ${fails} FAILED` : 'quests/test: all passed');
 process.exit(fails ? 1 : 0);

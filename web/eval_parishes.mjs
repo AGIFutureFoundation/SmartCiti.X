@@ -265,6 +265,47 @@ if (rm.mode !== 'walk' || rm.pr !== 1 || !(rm.block > 0) || rm.ovPressed !== 'fa
 if (rm.afterChordMode !== 'walk') fail(rmRow, `E with repeat/Ctrl changed the mode to ${rm.afterChordMode}`);
 if (rmRow.fails.length) bad++;
 
+/* wave 7 world layer (NEW rows; every BASE target above is unchanged and is applied here too, AFTER the parish's
+   PARISH v1.4 streets and water have arrived): meshed streets replace the painted grid, AUTHORED water is cut out of
+   the land, buildings are solid (physkit), the avatar wades/swims, and the Living world (ambientkit) is measured ON */
+const worldRows = [];
+for (const pid of PROBE) {
+  await page.evaluate((id) => window.__parishes.view('origin', id), pid);
+  await page.waitForFunction((id) => { const s = window.__parishes.stats(); return (s.roads.ready.includes(id) || s.roads.failed.length > 0) && s.pending === 0; }, pid, { timeout: 20000 }).catch(() => {});
+  await page.waitForTimeout(700);
+  const times = (await page.evaluate(() => window.__parishes.frameTimes(6))).sort((a, b) => a - b);
+  const st = await page.evaluate(() => window.__parishes.stats());
+  const wall = await page.evaluate(() => window.__parishes.physWall());
+  const wet = await page.evaluate(() => window.__parishes.physWater());
+  const row = { probe: 'world', parish: pid, calls: st.calls, tris: st.triangles, ms: +times[Math.floor(times.length / 2)].toFixed(1), roadSegs: st.roads.segs, roadTris: st.roads.tris,
+    waterFeats: st.water.feats[pid], boxes: st.phys.boxes, curbs: st.phys.curbs, wall, wet, fails: [] };
+  const base = BASE[pid].origin;
+  if (!st.roads.ready.includes(pid)) fail(row, `streets not meshed for ${pid} (failed: ${JSON.stringify(st.roads.failed)})`);
+  if (st.roads.failed.length || st.water.failed.length) fail(row, `world fetch failed: ${JSON.stringify([st.roads.failed, st.water.failed])}`);
+  if (!st.roads.gridOff.includes(pid)) fail(row, 'the painted grid still shows where the streets are meshed');
+  if (!(st.roads.segs > 0 && st.roads.visible)) fail(row, 'no meshed street segment drawn');
+  if (!st.water.cut.includes(pid)) fail(row, 'AUTHORED water not cut out of the land');
+  if (!st.phys.on || !(st.phys.boxes > 0)) fail(row, `physics off or no boxes (${st.phys.boxes})`);
+  if (st.calls > Math.ceil(base.calls * CALL_HEADROOM)) fail(row, `calls ${st.calls} > ${Math.ceil(base.calls * CALL_HEADROOM)}`);
+  if (st.triangles > base.tris * TRI_HEADROOM) fail(row, `tris ${st.triangles} > ${Math.round(base.tris * TRI_HEADROOM)}`);
+  if (row.ms > base.ms * MS_HEADROOM) fail(row, `frame ${row.ms} ms > ${(base.ms * MS_HEADROOM).toFixed(1)}`);
+  if (wall.inside) fail(row, `the avatar walked into a building (${JSON.stringify(wall)})`);
+  if (wet.feats > 0 && (wet.water === 'dry' || !wet.events.includes('enter-water'))) fail(row, `dropped into ${wet.kind}: ${JSON.stringify(wet)}`);
+  if (row.fails.length) bad++;
+  worldRows.push(row);
+}
+/* Living world ON (default OFF): ambientkit's budget is <= 8 draw calls (AMBIENT_CONTRACT); measured, and hidden in the overview */
+const ambRow = await page.evaluate(async () => {
+  const P = window.__parishes; P.view('origin', '22071'); await new Promise((r) => setTimeout(r, 400));
+  const off = P.stats().calls; const a = P.ambient(true); await new Promise((r) => setTimeout(r, 900));
+  const s = P.stats(); P.view('overview', '22071'); await new Promise((r) => setTimeout(r, 400));
+  const ov = P.stats(); P.ambient(false); P.view('origin', '22071');
+  return { probe: 'ambient-on', callsOff: off, callsOn: s.calls, kitCalls: s.ambient ? s.ambient.drawCalls : null, instances: s.ambient ? s.ambient.instances : null, overviewCalls: ov.calls, fails: [] };
+});
+if (ambRow.kitCalls === null || ambRow.kitCalls > 8) fail(ambRow, `ambient draw calls ${ambRow.kitCalls} (budget 8)`);
+if (ambRow.overviewCalls > Math.ceil(BASE['22071'].overview.calls * CALL_HEADROOM)) fail(ambRow, `overview with ambient on: ${ambRow.overviewCalls} calls`);
+if (ambRow.fails.length) bad++;
+
 /* styles: the panels follow the Style switcher (tokens only) */
 if (SHOTS) {
   for (const s of ['hivis', 'enterprise']) {
@@ -275,7 +316,7 @@ if (SHOTS) {
 }
 await browser.close();
 
-const out = { rows, cross, ride: rideRows, npcs: npcRow, satellite: satRow, ground: groundRow, atmosphere: atmRow, satrace: raceRow, ridemode: rmRow, errors, bad: bad + errors.length };
+const out = { rows, cross, ride: rideRows, npcs: npcRow, satellite: satRow, ground: groundRow, atmosphere: atmRow, satrace: raceRow, ridemode: rmRow, world: worldRows, ambient: ambRow, errors, bad: bad + errors.length };
 if (JSON_OUT) console.log(JSON.stringify(out, null, 1));
 else {
   for (const r of rows) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.parish} ${r.view.padEnd(8)} calls ${r.calls} tris ${r.tris} ms ${r.ms} chunks ${r.chunks} fabric ${r.fabric} lamps ${r.lamps} loaded ${r.loaded}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
@@ -285,6 +326,7 @@ else {
   console.log(`${satRow.fails.length ? 'FAIL' : '  ok'} satellite ${satRow.src} :: ${satRow.msg}${satRow.fails.length ? ' :: ' + satRow.fails.join('; ') : ''}`);
   for (const r of rows.filter((x) => x.kit)) console.log(`${r.fails.length ? 'FAIL' : '  ok'} kit ${r.parish} ${r.view.padEnd(8)} buildings ${JSON.stringify(r.kit)} calls/family ${JSON.stringify(r.familyCalls)}`);
   for (const r of [groundRow, atmRow, raceRow, rmRow]) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.probe} ${JSON.stringify(Object.fromEntries(Object.entries(r).filter(([k]) => k !== 'fails' && k !== 'probe')))}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
+  for (const r of [...worldRows, ambRow]) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.probe} ${JSON.stringify(Object.fromEntries(Object.entries(r).filter(([k]) => k !== 'fails' && k !== 'probe')))}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
   console.log(`  -- DIAG 22071 overview median frame: scale 1 ${diag[1]} ms, scale 0.6 ${diag[0.6]} ms (diagnosis, not a target)`);
   for (const e of errors) console.log('FAIL page error: ' + e);
   console.log(bad + errors.length ? `eval_parishes: ${bad + errors.length} FAIL` : 'eval_parishes: all rows within target');

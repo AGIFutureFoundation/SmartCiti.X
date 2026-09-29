@@ -27,6 +27,7 @@ never enter a completion record; the toast and the quest log say so.
 """
 import html
 import json
+import re
 import pathlib
 import posixpath
 
@@ -306,6 +307,67 @@ def quest_js(scope, page=None):
     _issued.clear()
     if wrong:
         raise AssertionError(f'questkit: hooks {wrong} are not in scope {scope!r} (their world is elsewhere)')
-    data = json.dumps(_data(scope, page), ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
+    d, expand = _compact_story(_data(scope, page))
+    data = json.dumps(d, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
     return ('<script data-tc-quests>\n(function () {\n"use strict";\n' + CORE + '\nconst QD = ' + data + ';\n'
-            + GLUE_JS + '})();\n</script>\n')
+            + expand + GLUE_JS + '})();\n</script>\n')
+
+
+# Wave 7 side-story entries (treasure-story-* / side-story-*, PATHS_CONTRACT v1) repeat the same titles, hints and
+# labels in every parish, so a page carries them as compact rows over one shared text table and STORY_EXPAND rebuilds
+# the exact entries (and their titles) before the glue runs. Only entries whose full form the row reproduces exactly
+# are compacted; pages with none carry byte-identical script as before.
+STORY_ID = re.compile(r'^(treasure|side)-story-')
+STORY_EXPAND = r"""if (QD.story) {
+  const T = QD.story.t;
+  for (const r of QD.story.q) {
+    const e = { id: r[0], kind: r[1] ? 'side' : 'treasure', title: T[r[2]], world: r[3], place: r[0].replace(/^(treasure|side)-/, ''),
+      requires: { lessons: [], halls: [], quests: r[4] }, unlock_text: T[r[5]], hint: T[r[6]], reward: { badge: 'badge-' + r[0], label: T[r[7]] } };
+    QD.quests.push(e);
+  }
+  for (const [i, t] of QD.story.titles) QD.titles.quests[i] = T[t];
+  delete QD.story;
+}
+"""
+
+
+def _story_full(r, T):
+    """Python twin of STORY_EXPAND for one row (key order as in _data's keep)."""
+    return {'id': r[0], 'kind': 'side' if r[1] else 'treasure', 'title': T[r[2]], 'world': r[3],
+            'place': re.sub(r'^(treasure|side)-', '', r[0]),
+            'requires': {'lessons': [], 'halls': [], 'quests': r[4]}, 'unlock_text': T[r[5]], 'hint': T[r[6]],
+            'reward': {'badge': 'badge-' + r[0], 'label': T[r[7]]}}
+
+
+def _compact_story(d):
+    table, idx = [], {}
+
+    def t(x):
+        if x not in idx:
+            idx[x] = len(table)
+            table.append(x)
+        return idx[x]
+    keep, rows, tail = [], [], True
+    for q in reversed(d['quests']):   # only the contiguous run of story entries at the end (keeps entry order)
+        if tail and STORY_ID.match(q['id']) and q['kind'] in ('treasure', 'side'):
+            try:
+                r = [q['id'], 1 if q['kind'] == 'side' else 0, t(q['title']), q['world'], q['requires']['quests'],
+                     t(q['unlock_text']), t(q['hint']), t(q['reward']['label'])]
+            except KeyError:
+                r = None
+            if r is not None and _story_full(r, table) == q:
+                rows.append(r)
+                continue
+        tail = False
+        keep.append(q)
+    if not rows:
+        return d, ''
+    rows.reverse()
+    keep.reverse()
+    tq = d['titles']['quests']
+    moved = [[i, t(tq[i])] for i in sorted(tq) if STORY_ID.match(i)]
+    out = dict(d)
+    out['quests'] = keep
+    out['titles'] = dict(d['titles'], quests={i: v for i, v in tq.items() if not STORY_ID.match(i)})
+    out['story'] = {'t': table, 'q': rows, 'titles': moved}
+    return out, STORY_EXPAND

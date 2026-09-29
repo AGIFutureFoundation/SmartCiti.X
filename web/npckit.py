@@ -69,7 +69,8 @@ const STATES = Object.freeze(['idle', 'wander', 'walk', 'greet', 'talk', 'follow
 const LABEL_KEYS = ['talk', 'next', 'prev', 'close', 'takeMeThere', 'source',
   'notCert', 'pointsTo', 'of', 'honesty', 'quoteLang', 'roles'];
 const ROLE_KEYS = { mentor: 'npc.role.mentor', 'k12-guide': 'npc.role.k12', ranger: 'npc.role.ranger',
-  pilot: 'npc.role.pilot', host: 'npc.role.host' };
+  pilot: 'npc.role.pilot', host: 'npc.role.host', responder: 'npc.role.responder',
+  'relief-coordinator': 'npc.role.relief', teacher: 'npc.role.teacher', 'humanitarian-trainer': 'npc.role.humanitarian' };
 const LABEL_I18N = { talk: 'npc.talk', next: 'npc.next', prev: 'npc.prev', close: 'npc.close',
   takeMeThere: 'npc.take', source: 'npc.source', notCert: 'npc.notcert', pointsTo: 'npc.points',
   of: 'npc.of', honesty: 'npc.honesty', quoteLang: 'npc.quotelang' };
@@ -535,7 +536,8 @@ NPC_JS = NPC_CORE + ("export { createNPCKit, nextState, steer, makeBudget, dialo
 NPC_I18N_KEYS = ('npc.talk', 'npc.next', 'npc.prev', 'npc.close', 'npc.take', 'npc.source',
                  'npc.notcert', 'npc.points', 'npc.of', 'npc.honesty', 'npc.quotelang',
                  'npc.role.mentor', 'npc.role.k12', 'npc.role.ranger', 'npc.role.pilot',
-                 'npc.role.host')
+                 'npc.role.host', 'npc.role.responder', 'npc.role.relief', 'npc.role.teacher',
+                 'npc.role.humanitarian')
 
 if __name__ == '__main__':
     if '--emit' in sys.argv:

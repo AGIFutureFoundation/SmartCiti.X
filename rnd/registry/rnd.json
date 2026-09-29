@@ -21,16 +21,16 @@
   "measured_elsewhere": 51,
   "computed_from_registry": 12,
   "measured_source_files": 11,
-  "registries_scanned": 60,
-  "app_renderers_scanned": 28,
+  "registries_scanned": 66,
+  "app_renderers_scanned": 29,
   "doc_renderers_scanned": 3,
-  "builders_scanned": 50,
-  "suites_scanned": 89,
-  "declared_unbuilt": 5,
+  "builders_scanned": 54,
+  "suites_scanned": 94,
+  "declared_unbuilt": 6,
   "declared_unbuilt_by_their_own_words": 2,
-  "declared_unbuilt_not_drawn": 4,
+  "declared_unbuilt_not_drawn": 5,
   "declared_unbuilt_documented_but_not_drawn": 1,
-  "declared_unbuilt_read_by_nothing": 3,
+  "declared_unbuilt_read_by_nothing": 2,
   "gaps": 21,
   "gaps_open": 16,
   "gaps_closed": 5,
@@ -38,13 +38,13 @@
   "budget_views": 6,
   "budget_currencies": 2,
   "budget_agreements": 7,
-  "suites_run": 89,
-  "suite_checks_declared": 4557,
+  "suites_run": 94,
+  "suite_checks_declared": 4818,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 271
+  "files_read": 290
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -1539,14 +1539,17 @@
    "pack": "bundles",
    "reasons": [
     "the registry declares honesty.not_built_yet",
-    "no page generator under web/ names this path, so nothing a learner opens reads it",
-    "and nothing outside its own pack names it either - not a builder, not the wiki, not another pack's suite; inside it, bundles/build.py, bundles/test.mjs does"
+    "no page generator under web/ names this path, so nothing a learner opens reads it"
    ],
    "says": "no page in this bundle draws these packages. This registry is the data a scope or a quote would be built from; nothing renders it, and saying so here is cheaper than letting somebody discover it.",
    "read_by_app_renderers": [],
    "read_by_doc_renderers": [],
-   "read_by_builders": [],
-   "read_by_suites": [],
+   "read_by_builders": [
+    "holodeck/build.py"
+   ],
+   "read_by_suites": [
+    "holodeck/test.mjs"
+   ],
    "read_by_its_own_pack": [
     "bundles/build.py",
     "bundles/test.mjs"
@@ -1568,6 +1571,31 @@
    "read_by_its_own_pack": [
     "cloudflare/build.py",
     "cloudflare/test.mjs"
+   ],
+   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
+  },
+  {
+   "registry": "layers/registry/paths.json",
+   "pack": "layers",
+   "reasons": [
+    "no page generator under web/ names this path, so nothing a learner opens reads it"
+   ],
+   "says": null,
+   "read_by_app_renderers": [],
+   "read_by_doc_renderers": [],
+   "read_by_builders": [
+    "holodeck/build.py",
+    "npcs/build.py",
+    "quests/build.py"
+   ],
+   "read_by_suites": [
+    "holodeck/test.mjs",
+    "npcs/test.mjs"
+   ],
+   "read_by_its_own_pack": [
+    "layers/build.py",
+    "layers/paths.py",
+    "layers/test.mjs"
    ],
    "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
   },
@@ -1678,6 +1706,23 @@
     "agents/test.mjs"
    ]
   },
+  "ambient/registry/ambient.json": {
+   "app_renderers": [
+    "web/build_parishes.py"
+   ],
+   "doc_renderers": [],
+   "builders": [
+    "holodeck/build.py"
+   ],
+   "suites": [
+    "holodeck/test.mjs",
+    "web/test_parishes.mjs"
+   ],
+   "own_pack": [
+    "ambient/build.py",
+    "ambient/test.mjs"
+   ]
+  },
   "auth/registry/auth.json": {
    "app_renderers": [
     "web/build_auth.py",
@@ -1733,8 +1778,12 @@
   "bundles/registry/bundles.json": {
    "app_renderers": [],
    "doc_renderers": [],
-   "builders": [],
-   "suites": [],
+   "builders": [
+    "holodeck/build.py"
+   ],
+   "suites": [
+    "holodeck/test.mjs"
+   ],
    "own_pack": [
     "bundles/build.py",
     "bundles/test.mjs"
@@ -1819,6 +1868,23 @@
     "contrib/verify.mjs"
    ]
   },
+  "economy/registry/economy.json": {
+   "app_renderers": [
+    "web/build_parishes.py"
+   ],
+   "doc_renderers": [],
+   "builders": [
+    "holodeck/build.py"
+   ],
+   "suites": [
+    "holodeck/test.mjs",
+    "layers/test.mjs"
+   ],
+   "own_pack": [
+    "economy/build.py",
+    "economy/test.mjs"
+   ]
+  },
   "ei/registry/ei.json": {
    "app_renderers": [
     "web/build_3d.py"
@@ -1859,9 +1925,12 @@
    ],
    "doc_renderers": [],
    "builders": [
+    "holodeck/build.py",
     "quests/build.py"
    ],
    "suites": [
+    "holodeck/test.mjs",
+    "physics/test.mjs",
     "quests/test.mjs",
     "web/test_fleet.mjs",
     "web/test_home.mjs",
@@ -1943,6 +2012,22 @@
     "guide/test.mjs"
    ]
   },
+  "holodeck/registry/packs.json": {
+   "app_renderers": [
+    "web/build_home.py",
+    "web/build_packs.py"
+   ],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [
+    "web/test_home.mjs",
+    "web/test_packs.mjs"
+   ],
+   "own_pack": [
+    "holodeck/build.py",
+    "holodeck/test.mjs"
+   ]
+  },
   "kit/registry/kit.json": {
    "app_renderers": [
     "web/build_3d.py"
@@ -1996,10 +2081,12 @@
    ],
    "doc_renderers": [],
    "builders": [
+    "holodeck/build.py",
     "npcs/build.py",
     "quests/build.py"
    ],
    "suites": [
+    "holodeck/test.mjs",
     "npcs/test.mjs",
     "quests/test.mjs",
     "web/test_home.mjs",
@@ -2007,6 +2094,25 @@
    ],
    "own_pack": [
     "layers/build.py",
+    "layers/paths.py",
+    "layers/test.mjs"
+   ]
+  },
+  "layers/registry/paths.json": {
+   "app_renderers": [],
+   "doc_renderers": [],
+   "builders": [
+    "holodeck/build.py",
+    "npcs/build.py",
+    "quests/build.py"
+   ],
+   "suites": [
+    "holodeck/test.mjs",
+    "npcs/test.mjs"
+   ],
+   "own_pack": [
+    "layers/build.py",
+    "layers/paths.py",
     "layers/test.mjs"
    ]
   },
@@ -2030,6 +2136,7 @@
     "completion/build.py",
     "compliance/build.py",
     "evals/build.py",
+    "holodeck/build.py",
     "layers/build.py",
     "npcs/build.py",
     "quests/build.py",
@@ -2043,6 +2150,7 @@
     "completion/test.mjs",
     "completion/verify.mjs",
     "evals/test.mjs",
+    "holodeck/test.mjs",
     "layers/test.mjs",
     "npcs/test.mjs",
     "quests/test.mjs",
@@ -2165,6 +2273,7 @@
     "ei/build.py",
     "evals/build.py",
     "geo3d/build.py",
+    "holodeck/build.py",
     "layers/build.py",
     "lessons/build.py",
     "props/build.py",
@@ -2184,6 +2293,7 @@
     "ei/test.mjs",
     "evals/test.mjs",
     "geo3d/test.mjs",
+    "holodeck/test.mjs",
     "i18n/test.mjs",
     "layers/test.mjs",
     "lessons/test.mjs",
@@ -2309,19 +2419,41 @@
    ],
    "doc_renderers": [],
    "builders": [
+    "ambient/build.py",
+    "economy/build.py",
+    "holodeck/build.py",
     "layers/build.py",
     "npcs/build.py"
    ],
    "suites": [
+    "ambient/test.mjs",
+    "economy/test.mjs",
     "fleet/test.mjs",
+    "holodeck/test.mjs",
     "layers/test.mjs",
     "npcs/test.mjs",
+    "physics/test.mjs",
     "quests/test.mjs",
     "web/test_home.mjs",
     "web/test_parishes.mjs"
    ],
    "own_pack": [
     "parishes/build.py",
+    "parishes/build_world.py",
+    "parishes/test.mjs"
+   ]
+  },
+  "parishes/registry/world.json": {
+   "app_renderers": [
+    "web/build_parishes.py"
+   ],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [
+    "web/test_parishes.mjs"
+   ],
+   "own_pack": [
+    "parishes/build_world.py",
     "parishes/test.mjs"
    ]
   },
@@ -2343,6 +2475,25 @@
     "payments/build.py",
     "payments/catalog.mjs",
     "payments/test.mjs"
+   ]
+  },
+  "physics/registry/physics.json": {
+   "app_renderers": [
+    "web/build_fleet.py",
+    "web/build_parishes.py"
+   ],
+   "doc_renderers": [],
+   "builders": [
+    "holodeck/build.py"
+   ],
+   "suites": [
+    "holodeck/test.mjs",
+    "web/test_fleet.mjs",
+    "web/test_parishes.mjs"
+   ],
+   "own_pack": [
+    "physics/build.py",
+    "physics/test.mjs"
    ]
   },
   "props/registry/props.json": {
@@ -2415,6 +2566,8 @@
    ],
    "builders": [],
    "suites": [
+    "layers/test.mjs",
+    "npcs/test.mjs",
     "web/test_3d.mjs"
    ],
    "own_pack": [
@@ -2486,12 +2639,14 @@
    "builders": [
     "agents/build.py",
     "guide/build.py",
+    "holodeck/build.py",
     "layers/build.py",
     "lessons/build.py",
     "npcs/build.py",
     "spatial/build.py"
    ],
    "suites": [
+    "holodeck/test.mjs",
     "layers/test.mjs",
     "lessons/test.mjs",
     "npcs/test.mjs",
@@ -2561,6 +2716,7 @@
     "evals/build.py",
     "fleet/build.py",
     "guide/build.py",
+    "holodeck/build.py",
     "layers/build.py",
     "lessons/build.py",
     "meta/build.py",
@@ -2584,6 +2740,7 @@
     "evals/test.mjs",
     "fleet/test.mjs",
     "guide/test.mjs",
+    "holodeck/test.mjs",
     "layers/test.mjs",
     "lessons/test.mjs",
     "meta/test.mjs",
@@ -3021,8 +3178,10 @@
     "agents/build.py",
     "avatars/build.py",
     "bundles/build.py",
+    "economy/build.py",
     "evals/build.py",
     "guide/build.py",
+    "holodeck/build.py",
     "kit/build.py",
     "npcs/build.py",
     "orbis/build.py",
@@ -3040,7 +3199,9 @@
     "agents/test.mjs",
     "avatars/test.mjs",
     "bundles/test.mjs",
+    "economy/test.mjs",
     "evals/test.mjs",
+    "holodeck/test.mjs",
     "kit/test.mjs",
     "npcs/test.mjs",
     "orbis/test.mjs",
@@ -3139,12 +3300,14 @@
     "wiki/build_wiki.py"
    ],
    "builders": [
+    "ambient/build.py",
     "kit/build.py",
     "restoration/build.py",
     "sky/build.py",
     "spatial/build.py"
    ],
    "suites": [
+    "ambient/test.mjs",
     "kit/test.mjs",
     "restoration/test.mjs",
     "sky/test.mjs",
@@ -3183,6 +3346,7 @@
    "web/build_languages.py",
    "web/build_lessons.py",
    "web/build_map.py",
+   "web/build_packs.py",
    "web/build_page.py",
    "web/build_parishes.py",
    "web/build_plans.py",
@@ -3204,6 +3368,7 @@
   ],
   "builders": [
    "agents/build.py",
+   "ambient/build.py",
    "auth/build.py",
    "avatars/build.py",
    "bundles/build.py",
@@ -3211,12 +3376,14 @@
    "completion/build.py",
    "compliance/build.py",
    "contrib/build.py",
+   "economy/build.py",
    "ei/build.py",
    "evals/build.py",
    "fleet/build.py",
    "geo/build.py",
    "geo3d/build.py",
    "guide/build.py",
+   "holodeck/build.py",
    "kit/build.py",
    "labels/build.py",
    "layers/build.py",
@@ -3229,6 +3396,7 @@
    "parcels/build.py",
    "parishes/build.py",
    "payments/build.py",
+   "physics/build.py",
    "props/build.py",
    "protocols/build.py",
    "quests/build.py",
@@ -3256,6 +3424,7 @@
   ],
   "suites": [
    "agents/test.mjs",
+   "ambient/test.mjs",
    "auth/test.mjs",
    "avatars/test.mjs",
    "brand/test.mjs",
@@ -3272,6 +3441,7 @@
    "control/test.mjs",
    "control/test_graph.mjs",
    "control/test_hints.mjs",
+   "economy/test.mjs",
    "ei/test.mjs",
    "evals/test.mjs",
    "fabric/test.mjs",
@@ -3279,6 +3449,7 @@
    "geo/test.mjs",
    "geo3d/test.mjs",
    "guide/test.mjs",
+   "holodeck/test.mjs",
    "i18n/test.mjs",
    "kit/test.mjs",
    "labels/test.mjs",
@@ -3293,6 +3464,7 @@
    "parcels/test.mjs",
    "parishes/test.mjs",
    "payments/test.mjs",
+   "physics/test.mjs",
    "props/test.mjs",
    "protocols/test.mjs",
    "quests/test.mjs",
@@ -3328,6 +3500,7 @@
    "web/test_ladder.mjs",
    "web/test_map.mjs",
    "web/test_nav.mjs",
+   "web/test_packs.mjs",
    "web/test_parishes.mjs",
    "web/test_plans.mjs",
    "web/test_progress.mjs",
@@ -4365,7 +4538,7 @@
    {
     "suite": "web/test_home.mjs",
     "pack": "web",
-    "readme_checks": 72,
+    "readme_checks": 76,
     "declared": true,
     "in_readme_table": true
    },
@@ -4428,7 +4601,7 @@
    {
     "suite": "quests/test.mjs",
     "pack": "quests",
-    "readme_checks": 32,
+    "readme_checks": 33,
     "declared": true,
     "in_readme_table": true
    },
@@ -4470,7 +4643,7 @@
    {
     "suite": "parishes/test.mjs",
     "pack": "parishes",
-    "readme_checks": 45,
+    "readme_checks": 55,
     "declared": true,
     "in_readme_table": true
    },
@@ -4484,21 +4657,21 @@
    {
     "suite": "web/test_fleet.mjs",
     "pack": "web",
-    "readme_checks": 20,
+    "readme_checks": 26,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "npcs/test.mjs",
     "pack": "npcs",
-    "readme_checks": 144,
+    "readme_checks": 146,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "layers/test.mjs",
     "pack": "layers",
-    "readme_checks": 28,
+    "readme_checks": 36,
     "declared": true,
     "in_readme_table": true
    },
@@ -4526,23 +4699,58 @@
    {
     "suite": "web/test_parishes.mjs",
     "pack": "web",
-    "readme_checks": 82,
+    "readme_checks": 93,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "economy/test.mjs",
+    "pack": "economy",
+    "readme_checks": 48,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "ambient/test.mjs",
+    "pack": "ambient",
+    "readme_checks": 27,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "physics/test.mjs",
+    "pack": "physics",
+    "readme_checks": 45,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "holodeck/test.mjs",
+    "pack": "holodeck",
+    "readme_checks": 62,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_packs.mjs",
+    "pack": "web",
+    "readme_checks": 37,
     "declared": true,
     "in_readme_table": true
    }
   ],
-  "suites_run": 89,
-  "suites_declaring_a_count": 88,
+  "suites_run": 94,
+  "suites_declaring_a_count": 93,
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 4557,
-  "readme_headline": 4568,
+  "declared_total": 4818,
+  "readme_headline": 4829,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
   "max": 350,
-  "median": 43.0,
+  "median": 43,
   "thinnest": [
    {
     "suite": "ops/fuzz.mjs",
@@ -4580,7 +4788,7 @@
    },
    {
     "suite": "npcs/test.mjs",
-    "checks": 144
+    "checks": 146
    },
    {
     "suite": "respond/test.mjs",
@@ -4796,6 +5004,9 @@
   "agents/registry/advisors.json",
   "agents/registry/crews.json",
   "agents/test.mjs",
+  "ambient/build.py",
+  "ambient/registry/ambient.json",
+  "ambient/test.mjs",
   "assets/REFERENCE.md",
   "auth/build.py",
   "auth/recover.mjs",
@@ -4831,6 +5042,10 @@
   "control/test.mjs",
   "control/test_graph.mjs",
   "control/test_hints.mjs",
+  "economy/build.py",
+  "economy/core.mjs",
+  "economy/registry/economy.json",
+  "economy/test.mjs",
   "ei/build.py",
   "ei/registry/ei.json",
   "ei/test.mjs",
@@ -4851,6 +5066,9 @@
   "guide/build.py",
   "guide/registry/guide.json",
   "guide/test.mjs",
+  "holodeck/build.py",
+  "holodeck/registry/packs.json",
+  "holodeck/test.mjs",
   "i18n/locales/ar.json",
   "i18n/locales/de.json",
   "i18n/locales/en.json",
@@ -4867,7 +5085,9 @@
   "labels/registry/labels.json",
   "labels/test.mjs",
   "layers/build.py",
+  "layers/paths.py",
   "layers/registry/layers.json",
+  "layers/registry/paths.json",
   "layers/test.mjs",
   "lessons/build.py",
   "lessons/registry/lessons.json",
@@ -4905,8 +5125,10 @@
   "parcels/registry/parcels.json",
   "parcels/test.mjs",
   "parishes/build.py",
+  "parishes/build_world.py",
   "parishes/fetch_usatlas.py",
   "parishes/registry/parishes.json",
+  "parishes/registry/world.json",
   "parishes/render.py",
   "parishes/test.mjs",
   "payments/build.py",
@@ -4914,6 +5136,9 @@
   "payments/registry/catalog.json",
   "payments/test.mjs",
   "payments/worker.mjs",
+  "physics/build.py",
+  "physics/registry/physics.json",
+  "physics/test.mjs",
   "props/build.py",
   "props/registry/props.json",
   "props/test.mjs",
@@ -5008,6 +5233,7 @@
   "web/build_languages.py",
   "web/build_lessons.py",
   "web/build_map.py",
+  "web/build_packs.py",
   "web/build_page.py",
   "web/build_parishes.py",
   "web/build_plans.py",
@@ -5035,6 +5261,7 @@
   "web/test_ladder.mjs",
   "web/test_map.mjs",
   "web/test_nav.mjs",
+  "web/test_packs.mjs",
   "web/test_parishes.mjs",
   "web/test_plans.mjs",
   "web/test_progress.mjs",
