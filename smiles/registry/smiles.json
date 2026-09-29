@@ -1,0 +1,2903 @@
+{
+ "atlas": {
+  "bytes": 33044,
+  "cells": {
+   "asphalt": {
+    "col": 1,
+    "row": 0
+   },
+   "clinic-tile": {
+    "col": 3,
+    "row": 0
+   },
+   "garden-soil": {
+    "col": 1,
+    "row": 2
+   },
+   "grass": {
+    "col": 0,
+    "row": 0
+   },
+   "hall-floor": {
+    "col": 3,
+    "row": 2
+   },
+   "lino": {
+    "col": 2,
+    "row": 3
+   },
+   "lot": {
+    "col": 0,
+    "row": 3
+   },
+   "mulch": {
+    "col": 1,
+    "row": 3
+   },
+   "paint": {
+    "col": 3,
+    "row": 3
+   },
+   "rubber": {
+    "col": 1,
+    "row": 1
+   },
+   "sand": {
+    "col": 0,
+    "row": 1
+   },
+   "school-floor": {
+    "col": 0,
+    "row": 2
+   },
+   "shop-floor": {
+    "col": 2,
+    "row": 2
+   },
+   "sidewalk": {
+    "col": 2,
+    "row": 0
+   },
+   "water": {
+    "col": 3,
+    "row": 1
+   },
+   "wood": {
+    "col": 2,
+    "row": 1
+   }
+  },
+  "grid": 4,
+  "image": "smiles/maps/atlas.webp",
+  "provenance": "AUTHORED",
+  "sha256": "ef0586bffb476f182dc298c3d7210a6ce983088f9819c8608e2d707109237d43"
+ },
+ "counts": {
+  "eggs": 16,
+  "games": 6,
+  "rooms": 9,
+  "stations": 37,
+  "van_stops": 8,
+  "zones": 15
+ },
+ "disclaimer": "General guidance, not medical or dental advice.",
+ "doors": [
+  {
+   "at": [
+    205.0,
+    370
+   ],
+   "id": "clinic",
+   "width_m": 6.0
+  },
+  {
+   "at": [
+    600.0,
+    350
+   ],
+   "id": "school",
+   "width_m": 6.0
+  },
+  {
+   "at": [
+    695.0,
+    620
+   ],
+   "id": "community",
+   "width_m": 6.0
+  },
+  {
+   "at": [
+    695.0,
+    780
+   ],
+   "id": "shop",
+   "width_m": 6.0
+  },
+  {
+   "at": [
+    140.0,
+    780
+   ],
+   "id": "vanlot",
+   "width_m": 6.0
+  },
+  {
+   "at": [
+    1040.0,
+    350
+   ],
+   "id": "library",
+   "width_m": 6.0
+  },
+  {
+   "at": [
+    100.0,
+    160
+   ],
+   "id": "room-reception",
+   "width_m": 6.0
+  },
+  {
+   "at": [
+    210.0,
+    160
+   ],
+   "id": "room-operatory",
+   "width_m": 6.0
+  },
+  {
+   "at": [
+    315.0,
+    160
+   ],
+   "id": "room-hygiene",
+   "width_m": 6.0
+  },
+  {
+   "at": [
+    100.0,
+    250
+   ],
+   "id": "room-imaging",
+   "width_m": 6.0
+  },
+  {
+   "at": [
+    210.0,
+    250
+   ],
+   "id": "room-sterilisation",
+   "width_m": 6.0
+  },
+  {
+   "at": [
+    315.0,
+    250
+   ],
+   "id": "room-surgery",
+   "width_m": 6.0
+  },
+  {
+   "at": [
+    125.0,
+    350
+   ],
+   "id": "room-lab",
+   "width_m": 6.0
+  },
+  {
+   "at": [
+    245.0,
+    350
+   ],
+   "id": "room-careers",
+   "width_m": 6.0
+  },
+  {
+   "at": [
+    325.0,
+    350
+   ],
+   "id": "room-outreach",
+   "width_m": 6.0
+  }
+ ],
+ "eggs": [
+  {
+   "at": [
+    234.8,
+    562.8
+   ],
+   "badge": "Tooth fairy friend",
+   "hint": "Where do tired walkers rest by the river?",
+   "id": "egg-smiles-tooth-fairy-coin",
+   "place": "bench",
+   "reveal": "Baby teeth hold space for adult teeth, so caring for them matters too (public-health dental guidance).",
+   "title": "The tooth fairy dropped a coin",
+   "zone": "park"
+  },
+  {
+   "at": [
+    552.9,
+    122.0
+   ],
+   "badge": "Golden brusher",
+   "hint": "Two minutes, twice a day - find the brush that shines at school.",
+   "id": "egg-smiles-golden-toothbrush",
+   "place": "classroom",
+   "reveal": "Brushing twice a day for two minutes with fluoride toothpaste is the everyday habit public-health dental guidance recommends.",
+   "title": "The golden toothbrush",
+   "zone": "school"
+  },
+  {
+   "at": [
+    521.4,
+    481.5
+   ],
+   "badge": "Molar finder",
+   "hint": "Something small and white is buried where kids dig.",
+   "id": "egg-smiles-lost-molar",
+   "place": "sandbox",
+   "reveal": "Back teeth have grooves where food can hide; dental sealants are one way clinics help protect them (public-health dental guidance).",
+   "title": "A lost baby molar",
+   "zone": "playground"
+  },
+  {
+   "at": [
+    669.8,
+    582.7
+   ],
+   "badge": "Floss explorer",
+   "hint": "Between the teeth and between the walls - look for a thread of colour.",
+   "id": "egg-smiles-floss-rainbow",
+   "place": "hall",
+   "reveal": "Cleaning between your teeth every day reaches places a toothbrush misses (public-health dental guidance).",
+   "title": "The floss rainbow",
+   "zone": "community"
+  },
+  {
+   "at": [
+    192.5,
+    747.9
+   ],
+   "badge": "Van spotter",
+   "hint": "The clinic on wheels hides a smile sticker.",
+   "id": "egg-smiles-van-sticker",
+   "place": "van",
+   "reveal": "Mobile dental vans and school programmes bring check-ups to where people already are (public-health dental programmes, in general terms).",
+   "title": "The van's secret sticker",
+   "zone": "vanlot"
+  },
+  {
+   "at": [
+    703.3,
+    741.2
+   ],
+   "badge": "Sugar bug buster",
+   "hint": "A sneaky bug loves sticky sweets - find its poster in the shop.",
+   "id": "egg-smiles-sugar-bug",
+   "place": "shelf",
+   "reveal": "Mouth germs feed on sugar and make acids that can harm tooth enamel, so limit sugary snacks and drinks (public-health dental guidance).",
+   "title": "The sugar bug poster",
+   "zone": "shop"
+  },
+  {
+   "at": [
+    203.1,
+    110.0
+   ],
+   "badge": "Model maker",
+   "hint": "The lab bench keeps a tooth far too big for any mouth.",
+   "id": "egg-smiles-giant-molar",
+   "place": "lab",
+   "reveal": "Dental labs make crowns, dentures and models from impressions or digital scans - one of many dental careers.",
+   "title": "The giant model molar",
+   "zone": "clinic"
+  },
+  {
+   "at": [
+    470.6,
+    752.6
+   ],
+   "badge": "Crunch champion",
+   "hint": "A crunchy snack grows in the ground near the van lot.",
+   "id": "egg-smiles-garden-carrot",
+   "place": "bed",
+   "reveal": "Crunchy vegetables, cheese and water are tooth-friendly snack choices (general public-health nutrition guidance).",
+   "title": "The crunchy carrot",
+   "zone": "garden"
+  },
+  {
+   "at": [
+    1078.7,
+    248.4
+   ],
+   "badge": "Story smile",
+   "hint": "A quiet place with many stories hides one about smiles.",
+   "id": "egg-smiles-library-book",
+   "place": "shelf",
+   "reveal": "Picture books about brushing and check-ups are a friendly way for families to talk about healthy habits (public-health dental guidance).",
+   "title": "The picture book about teeth",
+   "zone": "library"
+  },
+  {
+   "at": [
+    1095.1,
+    599.2
+   ],
+   "badge": "Water champion",
+   "hint": "Thirsty after the match? Look by the bench.",
+   "id": "egg-smiles-water-bottle",
+   "place": "bench",
+   "reveal": "Water is a great drink after sport; many sports drinks have added sugar (public-health dental guidance).",
+   "title": "The team water bottle",
+   "zone": "sports"
+  },
+  {
+   "at": [
+    1032.4,
+    697.5
+   ],
+   "badge": "Mouthguard keeper",
+   "hint": "Players protect their smiles near the goal.",
+   "id": "egg-smiles-mouthguard",
+   "place": "goal",
+   "reveal": "A mouthguard helps protect teeth during contact sports (public-health dental guidance).",
+   "title": "The lost mouthguard",
+   "zone": "sports"
+  },
+  {
+   "at": [
+    852.9,
+    416.0
+   ],
+   "badge": "Check-up planner",
+   "hint": "Wait for the bus and read the reminder.",
+   "id": "egg-smiles-bus-reminder",
+   "place": "shelter",
+   "reveal": "Regular dental check-ups are part of public-health dental guidance - plan how you will get there.",
+   "title": "The check-up reminder card",
+   "zone": "busstop"
+  },
+  {
+   "at": [
+    299.6,
+    1058.7
+   ],
+   "badge": "Market muncher",
+   "hint": "A market stall keeps a crunchy, tooth-friendly snack.",
+   "id": "egg-smiles-market-apple",
+   "place": "stall",
+   "reveal": "Whole fruit and vegetables make tooth-friendly snacks (general public-health nutrition guidance).",
+   "title": "The crunchy apple",
+   "zone": "market"
+  },
+  {
+   "at": [
+    536.2,
+    1065.5
+   ],
+   "badge": "Bubble hero",
+   "hint": "Someone left soap by a porch on Maple Row.",
+   "id": "egg-smiles-soap-bar",
+   "place": "porch",
+   "reveal": "Wash hands with soap and water, scrubbing all over, before eating and after the toilet (public-health hand hygiene guidance).",
+   "title": "The bubbly soap bar",
+   "zone": "homes-a"
+  },
+  {
+   "at": [
+    710.1,
+    1071.1
+   ],
+   "badge": "Brush swapper",
+   "hint": "A worn-out brush waits in a Birch Row garden.",
+   "id": "egg-smiles-brush-swap",
+   "place": "garden",
+   "reveal": "Replace a toothbrush when its bristles look frayed or worn (public-health dental guidance).",
+   "title": "The old frayed toothbrush",
+   "zone": "homes-b"
+  },
+  {
+   "at": [
+    1083.2,
+    1051.3
+   ],
+   "badge": "Tap detective",
+   "hint": "Clean water flows in a Cedar Row kitchen.",
+   "id": "egg-smiles-fluoride-tap",
+   "place": "kitchen",
+   "reveal": "Many communities add fluoride to drinking water to help prevent tooth decay (public-health dental guidance).",
+   "title": "The kitchen tap",
+   "zone": "homes-c"
+  }
+ ],
+ "games": {
+  "brushing": {
+   "quadrants": [
+    "upper-right",
+    "upper-left",
+    "lower-left",
+    "lower-right"
+   ],
+   "total_s": 120,
+   "total_source": "public-health dental guidance: brush twice a day for two minutes with fluoride toothpaste",
+   "zone": "clinic"
+  },
+  "drinks": {
+   "categories": [
+    {
+     "examples": [
+      "Water",
+      "Sparkling water (plain)"
+     ],
+     "id": "plain",
+     "name": "No added sugar",
+     "rank": 0
+    },
+    {
+     "examples": [
+      "Plain milk"
+     ],
+     "id": "natural",
+     "name": "Natural milk sugar, no added sugar",
+     "rank": 1
+    },
+    {
+     "examples": [
+      "100% fruit juice"
+     ],
+     "id": "juice",
+     "name": "Fruit sugars - a sometimes drink",
+     "rank": 2
+    },
+    {
+     "examples": [
+      "Soda",
+      "Sports drink",
+      "Sweet tea",
+      "Flavoured milk"
+     ],
+     "id": "added",
+     "name": "Usually has added sugar",
+     "rank": 3
+    }
+   ],
+   "note": "Compares categories only; no sugar amount is recorded in any registry, so none are shown.",
+   "zone": "playground"
+  },
+  "flossing": {
+   "arch_teeth": 10,
+   "note": "AUTHORED game arch (not an anatomical count)",
+   "zone": "school"
+  },
+  "handwash": {
+   "scrub_s": 20,
+   "source": "public-health hand hygiene guidance: scrub with soap for at least 20 seconds",
+   "steps": [
+    "wet",
+    "soap",
+    "scrub",
+    "rinse",
+    "dry"
+   ],
+   "zone": "park"
+  },
+  "plaque": {
+   "grid": [
+    4,
+    6
+   ],
+   "note": "disclosing-tablet style colouring is a game effect",
+   "spots": 9,
+   "zone": "community"
+  },
+  "snacks": {
+   "items": [
+    {
+     "id": "water",
+     "name": "Water",
+     "sort": "tooth-friendly"
+    },
+    {
+     "id": "milk",
+     "name": "Plain milk",
+     "sort": "tooth-friendly"
+    },
+    {
+     "id": "cheese",
+     "name": "Cheese cubes",
+     "sort": "tooth-friendly"
+    },
+    {
+     "id": "carrot",
+     "name": "Carrot sticks",
+     "sort": "tooth-friendly"
+    },
+    {
+     "id": "apple",
+     "name": "Apple slices",
+     "sort": "tooth-friendly"
+    },
+    {
+     "id": "yogurt",
+     "name": "Plain yogurt",
+     "sort": "tooth-friendly"
+    },
+    {
+     "id": "candy",
+     "name": "Hard candy",
+     "sort": "sugary"
+    },
+    {
+     "id": "gummies",
+     "name": "Sticky gummies",
+     "sort": "sugary"
+    },
+    {
+     "id": "soda",
+     "name": "Soda",
+     "sort": "sugary"
+    },
+    {
+     "id": "cookies",
+     "name": "Cookies",
+     "sort": "sugary"
+    },
+    {
+     "id": "caramel",
+     "name": "Caramels",
+     "sort": "sugary"
+    },
+    {
+     "id": "frosted",
+     "name": "Frosted cereal",
+     "sort": "sugary"
+    }
+   ],
+   "source": "public-health dental guidance: limit sugary snacks and drinks",
+   "zone": "shop"
+  }
+ },
+ "guidance": {
+  "brushing": "Brush twice a day for two minutes with fluoride toothpaste.",
+  "drinks": "Choose water most often; save sugary drinks for sometimes.",
+  "flossing": "Clean between your teeth every day.",
+  "handwash": "Wash your hands with soap and water, scrubbing for at least 20 seconds.",
+  "plaque": "Brushing and cleaning between teeth remove plaque; see a dentist for regular check-ups.",
+  "snacks": "Limit sugary snacks and drinks; water is a great choice."
+ },
+ "inputs": [
+  "smiles/build.py",
+  "smiles/render.py",
+  "smiles/authored/district.json",
+  "smiles/authored/stations.json",
+  "quests/source/smiles.json"
+ ],
+ "map": {
+  "bytes": 206028,
+  "image": "smiles/maps/district-4k.webp",
+  "m_per_px": 0.292969,
+  "provenance": "AUTHORED",
+  "px": 4096,
+  "sha256": "8ac92e858b1d7cb6471002f2c07ab60bd3a10d9c0ea420d01825cd07db036184"
+ },
+ "name": "Unspoken Smiles district",
+ "place_note": "AUTHORED game district - not a real place, not surveyed; Unspoken Smiles is named only as the programme the clinic stations belong to (no endorsement, partnership or clinical claim).",
+ "play_note": "Games, eggs and badges here are play: stored on this device only, never a completion record, never money.",
+ "programmes": [
+  {
+   "id": "dental-careers-unspoken-smiles",
+   "name": "Dental Careers — Unspoken Smiles",
+   "pack_file": "WebXR/dist/packs/dental-careers-unspoken-smiles.json",
+   "stations": 19
+  },
+  {
+   "id": "dental-hygiene-unspoken-smiles",
+   "name": "Dental Hygiene — Unspoken Smiles",
+   "pack_file": "WebXR/dist/packs/dental-hygiene-unspoken-smiles.json",
+   "stations": 19
+  }
+ ],
+ "provenance": "AUTHORED",
+ "rooms": [
+  {
+   "id": "reception",
+   "name": "Reception and intake",
+   "rect": [
+    50,
+    70,
+    100,
+    90
+   ],
+   "stations": [
+    "patient-intake-screening",
+    "dn-medical-history-and-medication-review",
+    "front-office-treatment-coordination",
+    "dn-dental-coding-billing-and-preauthorisation",
+    "teledentistry-and-triage"
+   ]
+  },
+  {
+   "id": "operatory",
+   "name": "Operatories",
+   "rect": [
+    160,
+    70,
+    100,
+    90
+   ],
+   "stations": [
+    "four-handed-dentistry",
+    "operatory-turnover",
+    "endodontic-assisting",
+    "orthodontic-assisting",
+    "denture-delivery-and-adjustment",
+    "special-needs-and-geriatric-dentistry",
+    "pediatric-visit"
+   ]
+  },
+  {
+   "id": "hygiene",
+   "name": "Hygiene bay",
+   "rect": [
+    270,
+    70,
+    90,
+    90
+   ],
+   "stations": [
+    "periodontal-charting",
+    "ultrasonic-scaling",
+    "fluoride-and-sealants",
+    "aerosol-management",
+    "oral-cancer-screening",
+    "dn-oral-hygiene-instruction-and-motivational-interviewing",
+    "nitrous-oxide-monitoring"
+   ]
+  },
+  {
+   "id": "imaging",
+   "name": "Imaging room",
+   "rect": [
+    50,
+    170,
+    100,
+    80
+   ],
+   "stations": [
+    "dental-radiography-fmx",
+    "radiograph-safety",
+    "dn-digital-intraoral-scanning-and-cad-cam"
+   ]
+  },
+  {
+   "id": "sterilisation",
+   "name": "Sterilisation centre",
+   "rect": [
+    160,
+    170,
+    100,
+    80
+   ],
+   "stations": [
+    "sterilisation-technician-cycle",
+    "instrument-reprocessing",
+    "infection-control-audit",
+    "sharps-exposure-response",
+    "amalgam-waste-handling"
+   ]
+  },
+  {
+   "id": "surgery",
+   "name": "Surgery suite",
+   "rect": [
+    270,
+    170,
+    90,
+    80
+   ],
+   "stations": [
+    "oral-surgery-assisting",
+    "implant-surgery-assisting",
+    "chairside-emergency",
+    "dn-dental-trauma-and-avulsed-tooth-response",
+    "phlebotomy"
+   ]
+  },
+  {
+   "id": "lab",
+   "name": "Dental lab",
+   "rect": [
+    50,
+    260,
+    150,
+    90
+   ],
+   "stations": [
+    "dental-lab-bench"
+   ]
+  },
+  {
+   "id": "careers",
+   "name": "Careers room",
+   "rect": [
+    210,
+    260,
+    70,
+    90
+   ],
+   "stations": [
+    "dental-careers-pathway"
+   ]
+  },
+  {
+   "id": "outreach",
+   "name": "Outreach desk",
+   "rect": [
+    290,
+    260,
+    70,
+    90
+   ],
+   "stations": [
+    "mobile-dental-outreach",
+    "school-screening-outreach",
+    "dn-public-health-dentistry-and-fluoridation-advocacy"
+   ]
+  }
+ ],
+ "rooms_note": "The grouping of stations into rooms is AUTHORED for this district; the stations themselves are the programme's, linked at their source.",
+ "schema": "smiles/1",
+ "size_m": [
+  1200,
+  1200
+ ],
+ "source_stamp": "739543dc89a8e019fe152cda83b95b59a63c45b7e133dac3cdf4b3019158fb01",
+ "stations": [
+  {
+   "app": "smartcity",
+   "id": "aerosol-management",
+   "name": "Aerosol Management",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ],
+   "room": "hygiene",
+   "source": "WebXR/smartcity/js/sims/aerosol-management.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/aerosol-management.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "amalgam-waste-handling",
+   "name": "Amalgam Waste Handling",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ],
+   "room": "sterilisation",
+   "source": "WebXR/smartcity/js/sims/amalgam-waste-handling.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/amalgam-waste-handling.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "chairside-emergency",
+   "name": "Chairside Emergency",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ],
+   "room": "surgery",
+   "source": "WebXR/smartcity/js/sims/chairside-emergency.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/chairside-emergency.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "dental-careers-pathway",
+   "name": "Dental Careers Pathway",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ],
+   "room": "careers",
+   "source": "WebXR/smartcity/js/sims/dental-careers-pathway.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/dental-careers-pathway.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "dental-lab-bench",
+   "name": "Dental Laboratory Bench",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ],
+   "room": "lab",
+   "source": "WebXR/smartcity/js/sims/dental-lab-bench.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/dental-lab-bench.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "dental-radiography-fmx",
+   "name": "Full-Mouth Radiographic Series",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ],
+   "room": "imaging",
+   "source": "WebXR/smartcity/js/sims/dental-radiography-fmx.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/dental-radiography-fmx.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "denture-delivery-and-adjustment",
+   "name": "Denture Delivery & Adjustment",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ],
+   "room": "operatory",
+   "source": "WebXR/smartcity/js/sims/denture-delivery-and-adjustment.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/denture-delivery-and-adjustment.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "dn-dental-coding-billing-and-preauthorisation",
+   "name": "Dental Coding, Billing & Pre-authorisation",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ],
+   "room": "reception",
+   "source": "WebXR/smartcity/js/sims/dn-dental-coding-billing-and-preauthorisation.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/dn-dental-coding-billing-and-preauthorisation.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "dn-dental-trauma-and-avulsed-tooth-response",
+   "name": "Dental Trauma & Avulsed Tooth Response",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ],
+   "room": "surgery",
+   "source": "WebXR/smartcity/js/sims/dn-dental-trauma-and-avulsed-tooth-response.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/dn-dental-trauma-and-avulsed-tooth-response.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "dn-digital-intraoral-scanning-and-cad-cam",
+   "name": "Digital Intraoral Scanning & CAD/CAM",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ],
+   "room": "imaging",
+   "source": "WebXR/smartcity/js/sims/dn-digital-intraoral-scanning-and-cad-cam.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/dn-digital-intraoral-scanning-and-cad-cam.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "dn-medical-history-and-medication-review",
+   "name": "Medical History & Medication Review",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ],
+   "room": "reception",
+   "source": "WebXR/smartcity/js/sims/dn-medical-history-and-medication-review.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/dn-medical-history-and-medication-review.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "dn-oral-hygiene-instruction-and-motivational-interviewing",
+   "name": "Oral Hygiene Instruction & Motivational Interviewing",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ],
+   "room": "hygiene",
+   "source": "WebXR/smartcity/js/sims/dn-oral-hygiene-instruction-and-motivational-interviewing.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/dn-oral-hygiene-instruction-and-motivational-interviewing.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "dn-public-health-dentistry-and-fluoridation-advocacy",
+   "name": "Public Health Dentistry & Fluoridation Advocacy",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ],
+   "room": "outreach",
+   "source": "WebXR/smartcity/js/sims/dn-public-health-dentistry-and-fluoridation-advocacy.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/dn-public-health-dentistry-and-fluoridation-advocacy.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "endodontic-assisting",
+   "name": "Endodontic Assisting",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ],
+   "room": "operatory",
+   "source": "WebXR/smartcity/js/sims/endodontic-assisting.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/endodontic-assisting.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "fluoride-and-sealants",
+   "name": "Fluoride and Sealants",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ],
+   "room": "hygiene",
+   "source": "WebXR/smartcity/js/sims/fluoride-and-sealants.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/fluoride-and-sealants.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "four-handed-dentistry",
+   "name": "Four-Handed Dentistry",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ],
+   "room": "operatory",
+   "source": "WebXR/smartcity/js/sims/four-handed-dentistry.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/four-handed-dentistry.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "front-office-treatment-coordination",
+   "name": "Front Office & Treatment Coordination",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ],
+   "room": "reception",
+   "source": "WebXR/smartcity/js/sims/front-office-treatment-coordination.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/front-office-treatment-coordination.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "implant-surgery-assisting",
+   "name": "Implant Surgery Assisting",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ],
+   "room": "surgery",
+   "source": "WebXR/smartcity/js/sims/implant-surgery-assisting.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/implant-surgery-assisting.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "infection-control-audit",
+   "name": "Infection Control Audit",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ],
+   "room": "sterilisation",
+   "source": "WebXR/smartcity/js/sims/infection-control-audit.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/infection-control-audit.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "instrument-reprocessing",
+   "name": "Instrument Reprocessing",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ],
+   "room": "sterilisation",
+   "source": "WebXR/smartcity/js/sims/instrument-reprocessing.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/instrument-reprocessing.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "mobile-dental-outreach",
+   "name": "Mobile Dental Outreach",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ],
+   "room": "outreach",
+   "source": "WebXR/smartcity/js/sims/mobile-dental-outreach.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/mobile-dental-outreach.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "nitrous-oxide-monitoring",
+   "name": "Nitrous Oxide Monitoring",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ],
+   "room": "hygiene",
+   "source": "WebXR/smartcity/js/sims/nitrous-oxide-monitoring.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/nitrous-oxide-monitoring.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "operatory-turnover",
+   "name": "Operatory Turnover",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ],
+   "room": "operatory",
+   "source": "WebXR/smartcity/js/sims/operatory-turnover.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/operatory-turnover.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "oral-cancer-screening",
+   "name": "Oral Cancer Screening",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ],
+   "room": "hygiene",
+   "source": "WebXR/smartcity/js/sims/oral-cancer-screening.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/oral-cancer-screening.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "oral-surgery-assisting",
+   "name": "Oral Surgery Assisting",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ],
+   "room": "surgery",
+   "source": "WebXR/smartcity/js/sims/oral-surgery-assisting.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/oral-surgery-assisting.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "orthodontic-assisting",
+   "name": "Orthodontic Assisting",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ],
+   "room": "operatory",
+   "source": "WebXR/smartcity/js/sims/orthodontic-assisting.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/orthodontic-assisting.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "patient-intake-screening",
+   "name": "Patient Intake Screening",
+   "programmes": [
+    "dental-careers-unspoken-smiles",
+    "dental-hygiene-unspoken-smiles"
+   ],
+   "room": "reception",
+   "source": "WebXR/smartcity/js/sims/patient-intake-screening.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/patient-intake-screening.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "pediatric-visit",
+   "name": "Pediatric Visit",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ],
+   "room": "operatory",
+   "source": "WebXR/smartcity/js/sims/pediatric-visit.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/pediatric-visit.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "periodontal-charting",
+   "name": "Periodontal Charting",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ],
+   "room": "hygiene",
+   "source": "WebXR/smartcity/js/sims/periodontal-charting.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/periodontal-charting.js"
+  },
+  {
+   "app": "trades",
+   "id": "phlebotomy",
+   "name": "Draw Station",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ],
+   "room": "surgery",
+   "source": "WebXR/trades/js/rooms/phlebotomy.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/trades/js/rooms/phlebotomy.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "radiograph-safety",
+   "name": "Radiograph Safety",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ],
+   "room": "imaging",
+   "source": "WebXR/smartcity/js/sims/radiograph-safety.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/radiograph-safety.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "school-screening-outreach",
+   "name": "School Screening Outreach",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ],
+   "room": "outreach",
+   "source": "WebXR/smartcity/js/sims/school-screening-outreach.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/school-screening-outreach.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "sharps-exposure-response",
+   "name": "Sharps Exposure Response",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ],
+   "room": "sterilisation",
+   "source": "WebXR/smartcity/js/sims/sharps-exposure-response.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/sharps-exposure-response.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "special-needs-and-geriatric-dentistry",
+   "name": "Special Needs & Geriatric Dentistry",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ],
+   "room": "operatory",
+   "source": "WebXR/smartcity/js/sims/special-needs-and-geriatric-dentistry.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/special-needs-and-geriatric-dentistry.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "sterilisation-technician-cycle",
+   "name": "Sterilisation Centre",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ],
+   "room": "sterilisation",
+   "source": "WebXR/smartcity/js/sims/sterilisation-technician-cycle.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/sterilisation-technician-cycle.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "teledentistry-and-triage",
+   "name": "Teledentistry & Triage",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ],
+   "room": "reception",
+   "source": "WebXR/smartcity/js/sims/teledentistry-and-triage.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/teledentistry-and-triage.js"
+  },
+  {
+   "app": "smartcity",
+   "id": "ultrasonic-scaling",
+   "name": "Ultrasonic Scaling",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ],
+   "room": "hygiene",
+   "source": "WebXR/smartcity/js/sims/ultrasonic-scaling.js",
+   "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/ultrasonic-scaling.js"
+  }
+ ],
+ "stations_check": "verified against the reference clone at 9914455d742b5347237a53da71079d5114880bda",
+ "stations_from": {
+  "branch": "claude/vr-ar-safety-training-wkwmve",
+  "from": "AGIFutureFoundation/vr-safety-training",
+  "note": "Transcribed (ids, display names, source paths) from the two programme pack files at ref_commit by a script that reads git show; nothing else copied. Station code stays in that repository and is linked, not copied.",
+  "ref_commit": "9914455d742b5347237a53da71079d5114880bda",
+  "url_base": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/"
+ },
+ "streets": [
+  {
+   "from": [
+    0,
+    400
+   ],
+   "id": "main-st",
+   "name": "Main Street",
+   "to": [
+    1200,
+    400
+   ],
+   "width_m": 16
+  },
+  {
+   "from": [
+    400,
+    0
+   ],
+   "id": "school-rd",
+   "name": "School Road",
+   "to": [
+    400,
+    1200
+   ],
+   "width_m": 14
+  },
+  {
+   "from": [
+    0,
+    640
+   ],
+   "id": "park-ln",
+   "name": "Park Lane",
+   "to": [
+    880,
+    640
+   ],
+   "width_m": 10
+  },
+  {
+   "from": [
+    600,
+    400
+   ],
+   "id": "market-row",
+   "name": "Market Row",
+   "to": [
+    600,
+    1200
+   ],
+   "width_m": 10
+  },
+  {
+   "from": [
+    880,
+    0
+   ],
+   "id": "orchard-st",
+   "name": "Orchard Street",
+   "to": [
+    880,
+    1200
+   ],
+   "width_m": 12
+  },
+  {
+   "from": [
+    0,
+    860
+   ],
+   "id": "library-ave",
+   "name": "Library Avenue",
+   "to": [
+    1200,
+    860
+   ],
+   "width_m": 12
+  },
+  {
+   "from": [
+    1180,
+    0
+   ],
+   "id": "ring-rd-e",
+   "name": "Ring Road (east)",
+   "to": [
+    1180,
+    1200
+   ],
+   "width_m": 10
+  },
+  {
+   "from": [
+    0,
+    1180
+   ],
+   "id": "ring-rd-s",
+   "name": "Ring Road (south)",
+   "to": [
+    1200,
+    1180
+   ],
+   "width_m": 10
+  }
+ ],
+ "van_route": {
+  "id": "van-route",
+  "name": "Mobile dental van route",
+  "note": "AUTHORED loop along the district's street centrelines; the van timetable is not modelled.",
+  "path": [
+   [
+    140,
+    640
+   ],
+   [
+    600,
+    640
+   ],
+   [
+    600,
+    400
+   ],
+   [
+    880,
+    400
+   ],
+   [
+    880,
+    200
+   ],
+   [
+    880,
+    400
+   ],
+   [
+    400,
+    400
+   ],
+   [
+    400,
+    200
+   ],
+   [
+    400,
+    400
+   ],
+   [
+    205,
+    400
+   ],
+   [
+    400,
+    400
+   ],
+   [
+    400,
+    860
+   ],
+   [
+    200,
+    860
+   ],
+   [
+    400,
+    860
+   ],
+   [
+    400,
+    640
+   ],
+   [
+    140,
+    640
+   ]
+  ],
+  "stops": [
+   {
+    "at": [
+     140,
+     640
+    ],
+    "id": "stop-lot",
+    "name": "Van lot"
+   },
+   {
+    "at": [
+     300,
+     640
+    ],
+    "id": "stop-park",
+    "name": "Park entrance"
+   },
+   {
+    "at": [
+     695,
+     400
+    ],
+    "id": "stop-community",
+    "name": "Community centre"
+   },
+   {
+    "at": [
+     400,
+     200
+    ],
+    "id": "stop-school",
+    "name": "School gate"
+   },
+   {
+    "at": [
+     205,
+     400
+    ],
+    "id": "stop-clinic",
+    "name": "Clinic door"
+   },
+   {
+    "at": [
+     880,
+     200
+    ],
+    "id": "stop-library",
+    "name": "Library"
+   },
+   {
+    "at": [
+     200,
+     860
+    ],
+    "id": "stop-market",
+    "name": "Market plaza"
+   },
+   {
+    "at": [
+     845,
+     400
+    ],
+    "id": "stop-bus",
+    "name": "Bus stop"
+   }
+  ]
+ },
+ "walls": [
+  {
+   "from": [
+    40,
+    30
+   ],
+   "h": 4.0,
+   "id": "clinic:0",
+   "mat": "clinic-tile",
+   "to": [
+    370,
+    30
+   ]
+  },
+  {
+   "from": [
+    40,
+    30
+   ],
+   "h": 4.0,
+   "id": "clinic:1",
+   "mat": "clinic-tile",
+   "to": [
+    40,
+    370
+   ]
+  },
+  {
+   "from": [
+    370,
+    30
+   ],
+   "h": 4.0,
+   "id": "clinic:2",
+   "mat": "clinic-tile",
+   "to": [
+    370,
+    370
+   ]
+  },
+  {
+   "from": [
+    40,
+    370
+   ],
+   "h": 4.0,
+   "id": "clinic:3",
+   "mat": "clinic-tile",
+   "to": [
+    202.0,
+    370
+   ]
+  },
+  {
+   "from": [
+    208.0,
+    370
+   ],
+   "h": 4.0,
+   "id": "clinic:4",
+   "mat": "clinic-tile",
+   "to": [
+    370,
+    370
+   ]
+  },
+  {
+   "from": [
+    440,
+    50
+   ],
+   "h": 5.0,
+   "id": "school:0",
+   "mat": "school-floor",
+   "to": [
+    760,
+    50
+   ]
+  },
+  {
+   "from": [
+    440,
+    50
+   ],
+   "h": 5.0,
+   "id": "school:1",
+   "mat": "school-floor",
+   "to": [
+    440,
+    350
+   ]
+  },
+  {
+   "from": [
+    760,
+    50
+   ],
+   "h": 5.0,
+   "id": "school:2",
+   "mat": "school-floor",
+   "to": [
+    760,
+    350
+   ]
+  },
+  {
+   "from": [
+    440,
+    350
+   ],
+   "h": 5.0,
+   "id": "school:3",
+   "mat": "school-floor",
+   "to": [
+    597.0,
+    350
+   ]
+  },
+  {
+   "from": [
+    603.0,
+    350
+   ],
+   "h": 5.0,
+   "id": "school:4",
+   "mat": "school-floor",
+   "to": [
+    760,
+    350
+   ]
+  },
+  {
+   "from": [
+    620,
+    440
+   ],
+   "h": 5.0,
+   "id": "community:0",
+   "mat": "hall-floor",
+   "to": [
+    770,
+    440
+   ]
+  },
+  {
+   "from": [
+    620,
+    440
+   ],
+   "h": 5.0,
+   "id": "community:1",
+   "mat": "hall-floor",
+   "to": [
+    620,
+    620
+   ]
+  },
+  {
+   "from": [
+    770,
+    440
+   ],
+   "h": 5.0,
+   "id": "community:2",
+   "mat": "hall-floor",
+   "to": [
+    770,
+    620
+   ]
+  },
+  {
+   "from": [
+    620,
+    620
+   ],
+   "h": 5.0,
+   "id": "community:3",
+   "mat": "hall-floor",
+   "to": [
+    692.0,
+    620
+   ]
+  },
+  {
+   "from": [
+    698.0,
+    620
+   ],
+   "h": 5.0,
+   "id": "community:4",
+   "mat": "hall-floor",
+   "to": [
+    770,
+    620
+   ]
+  },
+  {
+   "from": [
+    620,
+    670
+   ],
+   "h": 5.0,
+   "id": "shop:0",
+   "mat": "shop-floor",
+   "to": [
+    770,
+    670
+   ]
+  },
+  {
+   "from": [
+    620,
+    670
+   ],
+   "h": 5.0,
+   "id": "shop:1",
+   "mat": "shop-floor",
+   "to": [
+    620,
+    780
+   ]
+  },
+  {
+   "from": [
+    770,
+    670
+   ],
+   "h": 5.0,
+   "id": "shop:2",
+   "mat": "shop-floor",
+   "to": [
+    770,
+    780
+   ]
+  },
+  {
+   "from": [
+    620,
+    780
+   ],
+   "h": 5.0,
+   "id": "shop:3",
+   "mat": "shop-floor",
+   "to": [
+    692.0,
+    780
+   ]
+  },
+  {
+   "from": [
+    698.0,
+    780
+   ],
+   "h": 5.0,
+   "id": "shop:4",
+   "mat": "shop-floor",
+   "to": [
+    770,
+    780
+   ]
+  },
+  {
+   "from": [
+    30,
+    670
+   ],
+   "h": 5.0,
+   "id": "vanlot:0",
+   "mat": "lot",
+   "to": [
+    250,
+    670
+   ]
+  },
+  {
+   "from": [
+    30,
+    670
+   ],
+   "h": 5.0,
+   "id": "vanlot:1",
+   "mat": "lot",
+   "to": [
+    30,
+    780
+   ]
+  },
+  {
+   "from": [
+    250,
+    670
+   ],
+   "h": 5.0,
+   "id": "vanlot:2",
+   "mat": "lot",
+   "to": [
+    250,
+    780
+   ]
+  },
+  {
+   "from": [
+    30,
+    780
+   ],
+   "h": 5.0,
+   "id": "vanlot:3",
+   "mat": "lot",
+   "to": [
+    137.0,
+    780
+   ]
+  },
+  {
+   "from": [
+    143.0,
+    780
+   ],
+   "h": 5.0,
+   "id": "vanlot:4",
+   "mat": "lot",
+   "to": [
+    250,
+    780
+   ]
+  },
+  {
+   "from": [
+    920,
+    50
+   ],
+   "h": 5.0,
+   "id": "library:0",
+   "mat": "wood",
+   "to": [
+    1160,
+    50
+   ]
+  },
+  {
+   "from": [
+    920,
+    50
+   ],
+   "h": 5.0,
+   "id": "library:1",
+   "mat": "wood",
+   "to": [
+    920,
+    350
+   ]
+  },
+  {
+   "from": [
+    1160,
+    50
+   ],
+   "h": 5.0,
+   "id": "library:2",
+   "mat": "wood",
+   "to": [
+    1160,
+    350
+   ]
+  },
+  {
+   "from": [
+    920,
+    350
+   ],
+   "h": 5.0,
+   "id": "library:3",
+   "mat": "wood",
+   "to": [
+    1037.0,
+    350
+   ]
+  },
+  {
+   "from": [
+    1043.0,
+    350
+   ],
+   "h": 5.0,
+   "id": "library:4",
+   "mat": "wood",
+   "to": [
+    1160,
+    350
+   ]
+  },
+  {
+   "from": [
+    50,
+    70
+   ],
+   "h": 2.2,
+   "id": "room-reception:0",
+   "mat": "room",
+   "to": [
+    150,
+    70
+   ]
+  },
+  {
+   "from": [
+    50,
+    70
+   ],
+   "h": 2.2,
+   "id": "room-reception:1",
+   "mat": "room",
+   "to": [
+    50,
+    160
+   ]
+  },
+  {
+   "from": [
+    150,
+    70
+   ],
+   "h": 2.2,
+   "id": "room-reception:2",
+   "mat": "room",
+   "to": [
+    150,
+    160
+   ]
+  },
+  {
+   "from": [
+    50,
+    160
+   ],
+   "h": 2.2,
+   "id": "room-reception:3",
+   "mat": "room",
+   "to": [
+    97.0,
+    160
+   ]
+  },
+  {
+   "from": [
+    103.0,
+    160
+   ],
+   "h": 2.2,
+   "id": "room-reception:4",
+   "mat": "room",
+   "to": [
+    150,
+    160
+   ]
+  },
+  {
+   "from": [
+    160,
+    70
+   ],
+   "h": 2.2,
+   "id": "room-operatory:0",
+   "mat": "room",
+   "to": [
+    260,
+    70
+   ]
+  },
+  {
+   "from": [
+    160,
+    70
+   ],
+   "h": 2.2,
+   "id": "room-operatory:1",
+   "mat": "room",
+   "to": [
+    160,
+    160
+   ]
+  },
+  {
+   "from": [
+    260,
+    70
+   ],
+   "h": 2.2,
+   "id": "room-operatory:2",
+   "mat": "room",
+   "to": [
+    260,
+    160
+   ]
+  },
+  {
+   "from": [
+    160,
+    160
+   ],
+   "h": 2.2,
+   "id": "room-operatory:3",
+   "mat": "room",
+   "to": [
+    207.0,
+    160
+   ]
+  },
+  {
+   "from": [
+    213.0,
+    160
+   ],
+   "h": 2.2,
+   "id": "room-operatory:4",
+   "mat": "room",
+   "to": [
+    260,
+    160
+   ]
+  },
+  {
+   "from": [
+    270,
+    70
+   ],
+   "h": 2.2,
+   "id": "room-hygiene:0",
+   "mat": "room",
+   "to": [
+    360,
+    70
+   ]
+  },
+  {
+   "from": [
+    270,
+    70
+   ],
+   "h": 2.2,
+   "id": "room-hygiene:1",
+   "mat": "room",
+   "to": [
+    270,
+    160
+   ]
+  },
+  {
+   "from": [
+    360,
+    70
+   ],
+   "h": 2.2,
+   "id": "room-hygiene:2",
+   "mat": "room",
+   "to": [
+    360,
+    160
+   ]
+  },
+  {
+   "from": [
+    270,
+    160
+   ],
+   "h": 2.2,
+   "id": "room-hygiene:3",
+   "mat": "room",
+   "to": [
+    312.0,
+    160
+   ]
+  },
+  {
+   "from": [
+    318.0,
+    160
+   ],
+   "h": 2.2,
+   "id": "room-hygiene:4",
+   "mat": "room",
+   "to": [
+    360,
+    160
+   ]
+  },
+  {
+   "from": [
+    50,
+    170
+   ],
+   "h": 2.2,
+   "id": "room-imaging:0",
+   "mat": "room",
+   "to": [
+    150,
+    170
+   ]
+  },
+  {
+   "from": [
+    50,
+    170
+   ],
+   "h": 2.2,
+   "id": "room-imaging:1",
+   "mat": "room",
+   "to": [
+    50,
+    250
+   ]
+  },
+  {
+   "from": [
+    150,
+    170
+   ],
+   "h": 2.2,
+   "id": "room-imaging:2",
+   "mat": "room",
+   "to": [
+    150,
+    250
+   ]
+  },
+  {
+   "from": [
+    50,
+    250
+   ],
+   "h": 2.2,
+   "id": "room-imaging:3",
+   "mat": "room",
+   "to": [
+    97.0,
+    250
+   ]
+  },
+  {
+   "from": [
+    103.0,
+    250
+   ],
+   "h": 2.2,
+   "id": "room-imaging:4",
+   "mat": "room",
+   "to": [
+    150,
+    250
+   ]
+  },
+  {
+   "from": [
+    160,
+    170
+   ],
+   "h": 2.2,
+   "id": "room-sterilisation:0",
+   "mat": "room",
+   "to": [
+    260,
+    170
+   ]
+  },
+  {
+   "from": [
+    160,
+    170
+   ],
+   "h": 2.2,
+   "id": "room-sterilisation:1",
+   "mat": "room",
+   "to": [
+    160,
+    250
+   ]
+  },
+  {
+   "from": [
+    260,
+    170
+   ],
+   "h": 2.2,
+   "id": "room-sterilisation:2",
+   "mat": "room",
+   "to": [
+    260,
+    250
+   ]
+  },
+  {
+   "from": [
+    160,
+    250
+   ],
+   "h": 2.2,
+   "id": "room-sterilisation:3",
+   "mat": "room",
+   "to": [
+    207.0,
+    250
+   ]
+  },
+  {
+   "from": [
+    213.0,
+    250
+   ],
+   "h": 2.2,
+   "id": "room-sterilisation:4",
+   "mat": "room",
+   "to": [
+    260,
+    250
+   ]
+  },
+  {
+   "from": [
+    270,
+    170
+   ],
+   "h": 2.2,
+   "id": "room-surgery:0",
+   "mat": "room",
+   "to": [
+    360,
+    170
+   ]
+  },
+  {
+   "from": [
+    270,
+    170
+   ],
+   "h": 2.2,
+   "id": "room-surgery:1",
+   "mat": "room",
+   "to": [
+    270,
+    250
+   ]
+  },
+  {
+   "from": [
+    360,
+    170
+   ],
+   "h": 2.2,
+   "id": "room-surgery:2",
+   "mat": "room",
+   "to": [
+    360,
+    250
+   ]
+  },
+  {
+   "from": [
+    270,
+    250
+   ],
+   "h": 2.2,
+   "id": "room-surgery:3",
+   "mat": "room",
+   "to": [
+    312.0,
+    250
+   ]
+  },
+  {
+   "from": [
+    318.0,
+    250
+   ],
+   "h": 2.2,
+   "id": "room-surgery:4",
+   "mat": "room",
+   "to": [
+    360,
+    250
+   ]
+  },
+  {
+   "from": [
+    50,
+    260
+   ],
+   "h": 2.2,
+   "id": "room-lab:0",
+   "mat": "room",
+   "to": [
+    200,
+    260
+   ]
+  },
+  {
+   "from": [
+    50,
+    260
+   ],
+   "h": 2.2,
+   "id": "room-lab:1",
+   "mat": "room",
+   "to": [
+    50,
+    350
+   ]
+  },
+  {
+   "from": [
+    200,
+    260
+   ],
+   "h": 2.2,
+   "id": "room-lab:2",
+   "mat": "room",
+   "to": [
+    200,
+    350
+   ]
+  },
+  {
+   "from": [
+    50,
+    350
+   ],
+   "h": 2.2,
+   "id": "room-lab:3",
+   "mat": "room",
+   "to": [
+    122.0,
+    350
+   ]
+  },
+  {
+   "from": [
+    128.0,
+    350
+   ],
+   "h": 2.2,
+   "id": "room-lab:4",
+   "mat": "room",
+   "to": [
+    200,
+    350
+   ]
+  },
+  {
+   "from": [
+    210,
+    260
+   ],
+   "h": 2.2,
+   "id": "room-careers:0",
+   "mat": "room",
+   "to": [
+    280,
+    260
+   ]
+  },
+  {
+   "from": [
+    210,
+    260
+   ],
+   "h": 2.2,
+   "id": "room-careers:1",
+   "mat": "room",
+   "to": [
+    210,
+    350
+   ]
+  },
+  {
+   "from": [
+    280,
+    260
+   ],
+   "h": 2.2,
+   "id": "room-careers:2",
+   "mat": "room",
+   "to": [
+    280,
+    350
+   ]
+  },
+  {
+   "from": [
+    210,
+    350
+   ],
+   "h": 2.2,
+   "id": "room-careers:3",
+   "mat": "room",
+   "to": [
+    242.0,
+    350
+   ]
+  },
+  {
+   "from": [
+    248.0,
+    350
+   ],
+   "h": 2.2,
+   "id": "room-careers:4",
+   "mat": "room",
+   "to": [
+    280,
+    350
+   ]
+  },
+  {
+   "from": [
+    290,
+    260
+   ],
+   "h": 2.2,
+   "id": "room-outreach:0",
+   "mat": "room",
+   "to": [
+    360,
+    260
+   ]
+  },
+  {
+   "from": [
+    290,
+    260
+   ],
+   "h": 2.2,
+   "id": "room-outreach:1",
+   "mat": "room",
+   "to": [
+    290,
+    350
+   ]
+  },
+  {
+   "from": [
+    360,
+    260
+   ],
+   "h": 2.2,
+   "id": "room-outreach:2",
+   "mat": "room",
+   "to": [
+    360,
+    350
+   ]
+  },
+  {
+   "from": [
+    290,
+    350
+   ],
+   "h": 2.2,
+   "id": "room-outreach:3",
+   "mat": "room",
+   "to": [
+    322.0,
+    350
+   ]
+  },
+  {
+   "from": [
+    328.0,
+    350
+   ],
+   "h": 2.2,
+   "id": "room-outreach:4",
+   "mat": "room",
+   "to": [
+    360,
+    350
+   ]
+  },
+  {
+   "from": [
+    0,
+    0
+   ],
+   "h": 3.0,
+   "id": "edge:0",
+   "mat": "room",
+   "to": [
+    1200,
+    0
+   ]
+  },
+  {
+   "from": [
+    0,
+    0
+   ],
+   "h": 3.0,
+   "id": "edge:1",
+   "mat": "room",
+   "to": [
+    0,
+    1200
+   ]
+  },
+  {
+   "from": [
+    1200,
+    0
+   ],
+   "h": 3.0,
+   "id": "edge:2",
+   "mat": "room",
+   "to": [
+    1200,
+    1200
+   ]
+  },
+  {
+   "from": [
+    0,
+    1200
+   ],
+   "h": 3.0,
+   "id": "edge:3",
+   "mat": "room",
+   "to": [
+    1200,
+    1200
+   ]
+  }
+ ],
+ "walls_note": "AUTHORED walls: each is drawn and is a solid box in the shared arcade physics (web/physkit.py); one south doorway per building and clinic room.",
+ "zones": [
+  {
+   "colour": "#cfe8f5",
+   "eggs": [
+    "egg-smiles-giant-molar"
+   ],
+   "games": [
+    "brushing"
+   ],
+   "id": "clinic",
+   "kind": "clinic",
+   "name": "Unspoken Smiles clinic",
+   "rect": [
+    40,
+    30,
+    330,
+    340
+   ],
+   "solids": []
+  },
+  {
+   "colour": "#f7e3b5",
+   "eggs": [
+    "egg-smiles-golden-toothbrush"
+   ],
+   "games": [
+    "flossing"
+   ],
+   "id": "school",
+   "kind": "school",
+   "name": "Neighbourhood school",
+   "rect": [
+    440,
+    50,
+    320,
+    300
+   ],
+   "solids": []
+  },
+  {
+   "colour": "#9fd39a",
+   "eggs": [
+    "egg-smiles-tooth-fairy-coin"
+   ],
+   "games": [
+    "handwash"
+   ],
+   "id": "park",
+   "kind": "park",
+   "name": "Riverside park",
+   "rect": [
+    30,
+    440,
+    340,
+    180
+   ],
+   "solids": []
+  },
+  {
+   "colour": "#f4c7a8",
+   "eggs": [
+    "egg-smiles-lost-molar"
+   ],
+   "games": [
+    "drinks"
+   ],
+   "id": "playground",
+   "kind": "playground",
+   "name": "Playground",
+   "rect": [
+    430,
+    440,
+    150,
+    180
+   ],
+   "solids": []
+  },
+  {
+   "colour": "#e0d0f0",
+   "eggs": [
+    "egg-smiles-floss-rainbow"
+   ],
+   "games": [
+    "plaque"
+   ],
+   "id": "community",
+   "kind": "community",
+   "name": "Community centre",
+   "rect": [
+    620,
+    440,
+    150,
+    180
+   ],
+   "solids": []
+  },
+  {
+   "colour": "#d8f0d8",
+   "eggs": [
+    "egg-smiles-sugar-bug"
+   ],
+   "games": [
+    "snacks"
+   ],
+   "id": "shop",
+   "kind": "shop",
+   "name": "Corner health shop",
+   "rect": [
+    620,
+    670,
+    150,
+    110
+   ],
+   "solids": []
+  },
+  {
+   "colour": "#d6d6de",
+   "eggs": [
+    "egg-smiles-van-sticker"
+   ],
+   "games": [],
+   "id": "vanlot",
+   "kind": "vanlot",
+   "name": "Mobile dental van lot",
+   "rect": [
+    30,
+    670,
+    220,
+    110
+   ],
+   "solids": []
+  },
+  {
+   "colour": "#b7dca0",
+   "eggs": [
+    "egg-smiles-garden-carrot"
+   ],
+   "games": [],
+   "id": "garden",
+   "kind": "garden",
+   "name": "Community garden",
+   "rect": [
+    280,
+    670,
+    300,
+    110
+   ],
+   "solids": []
+  },
+  {
+   "colour": "#f0dcc8",
+   "eggs": [
+    "egg-smiles-library-book"
+   ],
+   "games": [],
+   "id": "library",
+   "kind": "library",
+   "name": "Neighbourhood library",
+   "rect": [
+    920,
+    50,
+    240,
+    300
+   ],
+   "solids": []
+  },
+  {
+   "colour": "#8cc98a",
+   "eggs": [
+    "egg-smiles-water-bottle",
+    "egg-smiles-mouthguard"
+   ],
+   "games": [],
+   "id": "sports",
+   "kind": "sports",
+   "name": "Sports field",
+   "rect": [
+    920,
+    440,
+    240,
+    380
+   ],
+   "solids": []
+  },
+  {
+   "colour": "#ffe082",
+   "eggs": [
+    "egg-smiles-bus-reminder"
+   ],
+   "games": [],
+   "id": "busstop",
+   "kind": "busstop",
+   "name": "Bus stop",
+   "rect": [
+    830,
+    412,
+    30,
+    12
+   ],
+   "solids": []
+  },
+  {
+   "colour": "#f6e7c1",
+   "eggs": [
+    "egg-smiles-market-apple"
+   ],
+   "games": [],
+   "id": "market",
+   "kind": "market",
+   "name": "Farmers-market plaza",
+   "rect": [
+    30,
+    900,
+    340,
+    240
+   ],
+   "solids": [
+    [
+     50,
+     950,
+     36,
+     24
+    ],
+    [
+     102,
+     950,
+     36,
+     24
+    ],
+    [
+     154,
+     950,
+     36,
+     24
+    ],
+    [
+     206,
+     950,
+     36,
+     24
+    ],
+    [
+     258,
+     950,
+     36,
+     24
+    ],
+    [
+     310,
+     950,
+     36,
+     24
+    ],
+    [
+     50,
+     1040,
+     36,
+     24
+    ],
+    [
+     102,
+     1040,
+     36,
+     24
+    ],
+    [
+     154,
+     1040,
+     36,
+     24
+    ],
+    [
+     206,
+     1040,
+     36,
+     24
+    ],
+    [
+     258,
+     1040,
+     36,
+     24
+    ],
+    [
+     310,
+     1040,
+     36,
+     24
+    ]
+   ]
+  },
+  {
+   "colour": "#e8d6cf",
+   "eggs": [
+    "egg-smiles-soap-bar"
+   ],
+   "games": [],
+   "id": "homes-a",
+   "kind": "residential",
+   "name": "Maple Row homes",
+   "rect": [
+    440,
+    900,
+    140,
+    240
+   ],
+   "solids": [
+    [
+     455,
+     930,
+     30,
+     24
+    ],
+    [
+     510,
+     930,
+     30,
+     24
+    ],
+    [
+     455,
+     1086,
+     30,
+     24
+    ],
+    [
+     510,
+     1086,
+     30,
+     24
+    ]
+   ]
+  },
+  {
+   "colour": "#dcd3e6",
+   "eggs": [
+    "egg-smiles-brush-swap"
+   ],
+   "games": [],
+   "id": "homes-b",
+   "kind": "residential",
+   "name": "Birch Row homes",
+   "rect": [
+    630,
+    900,
+    230,
+    240
+   ],
+   "solids": [
+    [
+     645,
+     930,
+     30,
+     24
+    ],
+    [
+     700,
+     930,
+     30,
+     24
+    ],
+    [
+     755,
+     930,
+     30,
+     24
+    ],
+    [
+     645,
+     1086,
+     30,
+     24
+    ],
+    [
+     700,
+     1086,
+     30,
+     24
+    ],
+    [
+     755,
+     1086,
+     30,
+     24
+    ]
+   ]
+  },
+  {
+   "colour": "#d3e2e6",
+   "eggs": [
+    "egg-smiles-fluoride-tap"
+   ],
+   "games": [],
+   "id": "homes-c",
+   "kind": "residential",
+   "name": "Cedar Row homes",
+   "rect": [
+    920,
+    900,
+    240,
+    240
+   ],
+   "solids": [
+    [
+     935,
+     930,
+     30,
+     24
+    ],
+    [
+     990,
+     930,
+     30,
+     24
+    ],
+    [
+     1045,
+     930,
+     30,
+     24
+    ],
+    [
+     1100,
+     930,
+     30,
+     24
+    ],
+    [
+     935,
+     1086,
+     30,
+     24
+    ],
+    [
+     990,
+     1086,
+     30,
+     24
+    ],
+    [
+     1045,
+     1086,
+     30,
+     24
+    ],
+    [
+     1100,
+     1086,
+     30,
+     24
+    ]
+   ]
+  }
+ ]
+}

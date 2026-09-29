@@ -21,11 +21,11 @@
   "measured_elsewhere": 51,
   "computed_from_registry": 12,
   "measured_source_files": 11,
-  "registries_scanned": 79,
-  "app_renderers_scanned": 32,
+  "registries_scanned": 83,
+  "app_renderers_scanned": 33,
   "doc_renderers_scanned": 3,
-  "builders_scanned": 63,
-  "suites_scanned": 112,
+  "builders_scanned": 67,
+  "suites_scanned": 121,
   "declared_unbuilt": 7,
   "declared_unbuilt_by_their_own_words": 2,
   "declared_unbuilt_not_drawn": 6,
@@ -38,13 +38,13 @@
   "budget_views": 6,
   "budget_currencies": 2,
   "budget_agreements": 7,
-  "suites_run": 112,
-  "suite_checks_declared": 5684,
+  "suites_run": 121,
+  "suite_checks_declared": 5948,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 351
+  "files_read": 372
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -1809,11 +1809,17 @@
    ],
    "doc_renderers": [],
    "builders": [
+    "outdoors/build.py",
+    "quests/build.py",
+    "seasons/build.py",
     "underwater/build.py"
    ],
    "suites": [
+    "outdoors/test.mjs",
     "parishes/test.mjs",
+    "quests/test.mjs",
     "restoration/test_scenarios.mjs",
+    "seasons/test.mjs",
     "underwater/test.mjs",
     "web/test_bayworld.mjs",
     "web/test_home.mjs"
@@ -1830,7 +1836,9 @@
     "web/build_bayworld.py"
    ],
    "doc_renderers": [],
-   "builders": [],
+   "builders": [
+    "outdoors/build.py"
+   ],
    "suites": [],
    "own_pack": [
     "bayarea/page_view.py",
@@ -2013,12 +2021,14 @@
    "doc_renderers": [],
    "builders": [
     "facades/build.py",
-    "holodeck/build.py"
+    "holodeck/build.py",
+    "seasons/build.py"
    ],
    "suites": [
     "facades/test.mjs",
     "holodeck/test.mjs",
-    "layers/test.mjs"
+    "layers/test.mjs",
+    "seasons/test.mjs"
    ],
    "own_pack": [
     "economy/build.py",
@@ -2426,6 +2436,21 @@
     "orbis/test.mjs"
    ]
   },
+  "outdoors/registry/outdoors.json": {
+   "app_renderers": [
+    "web/build_parishes.py",
+    "web/build_wilds.py"
+   ],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [
+    "web/test_fishkit.mjs"
+   ],
+   "own_pack": [
+    "outdoors/build.py",
+    "outdoors/test.mjs"
+   ]
+  },
   "pack/registry/halls.json": {
    "app_renderers": [
     "web/build_3d.py",
@@ -2624,6 +2649,7 @@
     "holodeck/build.py",
     "layers/build.py",
     "npcs/build.py",
+    "seasons/build.py",
     "underwater/build.py"
    ],
    "suites": [
@@ -2637,6 +2663,7 @@
     "npcs/test.mjs",
     "physics/test.mjs",
     "quests/test.mjs",
+    "seasons/test.mjs",
     "underwater/test.mjs",
     "web/test_home.mjs",
     "web/test_parishes.mjs"
@@ -2654,7 +2681,9 @@
     "web/build_parishes.py"
    ],
    "doc_renderers": [],
-   "builders": [],
+   "builders": [
+    "outdoors/build.py"
+   ],
    "suites": [
     "bayarea/test.mjs",
     "web/test_parishes.mjs"
@@ -2689,6 +2718,7 @@
    "app_renderers": [
     "web/build_fleet.py",
     "web/build_parishes.py",
+    "web/build_smiles.py",
     "web/build_wilds.py"
    ],
    "doc_renderers": [],
@@ -2750,6 +2780,7 @@
     "web/build_bayworld.py",
     "web/build_parishes.py",
     "web/build_schools.py",
+    "web/build_smiles.py",
     "web/build_wilds.py"
    ],
    "doc_renderers": [],
@@ -2761,7 +2792,8 @@
     "web/test_parishes.mjs",
     "web/test_quests.mjs",
     "web/test_schools.mjs",
-    "web/test_wilds.mjs"
+    "web/test_wilds.mjs",
+    "wildlife/test.mjs"
    ],
    "own_pack": [
     "quests/build.py",
@@ -2942,6 +2974,20 @@
     "schools/test.mjs"
    ]
   },
+  "seasons/registry/seasons.json": {
+   "app_renderers": [
+    "web/build_parishes.py"
+   ],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [
+    "web/test_fieldkit.mjs"
+   ],
+   "own_pack": [
+    "seasons/build.py",
+    "seasons/test.mjs"
+   ]
+  },
   "security/registry/sbom.cdx.json": {
    "app_renderers": [
     "web/build_quests.py"
@@ -3065,6 +3111,24 @@
    "own_pack": [
     "sky/build.py",
     "sky/test.mjs"
+   ]
+  },
+  "smiles/registry/smiles.json": {
+   "app_renderers": [
+    "web/build_smiles.py"
+   ],
+   "doc_renderers": [],
+   "builders": [
+    "quests/build.py"
+   ],
+   "suites": [
+    "quests/test.mjs",
+    "web/test_smiles.mjs",
+    "web/test_smileskit.mjs"
+   ],
+   "own_pack": [
+    "smiles/build.py",
+    "smiles/test.mjs"
    ]
   },
   "spaces/registry/spaces.json": {
@@ -3577,6 +3641,20 @@
     "venue/test.mjs"
    ]
   },
+  "wildlife/registry/wildlife.json": {
+   "app_renderers": [
+    "web/build_parishes.py",
+    "web/build_wilds.py"
+   ],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [],
+   "own_pack": [
+    "wildlife/build.py",
+    "wildlife/make_eggs.py",
+    "wildlife/test.mjs"
+   ]
+  },
   "wilds/registry/wilds.json": {
    "app_renderers": [
     "web/build_fleet.py",
@@ -3589,20 +3667,24 @@
     "classroom/build.py",
     "cognitionx/build.py",
     "lessons/build.py",
+    "outdoors/build.py",
     "quests/build.py",
-    "tasks/build.py"
+    "tasks/build.py",
+    "wildlife/build.py"
    ],
    "suites": [
     "classroom/test.mjs",
     "cognitionx/test.mjs",
     "fleet/test.mjs",
     "lessons/test.mjs",
+    "outdoors/test.mjs",
     "quests/test.mjs",
     "tasks/test.mjs",
     "web/test_fleet.mjs",
     "web/test_geomap.mjs",
     "web/test_schools.mjs",
-    "web/test_wilds.mjs"
+    "web/test_wilds.mjs",
+    "wildlife/test.mjs"
    ],
    "own_pack": [
     "wilds/build.py",
@@ -3700,6 +3782,7 @@
    "web/build_robotics.py",
    "web/build_schools.py",
    "web/build_seo.py",
+   "web/build_smiles.py",
    "web/build_spaces.py",
    "web/build_verify.py",
    "web/build_wilds.py",
@@ -3744,6 +3827,7 @@
    "meta/build.py",
    "npcs/build.py",
    "orbis/build.py",
+   "outdoors/build.py",
    "pack/build.py",
    "parcels/build.py",
    "parishes/build.py",
@@ -3758,9 +3842,11 @@
    "roadmap/build.py",
    "robotics/build.py",
    "schools/build.py",
+   "seasons/build.py",
    "sessions/build.py",
    "sims/build.py",
    "sky/build.py",
+   "smiles/build.py",
    "spaces/build.py",
    "spatial/build.py",
    "stations/build.py",
@@ -3772,6 +3858,7 @@
    "underwater/build.py",
    "unions/build.py",
    "venue/build.py",
+   "wildlife/build.py",
    "wilds/build.py",
    "worksites/build.py",
    "world/build.py",
@@ -3821,6 +3908,7 @@
    "npcs/test.mjs",
    "ops/test.mjs",
    "orbis/test.mjs",
+   "outdoors/test.mjs",
    "pack/verify.mjs",
    "parcels/test.mjs",
    "parishes/test.mjs",
@@ -3836,12 +3924,14 @@
    "roadmap/test.mjs",
    "robotics/test.mjs",
    "schools/test.mjs",
+   "seasons/test.mjs",
    "security/test.mjs",
    "security/test_sbom.mjs",
    "sessions/test.mjs",
    "sessions/verify.mjs",
    "sims/test.mjs",
    "sky/test.mjs",
+   "smiles/test.mjs",
    "spaces/test.mjs",
    "spatial/test.mjs",
    "stations/test.mjs",
@@ -3860,6 +3950,8 @@
    "web/test_design.mjs",
    "web/test_fabric.mjs",
    "web/test_facadekit.mjs",
+   "web/test_fieldkit.mjs",
+   "web/test_fishkit.mjs",
    "web/test_fleet.mjs",
    "web/test_geomap.mjs",
    "web/test_gltf.mjs",
@@ -3880,11 +3972,15 @@
    "web/test_rtl.mjs",
    "web/test_schools.mjs",
    "web/test_seo.mjs",
+   "web/test_smiles.mjs",
+   "web/test_smileskit.mjs",
    "web/test_spaces.mjs",
    "web/test_tqkit.mjs",
    "web/test_verify.mjs",
+   "web/test_wildkit.mjs",
    "web/test_wilds.mjs",
    "web/test_worksites.mjs",
+   "wildlife/test.mjs",
    "wilds/test.mjs",
    "worksites/test.mjs",
    "worksites/verify.mjs",
@@ -4974,7 +5070,7 @@
    {
     "suite": "quests/test.mjs",
     "pack": "quests",
-    "readme_checks": 33,
+    "readme_checks": 38,
     "declared": true,
     "in_readme_table": true
    },
@@ -5236,21 +5332,84 @@
     "readme_checks": 67,
     "declared": true,
     "in_readme_table": true
+   },
+   {
+    "suite": "seasons/test.mjs",
+    "pack": "seasons",
+    "readme_checks": 28,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_fieldkit.mjs",
+    "pack": "web",
+    "readme_checks": 34,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "outdoors/test.mjs",
+    "pack": "outdoors",
+    "readme_checks": 30,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_fishkit.mjs",
+    "pack": "web",
+    "readme_checks": 58,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "wildlife/test.mjs",
+    "pack": "wildlife",
+    "readme_checks": 27,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_wildkit.mjs",
+    "pack": "web",
+    "readme_checks": 18,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "smiles/test.mjs",
+    "pack": "smiles",
+    "readme_checks": 22,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_smiles.mjs",
+    "pack": "web",
+    "readme_checks": 25,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_smileskit.mjs",
+    "pack": "web",
+    "readme_checks": 17,
+    "declared": true,
+    "in_readme_table": true
    }
   ],
-  "suites_run": 112,
-  "suites_declaring_a_count": 110,
+  "suites_run": 121,
+  "suites_declaring_a_count": 119,
   "suites_without_a_count": [
    "control/soak.mjs",
    "restoration/test_scenarios.mjs"
   ],
-  "declared_total": 5684,
-  "readme_headline": 5719,
+  "declared_total": 5948,
+  "readme_headline": 5983,
   "unaccounted_for": 35,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
   "max": 364,
-  "median": 45.0,
+  "median": 40,
   "thinnest": [
    {
     "suite": "ops/fuzz.mjs",
@@ -5643,6 +5802,10 @@
   "orbis/runner-visko-orbis-stable/postcss.config.mjs",
   "orbis/runner-visko-orbis-stable/skill/SKILL.md",
   "orbis/test.mjs",
+  "outdoors/build.py",
+  "outdoors/registry/outdoors.json",
+  "outdoors/test.mjs",
+  "outdoors/wilds_shore.mjs",
   "pack/build.py",
   "pack/hall_signoff.mjs",
   "pack/registry.js",
@@ -5706,6 +5869,9 @@
   "schools/build.py",
   "schools/registry/schools.json",
   "schools/test.mjs",
+  "seasons/build.py",
+  "seasons/registry/seasons.json",
+  "seasons/test.mjs",
   "security/authz.mjs",
   "security/build_sbom.py",
   "security/contest.mjs",
@@ -5724,6 +5890,10 @@
   "sky/build.py",
   "sky/registry/sky.json",
   "sky/test.mjs",
+  "smiles/build.py",
+  "smiles/registry/smiles.json",
+  "smiles/render.py",
+  "smiles/test.mjs",
   "spaces/build.py",
   "spaces/registry/spaces.json",
   "spaces/test.mjs",
@@ -5794,6 +5964,7 @@
   "web/build_robotics.py",
   "web/build_schools.py",
   "web/build_seo.py",
+  "web/build_smiles.py",
   "web/build_spaces.py",
   "web/build_verify.py",
   "web/build_wilds.py",
@@ -5809,6 +5980,8 @@
   "web/test_design.mjs",
   "web/test_fabric.mjs",
   "web/test_facadekit.mjs",
+  "web/test_fieldkit.mjs",
+  "web/test_fishkit.mjs",
   "web/test_fleet.mjs",
   "web/test_geomap.mjs",
   "web/test_gltf.mjs",
@@ -5829,12 +6002,19 @@
   "web/test_rtl.mjs",
   "web/test_schools.mjs",
   "web/test_seo.mjs",
+  "web/test_smiles.mjs",
+  "web/test_smileskit.mjs",
   "web/test_spaces.mjs",
   "web/test_tqkit.mjs",
   "web/test_verify.mjs",
+  "web/test_wildkit.mjs",
   "web/test_wilds.mjs",
   "web/test_worksites.mjs",
   "wiki/build_wiki.py",
+  "wildlife/build.py",
+  "wildlife/make_eggs.py",
+  "wildlife/registry/wildlife.json",
+  "wildlife/test.mjs",
   "wilds/build.py",
   "wilds/core.mjs",
   "wilds/registry/wilds.json",

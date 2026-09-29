@@ -91,6 +91,7 @@ const BUILDERS = {
   'web/trade_craft_fleet.html': 'build_fleet.py',
   'web/trade_craft_packs.html': 'build_packs.py',
   'web/trade_craft_robotics.html': 'build_robotics.py',
+  'web/trade_craft_smiles.html': 'build_smiles.py',
 };
 
 const en = JSON.parse(readFileSync(join(ROOT, 'i18n/locales/en.json'), 'utf8')).strings;

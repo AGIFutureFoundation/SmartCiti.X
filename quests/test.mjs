@@ -215,5 +215,52 @@ ok(`questkit scope 'parishes' holds exactly the parish-world entries (${pq.lengt
     r.same === true && r.titles === true && r.compacted && r.nStory > 0 && r.campus === false, JSON.stringify(r));
 }
 
+// wave 12 (BAYOU, GAMES_CONTRACT): every quests/source/*.json is loaded, owner-prefixed, informative, in a known world
+{
+  const srcDir = join(ROOT, 'quests/source');
+  const files = readdirSync(srcDir).filter((f) => f.endsWith('.json')).sort();
+  const want = Object.fromEntries(files.map((f) => ['quests/source/' + f, JSON.parse(read('quests/source/' + f)).entries.length]));
+  ok(`quests/build.py loads every quests/source/*.json, sorted (${files.length}: ${files.join(', ')})`,
+    reg.sources && JSON.stringify(reg.sources) === JSON.stringify(want) && files.every((f) => reg.reads.includes('quests/source/' + f)),
+    JSON.stringify({ reg: reg.sources, want }));
+  const byId = Object.fromEntries(reg.quests.map((q) => [q.id, q]));
+  const badSrc = [];
+  const seen = {};
+  for (const f of files) {
+    const stem = f.slice(0, -5);
+    for (const e of JSON.parse(read('quests/source/' + f)).entries) {
+      if (seen[e.id]) badSrc.push(`${e.id}: in ${seen[e.id]} and ${f}`);
+      seen[e.id] = f;
+      const q = byId[e.id];
+      if (!q) { badSrc.push(`${e.id}: in ${f} but not in the registry`); continue; }
+      if (q.world !== e.world || q.kind !== e.kind || q.reward.badge !== 'badge-' + e.id) badSrc.push(`${e.id}: world/kind/badge differ from ${f}`);
+      if (f === 'campus.json') continue;
+      if (!e.id.startsWith(`${e.kind}-${stem}-`)) badSrc.push(`${e.id}: not ${e.kind}-${stem}-*`);
+      if (typeof q.reveal !== 'string' || q.reveal.trim().length < 20) badSrc.push(`${e.id}: no informative reveal`);
+      if (q.trigger && !/^(konami|typed:[a-z]{3,24}|clicks:[2-9])$/.test(q.trigger)) badSrc.push(`${e.id}: trigger ${q.trigger}`);
+    }
+  }
+  ok('source entries: one owner file each, owner-prefixed ids, badge-<id>, a one-line informative reveal, contract triggers', badSrc.length === 0, badSrc);
+  const bay = new Set(Object.keys(JSON.parse(read('bayarea/registry/bayarea.json')).counties));
+  const wildsIds = existsSync(join(ROOT, 'wilds/registry/wilds.json')) ? new Set(JSON.parse(read('wilds/registry/wilds.json')).worlds.map((w) => w.id)) : null;
+  const smilesZ = existsSync(join(ROOT, 'smiles/registry/smiles.json')) ? new Set(JSON.parse(read('smiles/registry/smiles.json')).zones.map((z) => z.id)) : null;
+  const badW = reg.quests.filter((q) => (q.world.startsWith('bay:') && !bay.has(q.world.slice(4)))
+    || (q.world.startsWith('wilds:') && wildsIds && !wildsIds.has(q.world.slice(6)))
+    || ((q.world === 'smiles' || q.world.startsWith('smiles:')) && (!smilesZ || (q.world.startsWith('smiles:') && !smilesZ.has(q.world.slice(7))))))
+    .map((q) => `${q.id}: ${q.world}`);
+  ok('wave-12 world kinds resolve: bay:<fips> in bayarea counties, wilds:<id> in wilds worlds, smiles:<zone> in smiles zones', badW.length === 0, badW);
+  const noFact = reg.quests.filter((q) => q.reveal !== undefined && /\b\d+(\.\d+)?\s*(ft|feet|lb|lbs|pounds|kg|inches|cm|mph|years? old)\b/i.test(q.reveal)).map((q) => q.id);
+  ok('no reveal quotes an invented measurement (sizes, weights, speeds)', noFact.length === 0, noFact);
+  let sc = null;
+  try {
+    sc = JSON.parse(execFileSync('python3', ['-c', 'import json,sys;sys.path.insert(0,"web");import questkit as k;print(json.dumps({s:{"n":sum(1 for q in k.QUESTS if k.in_scope(q,s)),"page":k.SCOPE_PAGE[s],"reveal":"reveal" in json.dumps(k._data(s,k.SCOPE_PAGE[s])) if any(k.in_scope(q,s) for q in k.QUESTS) else None} for s in ("bay","smiles")}))'], { cwd: ROOT, encoding: 'utf8', maxBuffer: 64 << 20 }));
+  } catch (e) { sc = { error: String(e).slice(0, 200) }; }
+  const nBay = reg.quests.filter((q) => q.world === 'bay' || q.world.startsWith('bay:')).length;
+  const nSm = reg.quests.filter((q) => q.world === 'smiles' || q.world.startsWith('smiles:')).length;
+  ok(`questkit scopes 'bay' (${nBay}) and 'smiles' (${nSm}) hold exactly their world entries, bind to their pages and carry reveal lines`,
+    sc && sc.bay && sc.bay.n === nBay && sc.bay.page === 'web/trade_craft_bay.html' && sc.smiles.n === nSm && sc.smiles.page === 'web/trade_craft_smiles.html'
+    && (nBay === 0 || sc.bay.reveal === true), JSON.stringify(sc));
+}
+
 console.log(fails ? `quests/test: ${fails} FAILED` : 'quests/test: all passed');
 process.exit(fails ? 1 : 0);

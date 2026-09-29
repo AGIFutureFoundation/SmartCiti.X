@@ -39,7 +39,8 @@ END = '/* QUEST_CORE:END */'
 LESSONS_PAGE = 'web/trade_craft_lessons.html'
 QUESTS_PAGE = 'web/trade_craft_quests.html'
 SCOPE_PAGE = {'campus': 'web/trade_craft_3d.html', 'wilds': 'web/trade_craft_wilds.html',
-              'parishes': 'web/trade_craft_parishes.html', 'all': QUESTS_PAGE}
+              'parishes': 'web/trade_craft_parishes.html', 'all': QUESTS_PAGE,
+              'bay': 'web/trade_craft_bay.html', 'smiles': 'web/trade_craft_smiles.html'}
 
 
 def _need(d, k, where):
@@ -91,6 +92,11 @@ def in_scope(q, scope):
         return w.startswith('wilds:')
     if scope == 'parishes':
         return w == 'parishes' or w.startswith('parish:')
+    # wave 12 (BAYOU, GAMES_CONTRACT): the Bay world and the Unspoken Smiles district
+    if scope == 'bay':
+        return w == 'bay' or w.startswith('bay:')
+    if scope == 'smiles':
+        return w == 'smiles' or w.startswith('smiles:')
     if scope.startswith('page:'):
         return w == scope
     raise ValueError(f'questkit: unknown scope {scope!r}')
@@ -160,7 +166,7 @@ def _data(scope, page):
         L = LESSONS[lid]
         lessons[lid] = {'hall': L['hall'], 'steps': [{k: s[k] for k in STEP_FIELDS if k in s} for s in L['steps']]}
     keep = ('id', 'kind', 'title', 'world', 'place', 'requires', 'unlock_text', 'hint', 'riddle', 'reward', 'band',
-            'trigger', 'target')
+            'trigger', 'target', 'reveal')
     return {
         'honesty': HONESTY,
         'keys': KEYS,

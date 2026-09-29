@@ -1,0 +1,397 @@
+{
+ "from": "AGIFutureFoundation/vr-safety-training",
+ "ref_commit": "9914455d742b5347237a53da71079d5114880bda",
+ "branch": "claude/vr-ar-safety-training-wkwmve",
+ "url_base": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/",
+ "note": "Transcribed (ids, display names, source paths) from the two programme pack files at ref_commit by a script that reads git show; nothing else copied. Station code stays in that repository and is linked, not copied.",
+ "programmes": [
+  {
+   "id": "dental-careers-unspoken-smiles",
+   "name": "Dental Careers — Unspoken Smiles",
+   "pack_file": "WebXR/dist/packs/dental-careers-unspoken-smiles.json",
+   "station_ids": [
+    "patient-intake-screening",
+    "dental-careers-pathway",
+    "four-handed-dentistry",
+    "dental-radiography-fmx",
+    "sterilisation-technician-cycle",
+    "dental-lab-bench",
+    "orthodontic-assisting",
+    "oral-surgery-assisting",
+    "front-office-treatment-coordination",
+    "infection-control-audit",
+    "school-screening-outreach",
+    "implant-surgery-assisting",
+    "endodontic-assisting",
+    "denture-delivery-and-adjustment",
+    "special-needs-and-geriatric-dentistry",
+    "teledentistry-and-triage",
+    "dn-digital-intraoral-scanning-and-cad-cam",
+    "dn-dental-trauma-and-avulsed-tooth-response",
+    "dn-dental-coding-billing-and-preauthorisation"
+   ]
+  },
+  {
+   "id": "dental-hygiene-unspoken-smiles",
+   "name": "Dental Hygiene — Unspoken Smiles",
+   "pack_file": "WebXR/dist/packs/dental-hygiene-unspoken-smiles.json",
+   "station_ids": [
+    "phlebotomy",
+    "operatory-turnover",
+    "instrument-reprocessing",
+    "sharps-exposure-response",
+    "patient-intake-screening",
+    "radiograph-safety",
+    "periodontal-charting",
+    "ultrasonic-scaling",
+    "aerosol-management",
+    "fluoride-and-sealants",
+    "nitrous-oxide-monitoring",
+    "chairside-emergency",
+    "amalgam-waste-handling",
+    "mobile-dental-outreach",
+    "pediatric-visit",
+    "oral-cancer-screening",
+    "dn-medical-history-and-medication-review",
+    "dn-oral-hygiene-instruction-and-motivational-interviewing",
+    "dn-public-health-dentistry-and-fluoridation-advocacy"
+   ]
+  }
+ ],
+ "stations": [
+  {
+   "id": "aerosol-management",
+   "name": "Aerosol Management",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/aerosol-management.js",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "amalgam-waste-handling",
+   "name": "Amalgam Waste Handling",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/amalgam-waste-handling.js",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "chairside-emergency",
+   "name": "Chairside Emergency",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/chairside-emergency.js",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "dental-careers-pathway",
+   "name": "Dental Careers Pathway",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/dental-careers-pathway.js",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "dental-lab-bench",
+   "name": "Dental Laboratory Bench",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/dental-lab-bench.js",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "dental-radiography-fmx",
+   "name": "Full-Mouth Radiographic Series",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/dental-radiography-fmx.js",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "denture-delivery-and-adjustment",
+   "name": "Denture Delivery & Adjustment",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/denture-delivery-and-adjustment.js",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "dn-dental-coding-billing-and-preauthorisation",
+   "name": "Dental Coding, Billing & Pre-authorisation",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/dn-dental-coding-billing-and-preauthorisation.js",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "dn-dental-trauma-and-avulsed-tooth-response",
+   "name": "Dental Trauma & Avulsed Tooth Response",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/dn-dental-trauma-and-avulsed-tooth-response.js",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "dn-digital-intraoral-scanning-and-cad-cam",
+   "name": "Digital Intraoral Scanning & CAD/CAM",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/dn-digital-intraoral-scanning-and-cad-cam.js",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "dn-medical-history-and-medication-review",
+   "name": "Medical History & Medication Review",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/dn-medical-history-and-medication-review.js",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "dn-oral-hygiene-instruction-and-motivational-interviewing",
+   "name": "Oral Hygiene Instruction & Motivational Interviewing",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/dn-oral-hygiene-instruction-and-motivational-interviewing.js",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "dn-public-health-dentistry-and-fluoridation-advocacy",
+   "name": "Public Health Dentistry & Fluoridation Advocacy",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/dn-public-health-dentistry-and-fluoridation-advocacy.js",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "endodontic-assisting",
+   "name": "Endodontic Assisting",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/endodontic-assisting.js",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "fluoride-and-sealants",
+   "name": "Fluoride and Sealants",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/fluoride-and-sealants.js",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "four-handed-dentistry",
+   "name": "Four-Handed Dentistry",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/four-handed-dentistry.js",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "front-office-treatment-coordination",
+   "name": "Front Office & Treatment Coordination",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/front-office-treatment-coordination.js",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "implant-surgery-assisting",
+   "name": "Implant Surgery Assisting",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/implant-surgery-assisting.js",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "infection-control-audit",
+   "name": "Infection Control Audit",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/infection-control-audit.js",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "instrument-reprocessing",
+   "name": "Instrument Reprocessing",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/instrument-reprocessing.js",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "mobile-dental-outreach",
+   "name": "Mobile Dental Outreach",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/mobile-dental-outreach.js",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "nitrous-oxide-monitoring",
+   "name": "Nitrous Oxide Monitoring",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/nitrous-oxide-monitoring.js",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "operatory-turnover",
+   "name": "Operatory Turnover",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/operatory-turnover.js",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "oral-cancer-screening",
+   "name": "Oral Cancer Screening",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/oral-cancer-screening.js",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "oral-surgery-assisting",
+   "name": "Oral Surgery Assisting",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/oral-surgery-assisting.js",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "orthodontic-assisting",
+   "name": "Orthodontic Assisting",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/orthodontic-assisting.js",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "patient-intake-screening",
+   "name": "Patient Intake Screening",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/patient-intake-screening.js",
+   "programmes": [
+    "dental-careers-unspoken-smiles",
+    "dental-hygiene-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "pediatric-visit",
+   "name": "Pediatric Visit",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/pediatric-visit.js",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "periodontal-charting",
+   "name": "Periodontal Charting",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/periodontal-charting.js",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "phlebotomy",
+   "name": "Draw Station",
+   "app": "trades",
+   "source": "WebXR/trades/js/rooms/phlebotomy.js",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "radiograph-safety",
+   "name": "Radiograph Safety",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/radiograph-safety.js",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "school-screening-outreach",
+   "name": "School Screening Outreach",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/school-screening-outreach.js",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "sharps-exposure-response",
+   "name": "Sharps Exposure Response",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/sharps-exposure-response.js",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "special-needs-and-geriatric-dentistry",
+   "name": "Special Needs & Geriatric Dentistry",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/special-needs-and-geriatric-dentistry.js",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "sterilisation-technician-cycle",
+   "name": "Sterilisation Centre",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/sterilisation-technician-cycle.js",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "teledentistry-and-triage",
+   "name": "Teledentistry & Triage",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/teledentistry-and-triage.js",
+   "programmes": [
+    "dental-careers-unspoken-smiles"
+   ]
+  },
+  {
+   "id": "ultrasonic-scaling",
+   "name": "Ultrasonic Scaling",
+   "app": "smartcity",
+   "source": "WebXR/smartcity/js/sims/ultrasonic-scaling.js",
+   "programmes": [
+    "dental-hygiene-unspoken-smiles"
+   ]
+  }
+ ]
+}

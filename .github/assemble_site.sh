@@ -45,6 +45,9 @@ mkdir -p _site/bayarea _site/underwater/registry
 cp -r bayarea/maps _site/bayarea/maps
 rm -rf _site/bayarea/maps/tiles    # the pages load one ground atlas per county (bayarea/maps/atlas)
 cp underwater/registry/underwater.json _site/underwater/registry/underwater.json
+# The Unspoken Smiles world loads its 4k map and one ground atlas at run time (paths from smiles/registry).
+mkdir -p _site/smiles && cp -r smiles/maps _site/smiles/maps
+for f in smiles/maps/district-4k.webp smiles/maps/atlas.webp; do [ -f "_site/$f" ] || { echo "assemble: $f missing from _site"; exit 1; }; done
 python3 - <<'PY'
 import json, pathlib, sys
 reg = json.load(open('bayarea/registry/bayarea.json'))

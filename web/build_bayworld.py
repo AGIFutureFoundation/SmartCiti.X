@@ -63,6 +63,11 @@ T.FAMILY_OF = [('campus', 'hall'), ('city', 'tower'), ('restoration', 'other')]
 T.KITS_OFF = {'npcs': 'npcs/registry/npcs.json places guides in the New Orleans parishes only - no Bay county entries',
               'quests': 'quests/registry/quests.json names New Orleans parishes only - no Bay county quests',
               'layers': 'layers/registry/layers.json holds learning paths for the New Orleans parishes only'}
+# BEGIN BAYOU w12 (BAYOU·Wildlife & Easter Eggs): the parish quest LIST stays off here, but the wildlife kit (BAYOU w12
+# block in web/build_parishes.py) carries quest_js('bay') for Bay finds and eggs - the stub reason says so.
+T.KITS_OFF['quests'] = ('quests/registry/quests.json holds no parish-style quest list for Bay counties - Bay wildlife '
+                        'finds and hidden eggs (world bay / bay:<county>) ride with the wildlife watch panel')
+# END BAYOU w12
 T.SEO = ('The Bay Area counties \u2014 SmartCiti.X : Trade Craft Academy',
          f'Walk and drive {len(T.REG["selection"]["selected"])} connected Bay Area counties: Census outlines (coarse), '
          'AUTHORED streets and districts, not official neighbourhoods.')

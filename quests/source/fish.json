@@ -1,0 +1,270 @@
+{
+ "from": "FISH",
+ "note": "FISH·Fishing & Crawfish (wave 12): hidden quiet spots (eggs) derived by rule in outdoors/registry/outdoors.json#hidden, and catches the fishing kit (web/fishkit.py) reports through TCQuests.find. All PLAY.",
+ "entries": [
+  {
+   "id": "egg-fish-quiet-pond-parishes",
+   "kind": "egg",
+   "title": "The quiet pond",
+   "world": "parishes",
+   "place": "parishes-22071-5",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Somewhere in the start parish the smallest pond keeps a secret.",
+   "reward": {
+    "badge": "badge-egg-fish-quiet-pond-parishes",
+    "label": "Quiet pond finder"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "Small ponds warm quickly in spring, and sunfish often nest in their shallows - state wildlife agency pond guides say to look for round, fanned-out nest beds.",
+   "band": "K-5"
+  },
+  {
+   "id": "egg-fish-quiet-pond-bay",
+   "kind": "egg",
+   "title": "The Bay pond",
+   "world": "bay",
+   "place": "bay-06075-3",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The smallest pond in the Bay start county hides a quiet spot.",
+   "reward": {
+    "badge": "badge-egg-fish-quiet-pond-bay",
+    "label": "Bay pond finder"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "Many Bay Area ponds and reservoirs hold introduced sunfish and bass; state wildlife agency pages explain which waters are open to fishing.",
+   "band": "K-5"
+  },
+  {
+   "id": "egg-fish-shore-mountain",
+   "kind": "egg",
+   "title": "The high lake shore",
+   "world": "wilds:mountain",
+   "place": "m-snow-road",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The mountain world hides one quiet shore spot far from the centre.",
+   "reward": {
+    "badge": "badge-egg-fish-shore-mountain",
+    "label": "The high lake shore finder"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "Cold mountain water holds more dissolved oxygen, which is one reason trout do well there (general state wildlife agency guidance).",
+   "band": "K-5"
+  },
+  {
+   "id": "egg-fish-shore-forest",
+   "kind": "egg",
+   "title": "The far lakeshore",
+   "world": "wilds:forest",
+   "place": "f-fuel-break",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The forest world hides one quiet shore spot far from the centre.",
+   "reward": {
+    "badge": "badge-egg-fish-shore-forest",
+    "label": "The far lakeshore finder"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "Shade from shoreline trees keeps lake edges cooler, and fallen wood gives small fish cover - a general point in state wildlife agency habitat guides.",
+   "band": "K-5"
+  },
+  {
+   "id": "egg-fish-shore-canyon",
+   "kind": "egg",
+   "title": "The canyon eddy",
+   "world": "wilds:canyon",
+   "place": "c-valve-vault",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The canyon world hides one quiet shore spot far from the centre.",
+   "reward": {
+    "badge": "badge-egg-fish-shore-canyon",
+    "label": "The canyon eddy finder"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "In a river, fish often rest in slower water behind rocks and bends and wait for food to drift past - general state wildlife agency angling guidance.",
+   "band": "K-5"
+  },
+  {
+   "id": "egg-fish-shore-delta",
+   "kind": "egg",
+   "title": "The marsh cut",
+   "world": "wilds:delta",
+   "place": "d-pile-trestle",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The delta world hides one quiet shore spot far from the centre.",
+   "reward": {
+    "badge": "badge-egg-fish-shore-delta",
+    "label": "The marsh cut finder"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "Marsh edges are nurseries: young fish, shrimp and crabs shelter among the grasses - a general point in state wildlife agency coastal guides.",
+   "band": "K-5"
+  },
+  {
+   "id": "treasure-fish-catch-largemouth-bass",
+   "kind": "treasure",
+   "title": "Land a largemouth bass",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Try a lure at dawn or dusk on a bayou or lake.",
+   "reward": {
+    "badge": "badge-treasure-fish-catch-largemouth-bass",
+    "label": "Bass angler (play)"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "Largemouth bass are ambush feeders around cover; state wildlife agency guides suggest wet hands and a quick release.",
+   "band": "6-8",
+   "place": "fish-hud"
+  },
+  {
+   "id": "treasure-fish-catch-red-drum",
+   "kind": "treasure",
+   "title": "Land a red drum",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Marsh water and a lake, shrimp or cut bait.",
+   "reward": {
+    "badge": "badge-treasure-fish-catch-red-drum",
+    "label": "Redfish angler (play)"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "Red drum usually carry one or more dark tail spots; size and limit rules come from the state wildlife agency.",
+   "band": "6-8",
+   "place": "fish-hud"
+  },
+  {
+   "id": "treasure-fish-trap-crawfish",
+   "kind": "treasure",
+   "title": "Run a crawfish trap line",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Set a trap on a canal or pond in the cool months, then come back and check it.",
+   "reward": {
+    "badge": "badge-treasure-fish-trap-crawfish",
+    "label": "Trap line runner (play)"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "Louisiana crawfish are often raised in flooded rice fields after harvest; real trapping follows state wildlife agency rules.",
+   "band": "6-8",
+   "place": "fish-hud"
+  },
+  {
+   "id": "side-fish-gulf-slam",
+   "kind": "side",
+   "title": "Gulf slam",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-fish-catch-largemouth-bass",
+     "treasure-fish-catch-red-drum",
+     "treasure-fish-trap-crawfish"
+    ]
+   },
+   "hint": "Bass, redfish and a crawfish haul in the parish world.",
+   "reward": {
+    "badge": "badge-side-fish-gulf-slam",
+    "label": "Gulf slam (play)"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "Different species need different water, bait and time of day - matching them is what anglers learn from state wildlife agency fishing guides.",
+   "band": "6-8",
+   "place": "fish-hud"
+  },
+  {
+   "id": "treasure-fish-catch-striped-bass",
+   "kind": "treasure",
+   "title": "Land a striped bass",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Cast from the Bay shore at dawn or dusk.",
+   "reward": {
+    "badge": "badge-treasure-fish-catch-striped-bass",
+    "label": "Striper angler (play)"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "Striped bass move between salt and fresh water; licences and rules come from the California state wildlife agency.",
+   "band": "6-8",
+   "place": "fish-hud"
+  },
+  {
+   "id": "treasure-fish-crab-dungeness",
+   "kind": "treasure",
+   "title": "Pull up a Dungeness crab",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A crab line on the Bay shore in the cooler months.",
+   "reward": {
+    "badge": "badge-treasure-fish-crab-dungeness",
+    "label": "Crab line (play)"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "Real crabbing has size, sex and season rules set by the state wildlife agency - the game only records a play tag.",
+   "band": "6-8",
+   "place": "fish-hud"
+  },
+  {
+   "id": "treasure-fish-catch-rainbow-trout",
+   "kind": "treasure",
+   "title": "Land a rainbow trout",
+   "world": "wilds:forest",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A fly rod on the lake shore, dawn or dusk.",
+   "reward": {
+    "badge": "badge-treasure-fish-catch-rainbow-trout",
+    "label": "Trout angler (play)"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "Trout need cool, clean, oxygen-rich water; state wildlife agency guides recommend barbless hooks for release.",
+   "band": "6-8",
+   "place": "f-water-intake"
+  }
+ ]
+}

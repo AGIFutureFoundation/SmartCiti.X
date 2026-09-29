@@ -1991,6 +1991,21 @@ if (ROOT / 'robotics/registry/robotics.json').exists() and (HERE / 'robokit.py')
 else:
     ROBO_SECTION = ROBO_TAIL = ''
 # ROBOLAB (wave 11) END
+# BEGIN FIELDS w12 (FIELDS·Seasons & Harvest): seasons & harvest play (web/fieldkit.py, seasons/registry) - a game
+# clock, in-season board (hudkit panel 'fields', #fk-board, slot te, compact icon), farm-plot mini-game and harvest log
+# below the stage; the AUTHORED plots of the loaded parishes/counties are ONE InstancedMesh drawn only while the player
+# shows them (0 draw calls otherwise). The Bay page inherits this through web/build_bayworld.py (world 'bay').
+if (ROOT / 'seasons/registry/seasons.json').exists() and (HERE / 'fieldkit.py').exists():
+    from fieldkit import fields_section_html, fields_tail, fields_scene_js, fields_board_html, FIELDS_HUD_PANEL  # noqa: E402
+    FIELDS_WORLD = 'bay' if PAGE.endswith('trade_craft_bay.html') else 'parishes'
+    FIELDS_SECTION, FIELDS_TAIL, FIELDS_BOARD = fields_section_html(FIELDS_WORLD), fields_tail(FIELDS_WORLD), fields_board_html()
+    if JS.count('window.__parishes = {') != 1:
+        raise BuildError('build_parishes: FIELDS mount anchor `window.__parishes = {` must occur exactly once')
+    JS = JS.replace('window.__parishes = {', fields_scene_js() + 'window.__parishes = {', 1)
+    HUD_PANELS.append(dict(FIELDS_HUD_PANEL))
+else:
+    FIELDS_SECTION = FIELDS_TAIL = FIELDS_BOARD = ''
+# END FIELDS w12
 HUD_LAYER = hud_layer(HUD_PANELS, TS, TA)
 
 page = f'''<!doctype html>
@@ -2177,6 +2192,80 @@ if FLEET_REG:
     page = page.replace(HUD_LAYER, hud_layer(HUD_PANELS, TS, TA))
 # END DRIVE w11
 
+# BEGIN FISH w12 (FISH·Fishing & Crawfish): the fishing & crawfish game (web/fishkit.py, outdoors/registry/outdoors.json)
+# on this world (and, through web/build_bayworld.py, the Bay: world 'bay'). Spots are DERIVED from the AUTHORED water;
+# a HUD panel 'fish' (#fish-hud, slot b) + a section below the stage (#fish, dock chip); ONE
+# InstancedMesh for every marker (one draw call, only while a spot is within 150 m). Play only, device-local.
+if (ROOT / 'outdoors/registry/outdoors.json').exists() and (HERE / 'fishkit.py').exists():
+    from fishkit import fish_embed  # noqa: E402
+    _FISH_WORLD = 'bay' if PAGE.endswith('trade_craft_bay.html') else 'parishes'
+    _fh, _fs, _ft = fish_embed(_FISH_WORLD)
+    _FISH_OLD_LAYER = hud_layer(HUD_PANELS, TS, TA)
+    _FISH_HOST = ("/* FISH w12 host bridge (web/fishkit.py reads it) */\n"
+                  "window.__fishHost = { THREE, scene, where: () => current ? { region: current.id, x: eye.x - current.origin_m[0], z: eye.z - current.origin_m[1] } : null,\n"
+                  "  regions: () => [...loaded], toWorld: (r, x, z) => { const p = PAR.get(r); return p ? [p.origin_m[0] + x, p.origin_m[1] + z] : null; },\n"
+                  "  teleport: (x, z) => { if (mode !== 'walk') setMode('walk'); teleport(x, z, eye.yaw); }, surfaceY: () => (WORLD ? WORLD.surface_y : 0) };\n")
+    for _a, _b in (('window.__parishes = {', _FISH_HOST + 'window.__parishes = {'),
+                   ('<div id="satbox" hidden></div>', '<div id="satbox" hidden></div>' + _fh),
+                   ('<ul data-contracts>', _fs + '\n<ul data-contracts>'),
+                   ('</div></body>', _ft + '</div></body>'),
+                   (_FISH_OLD_LAYER, None)):
+        if page.count(_a) != 1:
+            raise BuildError(f'build_parishes: FISH anchor found {page.count(_a)}x: {_a[:60]!r}')
+        if _b is not None:
+            page = page.replace(_a, _b)
+    # compact 'none' (the panel is one 44 px button + a small meter); the dock chip joins once UX's hud.open.fish exists
+    HUD_PANELS.append({'id': 'fish', 'kind': 'panel', 'sel': '#fish-hud', 'slot': 'b', 'order': 1, 'compact': 'none'})
+    if 'hud.open.fish' in json.loads((ROOT / 'i18n/locales/en.json').read_text(encoding='utf-8'))['strings']:
+        HUD_PANELS.append({'id': 'fishsec', 'kind': 'flow', 'goto': '#fish', 'anchor': '<section id="fish"', 'icon': 'route',
+                           'label': 'hud.open.fish'})
+    page = page.replace(_FISH_OLD_LAYER, hud_layer(HUD_PANELS, TS, TA))
+# END FISH w12
+
+# BEGIN BAYOU w12 (BAYOU·Wildlife & Easter Eggs): wildlife watch (web/wildkit.py, wildlife/registry/wildlife.json) on this
+# world (and, through web/build_bayworld.py, the Bay: region 'bay'). Sightings are seeded per 250 m cell on this page's
+# AUTHORED habitat (inWaterAt / parishAt); photo mode refuses a shot closer than the species' safe distance; a field-guide
+# codex, the gator-season SIMULATION (K-12: nest survey) and turtle / litter games live in ONE hudkit panel 'wild'
+# (#wild-panel, slot bs, compact icon). No meshes, no draw calls. Hidden egg hooks for this world's triggered eggs
+# (quests/source/bayou.json); the Bay page, whose parish quest list is off, carries quest_js('bay') here. Play only.
+if (ROOT / 'wildlife/registry/wildlife.json').exists() and (HERE / 'wildkit.py').exists():
+    import wildkit as _wk  # noqa: E402
+    from questkit import quest_js as _wq_js, egg_attr as _wq_egg, in_scope as _wq_in, QUEST_CSS as _WQ_CSS  # noqa: E402
+    _WILD_REGION = 'bay' if PAGE.endswith('trade_craft_bay.html') else 'parishes'
+    _wall = json.loads((ROOT / 'quests/registry/quests.json').read_text())['quests']
+    _whooks = [q['id'] for q in _wall if q['kind'] == 'egg' and 'trigger' in q   # every source's triggered eggs (GAMES_CONTRACT)
+               and (q['world'] == _WILD_REGION or (_WILD_REGION == 'bay' and q['world'].startswith('bay:')))]
+    for _wid in _whooks:
+        if not _wq_in(next(q for q in _wall if q['id'] == _wid), _WILD_REGION):
+            raise BuildError(f'build_parishes: BAYOU hook {_wid} is not in quest scope {_WILD_REGION!r}')
+    _WILD_PANEL = _wk.wild_panel_html(_WILD_REGION, [_wq_egg(i) for i in _whooks])
+    _WILD_DATA = ('<script type="application/json" id="wild-data">'
+                  + json.dumps(_wk.wild_data(_WILD_REGION), ensure_ascii=False).replace('</', '<\\/') + '</script>'
+                  + '<script type="application/json" id="wild-i18n">'
+                  + json.dumps(_wk.wild_i18n(), ensure_ascii=False).replace('</', '<\\/') + '</script>')
+    _WILD_HOST = (_wk.WILD_JS + "\n/* BAYOU w12 wildlife mount */\n"
+                  "const WILD = TCWILD.mount({ root: document.getElementById('wild-panel'), data: JSON.parse(document.getElementById('wild-data').textContent),\n"
+                  "  i18n: JSON.parse(document.getElementById('wild-i18n').textContent), getPlayer: () => ({ x: eye.x, z: eye.z }),\n"
+                  "  isWater: (x, z) => inWaterAt(x, z), isGround: (x, z) => !!parishAt(x, z), seed: SEED,\n"
+                  "  month: Number(new URLSearchParams(location.search).get('wildmonth')) || (new Date().getMonth() + 1) });\n")
+    _WILD_TAIL = _WILD_DATA
+    if _WILD_REGION == 'bay' and QUEST_STATE != 'wired':
+        _WILD_TAIL += f'<style>{_WQ_CSS}</style>' + _wq_js('bay')
+    _WILD_OLD_LAYER = hud_layer(HUD_PANELS, TS, TA)
+    for _a, _b in (('window.__parishes = {', _WILD_HOST + 'window.__parishes = {'),
+                   ('<div id="satbox" hidden></div>', '<div id="satbox" hidden></div>' + _WILD_PANEL),
+                   ('</div></body>', _WILD_TAIL + '</div></body>'),
+                   ('</head>', f'<style id="wild-css">{_wk.WILD_CSS}</style>\n</head>'),
+                   (_WILD_OLD_LAYER, None)):
+        if page.count(_a) != 1:
+            raise BuildError(f'build_parishes: BAYOU anchor found {page.count(_a)}x: {_a[:60]!r}')
+        if _b is not None:
+            page = page.replace(_a, _b)
+    # compact 'none': the panel is a <details> that folds to its 44 px summary line (no hud.* launcher key needed)
+    HUD_PANELS.append({'id': 'wild', 'kind': 'panel', 'sel': '#wild-panel', 'slot': 'bs', 'order': 2, 'compact': 'none'})
+    page = page.replace(_WILD_OLD_LAYER, hud_layer(HUD_PANELS, TS, TA))
+# END BAYOU w12
+
 I18N_CAT = {}
 for _f in sorted((ROOT / 'i18n/locales').glob('*.json')):
     _c = json.loads(_f.read_text(encoding='utf-8'))
@@ -2197,6 +2286,15 @@ if ROBO_SECTION:
             raise BuildError(f'build_parishes: ROBOLAB anchor {_ra!r} must occur exactly once')
         page = page.replace(_ra, _rb)
 # ROBOLAB (wave 11) END
+# BEGIN FIELDS w12 (FIELDS·Seasons & Harvest): section before the contracts list, board inside the stage, kit before </body>
+if FIELDS_SECTION:
+    for _fa, _fb in (('<ul data-contracts>', FIELDS_SECTION + '\n<ul data-contracts>'),
+                     ('<div id="toast" hidden role="status"></div>', '<div id="toast" hidden role="status"></div>' + FIELDS_BOARD),
+                     ('</div></body>', FIELDS_TAIL + '</div></body>')):
+        if page.count(_fa) != 1:
+            raise BuildError(f'build_parishes: FIELDS anchor {_fa!r} must occur exactly once')
+        page = page.replace(_fa, _fb)
+# END FIELDS w12
 flow_anchors_present(HUD_PANELS, page)
 page = page.replace('__PARISHES_I18N__', json.dumps(I18N_CAT, ensure_ascii=False, sort_keys=True).replace('</', '<\\/'))
 

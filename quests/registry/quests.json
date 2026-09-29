@@ -2,18 +2,31 @@
  "pack": "quests",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
- "source_stamp": "915cf7f7740ad20e",
+ "source_stamp": "034372984a121031",
  "reads": [
   "lessons/registry/lessons.json",
   "pack/registry/halls.json",
   "sims/registry/sims.json",
   "tools/registry/toolcribs.json",
   "wilds/registry/wilds.json",
-  "quests/source/campus.json",
   "layers/registry/layers.json",
   "fleet/registry/fleet.json",
-  "layers/registry/paths.json"
+  "layers/registry/paths.json",
+  "bayarea/registry/bayarea.json",
+  "smiles/registry/smiles.json",
+  "quests/source/bayou.json",
+  "quests/source/campus.json",
+  "quests/source/fields.json",
+  "quests/source/fish.json",
+  "quests/source/smiles.json"
  ],
+ "sources": {
+  "quests/source/bayou.json": 79,
+  "quests/source/campus.json": 127,
+  "quests/source/fields.json": 20,
+  "quests/source/fish.json": 13,
+  "quests/source/smiles.json": 16
+ },
  "parishes": [
   "22005",
   "22051",
@@ -32,10 +45,10 @@
  "honesty": "Quests, games, treasures, easter eggs and badges are play: they are kept on this device only, they are never evidence of anything, and they never enter a completion record.",
  "counts": {
   "main": 11,
-  "side": 283,
+  "side": 289,
   "game": 4,
-  "treasure": 723,
-  "egg": 50
+  "treasure": 790,
+  "egg": 105
  },
  "halls_with_side_quests": [
   "acoustic",
@@ -4252,6 +4265,1749 @@
    "unlock_text": "Open to everyone."
   },
   {
+   "id": "treasure-bayou-photo-parishes-american-alligator",
+   "kind": "treasure",
+   "title": "Photo: American alligator",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a american alligator from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-parishes-american-alligator",
+    "label": "American alligator photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "american-alligator",
+   "band": "K-5",
+   "reveal": "Once listed as endangered in the United States, the alligator recovered under protection and is now managed by state wildlife agencies (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-parishes-brown-pelican",
+   "kind": "treasure",
+   "title": "Photo: Brown pelican",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a brown pelican from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-parishes-brown-pelican",
+    "label": "Brown pelican photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "brown-pelican",
+   "band": "K-5",
+   "reveal": "Brown pelicans plunge-dive from the air to catch fish; the brown pelican is Louisiana's state bird (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-bay-brown-pelican",
+   "kind": "treasure",
+   "title": "Photo: Brown pelican",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a brown pelican from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-bay-brown-pelican",
+    "label": "Brown pelican photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "brown-pelican",
+   "band": "K-5",
+   "reveal": "Brown pelicans plunge-dive from the air to catch fish; the brown pelican is Louisiana's state bird (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-parishes-roseate-spoonbill",
+   "kind": "treasure",
+   "title": "Photo: Roseate spoonbill",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a roseate spoonbill from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-parishes-roseate-spoonbill",
+    "label": "Roseate spoonbill photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "roseate-spoonbill",
+   "band": "K-5",
+   "reveal": "A spoonbill sweeps its flat bill side to side in shallow water; its pink colour comes from pigments in the food it eats (bird conservation groups).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-parishes-great-egret",
+   "kind": "treasure",
+   "title": "Photo: Great egret",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a great egret from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-parishes-great-egret",
+    "label": "Great egret photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "great-egret",
+   "band": "K-5",
+   "reveal": "Great egrets were once hunted for their plumes for hats; protection laws helped them recover (bird conservation groups).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-bay-great-egret",
+   "kind": "treasure",
+   "title": "Photo: Great egret",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a great egret from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-bay-great-egret",
+    "label": "Great egret photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "great-egret",
+   "band": "K-5",
+   "reveal": "Great egrets were once hunted for their plumes for hats; protection laws helped them recover (bird conservation groups).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-parishes-great-blue-heron",
+   "kind": "treasure",
+   "title": "Photo: Great blue heron",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a great blue heron from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-parishes-great-blue-heron",
+    "label": "Great blue heron photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "great-blue-heron",
+   "band": "K-5",
+   "reveal": "The great blue heron stands still in the shallows and strikes fish with its bill; it is the largest heron in North America (bird field guides).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-bay-great-blue-heron",
+   "kind": "treasure",
+   "title": "Photo: Great blue heron",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a great blue heron from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-bay-great-blue-heron",
+    "label": "Great blue heron photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "great-blue-heron",
+   "band": "K-5",
+   "reveal": "The great blue heron stands still in the shallows and strikes fish with its bill; it is the largest heron in North America (bird field guides).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-parishes-white-ibis",
+   "kind": "treasure",
+   "title": "Photo: White ibis",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a white ibis from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-parishes-white-ibis",
+    "label": "White ibis photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "white-ibis",
+   "band": "K-5",
+   "reveal": "A white ibis probes mud with its long curved bill for crawfish and insects (bird field guides).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-parishes-osprey",
+   "kind": "treasure",
+   "title": "Photo: Osprey",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a osprey from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-parishes-osprey",
+    "label": "Osprey photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "osprey",
+   "band": "K-5",
+   "reveal": "Ospreys dive feet-first to catch fish and carry them head-forward in flight (bird field guides).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-bay-osprey",
+   "kind": "treasure",
+   "title": "Photo: Osprey",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a osprey from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-bay-osprey",
+    "label": "Osprey photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "osprey",
+   "band": "K-5",
+   "reveal": "Ospreys dive feet-first to catch fish and carry them head-forward in flight (bird field guides).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-parishes-nutria",
+   "kind": "treasure",
+   "title": "Photo: Nutria",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a nutria from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-parishes-nutria",
+    "label": "Nutria photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "nutria",
+   "band": "K-5",
+   "reveal": "Nutria are South American rodents brought to Louisiana; their feeding strips marsh plants and adds to coastal wetland loss (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-parishes-river-otter",
+   "kind": "treasure",
+   "title": "Photo: North American river otter",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a north american river otter from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-parishes-river-otter",
+    "label": "North American river otter photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "river-otter",
+   "band": "K-5",
+   "reveal": "River otters hunt fish and crawfish and den in banks near water (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-bay-river-otter",
+   "kind": "treasure",
+   "title": "Photo: North American river otter",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a north american river otter from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-bay-river-otter",
+    "label": "North American river otter photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "river-otter",
+   "band": "K-5",
+   "reveal": "River otters hunt fish and crawfish and den in banks near water (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-parishes-red-eared-slider",
+   "kind": "treasure",
+   "title": "Photo: Red-eared slider",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a red-eared slider from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-parishes-red-eared-slider",
+    "label": "Red-eared slider photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "red-eared-slider",
+   "band": "K-5",
+   "reveal": "Sliders bask on logs to warm up; released pet sliders compete with native turtles in many places, including California (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-bay-red-eared-slider",
+   "kind": "treasure",
+   "title": "Photo: Red-eared slider",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a red-eared slider from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-bay-red-eared-slider",
+    "label": "Red-eared slider photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "red-eared-slider",
+   "band": "K-5",
+   "reveal": "Sliders bask on logs to warm up; released pet sliders compete with native turtles in many places, including California (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-parishes-bald-eagle",
+   "kind": "treasure",
+   "title": "Photo: Bald eagle",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a bald eagle from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-parishes-bald-eagle",
+    "label": "Bald eagle photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "bald-eagle",
+   "band": "K-5",
+   "reveal": "Bald eagles recovered after the pesticide DDT was banned in the United States; they are protected by federal law (federal wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-bay-bald-eagle",
+   "kind": "treasure",
+   "title": "Photo: Bald eagle",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a bald eagle from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-bay-bald-eagle",
+    "label": "Bald eagle photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "bald-eagle",
+   "band": "K-5",
+   "reveal": "Bald eagles recovered after the pesticide DDT was banned in the United States; they are protected by federal law (federal wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-parishes-monarch-butterfly",
+   "kind": "treasure",
+   "title": "Photo: Monarch butterfly",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a monarch butterfly from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-parishes-monarch-butterfly",
+    "label": "Monarch butterfly photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "monarch-butterfly",
+   "band": "K-5",
+   "reveal": "Monarch caterpillars eat only milkweed; western monarchs gather to overwinter in groves on the California coast (conservation groups).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-bay-monarch-butterfly",
+   "kind": "treasure",
+   "title": "Photo: Monarch butterfly",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a monarch butterfly from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-bay-monarch-butterfly",
+    "label": "Monarch butterfly photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "monarch-butterfly",
+   "band": "K-5",
+   "reveal": "Monarch caterpillars eat only milkweed; western monarchs gather to overwinter in groves on the California coast (conservation groups).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-parishes-green-anole",
+   "kind": "treasure",
+   "title": "Photo: Green anole",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a green anole from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-parishes-green-anole",
+    "label": "Green anole photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "green-anole",
+   "band": "K-5",
+   "reveal": "Green anoles change colour from green to brown with temperature and mood (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-parishes-white-tailed-deer",
+   "kind": "treasure",
+   "title": "Photo: White-tailed deer",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a white-tailed deer from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-parishes-white-tailed-deer",
+    "label": "White-tailed deer photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "white-tailed-deer",
+   "band": "K-5",
+   "reveal": "A white-tailed deer raises its white tail like a flag as an alarm when it runs (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-bay-california-sea-lion",
+   "kind": "treasure",
+   "title": "Photo: California sea lion",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a california sea lion from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-bay-california-sea-lion",
+    "label": "California sea lion photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "california-sea-lion",
+   "band": "K-5",
+   "reveal": "Sea lions bark loudly and can walk on land by turning their rear flippers forward; marine mammals are protected by federal law (NOAA Fisheries).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-bay-harbor-seal",
+   "kind": "treasure",
+   "title": "Photo: Harbor seal",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a harbor seal from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-bay-harbor-seal",
+    "label": "Harbor seal photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "harbor-seal",
+   "band": "K-5",
+   "reveal": "Harbor seals cannot turn their rear flippers forward, so they wriggle on land; they rest hauled out on rocks and beaches (NOAA Fisheries).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-bay-dungeness-crab",
+   "kind": "treasure",
+   "title": "Photo: Dungeness crab",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a dungeness crab from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-bay-dungeness-crab",
+    "label": "Dungeness crab photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "dungeness-crab",
+   "band": "K-5",
+   "reveal": "The Dungeness crab is named after a place on the Washington coast and lives on sandy bottoms along the Pacific coast (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-bay-western-gull",
+   "kind": "treasure",
+   "title": "Photo: Western gull",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a western gull from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-bay-western-gull",
+    "label": "Western gull photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "western-gull",
+   "band": "K-5",
+   "reveal": "Western gulls nest on islands in the Bay and along the Pacific coast (bird field guides).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-parishes-black-crowned-night-heron",
+   "kind": "treasure",
+   "title": "Photo: Black-crowned night heron",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a black-crowned night heron from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-parishes-black-crowned-night-heron",
+    "label": "Black-crowned night heron photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "black-crowned-night-heron",
+   "band": "K-5",
+   "reveal": "Night herons roost in trees by day and hunt at dusk and after dark (bird field guides).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-bay-black-crowned-night-heron",
+   "kind": "treasure",
+   "title": "Photo: Black-crowned night heron",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a black-crowned night heron from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-bay-black-crowned-night-heron",
+    "label": "Black-crowned night heron photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "black-crowned-night-heron",
+   "band": "K-5",
+   "reveal": "Night herons roost in trees by day and hunt at dusk and after dark (bird field guides).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-bay-american-avocet",
+   "kind": "treasure",
+   "title": "Photo: American avocet",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a american avocet from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-bay-american-avocet",
+    "label": "American avocet photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "american-avocet",
+   "band": "K-5",
+   "reveal": "Avocets sweep their upturned bills side to side through shallow water; they feed in salt ponds and mudflats (bird field guides).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-bay-california-quail",
+   "kind": "treasure",
+   "title": "Photo: California quail",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a california quail from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-bay-california-quail",
+    "label": "California quail photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "california-quail",
+   "band": "K-5",
+   "reveal": "The California quail, with its forward-curling head plume, is California's state bird (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-bay-western-pond-turtle",
+   "kind": "treasure",
+   "title": "Photo: Western pond turtle",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a western pond turtle from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-bay-western-pond-turtle",
+    "label": "Western pond turtle photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "western-pond-turtle",
+   "band": "K-5",
+   "reveal": "Pond turtles are native freshwater turtles of California and a species of conservation concern (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-bay-coyote",
+   "kind": "treasure",
+   "title": "Photo: Coyote",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a coyote from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-bay-coyote",
+    "label": "Coyote photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "coyote",
+   "band": "K-5",
+   "reveal": "Coyotes live in many cities, including parks around the Bay; they are adaptable and wary of people unless fed (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-bay-red-tailed-hawk",
+   "kind": "treasure",
+   "title": "Photo: Red-tailed hawk",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a red-tailed hawk from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-bay-red-tailed-hawk",
+    "label": "Red-tailed hawk photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "red-tailed-hawk",
+   "band": "K-5",
+   "reveal": "Red-tailed hawks often perch on poles beside open fields watching for rodents (bird field guides).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-photo-parishes-red-tailed-hawk",
+   "kind": "treasure",
+   "title": "Photo: Red-tailed hawk",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Photograph a red-tailed hawk from the photo band - not too close.",
+   "reward": {
+    "badge": "badge-treasure-bayou-photo-parishes-red-tailed-hawk",
+    "label": "Red-tailed hawk photographer"
+   },
+   "provenance": "AUTHORED",
+   "place": "red-tailed-hawk",
+   "band": "K-5",
+   "reveal": "Red-tailed hawks often perch on poles beside open fields watching for rodents (bird field guides).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-gator-tag",
+   "kind": "treasure",
+   "title": "Alligator season: tag recorded (simulation)",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Work through the licensed-tag simulation with a partner, safety first.",
+   "reward": {
+    "badge": "badge-treasure-bayou-gator-tag",
+    "label": "Tag recorder (simulation)"
+   },
+   "provenance": "AUTHORED",
+   "place": "gator-season",
+   "reveal": "Louisiana runs a regulated alligator harvest season with tags issued through the state wildlife agency; this game shows the steps only in general terms, on an approximate game calendar. Real activity follows state rules - check the state wildlife agency (Louisiana Department of Wildlife and Fisheries; California Department of Fish and Wildlife).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-nest-survey",
+   "kind": "treasure",
+   "title": "Alligator nest survey (K-12)",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "In classroom mode, survey an alligator nest mound from a distance.",
+   "reward": {
+    "badge": "badge-treasure-bayou-nest-survey",
+    "label": "Nest surveyor"
+   },
+   "provenance": "AUTHORED",
+   "place": "nest-survey",
+   "band": "K-5",
+   "reveal": "Female alligators build nest mounds of plants and guard them, so surveys are done from a distance (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-turtle-parishes",
+   "kind": "treasure",
+   "title": "Turtle crossing helper",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Answer the turtle-crossing rounds the safe way.",
+   "reward": {
+    "badge": "badge-treasure-bayou-turtle-parishes",
+    "label": "Turtle helper"
+   },
+   "provenance": "AUTHORED",
+   "place": "turtle-crossing",
+   "band": "K-5",
+   "reveal": "Wildlife agencies advise helping a turtle across only when it is safe, in the direction it was going (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-litter-parishes",
+   "kind": "treasure",
+   "title": "Shoreline litter for wildlife",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Sort the shoreline litter into the right bags.",
+   "reward": {
+    "badge": "badge-treasure-bayou-litter-parishes",
+    "label": "Shoreline keeper"
+   },
+   "provenance": "AUTHORED",
+   "place": "shoreline-litter",
+   "band": "K-5",
+   "reveal": "Discarded fishing line and plastic entangle and choke birds, turtles and marine mammals (federal ocean agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "side-bayou-photo-safari-parishes",
+   "kind": "side",
+   "title": "Birding photo safari",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-bayou-photo-parishes-bald-eagle",
+     "treasure-bayou-photo-parishes-black-crowned-night-heron",
+     "treasure-bayou-photo-parishes-brown-pelican",
+     "treasure-bayou-photo-parishes-great-blue-heron",
+     "treasure-bayou-photo-parishes-great-egret",
+     "treasure-bayou-photo-parishes-osprey",
+     "treasure-bayou-photo-parishes-red-tailed-hawk",
+     "treasure-bayou-photo-parishes-roseate-spoonbill",
+     "treasure-bayou-photo-parishes-white-ibis"
+    ]
+   },
+   "hint": "Photograph every bird in this region's field guide, from the photo band.",
+   "reward": {
+    "badge": "badge-side-bayou-photo-safari-parishes",
+    "label": "Safari birder"
+   },
+   "provenance": "AUTHORED",
+   "place": "photo-safari",
+   "reveal": "Birders watch from a distance with binoculars; bird conservation groups ask people never to flush birds for a photo (bird conservation groups).",
+   "unlock_text": "To unlock: finish \"Photo: Bald eagle\", \"Photo: Black-crowned night heron\", \"Photo: Brown pelican\", \"Photo: Great blue heron\", \"Photo: Great egret\", \"Photo: Osprey\", \"Photo: Red-tailed hawk\", \"Photo: Roseate spoonbill\", \"Photo: White ibis\"."
+  },
+  {
+   "id": "treasure-bayou-turtle-bay",
+   "kind": "treasure",
+   "title": "Turtle crossing helper",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Answer the turtle-crossing rounds the safe way.",
+   "reward": {
+    "badge": "badge-treasure-bayou-turtle-bay",
+    "label": "Turtle helper"
+   },
+   "provenance": "AUTHORED",
+   "place": "turtle-crossing",
+   "band": "K-5",
+   "reveal": "Wildlife agencies advise helping a turtle across only when it is safe, in the direction it was going (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-litter-bay",
+   "kind": "treasure",
+   "title": "Shoreline litter for wildlife",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Sort the shoreline litter into the right bags.",
+   "reward": {
+    "badge": "badge-treasure-bayou-litter-bay",
+    "label": "Shoreline keeper"
+   },
+   "provenance": "AUTHORED",
+   "place": "shoreline-litter",
+   "band": "K-5",
+   "reveal": "Discarded fishing line and plastic entangle and choke birds, turtles and marine mammals (federal ocean agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "side-bayou-photo-safari-bay",
+   "kind": "side",
+   "title": "Birding photo safari",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-bayou-photo-bay-american-avocet",
+     "treasure-bayou-photo-bay-bald-eagle",
+     "treasure-bayou-photo-bay-black-crowned-night-heron",
+     "treasure-bayou-photo-bay-brown-pelican",
+     "treasure-bayou-photo-bay-california-quail",
+     "treasure-bayou-photo-bay-great-blue-heron",
+     "treasure-bayou-photo-bay-great-egret",
+     "treasure-bayou-photo-bay-osprey",
+     "treasure-bayou-photo-bay-red-tailed-hawk",
+     "treasure-bayou-photo-bay-western-gull"
+    ]
+   },
+   "hint": "Photograph every bird in this region's field guide, from the photo band.",
+   "reward": {
+    "badge": "badge-side-bayou-photo-safari-bay",
+    "label": "Safari birder"
+   },
+   "provenance": "AUTHORED",
+   "place": "photo-safari",
+   "reveal": "Birders watch from a distance with binoculars; bird conservation groups ask people never to flush birds for a photo (bird conservation groups).",
+   "unlock_text": "To unlock: finish \"Photo: American avocet\", \"Photo: Bald eagle\", \"Photo: Black-crowned night heron\", \"Photo: Brown pelican\", \"Photo: California quail\", \"Photo: Great blue heron\", \"Photo: Great egret\", \"Photo: Osprey\", \"Photo: Red-tailed hawk\", \"Photo: Western gull\"."
+  },
+  {
+   "id": "treasure-bayou-wilds-mountain-guide",
+   "kind": "treasure",
+   "title": "Field guide page",
+   "world": "wilds:mountain",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Take a wildlife photo from the photo band anywhere in this world.",
+   "reward": {
+    "badge": "badge-treasure-bayou-wilds-mountain-guide",
+    "label": "Field guide keeper"
+   },
+   "provenance": "AUTHORED",
+   "place": "trailhead",
+   "band": "K-5",
+   "reveal": "Mountain wildlife such as pikas live among loose rock slopes; stay on the trail (national park guidance).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-wilds-forest-guide",
+   "kind": "treasure",
+   "title": "Field guide page",
+   "world": "wilds:forest",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Take a wildlife photo from the photo band anywhere in this world.",
+   "reward": {
+    "badge": "badge-treasure-bayou-wilds-forest-guide",
+    "label": "Field guide keeper"
+   },
+   "provenance": "AUTHORED",
+   "place": "trailhead",
+   "band": "K-5",
+   "reveal": "Forest bears learn fast where people leave food - store food where bears cannot reach it (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-wilds-canyon-guide",
+   "kind": "treasure",
+   "title": "Field guide page",
+   "world": "wilds:canyon",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Take a wildlife photo from the photo band anywhere in this world.",
+   "reward": {
+    "badge": "badge-treasure-bayou-wilds-canyon-guide",
+    "label": "Field guide keeper"
+   },
+   "provenance": "AUTHORED",
+   "place": "trailhead",
+   "band": "K-5",
+   "reveal": "Bighorn sheep climb steep canyon rock on split hooves; never approach them on cliffs (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-bayou-wilds-delta-guide",
+   "kind": "treasure",
+   "title": "Field guide page",
+   "world": "wilds:delta",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Take a wildlife photo from the photo band anywhere in this world.",
+   "reward": {
+    "badge": "badge-treasure-bayou-wilds-delta-guide",
+    "label": "Field guide keeper"
+   },
+   "provenance": "AUTHORED",
+   "place": "trailhead",
+   "band": "K-5",
+   "reveal": "Marsh and delta wetlands filter water and shelter young fish and birds (federal wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-parish-22071-pelican",
+   "kind": "egg",
+   "title": "The state bird",
+   "world": "parish:22071",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A bird on the state flag feeds its young. Type its name.",
+   "reward": {
+    "badge": "badge-egg-bayou-parish-22071-pelican",
+    "label": "Bayou riddler: The state bird"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "typed:pelican",
+   "riddle": "A bird on the state flag feeds its young. Type its name.",
+   "reveal": "The brown pelican, Louisiana's state bird, disappeared from the state's coast and was brought back by reintroduction from Florida (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-parish-22075-birdfoot",
+   "kind": "egg",
+   "title": "The river's foot",
+   "world": "parish:22075",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "At the river's mouth the channels spread like toes. Type the shape.",
+   "reward": {
+    "badge": "badge-egg-bayou-parish-22075-birdfoot",
+    "label": "Bayou riddler: The river's foot"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "typed:birdfoot",
+   "riddle": "At the river's mouth the channels spread like toes. Type the shape.",
+   "reveal": "The Mississippi River's bird's-foot delta is named for the shape its channels make on a map (geological survey).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-parish-22087-spoonbill",
+   "kind": "egg",
+   "title": "The pink wader",
+   "world": "parish:22087",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A pink bird with a spoon for a bill. Type what it is called.",
+   "reward": {
+    "badge": "badge-egg-bayou-parish-22087-spoonbill",
+    "label": "Bayou riddler: The pink wader"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "typed:spoonbill",
+   "riddle": "A pink bird with a spoon for a bill. Type what it is called.",
+   "reveal": "Roseate spoonbills nest in colonies in coastal Louisiana marshes; their pink comes from their food (bird conservation groups).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-parish-22051-barataria",
+   "kind": "egg",
+   "title": "The pirate bay",
+   "world": "parish:22051",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A bay south of the city once hid privateers. Type its name.",
+   "reward": {
+    "badge": "badge-egg-bayou-parish-22051-barataria",
+    "label": "Bayou riddler: The pirate bay"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "typed:barataria",
+   "riddle": "A bay south of the city once hid privateers. Type its name.",
+   "reveal": "Barataria Bay is an estuary where river water meets Gulf salt water - a nursery for shrimp, crabs and fish (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-parish-22109-goodearth",
+   "kind": "egg",
+   "title": "The good earth",
+   "world": "parish:22109",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "This parish's French name means two English words. Type them as one.",
+   "reward": {
+    "badge": "badge-egg-bayou-parish-22109-goodearth",
+    "label": "Bayou riddler: The good earth"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "typed:goodearth",
+   "riddle": "This parish's French name means two English words. Type them as one.",
+   "reveal": "Terrebonne is French for \"good earth\"; coastal Louisiana is losing wetland to erosion and sinking land (geological survey).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-parish-22057-fourche",
+   "kind": "egg",
+   "title": "The fork",
+   "world": "parish:22057",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The bayou that names this parish was once a fork of the river. Type the French.",
+   "reward": {
+    "badge": "badge-egg-bayou-parish-22057-fourche",
+    "label": "Bayou riddler: The fork"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "typed:fourche",
+   "riddle": "The bayou that names this parish was once a fork of the river. Type the French.",
+   "reveal": "Lafourche means \"the fork\": Bayou Lafourche was once a branch of the Mississippi River (state historical guidance).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-parish-22103-pontchartrain",
+   "kind": "egg",
+   "title": "Not quite a lake",
+   "world": "parish:22103",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The big water on the north shore is called a lake. Type its name.",
+   "reward": {
+    "badge": "badge-egg-bayou-parish-22103-pontchartrain",
+    "label": "Bayou riddler: Not quite a lake"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "typed:pontchartrain",
+   "riddle": "The big water on the north shore is called a lake. Type its name.",
+   "reveal": "Lake Pontchartrain is a brackish estuary joined to the Gulf through passes, not a freshwater lake (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-parish-22105-tupelo",
+   "kind": "egg",
+   "title": "Knees in the water",
+   "world": "parish:22105",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A swamp tree that stands with the cypress. Type its name.",
+   "reward": {
+    "badge": "badge-egg-bayou-parish-22105-tupelo",
+    "label": "Bayou riddler: Knees in the water"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "typed:tupelo",
+   "riddle": "A swamp tree that stands with the cypress. Type its name.",
+   "reveal": "Bald cypress and swamp tupelo grow in standing water; cypress \"knees\" rise from the roots (state forestry guidance).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-parish-22063-maurepas",
+   "kind": "egg",
+   "title": "The smaller lake",
+   "world": "parish:22063",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "West of the big lake lies a smaller one ringed by swamp. Type it.",
+   "reward": {
+    "badge": "badge-egg-bayou-parish-22063-maurepas",
+    "label": "Bayou riddler: The smaller lake"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "typed:maurepas",
+   "riddle": "West of the big lake lies a smaller one ringed by swamp. Type it.",
+   "reveal": "Lake Maurepas, west of Lake Pontchartrain, is ringed by cypress-tupelo swamp (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-parish-22005-manchac",
+   "kind": "egg",
+   "title": "The old shortcut",
+   "world": "parish:22005",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A bayou once linked the river to the lakes. Type its name.",
+   "reward": {
+    "badge": "badge-egg-bayou-parish-22005-manchac",
+    "label": "Bayou riddler: The old shortcut"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "typed:manchac",
+   "riddle": "A bayou once linked the river to the lakes. Type its name.",
+   "reveal": "Bayou Manchac once linked the Mississippi River toward Lake Maurepas and was used as a route by early travellers (state historical guidance).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-parish-22093-bonfire",
+   "kind": "egg",
+   "title": "Fires on the levee",
+   "world": "parish:22093",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "On one winter night the levee is lit. Type what burns.",
+   "reward": {
+    "badge": "badge-egg-bayou-parish-22093-bonfire",
+    "label": "Bayou riddler: Fires on the levee"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "typed:bonfire",
+   "riddle": "On one winter night the levee is lit. Type what burns.",
+   "reveal": "Bonfires on the Mississippi River levee in St. James Parish light Christmas Eve, a local tradition (state tourism guidance).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-parish-22095-swampbridge",
+   "kind": "egg",
+   "title": "The bridge on stilts",
+   "world": "parish:22095",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Highways here cross the swamp high on piles. Type what they are.",
+   "reward": {
+    "badge": "badge-egg-bayou-parish-22095-swampbridge",
+    "label": "Bayou riddler: The bridge on stilts"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "typed:swampbridge",
+   "riddle": "Highways here cross the swamp high on piles. Type what they are.",
+   "reveal": "Highways across the Manchac swamp run on long elevated bridges built on piles over the wetland (state transportation guidance).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-parish-22089-diversion",
+   "kind": "egg",
+   "title": "Let the river build",
+   "world": "parish:22089",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Open a gate and let the river carry mud to the marsh. Type the word.",
+   "reward": {
+    "badge": "badge-egg-bayou-parish-22089-diversion",
+    "label": "Bayou riddler: Let the river build"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "typed:diversion",
+   "riddle": "Open a gate and let the river carry mud to the marsh. Type the word.",
+   "reveal": "River diversions send Mississippi water and sediment into wetlands to help build land; the Bonnet Carre Spillway relieves river floods into Lake Pontchartrain (state coastal agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-parishes-konami",
+   "kind": "egg",
+   "title": "The old code in the bayou",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Some keys remember an older arcade - try them in the world.",
+   "reward": {
+    "badge": "badge-egg-bayou-parishes-konami",
+    "label": "Old-code gator watcher"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "konami",
+   "riddle": "Up, up, down, down, left, right, left, right, B, A.",
+   "reveal": "Alligators are cold-blooded and bask in the sun to warm up; that is why they lie still on banks (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-parishes-gator",
+   "kind": "egg",
+   "title": "Say see you later",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type the animal you say \"see you later\" to.",
+   "reward": {
+    "badge": "badge-egg-bayou-parishes-gator",
+    "label": "Later, gator"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "typed:alligator",
+   "riddle": "See you later...",
+   "reveal": "Only American alligators and Chinese alligators exist today; the American one lives in the southeastern United States (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-parishes-nutria",
+   "kind": "egg",
+   "title": "The marsh eater",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A rodent from another continent eats the marsh. Type its name.",
+   "reward": {
+    "badge": "badge-egg-bayou-parishes-nutria",
+    "label": "Marsh defender"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "typed:nutria",
+   "riddle": "Orange teeth, webbed feet.",
+   "reveal": "Nutria feeding strips marsh plants and adds to coastal wetland loss; the state pays for their control through a program (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-bay-06075-sealion",
+   "kind": "egg",
+   "title": "The barking dock",
+   "world": "bay:06075",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Some bayside docks bark. Type who barks.",
+   "reward": {
+    "badge": "badge-egg-bayou-bay-06075-sealion",
+    "label": "Bay riddler: The barking dock"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "typed:sealion",
+   "riddle": "Some bayside docks bark. Type who barks.",
+   "reveal": "Sea lions began hauling out on floating docks on the San Francisco waterfront around 1990 and became a well-known sight (NOAA Fisheries).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-bay-06041-redwood",
+   "kind": "egg",
+   "title": "The tallest trees",
+   "world": "bay:06041",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The tallest trees on Earth grow in these coastal hills. Type them.",
+   "reward": {
+    "badge": "badge-egg-bayou-bay-06041-redwood",
+    "label": "Bay riddler: The tallest trees"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "typed:redwood",
+   "riddle": "The tallest trees on Earth grow in these coastal hills. Type them.",
+   "reveal": "Coast redwoods are the tallest trees on Earth and grow where summer fog brings moisture (national park guidance).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-bay-06001-saltpond",
+   "kind": "egg",
+   "title": "The coloured ponds",
+   "world": "bay:06001",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seen from a plane, some Bay ponds are red and green. Type what they are.",
+   "reward": {
+    "badge": "badge-egg-bayou-bay-06001-saltpond",
+    "label": "Bay riddler: The coloured ponds"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "typed:saltpond",
+   "riddle": "Seen from a plane, some Bay ponds are red and green. Type what they are.",
+   "reveal": "Former salt evaporation ponds in the South Bay are being restored to tidal marsh; tiny organisms colour them red and green (federal wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-bay-06081-monarch",
+   "kind": "egg",
+   "title": "The winter groves",
+   "world": "bay:06081",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Orange wings gather on coastal trees in winter. Type the butterfly.",
+   "reward": {
+    "badge": "badge-egg-bayou-bay-06081-monarch",
+    "label": "Bay riddler: The winter groves"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "typed:monarch",
+   "riddle": "Orange wings gather on coastal trees in winter. Type the butterfly.",
+   "reveal": "Western monarch butterflies overwinter in groves along the California coast (conservation groups).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-bay-06013-otter",
+   "kind": "egg",
+   "title": "The otter comeback",
+   "world": "bay:06013",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A playful swimmer has been seen again in Bay creeks. Type it.",
+   "reward": {
+    "badge": "badge-egg-bayou-bay-06013-otter",
+    "label": "Bay riddler: The otter comeback"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "typed:otter",
+   "riddle": "A playful swimmer has been seen again in Bay creeks. Type it.",
+   "reveal": "River otters have been reported returning to many San Francisco Bay Area creeks and marshes (conservation groups).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-bay-06097-estuary",
+   "kind": "egg",
+   "title": "Where rivers meet the sea",
+   "world": "bay:06097",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The Bay is not a lake and not the ocean. Type what it is.",
+   "reward": {
+    "badge": "badge-egg-bayou-bay-06097-estuary",
+    "label": "Bay riddler: Where rivers meet the sea"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "typed:estuary",
+   "riddle": "The Bay is not a lake and not the ocean. Type what it is.",
+   "reveal": "San Francisco Bay is an estuary: fresh water from rivers mixes with salt water from the Pacific (federal geological survey).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-bay-06095-suisun",
+   "kind": "egg",
+   "title": "The big marsh",
+   "world": "bay:06095",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The largest brackish marsh on the West Coast lies here. Type its name.",
+   "reward": {
+    "badge": "badge-egg-bayou-bay-06095-suisun",
+    "label": "Bay riddler: The big marsh"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "typed:suisun",
+   "riddle": "The largest brackish marsh on the West Coast lies here. Type its name.",
+   "reveal": "Suisun Marsh is the largest brackish marsh on the west coast of the United States (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-bay-06055-vineyard",
+   "kind": "egg",
+   "title": "Rows on the hills",
+   "world": "bay:06055",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Rows of vines cover these valleys. Type what they are called.",
+   "reward": {
+    "badge": "badge-egg-bayou-bay-06055-vineyard",
+    "label": "Bay riddler: Rows on the hills"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "typed:vineyard",
+   "riddle": "Rows of vines cover these valleys. Type what they are called.",
+   "reveal": "Vineyards border creeks and wetlands, so growers and wildlife agencies work on keeping stream habitat healthy (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-bay-06085-avocet",
+   "kind": "egg",
+   "title": "The upturned bill",
+   "world": "bay:06085",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A shorebird sweeps an upturned bill through the ponds. Type it.",
+   "reward": {
+    "badge": "badge-egg-bayou-bay-06085-avocet",
+    "label": "Bay riddler: The upturned bill"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "typed:avocet",
+   "riddle": "A shorebird sweeps an upturned bill through the ponds. Type it.",
+   "reveal": "American avocets feed in South Bay salt ponds and mudflats, sweeping their bills through shallow water (bird field guides).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-bay-konami",
+   "kind": "egg",
+   "title": "The old code by the Bay",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Some keys remember an older arcade.",
+   "reward": {
+    "badge": "badge-egg-bayou-bay-konami",
+    "label": "Old-code seal spotter"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "konami",
+   "riddle": "Up, up, down, down, left, right, left, right, B, A.",
+   "reveal": "Harbor seals rest hauled out on rocks and beaches; if a seal lifts its head to watch you, you are too close (NOAA Fisheries).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-bay-fog",
+   "kind": "egg",
+   "title": "Summer fog",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type what rolls through the Golden Gate on summer afternoons.",
+   "reward": {
+    "badge": "badge-egg-bayou-bay-fog",
+    "label": "Fog watcher"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "typed:fog",
+   "riddle": "Cool, grey, and it comes in on little cat feet.",
+   "reveal": "Summer fog forms when moist ocean air cools over cold coastal water and is drawn inland through the Golden Gate (national weather service).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-wilds-mountain-pika",
+   "kind": "egg",
+   "title": "The rock rabbit",
+   "world": "wilds:mountain",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A tiny cousin of the rabbit squeaks from the talus. Type it.",
+   "reward": {
+    "badge": "badge-egg-bayou-wilds-mountain-pika",
+    "label": "Wilds riddler: The rock rabbit"
+   },
+   "provenance": "AUTHORED",
+   "place": "trailhead",
+   "band": "K-5",
+   "trigger": "typed:pika",
+   "riddle": "A tiny cousin of the rabbit squeaks from the talus. Type it.",
+   "reveal": "Pikas gather \"haypiles\" of plants in summer to eat through the winter under the snow (national park guidance).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-wilds-forest-bearbox",
+   "kind": "egg",
+   "title": "Lock the food",
+   "world": "wilds:forest",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Where bears roam, food goes in this. Type it as one word.",
+   "reward": {
+    "badge": "badge-egg-bayou-wilds-forest-bearbox",
+    "label": "Wilds riddler: Lock the food"
+   },
+   "provenance": "AUTHORED",
+   "place": "trailhead",
+   "band": "K-5",
+   "trigger": "typed:bearbox",
+   "riddle": "Where bears roam, food goes in this. Type it as one word.",
+   "reveal": "Bear-resistant food lockers keep bears from learning to raid camps (national park guidance).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-wilds-canyon-bighorn",
+   "kind": "egg",
+   "title": "Horns on the ledge",
+   "world": "wilds:canyon",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Rams clash on the canyon rim. Type what they are.",
+   "reward": {
+    "badge": "badge-egg-bayou-wilds-canyon-bighorn",
+    "label": "Wilds riddler: Horns on the ledge"
+   },
+   "provenance": "AUTHORED",
+   "place": "trailhead",
+   "band": "K-5",
+   "trigger": "typed:bighorn",
+   "riddle": "Rams clash on the canyon rim. Type what they are.",
+   "reveal": "Bighorn rams clash horns in the autumn to settle rank (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-wilds-delta-beaver",
+   "kind": "egg",
+   "title": "The dam builder",
+   "world": "wilds:delta",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Who turns a stream into a pond? Type it.",
+   "reward": {
+    "badge": "badge-egg-bayou-wilds-delta-beaver",
+    "label": "Wilds riddler: The dam builder"
+   },
+   "provenance": "AUTHORED",
+   "place": "trailhead",
+   "band": "K-5",
+   "trigger": "typed:beaver",
+   "riddle": "Who turns a stream into a pond? Type it.",
+   "reveal": "Beaver dams create ponds and wetlands that many other animals use (state wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-campus-hardhatbird",
+   "kind": "egg",
+   "title": "The bird on the crane",
+   "world": "campus",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Birds nest on tall structures. Type what a crew does before it lifts.",
+   "reward": {
+    "badge": "badge-egg-bayou-campus-hardhatbird",
+    "label": "Campus naturalist: The bird on the crane"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "typed:nestcheck",
+   "riddle": "Birds nest on tall structures. Type what a crew does before it lifts.",
+   "reveal": "Crews check for nesting birds before work on tall structures because active nests of most wild birds are protected by federal law (federal wildlife agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-bayou-campus-swale",
+   "kind": "egg",
+   "title": "The green ditch",
+   "world": "campus",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A planted ditch that slows rainwater. Type its name.",
+   "reward": {
+    "badge": "badge-egg-bayou-campus-swale",
+    "label": "Campus naturalist: The green ditch"
+   },
+   "provenance": "AUTHORED",
+   "place": "hidden",
+   "band": "K-5",
+   "trigger": "typed:bioswale",
+   "riddle": "A planted ditch that slows rainwater. Type its name.",
+   "reveal": "A bioswale is a planted channel that slows and filters stormwater before it reaches creeks and bays (federal environmental agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
    "id": "treasure-placard-acoustic",
    "kind": "treasure",
    "title": "The placard in the Inspection Bench",
@@ -6662,6 +8418,1053 @@
    },
    "provenance": "AUTHORED",
    "place": "typed:solidarity",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-fields-harvest-rice",
+   "kind": "treasure",
+   "title": "Rice field (harvest)",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of rice field inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-harvest-rice",
+    "label": "Harvest: Rice field"
+   },
+   "provenance": "AUTHORED",
+   "place": "fields",
+   "band": "6-8",
+   "reveal": "Rice is grown in flooded, levee-edged fields in parts of Louisiana; after harvest many fields are re-flooded to raise crawfish (source kind: state agricultural extension service).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-fields-harvest-sugarcane-harvest",
+   "kind": "treasure",
+   "title": "Sugarcane harvest (harvest)",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of sugarcane harvest inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-harvest-sugarcane-harvest",
+    "label": "Harvest: Sugarcane harvest"
+   },
+   "provenance": "AUTHORED",
+   "place": "fields",
+   "band": "6-8",
+   "reveal": "Sugarcane is a major Louisiana crop harvested in the cooler months and milled soon after cutting (source kind: state agricultural extension service).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-fields-harvest-strawberry-picking",
+   "kind": "treasure",
+   "title": "Strawberry picking (harvest)",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of strawberry picking inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-harvest-strawberry-picking",
+    "label": "Harvest: Strawberry picking"
+   },
+   "provenance": "AUTHORED",
+   "place": "fields",
+   "band": "K-5",
+   "reveal": "Strawberries are grown in parts of south-east Louisiana and picked by hand when fully red (source kind: state agricultural extension service).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-fields-harvest-citrus-harvest",
+   "kind": "treasure",
+   "title": "Satsuma-style citrus harvest (harvest)",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of satsuma-style citrus harvest inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-harvest-citrus-harvest",
+    "label": "Harvest: Satsuma-style citrus harvest"
+   },
+   "provenance": "AUTHORED",
+   "place": "fields",
+   "band": "K-5",
+   "reveal": "Satsuma-type mandarins grow in south Louisiana and are clipped rather than pulled so the peel is not torn (source kind: state agricultural extension service).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-fields-harvest-pecan-gathering",
+   "kind": "treasure",
+   "title": "Pecan gathering (harvest)",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of pecan gathering inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-harvest-pecan-gathering",
+    "label": "Harvest: Pecan gathering"
+   },
+   "provenance": "AUTHORED",
+   "place": "fields",
+   "band": "K-5",
+   "reveal": "Pecan trees are native to the region; the nuts fall in autumn and are gathered from the ground (source kind: state agricultural extension service).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-fields-harvest-garden-plot",
+   "kind": "treasure",
+   "title": "Garden plot (harvest)",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of garden plot inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-harvest-garden-plot",
+    "label": "Harvest: Garden plot"
+   },
+   "provenance": "AUTHORED",
+   "place": "fields",
+   "band": "K-5",
+   "reveal": "The Gulf Coast has two main vegetable-garden seasons, spring and autumn, with hot summers in between (source kind: state agricultural extension service).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-fields-harvest-orchard",
+   "kind": "treasure",
+   "title": "Orchard harvest (harvest)",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of orchard harvest inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-harvest-orchard",
+    "label": "Harvest: Orchard harvest"
+   },
+   "provenance": "AUTHORED",
+   "place": "fields",
+   "band": "K-5",
+   "reveal": "Orchards of stone fruit and apples are part of the farmland around the Bay Area; fruit is picked by hand as it ripens (source kind: state agricultural extension service).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-fields-harvest-vineyard-harvest",
+   "kind": "treasure",
+   "title": "Vineyard-style harvest (harvest)",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of vineyard-style harvest inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-harvest-vineyard-harvest",
+    "label": "Harvest: Vineyard-style harvest"
+   },
+   "provenance": "AUTHORED",
+   "place": "fields",
+   "band": "9-10",
+   "reveal": "Grapes are grown in the valleys north of the Bay and picked in late summer and autumn (source kind: state agricultural extension service).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-fields-harvest-community-garden",
+   "kind": "treasure",
+   "title": "Community garden (harvest)",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of community garden inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-harvest-community-garden",
+    "label": "Harvest: Community garden"
+   },
+   "provenance": "AUTHORED",
+   "place": "fields",
+   "band": "K-5",
+   "reveal": "The Bay Area has a mild climate, so community gardens can grow something in most months (source kind: state agricultural extension service).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-fields-harvest-shoreline-cleanup",
+   "kind": "treasure",
+   "title": "Shoreline cleanup day (harvest)",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of shoreline cleanup day inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-harvest-shoreline-cleanup",
+    "label": "Harvest: Shoreline cleanup day"
+   },
+   "provenance": "AUTHORED",
+   "place": "fields",
+   "band": "6-8",
+   "reveal": "Volunteer shoreline cleanups keep litter out of the Bay and record what they find (source kind: state coastal agency).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-fields-event-parade-season",
+   "kind": "treasure",
+   "title": "Parade season (seasonal event)",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of parade season inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-event-parade-season",
+    "label": "Ready: Parade season"
+   },
+   "provenance": "AUTHORED",
+   "place": "fields",
+   "band": "K-5",
+   "reveal": "Winter parade season is a long community tradition in south Louisiana towns (source kind: local tourism office).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-fields-event-festival-day",
+   "kind": "treasure",
+   "title": "Festival day (seasonal event)",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of festival day inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-event-festival-day",
+    "label": "Ready: Festival day"
+   },
+   "provenance": "AUTHORED",
+   "place": "fields",
+   "band": "K-5",
+   "reveal": "Many Louisiana towns hold food and music festivals in the mild spring and autumn months (source kind: local tourism office).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-fields-event-storm-drill",
+   "kind": "treasure",
+   "title": "Hurricane-preparedness drill (seasonal event)",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of hurricane-preparedness drill inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-event-storm-drill",
+    "label": "Ready: Hurricane-preparedness drill"
+   },
+   "provenance": "AUTHORED",
+   "place": "fields",
+   "band": "6-8",
+   "reveal": "The Gulf Coast plans for hurricanes every summer and autumn; official seasons and alerts come from the national weather service and local emergency management (source kind: national weather service).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-fields-event-back-to-school",
+   "kind": "treasure",
+   "title": "Back-to-school week (seasonal event)",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of back-to-school week inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-event-back-to-school",
+    "label": "Ready: Back-to-school week"
+   },
+   "provenance": "AUTHORED",
+   "place": "fields",
+   "band": "K-5",
+   "reveal": "In the southern states school usually starts in late summer, in the heat (source kind: local school district calendar).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-fields-event-festival-day-bay",
+   "kind": "treasure",
+   "title": "Festival day (seasonal event)",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of festival day inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-event-festival-day-bay",
+    "label": "Ready: Festival day"
+   },
+   "provenance": "AUTHORED",
+   "place": "fields",
+   "band": "K-5",
+   "reveal": "Bay Area towns hold street fairs and harvest festivals through the dry months (source kind: local tourism office).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-fields-event-quake-drill",
+   "kind": "treasure",
+   "title": "Earthquake-preparedness drill (seasonal event)",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of earthquake-preparedness drill inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-event-quake-drill",
+    "label": "Ready: Earthquake-preparedness drill"
+   },
+   "provenance": "AUTHORED",
+   "place": "fields",
+   "band": "K-5",
+   "reveal": "The Bay Area lies near active faults, so schools and families practise drop, cover and hold on (source kind: state emergency services office).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-fields-event-back-to-school-bay",
+   "kind": "treasure",
+   "title": "Back-to-school week (seasonal event)",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of back-to-school week inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-event-back-to-school-bay",
+    "label": "Ready: Back-to-school week"
+   },
+   "provenance": "AUTHORED",
+   "place": "fields",
+   "band": "K-5",
+   "reveal": "Many California schools start in August (source kind: local school district calendar).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "side-fields-rice-season",
+   "kind": "side",
+   "title": "A rice season, flood to harvest",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-fields-harvest-rice"
+    ]
+   },
+   "hint": "Take one rice field through all six stages: field prep, flooding, planting, growth, draining and harvest.",
+   "reward": {
+    "badge": "badge-side-fields-rice-season",
+    "label": "Rice season"
+   },
+   "provenance": "AUTHORED",
+   "place": "fields",
+   "band": "6-8",
+   "reveal": "After the rice harvest, many Louisiana fields are re-flooded for crawfish - the rice-crawfish rotation (source kind: state agricultural extension service).",
+   "unlock_text": "To unlock: finish \"Rice field (harvest)\"."
+  },
+  {
+   "id": "side-fields-louisiana-year",
+   "kind": "side",
+   "title": "A Louisiana growing year",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-fields-harvest-rice",
+     "treasure-fields-harvest-sugarcane-harvest",
+     "treasure-fields-harvest-strawberry-picking",
+     "treasure-fields-harvest-citrus-harvest",
+     "treasure-fields-harvest-pecan-gathering",
+     "treasure-fields-harvest-garden-plot"
+    ]
+   },
+   "hint": "Harvest every Louisiana crop in the game calendar at least once.",
+   "reward": {
+    "badge": "badge-side-fields-louisiana-year",
+    "label": "Parish grower"
+   },
+   "provenance": "AUTHORED",
+   "place": "fields",
+   "band": "6-8",
+   "reveal": "Louisiana crops follow warm-season and cool-season rhythms; extension services publish planting calendars for each region (source kind: state agricultural extension service).",
+   "unlock_text": "To unlock: finish \"Rice field (harvest)\", \"Sugarcane harvest (harvest)\", \"Strawberry picking (harvest)\", \"Satsuma-style citrus harvest (harvest)\", \"Pecan gathering (harvest)\", \"Garden plot (harvest)\"."
+  },
+  {
+   "id": "side-fields-bay-year",
+   "kind": "side",
+   "title": "A Bay Area growing year",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-fields-harvest-orchard",
+     "treasure-fields-harvest-vineyard-harvest",
+     "treasure-fields-harvest-community-garden",
+     "treasure-fields-harvest-shoreline-cleanup"
+    ]
+   },
+   "hint": "Finish the orchard, vineyard, community garden and shoreline cleanup tasks in the Bay game calendar.",
+   "reward": {
+    "badge": "badge-side-fields-bay-year",
+    "label": "Bay grower"
+   },
+   "provenance": "AUTHORED",
+   "place": "fields",
+   "band": "K-5",
+   "reveal": "The Bay Area mild, dry-summer climate shapes when fruit ripens and when gardens are watered (source kind: state agricultural extension service).",
+   "unlock_text": "To unlock: finish \"Orchard harvest (harvest)\", \"Vineyard-style harvest (harvest)\", \"Community garden (harvest)\", \"Shoreline cleanup day (harvest)\"."
+  },
+  {
+   "id": "egg-fish-quiet-pond-parishes",
+   "kind": "egg",
+   "title": "The quiet pond",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Somewhere in the start parish the smallest pond keeps a secret.",
+   "reward": {
+    "badge": "badge-egg-fish-quiet-pond-parishes",
+    "label": "Quiet pond finder"
+   },
+   "provenance": "AUTHORED",
+   "place": "parishes-22071-5",
+   "band": "K-5",
+   "reveal": "Small ponds warm quickly in spring, and sunfish often nest in their shallows - state wildlife agency pond guides say to look for round, fanned-out nest beds.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-fish-quiet-pond-bay",
+   "kind": "egg",
+   "title": "The Bay pond",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The smallest pond in the Bay start county hides a quiet spot.",
+   "reward": {
+    "badge": "badge-egg-fish-quiet-pond-bay",
+    "label": "Bay pond finder"
+   },
+   "provenance": "AUTHORED",
+   "place": "bay-06075-3",
+   "band": "K-5",
+   "reveal": "Many Bay Area ponds and reservoirs hold introduced sunfish and bass; state wildlife agency pages explain which waters are open to fishing.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-fish-shore-mountain",
+   "kind": "egg",
+   "title": "The high lake shore",
+   "world": "wilds:mountain",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The mountain world hides one quiet shore spot far from the centre.",
+   "reward": {
+    "badge": "badge-egg-fish-shore-mountain",
+    "label": "The high lake shore finder"
+   },
+   "provenance": "AUTHORED",
+   "place": "m-snow-road",
+   "band": "K-5",
+   "reveal": "Cold mountain water holds more dissolved oxygen, which is one reason trout do well there (general state wildlife agency guidance).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-fish-shore-forest",
+   "kind": "egg",
+   "title": "The far lakeshore",
+   "world": "wilds:forest",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The forest world hides one quiet shore spot far from the centre.",
+   "reward": {
+    "badge": "badge-egg-fish-shore-forest",
+    "label": "The far lakeshore finder"
+   },
+   "provenance": "AUTHORED",
+   "place": "f-fuel-break",
+   "band": "K-5",
+   "reveal": "Shade from shoreline trees keeps lake edges cooler, and fallen wood gives small fish cover - a general point in state wildlife agency habitat guides.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-fish-shore-canyon",
+   "kind": "egg",
+   "title": "The canyon eddy",
+   "world": "wilds:canyon",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The canyon world hides one quiet shore spot far from the centre.",
+   "reward": {
+    "badge": "badge-egg-fish-shore-canyon",
+    "label": "The canyon eddy finder"
+   },
+   "provenance": "AUTHORED",
+   "place": "c-valve-vault",
+   "band": "K-5",
+   "reveal": "In a river, fish often rest in slower water behind rocks and bends and wait for food to drift past - general state wildlife agency angling guidance.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-fish-shore-delta",
+   "kind": "egg",
+   "title": "The marsh cut",
+   "world": "wilds:delta",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The delta world hides one quiet shore spot far from the centre.",
+   "reward": {
+    "badge": "badge-egg-fish-shore-delta",
+    "label": "The marsh cut finder"
+   },
+   "provenance": "AUTHORED",
+   "place": "d-pile-trestle",
+   "band": "K-5",
+   "reveal": "Marsh edges are nurseries: young fish, shrimp and crabs shelter among the grasses - a general point in state wildlife agency coastal guides.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-fish-catch-largemouth-bass",
+   "kind": "treasure",
+   "title": "Land a largemouth bass",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Try a lure at dawn or dusk on a bayou or lake.",
+   "reward": {
+    "badge": "badge-treasure-fish-catch-largemouth-bass",
+    "label": "Bass angler (play)"
+   },
+   "provenance": "AUTHORED",
+   "place": "fish-hud",
+   "band": "6-8",
+   "reveal": "Largemouth bass are ambush feeders around cover; state wildlife agency guides suggest wet hands and a quick release.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-fish-catch-red-drum",
+   "kind": "treasure",
+   "title": "Land a red drum",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Marsh water and a lake, shrimp or cut bait.",
+   "reward": {
+    "badge": "badge-treasure-fish-catch-red-drum",
+    "label": "Redfish angler (play)"
+   },
+   "provenance": "AUTHORED",
+   "place": "fish-hud",
+   "band": "6-8",
+   "reveal": "Red drum usually carry one or more dark tail spots; size and limit rules come from the state wildlife agency.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-fish-trap-crawfish",
+   "kind": "treasure",
+   "title": "Run a crawfish trap line",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Set a trap on a canal or pond in the cool months, then come back and check it.",
+   "reward": {
+    "badge": "badge-treasure-fish-trap-crawfish",
+    "label": "Trap line runner (play)"
+   },
+   "provenance": "AUTHORED",
+   "place": "fish-hud",
+   "band": "6-8",
+   "reveal": "Louisiana crawfish are often raised in flooded rice fields after harvest; real trapping follows state wildlife agency rules.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "side-fish-gulf-slam",
+   "kind": "side",
+   "title": "Gulf slam",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-fish-catch-largemouth-bass",
+     "treasure-fish-catch-red-drum",
+     "treasure-fish-trap-crawfish"
+    ]
+   },
+   "hint": "Bass, redfish and a crawfish haul in the parish world.",
+   "reward": {
+    "badge": "badge-side-fish-gulf-slam",
+    "label": "Gulf slam (play)"
+   },
+   "provenance": "AUTHORED",
+   "place": "fish-hud",
+   "band": "6-8",
+   "reveal": "Different species need different water, bait and time of day - matching them is what anglers learn from state wildlife agency fishing guides.",
+   "unlock_text": "To unlock: finish \"Land a largemouth bass\", \"Land a red drum\", \"Run a crawfish trap line\"."
+  },
+  {
+   "id": "treasure-fish-catch-striped-bass",
+   "kind": "treasure",
+   "title": "Land a striped bass",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Cast from the Bay shore at dawn or dusk.",
+   "reward": {
+    "badge": "badge-treasure-fish-catch-striped-bass",
+    "label": "Striper angler (play)"
+   },
+   "provenance": "AUTHORED",
+   "place": "fish-hud",
+   "band": "6-8",
+   "reveal": "Striped bass move between salt and fresh water; licences and rules come from the California state wildlife agency.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-fish-crab-dungeness",
+   "kind": "treasure",
+   "title": "Pull up a Dungeness crab",
+   "world": "bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A crab line on the Bay shore in the cooler months.",
+   "reward": {
+    "badge": "badge-treasure-fish-crab-dungeness",
+    "label": "Crab line (play)"
+   },
+   "provenance": "AUTHORED",
+   "place": "fish-hud",
+   "band": "6-8",
+   "reveal": "Real crabbing has size, sex and season rules set by the state wildlife agency - the game only records a play tag.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-fish-catch-rainbow-trout",
+   "kind": "treasure",
+   "title": "Land a rainbow trout",
+   "world": "wilds:forest",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A fly rod on the lake shore, dawn or dusk.",
+   "reward": {
+    "badge": "badge-treasure-fish-catch-rainbow-trout",
+    "label": "Trout angler (play)"
+   },
+   "provenance": "AUTHORED",
+   "place": "f-water-intake",
+   "band": "6-8",
+   "reveal": "Trout need cool, clean, oxygen-rich water; state wildlife agency guides recommend barbless hooks for release.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-smiles-tooth-fairy-coin",
+   "kind": "egg",
+   "title": "The tooth fairy dropped a coin",
+   "world": "smiles:park",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Where do tired walkers rest by the river?",
+   "reward": {
+    "badge": "badge-egg-smiles-tooth-fairy-coin",
+    "label": "Tooth fairy friend"
+   },
+   "provenance": "AUTHORED",
+   "place": "bench",
+   "band": "K-5",
+   "reveal": "Baby teeth hold space for adult teeth, so caring for them matters too (public-health dental guidance).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-smiles-golden-toothbrush",
+   "kind": "egg",
+   "title": "The golden toothbrush",
+   "world": "smiles:school",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Two minutes, twice a day - find the brush that shines at school.",
+   "reward": {
+    "badge": "badge-egg-smiles-golden-toothbrush",
+    "label": "Golden brusher"
+   },
+   "provenance": "AUTHORED",
+   "place": "classroom",
+   "band": "K-5",
+   "reveal": "Brushing twice a day for two minutes with fluoride toothpaste is the everyday habit public-health dental guidance recommends.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-smiles-lost-molar",
+   "kind": "egg",
+   "title": "A lost baby molar",
+   "world": "smiles:playground",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something small and white is buried where kids dig.",
+   "reward": {
+    "badge": "badge-egg-smiles-lost-molar",
+    "label": "Molar finder"
+   },
+   "provenance": "AUTHORED",
+   "place": "sandbox",
+   "band": "K-5",
+   "reveal": "Back teeth have grooves where food can hide; dental sealants are one way clinics help protect them (public-health dental guidance).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-smiles-floss-rainbow",
+   "kind": "egg",
+   "title": "The floss rainbow",
+   "world": "smiles:community",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Between the teeth and between the walls - look for a thread of colour.",
+   "reward": {
+    "badge": "badge-egg-smiles-floss-rainbow",
+    "label": "Floss explorer"
+   },
+   "provenance": "AUTHORED",
+   "place": "hall",
+   "band": "K-5",
+   "reveal": "Cleaning between your teeth every day reaches places a toothbrush misses (public-health dental guidance).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-smiles-van-sticker",
+   "kind": "egg",
+   "title": "The van's secret sticker",
+   "world": "smiles:vanlot",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The clinic on wheels hides a smile sticker.",
+   "reward": {
+    "badge": "badge-egg-smiles-van-sticker",
+    "label": "Van spotter"
+   },
+   "provenance": "AUTHORED",
+   "place": "van",
+   "band": "K-5",
+   "reveal": "Mobile dental vans and school programmes bring check-ups to where people already are (public-health dental programmes, in general terms).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-smiles-sugar-bug",
+   "kind": "egg",
+   "title": "The sugar bug poster",
+   "world": "smiles:shop",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A sneaky bug loves sticky sweets - find its poster in the shop.",
+   "reward": {
+    "badge": "badge-egg-smiles-sugar-bug",
+    "label": "Sugar bug buster"
+   },
+   "provenance": "AUTHORED",
+   "place": "shelf",
+   "band": "K-5",
+   "reveal": "Mouth germs feed on sugar and make acids that can harm tooth enamel, so limit sugary snacks and drinks (public-health dental guidance).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-smiles-giant-molar",
+   "kind": "egg",
+   "title": "The giant model molar",
+   "world": "smiles:clinic",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The lab bench keeps a tooth far too big for any mouth.",
+   "reward": {
+    "badge": "badge-egg-smiles-giant-molar",
+    "label": "Model maker"
+   },
+   "provenance": "AUTHORED",
+   "place": "lab",
+   "band": "K-5",
+   "reveal": "Dental labs make crowns, dentures and models from impressions or digital scans - one of many dental careers.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-smiles-garden-carrot",
+   "kind": "egg",
+   "title": "The crunchy carrot",
+   "world": "smiles:garden",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A crunchy snack grows in the ground near the van lot.",
+   "reward": {
+    "badge": "badge-egg-smiles-garden-carrot",
+    "label": "Crunch champion"
+   },
+   "provenance": "AUTHORED",
+   "place": "bed",
+   "band": "K-5",
+   "reveal": "Crunchy vegetables, cheese and water are tooth-friendly snack choices (general public-health nutrition guidance).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-smiles-library-book",
+   "kind": "egg",
+   "title": "The picture book about teeth",
+   "world": "smiles:library",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A quiet place with many stories hides one about smiles.",
+   "reward": {
+    "badge": "badge-egg-smiles-library-book",
+    "label": "Story smile"
+   },
+   "provenance": "AUTHORED",
+   "place": "shelf",
+   "band": "K-5",
+   "reveal": "Picture books about brushing and check-ups are a friendly way for families to talk about healthy habits (public-health dental guidance).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-smiles-water-bottle",
+   "kind": "egg",
+   "title": "The team water bottle",
+   "world": "smiles:sports",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Thirsty after the match? Look by the bench.",
+   "reward": {
+    "badge": "badge-egg-smiles-water-bottle",
+    "label": "Water champion"
+   },
+   "provenance": "AUTHORED",
+   "place": "bench",
+   "band": "K-5",
+   "reveal": "Water is a great drink after sport; many sports drinks have added sugar (public-health dental guidance).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-smiles-mouthguard",
+   "kind": "egg",
+   "title": "The lost mouthguard",
+   "world": "smiles:sports",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Players protect their smiles near the goal.",
+   "reward": {
+    "badge": "badge-egg-smiles-mouthguard",
+    "label": "Mouthguard keeper"
+   },
+   "provenance": "AUTHORED",
+   "place": "goal",
+   "band": "K-5",
+   "reveal": "A mouthguard helps protect teeth during contact sports (public-health dental guidance).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-smiles-bus-reminder",
+   "kind": "egg",
+   "title": "The check-up reminder card",
+   "world": "smiles:busstop",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Wait for the bus and read the reminder.",
+   "reward": {
+    "badge": "badge-egg-smiles-bus-reminder",
+    "label": "Check-up planner"
+   },
+   "provenance": "AUTHORED",
+   "place": "shelter",
+   "band": "K-5",
+   "reveal": "Regular dental check-ups are part of public-health dental guidance - plan how you will get there.",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-smiles-market-apple",
+   "kind": "egg",
+   "title": "The crunchy apple",
+   "world": "smiles:market",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A market stall keeps a crunchy, tooth-friendly snack.",
+   "reward": {
+    "badge": "badge-egg-smiles-market-apple",
+    "label": "Market muncher"
+   },
+   "provenance": "AUTHORED",
+   "place": "stall",
+   "band": "K-5",
+   "reveal": "Whole fruit and vegetables make tooth-friendly snacks (general public-health nutrition guidance).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-smiles-soap-bar",
+   "kind": "egg",
+   "title": "The bubbly soap bar",
+   "world": "smiles:homes-a",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Someone left soap by a porch on Maple Row.",
+   "reward": {
+    "badge": "badge-egg-smiles-soap-bar",
+    "label": "Bubble hero"
+   },
+   "provenance": "AUTHORED",
+   "place": "porch",
+   "band": "K-5",
+   "reveal": "Wash hands with soap and water, scrubbing all over, before eating and after the toilet (public-health hand hygiene guidance).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-smiles-brush-swap",
+   "kind": "egg",
+   "title": "The old frayed toothbrush",
+   "world": "smiles:homes-b",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A worn-out brush waits in a Birch Row garden.",
+   "reward": {
+    "badge": "badge-egg-smiles-brush-swap",
+    "label": "Brush swapper"
+   },
+   "provenance": "AUTHORED",
+   "place": "garden",
+   "band": "K-5",
+   "reveal": "Replace a toothbrush when its bristles look frayed or worn (public-health dental guidance).",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-smiles-fluoride-tap",
+   "kind": "egg",
+   "title": "The kitchen tap",
+   "world": "smiles:homes-c",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Clean water flows in a Cedar Row kitchen.",
+   "reward": {
+    "badge": "badge-egg-smiles-fluoride-tap",
+    "label": "Tap detective"
+   },
+   "provenance": "AUTHORED",
+   "place": "kitchen",
+   "band": "K-5",
+   "reveal": "Many communities add fluoride to drinking water to help prevent tooth decay (public-health dental guidance).",
    "unlock_text": "Open to everyone."
   },
   {

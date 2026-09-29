@@ -223,29 +223,75 @@ if (ROOT / WILDS_PATH).exists():
             add(f'treasure-wilds-{cid}', 'treasure', f'{label[kind]} in {wname}', f'wilds:{wid}', req(),
                 riddle, f'{label[kind]} finder: {wname}', place=cid, band='K-5', riddle=riddle)
 
-# The campus and its halls (CAMPUS publishes these entries; the 3D page binds
-# them itself and calls TCQuests.find(id), so they carry no trigger fields).
+# Every quests/source/*.json (sorted by name) is loaded here. campus.json (CAMPUS) keeps its wave-3 rules: kind
+# treasure|egg, world campus | hall:<id>, no trigger fields (the 3D page binds them itself). Every other source file
+# <stem>.json is owned by one agent (GAMES_CONTRACT: fish FISH, fields FIELDS, smiles SMILES, bayou BAYOU); its ids
+# start with treasure-<stem>- | egg-<stem>- | side-<stem>-, each entry carries a one-line informative `reveal`
+# (general, the kind of source named - never an invented number), and it may carry a trigger per QUEST_CONTRACT
+# (konami | typed:<word> | clicks:<n> with a target). A kit reports a catch / harvest / sighting by calling
+# window.TCQuests.find(<treasure id>) - the engine's own find(), nothing parallel. Duplicate ids stop the build by
+# name, naming both files.
+SOURCE_DIR = HERE / 'source'
+SOURCES = sorted(SOURCE_DIR.glob('*.json'))
 CAMPUS_SRC = 'quests/source/campus.json'
-_campus = need(load(CAMPUS_SRC), 'entries', CAMPUS_SRC)
-for e in _campus:
-    eid = need(e, 'id', CAMPUS_SRC)
-    for k in ('kind', 'title', 'world', 'place', 'requires', 'hint', 'reward', 'provenance'):
-        need(e, k, f'{CAMPUS_SRC}#{eid}')
-    if e['kind'] not in ('treasure', 'egg'):
-        raise ValueError(f'{CAMPUS_SRC}#{eid}: kind {e["kind"]!r} - CAMPUS entries are treasure|egg')
-    if not (e['world'] == 'campus' or e['world'].startswith('hall:')):
-        raise ValueError(f'{CAMPUS_SRC}#{eid}: world {e["world"]!r} is not campus | hall:<id>')
-    if 'trigger' in e or 'target' in e:
-        raise ValueError(f'{CAMPUS_SRC}#{eid}: campus entries carry no trigger fields (the 3D page binds them)')
-    if e['provenance'] != 'AUTHORED':
-        raise ValueError(f'{CAMPUS_SRC}#{eid}: provenance must be AUTHORED')
-    r = e['requires']
-    add(eid, e['kind'], e['title'], e['world'],
-        req(need(r, 'lessons', eid), need(r, 'halls', eid), need(r, 'quests', eid)), e['hint'],
-        need(e['reward'], 'label', f'{CAMPUS_SRC}#{eid}.reward'), place=e['place'],
-        band=e['band'] if 'band' in e else None)
-    if Q[-1]['reward']['badge'] != need(e['reward'], 'badge', f'{CAMPUS_SRC}#{eid}.reward'):
-        raise ValueError(f'{CAMPUS_SRC}#{eid}: reward badge must be badge-{eid}')
+if not (ROOT / CAMPUS_SRC).exists():
+    raise FileNotFoundError(f'{CAMPUS_SRC} is missing (CAMPUS publishes it)')
+SRC_KINDS = ('treasure', 'egg', 'side')
+TRIGGER_RE = re.compile(r'^(konami|typed:[a-z]{3,24}|clicks:[2-9])$')
+_src_of = {}
+for _sp in SOURCES:
+    src = str(_sp.relative_to(ROOT))
+    stem = _sp.stem
+    if not re.fullmatch(r'[a-z0-9]+', stem):
+        raise ValueError(f'{src}: source file names are one lowercase word (the owner token)')
+    _doc = json.loads(_sp.read_text(encoding='utf-8'))
+    _entries = need(_doc, 'entries', src)
+    if not isinstance(_entries, list) or not _entries:
+        raise ValueError(f'{src}: entries must be a non-empty list')
+    campus = src == CAMPUS_SRC
+    for e in _entries:
+        eid = need(e, 'id', src)
+        if eid in _src_of:
+            raise AssertionError(f'quest id {eid!r} is declared twice: in {_src_of[eid]} and in {src}')
+        _src_of[eid] = src
+        for k in ('kind', 'title', 'world', 'place', 'requires', 'hint', 'reward', 'provenance'):
+            need(e, k, f'{src}#{eid}')
+        if e['provenance'] != 'AUTHORED':
+            raise ValueError(f'{src}#{eid}: provenance must be AUTHORED')
+        if campus:
+            if e['kind'] not in ('treasure', 'egg'):
+                raise ValueError(f'{src}#{eid}: kind {e["kind"]!r} - CAMPUS entries are treasure|egg')
+            if not (e['world'] == 'campus' or e['world'].startswith('hall:')):
+                raise ValueError(f'{src}#{eid}: world {e["world"]!r} is not campus | hall:<id>')
+            if 'trigger' in e or 'target' in e:
+                raise ValueError(f'{src}#{eid}: campus entries carry no trigger fields (the 3D page binds them)')
+        else:
+            if e['kind'] not in SRC_KINDS:
+                raise ValueError(f'{src}#{eid}: kind {e["kind"]!r} is not one of {SRC_KINDS}')
+            if not eid.startswith(f'{e["kind"]}-{stem}-'):
+                raise ValueError(f'{src}#{eid}: ids in {stem}.json start with {e["kind"]}-{stem}- (the owner token)')
+            rv = need(e, 'reveal', f'{src}#{eid}')
+            if not isinstance(rv, str) or len(rv.strip()) < 20:
+                raise ValueError(f'{src}#{eid}: reveal must be one informative line (>= 20 chars)')
+            if 'trigger' in e:
+                if e['kind'] != 'egg' or not TRIGGER_RE.match(e['trigger']):
+                    raise ValueError(f'{src}#{eid}: trigger {e["trigger"]!r} is not konami | typed:<a-z word> | '
+                                     'clicks:<2-9> on an egg')
+                if e['trigger'].startswith('clicks:') and 'target' not in e:
+                    raise ValueError(f'{src}#{eid}: a clicks trigger needs a target selector')
+            elif 'target' in e:
+                raise ValueError(f'{src}#{eid}: target without a trigger')
+        r = e['requires']
+        add(eid, e['kind'], e['title'], e['world'],
+            req(need(r, 'lessons', eid), need(r, 'halls', eid), need(r, 'quests', eid)), e['hint'],
+            need(e['reward'], 'label', f'{src}#{eid}.reward'), place=e['place'],
+            band=e['band'] if 'band' in e else None,
+            trigger=e['trigger'] if 'trigger' in e else None, target=e['target'] if 'target' in e else None,
+            riddle=e['riddle'] if 'riddle' in e else None)
+        if 'reveal' in e:
+            Q[-1]['reveal'] = e['reveal']
+        if Q[-1]['reward']['badge'] != need(e['reward'], 'badge', f'{src}#{eid}.reward'):
+            raise ValueError(f'{src}#{eid}: reward badge must be badge-{eid}')
 
 # Modules no page reads today, brought into play on the quest board.
 add('side-inspect-sequencer-eval', 'side', 'Inspect the sequencer eval', QUEST_PAGE, req(),
@@ -416,6 +462,15 @@ for p in need(_paths, 'parishes', PATHS_REG):
             f'Follow every step of this side story in {pname}.', f'{title}: {pname}', place=sid)
 
 
+# world registries for the wave-12 world kinds (read-only; fail closed on a malformed registry)
+BAY_PATH = 'bayarea/registry/bayarea.json'
+BAY_FIPS = sorted(need(load(BAY_PATH), 'counties', BAY_PATH))
+WILDS_IDS = ({need(w, 'id', WILDS_PATH) for w in need(load(WILDS_PATH), 'worlds', WILDS_PATH)}
+             if (ROOT / WILDS_PATH).exists() else None)
+SMILES_PATH = 'smiles/registry/smiles.json'
+SMILES_ZONES = ({need(z, 'id', f'{SMILES_PATH}#zones') for z in need(load(SMILES_PATH), 'zones', SMILES_PATH)}
+                if (ROOT / SMILES_PATH).exists() else None)
+
 ids = [q['id'] for q in Q]
 dupes = sorted({i for i in ids if ids.count(i) > 1})
 if dupes:
@@ -430,8 +485,19 @@ for q in Q:
         raise ValueError(f'{q["id"]}: band {q["band"]!r} is not one of {BANDS}')
     w = q['world']
     if not (w == 'campus' or w.startswith('hall:') or w.startswith('wilds:') or w.startswith('page:')
-            or w == 'parishes' or w.startswith('parish:')):
-        raise ValueError(f'{q["id"]}: world {w!r} is not campus | hall:<id> | wilds:<id> | page:<path> | parishes | parish:<fips>')
+            or w == 'parishes' or w.startswith('parish:') or w == 'bay' or w.startswith('bay:')
+            or w == 'smiles' or w.startswith('smiles:')):
+        raise ValueError(f'{q["id"]}: world {w!r} is not campus | hall:<id> | wilds:<id> | page:<path> | parishes | '
+                         'parish:<fips> | bay | bay:<fips> | smiles | smiles:<zone>')
+    if w.startswith('bay:') and w[4:] not in BAY_FIPS:
+        raise KeyError(f'{q["id"]}: world names Bay county {w[4:]!r}, which {BAY_PATH}#counties does not hold')
+    if w.startswith('wilds:') and WILDS_IDS is not None and w[6:] not in WILDS_IDS:
+        raise KeyError(f'{q["id"]}: world names wilds world {w[6:]!r}, which {WILDS_PATH} does not hold')
+    if w == 'smiles' or w.startswith('smiles:'):
+        if SMILES_ZONES is None:
+            raise FileNotFoundError(f'{q["id"]}: world {w!r} needs {SMILES_PATH} (SMILES publishes zones[].id)')
+        if w.startswith('smiles:') and w[7:] not in SMILES_ZONES:
+            raise KeyError(f'{q["id"]}: world names Smiles zone {w[7:]!r}, which {SMILES_PATH}#zones does not hold')
     if w.startswith('parish:') and w[7:] not in _fips_all:
         raise KeyError(f'{q["id"]}: world names parish {w[7:]!r}, which {LAYERS_PATH} does not hold')
     if w.startswith('hall:') and w[5:] not in HALLS:
@@ -488,7 +554,9 @@ for i in by_id:
 counts = {k: sum(1 for q in Q if q['kind'] == k) for k in KINDS}
 stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()
                        + (ROOT / LESSONS_PATH).read_bytes() + (ROOT / SIMS_PATH).read_bytes()
-                       + (ROOT / CAMPUS_SRC).read_bytes() + (ROOT / LAYERS_PATH).read_bytes()
+                       + b''.join(p.name.encode() + p.read_bytes() for p in SOURCES)
+                       + (ROOT / LAYERS_PATH).read_bytes() + (ROOT / BAY_PATH).read_bytes()
+                       + ((ROOT / SMILES_PATH).read_bytes() if (ROOT / SMILES_PATH).exists() else b'')
                        + ((ROOT / FLEET_PATH).read_bytes() if (ROOT / FLEET_PATH).exists() else b'')
                        + ((ROOT / WILDS_PATH).read_bytes() if (ROOT / WILDS_PATH).exists() else b'')
                        + (ROOT / PATHS_REG).read_bytes()).hexdigest()[:16]
@@ -497,7 +565,10 @@ doc = {
     'product': need(lessons_reg, 'product', LESSONS_PATH),
     'pack_version': need(lessons_reg, 'pack_version', LESSONS_PATH),
     'source_stamp': stamp,
-    'reads': [LESSONS_PATH, HALLS_PATH, SIMS_PATH, CRIBS_PATH, WILDS_PATH, CAMPUS_SRC, LAYERS_PATH, FLEET_PATH, PATHS_REG],
+    'reads': [LESSONS_PATH, HALLS_PATH, SIMS_PATH, CRIBS_PATH, WILDS_PATH, LAYERS_PATH, FLEET_PATH, PATHS_REG,
+              BAY_PATH, SMILES_PATH] + [str(p.relative_to(ROOT)) for p in SOURCES],
+    'sources': {str(p.relative_to(ROOT)): sum(1 for v in _src_of.values() if v == str(p.relative_to(ROOT)))
+                for p in SOURCES},
     'parishes': _fips_all,
     'honesty': HONESTY,
     'counts': counts,

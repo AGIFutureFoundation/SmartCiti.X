@@ -1415,6 +1415,66 @@ page = page.replace('<p class="help" data-legend>', f'<p class="help" data-fleet
                     f'{esc(_DRIVE_PHYS["honesty"])}</p>\n<p class="help"><span data-i18n="fleet.drive.honesty">{T("fleet.drive.honesty")}</span></p>\n'
                     '<p class="help" data-legend>', 1)
 # END DRIVE
+
+# BEGIN FISH w12 (FISH·Fishing & Crawfish): the fishing game (web/fishkit.py) in every wilds world - spots on the
+# shoreline of the AUTHORED terrain (outdoors/registry/outdoors.json, DERIVED via outdoors/wilds_shore.mjs); HUD panel
+# 'fish' (#fish-hud, slot b) + section #fish (dock chip); ONE InstancedMesh for the markers. Play only.
+if (ROOT / 'outdoors/registry/outdoors.json').exists() and (HERE / 'fishkit.py').exists():
+    from fishkit import fish_embed  # noqa: E402
+    _fh, _fs, _ft = fish_embed('wilds')
+    _FISH_OLD_LAYER = hud_layer(HUD_PANELS, TS, TA)
+    _FISH_HOST = ("/* FISH w12 host bridge (web/fishkit.py reads it) */\n"
+                  "window.__fishHost = { THREE, scene, where: () => W ? { region: W.id, x: eye.x, z: eye.z } : null,\n"
+                  "  regions: () => (W ? [W.id] : []), toWorld: (r, x, z) => (W && r === W.id ? [x, z] : null),\n"
+                  "  teleport: (x, z) => { if (mode !== 'walk') setMode('walk'); teleport(x, z, eye.yaw); }, surfaceY: () => (W ? W.biome.water_level_m : 0) };\n")
+    for _a, _b in (('window.__wilds = {', _FISH_HOST + 'window.__wilds = {'),
+                   ('<div id="toast" hidden role="status"></div>', '<div id="toast" hidden role="status"></div>' + _fh),
+                   ('<p class="help" data-legend>', _fs + '\n<p class="help" data-legend>'),
+                   ('</div></body>', _ft + '</div></body>'),
+                   (_FISH_OLD_LAYER, None)):
+        if page.count(_a) != 1:
+            raise SystemExit(f'build_wilds: FISH anchor found {page.count(_a)}x: {_a[:60]!r}')
+        if _b is not None:
+            page = page.replace(_a, _b)
+    # compact 'none' (the panel is one 44 px button + a small meter); the dock chip joins once UX's hud.open.fish exists
+    HUD_PANELS.append({'id': 'fish', 'kind': 'panel', 'sel': '#fish-hud', 'slot': 'b', 'order': 1, 'compact': 'none'})
+    if 'hud.open.fish' in json.loads((ROOT / 'i18n/locales/en.json').read_text(encoding='utf-8'))['strings']:
+        HUD_PANELS.append({'id': 'fishsec', 'kind': 'flow', 'goto': '#fish', 'anchor': '<section id="fish"', 'icon': 'route',
+                           'label': 'hud.open.fish'})
+    page = page.replace(_FISH_OLD_LAYER, hud_layer(HUD_PANELS, TS, TA))
+# END FISH w12
+# BEGIN BAYOU w12 (BAYOU·Wildlife & Easter Eggs): wildlife watch in every wilds world (web/wildkit.py, region 'wilds'):
+# sightings seeded per 250 m cell on this page's AUTHORED terrain (water below W.biome.water_level_m = water; inside
+# the world extent = ground), photo mode with the safe-distance rule, the field-guide codex and the turtle / litter
+# games in ONE hudkit panel 'wild' (#wild-panel, slot bs, compact none - a <details>). No meshes, no draw calls.
+# A photo reports treasure-bayou-wilds-<world>-guide (quests/source/bayou.json) through TCQuests.find. Play only.
+if (ROOT / 'wildlife/registry/wildlife.json').exists() and (HERE / 'wildkit.py').exists():
+    import wildkit as _wk  # noqa: E402
+    _WILD_PANEL = _wk.wild_panel_html('wilds')
+    _WILD_DATA = ('<script type="application/json" id="wild-data">'
+                  + json.dumps(_wk.wild_data('wilds'), ensure_ascii=False).replace('</', '<\\/') + '</script>'
+                  + '<script type="application/json" id="wild-i18n">'
+                  + json.dumps(_wk.wild_i18n(), ensure_ascii=False).replace('</', '<\\/') + '</script>')
+    _WILD_HOST = (_wk.WILD_JS + "\n/* BAYOU w12 wildlife mount */\n"
+                  "const WILD = TCWILD.mount({ root: document.getElementById('wild-panel'), data: JSON.parse(document.getElementById('wild-data').textContent),\n"
+                  "  i18n: JSON.parse(document.getElementById('wild-i18n').textContent), getPlayer: () => (W ? { x: eye.x, z: eye.z } : null),\n"
+                  "  isWater: (x, z) => !!(W && T) && T.height(x, z) < W.biome.water_level_m,\n"
+                  "  isGround: (x, z) => !!(W && T) && Math.abs(x) < W.extent_m / 2 - 10 && Math.abs(z) < W.extent_m / 2 - 10 && T.height(x, z) >= W.biome.water_level_m,\n"
+                  "  seed: 20260929, worldId: () => (W ? W.id : 'none'),\n"
+                  "  month: Number(new URLSearchParams(location.search).get('wildmonth')) || (new Date().getMonth() + 1) });\n")
+    _WILD_OLD_LAYER = hud_layer(HUD_PANELS, TS, TA)
+    for _a, _b in (('window.__wilds = {', _WILD_HOST + 'window.__wilds = {'),
+                   ('<div id="toast" hidden role="status"></div>', '<div id="toast" hidden role="status"></div>' + _WILD_PANEL),
+                   ('</div></body>', _WILD_DATA + '</div></body>'),
+                   ('</style>\n</head>', _wk.WILD_CSS + '</style>\n</head>'),
+                   (_WILD_OLD_LAYER, None)):
+        if page.count(_a) != 1:
+            raise SystemExit(f'build_wilds: BAYOU anchor found {page.count(_a)}x: {_a[:60]!r}')
+        if _b is not None:
+            page = page.replace(_a, _b)
+    HUD_PANELS.append({'id': 'wild', 'kind': 'panel', 'sel': '#wild-panel', 'slot': 'bs', 'order': 1, 'compact': 'none'})
+    page = page.replace(_WILD_OLD_LAYER, hud_layer(HUD_PANELS, TS, TA))
+# END BAYOU w12
 # exactly the chrome keys this page used, for every locale in i18n/locales;
 # a key missing (or empty) in any locale stops the build by name
 I18N_CAT = {}

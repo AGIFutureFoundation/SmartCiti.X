@@ -1,0 +1,73 @@
+{
+ "note": "AUTHORED game catalogue. Species are real regional species named generally; every stat is an AUTHORED game number on a 1-5 scale (not a size, weight, limit or record); seasons are approximate game calendars; facts are general and name only the kind of source.",
+ "regions": {
+  "gulf": {"title": "Gulf coast parishes and delta", "agency": "Louisiana Department of Wildlife and Fisheries"},
+  "bay": {"title": "San Francisco Bay Area", "agency": "California Department of Fish and Wildlife"},
+  "west": {"title": "Western mountains, forests and canyons (general geography only)", "agency": null}
+ },
+ "habitats": {
+  "lake": "open lake water with a shoreline",
+  "bayou": "slow, winding bayou channel",
+  "canal": "straight drainage canal or ditch",
+  "stream": "small moving stream",
+  "pond": "small still pond",
+  "flooded-field": "shallow flooded field edge (crawfish ground)",
+  "bay-shore": "salt or brackish bay shoreline",
+  "river": "moving river water",
+  "marsh": "shallow marsh and braided channels"
+ },
+ "rods": [
+  {"id": "cane-pole", "title": "Cane pole", "method": "line", "stats": {"reach": 1, "power": 1, "finesse": 4, "tension_window": 5}, "habitats": ["pond", "canal", "bayou", "stream", "lake", "marsh"], "tip": "No reel: swing the bait out and lift the fish straight up - simple and gentle for panfish."},
+  {"id": "spinning-rod", "title": "Spinning rod", "method": "cast", "stats": {"reach": 3, "power": 3, "finesse": 4, "tension_window": 4}, "habitats": ["pond", "canal", "bayou", "stream", "lake", "river", "marsh", "bay-shore"], "tip": "An open-face reel that is easy to learn; the drag lets line slip before it breaks."},
+  {"id": "baitcasting-rod", "title": "Baitcasting rod", "method": "cast", "stats": {"reach": 4, "power": 5, "finesse": 2, "tension_window": 3}, "habitats": ["lake", "bayou", "river", "marsh", "bay-shore"], "tip": "Accurate and strong, but a careless cast can tangle the spool (a 'backlash') - thumb the spool."},
+  {"id": "fly-rod", "title": "Fly rod", "method": "cast", "stats": {"reach": 3, "power": 2, "finesse": 5, "tension_window": 3}, "habitats": ["stream", "river", "lake", "pond"], "tip": "The weight is in the line, not the lure: the rod loads the line and a light fly follows."},
+  {"id": "surf-rod", "title": "Surf rod", "method": "cast", "stats": {"reach": 5, "power": 4, "finesse": 2, "tension_window": 4}, "habitats": ["bay-shore", "lake", "river"], "tip": "A long rod to reach past near-shore water from a bank or beach."},
+  {"id": "crab-line", "title": "Crab line", "method": "line", "stats": {"reach": 1, "power": 2, "finesse": 3, "tension_window": 5}, "habitats": ["bay-shore", "marsh", "bayou"], "tip": "A weighted line with bait and no hook: pull it in slowly and scoop the crab with a net."},
+  {"id": "crawfish-trap", "title": "Crawfish trap", "method": "trap", "stats": {"reach": 1, "power": 1, "finesse": 1, "tension_window": 5}, "habitats": ["flooded-field", "canal", "pond", "marsh"], "tip": "A mesh trap with funnel entrances: set it, wait, then run the trap line and check each one."}
+ ],
+ "baits": [
+  {"id": "worm", "title": "Worm", "kind": "live bait"},
+  {"id": "cricket", "title": "Cricket", "kind": "live bait"},
+  {"id": "minnow", "title": "Minnow", "kind": "live bait"},
+  {"id": "shrimp", "title": "Shrimp", "kind": "bait"},
+  {"id": "cut-bait", "title": "Cut bait", "kind": "bait"},
+  {"id": "chicken-neck", "title": "Chicken neck", "kind": "crab bait"},
+  {"id": "trap-bait", "title": "Fish-based trap bait", "kind": "trap bait"},
+  {"id": "soft-plastic", "title": "Soft plastic worm", "kind": "lure"},
+  {"id": "spinner", "title": "Spinner", "kind": "lure"},
+  {"id": "crankbait", "title": "Crankbait", "kind": "lure"},
+  {"id": "topwater", "title": "Topwater popper", "kind": "lure"},
+  {"id": "dry-fly", "title": "Dry fly", "kind": "fly"},
+  {"id": "nymph", "title": "Nymph", "kind": "fly"}
+ ],
+ "times": ["dawn", "day", "dusk", "night"],
+ "species": [
+  {"id": "largemouth-bass", "title": "Largemouth bass", "regions": ["gulf", "bay"], "habitats": ["lake", "bayou", "canal", "pond", "marsh"], "methods": ["cast", "line"], "baits": ["soft-plastic", "crankbait", "topwater", "spinner", "minnow", "worm"], "season": [3, 10], "times": {"dawn": 3, "day": 1, "dusk": 3, "night": 1}, "stats": {"fight": 4, "wariness": 3, "rarity": 2}, "fact": "Its upper jaw reaches back past the eye - the easiest way to tell it from other black basses.", "handling": "Wet your hands, support its body level and keep it in the water while you unhook it."},
+  {"id": "bluegill", "title": "Bluegill", "regions": ["gulf", "bay", "west"], "habitats": ["pond", "lake", "canal", "bayou", "stream"], "methods": ["line", "cast"], "baits": ["worm", "cricket", "dry-fly", "nymph"], "season": [3, 10], "times": {"dawn": 2, "day": 3, "dusk": 2, "night": 0}, "stats": {"fight": 2, "wariness": 1, "rarity": 1}, "fact": "Bluegill are sunfish that nest in shallow colonies, and the males guard the nests.", "handling": "Smooth the sharp top fin down from front to back before you hold it."},
+  {"id": "redear-sunfish", "title": "Redear sunfish", "regions": ["gulf"], "habitats": ["pond", "lake", "canal"], "methods": ["line", "cast"], "baits": ["worm", "cricket"], "season": [4, 9], "times": {"dawn": 2, "day": 3, "dusk": 2, "night": 0}, "stats": {"fight": 2, "wariness": 2, "rarity": 2}, "fact": "Redear sunfish eat snails, which is why many anglers call them shellcrackers.", "handling": "Use a small hook and a dehooker so the fish goes back quickly."},
+  {"id": "crappie", "title": "Crappie", "regions": ["gulf"], "habitats": ["lake", "bayou", "canal"], "methods": ["line", "cast"], "baits": ["minnow", "spinner"], "season": [1, 5], "times": {"dawn": 3, "day": 1, "dusk": 3, "night": 2}, "stats": {"fight": 2, "wariness": 2, "rarity": 2}, "fact": "Crappie often school around sunken brush and other cover, so where you find one you may find more.", "handling": "Their mouths tear easily: reel steadily and lift gently."},
+  {"id": "channel-catfish", "title": "Channel catfish", "regions": ["gulf", "bay", "west"], "habitats": ["bayou", "canal", "lake", "river", "pond"], "methods": ["cast", "line"], "baits": ["cut-bait", "worm", "shrimp"], "season": [4, 10], "times": {"dawn": 2, "day": 1, "dusk": 3, "night": 3}, "stats": {"fight": 3, "wariness": 2, "rarity": 1}, "fact": "Catfish find much of their food by taste and smell - their whisker-like barbels carry taste buds.", "handling": "Hold it behind the side and top spines; those spines can give a painful jab."},
+  {"id": "red-drum", "title": "Red drum (redfish)", "regions": ["gulf"], "habitats": ["marsh", "bayou", "lake"], "methods": ["cast"], "baits": ["shrimp", "cut-bait", "spinner", "soft-plastic"], "season": [1, 12], "times": {"dawn": 3, "day": 2, "dusk": 3, "night": 1}, "stats": {"fight": 5, "wariness": 3, "rarity": 3}, "fact": "Red drum usually carry one or more dark spots near the tail.", "handling": "Support its weight with two hands and let it swim off on its own before you let go."},
+  {"id": "spotted-seatrout", "title": "Spotted seatrout", "regions": ["gulf"], "habitats": ["marsh", "lake"], "methods": ["cast"], "baits": ["shrimp", "soft-plastic", "topwater"], "season": [3, 11], "times": {"dawn": 3, "day": 1, "dusk": 3, "night": 2}, "stats": {"fight": 3, "wariness": 3, "rarity": 3}, "fact": "Spotted seatrout carry scattered black spots on the back, fins and tail.", "handling": "Keep it in the water and handle it as little as possible - its slime coat protects it."},
+  {"id": "southern-flounder", "title": "Southern flounder", "regions": ["gulf"], "habitats": ["marsh", "lake"], "methods": ["cast"], "baits": ["minnow", "shrimp", "soft-plastic"], "season": [9, 12], "times": {"dawn": 2, "day": 2, "dusk": 3, "night": 2}, "stats": {"fight": 3, "wariness": 4, "rarity": 4}, "fact": "Flounder are flatfish: as they grow, both eyes move to one side of the head so they can lie flat and ambush prey.", "handling": "Lay it flat on a wet hand and slide it back into the water."},
+  {"id": "blue-crab", "title": "Blue crab", "regions": ["gulf"], "habitats": ["marsh", "bayou", "lake"], "methods": ["line", "trap"], "baits": ["chicken-neck", "trap-bait"], "season": [3, 11], "times": {"dawn": 3, "day": 2, "dusk": 2, "night": 1}, "stats": {"fight": 2, "wariness": 2, "rarity": 2}, "fact": "Blue crabs are swimming crabs: their last pair of legs is flattened like paddles.", "handling": "Hold a crab from behind, at the back legs, away from the claws; rules often protect egg-bearing females - return them."},
+  {"id": "red-swamp-crawfish", "title": "Red swamp crawfish", "regions": ["gulf"], "habitats": ["flooded-field", "canal", "pond", "marsh"], "methods": ["trap"], "baits": ["trap-bait"], "season": [1, 6], "times": {"dawn": 2, "day": 2, "dusk": 2, "night": 2}, "stats": {"fight": 1, "wariness": 1, "rarity": 1}, "fact": "Red swamp crawfish dig burrows and wait out dry months underground until water returns.", "handling": "Keep a catch cool, damp and shaded; release small or egg-bearing crawfish where you found them."},
+  {"id": "striped-bass", "title": "Striped bass", "regions": ["bay"], "habitats": ["bay-shore", "river"], "methods": ["cast"], "baits": ["minnow", "cut-bait", "spinner", "topwater"], "season": [3, 11], "times": {"dawn": 3, "day": 1, "dusk": 3, "night": 2}, "stats": {"fight": 5, "wariness": 3, "rarity": 3}, "fact": "Striped bass move between salt and fresh water: many swim upriver to spawn.", "handling": "Keep your fingers out of the gills; hold it by the lower lip and support the belly."},
+  {"id": "california-halibut", "title": "California halibut", "regions": ["bay"], "habitats": ["bay-shore"], "methods": ["cast"], "baits": ["minnow", "soft-plastic"], "season": [4, 10], "times": {"dawn": 2, "day": 3, "dusk": 2, "night": 0}, "stats": {"fight": 4, "wariness": 4, "rarity": 4}, "fact": "Like every flatfish, a young halibut swims upright; one eye then migrates so the fish can lie flat on the sand.", "handling": "Its teeth are sharp: use pliers and keep the fish flat and wet."},
+  {"id": "surfperch", "title": "Surfperch", "regions": ["bay"], "habitats": ["bay-shore"], "methods": ["cast", "line"], "baits": ["shrimp", "worm", "soft-plastic"], "season": [1, 12], "times": {"dawn": 2, "day": 3, "dusk": 2, "night": 0}, "stats": {"fight": 2, "wariness": 2, "rarity": 1}, "fact": "Surfperch give birth to live young instead of laying eggs.", "handling": "Wet your hands and return it quickly - especially in spring, when females may be carrying young."},
+  {"id": "dungeness-crab", "title": "Dungeness crab", "regions": ["bay"], "habitats": ["bay-shore"], "methods": ["line", "trap"], "baits": ["chicken-neck", "trap-bait"], "season": [11, 6], "times": {"dawn": 2, "day": 2, "dusk": 2, "night": 2}, "stats": {"fight": 2, "wariness": 3, "rarity": 3}, "fact": "Dungeness crabs often bury themselves in sandy bottoms with only their eyes showing.", "handling": "Hold from behind at the back legs; rules on size and sex apply to real crabbing - check the state wildlife agency."},
+  {"id": "rainbow-trout", "title": "Rainbow trout", "regions": ["west", "bay"], "habitats": ["stream", "river", "lake"], "methods": ["cast"], "baits": ["dry-fly", "nymph", "spinner", "worm"], "season": [4, 11], "times": {"dawn": 3, "day": 2, "dusk": 3, "night": 0}, "stats": {"fight": 3, "wariness": 4, "rarity": 2}, "fact": "Rainbow trout need cool, oxygen-rich water, so they hold where currents mix and shade the stream.", "handling": "Barbless hooks and wet hands help a trout recover; keep it in the water for the photo."},
+  {"id": "cutthroat-trout", "title": "Cutthroat trout", "regions": ["west"], "habitats": ["stream", "lake", "river"], "methods": ["cast"], "baits": ["dry-fly", "nymph", "spinner"], "season": [5, 10], "times": {"dawn": 3, "day": 2, "dusk": 3, "night": 0}, "stats": {"fight": 3, "wariness": 3, "rarity": 3}, "fact": "Cutthroat trout are named for the red-orange slash under the lower jaw.", "handling": "Face it into gentle current until it swims away strongly."},
+  {"id": "brown-trout", "title": "Brown trout", "regions": ["west"], "habitats": ["river", "stream"], "methods": ["cast"], "baits": ["nymph", "dry-fly", "spinner", "minnow"], "season": [4, 10], "times": {"dawn": 3, "day": 1, "dusk": 3, "night": 2}, "stats": {"fight": 4, "wariness": 5, "rarity": 4}, "fact": "Brown trout were brought to North America from Europe and are among the warier trout.", "handling": "Keep the fight short so the fish is not exhausted before release."},
+  {"id": "smallmouth-bass", "title": "Smallmouth bass", "regions": ["west"], "habitats": ["river", "lake"], "methods": ["cast"], "baits": ["crankbait", "soft-plastic", "spinner", "minnow"], "season": [4, 10], "times": {"dawn": 3, "day": 2, "dusk": 3, "night": 0}, "stats": {"fight": 4, "wariness": 3, "rarity": 3}, "fact": "Smallmouth bass favour clearer, rockier water with some current.", "handling": "Hold by the lower lip with the body supported, then let it swim from your hand."},
+  {"id": "yellow-perch", "title": "Yellow perch", "regions": ["west"], "habitats": ["lake", "pond"], "methods": ["line", "cast"], "baits": ["worm", "minnow"], "season": [1, 12], "times": {"dawn": 2, "day": 3, "dusk": 2, "night": 0}, "stats": {"fight": 1, "wariness": 1, "rarity": 1}, "fact": "Yellow perch have dark vertical bars on a golden body and often travel in schools.", "handling": "Flatten the spiny top fin before gripping it."}
+ ],
+ "honesty": {
+  "play": "Every catch, trap haul and codex entry is PLAY: stored only on this device, never a completion record, never money, never a licence.",
+  "real": "Real activity follows state rules - check the state wildlife agency (Louisiana Department of Wildlife and Fisheries; California Department of Fish and Wildlife) for licences, seasons, sizes and limits.",
+  "seasons": "Seasons here are approximate, game calendar - not the legal seasons.",
+  "facts": "Species facts are general, from the kind of material state wildlife agencies publish in species profiles; game stats are AUTHORED on a 1-5 scale and are not sizes or records.",
+  "wildlife": "Never approach, feed or harass wildlife; alligators share Gulf waters and are dangerous - keep your distance.",
+  "places": "Fishing spots sit on AUTHORED water (procedural lakes, bayous, canals, ponds and terrain) - not the real waters."
+ }
+}
