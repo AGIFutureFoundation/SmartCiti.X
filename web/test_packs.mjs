@@ -72,6 +72,13 @@ ok(KINDS.every((k) => own.includes(`.cat:has(#pk-k-${k}:checked) .pk:not([data-k
 
 /* ---- honesty ---- */
 ok(['counted', 'status', 'price', 'cert', 'k12', 'un', 'play', 'names'].every((k) => P.includes(`data-i18n="packs.honest.${k}">${esc(EN['packs.honest.' + k])}<`)), 'honesty footer: counted, status, no price, no certification, K-12 PROPOSED, UN not affiliated, play, quoted names');
+const W11_HONEST = { 'tradesquest-stations': 'tq', 'materials-colour': 'colour', 'robotics-lab': 'robotics', 'data-commons': 'data' };
+ok(Object.entries(W11_HONEST).every(([id, k]) => REG.packs.some((p) => p.id === id)
+  === P.includes(`data-i18n="packs.honest.${k}">${esc(EN['packs.honest.' + k])}<`)), 'wave-11 honesty lines (TradesQuest stations are ported play; robotics: nothing trained) shown exactly when their module is present');
+const w11 = REG.packs.filter((p) => p.wave === 11);
+ok(w11.every((p) => byId[p.id] && byId[p.id].body.includes(`data-i18n="packs.pack.${p.id}"`) && p.sources.length > 0),
+  `wave-11 shared modules each have a card titled from packs.pack.<id> and a source registry (${w11.map((p) => p.id).join(', ')})`);
+ok(!byId['robotics-lab'] || !/\btrained\b(?! on them)/i.test(byId['robotics-lab'].body.replace(/<[^>]+>/g, ' ')), 'robotics-lab card claims nothing was trained');
 const visible = P.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<style[\s\S]*?<\/style>/g, '').replace(/<[^>]+>/g, ' ');
 ok(!/[$€£¥₹]\s?\d|\d\s?(usd|eur|gbp)\b|\/\s?(mo|month|yr|year)\b|\bper (month|year)\b|% off|\bfree trial\b|\bbuy\b|\bpurchase\b|\bdownload\b|add to cart/i.test(visible), 'no price, currency, purchase or download on the page');
 ok(!/accredited|certified|official partner|endorsed by(?! the United Nations)/i.test(visible.replace(EN['packs.honest.un'], '')), 'no accreditation, certification or partner claim outside the honesty notes');

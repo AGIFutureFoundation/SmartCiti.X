@@ -434,7 +434,9 @@ const idv = rec.identity.value;
 const walletAddress = (idv && typeof idv === 'object' && idv.method === D.signing.wallet_method
   && typeof idv.address === 'string' && /^0x[0-9a-fA-F]{40}$/.test(idv.address)) ? idv.address : null;
 const wallet = (typeof window.ethereum === 'undefined') ? null : window.ethereum;
-const canExport = () => rec.training.state === 'present' && Array.isArray(rec.training.value) && ticked().length > 0;
+const DS_TAG = JSON.parse(document.getElementById('ds-data').textContent).tag_v2;  /* DATASHARE: /1 cannot carry world kinds */
+const canExport = () => rec.training.state === 'present' && Array.isArray(rec.training.value) && ticked().length > 0
+  && rec.training.value.every((e) => e && typeof e === 'object' && e.kind in D.fields_by_kind);
 const meta = { product: D.product, pack_version: D.pack_version, record_tag: D.record_tag, consent: D.consent,
   fields_by_kind: D.fields_by_kind, honesty: D.honesty, digest_over: D.digest_over };
 
@@ -443,6 +445,7 @@ function refresh() {
   btn.disabled = !ok;
   if (rec.training.state !== 'present') sayE('Nothing to export: the training log is ' + rec.training.state + '.', 'no-log');
   else if (!Array.isArray(rec.training.value)) sayE('Nothing to export: the training log is not an array.', 'no-log');
+  else if (rec.training.value.some((e) => !e || typeof e !== 'object' || !(e.kind in D.fields_by_kind))) sayE('This log holds episodes of a kind a ' + D.record_tag + ' package cannot carry (robotics world episodes). Use Share data below: it exports ' + DS_TAG + ' packages.', 'needs-v2');
   else if (ticked().length === 0) sayE('Tick at least one scope to build a package. No scope, no consent, no package.', 'no-scope');
   else sayE('Ready: ' + rec.training.value.length + ' episode(s) under scope ' + ticked().join(', ') + '. The file is downloaded to this device and sent nowhere.', 'ready');
   if (walletAddress === null) {
@@ -552,6 +555,352 @@ else:
 READS = ''.join(f'<li><code>{E(p)}</code></li>' for p in (CONTRIB_PATH, TRAINING_PATH, AUTH_PATH, MANIFEST_PATH))
 READS += f'<li><code>{E(PROTOCOLS_PATH)}</code> — {E(PROTOCOLS_STATE)}</li>'
 
+# ---------------------------------------------------------------------------
+# BEGIN DATASHARE (wave 11): the "Share data" section - a device-local store of
+# the learner's episodes (IndexedDB, guarded; works without it), per-package
+# opt-in under the fixed consent text, export a tc-contribution/2 package,
+# import packages (verified in the page by contrib/verify.mjs's own core), run
+# datashare/core.mjs's analysis, and export a tc-dataset/1 dataset + card.
+# K-12 / classroom mode: the section offers nothing and says so. Every core is
+# LIFTED byte-for-byte (contrib CONTRIB_CORE, the sign-in AUTH-CORE, datashare
+# DATASHARE_CORE); web/test_contribute.mjs holds the bytes to their sources.
+import re as _re  # noqa: E402
+
+DS_PATH = 'datashare/registry/datashare.json'
+VERIFY_PATH = 'contrib/verify.mjs'
+DS_CORE_PATH = 'datashare/core.mjs'
+SIGNIN_PATH = 'web/trade_craft_signin.html'
+LOCALES = ('en', 'es', 'fr', 'de', 'pt', 'zh', 'hi', 'ar')
+DS_KEYS = ('title', 'lede', 'classroom', 'load', 'import', 'export', 'analyse', 'dataset')
+
+
+def lift(rel, begin, end, include_end=True):
+    src = (ROOT / rel).read_text(encoding='utf-8')
+    a, b = src.find(begin), src.find(end)
+    if a < 0 or b <= a:
+        raise AssertionError(f'{rel}: no {begin} ... {end} block to lift')
+    return src[a:b + (len(end) if include_end else 0)]
+
+
+DS_REG = load(DS_PATH)
+if need(DS_REG, 'pack_version', DS_PATH) != PACK_VERSION:
+    raise AssertionError(f'{DS_PATH}: pack_version disagrees with {MANIFEST_PATH}')
+CONTRIB_CORE_JS = lift(VERIFY_PATH, '/* CONTRIB_CORE:BEGIN', '/* CONTRIB_CORE:END */')
+AUTH_CORE_JS = lift(SIGNIN_PATH, '/* AUTH-CORE:BEGIN', '/* AUTH-CORE:END */', include_end=False)
+DS_CORE_JS = lift(DS_CORE_PATH, '/* DATASHARE_CORE:BEGIN', '/* DATASHARE_CORE:END */')
+_vs = (ROOT / VERIFY_PATH).read_text(encoding='utf-8')
+_m = _re.search(r'export const REGISTRY_FILES = \{\n(.*?)\n\};', _vs, _re.S)
+if not _m:
+    raise AssertionError(f'{VERIFY_PATH}: no REGISTRY_FILES map')
+REG_FILES = dict(_re.findall(r"^\s*(\w+): '([^']+)',$", _m.group(1), _re.M))
+TAG_V2 = need(contrib_reg, 'record_tag_current', CONTRIB_PATH)
+WORLD_KINDS = need(contrib_reg, 'world_episode_kinds', CONTRIB_PATH)
+FIELDS_V2 = dict(FIELDS_BY_KIND)
+FIELDS_V2.update({k: need(v, 'fields', k) for k, v in WORLD_KINDS.items()})
+DS_I18N = {}
+for loc in LOCALES:
+    doc = load(f'i18n/locales/{loc}.json')
+    strings = need(doc, 'strings', loc)
+    DS_I18N[loc] = {'dir': need(doc, 'dir', loc), 'strings': {k: need(strings, 'datashare.' + k, f'i18n/locales/{loc}.json') for k in DS_KEYS}}
+CLASSROOM_TEXT = need(DS_REG, 'classroom', DS_PATH)
+DS_SCOPES = need(need(DS_REG, 'consent_scope', DS_PATH), 'scopes', DS_PATH)
+PRACTICES = need(DS_REG, 'best_practices', DS_PATH)
+
+DS_PAYLOAD = json.dumps({
+    'regs': {k: load(rel) for k, rel in REG_FILES.items()},
+    'cfg': DS_REG,
+    'tag_v2': TAG_V2,
+    'fields_v2': FIELDS_V2,
+    'i18n': DS_I18N,
+    'store': {'db': 'tc-datashare', 'version': 1, 'objects': 'episodes'},
+    'classroom': {'plan_key': 'tc-class-plan', 'params': ['plan', 'classroom']},
+}, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
+
+DS_CLASSIC = CONTRIB_CORE_JS + '\n' + 'function authCore() {\n' + AUTH_CORE_JS + '\nreturn { recoverAddress };\n}\n' + DS_CORE_JS + r'''
+/* DATASHARE_PAGE:BEGIN - buildPackageV2(episodes, scope, meta, now, contrib) -> Promise of an unsigned
+   tc-contribution/2 package: the episodes verbatim, the scope ticked for THIS package, the fixed statement and
+   licence, origin.classroom_mode false, contributor.claimed null (a typed label may be a name). Pure. */
+async function buildPackageV2(episodes, scope, meta, now, contrib) {
+  if (!Array.isArray(episodes) || episodes.length === 0) throw new Error('datashare: no episodes selected, no package');
+  if (!Array.isArray(scope) || scope.length === 0) throw new Error('datashare: no scope ticked for this package, no consent, no package');
+  for (const s of scope) if (!meta.consent.scopes.includes(s)) throw new Error('datashare: scope ' + JSON.stringify(s) + ' is not declared');
+  for (const e of episodes) if (!e || typeof e !== 'object' || !(e.kind in meta.fields_v2)) throw new Error('datashare: an episode of kind ' + JSON.stringify(e && e.kind) + ' cannot be shared under ' + meta.tag_v2);
+  const c = countEpisodes(episodes);
+  const record = {
+    record: meta.tag_v2, product: meta.product, pack_version: meta.pack_version, exported_at: now.toISOString(),
+    contributor: { claimed: null, attested_by: 'this device only', signature: null },
+    consent: { statement: meta.consent.statement, granted_at: now.toISOString(), scope: meta.consent.scopes.filter((s) => scope.includes(s)), revocable: true, license: meta.consent.license },
+    origin: { classroom_mode: false },
+    dataset: { episodes: episodes, traces_attached: c.traces_attached, episode_counts_by_kind: c.episode_counts_by_kind, sims_covered: c.sims_covered, fields_by_kind: meta.fields_v2 },
+    honesty: { proves: meta.honesty.proves, does_not_prove: meta.honesty.does_not_prove, nothing_sent: meta.honesty.nothing_sent, no_agent_trained: meta.honesty.no_agent_trained },
+  };
+  const bytes = new TextEncoder().encode(contrib.canonical(contrib.digestBody(record)));
+  const buf = await globalThis.crypto.subtle.digest('SHA-256', bytes);
+  record.digest = { alg: 'SHA-256', over: meta.digest_over, hex: [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('') };
+  return record;
+}
+/* DATASHARE_PAGE:END */
+'''
+
+SHARE_SCRIPT = r'''
+const S = JSON.parse(document.getElementById('ds-data').textContent);
+const box = document.getElementById('share');
+const lang = (() => { const q = new URLSearchParams(location.search).get('lang'); if (q && q in S.i18n) return q;
+  const l = String(document.documentElement.lang || 'en').slice(0, 2); return l in S.i18n ? l : 'en'; })();
+const T = (k) => { const s = S.i18n[lang].strings[k]; if (typeof s !== 'string') throw new Error('datashare i18n: no ' + k); return s; };
+for (const el of box.querySelectorAll('[data-ds-t]')) { el.textContent = T(el.getAttribute('data-ds-t')); el.setAttribute('dir', S.i18n[lang].dir); }
+const say = (id, t, state) => { const e = document.getElementById(id); e.textContent = t; if (state) e.setAttribute('data-state', state); };
+const el = (tag, text, attrs) => { const e = document.createElement(tag); if (text !== undefined) e.textContent = text; for (const [k, v] of Object.entries(attrs || {})) e.setAttribute(k, v); return e; };
+
+/* K-12 / classroom mode: a class plan on this device or in the link, or ?classroom - sharing is not offered at all.
+   If storage cannot be read, classroom mode cannot be ruled out, and sharing is not offered either (fail closed). */
+function classroomMode() {
+  const q = new URLSearchParams(location.search);
+  for (const p of S.classroom.params) if (q.has(p)) return 'link';
+  try { return localStorage.getItem(S.classroom.plan_key) !== null ? 'class-plan' : null; } catch (e) { return 'storage-blocked'; }
+}
+const mode = classroomMode();
+if (mode !== null) {
+  box.setAttribute('data-share-state', 'classroom');
+  document.getElementById('shareTools').hidden = true;
+  say('shareClassroom', T('classroom') + (mode === 'storage-blocked' ? ' (storage is blocked, so classroom mode cannot be ruled out.)' : ''), 'shown');
+} else {
+  box.setAttribute('data-share-state', 'offered');
+  document.getElementById('shareClassroom').hidden = true;
+  startShare();
+}
+
+function startShare() {
+  const sha256hex = async (s) => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)))].map((b) => b.toString(16).padStart(2, '0')).join('');
+  const CC = contribCore(S.regs);
+  const AUTH = authCore();
+  const DC = datashareCore(S.cfg, sha256hex);
+  const contribReg = S.regs.contrib;
+  const meta = { tag_v2: S.tag_v2, product: contribReg.product, pack_version: contribReg.pack_version, fields_v2: S.fields_v2,
+    consent: { statement: contribReg.consent.statement, scopes: Object.keys(contribReg.consent.scopes).sort(), license: contribReg.consent.license.spdx },
+    honesty: contribReg.honesty, digest_over: contribReg.digest.over };
+
+  /* the local store: IndexedDB when it opens, else this tab's memory - and the page says which */
+  const mem = new Map();
+  let db = null;
+  const openDb = () => new Promise((res) => {
+    try {
+      const r = indexedDB.open(S.store.db, S.store.version);
+      r.onupgradeneeded = () => { r.result.createObjectStore(S.store.objects, { keyPath: 'id' }); };
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => res(null);
+      r.onblocked = () => res(null);
+    } catch (e) { res(null); }
+  });
+  const tx = (mode_, fn) => new Promise((res) => {
+    try { const t = db.transaction(S.store.objects, mode_); const out = fn(t.objectStore(S.store.objects)); t.oncomplete = () => res(out.result); t.onerror = () => res(null); t.onabort = () => res(null); }
+    catch (e) { res(null); }
+  });
+  async function putRow(row) { mem.set(row.id, row); if (db) await tx('readwrite', (s) => s.put(row)); }
+  async function allRows() {
+    if (db) { const rows = await tx('readonly', (s) => s.getAll()); if (Array.isArray(rows)) for (const r of rows) mem.set(r.id, r); }
+    return [...mem.values()];
+  }
+  async function clearRows() { mem.clear(); if (db) await tx('readwrite', (s) => s.clear()); }
+
+  const imported = [];   // [{name, record, verdict}] verified in this page
+  const built = [];      // packages exported in this session
+  const verdictOf = async (rec) => {
+    try {
+      const r = await CC.verifyAsync(rec, crypto.subtle, AUTH.recoverAddress);
+      for (const [rule, t] of Object.entries(r.tally)) if (t.fails.length) return { ok: false, rule, detail: t.fails[0] };
+      return { ok: true, rule: null, detail: '' };
+    } catch (e) { return { ok: false, rule: 'record.fields', detail: String(e && e.message) }; }
+  };
+
+  async function paintStore() {
+    const rows = await allRows();
+    const by = {};
+    for (const r of rows) { const k = r.source + ' · ' + r.episode.kind; by[k] = (by[k] || 0) + 1; }
+    const t = document.getElementById('storeTable'); t.textContent = '';
+    t.appendChild(el('tr')).append(el('th', 'source · kind'), el('th', 'episodes'));
+    for (const k of Object.keys(by).sort()) { const tr = el('tr', undefined, { 'data-store-row': k }); tr.append(el('td', k), el('td', String(by[k]))); t.appendChild(tr); }
+    box.setAttribute('data-store-count', String(rows.length));
+    const own = rows.filter((r) => r.source === 'device').length;
+    document.getElementById('shareExport').disabled = own === 0;
+    return rows;
+  }
+
+  document.getElementById('shareLoad').onclick = async () => {
+    let raw = null;
+    try { raw = localStorage.getItem(contribReg.training_source.key); } catch (e) { say('shareStatus', 'The training log cannot be read: storage is blocked.', 'blocked'); return; }
+    if (raw === null) { say('shareStatus', 'No training log on this device yet (' + contribReg.training_source.key + ' is absent).', 'no-log'); return; }
+    let log;
+    try { log = JSON.parse(raw); } catch (e) { say('shareStatus', 'The training log is unreadable; nothing was added.', 'unreadable'); return; }
+    if (!Array.isArray(log)) { say('shareStatus', 'The training log is not an array; nothing was added.', 'unreadable'); return; }
+    let added = 0, skipped = 0;
+    for (const ep of log) {
+      if (!ep || typeof ep !== 'object' || !(ep.kind in S.fields_v2)) { skipped++; continue; }
+      await putRow({ id: await DC.episodeId(ep), source: 'device', episode: ep }); added++;
+    }
+    await paintStore();
+    say('shareStatus', 'Added ' + added + ' episode(s) from this device' + (skipped ? ', skipped ' + skipped + ' of a kind no package carries' : '') + '. Stored ' + (db ? 'in this browser (IndexedDB)' : 'in this tab only (IndexedDB unavailable)') + '; nothing was sent.', 'loaded');
+  };
+
+  const scopeBoxes = [...document.querySelectorAll('input[data-share-scope]')];
+  document.getElementById('shareExport').onclick = async () => {
+    const scope = scopeBoxes.filter((b) => b.checked).map((b) => b.getAttribute('data-share-scope'));
+    try {
+      const rows = (await allRows()).filter((r) => r.source === 'device');
+      const pkg = await buildPackageV2(rows.map((r) => r.episode), scope, meta, new Date(), CC);
+      const v = await verdictOf(pkg);
+      if (!v.ok) throw new Error('the package does not verify (' + v.rule + ': ' + v.detail + '); nothing was downloaded');
+      built.push({ name: 'exported-' + pkg.digest.hex.slice(0, 12) + '.json', record: pkg, verdict: v });
+      download(JSON.stringify(pkg, null, 1), 'tc-contribution-v2-' + pkg.digest.hex.slice(0, 12) + '.json', 'application/json');
+      for (const b of scopeBoxes) b.checked = false;   // opt-in is per package: the next one starts unticked
+      say('shareStatus', 'Exported one package: ' + pkg.dataset.episodes.length + ' episode(s), scope ' + pkg.consent.scope.join(', ') + ', digest ' + pkg.digest.hex.slice(0, 16) + '…, verified in this page. It was downloaded, not sent.', 'exported');
+    } catch (e) { say('shareStatus', 'Not exported: ' + String(e && e.message), 'refused'); }
+  };
+
+  document.getElementById('shareImport').onchange = async (ev) => {
+    const files = [...ev.target.files];
+    const list = document.getElementById('importList'); list.textContent = '';
+    for (const f of files) {
+      let rec = null, v;
+      try { rec = JSON.parse(await f.text()); v = await verdictOf(rec); } catch (e) { v = { ok: false, rule: 'record.fields', detail: 'not JSON' }; }
+      const li = el('li', f.name + ': ' + (v.ok ? 'verified (' + rec.record + ', ' + rec.dataset.episodes.length + ' episodes)' : 'refused - ' + v.rule + ': ' + v.detail), { 'data-import': v.ok ? 'ok' : 'refused' });
+      list.appendChild(li);
+      if (!v.ok) continue;
+      imported.push({ name: f.name, record: rec, verdict: v });
+      for (const ep of rec.dataset.episodes) await putRow({ id: await DC.episodeId(ep), source: 'package ' + rec.digest.hex.slice(0, 12), episode: ep });
+    }
+    await paintStore();
+    say('shareStatus', files.length + ' file(s) read; verified ones were added to this browser\'s store. Nothing was sent.', 'imported');
+  };
+
+  document.getElementById('shareAnalyse').onclick = async () => {
+    const rows = await allRows();
+    const A = DC.analyse(rows.map((r) => ({ id: r.id, episode: r.episode })));
+    paintAnalysis(A);
+    say('shareStatus', 'Analysed ' + A.episodes + ' stored episode(s) in this page.', 'analysed');
+  };
+
+  document.getElementById('shareDataset').onclick = async () => {
+    const scope = document.getElementById('shareDsScope').value;
+    const pkgs = [...imported, ...built].sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
+    try {
+      const { manifest, items } = await DC.buildDataset({ packages: pkgs, scope, built_at: new Date().toISOString(), revocations: { record: 'tc-revocations/1', packages: [], episodes: [] } });
+      const A = DC.analyse(items);
+      const card = DC.renderCard(manifest, A);
+      download(JSON.stringify({ manifest, items }, null, 1), 'tc-dataset-' + manifest.digest.hex.slice(0, 12) + '.json', 'application/json');
+      download(card + '\n', 'DATASET_CARD-' + manifest.digest.hex.slice(0, 12) + '.md', 'text/markdown');
+      // the store's analysis panel is left as it was: the dataset's own analysis is in its card
+      say('shareStatus', 'Dataset for ' + scope + ': ' + manifest.packages.length + ' package(s) admitted, ' + manifest.refused.length + ' refused by name, ' + manifest.episodes.length + ' episodes (train ' + manifest.splits.train + ', val ' + manifest.splits.val + ', test ' + manifest.splits.test + '). Manifest and card downloaded; nothing was sent.', 'dataset');
+    } catch (e) { say('shareStatus', 'No dataset: ' + String(e && e.message), 'refused'); }
+  };
+  document.getElementById('shareClear').onclick = async () => { await clearRows(); await paintStore(); say('shareStatus', 'This browser\'s share store is empty.', 'cleared'); };
+
+  function download(text, name, type) {
+    const a = document.createElement('a');
+    // a data: URL (the file is built here and handed to the browser's own download; nothing is sent)
+    a.href = 'data:' + type + ';charset=utf-8,' + encodeURIComponent(text);
+    a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  }
+
+  function paintAnalysis(A) {
+    const out = document.getElementById('analysis'); out.textContent = '';
+    out.setAttribute('data-analysis-episodes', String(A.episodes));
+    const t = el('table', undefined, { id: 'analysisTable' });
+    t.appendChild(el('tr')).append(el('th', 'env / seat'), el('th', 'episodes'), el('th', 'success'));
+    const wh = Object.entries(A.by_where);
+    for (const [w, v] of wh) { const tr = el('tr', undefined, { 'data-where': w }); tr.append(el('td', w), el('td', String(v.n)), el('td', v.rate === null ? '-' : Math.round(100 * v.rate) + '%')); t.appendChild(tr); }
+    const wrap = el('div', undefined, { class: 'tscroll' }); wrap.appendChild(t); out.appendChild(wrap);
+    // a small chart: episodes per env / seat, the successful share in the second colour
+    const max = Math.max(1, ...wh.map(([, v]) => v.n)), W = 560, rowH = 22, H = wh.length * rowH + 8, L = 190;
+    const NS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H); svg.setAttribute('id', 'analysisChart'); svg.setAttribute('role', 'img');
+    svg.setAttribute('aria-label', 'Episodes per env or seat; the darker part is the share that succeeded');
+    wh.forEach(([w, v], i) => {
+      const y = 4 + i * rowH, bw = Math.max(2, (W - L - 40) * v.n / max);
+      const lab = document.createElementNS(NS, 'text'); lab.setAttribute('x', L - 6); lab.setAttribute('y', y + 14); lab.setAttribute('text-anchor', 'end'); lab.setAttribute('class', 'clab'); lab.textContent = w; svg.appendChild(lab);
+      const r = document.createElementNS(NS, 'rect'); r.setAttribute('x', L); r.setAttribute('y', y + 3); r.setAttribute('width', bw); r.setAttribute('height', rowH - 8); r.setAttribute('rx', 3); r.setAttribute('class', 'cbar'); svg.appendChild(r);
+      if (v.outcomes) { const g = document.createElementNS(NS, 'rect'); g.setAttribute('x', L); g.setAttribute('y', y + 3); g.setAttribute('width', bw * v.success / v.n); g.setAttribute('height', rowH - 8); g.setAttribute('rx', 3); g.setAttribute('class', 'cgood'); svg.appendChild(g); }
+      const n = document.createElementNS(NS, 'text'); n.setAttribute('x', L + bw + 6); n.setAttribute('y', y + 14); n.setAttribute('class', 'cnum'); n.textContent = String(v.n); svg.appendChild(n);
+    });
+    out.appendChild(svg);
+    const fl = el('ul', undefined, { id: 'analysisFlags' });
+    for (const f of A.flags) fl.appendChild(el('li', f.flag + ' · ' + f.where + ' · ' + f.episode + ': ' + f.detail, { 'data-flag': f.flag }));
+    for (const n of A.outlier_notes) fl.appendChild(el('li', 'note · ' + n, { 'data-flag': 'note' }));
+    if (!fl.children.length) fl.appendChild(el('li', 'No range, missing-field or outlier flags.'));
+    out.appendChild(el('p', 'Flags', { class: 'why' })); out.appendChild(fl);
+    const gp = el('ul', undefined, { id: 'analysisGaps' });
+    for (const g of A.gaps) gp.appendChild(el('li', g.env + ': ' + g.gap, { 'data-gap': g.env }));
+    out.appendChild(el('p', 'Coverage gaps', { class: 'why' })); out.appendChild(gp);
+  }
+
+  openDb().then(async (d) => {
+    db = d;
+    box.setAttribute('data-store', db ? 'indexeddb' : 'memory');
+    say('shareStore', db ? 'Store: this browser (IndexedDB ' + S.store.db + '). It stays on this device.' : 'Store: this tab only - IndexedDB is unavailable here, so the list is lost when the tab closes. Everything else works.', db ? 'indexeddb' : 'memory');
+    await paintStore();
+  });
+}
+'''
+
+SHARE_SCOPE_ROWS = ''.join(
+    f'<label class="scope"><input type="checkbox" data-share-scope="{E(s)}"> <b>{E(s)}</b> — {E(SCOPES[s])}</label>\n'
+    for s in sorted(SCOPES))
+DS_SCOPE_OPTIONS = ''.join(f'<option value="{E(s)}">{E(s)}</option>' for s in DS_SCOPES)
+PRACTICE_ROWS = ''.join(
+    f'<tr><td class="k">{E(p["practice"])}</td><td class="muted">{E(p["what"])}</td>'
+    f'<td><code>{E(p["enforced_by"]["file"])}</code></td></tr>' for p in PRACTICES)
+SHARE_SECTION = f'''
+<section id="share" data-share-state="unpainted" data-store="unpainted">
+  <h2 data-ds-t="title">Share data</h2>
+  <p class="why" data-ds-t="lede"></p>
+  <p class="nonebox" id="shareClassroom" data-state="unpainted"></p>
+  <div id="shareTools">
+    <p class="muted" id="shareStore" data-state="unpainted"></p>
+    <p><button id="shareLoad" type="button" data-ds-t="load"></button>
+       <label class="filebtn"><span data-ds-t="import"></span> <input id="shareImport" type="file" accept="application/json,.json" multiple></label>
+       <button id="shareClear" type="button" class="quiet">Empty this store</button></p>
+    <div class="tscroll"><table id="storeTable"></table></div>
+    <div class="card" id="sharePackage">
+      <p class="why">One package at a time: tick the scope for THIS package. The boxes clear after each export, so every
+         package is its own opt-in. The package is <code>{E(TAG_V2)}</code>: your episodes verbatim, the fixed statement
+         below, licence <b>{E(LICENSE_SPDX)}</b>, <code>origin.classroom_mode: false</code>, no contributor label, unsigned.</p>
+      {SHARE_SCOPE_ROWS}
+      <p class="statement" id="shareStatement">{E(CONSENT_STATEMENT)}</p>
+      <p><button id="shareExport" type="button" disabled data-ds-t="export"></button></p>
+    </div>
+    <ul id="importList" class="muted"></ul>
+    <p><button id="shareAnalyse" type="button" data-ds-t="analyse"></button>
+       <label class="muted">dataset scope <select id="shareDsScope">{DS_SCOPE_OPTIONS}</select></label>
+       <button id="shareDataset" type="button" data-ds-t="dataset"></button></p>
+    <p class="why" id="shareStatus" data-state="unpainted" aria-live="polite"></p>
+    <div class="card" id="analysis" data-analysis-episodes="0"><p class="muted">The analysis of the stored episodes appears here:
+       counts per env and seat, success rates, range, missing-field and outlier flags, and coverage gaps - computed in this
+       page by <code>{E(DS_CORE_PATH)}</code>.</p></div>
+  </div>
+  <p class="muted">A dataset is built from the packages imported or exported in this session, each verified here by
+     <code>{E(VERIFY_PATH)}</code>'s own rules; a package that fails, carries a forbidden field, another licence or a
+     scope that does not include the dataset's is refused by name. {E(closed(need(need(DS_REG, 'honesty', DS_PATH), 'trained', DS_PATH)))}
+     {E(closed(need(need(DS_REG, 'honesty', DS_PATH), 'formats', DS_PATH)))}</p>
+  <details><summary>Robotics-data practice this code enforces</summary>
+    <div class="tscroll"><table id="practices"><tbody><tr><th>practice</th><th>what</th><th>enforced in</th></tr>{PRACTICE_ROWS}</tbody></table></div>
+  </details>
+</section>
+'''
+SHARE_CSS = '''
+.filebtn{display:inline-block;background:var(--sunk);border:1px solid var(--rule);border-radius:7px;padding:6px 10px;color:var(--ink);margin:4px 4px 4px 0}
+.filebtn input{max-width:210px;color:var(--muted)}
+button.quiet{background:var(--sunk);color:var(--ink);box-shadow:inset 0 0 0 1px var(--rule)}
+#share button{margin:4px 4px 4px 0}
+#share select{background:var(--sunk);color:var(--ink);border:1px solid var(--rule);border-radius:6px;padding:4px}
+#analysisChart{width:100%;max-width:640px;height:auto;display:block;margin:10px 0}
+#analysisChart .cbar{fill:var(--steel);opacity:.45}
+#analysisChart .cgood{fill:var(--good)}
+#analysisChart .clab,#analysisChart .cnum{fill:var(--ink);font:12px system-ui,sans-serif}
+#share details summary{cursor:pointer;color:var(--steel);margin:10px 0}
+'''
+# END DATASHARE
+
 NAV = nav_html('web/trade_craft_contribute.html', nav_labels('en'))
 from questkit import QUEST_CSS, quest_js, page_hooks  # noqa: E402  quests: egg hooks only
 QUEST_TAIL = '<style>' + QUEST_CSS + '</style>\n' + page_hooks('web/trade_craft_contribute.html') + quest_js('page:web/trade_craft_contribute.html')
@@ -615,6 +964,7 @@ footer.page{{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30p
   color:var(--muted);font-size:14px}}
 footer.page a{{margin-inline-end:10px}}
 </style>
+<style>{SHARE_CSS}</style>
 <style>{NAV_CSS}</style>
 <style>{bridge_css()}</style>
 </head>
@@ -680,6 +1030,7 @@ footer.page a{{margin-inline-end:10px}}
      package itself.</p></div>
 </section>
 
+{SHARE_SECTION}
 <section id="shape">
   <h2>What an episode carries</h2>
   <p class="why">Read from <code>{E(TRAINING_PATH)}</code> through <code>{E(CONTRIB_PATH)}</code>. The verifier holds every
@@ -723,6 +1074,11 @@ footer.page a{{margin-inline-end:10px}}
 {CONTRIB_JS}</script>
 <script type="module">
 {SCRIPT}</script>
+<script type="application/json" id="ds-data">{DS_PAYLOAD}</script>
+<script id="ds-cores">
+{DS_CLASSIC}</script>
+<script type="module">
+{SHARE_SCRIPT}</script>
 {QUEST_TAIL}</body>
 </html>
 '''
@@ -735,4 +1091,4 @@ page = apply_seo(page, 'web/trade_craft_contribute.html', 'SmartCiti.X : Trade C
 from herovideo import adopt_doc_hero  # noqa: E402
 page = adopt_doc_hero('contribute', page)
 emit(out, page, f'{len(SCOPES)} scopes, {len(FIELDS_BY_KIND)} episode kinds, {len(DESTINATIONS)} destinations '
-                f'({PROTOCOLS_STATE}), uploads nothing')
+                f'({PROTOCOLS_STATE}), share data: {len(FIELDS_V2)} kinds, {len(PRACTICES)} enforced practices, uploads nothing')

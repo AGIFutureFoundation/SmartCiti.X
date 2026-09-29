@@ -154,14 +154,29 @@ check('[kit] gable roofs and a porch/gallery hint are geometry; windows are a sh
 check('[kit] trees are open-ended (14 triangles, pays for the roofs)', /CylinderGeometry\(0\.25, 0\.3, 2, 4, 1, true\)/.test(main) && /ConeGeometry\(2\.2, 6, 6, 1, true\)/.test(main) && /side: THREE\.DoubleSide/.test(main));
 {
   const regP = Object.values(REG.parishes);
-  const tilesOk = D && D.parishes.every((p) => { const r = REG.parishes[p.id]; const g = r && r.map.ground_tiles; return g && p.ground.tiles.length === g.tiles.length && g.tiles.length === g.grid * g.grid && p.ground.tiles.every(([src]) => existsSync(ROOT + src)); });
-  check('[ground] every parish carries its PARISH v1.3 ground tiles and each file exists', !!tilesOk && regP.length === D.parishes.length);
+  /* WORLDS w11: the page carries ONE atlas per parish (parishes/build_atlas.py) built from exactly the registry's tiles */
+  const AT = JSON.parse(read('parishes/registry/ground_atlas.json')).atlases;
+  const tilesOk = D && D.parishes.every((p) => { const r = REG.parishes[p.id]; const g = r && r.map.ground_tiles; if (!g || g.tiles.length !== g.grid * g.grid) return false;
+    const stem = g.tiles[0].path.replace(/-r\d+c\d+\.webp$/, ''), a = AT[stem], shas = [...g.tiles].sort((u, v) => u.row - v.row || u.col - v.col).map((t) => t.sha256);
+    return !!a && p.ground.stem === stem && p.ground.atlas === a.path && a.px === 2048 && JSON.stringify(a.tiles_sha256) === JSON.stringify(shas) && existsSync(ROOT + a.path)
+      && createHash('sha256').update(readFileSync(ROOT + a.path)).digest('hex') === a.sha256 && !('tiles' in p.ground); });
+  check('[ground] every parish carries ONE 2048 px ground atlas built from its PARISH v1.3 tiles (tile shas + atlas sha match), no per-tile paths', !!tilesOk && regP.length === D.parishes.length);
   const lbl = regP[0].map.ground_tiles.label;
   const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   check('[ground] the ground_tiles label is shown verbatim next to the 3D view', html.includes(`<p class="help" data-ground-label lang="en">${esc(lbl)}</p>`) && html.indexOf('data-ground-label') > html.indexOf('id="stage"'));
 }
 check('[ground] tiles drape as ONE composed texture per parish on the flat land (no extra mesh, still y = 0)',
-  /const GROUND_PX = 2048;/.test(main) && /cx\.drawImage\(im, col \* cell, row \* cell, cell, cell\)/.test(main) && /new THREE\.Mesh\(g, streetMat\(LAND\[p\.idx % LAND\.length\], p\)\)/.test(main) && /pa\[i\] = 0/.test(main));
+  /const GROUND_PX = 2048;/.test(main) && /cx\.drawImage\(im, 0, 0, GROUND_PX, GROUND_PX\)/.test(main) && /im\.src = '\.\.\/' \+ g\.atlas;/.test(main) && !/g\.tiles/.test(main) && /new THREE\.Mesh\(g, streetMat\(LAND\[p\.idx % LAND\.length\], p\)\)/.test(main) && /pa\[i\] = 0/.test(main));
+// WORLDS w11: a lot that falls in AUTHORED water re-seats onto the nearest EMPTY dry lot cell of its chunk (never on the water)
+check('[fabric] lake lots re-seat chunk-locally onto empty dry cells (h >= 0.8, nearest the water first, kerb rule kept), counted in skipped.reseated',
+  /if \(h < 0\.55\) \{ skipped\.water\+\+; wet\.push\(\[x, z\]\); \} continue;/.test(main) && /else open\.push\(\[ix, iz, x, z, jx, jz, use, null\]\);/.test(main)
+  && /else if \(h >= 0\.8\) open\.push\(\[ix, iz, x, z, jx, jz, use, rn\]\);/.test(main) && /ranked\.slice\(0, wet\.length\)/.test(main)
+  && /\.sort\(\(u, v\) => u\[0\] - v\[0\] \|\| u\[1\] - v\[1\]\)/.test(main) && /out\.block\.push\(lot\); skipped\.reseated\+\+;/.test(main)
+  && /const skipped = \{ water: 0, road: 0, reseated: 0 \};/.test(main));
+// WORLDS w11: the overview (a still picture) re-renders only when what it shows changes, plus a 1 s heartbeat; walk views render every frame
+check('[perf] overview renders on demand (parish, canvas size, loads, marker/landmark/station counts, visible set, DIAG; 1 s heartbeat) and every other mode renders every frame',
+  /if \(!DIAG\.noRender && ovNeedsRender\(now\)\) renderer\.render\(scene, camera\);/.test(main) && /if \(mode !== 'overview' \|\| DIAG\.ovAlways\) \{ ovKey = ''; return true; \}/.test(main)
+  && /groundReady\.size, waterCut\.size, loaded\.size, markers\.count, stations\.count, lm, vis, JSON\.stringify\(DIAG\)/.test(main) && /now - ovT > 1000/.test(main));
 check('[ground] the AUTHORED street grid is painted in the land shader, near field only', /float road = max\(step\(5\.0, q\.x\)/.test(main) && /float far = 1\.0 - smoothstep\(220\.0, 420\.0, vGroundDist\);/.test(main));
 check('[atmos] sky is a gradient on a transparent canvas (no sky mesh); fog = horizon colour; declared sun',
   /alpha: true, powerPreference/.test(main) && /renderer\.setClearColor\(HORIZON, 0\);/.test(main) && /canvas\.style\.backgroundImage = 'linear-gradient\(180deg,'/.test(main)
@@ -260,6 +275,13 @@ if (/labels: labelsFrom\(tr\)/.test(main)) for (const m of main.matchAll(/'(npc\
 if (/const DEEP_ON = true/.test(main)) { for (const m of html.matchAll(/data-i18n="(deep\.[a-z0-9_.]+)"/g)) used.add(m[1]); for (const m of main.matchAll(/'(deep\.[a-z0-9.]+)'/g)) used.add(m[1]); }
 // UX (wave 10): the HUD layout manager's launcher/dock/region labels (web/hudkit.py) travel as hud.* data-i18n keys
 for (const m of html.matchAll(/data-i18n(?:-aria)?="(hud\.[a-z0-9_.]+)"/g)) used.add(m[1]);
+// DRIVE (wave 11): the drive mount's HUD labels (fleetkit FLEET_HUD_LABELS, exit hint = fleet.hud.exit_e) and touch labels travel as fleet.* keys
+if (/const DRIVE_CLS = FLEETREG/.test(main)) {
+  const hl = main.match(/const FLEET_HUD_LABELS = \[([^\]]+)\]/), tl = main.match(/\[([^\]]+)\]\.map\(\(k\) => \[k, tr\('fleet\.touch\.' \+ k\)\]\)/);
+  if (hl) for (const m of hl[1].matchAll(/'([a-zA-Z_]+)'/g)) used.add('fleet.hud.' + m[1]);
+  if (/tr\(k === 'exit' \? 'fleet\.hud\.exit_e'/.test(main)) used.add('fleet.hud.exit_e');
+  if (tl) for (const m of tl[1].matchAll(/'([a-z]+)'/g)) used.add('fleet.touch.' + m[1]);
+}
 check('[i18n] every key the page uses is in the catalogue, and only those', CAT && JSON.stringify([...used].sort()) === JSON.stringify(Object.keys(CAT.en.strings).sort()),
   CAT ? [...used].filter((k) => !(k in CAT.en.strings)).concat(Object.keys(CAT.en.strings).filter((k) => !used.has(k))).join(',') : '');
 let same = [];

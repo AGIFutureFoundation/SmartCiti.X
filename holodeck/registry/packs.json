@@ -3,13 +3,13 @@
   "by_kind": {
    "k12": 1,
    "path": 7,
-   "system": 3,
+   "system": 7,
    "union": 10,
-   "world": 2
+   "world": 3
   },
-  "packs": 23,
+  "packs": 28,
   "proposed": 1,
-  "shipping": 22
+  "shipping": 27
  },
  "honesty": {
   "certification": "no pack certifies, qualifies or licenses anybody; lessons stay unverified general practice",
@@ -430,7 +430,7 @@
     },
     {
      "path": "layers/registry/layers.json",
-     "sha256": "905717530e978439"
+     "sha256": "d918992a7f700d52"
     }
    ],
    "status": "SHIPPING",
@@ -453,7 +453,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "00078cb3d1d0cc26"
+     "sha256": "e7ffd6ec7ffda0ef"
     }
    ],
    "status": "SHIPPING",
@@ -477,7 +477,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "00078cb3d1d0cc26"
+     "sha256": "e7ffd6ec7ffda0ef"
     }
    ],
    "status": "SHIPPING",
@@ -501,7 +501,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "00078cb3d1d0cc26"
+     "sha256": "e7ffd6ec7ffda0ef"
     }
    ],
    "status": "SHIPPING",
@@ -525,7 +525,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "00078cb3d1d0cc26"
+     "sha256": "e7ffd6ec7ffda0ef"
     }
    ],
    "status": "PROPOSED",
@@ -549,7 +549,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "00078cb3d1d0cc26"
+     "sha256": "e7ffd6ec7ffda0ef"
     }
    ],
    "status": "SHIPPING",
@@ -573,7 +573,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "00078cb3d1d0cc26"
+     "sha256": "e7ffd6ec7ffda0ef"
     }
    ],
    "status": "SHIPPING",
@@ -597,7 +597,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "00078cb3d1d0cc26"
+     "sha256": "e7ffd6ec7ffda0ef"
     }
    ],
    "status": "SHIPPING",
@@ -624,7 +624,7 @@
     },
     {
      "path": "layers/registry/layers.json",
-     "sha256": "905717530e978439"
+     "sha256": "d918992a7f700d52"
     }
    ],
    "status": "SHIPPING",
@@ -714,6 +714,118 @@
    ],
    "status": "SHIPPING",
    "title_key": "packs.pack.physics"
+  },
+  {
+   "contents": {
+    "host_halls": 5,
+    "station_kinds": 4
+   },
+   "id": "tradesquest-stations",
+   "kind": "system",
+   "open": "web/trade_craft_3d.html",
+   "requires": [],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "web/tqkit.py",
+     "sha256": "e8be0f3e59aa652f"
+    },
+    {
+     "path": "unions/registry/unions.json",
+     "sha256": "619bc8ea7328f5ea"
+    }
+   ],
+   "status": "SHIPPING",
+   "title_key": "packs.pack.tradesquest-stations",
+   "wave": 11
+  },
+  {
+   "contents": {
+    "colour_categories": 8,
+    "colours": 52,
+    "pattern_recipes": 23
+   },
+   "id": "materials-colour",
+   "kind": "system",
+   "open": "web/trade_craft_design.html",
+   "requires": [],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "surfaces/registry/exterior.json",
+     "sha256": "bf04412bee43f22d"
+    }
+   ],
+   "status": "SHIPPING",
+   "title_key": "packs.pack.materials-colour",
+   "wave": 11
+  },
+  {
+   "contents": {
+    "components": 44,
+    "signs": 65,
+    "styles": 8
+   },
+   "id": "exteriors-signs",
+   "kind": "world",
+   "open": "web/trade_craft_parishes.html",
+   "requires": [
+    "parish-worlds"
+   ],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "facades/registry/facades.json",
+     "sha256": "99e076a8c381a1f7"
+    }
+   ],
+   "status": "SHIPPING",
+   "title_key": "packs.pack.exteriors-signs",
+   "wave": 11
+  },
+  {
+   "contents": {
+    "embodiments": 3,
+    "sim_seat_envs": 11,
+    "world_envs": 4
+   },
+   "id": "robotics-lab",
+   "kind": "system",
+   "open": "web/trade_craft_robotics.html",
+   "requires": [],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "robotics/registry/robotics.json",
+     "sha256": "e20be2bf02e43966"
+    }
+   ],
+   "status": "SHIPPING",
+   "title_key": "packs.pack.robotics-lab",
+   "wave": 11
+  },
+  {
+   "contents": {
+    "episode_kinds": 5,
+    "practices": 13,
+    "refusal_reasons": 7
+   },
+   "id": "data-commons",
+   "kind": "system",
+   "open": "web/trade_craft_contribute.html",
+   "requires": [
+    "robotics-lab"
+   ],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "datashare/registry/datashare.json",
+     "sha256": "71cf3136c9887e48"
+    }
+   ],
+   "status": "SHIPPING",
+   "title_key": "packs.pack.data-commons",
+   "wave": 11
   }
  ],
  "paths": [
@@ -726,5 +838,5 @@
   "roam"
  ],
  "series": "SmartCiti.X Powered by AGI Corp",
- "source_stamp": "4864f941709c70c6"
+ "source_stamp": "6f5d4a09a5539dc4"
 }

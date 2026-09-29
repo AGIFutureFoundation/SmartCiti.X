@@ -97,7 +97,27 @@ for (const P of PACKS) declared[P.pack] = (await import(new URL('../' + P.file, 
 
 /* ---------------------------------------------- no network, no storage */
 const scripts = [...page.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/g)];
-const code = scripts.filter((m) => !/type="application\/json"/.test(m[1])).map((m) => m[2]).join('\n');
+// The site style scripts (design_kit STYLE_HEAD_JS, sitenav STYLE_JS; AUDIT row 12) are the one carve-out, the
+// same narrow one lessons/test.mjs and web/test_schools.mjs carry: they may touch localStorage['tc-style'] only,
+// get/set only, each access inside try/catch - held just below. Every other script is scanned in full.
+const STYLE_IDS = /\bid="style-(?:head-)?js"/;
+const styleScripts = scripts.filter((m) => STYLE_IDS.test(m[1]));
+const code = scripts.filter((m) => !/type="application\/json"/.test(m[1]) && !STYLE_IDS.test(m[1])).map((m) => m[2]).join('\n');
+{
+  const bad = [];
+  for (const [, , s] of styleScripts) {
+    if (/sessionStorage|indexedDB|document\.cookie|fetch|XMLHttpRequest|removeItem|localStorage\.clear|localStorage\[|localStorage\.key\(/.test(s)) bad.push('an API other than localStorage get/set');
+    const calls = [...s.matchAll(/localStorage\.(getItem|setItem)\(([^,)]+)/g)];
+    for (const c of calls) {
+      const k = c[2].trim();
+      if (k !== "'tc-style'" && !(k === 'K' && /var K='tc-style'[,;]/.test(s))) bad.push(`storage key ${k} is not 'tc-style'`);
+    }
+    const guarded = (s.match(/try\{(?:var \w+=|\w+=)?localStorage\.(?:getItem|setItem)\(/g) || []).length;
+    if (guarded !== calls.length) bad.push(`${calls.length - guarded} storage access(es) outside try/catch`);
+  }
+  ok('the saved site style applies here (style-head-js in <head>, style-js before </body>), and those two scripts touch only localStorage[\'tc-style\'], get/set, inside try/catch',
+    styleScripts.length === 2 && page.indexOf('id="style-head-js"') < page.indexOf('</head>') && bad.length === 0, bad);
+}
 const markup = page.replace(/<script[^>]*>[\s\S]*?<\/script>/g, '').replace(/<style>[\s\S]*?<\/style>/g, '');
 {
   const NET = [/\bfetch\b/, /XMLHttpRequest/, /sendBeacon/, /WebSocket/, /EventSource/, /RTCPeerConnection/, /importScripts/,
@@ -175,13 +195,15 @@ for (const P of PACKS) {
   const dir = join(ROOT, P.pack, 'fixture');
   const files = readdirSync(dir).filter((f) => f.endsWith('.json')).sort();
   ok(`[${P.pack}] every mutant on disk is one the registry names with the rule it breaks (${files.length - 1} mutants + good.json)`,
-    files.filter((f) => f.startsWith('mutant-')).every((f) => f in expected[P.pack]) && files.includes('good.json')
+    // wave 11: contrib gained schema-v2 fixtures (good-v2.json, v2-mutant-*.json); every mutant file, of any
+    // version prefix, must still be one the registry names
+    files.filter((f) => /(^|-)mutant-/.test(f)).every((f) => f in expected[P.pack]) && files.includes('good.json')
     && Object.keys(expected[P.pack]).every((f) => files.includes(f)));
   for (const f of files) {
     const text = readFileSync(join(dir, f), 'utf8');
     const pg = await pageRun(CORE[P.pack], text);
     const cli = cliRun(P.file, join(dir, f));
-    const want = f === 'good.json' ? [] : [expected[P.pack][f]];
+    const want = /^good(-v\d+)?\.json$/.test(f) ? [] : [expected[P.pack][f]];
     ok(`[${P.pack}] ${f}: the page's core, in node over webcrypto.subtle, prints what the CLI prints `
       + `(exit ${cli.status}, ${cli.fails.length ? 'FAIL ' + cli.fails.join(', ') : 'every rule ok'}) and fails by exactly the registry's rule`,
       same(pg, cli) && pg.fails.join() === want.join(), { page: pg.fails, cli: cli.fails, want, outSame: pg.out === cli.out, errSame: pg.err === cli.err });

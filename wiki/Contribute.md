@@ -54,6 +54,11 @@ ok ids.scenario: checked 3, failing 0
 ok ids.hall: checked 6, failing 0
 ok ids.campus: checked 6, failing 0
 ok dataset.counts: checked 3, failing 0
+ok origin.classroom: checked 0, failing 0
+ok privacy: checked 0, failing 0
+ok ids.env: checked 0, failing 0
+ok world.samples: checked 0, failing 0
+ok world.outcome: checked 0, failing 0
 note trace: training.json enumerates no gauge field names (gauges() is described, not listed), so each trace is held to its sample count and sample keys only; nothing inside gauges is checked
 signature: unsigned: this device only
 summary: 6 episodes (advisor 1, crew 1, sim 3, walkaround 1), 1 trace(s) attached holding 4 samples, 2 sim(s) covered (airless-sprayer, boom-lift)

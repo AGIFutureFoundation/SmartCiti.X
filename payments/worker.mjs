@@ -27,6 +27,11 @@ import CATALOG from './catalog.mjs';
 // POST /api/reactor/token (reactor/route.mjs): a short-lived, scoped Reactor JWT; the key is the
 // REACTOR_API_KEY Worker secret and never leaves this Worker. It shares this file's rate limiter.
 import { handleReactorToken, REACTOR_CONFIG } from '../reactor/route.mjs';
+// BEGIN DATASHARE (wave 11): POST /api/datashare/intake (datashare/intake.mjs) - one contribution package,
+// validated with the contrib verifier core, stored in R2 by digest. OFF unless env.DATASHARE_INTAKE === "on"
+// (then 404 like any unknown path); NOT deployed; not in ALL_ROUTES while off by default - see FLAGGED_ROUTES.
+import { handleIntake, INTAKE_ENDPOINT } from '../datashare/intake.mjs';
+// END DATASHARE
 
 // Every reply carries security/headers.json's `api` headers (copied into the catalogue by
 // payments/build.py): Cloudflare Pages does not apply _headers to Pages Functions responses,
@@ -261,6 +266,9 @@ export function makeWorker(deps) {
       if (path === REACTOR_CONFIG.token.endpoint) return handleReactorToken(request, env, {
         reactor: REACTOR_CONFIG, api_headers: deps.catalog.api_headers, limiter: { rateLimitConfig, clientKey, takeToken },
         subtle: deps.subtle, now: deps.now, fetch: deps.fetch });
+      // BEGIN DATASHARE (wave 11): flag-gated inside handleIntake; off -> the same 404 as below
+      if (path === INTAKE_ENDPOINT) return handleIntake(request, env, { api_headers: deps.catalog.api_headers, subtle: deps.subtle });
+      // END DATASHARE
       return refuse(404, 'not_found', 'no such route');
     },
   };
@@ -269,6 +277,9 @@ export function makeWorker(deps) {
 export const ROUTES = [CATALOG.checkout.endpoint, CATALOG.webhook.endpoint];
 // every route this Worker answers: the payments ROUTES plus the Reactor token route
 export const ALL_ROUTES = [...ROUTES, REACTOR_CONFIG.token.endpoint];
+// BEGIN DATASHARE (wave 11): routes mounted but OFF by default (answered only when their flag is on)
+export const FLAGGED_ROUTES = [{ path: INTAKE_ENDPOINT, flag_env: 'DATASHARE_INTAKE', on: 'on', module: 'datashare/intake.mjs' }];
+// END DATASHARE
 
 export default makeWorker({
   catalog: CATALOG,

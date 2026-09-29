@@ -347,6 +347,118 @@ from design_kit import STYLES, STYLE_HEAD_JS, style_css
 from sitenav import STYLE_JS          # page script: remembers the reader's choice</code></pre></details>
 </section>'''
 
+# ---- Materials & colour (PATTERN, wave 11): exterior recipes + AUTHORED colour categories from
+# surfaces/registry/exterior.json, previews drawn at runtime by web/patternkit.py (no image file).
+import patternkit as PKIT  # noqa: E402
+_LOC = json.loads((ROOT / 'i18n' / 'locales' / 'en.json').read_text(encoding='utf-8'))['strings']
+
+
+def _pl(k):
+    key = 'pattern.' + k
+    if key not in _LOC:
+        raise SystemExit(f'build_design: i18n key {key} missing from en.json')
+    return _LOC[key]
+
+
+_X = PKIT.EXT
+_picks = {}
+for _fid, _f in _X['colour_families'].items():
+    _by = {}
+    for _c in _f['colours']:
+        _by.setdefault(_c['use'], _c['id'])
+    _first = _f['colours'][0]['id']
+    _picks[_fid] = {'wall': _by['body'] if 'body' in _by else _first,
+                    'roof': _by['roof'] if 'roof' in _by else _first,
+                    'ground': _by['ground'] if 'ground' in _by else _first}
+_fam_btns = (f'<button type="button" class="pk-f" data-fam="" aria-pressed="true">{E(_pl("all"))}</button>'
+             + ''.join(f'<button type="button" class="pk-f" data-fam="{E(fid)}" aria-pressed="false">{E(f["name"])}</button>'
+                       for fid, f in _X['colour_families'].items()))
+_sw_groups = []
+for fid, f in _X['colour_families'].items():
+    sw = ''.join(f'<li class="pk-sw" style="background:{c["hex"]};color:{c["label_ink"]}" data-ratio="{c["label_ratio"]}">'
+                 f'<strong>{E(c["name"])}</strong><code>{c["hex"]}</code><span>{E(_pl("use." + c["use"]))}</span></li>'
+                 for c in f['colours'])
+    _hex = {c['id']: (c['hex'], c['name']) for c in f['colours']}
+    let = ''.join(f'<li class="pk-let" style="background:{_hex[l["bg"]][0]};color:{_hex[l["fg"]][0]}" data-ratio="{l["ratio"]}">'
+                  f'Aa {E(_hex[l["fg"]][1])} / {E(_hex[l["bg"]][1])} <span>{l["ratio"]:.2f}:1</span></li>'
+                  for l in f['lettering'])
+    cw = f['cvd_worst']
+    _sw_groups.append(
+        f'<div class="pk-fam" data-fam="{E(fid)}"><h3 class="g-sub">{E(f["name"])}</h3><p class="g-why">{E(f["why"])}</p>'
+        f'<ul class="pk-sws" aria-label="{E(_pl("swatches"))}: {E(f["name"])}">{sw}</ul>'
+        f'<p class="pk-lab">{E(_pl("lettering"))}</p><ul class="pk-lets">{let}</ul>'
+        f'<p class="g-meta">CVD min dE {cw["worst_delta_e"]:.1f} ({E(cw["view"])}, {E(cw["pair"][0])} / {E(cw["pair"][1])})</p></div>')
+_prev = []
+for rid, r in _X['recipes'].items():
+    part = r['uses'][0]
+    _prev.append(f'<figure class="pk-card" data-family="{E(r["family"])}"><canvas class="pk-cv" width="256" height="256" '
+                 f'data-recipe="{E(rid)}" data-part="{part}" role="img" aria-label="{E(r["name"])}"></canvas>'
+                 f'<figcaption><strong>{E(r["name"])}</strong> <code>{E(rid)}</code><br>'
+                 f'<span class="g-meta">{E(_pl("tile"))} {r["tile_m"]} m - {E(_pl("uses"))}: '
+                 f'{E(", ".join(_pl("use." + u) for u in r["uses"]))}</span></figcaption></figure>')
+_n_col = sum(len(f['colours']) for f in _X['colour_families'].values())
+materials_sec = f"""<section class="g-sec" id="materials" aria-labelledby="h-materials">
+<div class="g-head"><h2 id="h-materials">{E(_pl('title'))}</h2><code class="g-fn">web/patternkit.py</code></div>
+<p class="g-why">{E(_pl('lede'))} {len(_X['recipes'])} recipes, {len(_X['colour_families'])} categories, {_n_col} colours.</p>
+<p class="pk-prov">{K.badge('Authored', 'amber')} {E(_pl('provenance'))}</p>
+<p class="g-why">{E(_pl('cvd').replace('{de}', format(_X['checks']['cvd']['min_delta_e'], 'g')))}</p>
+<div class="pk-filter" role="group" aria-label="{E(_pl('filter'))}">{_fam_btns}</div>
+<h3 class="g-sub">{E(_pl('previews'))}</h3>
+<p class="g-meta pk-now" aria-live="polite"></p>
+<div class="pk-grid">{''.join(_prev)}</div>
+<h3 class="g-sub">{E(_pl('swatches'))}</h3>
+{''.join(_sw_groups)}
+<details class="g-code"><summary>Usage</summary><pre><code>import patternkit as PK            # web/patternkit.py - contract: PATTERN_CONTRACT v{PKIT.VERSION}
+page += '&lt;script&gt;' + PK.inline_script(['brick.flemish'], ['civic']) + '&lt;/script&gt;'
+# in the page: PatternKit.texture(THREE, 'brick.flemish', 'civic.civic_brick', {{quality: 'medium'}})</code></pre></details>
+</section>"""
+PK_PICKS = json.dumps(_picks, separators=(',', ':'))
+PK_GALLERY_JS = """(() => {
+  const root = document.getElementById('materials'); if (!root || typeof PatternKit === 'undefined') return;
+  const PICKS = JSON.parse(root.dataset.picks);
+  const now = root.querySelector('.pk-now');
+  function paint(fam) {
+    const use = fam || 'earth';
+    for (const cv of root.querySelectorAll('canvas[data-recipe]')) {
+      const tile = document.createElement('canvas'); tile.width = 128; tile.height = 128;
+      const col = PICKS[use][cv.dataset.part];
+      PatternKit.draw(tile.getContext('2d'), cv.dataset.recipe, col, 128);
+      const ctx = cv.getContext('2d'); ctx.fillStyle = ctx.createPattern(tile, 'repeat'); ctx.fillRect(0, 0, cv.width, cv.height);
+      cv.dataset.colour = col;
+    }
+    now.textContent = use + ': ' + Object.values(PICKS[use]).join(', ');
+  }
+  function pick(fam) {
+    for (const b of root.querySelectorAll('.pk-f')) b.setAttribute('aria-pressed', String(b.dataset.fam === fam));
+    for (const g of root.querySelectorAll('.pk-fam')) g.hidden = !!fam && g.dataset.fam !== fam;
+    paint(fam);
+  }
+  root.querySelector('.pk-filter').addEventListener('click', (e) => { const b = e.target.closest('.pk-f'); if (b) pick(b.dataset.fam); });
+  pick('');
+})();"""
+materials_sec = materials_sec.replace('<section class="g-sec" id="materials"',
+                                      f'<section class="g-sec" id="materials" data-picks="{E(PK_PICKS)}"', 1)
+GCSS += """
+.pk-filter{display:flex;flex-wrap:wrap;gap:var(--dk-s-2);margin-block:var(--dk-s-3)}
+.pk-f{font:inherit;min-block-size:44px;padding:0 var(--dk-s-3);border-radius:var(--dk-r-md);border:1px solid var(--tc-line);background:var(--tc-panel);color:var(--tc-ink);cursor:pointer}
+.pk-f[aria-pressed="true"]{background:var(--tc-ink);color:var(--tc-plate)}
+.pk-f:focus-visible{outline:3px solid var(--tc-link);outline-offset:2px}
+.pk-grid{display:grid;gap:var(--dk-s-3);grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.pk-card{margin:0;background:var(--tc-panel);border:1px solid var(--tc-line);border-radius:var(--dk-r-md);overflow:hidden}
+.pk-cv{display:block;inline-size:100%;block-size:auto;aspect-ratio:1}
+.pk-card figcaption{padding:var(--dk-s-2);font-size:var(--dk-t-sm);color:var(--tc-ink)}
+.pk-card code{font-size:var(--dk-t-xs);overflow-wrap:anywhere}
+.pk-sws,.pk-lets{list-style:none;padding:0;margin:var(--dk-s-2) 0;display:grid;gap:var(--dk-s-2);grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+.pk-sw{padding:var(--dk-s-3);border-radius:var(--dk-r-md);display:flex;flex-direction:column;gap:2px;min-block-size:84px;border:1px solid var(--tc-line)}
+.pk-sw code{font:var(--dk-t-xs)/1.3 var(--dk-f-mono);color:inherit}
+.pk-sw span{font-size:var(--dk-t-sm)}
+.pk-let{padding:var(--dk-s-2) var(--dk-s-3);border-radius:var(--dk-r-md);font-weight:600}
+.pk-lab{margin:var(--dk-s-3) 0 0;font-size:var(--dk-t-sm);color:var(--tc-muted)}
+.pk-prov{display:flex;flex-wrap:wrap;gap:var(--dk-s-2);align-items:center}
+.pk-fam[hidden]{display:none}
+"""
+PK_SCRIPT = PKIT.inline_script()
+
 GCSS += '''
 .g-demo{margin-block:var(--dk-s-4);border-radius:var(--dk-r-lg);overflow:hidden}
 .g-demo .ph{min-block-size:320px}
@@ -396,9 +508,9 @@ page = f'''<!doctype html>
 <p>Tokens and templates any page builder can import. Every template below is shown in the dark and the light
 palette with the exact call that drew it. Footage is house-made: recorded frame by frame from this build's own
 3D campus (see media/registry/media.json). Icons are Lucide, vendored under the ISC licence.</p>
-<ul class="g-toc">{''.join(f'<li><a href="#t-{n}">{E(t)}</a></li>' for n, t, _w, _a in EXAMPLES)}<li><a href="#tokens">Tokens</a></li><li><a href="#styles">Five styles</a></li><li><a href="#hero-band">Hero band</a></li><li><a href="#theme">Theme layer</a></li><li><a href="#clips">Clips</a></li><li><a href="#patterns">Kit patterns</a></li></ul>
+<ul class="g-toc">{''.join(f'<li><a href="#t-{n}">{E(t)}</a></li>' for n, t, _w, _a in EXAMPLES)}<li><a href="#tokens">Tokens</a></li><li><a href="#styles">Five styles</a></li><li><a href="#hero-band">Hero band</a></li><li><a href="#theme">Theme layer</a></li><li><a href="#clips">Clips</a></li><li><a href="#patterns">Kit patterns</a></li><li><a href="#materials">Materials &amp; colour</a></li></ul>
 </header>
-{styles_sec}{hero_sec}{theme_sec}{clips_sec}{patterns_sec}
+{styles_sec}{hero_sec}{theme_sec}{clips_sec}{patterns_sec}{materials_sec}
 {''.join(sections)}
 <section class="g-sec" id="tokens" aria-labelledby="h-tokens">
 <div class="g-head"><h2 id="h-tokens">Tokens</h2><code class="g-fn">design_kit.TOKENS</code></div>
@@ -415,6 +527,8 @@ palette with the exact call that drew it. Footage is house-made: recorded frame 
 <script>{HERO_JS}</script>
 <script>{THEME_JS}</script>
 <script>{STYLE_JS}</script>
+<script>{PK_SCRIPT}</script>
+<script>{PK_GALLERY_JS}</script>
 </body>
 </html>
 '''

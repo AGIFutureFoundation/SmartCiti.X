@@ -120,8 +120,12 @@ if C['packs'] != len(REG['packs']):
 stats = ''.join(f'<div class="tc-stat"><span class="tc-stat-v" data-stat="{k}">{int(C[k])}</span>'
                 f'{T("packs.stat." + k, "span", STAT_ATTR)}</div>'
                 for k in ('packs', 'shipping', 'proposed'))
+# wave 11 (TQ): a module's own honesty line is shown exactly when that module is in the registry
+W11_HONEST = {'tradesquest-stations': 'tq', 'materials-colour': 'colour', 'robotics-lab': 'robotics', 'data-commons': 'data'}
+PACK_IDS = [p['id'] for p in REG['packs']]
 honest = ''.join(f'<li>{T("packs.honest." + k)}</li>'
-                 for k in ('counted', 'status', 'price', 'cert', 'k12', 'un', 'play', 'names'))
+                 for k in ('counted', 'status', 'price', 'cert', 'k12', 'un', 'play', 'names')
+                 + tuple(v for m, v in W11_HONEST.items() if m in PACK_IDS))
 
 tcss, tjs = theme('doc')
 for k in [k for k in EN if k.startswith('packs.home.')] + ['packs.nav', 'packs.seo.desc']:

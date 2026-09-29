@@ -252,6 +252,103 @@ st = status_of(contents)
 packs.append({'id': 'physics', 'kind': 'system', 'title_key': 'packs.pack.physics', 'status': st,
               'contents': contents, 'requires': [], 'sources': sources, 'open': open_link('physics', st)})
 
+# ------------------------------------------------ wave 11: shared modules (TQ) --
+# A module that is new in wave 11 is emitted ONLY when its registry exists when this build runs:
+# an absent registry means no module at all (no placeholder, no PROPOSED stub with zeros). When the
+# registry exists it must carry every field read here, or the build stops by name.
+# wave-11 pages may not be built yet: a missing page (or one without the kit) gives no link, never an error
+OPEN_W11 = {
+    'tqkit': ('web/trade_craft_3d.html', 'TQ_KIT:BEGIN'),
+    'facadekit': ('web/trade_craft_parishes.html', '__facades'),  # the facade mount's runtime hook
+    'patternkit': ('web/trade_craft_design.html', 'patternkit'),
+    'robotics': ('web/trade_craft_robotics.html', 'robokit'),
+    'contribute': ('web/trade_craft_contribute.html', 'datashare'),
+    'drive': ('web/trade_craft_wilds.html', 'fleetDriveMount'),
+}
+
+
+def open_w11(key, status):
+    rel, kit = OPEN_W11[key]
+    if status != 'SHIPPING' or not (ROOT / rel).is_file() or kit not in (ROOT / rel).read_text(encoding='utf-8'):
+        return None
+    return rel
+
+
+def module(mid, kind, contents, sources, open_key, requires=()):
+    st = status_of(contents)
+    packs.append({'id': mid, 'kind': kind, 'title_key': f'packs.pack.{mid}', 'status': st, 'contents': contents,
+                  'requires': list(requires), 'sources': sources, 'open': open_w11(open_key, st), 'wave': 11})
+
+
+# TradesQuest field-job stations (BRIDGE_CONTRACT v1): web/tqkit.py ports four TradesQuest 3D scenes
+# from game-world-focus @3ea15f0; its TQKIT_HALLS names the union halls that host them.
+R_TQKIT = 'web/tqkit.py'
+if (ROOT / R_TQKIT).is_file():
+    import importlib.util
+    import sys
+    sys.dont_write_bytecode = True  # counting reads the kit; it writes nothing next to it
+    _spec = importlib.util.spec_from_file_location('tqkit_counted', ROOT / R_TQKIT)
+    _tq = importlib.util.module_from_spec(_spec)
+    _spec.loader.exec_module(_tq)
+    for name in ('TQKIT_KINDS', 'TQKIT_HALLS'):
+        if not hasattr(_tq, name):
+            raise HolodeckError(f'holodeck: {R_TQKIT} has no {name}')
+    host = []
+    for kd in _tq.TQKIT_KINDS:
+        for h in need(need(_tq.TQKIT_HALLS, kd, f'{R_TQKIT} TQKIT_HALLS'), 'primary', f'TQKIT_HALLS.{kd}'):
+            if h not in UNIONS:
+                raise HolodeckError(f'holodeck: {R_TQKIT} station {kd} names hall {h!r} not in {R_UNIONS}')
+            host.append(h)
+    module('tradesquest-stations', 'system', {'station_kinds': len(_tq.TQKIT_KINDS), 'host_halls': len(set(host))},
+           [src(R_TQKIT), src(R_UNIONS)], 'tqkit')
+
+# Materials & colour (PATTERN_CONTRACT v1): surfaces/registry/exterior.json - AUTHORED pattern recipes and
+# colour categories (each category's AA + colour-vision checks are held by surfaces/, not re-claimed here).
+R_EXTERIOR = 'surfaces/registry/exterior.json'
+EXT = load_new(R_EXTERIOR)
+if EXT is not None:
+    fams = need(EXT, 'colour_families', R_EXTERIOR)
+    module('materials-colour', 'system', {'pattern_recipes': len(need(EXT, 'recipes', R_EXTERIOR)),
+                                          'colour_categories': len(fams),
+                                          'colours': sum(len(need(f, 'colours', f'{R_EXTERIOR} colour_families.{k}'))
+                                                         for k, f in fams.items())},
+           [src(R_EXTERIOR)], 'patternkit')
+
+# Exteriors & signs (FACADE v1): facades/registry/facades.json - AUTHORED style recipes and play signs.
+R_FACADES = 'facades/registry/facades.json'
+FAC = load_new(R_FACADES)
+if FAC is not None:
+    styles = need(FAC, 'styles', R_FACADES)
+    comps = sum(len(need(v, 'components', f'{R_FACADES} styles.{k}')) for k, v in styles.items())
+    module('exteriors-signs', 'world', {'styles': len(styles), 'components': comps,
+                                        'signs': len(need(FAC, 'signs', R_FACADES))},
+           [src(R_FACADES)], 'facadekit', requires=['parish-worlds'])
+
+# Robotics lab (ROBOTICS_CONTRACT v1): robotics/registry/robotics.json - AUTHORED/DERIVED env specs, SCRIPTED
+# reference policies; no model is trained on any of it, so the module counts specs, never "trained" anything.
+R_ROBOTICS = 'robotics/registry/robotics.json'
+ROB = load_new(R_ROBOTICS)
+if ROB is not None:
+    envs = need(ROB, 'envs', R_ROBOTICS)
+    runners = [need(e, 'runner', f'{R_ROBOTICS} envs.{k}') for k, e in envs.items()]
+    for r in runners:
+        if r not in ('robokit', 'sim-seat'):
+            raise HolodeckError(f'holodeck: {R_ROBOTICS} env runner {r!r} is not robokit or sim-seat')
+    module('robotics-lab', 'system', {'embodiments': len(need(ROB, 'embodiments', R_ROBOTICS)),
+                                      'world_envs': runners.count('robokit'), 'sim_seat_envs': runners.count('sim-seat')},
+           [src(R_ROBOTICS)], 'robotics')
+
+# Data commons (DATASHARE, on ROBOTICS_CONTRACT v1): datashare/registry/datashare.json - the dataset format for
+# opt-in shared episodes. Counts what the registry defines (kinds, enforced practices, refusal reasons); the
+# intake route is written, off by default and not deployed, and nothing is trained - so nothing here counts either.
+R_DATASHARE = 'datashare/registry/datashare.json'
+DSH = load_new(R_DATASHARE)
+if DSH is not None:
+    module('data-commons', 'system', {'episode_kinds': len(need(DSH, 'fields_by_kind', R_DATASHARE)),
+                                      'practices': len(need(DSH, 'best_practices', R_DATASHARE)),
+                                      'refusal_reasons': len(need(DSH, 'refusals', R_DATASHARE))},
+           [src(R_DATASHARE)], 'contribute', requires=['robotics-lab'] if ROB is not None else [])
+
 # ------------------------------------------------ checks + write -----------
 ids = [p['id'] for p in packs]
 if len(set(ids)) != len(ids):

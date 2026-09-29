@@ -223,6 +223,7 @@ function hkShell(a, W, D, H, lod, emit) {
     for (const sx of [-1, 1]) e('shell', 0x3b3f43, .4, .6, D + .8, sx * (W / 2 + .38), .3, 0);   // plinth
     e('shell', 0x3b3f43, W + .8, .6, .4, 0, .3, D / 2 + .38);
   }
+  hkFacadeDetails(W, D, H, lod, e);   // FACADE w11: exterior details (civic recipe, facades/registry)
   /* glazing */
   const gz = (y, h) => {
     e('shell', HK_GLASS, W * .8, h, .12, 0, y, D / 2 + .36 * (lod ? 1 : .2));
@@ -301,6 +302,22 @@ function hkShell(a, W, D, H, lod, emit) {
   return { top, headY };
 }
 function DOORS_H(a) { return a.door.h; }
+/* FACADE w11: exterior details from the AUTHORED civic recipe (facades/registry/facades.json; hallkit.py checks this
+   literal against the registry at import) */
+const HK_CIVIC = {"cornice": {"depth_m": 0.6, "h_m": 0.7, "hex": 13616820, "out_m": 0.0, "y_m": -0.7}, "downpipes": {"depth_m": 0.16, "h_m": -0.5, "hex": 9213082, "out_m": 0.08, "spacing_m": 18.0, "width_m": 0.16, "y_m": 0.0}, "entry-steps": {"depth_m": 2.4, "h_m": 0.6, "hex": 13616820, "out_m": 0.0, "width_m": 8.0, "y_m": 0.0}, "piers": {"depth_m": 0.4, "h_m": -0.7, "hex": 13616820, "out_m": 0.15, "spacing_m": 6.0, "width_m": 0.9, "y_m": 0.0}};
+function hkFacadeDetails(W, D, H, lod, e) {
+  const C = HK_CIVIC, fz = -D / 2 - .33;           // the cladding's outer face on the door side
+  const co = C['cornice'], pi = C['piers'], dp = C['downpipes'], st = C['entry-steps'];
+  e('shell', co.hex, W + .6, co.h_m, co.depth_m, 0, H + co.y_m + co.h_m / 2, fz - co.depth_m / 2);
+  const ph = H + pi.h_m, n = lod ? Math.max(2, Math.floor(W / pi.spacing_m) + 1) : 2;
+  for (let i = 0; i < n; i++) {
+    const x = -W / 2 + pi.width_m / 2 + (W - pi.width_m) * i / (n - 1);
+    if (Math.abs(x) < 5.5) continue;              // keep the entrance and its canopy clear
+    e('shell', pi.hex, pi.width_m, ph, pi.depth_m, x, ph / 2, fz - pi.out_m - pi.depth_m / 2);
+  }
+  if (lod) for (const sx of [-1, 1]) e('shell', dp.hex, dp.width_m, H + dp.h_m, dp.depth_m, sx * (W / 2 - .15), (H + dp.h_m) / 2, fz - dp.out_m - dp.depth_m / 2);
+  else e('shell', st.hex, Math.min(st.width_m, W * .3), st.h_m, st.depth_m, 0, st.h_m / 2, fz - st.depth_m / 2);   // the walk keeps its threshold flat at full size
+}
 /* one pooled, vertex-coloured material for every archetype box, page-wide */
 let hkMatShared = null;
 function hkMat() {
@@ -339,6 +356,35 @@ function hkSign(text, w, h) {
 }
 """
 
+
+# BEGIN FACADE w11 (FACADE·Exteriors & Signs): exterior details on every hall shell - cornice, piers, corner
+# downpipes and (campus scale) an entry stoop - read from the AUTHORED civic recipe in facades/registry/facades.json
+# and emitted as more boxes into the host's pooled vertex-coloured mesh (0 extra draw calls). The front is local -z
+# (the door face). Fails closed: a missing registry or component stops the build by name.
+def _civic_recipe():
+    reg_path = ROOT / 'facades' / 'registry' / 'facades.json'
+    if not reg_path.exists():
+        raise HallKitError('facades/registry/facades.json missing: run python3 facades/build.py (hall exterior details)')
+    reg = json.loads(reg_path.read_text())
+    comps = {c['id']: c for c in reg['styles']['civic']['components']}
+    out = {}
+    for k in ('cornice', 'piers', 'entry-steps', 'downpipes'):
+        if k not in comps:
+            raise HallKitError(f'facades civic recipe has no component {k!r} (hall exterior details)')
+        c = comps[k]
+        out[k] = {f: c[f] for f in ('y_m', 'h_m', 'depth_m', 'out_m')}
+        for f in ('width_m', 'spacing_m'):
+            if f in c:
+                out[k][f] = c[f]
+        out[k]['hex'] = int(reg['colour_categories'][c['colour_category']]['hex'][1:], 16)
+    return out
+
+
+_HK_CIVIC_LIVE = 'const HK_CIVIC = ' + json.dumps(_civic_recipe(), sort_keys=True) + ';'
+if HALLKIT_JS.count(_HK_CIVIC_LIVE) != 1:
+    raise HallKitError('web/hallkit.py: the HK_CIVIC literal in HALLKIT_JS is stale against facades/registry civic recipe - '
+                       'paste: ' + _HK_CIVIC_LIVE)
+# END FACADE w11
 
 def _live():
     halls = json.load(open(ROOT / 'pack/registry/halls.json'))['halls']

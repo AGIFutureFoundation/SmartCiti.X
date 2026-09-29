@@ -715,6 +715,95 @@ ok('the labels palette was read from the labels registry as it stands now (cross
   LEG.labels_stamp === labels.source_stamp
   && LEG.palette_sha === createHash('sha256').update(canon([labels.palette, labels.palette_roles, labels.paint])).digest('hex').slice(0, 16));
 
+/* ---- exterior patterns + colour categories (wave 11, PATTERN). Every figure the
+   builder stored is re-measured here from the hex values, with this file's own
+   arithmetic, so a builder that stored a wrong ratio or skipped a pair fails. */
+const ext = JSON.parse(readFileSync(new URL('./registry/exterior.json', import.meta.url)));
+const extSrc = readFileSync(new URL('./exterior.py', import.meta.url));
+ok('[EXT-STAMP] exterior.json was built from exterior.py as it stands now',
+  ext.source_stamp === createHash('sha256').update(extSrc).digest('hex').slice(0, 16));
+const XK = new Set(ext.kinds);
+const XR = Object.entries(ext.recipes);
+ok(`[EXT-KIND] every recipe (${XR.length}) names a known kind, family and use, and every kind is used`,
+  XR.length >= 20 && XR.every(([id, r]) => XK.has(r.kind) && ext.families.includes(r.family) && id.startsWith(r.family + '.')
+    && r.uses.length && r.uses.every((u) => ['wall', 'roof', 'ground'].includes(u)) && r.tile_m > 0 && r.tile_m <= 4
+    && r.joint_shade <= 0 && r.joint_shade >= -0.6 && typeof r.why === 'string' && r.why.length > 10)
+  && ext.kinds.every((k) => XR.some(([, r]) => r.kind === k)));
+ok('[EXT-KIND] the pattern families the brief names are present (brick bonds, siding, stucco, terrazzo, board-formed, metal, paving, roofs)',
+  ['brick.running', 'brick.flemish', 'brick.herringbone', 'brick.basketweave', 'siding.clapboard', 'siding.shiplap',
+    'siding.board_batten', 'siding.shingle', 'render.stucco', 'render.terrazzo', 'concrete.board_formed', 'metal.corrugated',
+    'metal.standing_seam', 'paving.pavers', 'paving.cobble', 'roof.barrel_tile', 'roof.slate'].every((k) => k in ext.recipes));
+/* counts per tile must be whole numbers so a tile repeats exactly */
+const intKeys = ['courses', 'per_course', 'units', 'cells', 'per_cell', 'boards', 'rows', 'per_row', 'waves', 'bands', 'panels', 'cols', 'grain', 'tie_holes', 'dots'];
+ok('[EXT-TILE] every per-tile count is a positive integer; herringbone units are a multiple of 4; hex rows are even',
+  XR.every(([, r]) => intKeys.every((k) => !(k in r.params) || (Number.isInteger(r.params[k]) && r.params[k] > 0)))
+  && XR.filter(([, r]) => r.kind === 'herringbone').every(([, r]) => r.params.units % 4 === 0)
+  && XR.filter(([, r]) => ['hex', 'cobble', 'shingle', 'slate'].includes(r.kind)).every(([, r]) => (r.params.rows % 2) === 0)
+  && XR.filter(([, r]) => r.kind === 'bond' && r.params.header_every === 1).every(([, r]) => (r.params.per_course * 2) % 3 === 0));
+const Q = ext.quality_sizes;
+ok('[EXT-TILE] quality sizes are powers of two, low < medium < high',
+  ['low', 'medium', 'high'].every((q) => Number.isInteger(Q[q]) && (Q[q] & (Q[q] - 1)) === 0) && Q.low < Q.medium && Q.medium < Q.high);
+/* WCAG 2.x, re-implemented here (independent of design_kit.contrast which the builder used) */
+const xlin = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+const xlum = (c) => 0.2126 * xlin(c[0]) + 0.7152 * xlin(c[1]) + 0.0722 * xlin(c[2]);
+const xratio = (a, b) => { const A = xlum(rgb(a)), B = xlum(rgb(b)); return (Math.max(A, B) + 0.05) / (Math.min(A, B) + 0.05); };
+const XF = Object.entries(ext.colour_families);
+const xhexOf = Object.fromEntries(XF.flatMap(([, f]) => f.colours.map((c) => [c.id, c.hex])));
+ok(`[EXT-AA] every swatch label ink reaches 4.5:1 on its colour (${Object.keys(xhexOf).length} colours, re-measured)`,
+  XF.every(([, f]) => f.colours.every((c) => /^#[0-9A-F]{6}$/.test(c.hex) && ['#000000', '#FFFFFF'].includes(c.label_ink)
+    && xratio(c.label_ink, c.hex) >= 4.5 && Math.abs(xratio(c.label_ink, c.hex) - c.label_ratio) < 0.002)));
+ok('[EXT-AA] every lettering pair a family declares reaches 4.5:1 (re-measured) and every family declares at least one',
+  XF.every(([, f]) => f.lettering.length >= 1 && f.lettering.every((l) => l.fg in xhexOf && l.bg in xhexOf
+    && xratio(xhexOf[l.fg], xhexOf[l.bg]) >= 4.5 && Math.abs(xratio(xhexOf[l.fg], xhexOf[l.bg]) - l.ratio) < 0.002)));
+/* CVD: Machado 2009 matrices as published in the registry, on linear sRGB; CIE76 in CIELAB (D65) */
+const CV = ext.checks.cvd;
+const srgbLin = (v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+const enc = (v) => Math.round((v <= 0.0031308 ? v * 12.92 : 1.055 * v ** (1 / 2.4) - 0.055) * 255);
+const xsim = (c, M) => { const l = c.map(srgbLin); return M.map((row) => enc(Math.min(1, Math.max(0, row[0] * l[0] + row[1] * l[1] + row[2] * l[2])))); };
+const xlab = (c) => {
+  const [r, g, b] = c.map(srgbLin);
+  const x = (0.4124564 * r + 0.3575761 * g + 0.1804375 * b) / 0.95047, y = 0.2126729 * r + 0.7151522 * g + 0.0721750 * b,
+    z = (0.0193339 * r + 0.1191920 * g + 0.9503041 * b) / 1.08883;
+  const f = (t) => t > 216 / 24389 ? Math.cbrt(t) : (841 / 108) * t + 4 / 29;
+  return [116 * f(y) - 16, 500 * (f(x) - f(y)), 200 * (f(y) - f(z))];
+};
+const xde = (a, b) => { const A = xlab(a), B = xlab(b); return Math.hypot(A[0] - B[0], A[1] - B[1], A[2] - B[2]); };
+ok('[EXT-CVD] the stated method is Machado 2009 severity 1.0 for protanopia and deuteranopia with a declared floor >= 10',
+  /Machado/.test(CV.method) && CV.min_delta_e >= 10 && Object.keys(CV.matrices).sort().join() === 'deuteranopia,protanopia'
+  && Math.abs(CV.matrices.protanopia[0][0] - 0.152286) < 1e-9 && Math.abs(CV.matrices.deuteranopia[0][0] - 0.367322) < 1e-9);
+const cvdBad = [];
+let cvdMin = Infinity;
+for (const [fid, f] of XF) {
+  for (let i = 0; i < f.colours.length; i++) for (let j = i + 1; j < f.colours.length; j++) {
+    const a = rgb(f.colours[i].hex), b = rgb(f.colours[j].hex);
+    for (const [v, M] of [['normal', null], ...Object.entries(CV.matrices)]) {
+      const d = M ? xde(xsim(a, M), xsim(b, M)) : xde(a, b);
+      cvdMin = Math.min(cvdMin, d);
+      if (d < CV.min_delta_e) cvdBad.push(`${f.colours[i].id}~${f.colours[j].id}@${v}:${d.toFixed(1)}`);
+    }
+  }
+}
+ok(`[EXT-CVD] every pair inside each of ${XF.length} colour categories stays >= dE ${CV.min_delta_e} under normal, protanopia and deuteranopia (min ${cvdMin.toFixed(2)})`,
+  XF.length >= 8 && cvdBad.length === 0 || console.error(cvdBad.join(' ')));
+ok('[EXT-USE] every category covers body, trim or ground and an accent; every colour use is one of body/trim/accent/roof/ground',
+  XF.every(([, f]) => f.colours.every((c) => ext.colour_uses.includes(c.use)) && f.colours.some((c) => c.use === 'accent')
+    && f.colours.some((c) => ['body', 'trim'].includes(c.use))));
+/* no brand, standard-system or trademarked colour name: a PARTIAL denylist written here, matched as words */
+const DENY = ['pantone', 'ral', 'ncs', 'munsell', 'sherwin', 'benjamin', 'behr', 'farrow', 'dulux', 'valspar', 'tiffany',
+  'ferrari', 'coca', 'cola', 'ups', 'fedex', 'deere', 'caterpillar', 'cat', 'ikea', 'lego', 'barbie', 'ansi', 'osha', 'iso',
+  'federal', 'fs', 'bs', 'safety yellow', 'klein', 'hermes', 'starbucks', 'mcdonald', 'target', 'home depot', 'lowe'];
+const xwords = (s) => ` ${String(s).toLowerCase().replace(/[^a-z0-9]+/g, ' ')} `;
+const named = [...XF.flatMap(([fid, f]) => [f.name, ...f.colours.map((c) => c.name + ' ' + c.id)]), ...XR.map(([id, r]) => r.name + ' ' + id)];
+const hits = named.filter((nm) => DENY.some((d) => xwords(nm).includes(` ${d} `)));
+ok(`[EXT-NAMES] no colour or recipe name matches the partial brand/standard denylist (${DENY.length} terms, ${named.length} names)`,
+  hits.length === 0 || console.error(hits.join(' | ')));
+ok('[EXT-HINTS] every land-use hint names recipes usable for that part and known families; the four world classes are covered',
+  ['residential', 'commercial', 'industrial', 'park'].every((u) => u in ext.landuse_hints)
+  && Object.values(ext.landuse_hints).every((h) => ['wall', 'roof', 'ground'].every((p) => h[p].length && h[p].every((id) => id in ext.recipes && ext.recipes[id].uses.includes(p)))
+    && h.families.every((f) => f in ext.colour_families)));
+ok('[EXT-HONEST] the exterior registry is AUTHORED and says no image, brand or standard value is used',
+  ext.provenance === 'AUTHORED' && /no image file/.test(ext.honesty) && /brand/.test(ext.honesty) && /standard/.test(ext.honesty));
+
 console.log(`surfaces/test: ${n} checks passed — ${Object.keys(cat).length} finishes, `
   + `${Object.keys(wcat).length} walls, ${Object.keys(pats).length} patterns, `
   + `${Object.keys(halls).length} halls, `

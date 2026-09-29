@@ -137,6 +137,9 @@ page = f'''<!doctype html>
 <style id="tc-css">{tcss}</style>
 <style>
 body{{font:16px/1.6 "IBM Plex Sans",system-ui,sans-serif}}
+/* AUDIT row 11 (UX): the page tokens the site nav and the banners read, bound to the theme layer on <body>, so the
+   nav and the page share one scheme (before this the nav fell back to the OS Canvas colours: a light bar over a dark page) */
+body.tc-theme{{--plate:var(--tc-plate);--panel:var(--tc-panel);--raised:var(--tc-raised);--line:var(--tc-line);--rule:var(--tc-line);--ink:var(--tc-ink);--muted:var(--tc-muted);--mark:var(--tc-amber);--link:var(--tc-link)}}
 .wrap{{max-width:1040px;margin:0 auto;padding:24px 16px 56px}}
 .banner{{display:flex;gap:12px;align-items:flex-start;background:var(--panel);color:var(--ink);
   border:1px solid var(--line);border-inline-start:4px solid var(--mark);border-radius:8px;padding:14px 18px;margin:0 0 18px}}

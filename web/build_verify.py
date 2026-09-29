@@ -189,7 +189,7 @@ CARRIES += (f'<li><code>{E(SIGNIN_PAGE)}</code> between <code>{E(AUTH_BEGIN)}</c
 
 # the site nav, declared once in web/sitenav.py; a page built without it would be
 # a page a learner cannot leave, so there is no fallback: a missing declaration stops the build
-from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
+from sitenav import nav_html, labels as nav_labels, NAV_CSS, with_style_memory  # noqa: E402
 NAV = nav_html('web/trade_craft_verify.html', nav_labels('en'))
 NAV_STATE = 'with'
 
@@ -360,6 +360,7 @@ a{{color:var(--steel)}}
 header.page{{padding:34px 0 10px;border-bottom:3px solid var(--mark)}}
 header.page h1{{font:700 34px/1.1 "Barlow Condensed",system-ui,sans-serif;margin:0}}
 header.page h1 .x{{color:var(--mark)}}
+header.page .brand{{margin:0 0 2px;font:600 13px/1.3 "IBM Plex Sans",system-ui,sans-serif;color:var(--muted);letter-spacing:.02em}}header.page .brand .x{{color:var(--mark)}}
 header.page p{{color:var(--muted);margin:6px 0 14px}}
 h2{{font:700 22px/1.2 "Barlow Condensed",system-ui,sans-serif;margin:30px 0 10px;color:var(--mark);letter-spacing:.02em}}
 .lead{{background:var(--panel);border:1px solid var(--rule);border-inline-start:4px solid var(--warn);
@@ -402,7 +403,8 @@ footer.page{{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30p
 {NAV}<div class="wrap">
 
 <header class="page">
-  <h1>{E(TITLE)} — <span class="x">verify a record</span></h1>
+  <p class="brand">{E(TITLE)}</p>
+  <h1>{E(nav_labels('en')['nav.page.verify'])}</h1>
   <p>{E(PRODUCT)} · pack {E(PACK_VERSION)} · check an exported {TAG_LIST} file with the verifiers' own code, in this tab</p>
 </header>
 
@@ -485,6 +487,8 @@ return {{ recoverAddress: recoverAddress }};
 page = apply_seo(page, 'web/trade_craft_verify.html', 'SmartCiti.X : Trade Craft Academy \u2014 verify a record',
     'Check a learner\'s exported training record against its own rules, and read plainly what such a record proves and what it does not.', 'page',
     canonical_link=False, jsonld=False)
+# AUDIT row 12: follow the reader's saved style (sitenav.with_style_memory, UX)
+page = with_style_memory(page)
 emit(HERE / 'trade_craft_verify.html', page,
      f'{len(KINDS)} record kinds, {len(ALL_FILES)} registries embedded, cores carried from '
      + ', '.join(c[0] for c in CORES) + f', {NAV_STATE} the site nav, uploads nothing')

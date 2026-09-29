@@ -1211,13 +1211,185 @@ function fleetTouchControls(doc, host, labels, onToggle) {
   api.setAboard(false);
   return api;
 }
+/* ---- DRIVE (wave 11): per-family handling classes, a driving HUD, one-call world mount ----
+   Handling classes are AUTHORED input shaping (how fast steer/throttle follow the controls, chase distance) chosen
+   from each family's registry figures by the AUTHORED rule below; the motion itself stays fleetStep's SCHEMATIC
+   arcade physics - not any vehicle's real handling. */
+const FLEET_HANDLING = {
+  cycle: { medium: 'land', steer_rate: 9, throttle_rate: 5, cam_back: 1.0 },
+  nimble: { medium: 'land', steer_rate: 8, throttle_rate: 4, cam_back: 1.0 },
+  standard: { medium: 'land', steer_rate: 6, throttle_rate: 3, cam_back: 1.0 },
+  worksite: { medium: 'land', steer_rate: 4, throttle_rate: 2, cam_back: 1.0 },
+  heavy: { medium: 'land', steer_rate: 3.5, throttle_rate: 1.5, cam_back: 1.2 },
+  paddle: { medium: 'water', steer_rate: 3, throttle_rate: 1.5, cam_back: 1.0 },
+  planing: { medium: 'water', steer_rate: 5, throttle_rate: 3, cam_back: 1.0 },
+  displacement: { medium: 'water', steer_rate: 3, throttle_rate: 1.5, cam_back: 1.1 },
+  ship: { medium: 'water', steer_rate: 1.5, throttle_rate: 0.6, cam_back: 1.2 },
+};
+const FLEET_HANDLING_RULE = { cycle_max_kg: 100, worksite_max_kmh: 40, heavy_min_kg: 9000, nimble_min_accel: 2.5,
+  paddle_max_kg: 60, ship_min_kg: 100000, planing_min_kmh: 45, provenance: 'AUTHORED' };
+/* one entry -> class id (fields read directly; a missing one throws by name) */
+function fleetHandlingClass(e) {
+  const R = FLEET_HANDLING_RULE;
+  const m = fleetNeed(e, 'mass_kg', 'entry'), top = fleetNeed(e, 'top_speed_kmh', 'entry'), acc = fleetNeed(e, 'accel_ms2', 'entry');
+  const med = fleetNeed(e, 'medium', 'entry');
+  if (med === 'land') {
+    if (m < R.cycle_max_kg) return 'cycle';
+    if (top <= R.worksite_max_kmh) return 'worksite';
+    if (m >= R.heavy_min_kg) return 'heavy';
+    return acc >= R.nimble_min_accel ? 'nimble' : 'standard';
+  }
+  if (med === 'water') {
+    if (m <= R.paddle_max_kg) return 'paddle';
+    if (m >= R.ship_min_kg) return 'ship';
+    return top >= R.planing_min_kmh ? 'planing' : 'displacement';
+  }
+  throw new Error('fleetkit: entry ' + e.id + ' has an unknown medium ' + med);
+}
+/* every family -> {cls, basis}: the class of the family's HEAVIEST member (conservative: a family drives like its
+   biggest member); every family in reg.families gets one or this throws by name */
+function fleetFamilyHandling(reg) {
+  const out = new Map();
+  for (const f of fleetNeed(reg, 'families', 'registry')) {
+    const es = reg.fleet.filter((e) => e.family === f.id);
+    if (!es.length) throw new Error('fleetkit: family ' + f.id + ' has no entries');
+    let b = es[0];
+    for (const e of es) if (fleetNeed(e, 'mass_kg', 'entry') > b.mass_kg) b = e;
+    const cls = fleetHandlingClass(b);
+    if (FLEET_HANDLING[cls].medium !== f.medium) throw new Error('fleetkit: family ' + f.id + ' class ' + cls + ' is the wrong medium');
+    out.set(f.id, { cls, basis: b.id, medium: f.medium });
+  }
+  return out;
+}
+/* pure input shaping: throttle and steer follow the raw controls at the class rates; the BRAKE is never shaped */
+function fleetShapeInput(sh, raw, cls, dt) {
+  const H = FLEET_HANDLING[cls];
+  if (!H) throw new Error('fleetkit: unknown handling class ' + cls);
+  const go = (a, b, r) => a + Math.max(-r * dt, Math.min(r * dt, b - a));
+  sh.throttle = go(sh.throttle, Math.max(-1, Math.min(1, raw.throttle)), H.throttle_rate);
+  sh.steer = go(sh.steer, Math.max(-1, Math.min(1, raw.steer)), H.steer_rate);
+  return { throttle: sh.throttle, steer: sh.steer, brake: raw.brake ? 1 : 0 };
+}
+/* pure HUD state: speed km/h (|v|), direction D / R / N (0.3 m/s dead band), medium, class */
+function fleetHudState(st, spec, cls) {
+  const v = fleetNeed(st, 'v', 'state');
+  return { kmh: Math.round(Math.abs(v) * 3.6), top_kmh: Math.round(spec.top * 3.6), gear: v > 0.3 ? 'D' : v < -0.3 ? 'R' : 'N',
+    medium: spec.medium, cls, pct: Math.min(1, Math.abs(v) / spec.top) };
+}
+const FLEET_HUD_LABELS = ['region', 'kmh', 'gear_D', 'gear_R', 'gear_N', 'land', 'water', 'exit', 'cls_cycle', 'cls_nimble',
+  'cls_standard', 'cls_worksite', 'cls_heavy', 'cls_paddle', 'cls_planing', 'cls_displacement', 'cls_ship'];
+function fleetHudText(hs, labels) {
+  for (const k of FLEET_HUD_LABELS) fleetNeed(labels, k, 'hud labels');
+  return { speed: hs.kmh + ' ' + labels.kmh, gear: labels['gear_' + hs.gear], medium: labels[hs.medium], cls: labels['cls_' + hs.cls], hint: labels.exit };
+}
+/* the HUD fills a page element the page registers with its HUD layout manager (web/hudkit.py) - it never positions itself */
+function fleetDriveHud(doc, el, labels) {
+  for (const k of FLEET_HUD_LABELS) { const v = fleetNeed(labels, k, 'hud labels'); if (typeof v !== 'string' || !v.trim()) throw new Error('fleetkit: hud label ' + k + ' is empty'); }
+  el.setAttribute('role', 'status'); el.setAttribute('aria-label', labels.region); el.classList.add('fleet-hud');
+  const mk = (cls) => { const s = doc.createElement('span'); s.className = cls; el.appendChild(s); return s; };
+  const sp = mk('fleet-hud-speed'), gr = mk('fleet-hud-gear'), md = mk('fleet-hud-medium'), cl = mk('fleet-hud-cls'), hi = mk('fleet-hud-hint');
+  el.hidden = true;
+  let lastKey = '';
+  return {
+    el,
+    update(hs) {
+      const t = fleetHudText(hs, labels), key = t.speed + t.gear + t.medium + t.cls;
+      if (key === lastKey) return t; lastKey = key;
+      sp.textContent = t.speed; gr.textContent = t.gear; gr.dataset.gear = hs.gear; md.textContent = t.medium; cl.textContent = t.cls; hi.textContent = t.hint;
+      return t;
+    },
+    show(v) { el.hidden = !v; if (!v) lastKey = ''; },
+  };
+}
+/* pure: the nearest spot (rings of step m out to maxR) where spec may be placed - boats find water, land finds dry.
+   At (x, z) itself it keeps yaw; a spot found further out faces AWAY from (x, z) (a boat launched from a bank points
+   out into the water it was found in, not back at the shore). Returns {x, z, yaw} or null (the refusal stays). */
+function fleetFindMedium(spec, ground, x, z, yaw, maxR, step) {
+  if (fleetCanSpawn(spec, ground, x, z, yaw).ok) return { x, z, yaw };
+  for (let r = step; r <= maxR; r += step) {
+    const n = Math.max(8, Math.round(2 * Math.PI * r / step));
+    for (let a = 0; a < n; a++) {
+      const px = x + r * Math.cos(2 * Math.PI * a / n), pz = z + r * Math.sin(2 * Math.PI * a / n);
+      const ya = Math.atan2(px - x, pz - z);
+      if (fleetCanSpawn(spec, ground, px, pz, ya).ok) return { x: px, z: pz, yaw: ya };
+    }
+  }
+  return null;
+}
+/* One-call world mount: summon a family's vehicle beside the walker (a boat at the nearest water), get in, drive with
+   keys + phone controls (fleetTouchControls), crash against the physkit world's solid boxes (fleetPhysStep), HUD, exit.
+   o = {reg, scene, camera, ground, stage, hudEl, touchLabels, hudLabels, keys() -> {throttle, steer, brake},
+        phys: null | {coeffs, world}, people() -> [...], onEvent(ev), maxSearchM}
+   Returns {summon(familyId, x, z, yaw) -> {ok, reason?, id?, x?, z?}, exit() -> {ok, x?, z?, reason?}, tick(dt) -> bool,
+            riding() -> null | {id, family, cls, st, spec}, handling: Map, hud, touch, fleet() -> fleetCreate result | null}. */
+function fleetDriveMount(THREE, o) {
+  for (const k of ['reg', 'scene', 'camera', 'ground', 'stage', 'hudEl', 'touchLabels', 'hudLabels', 'keys', 'phys', 'people', 'onEvent', 'maxSearchM', 'onToggle'])
+    fleetNeed(o, k, 'drive mount');
+  const handling = fleetFamilyHandling(o.reg);
+  const hud = fleetDriveHud(o.stage.ownerDocument, o.hudEl, o.hudLabels);
+  const touch = fleetTouchControls(o.stage.ownerDocument, o.stage, o.touchLabels, o.onToggle);
+  let fl = null, ride = null;
+  const parked = new Map();              // family -> {st, spec, h, entry}
+  function fleet() {
+    if (fl === null) { fl = fleetCreate(THREE, o.reg, Object.fromEntries(o.reg.families.map((f) => [f.id, 1]))); o.scene.add(fl.group); }
+    return fl;
+  }
+  function summon(familyId, x, z, yaw) {
+    const hd = handling.get(familyId);
+    if (!hd) throw new Error('fleetkit: drive mount has no family ' + familyId);
+    const entry = o.reg.fleet.find((e) => e.family === familyId);
+    const spec = fleetSpec(entry);
+    const here = fleetCanSpawn(spec, o.ground, x, z, yaw);
+    const spot = here.ok ? { x, z, yaw } : fleetFindMedium(spec, o.ground, x, z, yaw, o.maxSearchM, Math.max(4, spec.L));
+    if (!spot) return { ok: false, reason: here.reason, medium: spec.medium };
+    if (ride) exit(true);
+    const old = parked.get(familyId); if (old) { old.h.despawn(); parked.delete(familyId); }
+    const st = fleetState(spec, o.ground, spot.x, spot.z, spot.yaw), h = fleet().spawn(spec.id, st);
+    const v = { st, spec, h, entry, family: familyId, cls: hd.cls, shaped: { throttle: 0, steer: 0 } };
+    parked.set(familyId, v); ride = v; v.snap = true;
+    hud.show(true); touch.setAboard(true);   // touch controls show on coarse pointers (FLEET_TOUCH_CSS); the page may force them
+    return { ok: true, id: spec.id, x: spot.x, z: spot.z, moved: !here.ok };
+  }
+  function exit(force) {
+    if (!ride) return { ok: false, reason: 'not aboard' };
+    const p = fleetExitPoint(ride.st, ride.spec, o.ground);
+    if (!p && !force) return { ok: false, reason: 'no dry ground beside the vehicle' };
+    const out = p ? { ok: true, x: p.x, z: p.z } : { ok: true, x: ride.st.x, z: ride.st.z };
+    ride.st.v = 0; ride.h.set(ride.st); ride = null;
+    hud.show(false); touch.setAboard(false);
+    return out;
+  }
+  function board(x, z) {
+    const vs = [...parked.values()];
+    const v = fleetNearest({ x, z }, vs, 2.5);
+    if (!v) return false;
+    ride = v; v.snap = true; hud.show(true); touch.setAboard(true); return true;
+  }
+  function tick(dt) {
+    if (!ride) return false;
+    const k = o.keys(), t = touch.input();
+    const raw = { throttle: Math.max(-1, Math.min(1, k.throttle + t.throttle)), steer: Math.max(-1, Math.min(1, k.steer + t.steer)), brake: k.brake || t.brake ? 1 : 0 };
+    const input = fleetShapeInput(ride.shaped, raw, ride.cls, dt);
+    if (o.phys) fleetPhysStep(ride.st, ride.spec, input, o.ground, dt, { coeffs: o.phys.coeffs, world: o.phys.world, others: [], people: o.people(), onEvent: o.onEvent });
+    else fleetStep(ride.st, ride.spec, input, o.ground, dt);
+    ride.h.set(ride.st);
+    fleetChaseCamera(o.camera, ride.st, ride.spec, dt, { snap: !!ride.snap }); ride.snap = false;
+    hud.update(fleetHudState(ride.st, ride.spec, ride.cls));
+    return true;
+  }
+  function clear() { if (ride) exit(true); for (const v of parked.values()) v.h.despawn(); parked.clear(); }
+  return { summon, exit, board, tick, clear, handling, hud, touch, fleet: () => fl,
+    riding: () => (ride ? { id: ride.spec.id, family: ride.family, cls: ride.cls, st: ride.st, spec: ride.spec } : null) };
+}
 /* FLEET_KIT:END */
 export { FLEET_API, FLEET_SLOTS, FLEET_MIN_WET_M, FLEET_KEEL_CLEAR_M, fleetFamilyGeometry, fleetMaterial, fleetCreate,
   fleetGroundFromWilds, fleetFlatGround, fleetDepth, fleetSpec, fleetCanSpawn, fleetState, fleetLandStep, fleetBoatStep,
   fleetStep, fleetNearest, fleetExitPoint, fleetChaseCamera, fleetWake, fleetWheelLayout, fleetLights, fleetDriverEye,
   fleetDriverCamera, FLEET_TRAFFIC_BUDGET, FLEET_STEER_VIS, fleetGridLanes, fleetRingLane, fleetTraffic,
   FLEET_BRAKE_GAIN, fleetCabParts, FLEET_DETAIL, fleetDetailOf, fleetStreetRoutes, fleetParishStreets, fleetStickInput, FLEET_TOUCH_CSS, fleetTouchControls,
-  fleetCrashCoeffs, fleetBox, fleetSat, fleetVel, fleetCollideVehicles, fleetCollideStatic, fleetPeopleHit, fleetYieldCheck, fleetPhysStep, fleetCrashTone, fleetSmoke };
+  fleetCrashCoeffs, fleetBox, fleetSat, fleetVel, fleetCollideVehicles, fleetCollideStatic, fleetPeopleHit, fleetYieldCheck, fleetPhysStep, fleetCrashTone, fleetSmoke,
+  FLEET_HANDLING, FLEET_HANDLING_RULE, fleetHandlingClass, fleetFamilyHandling, fleetShapeInput, fleetHudState, FLEET_HUD_LABELS, fleetHudText,
+  fleetDriveHud, fleetFindMedium, fleetDriveMount };
 '''
 
 EXPORTS = re.findall(r'export \{([^}]*)\}', FLEET_JS)[0].replace('\n', ' ').split(',')

@@ -1223,6 +1223,7 @@ code{{font:13px "IBM Plex Mono",monospace;color:var(--steel)}}
   #stick{{width:100px;height:100px}}
   #panel{{top:auto;bottom:10px;max-height:45%}}
 }}
+/* BEGIN UX: AUDIT row 9, phone tap targets for the world mode buttons */@media(max-width:720px){{#stage .ctl .tc-btn{{min-block-size:44px}}}}/* END UX */
 </style>
 <style>{NAV_CSS}</style>
 <style data-tc-theme="canvas">{THEME_CSS}</style>
@@ -1282,6 +1283,138 @@ code{{font:13px "IBM Plex Mono",monospace;color:var(--steel)}}
 '''
 
 # ------------------------------------------------ run-time i18n catalogue --
+# BEGIN DRIVE (wave 11, DRIVE·Drivable Fleet): drivable fleet in the wilds - web/fleetkit.py fleetDriveMount + web/physkit.py.
+# Summon-on-request (nothing parks at the trailhead, so eval_wilds views and draw calls are unchanged): a family picker +
+# Drive button (or ?drive=<family>) places that family's vehicle beside the walker - a boat at the nearest water, a land
+# vehicle refuses water - F / Get out leaves it. Site props are solid (physkit boxes from the same KIT geometry the page
+# draws). Handling classes AUTHORED from fleet/registry figures; SCHEMATIC arcade physics; play, never a record.
+from fleetkit import fleet_inline as _drive_fleet_inline  # noqa: E402
+from physkit import phys_inline as _drive_phys_inline  # noqa: E402
+_DRIVE_FLEET = json.loads((ROOT / 'fleet/registry/fleet.json').read_text())
+_DRIVE_PHYS = json.loads((ROOT / 'physics/registry/physics.json').read_text())
+for _k in ('families', 'fleet', 'honesty'):
+    if _k not in _DRIVE_FLEET:
+        raise SystemExit(f'build_wilds: fleet/registry/fleet.json has no {_k!r} (DRIVE mount)')
+if 'coeffs' not in _DRIVE_PHYS or 'honesty' not in _DRIVE_PHYS:
+    raise SystemExit('build_wilds: physics/registry/physics.json has no coeffs/honesty (DRIVE mount)')
+_DRIVE_KEYS = ['fleet.touch.' + k for k in ('group', 'stick', 'throttle', 'brake', 'enter', 'exit')] + [
+    'fleet.hud.' + k for k in ('region', 'kmh', 'gear_D', 'gear_R', 'gear_N', 'land', 'water', 'exit', 'cls_cycle', 'cls_nimble',
+                               'cls_standard', 'cls_worksite', 'cls_heavy', 'cls_paddle', 'cls_planing', 'cls_displacement',
+                               'cls_ship')] + ['fleet.drive.' + k for k in ('family', 'summon', 'refused', 'noland', 'moved', 'honesty')]
+for _k in _DRIVE_KEYS:
+    T(_k)
+_USED.update(_DRIVE_KEYS)
+_opts = ''.join(f'<optgroup label="{esc(m)}">' + ''.join(f'<option value="{esc(f["id"])}">{esc(f["name"])}</option>'
+                for f in _DRIVE_FLEET['families'] if f['medium'] == m) + '</optgroup>' for m in ('land', 'water'))
+_DRIVE_HTML = (f'<div id="fleet-drive" class="tc-panel"><label><span data-i18n="fleet.drive.family">{T("fleet.drive.family")}</span> '
+               f'<select id="fleet-family" lang="en" dir="ltr">{_opts}</select></label> <button type="button" class="tc-btn" id="fleet-go">'
+               f'{TS("fleet.drive.summon")}</button><div id="fleet-hud"></div></div>')
+_DRIVE_CSS = ('#fleet-drive{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:6px 8px;font-size:.85rem}'
+              '#fleet-drive select,#fleet-drive button{min-height:44px;min-width:44px}'
+              '#fleet-hud{display:flex;gap:8px;flex-wrap:wrap;font-variant-numeric:tabular-nums}#fleet-hud[hidden]{display:none}'
+              '.fleet-hud-speed{font-weight:700}.fleet-hud-hint{opacity:.85}'
+              '#stage[data-drive="1"] #stick{display:none!important}#stage:not([data-drive="1"]) .fleet-touch{display:none!important}'
+              '@media (pointer:coarse){#stage[data-drive="1"] #minimap{display:none!important}}'
+              '@media (max-width:600px){#fleet-drive .fleet-hud-hint,#fleet-drive .fleet-hud-cls,#fleet-drive label>span{display:none}}#stage[data-mode="overview"] .fleet-touch{display:none!important}')
+_DRIVE_JS = _drive_phys_inline() + '\n' + _drive_fleet_inline() + r'''
+/* DRIVE mount (web/build_wilds.py BEGIN DRIVE block) */
+const DRIVE_FLEET = JSON.parse(document.getElementById('fleet-registry').textContent);
+const DRIVE_PHYS = JSON.parse(document.getElementById('physics-registry').textContent);
+let driveG = null, driveGT = null, drivePW = null, drivePWid = null, driveWorld = null, drivePending = new URLSearchParams(location.search).get('drive');
+const dground = { height: (x, z) => dG().height(x, z), waterLevel: (x, z) => dG().waterLevel(x, z) };
+function dG() { if (driveGT !== T) { driveGT = T; driveG = fleetGroundFromWilds(T, W.biome.water_level_m); } return driveG; }
+/* the site props the page draws (the same KIT geometry) as solid physkit boxes, per world */
+function drivePhysWorld() {
+  if (drivePWid === W.id) return drivePW;
+  const wl = W.biome.water_level_m;
+  const P = createPhysics({ reg: DRIVE_PHYS, cell: 16, ground: (x, z) => T.height(x, z), water: (x, z) => { const h = T.height(x, z); return h < wl ? { surface: wl, bed: h } : null; } });
+  const boxes = [];
+  for (const s of W.sites) {
+    const h = T.height(s.x, s.z), ry = (s.x * 7 + s.z * 3) % 6.28, c = Math.cos(ry), sn = Math.sin(ry);
+    KIT[s.kind]().forEach((g, i) => {
+      g.computeBoundingBox(); const b = g.boundingBox; g.dispose();
+      const lx = (b.min.x + b.max.x) / 2, lz = (b.min.z + b.max.z) / 2;
+      boxes.push({ id: s.id + ':' + i, cx: s.x + lx * c + lz * sn, cz: s.z - lx * sn + lz * c, hx: (b.max.x - b.min.x) / 2, hz: (b.max.z - b.min.z) / 2,
+        yaw: ry, y0: h + b.min.y, y1: h + b.max.y, kind: b.max.y - b.min.y > 0.25 ? 'building' : 'curb' });
+    });
+  }
+  P.addBoxes(boxes); drivePW = P; drivePWid = W.id; P.count = boxes.length;
+  return P;
+}
+const driveCrashes = [];
+let driveInside = 0;   // frames the vehicle centre was inside a solid box (must stay 0)
+const driveSmoke = fleetSmoke(THREE, 24); scene.add(driveSmoke.mesh);
+const driveHudLabels = Object.fromEntries(FLEET_HUD_LABELS.map((k) => [k, tr('fleet.hud.' + k)]));
+const driveTouchLabels = Object.fromEntries(['group', 'stick', 'throttle', 'brake', 'enter', 'exit'].map((k) => [k, tr('fleet.touch.' + k)]));
+const DRV = fleetDriveMount(THREE, { reg: DRIVE_FLEET, scene, camera, ground: dground, stage, hudEl: document.getElementById('fleet-hud'),
+  touchLabels: driveTouchLabels, hudLabels: driveHudLabels, maxSearchM: 1500,
+  keys: () => ({ throttle: (keys.KeyW || keys.ArrowUp ? 1 : 0) - (keys.KeyS || keys.ArrowDown ? 1 : 0),
+    steer: (keys.KeyA || keys.ArrowLeft ? 1 : 0) - (keys.KeyD || keys.ArrowRight ? 1 : 0), brake: keys.Space ? 1 : 0 }),
+  phys: { coeffs: DRIVE_PHYS, get world() { return drivePhysWorld(); } }, people: () => [],
+  onEvent: (e) => { if (e.type === 'crash') driveCrashes.push(e.with); if (e.type === 'crash') driveSmoke.puff(e.x, (e.y || 0) + 0.6, e.z, Math.min(1, e.speed / 15)); },
+  onToggle: () => driveToggle() });
+function driveSummon(fam) {
+  if (W === null) { drivePending = fam; return { ok: false, reason: 'no world yet' }; }
+  if (mode !== 'walk') setMode('walk');
+  if (driveWorld !== W.id) { DRV.clear(); driveWorld = W.id; }
+  const r = DRV.summon(fam, eye.x - Math.sin(eye.yaw) * 6, eye.z - Math.cos(eye.yaw) * 6, eye.yaw + Math.PI);
+  if (!r.ok) { toast(tr('fleet.drive.refused')); return r; }
+  if (r.moved) toast(tr('fleet.drive.moved'));
+  document.getElementById('fleet-family').value = fam;
+  stage.dataset.drive = '1'; canvas.focus();
+  return r;
+}
+function driveExit() {
+  const p = DRV.exit(false);
+  if (!p.ok) { if (DRV.riding()) toast(tr('fleet.drive.noland')); return p; }
+  eye.x = p.x; eye.z = p.z; stage.dataset.drive = '0'; placeEye();
+  return p;
+}
+function driveToggle() {
+  if (DRV.riding()) return driveExit();
+  if (DRV.board(eye.x, eye.z)) { stage.dataset.drive = '1'; return { ok: true }; }
+  return driveSummon(document.getElementById('fleet-family').value);
+}
+document.getElementById('fleet-go').addEventListener('click', () => driveSummon(document.getElementById('fleet-family').value));
+addEventListener('keydown', (e) => { if (e.code === 'KeyF' && !e.repeat && !(e.target.closest && e.target.closest('input,textarea,select')) && mode === 'walk') driveToggle(); });
+function driveTick(dt) {
+  if (drivePending && W !== null) { const f = drivePending; drivePending = null; const sel = document.getElementById('fleet-family'); if (DRIVE_FLEET.families.some((x) => x.id === f)) { sel.value = f; driveSummon(f); } else toast(tr('fleet.drive.refused')); }
+  if (DRV.riding() && driveWorld !== W.id) { DRV.clear(); stage.dataset.drive = '0'; }
+  if (!DRV.tick(dt)) return false;
+  const r = DRV.riding(); eye.x = r.st.x; eye.z = r.st.z; eye.yaw = r.st.yaw + Math.PI;
+  for (const bx of drivePhysWorld().query(r.st.x, r.st.z, 0.01)) if (bx.kind === 'building' && r.st.y + 0.5 > bx.y0 && r.st.y + 0.5 < bx.y1) driveInside++;
+  driveSmoke.update(dt);
+  return true;
+}
+window.__wilds.drive = {
+  summon: (fam) => driveSummon(fam), exit: () => driveExit(), toggle: () => driveToggle(),
+  state: () => { const r = DRV.riding(); return r ? { id: r.id, family: r.family, cls: r.cls, x: r.st.x, z: r.st.z, v: r.st.v, dent: r.st.dent, medium: r.spec.medium, hud: document.getElementById('fleet-hud').textContent } : null; },
+  boxes: () => drivePhysWorld().count, eye: () => ({ x: eye.x, z: eye.z }), crashes: () => driveCrashes.slice(), inside: () => driveInside,
+  place: (x, z, yaw) => { if (mode !== 'walk') setMode('walk'); eye.x = x; eye.z = z; eye.yaw = yaw; placeEye(); },
+  sites: () => W.sites.map((s) => ({ id: s.id, x: s.x, z: s.z, kind: s.kind })),
+};
+'''
+_a_frame = '    walk(dt); placeEye();\n'
+_a_tail = '\nrequestAnimationFrame(frame);\n'
+_a_html = '<div id="toast" hidden role="status"></div>'
+_a_data = '<script type="application/json" id="wilds-registry">'
+for _a in (_a_frame, _a_tail, _a_html, _a_data, HUD_LAYER, '</style>\n</head>'):
+    if page.count(_a) != 1:
+        raise SystemExit(f'build_wilds: DRIVE anchor found {page.count(_a)}x: {_a[:60]!r}')
+page = page.replace(_a_frame, '    if (!driveTick(dt)) { walk(dt); placeEye(); }\n')
+page = page.replace(_a_tail, '\n' + _DRIVE_JS + 'requestAnimationFrame(frame);\n')
+page = page.replace(_a_html, _a_html + _DRIVE_HTML)
+page = page.replace(_a_data, '<script type="application/json" id="fleet-registry">'
+                    + json.dumps(_DRIVE_FLEET, ensure_ascii=False).replace('</', '<\\/') + '</script>\n'
+                    + '<script type="application/json" id="physics-registry">'
+                    + json.dumps(_DRIVE_PHYS, ensure_ascii=False).replace('</', '<\\/') + '</script>\n' + _a_data)
+HUD_PANELS.append({'id': 'drive', 'kind': 'panel', 'sel': '#fleet-drive', 'slot': 't', 'order': 1, 'compact': 'none'})
+page = page.replace(HUD_LAYER, hud_layer(HUD_PANELS, TS, TA))
+page = page.replace('</style>\n</head>', _DRIVE_CSS + '</style>\n</head>')
+page = page.replace('<p class="help" data-legend>', f'<p class="help" data-fleet-honesty lang="en" dir="ltr">{esc(_DRIVE_FLEET["honesty"])} '
+                    f'{esc(_DRIVE_PHYS["honesty"])}</p>\n<p class="help"><span data-i18n="fleet.drive.honesty">{T("fleet.drive.honesty")}</span></p>\n'
+                    '<p class="help" data-legend>', 1)
+# END DRIVE
 # exactly the chrome keys this page used, for every locale in i18n/locales;
 # a key missing (or empty) in any locale stops the build by name
 I18N_CAT = {}
@@ -1309,5 +1442,8 @@ page = page.replace('__WILDS_I18N__', json.dumps(I18N_CAT, ensure_ascii=False, s
 page = apply_seo(page, PAGE, 'The wilds \u2014 SmartCiti.X : Trade Craft Academy',
                  f'Walk {c["worlds"]} authored exterior worlds, {c["area_km2"]} km\u00b2 in all, with trade work sites '
                  'tied to union halls and lessons. Authored landscapes, not surveys.', 'page')
+# BEGIN UX: AUDIT row 12, follow the reader's saved style (sitenav.with_style_memory)
+page = sitenav.with_style_memory(page)
+# END UX
 out = HERE / 'trade_craft_wilds.html'
 emit(out, page, f'{c["worlds"]} worlds | {c["sites"]} sites | quests {QUEST_STATE} | tasks {TASK_STATE} | nav wired')

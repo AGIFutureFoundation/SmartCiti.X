@@ -7372,6 +7372,23 @@ nav.sitenav .sitenav-menu[open]{flex:1 1 100%;min-width:0;max-width:100%}
 nav.sitenav .sitenav-menu[open]>summary{position:absolute;top:4px;inset-inline-end:12px}
 nav.sitenav .sitenav-menu[open]>.sitenav-groups,nav.sitenav .sitenav-menu[open] .sitenav-group{min-width:0;max-width:100%}
 #bar{top:var(--navh)}
+/* BEGIN UX (AUDIT rows 7 and 6): a visible "More" chip where the folded nav row is clipped, and the scene-build
+   status. The chip is drawn only while the row really overflows (data-more is set by measurement, below) and never
+   takes a pointer, so hovering it opens the nav as before. */
+@media (min-width:721px){
+nav.sitenav[data-more]:not(:hover):not(:focus-within)::before{content:attr(data-more) " ▾" / "";position:absolute;
+  inset-block:0;inset-inline-end:0;z-index:2;display:flex;align-items:center;padding-inline:40px 16px;font-weight:700;
+  color:var(--ink);background:linear-gradient(90deg,transparent,var(--sunk) 36px);pointer-events:none}
+nav.sitenav[data-more]:dir(rtl):not(:hover):not(:focus-within)::before{background:linear-gradient(270deg,transparent,var(--sunk) 36px)}}
+#uxBuild{position:fixed;inset:0;margin:auto;inline-size:max-content;block-size:max-content;max-inline-size:calc(100% - 32px);
+  z-index:7;display:flex;align-items:center;gap:10px;padding-block:12px;padding-inline:18px;border-radius:10px;
+  background:var(--panel);color:var(--ink);border:1px solid var(--rule);font:600 15px/1.3 "IBM Plex Sans",system-ui,sans-serif;
+  box-shadow:0 10px 28px rgba(0,0,0,.45);pointer-events:none}
+#uxBuild .uxb-spin{flex:none;inline-size:18px;block-size:18px;border-radius:50%;border:3px solid var(--rule);
+  border-block-start-color:var(--mark);animation:uxbspin .9s linear infinite}
+@keyframes uxbspin{to{transform:rotate(1turn)}}
+@media (prefers-reduced-motion:reduce){#uxBuild .uxb-spin{animation:none}}
+/* END UX */
 /* PHONES: ONE SCROLLING ROW, NOT FIVE WRAPPED ONES (wave 10, AUDIT finding).
    At 390 px the bar wrapped its twenty controls into a 390 x 291 block -
    with the nav, 39% of the screen was chrome over the scene. Below 640 px
@@ -7491,6 +7508,29 @@ __STYLE_JS__
 <div id="nogl"></div>
 <div id="cross">+</div>
 <div id="ov"></div>
+<!-- BEGIN UX (AUDIT row 6): the scene takes seconds to build after load; say so until window.__tc3d exists.
+     There is no build-phase hook to report (window.__tc3dPhase is the sky's hour), so the status is indeterminate. -->
+<div id="uxBuild" role="status" aria-live="polite"><span class="uxb-spin" aria-hidden="true"></span><span>__UXL_ux.campus.building__</span></div>
+<script>
+(function () {
+  let o = document.getElementById('uxBuild');
+  const t0 = performance.now();
+  const done = () => { if (o) { o.remove(); o = null; } };
+  const wait = () => { if (!o) return; if (window.__tc3d || performance.now() - t0 > 60000) { done(); return; } setTimeout(wait, 250); };
+  addEventListener('error', done);
+  wait();
+  // AUDIT row 7: mark the folded nav row when it is clipped, so the "More" chip shows only then
+  const nav = document.querySelector('nav.sitenav');
+  if (!nav) throw new Error('the site nav is missing, so there is no row to mark as clipped');
+  const clip = () => {
+    if (nav.matches(':hover,:focus-within')) return;
+    if (nav.scrollWidth > nav.clientWidth + 1) nav.setAttribute('data-more', '__UXL_ux.nav.more__');
+    else nav.removeAttribute('data-more');
+  };
+  clip(); addEventListener('resize', clip);
+}());
+</script>
+<!-- END UX -->
 <details id="tqDock" class="tqk-dock" hidden><summary id="tqDockSum"></summary><div class="tqk-dock-body"></div></details>
 <aside id="panel"><button id="pclose">__L_ui.close__</button><div id="pbody"></div></aside>
 </main>
@@ -16642,6 +16682,11 @@ page = page.replace('__H1_TEXT__', I18N['en']['strings']['nav.page.campus'])
 # and button has an accessible name before the script runs; renderChrome()
 # and the view code then rewrite them in the reader's language. A key the
 # wire does not carry is a KeyError here, not a blank button.
+# BEGIN UX (AUDIT rows 6 and 7): the build status and "More" chip words, en catalog, strict (a missing key stops the build)
+_UX_EN = json.load(open(ROOT / 'i18n/locales/en.json'))['strings']
+page = re.sub(r'__UXL_([a-z.]+)__', lambda m: _UX_EN[m.group(1)], page)
+assert '__UXL_' not in page, 'an unfilled UX label is left in the page'
+# END UX
 page = re.sub(r'__L_([a-zA-Z.]+)__', lambda m: I18N['en']['strings'][m.group(1)], page)
 assert '__L_' not in page, 'an unfilled control label is left in the page'
 # QUEST_CONTRACT v1: the quest engine comes AFTER this page's own main

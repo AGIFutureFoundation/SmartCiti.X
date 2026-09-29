@@ -1,0 +1,6 @@
+{
+ "record": "tc-revocations/1",
+ "packages": [],
+ "episodes": [],
+ "note": "the live list: empty - no contributor has asked; add a package digest or episode id to exclude it from every later build"
+}

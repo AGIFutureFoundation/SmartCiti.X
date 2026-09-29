@@ -83,6 +83,57 @@ ok('seat links on the page are only the registry\'s', (() => {
 ok('phone driving: the page builds the kit\'s touch controls with all six translated labels and toggles them with enter/exit',
   /fleetTouchControls\(document, \$\('\.fl-stage'\)/.test(page) && ['group', 'stick', 'throttle', 'brake', 'enter', 'exit'].every((k) => page.includes(`${k}: tr('touch.${k}')`))
   && /touch\.setAboard\(true\)/.test(page) && /touch\.setAboard\(false\)/.test(page) && /const t = touch\.input\(\)/.test(page));
+// ------------------------------------------------------ DRIVE (wave 11): showroom test-drive links + the wilds mount ---
+{
+  const td = block('fleet-testdrive');
+  const wreg = JSON.parse(readFileSync(join(ROOT, 'wilds/registry/wilds.json'), 'utf8'));
+  const wids = new Set(wreg.worlds.map((w) => w.id));
+  const tdBad = reg.families.filter((f) => { const h = td && td[f.id]; const m = typeof h === 'string' && h.match(/^trade_craft_wilds\.html\?drive=([a-z-]+)#([a-z-]+)$/);
+    return !m || m[1] !== f.id || !wids.has(m[2]); }).map((f) => f.id);
+  ok(`[drive] showroom: a Test drive link for every one of ${reg.families.length} families into a wilds world (?drive=<family>#<world>)`, td && Object.keys(td).length === reg.families.length && tdBad.length === 0, tdBad);
+  ok('[drive] showroom: the spec panel renders the Test drive link (data-testdrive) with its translated label', /td\.dataset\.testdrive = e\.family; td\.textContent = tr\('drive\.test'\)/.test(page));
+  const wp = readFileSync(join(ROOT, 'web/trade_craft_wilds.html'), 'utf8');
+  const wblock = (id) => { const m = wp.match(new RegExp(`<script type="application/json" id="${id}">([\\s\\S]*?)</script>`)); return m ? JSON.parse(m[1].replace(/<\\\//g, '</')) : null; };
+  ok('[drive] wilds: fleet and physics registries embedded verbatim', JSON.stringify(wblock('fleet-registry')) === JSON.stringify(reg) && JSON.stringify(wblock('physics-registry')) === JSON.stringify(physReg));
+  ok('[drive] wilds: fleetkit and physkit carried byte-for-byte (one copy each)', wp.includes(kit) && wp.split('/* FLEET_KIT:BEGIN').length === 2 && wp.includes(pkit) && wp.split('/* PHYS_KIT:BEGIN').length === 2);
+  ok('[drive] wilds: the frame loop drives when aboard and walks otherwise', wp.includes('if (!driveTick(dt)) { walk(dt); placeEye(); }') && /function driveTick\(dt\) \{/.test(wp));
+  ok('[drive] wilds: summon-on-request only (no vehicle parked at load: the fleet is created lazily inside the mount)', !/fleetCreate\(THREE, DRIVE_FLEET/.test(wp) && /fleetDriveMount\(THREE, \{ reg: DRIVE_FLEET/.test(wp));
+  ok('[drive] wilds: solid site props - physkit boxes built from the page KIT geometry, driving through fleetPhysStep', /KIT\[s\.kind\]\(\)\.forEach/.test(wp) && /P\.addBoxes\(boxes\)/.test(wp) && /phys: \{ coeffs: DRIVE_PHYS, get world\(\)/.test(wp));
+  const opts = [...wp.matchAll(/<option value="([a-z-]+)">/g)].map((m) => m[1]);
+  ok(`[drive] wilds: the vehicle picker lists all ${reg.families.length} families`, opts.length === reg.families.length && reg.families.every((f) => opts.includes(f.id)));
+  ok('[drive] wilds: the drive panel is registered with the HUD layout manager (hudkit slot t)', /&quot;sel&quot;: &quot;#fleet-drive&quot;, &quot;slot&quot;: &quot;t&quot;/.test(wp) && wp.includes('<div id="fleet-drive" class="tc-panel">'));
+  const cat = wblock('wilds-i18n');
+  const need = ['fleet.hud.kmh', 'fleet.hud.exit', 'fleet.hud.cls_ship', 'fleet.drive.refused', 'fleet.drive.noland', 'fleet.touch.throttle'];
+  const miss = Object.entries(cat).flatMap(([loc, c]) => need.filter((k) => typeof c.strings[k] !== 'string' || !c.strings[k].trim()).map((k) => loc + ':' + k));
+  ok('[drive] wilds: the runtime catalogue carries the drive/HUD/touch keys in all 8 locales', Object.keys(cat).length === 8 && miss.length === 0, miss);
+  ok('[drive] wilds: the fleet + physics honesty lines are shown once', wp.split('data-fleet-honesty').length === 2 && wp.includes(reg.honesty.slice(0, 60)));
+  ok('[drive] wilds: phone - walking stick hidden while driving, touch bar only while aboard, 44 px picker targets',
+    wp.includes('#stage[data-drive="1"] #stick{display:none!important}') && wp.includes('#stage:not([data-drive="1"]) .fleet-touch{display:none!important}') && wp.includes('#fleet-drive select,#fleet-drive button{min-height:44px;min-width:44px}'));
+}
+// ------------------------------------------------------ DRIVE (wave 11): the Bay page mount (web/build_bayworld.py) ---
+{
+  const bp = readFileSync(join(ROOT, 'web/trade_craft_bay.html'), 'utf8');
+  // the parish page carries the same DRIVE w11 mount (web/build_parishes.py); the Bay page inherits it
+  const pp = readFileSync(join(ROOT, 'web/trade_craft_parishes.html'), 'utf8');
+  ok('[drive] parish: fleetkit byte-for-byte, shaped + touch-merged input before physics, HUD update/show, hudkit panel drive slot t',
+    pp.includes(kit) && /if \(DRIVE_CLS\) \{ const _s = fleetShapeInput\([^\n]*, dt\); input\.throttle = _s\.throttle; input\.steer = _s\.steer; \}\n  if \(W\) physDrive\(input, dt\);/.test(pp)
+    && pp.includes('if (driveHud) driveHud.update(fleetHudState(riding.st, riding.spec, driveCls(riding.spec)));') && pp.includes('if (driveHud) driveHud.show(!!riding); if (driveTouch) driveTouch.setAboard(!!riding);')
+    && /&quot;sel&quot;: &quot;#fleet-hud&quot;, &quot;slot&quot;: &quot;t&quot;/.test(pp) && pp.split('<div id="fleet-hud" class="tc-panel"></div>').length === 2);
+  ok('[drive] bay: exactly one drive mount (inherited from the parish builder, not applied twice)', bp.split('const DRIVE_CLS = FLEETREG').length === 2 && bp.split('id="fleet-hud"').length === 2);
+  ok('[drive] bay: carries web/fleetkit.py byte-for-byte (handling/HUD kit present)', bp.includes(kit) && /function fleetDriveMount\(/.test(bp));
+  ok('[drive] bay: driving input is merged with the touch controls and shaped by the family handling class before physics',
+    /input\.brake = input\.brake \|\| _t\.brake \? 1 : 0; \}\n  if \(DRIVE_CLS\) \{ const _s = fleetShapeInput\(riding\.shaped \|\| \(riding\.shaped = \{ throttle: 0, steer: 0 \}\), input, driveCls\(riding\.spec\), dt\); input\.throttle = _s\.throttle; input\.steer = _s\.steer; \}\n  if \(W\) physDrive\(input, dt\);/.test(bp));
+  ok('[drive] bay: the HUD updates every drive step and shows/hides with enter/exit; touch controls follow aboard state',
+    bp.includes('if (driveHud) driveHud.update(fleetHudState(riding.st, riding.spec, driveCls(riding.spec)));') && bp.includes('if (driveHud) driveHud.show(!!riding); if (driveTouch) driveTouch.setAboard(!!riding);'));
+  ok('[drive] bay: the HUD is registered with the HUD layout manager (panel drive, #fleet-hud, slot t)',
+    /&quot;id&quot;: &quot;drive&quot;, &quot;kind&quot;: &quot;panel&quot;, &quot;order&quot;: 1, &quot;sel&quot;: &quot;#fleet-hud&quot;, &quot;slot&quot;: &quot;t&quot;/.test(bp) && bp.includes('<div id="fleet-hud" class="tc-panel"></div>'));
+  const bm = bp.match(/<script type="application\/json" id="parishes-i18n">([\s\S]*?)<\/script>/);
+  const bcat = bm ? JSON.parse(bm[1].replace(/<\\\//g, '</')) : {};
+  const bmiss = Object.entries(bcat).flatMap(([loc, c]) => ['fleet.hud.exit_e', 'fleet.hud.kmh', 'fleet.hud.cls_heavy', 'fleet.touch.brake'].filter((k) => typeof c.strings[k] !== 'string' || !c.strings[k].trim()).map((k) => loc + ':' + k));
+  ok('[drive] bay: HUD + touch keys in the embedded catalogue for all 8 locales (exit hint names E, the parish key)', Object.keys(bcat).length === 8 && bmiss.length === 0, bmiss);
+  ok('[drive] bay: phone - touch bar only while driving/boating, minimap + satellite box hidden while aboard on coarse pointers',
+    bp.includes('#stage:not([data-mode="drive"]):not([data-mode="boat"]) .fleet-touch{display:none!important}') && bp.includes('#stage[data-mode="drive"] #minimap,#stage[data-mode="boat"] #minimap'));
+}
 // ---------------------------------------------------------------- browser ---
 const base = arg('browser');
 if (base) {

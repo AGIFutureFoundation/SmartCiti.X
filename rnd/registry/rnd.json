@@ -21,11 +21,11 @@
   "measured_elsewhere": 51,
   "computed_from_registry": 12,
   "measured_source_files": 11,
-  "registries_scanned": 74,
-  "app_renderers_scanned": 31,
+  "registries_scanned": 79,
+  "app_renderers_scanned": 32,
   "doc_renderers_scanned": 3,
-  "builders_scanned": 60,
-  "suites_scanned": 106,
+  "builders_scanned": 63,
+  "suites_scanned": 112,
   "declared_unbuilt": 7,
   "declared_unbuilt_by_their_own_words": 2,
   "declared_unbuilt_not_drawn": 6,
@@ -38,13 +38,13 @@
   "budget_views": 6,
   "budget_currencies": 2,
   "budget_agreements": 7,
-  "suites_run": 106,
-  "suite_checks_declared": 5302,
+  "suites_run": 112,
+  "suite_checks_declared": 5684,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 327
+  "files_read": 351
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -1737,10 +1737,12 @@
    ],
    "doc_renderers": [],
    "builders": [
-    "holodeck/build.py"
+    "holodeck/build.py",
+    "robotics/build.py"
    ],
    "suites": [
     "holodeck/test.mjs",
+    "robotics/test.mjs",
     "web/test_parishes.mjs"
    ],
    "own_pack": [
@@ -1810,6 +1812,7 @@
     "underwater/build.py"
    ],
    "suites": [
+    "parishes/test.mjs",
     "restoration/test_scenarios.mjs",
     "underwater/test.mjs",
     "web/test_bayworld.mjs",
@@ -1965,10 +1968,12 @@
     "wiki/build_wiki.py"
    ],
    "builders": [
+    "datashare/build.py",
     "protocols/build.py",
     "worksites/build.py"
    ],
    "suites": [
+    "datashare/test.mjs",
     "protocols/test.mjs",
     "web/test_contribute.mjs",
     "web/test_home.mjs",
@@ -1980,15 +1985,38 @@
     "contrib/verify.mjs"
    ]
   },
-  "economy/registry/economy.json": {
+  "datashare/registry/datashare.json": {
    "app_renderers": [
-    "web/build_parishes.py"
+    "web/build_contribute.py"
    ],
    "doc_renderers": [],
    "builders": [
     "holodeck/build.py"
    ],
    "suites": [
+    "holodeck/test.mjs",
+    "web/test_contribute.mjs"
+   ],
+   "own_pack": [
+    "datashare/build.py",
+    "datashare/core.mjs",
+    "datashare/intake.mjs",
+    "datashare/intake_config.mjs",
+    "datashare/node_shell.mjs",
+    "datashare/test.mjs"
+   ]
+  },
+  "economy/registry/economy.json": {
+   "app_renderers": [
+    "web/build_parishes.py"
+   ],
+   "doc_renderers": [],
+   "builders": [
+    "facades/build.py",
+    "holodeck/build.py"
+   ],
+   "suites": [
+    "facades/test.mjs",
     "holodeck/test.mjs",
     "layers/test.mjs"
    ],
@@ -2028,17 +2056,36 @@
     "evals/test.mjs"
    ]
   },
+  "facades/registry/facades.json": {
+   "app_renderers": [
+    "web/build_parishes.py"
+   ],
+   "doc_renderers": [],
+   "builders": [
+    "holodeck/build.py"
+   ],
+   "suites": [
+    "holodeck/test.mjs",
+    "web/test_facadekit.mjs"
+   ],
+   "own_pack": [
+    "facades/build.py",
+    "facades/test.mjs"
+   ]
+  },
   "fleet/registry/fleet.json": {
    "app_renderers": [
     "web/build_fleet.py",
     "web/build_home.py",
     "web/build_landing.py",
-    "web/build_parishes.py"
+    "web/build_parishes.py",
+    "web/build_wilds.py"
    ],
    "doc_renderers": [],
    "builders": [
     "holodeck/build.py",
-    "quests/build.py"
+    "quests/build.py",
+    "robotics/build.py"
    ],
    "suites": [
     "holodeck/test.mjs",
@@ -2545,6 +2592,21 @@
     "parcels/test.mjs"
    ]
   },
+  "parishes/registry/ground_atlas.json": {
+   "app_renderers": [
+    "web/build_parishes.py"
+   ],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [
+    "web/test_bayworld.mjs",
+    "web/test_parishes.mjs"
+   ],
+   "own_pack": [
+    "parishes/build_atlas.py",
+    "parishes/test.mjs"
+   ]
+  },
   "parishes/registry/parishes.json": {
    "app_renderers": [
     "web/build_bayworld.py",
@@ -2581,6 +2643,7 @@
    ],
    "own_pack": [
     "parishes/build.py",
+    "parishes/build_atlas.py",
     "parishes/build_world.py",
     "parishes/test.mjs"
    ]
@@ -2612,6 +2675,7 @@
     "cloudflare/build.py"
    ],
    "suites": [
+    "datashare/test.mjs",
     "web/test_home.mjs",
     "web/test_plans.mjs"
    ],
@@ -2624,13 +2688,15 @@
   "physics/registry/physics.json": {
    "app_renderers": [
     "web/build_fleet.py",
-    "web/build_parishes.py"
+    "web/build_parishes.py",
+    "web/build_wilds.py"
    ],
    "doc_renderers": [],
    "builders": [
     "holodeck/build.py"
    ],
    "suites": [
+    "fleet/test.mjs",
     "holodeck/test.mjs",
     "web/test_fleet.mjs",
     "web/test_parishes.mjs"
@@ -2778,6 +2844,7 @@
    ],
    "doc_renderers": [],
    "builders": [
+    "robotics/build.py",
     "tasks/build.py"
    ],
    "suites": [
@@ -2808,6 +2875,30 @@
    "own_pack": [
     "roadmap/build.py",
     "roadmap/test.mjs"
+   ]
+  },
+  "robotics/registry/robotics.json": {
+   "app_renderers": [
+    "web/build_parishes.py",
+    "web/build_robotics.py"
+   ],
+   "doc_renderers": [],
+   "builders": [
+    "contrib/build.py",
+    "datashare/build.py",
+    "holodeck/build.py",
+    "training/build.py"
+   ],
+   "suites": [
+    "contrib/test.mjs",
+    "contrib/verify.mjs",
+    "datashare/test.mjs",
+    "holodeck/test.mjs",
+    "web/test_robotics.mjs"
+   ],
+   "own_pack": [
+    "robotics/build.py",
+    "robotics/test.mjs"
    ]
   },
   "schools/registry/schools.json": {
@@ -2915,6 +3006,7 @@
     "meta/build.py",
     "npcs/build.py",
     "quests/build.py",
+    "robotics/build.py",
     "schools/build.py",
     "sessions/build.py",
     "spaces/build.py",
@@ -2940,6 +3032,7 @@
     "lessons/test.mjs",
     "meta/test.mjs",
     "npcs/test.mjs",
+    "robotics/test.mjs",
     "schools/test.mjs",
     "spaces/test.mjs",
     "spatial/test.mjs",
@@ -3085,6 +3178,26 @@
     "stations/test.mjs"
    ]
   },
+  "surfaces/registry/exterior.json": {
+   "app_renderers": [
+    "web/build_design.py"
+   ],
+   "doc_renderers": [],
+   "builders": [
+    "facades/build.py",
+    "holodeck/build.py"
+   ],
+   "suites": [
+    "facades/test.mjs",
+    "holodeck/test.mjs",
+    "web/test_design.mjs",
+    "web/test_patternkit.mjs"
+   ],
+   "own_pack": [
+    "surfaces/build.py",
+    "surfaces/test.mjs"
+   ]
+  },
   "surfaces/registry/finishes.json": {
    "app_renderers": [
     "web/build_3d.py",
@@ -3138,7 +3251,8 @@
    "builders": [
     "fleet/build.py",
     "layers/build.py",
-    "npcs/build.py"
+    "npcs/build.py",
+    "robotics/build.py"
    ],
    "suites": [
     "fleet/test.mjs",
@@ -3223,9 +3337,11 @@
    "builders": [
     "completion/build.py",
     "contrib/build.py",
+    "datashare/build.py",
     "evals/build.py",
     "guide/build.py",
     "lessons/build.py",
+    "robotics/build.py",
     "sessions/build.py",
     "spatial/build.py",
     "worksites/build.py"
@@ -3235,14 +3351,17 @@
     "completion/test.mjs",
     "contrib/test.mjs",
     "contrib/verify.mjs",
+    "datashare/test.mjs",
     "evals/test.mjs",
     "guide/test.mjs",
     "lessons/test.mjs",
     "quests/test.mjs",
+    "robotics/test.mjs",
     "sessions/test.mjs",
     "sessions/verify.mjs",
     "web/test_contribute.mjs",
     "web/test_progress.mjs",
+    "web/test_robotics.mjs",
     "worksites/test.mjs"
    ],
    "own_pack": [
@@ -3255,7 +3374,9 @@
     "web/build_parishes.py"
    ],
    "doc_renderers": [],
-   "builders": [],
+   "builders": [
+    "robotics/build.py"
+   ],
    "suites": [
     "web/test_bayworld.mjs",
     "web/test_parishes.mjs"
@@ -3458,6 +3579,7 @@
   },
   "wilds/registry/wilds.json": {
    "app_renderers": [
+    "web/build_fleet.py",
     "web/build_geomap.py",
     "web/build_schools.py",
     "web/build_wilds.py"
@@ -3477,6 +3599,7 @@
     "lessons/test.mjs",
     "quests/test.mjs",
     "tasks/test.mjs",
+    "web/test_fleet.mjs",
     "web/test_geomap.mjs",
     "web/test_schools.mjs",
     "web/test_wilds.mjs"
@@ -3574,6 +3697,7 @@
    "web/build_plans.py",
    "web/build_progress.py",
    "web/build_quests.py",
+   "web/build_robotics.py",
    "web/build_schools.py",
    "web/build_seo.py",
    "web/build_spaces.py",
@@ -3602,9 +3726,11 @@
    "completion/build.py",
    "compliance/build.py",
    "contrib/build.py",
+   "datashare/build.py",
    "economy/build.py",
    "ei/build.py",
    "evals/build.py",
+   "facades/build.py",
    "fleet/build.py",
    "geo/build.py",
    "geo3d/build.py",
@@ -3630,6 +3756,7 @@
    "respond/build.py",
    "restoration/build.py",
    "roadmap/build.py",
+   "robotics/build.py",
    "schools/build.py",
    "sessions/build.py",
    "sims/build.py",
@@ -3673,10 +3800,12 @@
    "control/test.mjs",
    "control/test_graph.mjs",
    "control/test_hints.mjs",
+   "datashare/test.mjs",
    "economy/test.mjs",
    "ei/test.mjs",
    "evals/test.mjs",
    "fabric/test.mjs",
+   "facades/test.mjs",
    "fleet/test.mjs",
    "geo/test.mjs",
    "geo3d/test.mjs",
@@ -3705,6 +3834,7 @@
    "restoration/test.mjs",
    "restoration/test_scenarios.mjs",
    "roadmap/test.mjs",
+   "robotics/test.mjs",
    "schools/test.mjs",
    "security/test.mjs",
    "security/test_sbom.mjs",
@@ -3729,6 +3859,7 @@
    "web/test_contribute.mjs",
    "web/test_design.mjs",
    "web/test_fabric.mjs",
+   "web/test_facadekit.mjs",
    "web/test_fleet.mjs",
    "web/test_geomap.mjs",
    "web/test_gltf.mjs",
@@ -3740,10 +3871,12 @@
    "web/test_nav.mjs",
    "web/test_packs.mjs",
    "web/test_parishes.mjs",
+   "web/test_patternkit.mjs",
    "web/test_plans.mjs",
    "web/test_progress.mjs",
    "web/test_quests.mjs",
    "web/test_restokit.mjs",
+   "web/test_robotics.mjs",
    "web/test_rtl.mjs",
    "web/test_schools.mjs",
    "web/test_seo.mjs",
@@ -4449,7 +4582,7 @@
    {
     "suite": "surfaces/test.mjs",
     "pack": "surfaces",
-    "readme_checks": 74,
+    "readme_checks": 87,
     "declared": true,
     "in_readme_table": true
    },
@@ -4526,7 +4659,7 @@
    {
     "suite": "training/test.mjs",
     "pack": "training",
-    "readme_checks": 43,
+    "readme_checks": 52,
     "declared": true,
     "in_readme_table": true
    },
@@ -4708,14 +4841,14 @@
    {
     "suite": "contrib/test.mjs",
     "pack": "contrib",
-    "readme_checks": 54,
+    "readme_checks": 77,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_contribute.mjs",
     "pack": "web",
-    "readme_checks": 28,
+    "readme_checks": 40,
     "declared": true,
     "in_readme_table": true
    },
@@ -4785,14 +4918,14 @@
    {
     "suite": "web/test_nav.mjs",
     "pack": "web",
-    "readme_checks": 30,
+    "readme_checks": 36,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_verify.mjs",
     "pack": "web",
-    "readme_checks": 64,
+    "readme_checks": 65,
     "declared": true,
     "in_readme_table": true
    },
@@ -4862,7 +4995,7 @@
    {
     "suite": "web/test_design.mjs",
     "pack": "web",
-    "readme_checks": 83,
+    "readme_checks": 91,
     "declared": true,
     "in_readme_table": true
    },
@@ -4883,21 +5016,21 @@
    {
     "suite": "parishes/test.mjs",
     "pack": "parishes",
-    "readme_checks": 55,
+    "readme_checks": 57,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "fleet/test.mjs",
     "pack": "fleet",
-    "readme_checks": 75,
+    "readme_checks": 90,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_fleet.mjs",
     "pack": "web",
-    "readme_checks": 26,
+    "readme_checks": 46,
     "declared": true,
     "in_readme_table": true
    },
@@ -4932,14 +5065,14 @@
    {
     "suite": "web/test_plans.mjs",
     "pack": "web",
-    "readme_checks": 52,
+    "readme_checks": 53,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_parishes.mjs",
     "pack": "web",
-    "readme_checks": 108,
+    "readme_checks": 110,
     "declared": true,
     "in_readme_table": true
    },
@@ -4967,14 +5100,14 @@
    {
     "suite": "holodeck/test.mjs",
     "pack": "holodeck",
-    "readme_checks": 62,
+    "readme_checks": 78,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_packs.mjs",
     "pack": "web",
-    "readme_checks": 37,
+    "readme_checks": 40,
     "declared": true,
     "in_readme_table": true
    },
@@ -5030,7 +5163,7 @@
    {
     "suite": "web/test_bayworld.mjs",
     "pack": "web",
-    "readme_checks": 20,
+    "readme_checks": 21,
     "declared": true,
     "in_readme_table": true
    },
@@ -5061,21 +5194,63 @@
     "readme_checks": 31,
     "declared": true,
     "in_readme_table": true
+   },
+   {
+    "suite": "web/test_patternkit.mjs",
+    "pack": "web",
+    "readme_checks": 29,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "facades/test.mjs",
+    "pack": "facades",
+    "readme_checks": 53,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_facadekit.mjs",
+    "pack": "web",
+    "readme_checks": 52,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "robotics/test.mjs",
+    "pack": "robotics",
+    "readme_checks": 30,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_robotics.mjs",
+    "pack": "web",
+    "readme_checks": 19,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "datashare/test.mjs",
+    "pack": "datashare",
+    "readme_checks": 67,
+    "declared": true,
+    "in_readme_table": true
    }
   ],
-  "suites_run": 106,
-  "suites_declaring_a_count": 104,
+  "suites_run": 112,
+  "suites_declaring_a_count": 110,
   "suites_without_a_count": [
    "control/soak.mjs",
    "restoration/test_scenarios.mjs"
   ],
-  "declared_total": 5302,
-  "readme_headline": 5337,
+  "declared_total": 5684,
+  "readme_headline": 5719,
   "unaccounted_for": 35,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
   "max": 364,
-  "median": 42.0,
+  "median": 45.0,
   "thinnest": [
    {
     "suite": "ops/fuzz.mjs",
@@ -5384,6 +5559,16 @@
   "control/test.mjs",
   "control/test_graph.mjs",
   "control/test_hints.mjs",
+  "datashare/analyse.mjs",
+  "datashare/build.py",
+  "datashare/build_dataset.mjs",
+  "datashare/core.mjs",
+  "datashare/intake.mjs",
+  "datashare/intake_config.mjs",
+  "datashare/intake_core.mjs",
+  "datashare/node_shell.mjs",
+  "datashare/registry/datashare.json",
+  "datashare/test.mjs",
   "economy/build.py",
   "economy/core.mjs",
   "economy/registry/economy.json",
@@ -5395,6 +5580,9 @@
   "evals/registry/evals.json",
   "evals/test.mjs",
   "fabric/test.mjs",
+  "facades/build.py",
+  "facades/registry/facades.json",
+  "facades/test.mjs",
   "fleet/build.py",
   "fleet/registry/fleet.json",
   "fleet/test.mjs",
@@ -5467,8 +5655,10 @@
   "parcels/registry/parcels.json",
   "parcels/test.mjs",
   "parishes/build.py",
+  "parishes/build_atlas.py",
   "parishes/build_world.py",
   "parishes/fetch_usatlas.py",
+  "parishes/registry/ground_atlas.json",
   "parishes/registry/parishes.json",
   "parishes/registry/world.json",
   "parishes/render.py",
@@ -5510,6 +5700,9 @@
   "roadmap/build.py",
   "roadmap/registry/roadmap.json",
   "roadmap/test.mjs",
+  "robotics/build.py",
+  "robotics/registry/robotics.json",
+  "robotics/test.mjs",
   "schools/build.py",
   "schools/registry/schools.json",
   "schools/test.mjs",
@@ -5543,6 +5736,8 @@
   "stations/registry/stations.json",
   "stations/test.mjs",
   "surfaces/build.py",
+  "surfaces/exterior.py",
+  "surfaces/registry/exterior.json",
   "surfaces/registry/finishes.json",
   "surfaces/surfaces.py",
   "surfaces/test.mjs",
@@ -5596,6 +5791,7 @@
   "web/build_plans.py",
   "web/build_progress.py",
   "web/build_quests.py",
+  "web/build_robotics.py",
   "web/build_schools.py",
   "web/build_seo.py",
   "web/build_spaces.py",
@@ -5612,6 +5808,7 @@
   "web/test_contribute.mjs",
   "web/test_design.mjs",
   "web/test_fabric.mjs",
+  "web/test_facadekit.mjs",
   "web/test_fleet.mjs",
   "web/test_geomap.mjs",
   "web/test_gltf.mjs",
@@ -5623,10 +5820,12 @@
   "web/test_nav.mjs",
   "web/test_packs.mjs",
   "web/test_parishes.mjs",
+  "web/test_patternkit.mjs",
   "web/test_plans.mjs",
   "web/test_progress.mjs",
   "web/test_quests.mjs",
   "web/test_restokit.mjs",
+  "web/test_robotics.mjs",
   "web/test_rtl.mjs",
   "web/test_schools.mjs",
   "web/test_seo.mjs",

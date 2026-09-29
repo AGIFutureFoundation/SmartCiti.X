@@ -246,5 +246,70 @@ if (C !== null) {
   ok(`[shipped] every paragraph in ${JOIN_SECTIONS.map((s) => '#' + s).join(', ')} starts each sentence uppercase and closes each before the next`, joinBad.length === 0, joinBad);
 }
 
+/* ---------------------------------------------- Share data (wave 11, DATASHARE) */
+{
+  const between = (src, b, e, incl = true) => { const i = src.indexOf(b), j = i < 0 ? -1 : src.indexOf(e, i); return i < 0 || j <= i ? null : src.slice(i, j + (incl ? e.length : 0)); };
+  const cores = between(html, '<script id="ds-cores">', '</script>', false);
+  const vsrc = readText('contrib/verify.mjs'), dsrc = readText('datashare/core.mjs'), signin = readText('web/trade_craft_signin.html');
+  const CB = between(vsrc, '/* CONTRIB_CORE:BEGIN', '/* CONTRIB_CORE:END */'), DB = between(dsrc, '/* DATASHARE_CORE:BEGIN', '/* DATASHARE_CORE:END */');
+  const AB = between(signin, '/* AUTH-CORE:BEGIN', '/* AUTH-CORE:END */', false);
+  ok('[share] the page carries contrib/verify.mjs\'s CONTRIB_CORE, the sign-in AUTH-CORE and datashare/core.mjs\'s DATASHARE_CORE byte-for-byte (one set of rules, no second copy)',
+    cores !== null && CB !== null && DB !== null && AB !== null && cores.includes(CB) && cores.includes(DB) && cores.includes(AB));
+  const ds = JSON.parse(between(html, '<script type="application/json" id="ds-data">', '</script>', false).slice('<script type="application/json" id="ds-data">'.length).replace(/<\\\//g, '</'));
+  const { REGISTRY_FILES } = await import(M('contrib/verify.mjs'));
+  ok('[share] the page\'s registries are the files the verifier names, verbatim, and its datashare config is datashare.json',
+    Object.entries(REGISTRY_FILES).every(([k, rel]) => JSON.stringify(ds.regs[k]) === JSON.stringify(readJSON(rel)))
+    && JSON.stringify(ds.cfg) === JSON.stringify(readJSON('datashare/registry/datashare.json')) && ds.tag_v2 === 'tc-contribution/2');
+  const LOCS = ['en', 'es', 'fr', 'de', 'pt', 'zh', 'hi', 'ar'];
+  ok('[share] the section\'s words come from the 8 locales (datashare.* keys), verbatim, with each locale\'s direction',
+    LOCS.every((l) => { const d = readJSON(`i18n/locales/${l}.json`); return ds.i18n[l].dir === d.dir
+      && ['title', 'lede', 'classroom', 'load', 'import', 'export', 'analyse', 'dataset'].every((k) => ds.i18n[l].strings[k] === d.strings['datashare.' + k]); }));
+  const share = html.slice(html.indexOf('<section id="share"'), html.indexOf('</section>', html.indexOf('<section id="share"')));
+  const shareMod = html.slice(html.indexOf("const S = JSON.parse(document.getElementById('ds-data')"));
+  ok('[share] K-12 / classroom mode offers nothing: a class plan on the device, ?plan or ?classroom, or unreadable storage hides the tools and shows the locale\'s classroom sentence',
+    /S\.classroom\.plan_key/.test(shareMod) && JSON.stringify(ds.classroom) === JSON.stringify({ plan_key: 'tc-class-plan', params: ['plan', 'classroom'] })
+    && /document\.getElementById\('shareTools'\)\.hidden = true/.test(shareMod) && /return 'storage-blocked'/.test(shareMod) && /T\('classroom'\)/.test(shareMod)
+    && /not offered/.test(ds.i18n.en.strings.classroom));
+  ok('[share] the store is IndexedDB opened inside try/catch with a named in-memory fallback, and the page says which one it got',
+    /try \{\s*const r = indexedDB\.open/.test(shareMod) && /catch \(e\) \{ res\(null\); \}/.test(shareMod) && /IndexedDB is unavailable here/.test(shareMod) && /data-store="unpainted"/.test(share));
+  ok('[share] per-package opt-in: one unticked scope box per declared scope, the fixed statement verbatim, and the boxes are cleared after every export',
+    (share.match(/data-share-scope="/g) || []).length === Object.keys(contribReg.consent.scopes).length && !/data-share-scope="[^"]+" checked/.test(share)
+    && share.includes('>' + contribReg.consent.statement.replace(/'/g, '&#x27;') + '<') && /for \(const b of scopeBoxes\) b\.checked = false/.test(shareMod)
+    && /id="shareExport" type="button" disabled/.test(share));
+  ok('[share] the Share data scripts send nothing (no fetch, XMLHttpRequest, WebSocket or sendBeacon) and download by data: URL',
+    !/\bfetch\s*\(|XMLHttpRequest|WebSocket|sendBeacon/.test(shareMod.slice(0, shareMod.indexOf('</script>'))) && /'data:' \+ type/.test(shareMod));
+  ok('[share] every enforced practice the datashare registry lists is shown with the file that enforces it, and the page says nothing was trained',
+    readJSON('datashare/registry/datashare.json').best_practices.every((b) => share.includes(b.practice.replace(/'/g, '&#x27;')) && share.includes(b.enforced_by.file))
+    && /NOTHING HAS BEEN TRAINED/.test(share));
+  // the page's own buildPackageV2, lifted and run in node over the v2 fixture's episodes
+  const V = await import(M('contrib/verify.mjs'));
+  const ctx = {};
+  const classic = between(html, '<script id="contrib-js">', '</script>', false).slice('<script id="contrib-js">'.length) + '\n' + cores.slice('<script id="ds-cores">'.length);
+  new Function('ctx', classic + '\nctx.buildPackageV2 = buildPackageV2; ctx.contribCore = contribCore; ctx.datashareCore = datashareCore;')(ctx);
+  const regs = Object.fromEntries(Object.entries(REGISTRY_FILES).map(([k, rel]) => [k, readJSON(rel)]));
+  const CC = ctx.contribCore(regs);
+  const g2 = readJSON('contrib/fixture/v2/good.json');
+  const meta = { tag_v2: ds.tag_v2, product: contribReg.product, pack_version: contribReg.pack_version, fields_v2: ds.fields_v2,
+    consent: { statement: contribReg.consent.statement, scopes: Object.keys(contribReg.consent.scopes).sort(), license: contribReg.consent.license.spdx },
+    honesty: contribReg.honesty, digest_over: contribReg.digest.over };
+  const now = new Date('2026-09-29T02:00:00.000Z');
+  const pkg = await ctx.buildPackageV2(g2.dataset.episodes, ['robot-training'], meta, now, CC);
+  const vr = V.verify(pkg);
+  const fails = Object.entries(vr.tally).filter(([, t]) => t.fails.length).map(([k, t]) => k + ': ' + t.fails[0]);
+  ok('[share] the page\'s tc-contribution/2 package verifies with node contrib/verify.mjs on every rule: episodes verbatim, claimed null, origin.classroom_mode false, the ticked scope only',
+    fails.length === 0 && pkg.record === 'tc-contribution/2' && pkg.contributor.claimed === null && pkg.origin.classroom_mode === false
+    && JSON.stringify(pkg.consent.scope) === '["robot-training"]' && JSON.stringify(pkg.dataset.episodes) === JSON.stringify(g2.dataset.episodes), fails);
+  const refusedBy = async (eps, scope) => { try { await ctx.buildPackageV2(eps, scope, meta, now, CC); return ''; } catch (e) { return e.message; } };
+  ok('[share] buildPackageV2 refuses: no scope ticked, an undeclared scope, no episodes, an episode of a kind no package carries',
+    /no scope ticked/.test(await refusedBy(g2.dataset.episodes, [])) && /not declared/.test(await refusedBy(g2.dataset.episodes, ['marketing']))
+    && /no episodes/.test(await refusedBy([], ['robot-training'])) && /cannot be shared/.test(await refusedBy([{ kind: 'joystick' }], ['robot-training'])));
+  const DC = ctx.datashareCore(ds.cfg, async (s) => (await import('node:crypto')).createHash('sha256').update(s).digest('hex'));
+  const A = DC.analyse(g2.dataset.episodes.map((episode) => ({ episode })));
+  ok('[share] the page\'s analysis core runs over the same episodes and reports counts, rates and coverage gaps',
+    A.episodes === g2.dataset.episodes.length && A.by_kind['world-teleop'] === 2 && A.gaps.length > 0);
+  ok('[share] the /1 exporter no longer builds a package it cannot verify: a log holding world episodes is sent to Share data (needs-v2)',
+    /'needs-v2'/.test(mod) && /e\.kind in D\.fields_by_kind\)/.test(mod));
+}
+
 console.log(`\ncontribute: ${n} checks, ${bad} failure${bad === 1 ? '' : 's'}`);
 process.exit(bad ? 1 : 0);

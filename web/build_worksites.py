@@ -22,7 +22,7 @@ HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
 from seo import apply_seo  # noqa: E402  head tags only
-from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
+from sitenav import nav_html, labels as nav_labels, NAV_CSS, with_style_memory  # noqa: E402
 
 ROOT = HERE.parent
 REG_PATH = ROOT / 'worksites/registry/worksites.json'
@@ -380,4 +380,6 @@ code{{font:13px "IBM Plex Mono",monospace;color:var(--steel)}}
 out = HERE / 'trade_craft_worksites.html'
 page = apply_seo(page, 'web/trade_craft_worksites.html', 'SmartCiti.X : Trade Craft Academy \u2014 work sites',
     'Work sites drawn from the worksites registry: each site plan with its numbered hand-offs between roles, step by step.', 'page')
+# AUDIT row 12: follow the reader's saved style (sitenav.with_style_memory, UX)
+page = with_style_memory(page)
 emit(out, page, f'{c["sites"]} sites | {c["handoffs"]} hand-offs | stamp {reg["source_stamp"]}')

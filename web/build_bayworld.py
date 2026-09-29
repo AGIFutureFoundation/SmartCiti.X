@@ -152,6 +152,21 @@ EDITS = [
   "    DEEP_WORLD = _TGT.DEEP_WORLD if _TGT is not None else DEEP_WORLD\n"),
 ]
 
+# BEGIN FACADE w11 (FACADE·Exteriors & Signs): the Bay dresses the kit buildings with its own AUTHORED facade rules
+# (facades/registry rules world "bay"); the economy pack holds no Bay lots, so the Bay shows no play signs.
+T.FACADE_WORLD = 'bay'
+EDITS.append(("    FACADE_WORLD = 'parishes'   # the facades world these pages draw (a world target may override it)\n",
+              "    FACADE_WORLD = 'parishes'   # the facades world these pages draw (a world target may override it)\n"
+              "    FACADE_WORLD = _TGT.FACADE_WORLD if _TGT is not None else FACADE_WORLD\n"))
+# END FACADE w11
+
+# BEGIN DRIVE (wave 11, DRIVE·Drivable Fleet): the Bay page drives with the parish page's DRIVE w11 mount (handling
+# classes, hudkit 'drive' panel, phone controls) - web/build_parishes.py carries it, this page inherits it. Fail closed:
+# a parish builder without that mount stops this build by name instead of shipping a Bay page without it.
+if (HERE / 'build_parishes.py').read_text().count('# BEGIN DRIVE w11') != 1:
+    raise SystemExit('build_bayworld: the parish builder has no DRIVE w11 mount (expected exactly once)')
+# END DRIVE
+
 # browser run 02:44: with the NPC kit off (stub) npckit's makeClock is absent and the unguarded clock line threw at
 # start-up. WORLDS (wave 10) moved the guard INTO web/build_parishes.py; this page has NPCs off, so the guarded line is
 # REQUIRED here (exactly once) - a parish builder without it stops this build by name instead of shipping the crash.

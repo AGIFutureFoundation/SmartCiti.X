@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-26",
- "source_stamp": "184046fab2c6740c",
+ "source_stamp": "6bdddfe5d0f1ed84",
  "provenance": "DERIVED",
  "provenance_note": "every fact here is read from the registry that owns it and re-derivable by build.py; the episode shapes are training/registry/training.json#episode_kinds verbatim; the fixture package is SCRIPTED and labelled as not a learner",
  "honesty": {
@@ -83,6 +83,538 @@
    "excludes_signature_why": "the signature is a signature OVER the digest, made after it; a digest that covered it would be circular. Every other byte of contributor (claimed, attested_by) and of consent is covered, so a scope or licence edited after signing breaks the digest.",
    "numbers": "exporters write integers for counts and trace sample times so Python and JavaScript canonicalise alike"
   }
+ },
+ "record_tags": {
+  "tc-contribution/1": {
+   "kinds": [
+    "advisor",
+    "crew",
+    "sim",
+    "walkaround"
+   ],
+   "fields_by_kind": "episode_kinds",
+   "status": "verified exactly as before wave 11: the same kinds, the same fields_by_kind, the same fixture"
+  },
+  "tc-contribution/2": {
+   "kinds": [
+    "advisor",
+    "crew",
+    "sim",
+    "walkaround",
+    "world-teleop"
+   ],
+   "fields_by_kind": "episode_kinds + world_episode_kinds",
+   "adds": [
+    "origin",
+    "privacy",
+    "world episode kinds"
+   ],
+   "rules_only_v2": [
+    "origin.classroom",
+    "privacy",
+    "ids.env",
+    "world.samples",
+    "world.outcome"
+   ],
+   "status": "current: what datashare/ and the contribute page's Share data section export"
+  }
+ },
+ "record_tag_current": "tc-contribution/2",
+ "world_episode_kinds": {
+  "world-teleop": {
+   "fields": [
+    "t",
+    "kind",
+    "v",
+    "env",
+    "embodiment",
+    "world",
+    "actor",
+    "seed",
+    "hz",
+    "dt_s",
+    "steps",
+    "samples",
+    "outcome"
+   ],
+   "v": 1,
+   "sample_keys": [
+    "i",
+    "pose",
+    "vel",
+    "near",
+    "a"
+   ],
+   "outcome_keys": [
+    "done",
+    "success",
+    "return",
+    "terms",
+    "collected"
+   ],
+   "what": "one teleoperated (or scripted-reference) run of a robotics env in a world",
+   "max_samples": 300,
+   "sample_hz": 5,
+   "dt_s": 0.1
+  }
+ },
+ "world_envs": {
+  "source": "robotics/registry/robotics.json#envs (runner robokit)",
+  "pose_len_by_medium": {
+   "land": 3,
+   "water": 4
+  },
+  "envs": {
+   "world.litter-pickup": {
+    "embodiments": [
+     "rover.wheeled"
+    ],
+    "medium": "land",
+    "action_fields": [
+     "v",
+     "w"
+    ],
+    "observation": [
+     {
+      "name": "pose_e",
+      "low": -20.0,
+      "high": 20.0
+     },
+     {
+      "name": "pose_n",
+      "low": -20.0,
+      "high": 20.0
+     },
+     {
+      "name": "yaw",
+      "low": -3.1416,
+      "high": 3.1416
+     },
+     {
+      "name": "v",
+      "low": -0.8,
+      "high": 1.5
+     },
+     {
+      "name": "w",
+      "low": -1.2,
+      "high": 1.2
+     },
+     {
+      "name": "target_bearing",
+      "low": -3.1416,
+      "high": 3.1416
+     },
+     {
+      "name": "target_dist",
+      "low": 0,
+      "high": 56.57
+     },
+     {
+      "name": "near",
+      "low": 0,
+      "high": 4
+     },
+     {
+      "name": "collected",
+      "low": 0,
+      "high": 8
+     }
+    ],
+    "action_ranges": [
+     {
+      "name": "v",
+      "low": -0.8,
+      "high": 1.5
+     },
+     {
+      "name": "w",
+      "low": -1.2,
+      "high": 1.2
+     }
+    ],
+    "termination": [
+     "all-collected",
+     "cap"
+    ],
+    "reward_terms": [
+     "pickup",
+     "time",
+     "collision"
+    ],
+    "cap_steps": 600,
+    "seeds": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "arena_half_m": 20.0
+   },
+   "world.litter-sort": {
+    "embodiments": [
+     "arm.on-base"
+    ],
+    "medium": "land",
+    "action_fields": [
+     "v",
+     "w",
+     "grip"
+    ],
+    "observation": [
+     {
+      "name": "pose_e",
+      "low": -20.0,
+      "high": 20.0
+     },
+     {
+      "name": "pose_n",
+      "low": -20.0,
+      "high": 20.0
+     },
+     {
+      "name": "yaw",
+      "low": -3.1416,
+      "high": 3.1416
+     },
+     {
+      "name": "v",
+      "low": -0.6,
+      "high": 1.0
+     },
+     {
+      "name": "w",
+      "low": -1.0,
+      "high": 1.0
+     },
+     {
+      "name": "target_bearing",
+      "low": -3.1416,
+      "high": 3.1416
+     },
+     {
+      "name": "target_dist",
+      "low": 0,
+      "high": 56.57
+     },
+     {
+      "name": "near",
+      "low": 0,
+      "high": 4
+     },
+     {
+      "name": "carrying",
+      "low": 0,
+      "high": 1
+     },
+     {
+      "name": "binned",
+      "low": 0,
+      "high": 4
+     }
+    ],
+    "action_ranges": [
+     {
+      "name": "v",
+      "low": -0.6,
+      "high": 1.0
+     },
+     {
+      "name": "w",
+      "low": -1.0,
+      "high": 1.0
+     },
+     {
+      "name": "grip",
+      "low": 0,
+      "high": 1
+     }
+    ],
+    "termination": [
+     "all-binned",
+     "cap"
+    ],
+    "reward_terms": [
+     "pickup",
+     "deposit",
+     "time",
+     "collision"
+    ],
+    "cap_steps": 600,
+    "seeds": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "arena_half_m": 20.0
+   },
+   "world.rov-survey": {
+    "embodiments": [
+     "rov.survey"
+    ],
+    "medium": "water",
+    "action_fields": [
+     "v",
+     "w",
+     "vz"
+    ],
+    "observation": [
+     {
+      "name": "pose_e",
+      "low": -20.0,
+      "high": 20.0
+     },
+     {
+      "name": "pose_n",
+      "low": -20.0,
+      "high": 20.0
+     },
+     {
+      "name": "yaw",
+      "low": -3.1416,
+      "high": 3.1416
+     },
+     {
+      "name": "v",
+      "low": -1.25,
+      "high": 2.5
+     },
+     {
+      "name": "w",
+      "low": -1.2,
+      "high": 1.2
+     },
+     {
+      "name": "target_bearing",
+      "low": -3.1416,
+      "high": 3.1416
+     },
+     {
+      "name": "target_dist",
+      "low": 0,
+      "high": 56.57
+     },
+     {
+      "name": "near",
+      "low": 0,
+      "high": 4
+     },
+     {
+      "name": "depth",
+      "low": 0,
+      "high": 8.0
+     },
+     {
+      "name": "target_depth",
+      "low": 0,
+      "high": 8.0
+     },
+     {
+      "name": "visited",
+      "low": 0,
+      "high": 4
+     }
+    ],
+    "action_ranges": [
+     {
+      "name": "v",
+      "low": -1.25,
+      "high": 2.5
+     },
+     {
+      "name": "w",
+      "low": -1.2,
+      "high": 1.2
+     },
+     {
+      "name": "vz",
+      "low": -1.2,
+      "high": 1.2
+     }
+    ],
+    "termination": [
+     "all-visited",
+     "cap"
+    ],
+    "reward_terms": [
+     "visit",
+     "time",
+     "collision"
+    ],
+    "cap_steps": 600,
+    "seeds": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "arena_half_m": 20.0
+   },
+   "world.gate-drive": {
+    "embodiments": [
+     "rover.wheeled"
+    ],
+    "medium": "land",
+    "action_fields": [
+     "v",
+     "w"
+    ],
+    "observation": [
+     {
+      "name": "pose_e",
+      "low": -20.0,
+      "high": 20.0
+     },
+     {
+      "name": "pose_n",
+      "low": -20.0,
+      "high": 20.0
+     },
+     {
+      "name": "yaw",
+      "low": -3.1416,
+      "high": 3.1416
+     },
+     {
+      "name": "v",
+      "low": -0.8,
+      "high": 1.5
+     },
+     {
+      "name": "w",
+      "low": -1.2,
+      "high": 1.2
+     },
+     {
+      "name": "target_bearing",
+      "low": -3.1416,
+      "high": 3.1416
+     },
+     {
+      "name": "target_dist",
+      "low": 0,
+      "high": 56.57
+     },
+     {
+      "name": "near",
+      "low": 0,
+      "high": 4
+     },
+     {
+      "name": "gates_taken",
+      "low": 0,
+      "high": 4
+     }
+    ],
+    "action_ranges": [
+     {
+      "name": "v",
+      "low": -0.8,
+      "high": 1.5
+     },
+     {
+      "name": "w",
+      "low": -1.2,
+      "high": 1.2
+     }
+    ],
+    "termination": [
+     "all-gates",
+     "cap"
+    ],
+    "reward_terms": [
+     "gate",
+     "time",
+     "collision"
+    ],
+    "cap_steps": 600,
+    "seeds": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "arena_half_m": 20.0
+   }
+  }
+ },
+ "privacy": {
+  "forbidden_keys": {
+   "person": [
+    "name",
+    "first_name",
+    "last_name",
+    "full_name",
+    "username",
+    "user",
+    "user_id",
+    "email",
+    "phone",
+    "dob",
+    "birthdate",
+    "age",
+    "gender",
+    "device_id",
+    "ip",
+    "ip_address"
+   ],
+   "free_text": [
+    "text",
+    "comment",
+    "comments",
+    "message",
+    "notes",
+    "description",
+    "free_text",
+    "transcript",
+    "chat"
+   ],
+   "precise_location": [
+    "lat",
+    "lon",
+    "lng",
+    "latitude",
+    "longitude",
+    "gps",
+    "geo",
+    "geolocation",
+    "coords",
+    "coordinates",
+    "location",
+    "address",
+    "postcode",
+    "zip"
+   ],
+   "media_biometric": [
+    "audio",
+    "voice",
+    "image",
+    "photo",
+    "camera",
+    "video",
+    "face",
+    "biometric",
+    "heart_rate",
+    "fingerprint"
+   ]
+  },
+  "forbidden_keys_note": "a partial list written here, matched case-insensitively at every depth of every episode; a key it does not list is not thereby proven harmless",
+  "email_pattern": "[^@\\s]+@[^@\\s]+\\.[A-Za-z]{2,}",
+  "free_text_max": 80,
+  "free_text_why": "every string an episode legitimately carries is an id, a short gauge label or an ISO time; a string longer than this is treated as free text and refused",
+  "claimed": "in a /2 package contributor.claimed is null (unsigned) or the signing wallet address - never a label a person typed, which may be their name",
+  "applies_to": "tc-contribution/2 packages; a tc-contribution/1 package is verified exactly as before, and the dataset builder (datashare/build_dataset.mjs) applies the same scan to /1 packages before it admits them"
+ },
+ "origin": {
+  "field": "origin",
+  "shape": "{classroom_mode: false}",
+  "why": "K-12 / classroom mode offers no data sharing at all (training.json#world_teleop.classroom). A /2 package states the mode it was exported in; classroom_mode must be exactly false, and a package that says true, or says nothing, is refused by name. A device can lie: this proves what the exporter wrote, not who held it.",
+  "classroom_from": "K-12 / classroom mode: recording and sharing are not offered at all"
  },
  "consent": {
   "statement": "I share the training episodes in this package, recorded by this device, for the scopes named in consent.scope under the licence named in consent.license. I can withdraw by not sharing the file again; copies already given away are governed by that licence. Nothing in this package names me: it carries scenario ids, control schemes and measured outcomes, and the label or wallet address I chose to attach.",
@@ -276,7 +808,12 @@
    "ids.scenario",
    "ids.hall",
    "ids.campus",
-   "dataset.counts"
+   "dataset.counts",
+   "origin.classroom",
+   "privacy",
+   "ids.env",
+   "world.samples",
+   "world.outcome"
   ],
   "last_line": "a contribution proves what a device recorded and, if signed, which key vouched for it - not who, and not that any agent or robot learned from it; nothing is sent anywhere by this bundle"
  },
@@ -385,10 +922,79 @@
    "boom-lift"
   ]
  },
+ "fixture_v2": {
+  "good": "fixture/v2/good.json",
+  "dir_why": "a subdirectory, so the /1 fixture directory holds exactly good.json and the /1 mutants (the verify page and its test read it as the /1 set)",
+  "mutants": {
+   "classroom-mode": {
+    "file": "fixture/v2/mutant-classroom-mode.json",
+    "fails": "origin.classroom"
+   },
+   "no-origin": {
+    "file": "fixture/v2/mutant-no-origin.json",
+    "fails": "record.fields"
+   },
+   "claimed-label": {
+    "file": "fixture/v2/mutant-claimed-label.json",
+    "fails": "privacy"
+   },
+   "email-in-gauges": {
+    "file": "fixture/v2/mutant-email-in-gauges.json",
+    "fails": "privacy"
+   },
+   "latitude-in-gauges": {
+    "file": "fixture/v2/mutant-latitude-in-gauges.json",
+    "fails": "privacy"
+   },
+   "free-text-in-gauges": {
+    "file": "fixture/v2/mutant-free-text-in-gauges.json",
+    "fails": "privacy"
+   },
+   "camera-in-gauges": {
+    "file": "fixture/v2/mutant-camera-in-gauges.json",
+    "fails": "privacy"
+   },
+   "unknown-env": {
+    "file": "fixture/v2/mutant-unknown-env.json",
+    "fails": "ids.env"
+   },
+   "wrong-embodiment": {
+    "file": "fixture/v2/mutant-wrong-embodiment.json",
+    "fails": "ids.env"
+   },
+   "action-length": {
+    "file": "fixture/v2/mutant-action-length.json",
+    "fails": "world.samples"
+   },
+   "samples-over-cap": {
+    "file": "fixture/v2/mutant-samples-over-cap.json",
+    "fails": "world.samples"
+   },
+   "seed-not-in-env": {
+    "file": "fixture/v2/mutant-seed-not-in-env.json",
+    "fails": "world.samples"
+   },
+   "unknown-termination": {
+    "file": "fixture/v2/mutant-unknown-termination.json",
+    "fails": "world.outcome"
+   },
+   "v2-fields-by-kind-v1": {
+    "file": "fixture/v2/mutant-v2-fields-by-kind-v1.json",
+    "fails": "episode.fields"
+   }
+  },
+  "episodes": {
+   "advisor": 1,
+   "crew": 1,
+   "sim": 3,
+   "walkaround": 1,
+   "world-teleop": 2
+  }
+ },
  "counts": {
   "episode_kinds": 4,
   "scopes": 2,
-  "rules": 16,
+  "rules": 21,
   "mutants": 21,
   "sims": 11,
   "halls": 111,

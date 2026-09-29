@@ -1,0 +1,708 @@
+{
+ "pack": "smartcitix-datashare",
+ "brand": "DATASHARE·Data Commons",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-09-29",
+ "source_stamp": "ebc5ddf1f30546ee",
+ "provenance": "DERIVED",
+ "provenance_note": "record tags, kinds, privacy, licence and scopes are read from contrib/registry/contrib.json; env facts from it and robotics/registry/robotics.json; the split ratios, card template, best-practice list and intake limits are AUTHORED here",
+ "honesty": {
+  "trained": "NOTHING HAS BEEN TRAINED. No model has been trained on these environments or on any episode they produce, and the repo records no training run. They are specs and a runnable schematic sandbox.",
+  "no_agent_trained": "exporting this file trains nothing by itself: no agent exists in this bundle and none is claimed to, until one is actually trained against this data outside it",
+  "nothing_uploaded": "nothing is uploaded by this bundle; the intake route is written, off by default and not deployed",
+  "formats": "Shaped after gym-style environment specs. Not an RLDS, LeRobot or ML-Agents file: no round-trip test exists in the repo, so no compatibility is claimed.",
+  "shaped_after": "the manifest and card are shaped after datasheet-style documentation and episode-dataset practice (versioned schemas, digests, splits by hashed id); no external format is claimed",
+  "best_practices": "each best practice listed names the file and code that enforces it; nothing else is claimed"
+ },
+ "dataset_tag": "tc-dataset/1",
+ "accepts": {
+  "package_tags": [
+   "tc-contribution/1",
+   "tc-contribution/2"
+  ],
+  "intake_tag": "tc-contribution/2",
+  "contrib_source_stamp": "6bdddfe5d0f1ed84",
+  "robotics_schema": "tc-robotics/1",
+  "robotics_contract_version": 1
+ },
+ "fields_by_kind": {
+  "sim": [
+   "t",
+   "kind",
+   "campus",
+   "hall",
+   "sim",
+   "scenario",
+   "controls",
+   "actor",
+   "operator",
+   "outcome"
+  ],
+  "advisor": [
+   "t",
+   "kind",
+   "campus",
+   "hall",
+   "advisor",
+   "topic",
+   "answer_kind"
+  ],
+  "crew": [
+   "t",
+   "kind",
+   "campus",
+   "hall",
+   "crew",
+   "role",
+   "topic",
+   "answer_kind"
+  ],
+  "walkaround": [
+   "t",
+   "kind",
+   "campus",
+   "hall",
+   "sim",
+   "point"
+  ],
+  "world-teleop": [
+   "t",
+   "kind",
+   "v",
+   "env",
+   "embodiment",
+   "world",
+   "actor",
+   "seed",
+   "hz",
+   "dt_s",
+   "steps",
+   "samples",
+   "outcome"
+  ]
+ },
+ "world_kind_versions": {
+  "world-teleop": 1
+ },
+ "manifest_shape": {
+  "record": "tc-dataset/1",
+  "built_at": "ISO-8601, passed in by the caller (the CLI takes --built-at; default is refused: no clock is read)",
+  "scope": "the one consent scope this dataset is built for",
+  "licence": "CC-BY-4.0",
+  "schema_versions": "{package record tags admitted, episode kinds with their field lists and world kind version, robotics schema and contract version, contrib source_stamp}",
+  "packages": "[{digest, record, signed, attribution, episodes, admitted_episodes}]",
+  "episodes": "[{id, kind, split, env|sim, actor, provenance: {package, index, t}}]",
+  "splits": "{train: n, val: n, test: n}",
+  "refused": "[{package, reason, detail}]",
+  "excluded": "{revoked_packages, revoked_episodes, duplicate_episodes}",
+  "digest": "SHA-256 over the canonical manifest without digest - so a card can name the exact manifest it describes"
+ },
+ "split": {
+  "ratios": {
+   "train": 80,
+   "val": 10,
+   "test": 10
+  },
+  "by": "episode id = SHA-256 of the canonical JSON of the episode (the same canonical form contrib/ digests)",
+  "rule": "bucket = first 8 hex digits of SHA-256(\"split:\" + episode id) as an integer mod 100; bucket < 80 -> train, < 90 -> val, else test. Deterministic: the same episode lands in the same split in every build, on every machine, whatever else is in the dataset, so adding packages never moves an episode between splits.",
+  "provenance": "AUTHORED ratios"
+ },
+ "dedupe": {
+  "by": "episode id (content digest). Two packages carrying byte-identical episodes (after canonicalisation) contribute it once; the manifest keeps every package the episode came from, first one first.",
+  "package_dedupe": "a package whose digest.hex was already admitted is skipped as a duplicate, by name"
+ },
+ "licence": {
+  "dataset_licence": "CC-BY-4.0",
+  "compatible": [
+   "CC-BY-4.0"
+  ],
+  "rule": "every admitted package must carry consent.license CC-BY-4.0 (contrib/ fixes one licence for every package); a package under any other id is refused by name, so the dataset licence is that one licence and its attribution list names every admitted package by digest (and wallet address, when signed)",
+  "attribution": "unsigned packages are attributed as \"unsigned package <digest16>\"; contributor.claimed is never copied into a dataset, because a label a person typed may be their name"
+ },
+ "consent_scope": {
+  "scopes": [
+   "agent-training",
+   "robot-training"
+  ],
+  "rule": "a dataset is built FOR one declared scope; a package is admitted only if its consent.scope includes it, otherwise it is refused by name (consent-scope)"
+ },
+ "revocation": {
+  "file": "datashare/revocations.json",
+  "shape": "{\"record\": \"tc-revocations/1\", \"packages\": [digest hex], \"episodes\": [episode id]}",
+  "rule": "a package digest or an episode id on the list is excluded from every later build, by name, and the manifest records how many were excluded and why. It cannot recall a copy already given away: those are governed by the licence.",
+  "how_to_ask": "a contributor who holds the package file can name its digest (printed by contrib/verify.mjs); no account and no server exist, so the maintainer of a dataset copy honours the list at build time"
+ },
+ "refusals": {
+  "verifier": "the package fails contrib/verify.mjs (any rule); the first failing rule is named",
+  "privacy": "an episode carries a forbidden key (address, age, audio, biometric, birthdate, camera, ...), an email-shaped string or free text - the same scan contrib.json#privacy declares, applied to /1 packages too",
+  "classroom": "a /2 package whose origin.classroom_mode is not false (the verifier refuses it first)",
+  "licence": "every admitted package must carry consent.license CC-BY-4.0 (contrib/ fixes one licence for every package); a package under any other id is refused by name, so the dataset licence is that one licence and its attribution list names every admitted package by digest (and wallet address, when signed)",
+  "consent-scope": "a dataset is built FOR one declared scope; a package is admitted only if its consent.scope includes it, otherwise it is refused by name (consent-scope)",
+  "revoked": "a package digest or an episode id on the list is excluded from every later build, by name, and the manifest records how many were excluded and why. It cannot recall a copy already given away: those are governed by the licence.",
+  "duplicate": "a package whose digest.hex was already admitted is skipped as a duplicate, by name"
+ },
+ "privacy": {
+  "forbidden_keys": {
+   "person": [
+    "name",
+    "first_name",
+    "last_name",
+    "full_name",
+    "username",
+    "user",
+    "user_id",
+    "email",
+    "phone",
+    "dob",
+    "birthdate",
+    "age",
+    "gender",
+    "device_id",
+    "ip",
+    "ip_address"
+   ],
+   "free_text": [
+    "text",
+    "comment",
+    "comments",
+    "message",
+    "notes",
+    "description",
+    "free_text",
+    "transcript",
+    "chat"
+   ],
+   "precise_location": [
+    "lat",
+    "lon",
+    "lng",
+    "latitude",
+    "longitude",
+    "gps",
+    "geo",
+    "geolocation",
+    "coords",
+    "coordinates",
+    "location",
+    "address",
+    "postcode",
+    "zip"
+   ],
+   "media_biometric": [
+    "audio",
+    "voice",
+    "image",
+    "photo",
+    "camera",
+    "video",
+    "face",
+    "biometric",
+    "heart_rate",
+    "fingerprint"
+   ]
+  },
+  "forbidden_keys_note": "a partial list written here, matched case-insensitively at every depth of every episode; a key it does not list is not thereby proven harmless",
+  "email_pattern": "[^@\\s]+@[^@\\s]+\\.[A-Za-z]{2,}",
+  "free_text_max": 80,
+  "free_text_why": "every string an episode legitimately carries is an id, a short gauge label or an ISO time; a string longer than this is treated as free text and refused",
+  "claimed": "in a /2 package contributor.claimed is null (unsigned) or the signing wallet address - never a label a person typed, which may be their name",
+  "applies_to": "tc-contribution/2 packages; a tc-contribution/1 package is verified exactly as before, and the dataset builder (datashare/build_dataset.mjs) applies the same scan to /1 packages before it admits them"
+ },
+ "classroom": "K-12 / classroom mode: recording and sharing are not offered at all",
+ "envs": {
+  "world.litter-pickup": {
+   "pose": [
+    [
+     -20.0,
+     20.0
+    ],
+    [
+     -20.0,
+     20.0
+    ],
+    [
+     -3.1416,
+     3.1416
+    ]
+   ],
+   "vel": [
+    [
+     -0.8,
+     1.5
+    ],
+    [
+     -1.2,
+     1.2
+    ]
+   ],
+   "a": [
+    [
+     -0.8,
+     1.5
+    ],
+    [
+     -1.2,
+     1.2
+    ]
+   ],
+   "a_names": [
+    "v",
+    "w"
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "embodiments": [
+    "rover.wheeled"
+   ],
+   "medium": "land"
+  },
+  "world.litter-sort": {
+   "pose": [
+    [
+     -20.0,
+     20.0
+    ],
+    [
+     -20.0,
+     20.0
+    ],
+    [
+     -3.1416,
+     3.1416
+    ]
+   ],
+   "vel": [
+    [
+     -0.6,
+     1.0
+    ],
+    [
+     -1.0,
+     1.0
+    ]
+   ],
+   "a": [
+    [
+     -0.6,
+     1.0
+    ],
+    [
+     -1.0,
+     1.0
+    ],
+    [
+     0,
+     1
+    ]
+   ],
+   "a_names": [
+    "v",
+    "w",
+    "grip"
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "embodiments": [
+    "arm.on-base"
+   ],
+   "medium": "land"
+  },
+  "world.rov-survey": {
+   "pose": [
+    [
+     -20.0,
+     20.0
+    ],
+    [
+     -20.0,
+     20.0
+    ],
+    [
+     -3.1416,
+     3.1416
+    ],
+    [
+     0,
+     8.0
+    ]
+   ],
+   "vel": [
+    [
+     -1.25,
+     2.5
+    ],
+    [
+     -1.2,
+     1.2
+    ]
+   ],
+   "a": [
+    [
+     -1.25,
+     2.5
+    ],
+    [
+     -1.2,
+     1.2
+    ],
+    [
+     -1.2,
+     1.2
+    ]
+   ],
+   "a_names": [
+    "v",
+    "w",
+    "vz"
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "embodiments": [
+    "rov.survey"
+   ],
+   "medium": "water"
+  },
+  "world.gate-drive": {
+   "pose": [
+    [
+     -20.0,
+     20.0
+    ],
+    [
+     -20.0,
+     20.0
+    ],
+    [
+     -3.1416,
+     3.1416
+    ]
+   ],
+   "vel": [
+    [
+     -0.8,
+     1.5
+    ],
+    [
+     -1.2,
+     1.2
+    ]
+   ],
+   "a": [
+    [
+     -0.8,
+     1.5
+    ],
+    [
+     -1.2,
+     1.2
+    ]
+   ],
+   "a_names": [
+    "v",
+    "w"
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "embodiments": [
+    "rover.wheeled"
+   ],
+   "medium": "land"
+  }
+ },
+ "pose_len_by_medium": {
+  "land": 3,
+  "water": 4
+ },
+ "sim_seat_envs": [
+  "sim.airless-sprayer",
+  "sim.boom-lift",
+  "sim.crane-lift",
+  "sim.excavator-trench",
+  "sim.forklift-run",
+  "sim.load-chart",
+  "sim.overhead-crane",
+  "sim.pressure-washer",
+  "sim.rigging-signals",
+  "sim.scaffold-bay",
+  "sim.weld-bead"
+ ],
+ "embodiments": [
+  "arm.on-base",
+  "rov.survey",
+  "rover.wheeled"
+ ],
+ "outlier": {
+  "rule": "robust z = 0.6745 * (x - median) / MAD over the episodes of one env (world) or seat (sim); |z| > 3.5 is flagged; skipped (and said so) when an env has fewer than 5 episodes or MAD is 0",
+  "fields": [
+   "return (world) ",
+   "steps (world)",
+   "samples (world)"
+  ],
+  "z": 3.5,
+  "min_n": 5
+ },
+ "best_practices": [
+  {
+   "practice": "schema versioning",
+   "what": "every package names its record tag (tc-contribution/1 or /2), every world episode its kind version v, the dataset its tag tc-dataset/1 and the schema versions it admitted",
+   "enforced_by": {
+    "file": "contrib/verify.mjs",
+    "marker": "record is ${JSON.stringify(record.record)}, not"
+   }
+  },
+  {
+   "practice": "integrity digests",
+   "what": "SHA-256 per package (contrib/), per episode (the episode id) and over the manifest",
+   "enforced_by": {
+    "file": "datashare/core.mjs",
+    "marker": "async function episodeId("
+   }
+  },
+  {
+   "practice": "dedupe by digest",
+   "what": "episode id (content digest). Two packages carrying byte-identical episodes (after canonicalisation) contribute it once; the manifest keeps every package the episode came from, first one first.",
+   "enforced_by": {
+    "file": "datashare/core.mjs",
+    "marker": "refuse('duplicate'"
+   }
+  },
+  {
+   "practice": "deterministic split by hashed id",
+   "what": "bucket = first 8 hex digits of SHA-256(\"split:\" + episode id) as an integer mod 100; bucket < 80 -> train, < 90 -> val, else test. Deterministic: the same episode lands in the same split in every build, on every machine, whatever else is in the dataset, so adding packages never moves an episode between splits.",
+   "enforced_by": {
+    "file": "datashare/core.mjs",
+    "marker": "'split:' + id"
+   }
+  },
+  {
+   "practice": "provenance per episode",
+   "what": "every episode in the manifest names the package digest it came from, its index there, its actor (human or scripted-reference) and its time",
+   "enforced_by": {
+    "file": "datashare/core.mjs",
+    "marker": "provenance: {"
+   }
+  },
+  {
+   "practice": "consent scope",
+   "what": "a dataset is built FOR one declared scope; a package is admitted only if its consent.scope includes it, otherwise it is refused by name (consent-scope)",
+   "enforced_by": {
+    "file": "datashare/core.mjs",
+    "marker": "refuse('consent-scope'"
+   }
+  },
+  {
+   "practice": "licence compatibility",
+   "what": "every admitted package must carry consent.license CC-BY-4.0 (contrib/ fixes one licence for every package); a package under any other id is refused by name, so the dataset licence is that one licence and its attribution list names every admitted package by digest (and wallet address, when signed)",
+   "enforced_by": {
+    "file": "datashare/core.mjs",
+    "marker": "refuse('licence'"
+   }
+  },
+  {
+   "practice": "revocation honoured",
+   "what": "a package digest or an episode id on the list is excluded from every later build, by name, and the manifest records how many were excluded and why. It cannot recall a copy already given away: those are governed by the licence.",
+   "enforced_by": {
+    "file": "datashare/core.mjs",
+    "marker": "refuse('revoked'"
+   }
+  },
+  {
+   "practice": "no personal data",
+   "what": "no name, email, free text, precise location, audio, camera or biometric field in any episode; contributor labels never copied",
+   "enforced_by": {
+    "file": "contrib/verify.mjs",
+    "marker": "function privacyFindings("
+   }
+  },
+  {
+   "practice": "K-12 / classroom mode shares nothing",
+   "what": "K-12 / classroom mode: recording and sharing are not offered at all",
+   "enforced_by": {
+    "file": "contrib/verify.mjs",
+    "marker": "check('origin.classroom'"
+   }
+  },
+  {
+   "practice": "range and outlier checks",
+   "what": "world samples held to the env observation and action ranges; return and steps flagged by a robust (median/MAD) outlier rule; missing fields counted",
+   "enforced_by": {
+    "file": "datashare/core.mjs",
+    "marker": "function analyse("
+   }
+  },
+  {
+   "practice": "coverage gaps",
+   "what": "per env: seeds, embodiments and actors with no episode are listed",
+   "enforced_by": {
+    "file": "datashare/core.mjs",
+    "marker": "gaps.push("
+   }
+  },
+  {
+   "practice": "dataset card",
+   "what": "a datasheet-style card (motivation, composition, collection, preprocessing, uses, distribution, maintenance) is written with every dataset, its figures computed from the manifest",
+   "enforced_by": {
+    "file": "datashare/core.mjs",
+    "marker": "function renderCard("
+   }
+  }
+ ],
+ "card": {
+  "template": [
+   {
+    "id": "motivation",
+    "title": "Motivation",
+    "lines": [
+     "Why: example episodes from this bundle's SCHEMATIC simulators and AUTHORED robotics arenas, shared on purpose by learners who ticked a consent scope, for exercising training and evaluation pipelines.",
+     "Scope this dataset was built for: {{scope}}.",
+     "Trained on it so far: nothing. {{trained}}"
+    ]
+   },
+   {
+    "id": "composition",
+    "title": "Composition",
+    "lines": [
+     "{{episodes}} episodes from {{packages}} admitted package(s); by kind: {{by_kind}}.",
+     "Splits (deterministic, by hashed episode id): {{splits}}.",
+     "World episodes by env: {{by_env}}. Coverage gaps: {{gaps}}.",
+     "No personal data: no name, email, free text, precise location, audio, camera or biometric field (refused at build)."
+    ]
+   },
+   {
+    "id": "collection",
+    "title": "Collection process",
+    "lines": [
+     "Recorded device-locally by the training recorder (opt-in per episode), exported by the learner as a contribution package with a fixed consent statement and licence, verified by contrib/verify.mjs.",
+     "Actors: {{actors}}. Scripted-reference episodes are demonstrations of a hand-written policy, not learned behaviour.",
+     "K-12 / classroom mode: sharing is not offered at all; a package that says otherwise is refused."
+    ]
+   },
+   {
+    "id": "preprocessing",
+    "title": "Preprocessing",
+    "lines": [
+     "Episodes are carried verbatim. Deduplicated by content digest ({{duplicates}} duplicate episode(s) removed); {{revoked}} episode(s) excluded by the revocation list; {{refused}} package(s) refused by name.",
+     "Range and outlier flags are reported, not corrected: {{flags}}."
+    ]
+   },
+   {
+    "id": "uses",
+    "title": "Uses",
+    "lines": [
+     "Suited to: exercising a pipeline's plumbing, format handling and evaluation code on schematic data.",
+     "Not suited to: training a controller for real equipment or a real robot; the dynamics are AUTHORED / SCHEMATIC. {{formats}}"
+    ]
+   },
+   {
+    "id": "distribution",
+    "title": "Distribution",
+    "lines": [
+     "Licence: {{licence}}. Attribution: {{attribution}}.",
+     "Nothing is uploaded by this bundle; a dataset directory is written where the maintainer runs the builder."
+    ]
+   },
+   {
+    "id": "maintenance",
+    "title": "Maintenance",
+    "lines": [
+     "Revocation: {{revocation}}",
+     "Manifest digest: {{manifest_digest}}. Rebuild with the same packages and revocation list to reproduce it."
+    ]
+   }
+  ],
+  "style": "datasheet-style sections; every {{slot}} is filled from the manifest and the analysis, never typed"
+ },
+ "intake": {
+  "file": "datashare/intake.mjs",
+  "endpoint": "/api/datashare/intake",
+  "flag_env": "DATASHARE_INTAKE",
+  "flag_on_value": "on",
+  "flag_default": "off: unless the Worker env sets DATASHARE_INTAKE to \"on\" the route answers 404 like an unknown path",
+  "r2_binding": "DATASHARE_R2",
+  "key_prefix": "packages/sha256/",
+  "key_rule": "content-addressed: packages/sha256/<digest.hex>.json - a second POST of the same package finds the key present and stores nothing new",
+  "max_bytes": 1048576,
+  "content_type": "application/json",
+  "accepts": "tc-contribution/2",
+  "accepts_why": "only a /2 package states origin.classroom_mode; a /1 package cannot prove it was not exported in classroom mode, so the intake refuses it by name (the verifier and the dataset builder still accept it)",
+  "refuses": [
+   "wrong method (405)",
+   "flag off (404)",
+   "no R2 binding (503)",
+   "wrong content-type (415)",
+   "oversize (413)",
+   "not JSON (400)",
+   "record tag not tc-contribution/2 (422)",
+   "unconsented: empty or foreign scope, wrong statement or licence (422)",
+   "classroom mode (422)",
+   "any other verifier rule (422)"
+  ],
+  "deployed": false,
+  "status": "NOT DEPLOYED and OFF by default; tested only against a mocked R2 bucket (datashare/test.mjs)",
+  "logs": "nothing: no body, no header, no address"
+ },
+ "intake_core": {
+  "file": "datashare/intake_core.mjs",
+  "carries": [
+   "contrib/verify.mjs#CONTRIB_CORE",
+   "web/trade_craft_signin.html#AUTH-CORE"
+  ],
+  "registries": {
+   "contrib": "contrib/registry/contrib.json",
+   "training": "training/registry/training.json",
+   "sims": "sims/registry/sims.json",
+   "halls": "pack/registry/halls.json",
+   "campuses": "unions/registry/campuses.json",
+   "auth": "auth/registry/auth.json",
+   "robotics": "robotics/registry/robotics.json"
+  }
+ },
+ "fixtures": {
+  "v2-agent-only": {
+   "file": "fixture/v2-agent-only.json",
+   "exercises": "consent-scope when built for robot-training; admitted for agent-training"
+  },
+  "v1-email": {
+   "file": "fixture/v1-email.json",
+   "exercises": "privacy: a /1 package the /1 verifier passes, refused by the dataset scan"
+  },
+  "v2-reexport": {
+   "file": "fixture/v2-reexport.json",
+   "exercises": "admitted; every episode is a duplicate of good-v2 by content digest"
+  }
+ },
+ "fixture_revocations": {
+  "file": "fixture/revocations.json",
+  "revokes_episode": "9280036b5e59e39f67b0d4f8bff716c0c7e1ff0e6a32c791ca78ca6d62983f06",
+  "revokes_package": "v1-email"
+ },
+ "counts": {
+  "best_practices": 13,
+  "card_sections": 7,
+  "world_envs": 4,
+  "sim_seat_envs": 11,
+  "kinds": 5,
+  "trained_models": 0
+ }
+}

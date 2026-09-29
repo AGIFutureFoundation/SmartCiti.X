@@ -4,7 +4,7 @@ HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
 from seo import apply_seo  # noqa: E402  head tags only
-from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
+from sitenav import nav_html, labels as nav_labels, NAV_CSS, with_style_memory  # noqa: E402
 from design_kit import STYLES as _STYLES  # noqa: E402
 STYLED = ('html:is([data-style],:has(input[name="tc-style"]:is('
           + ','.join(f'[value="{x["id"]}"]' for x in _STYLES) + '):checked))')
@@ -222,5 +222,7 @@ out = HERE / "smartcitix_trade_craft_academy.html"
 # page is a mirror, and a mirror that lags its source is a second truth.
 page = apply_seo(page, 'web/smartcitix_trade_craft_academy.html', 'Adaptive Stack Protocol \u2014 SmartCiti.X : Trade Craft Academy',
     'The Adaptive Stack Protocol specification behind the academy, rendered from the repository\'s own spec document.', 'page')
+# AUDIT row 12: follow the reader's saved style (sitenav.with_style_memory, UX)
+page = with_style_memory(page)
 emit(out, page, f"spec v{SPEC_VERSION}")
 print("ok", len(page), "bytes;", "h2 ids:", list(slugs))

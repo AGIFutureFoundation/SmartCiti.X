@@ -72,7 +72,7 @@ from interiors import build as build_interiors, ROOMS as ROOM_PROGRAMME  # noqa:
 from mapdata import make_codes, HUES as SHARED_HUES  # noqa: E402
 from staleness import emit  # noqa: E402
 from seo import apply_seo  # noqa: E402  head tags only
-from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
+from sitenav import nav_html, labels as nav_labels, NAV_CSS, with_style_memory  # noqa: E402
 
 _districts_json = json.load(open(PACKS / 'unions/registry/districts.json'))['districts']
 DISTRICT_MAP = {k: (d['name'], d['tagline'], d['halls'])
@@ -1013,4 +1013,6 @@ renderDetail(selected); apply();
 out = ROOT / 'trade_craft_map.html'
 PAGE = apply_seo(PAGE, 'web/trade_craft_map.html', 'Network plan \u2014 SmartCiti.X : Trade Craft Academy',
     S('seo.desc.map'), 'page')
+# AUDIT row 12: follow the reader's saved style (sitenav.with_style_memory, UX)
+PAGE = with_style_memory(PAGE)
 emit(out, PAGE, f'{len(halls)} halls | {TOTALS["all"]:,} modules', encoding='utf-8')

@@ -186,6 +186,44 @@ EPISODE_KINDS = {
     },
 }
 
+# ROBOLAB (wave 11): WORLD episode kinds - teleop demonstrations of an AUTHORED robot embodiment in a world
+# (robotics/registry/robotics.json envs, run by web/robokit.py). Kept SEPARATE from EPISODE_KINDS on purpose:
+# EPISODE_KINDS is the 3D page's roster (one recordEpisode call per kind, checked above against that page);
+# these are recorded by robokit on the world pages, under the SAME storage key, toggle, cap and export shape -
+# an extension of this recorder, never a parallel format. Contract: $SP/ROBOTICS_CONTRACT.md v1.
+WORLD_EPISODE_KINDS = {
+    'world-teleop': {
+        'v': 1,
+        'fields': ['t', 'kind', 'v', 'env', 'embodiment', 'world', 'actor', 'seed', 'hz', 'dt_s',
+                   'steps', 'samples', 'outcome'],
+        'actor': 'one of ACTORS: `human` (a learner at the keys / touch pad) or `scripted-reference` (the '
+                 'env\'s SCRIPTED reference policy, deterministic from its seed)',
+        'sample_shape': {'i': 'control step index',
+                         'pose': '[e_m, n_m, yaw_rad] env-local metres (ROV adds depth_m) - never lat/lon',
+                         'vel': '[v_ms, w_rads]',
+                         'near': '[AUTHORED object ids within 6 m, at most 4, nearest first]',
+                         'a': '[action values in the env\'s action.fields order]'},
+        'outcome_shape': {'done': 'termination id', 'success': 'bool', 'return': 'number',
+                          'terms': '{reward term: summed value}', 'collected': 'int'},
+        'granularity': 'a fixed low-rate sample (hz) of pose, velocity, nearby AUTHORED object ids and the '
+                       'control inputs, capped at max_samples - a demonstration of SCHEMATIC unicycle '
+                       'kinematics in an AUTHORED arena, not a real robot\'s trajectory',
+        'what': 'one teleoperated (or scripted-reference) run of a robotics env in a world',
+    },
+}
+WORLD_TELEOP = {
+    'sample_hz': 5,
+    'dt_s': 0.1,
+    'max_samples': 300,
+    'max_samples_policy': 'a hard cap per episode: sampling stops at max_samples (60 s at 5 Hz)',
+    'opt_in': 'per episode: kept only when the learner pressed Record before driving (or ran the reference '
+              'policy with Record on), AND the base recorder toggle is not off',
+    'no_personal_data': 'no name, email, free text, audio, camera, biometric, device id or real-world '
+                        'location - only env-local pose, velocity, AUTHORED object ids and control inputs',
+    'classroom': 'K-12 / classroom mode: recording and sharing are not offered at all',
+    'recorder': 'web/robokit.py',
+}
+
 STORAGE = {
     'key': 'tc-training',
     'toggle_key': 'tc-training-on',
@@ -432,6 +470,28 @@ if not BOOTSTRAP:
             assert f"'{p['id']}'" in blk, \
                 f"{sid}: procedure step {p['id']} is declared but ITS policy never names it"
 
+# ROBOLAB (wave 11): the world kinds are a roster of their own - never grown into EPISODE_KINDS, never a
+# name collision with it - and the recorder that keeps them writes the SAME key, honours the SAME toggle and
+# rolling cap, and samples at exactly the declared rate and cap (read, not re-typed)
+assert not set(WORLD_EPISODE_KINDS) & set(EPISODE_KINDS), 'a world kind must not reuse an existing kind id'
+for kk, k in WORLD_EPISODE_KINDS.items():
+    assert 't' in k['fields'] and 'kind' in k['fields'] and 'v' in k['fields'], \
+        f'{kk}: every world episode needs a timestamp, its kind and its kind version'
+for bad in ('name', 'email', 'text', 'audio', 'camera', 'lat', 'lon', 'device'):
+    assert all(bad not in f for k in WORLD_EPISODE_KINDS.values() for f in k['fields']), \
+        f'a world episode field names personal data: {bad}'
+assert WORLD_TELEOP['max_samples'] == round(600 * WORLD_TELEOP['dt_s'] * WORLD_TELEOP['sample_hz']), \
+    'the sample cap is 60 s of samples at the declared rate'
+robo_src = (ROOT / 'web/robokit.py').read_text() if (ROOT / 'web/robokit.py').exists() else ''
+if robo_src:
+    assert 'TR_KEY_W = D_TRAIN.storage.key' in robo_src and 'D_TRAIN.storage.toggle_key' in robo_src, \
+        'robokit must write the declared training storage key and honour its toggle'
+    assert 'D_TRAIN.storage.cap' in robo_src, 'robokit must enforce the shared rolling cap'
+    assert 'D_TRAIN.world_teleop.sample_hz' in robo_src and 'D_TRAIN.world_teleop.max_samples' in robo_src, \
+        'robokit must read the sample rate and cap from this registry'
+    assert "kind: 'world-teleop'" in robo_src, 'world-teleop is declared but robokit never records it'
+    assert 'Math.random' not in robo_src, 'robokit must be deterministic: no Math.random'
+
 stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest()[:16]
 
 doc = {
@@ -446,6 +506,8 @@ doc = {
     'storage': STORAGE,
     'trace': TRACE,
     'export_format': EXPORT_FORMAT,
+    'world_episode_kinds': WORLD_EPISODE_KINDS,
+    'world_teleop': WORLD_TELEOP,
 }
 
 OUT = HERE / 'registry'

@@ -113,6 +113,100 @@ GAUGE_FIELDS_ENUMERATED = any(isinstance(v, (list, dict)) and 'gauge' in k for k
 if GAUGE_FIELDS_ENUMERATED:
     raise AssertionError(f'{TRAINING_PATH}#trace now enumerates gauge fields; extend the trace rule to check them')
 
+# ------------------------------------------ tc-contribution/2: world kinds ---
+# training.json#world_episode_kinds (ROBOLAB, wave 11) - a second family of
+# episodes a /2 package may carry. Read verbatim; the envs they name resolve
+# against robotics/registry/robotics.json, which must then exist.
+ROBOTICS_PATH = 'robotics/registry/robotics.json'
+RECORD_V1 = 'tc-contribution/1'
+RECORD_V2 = 'tc-contribution/2'
+WORLD_KINDS = req(TRAINING, 'world_episode_kinds', TRAINING_PATH)
+WORLD_TELEOP = req(TRAINING, 'world_teleop', TRAINING_PATH)
+WORLD_MAX_SAMPLES = req(WORLD_TELEOP, 'max_samples', TRAINING_PATH + '#world_teleop')
+ROBOTICS = json.load(open(ROOT / ROBOTICS_PATH))
+ROBOTICS_ENVS = req(ROBOTICS, 'envs', ROBOTICS_PATH)
+ROBOKIT_ENVS = {eid: e for eid, e in ROBOTICS_ENVS.items() if req(e, 'runner', f'{ROBOTICS_PATH}#envs.{eid}') == 'robokit'}
+if not ROBOKIT_ENVS:
+    raise AssertionError(f'{ROBOTICS_PATH}#envs names no robokit env; a world episode could resolve nothing')
+for k in WORLD_KINDS:
+    if k in EPISODE_KINDS:
+        raise AssertionError(f'{TRAINING_PATH}: kind {k!r} is in both episode_kinds and world_episode_kinds')
+FIELDS_BY_KIND_V2 = dict(FIELDS_BY_KIND)
+WORLD_SPECS = {}
+for kind, spec in WORLD_KINDS.items():
+    FIELDS_BY_KIND_V2[kind] = list(req(spec, 'fields', f'{TRAINING_PATH}#world_episode_kinds.{kind}'))
+    WORLD_SPECS[kind] = {
+        'v': req(spec, 'v', f'{TRAINING_PATH}#world_episode_kinds.{kind}'),
+        'sample_keys': list(req(spec, 'sample_shape', f'{TRAINING_PATH}#world_episode_kinds.{kind}').keys()),
+        'outcome_keys': list(req(spec, 'outcome_shape', f'{TRAINING_PATH}#world_episode_kinds.{kind}').keys()),
+        'what': req(spec, 'what', f'{TRAINING_PATH}#world_episode_kinds.{kind}'),
+        'max_samples': WORLD_MAX_SAMPLES,
+        'sample_hz': req(WORLD_TELEOP, 'sample_hz', TRAINING_PATH + '#world_teleop'),
+        'dt_s': req(WORLD_TELEOP, 'dt_s', TRAINING_PATH + '#world_teleop'),
+    }
+# the per-env facts a world episode is held to, read from robotics.json
+WORLD_ENVS = {}
+for eid, e in ROBOKIT_ENVS.items():
+    w = f'{ROBOTICS_PATH}#envs.{eid}'
+    WORLD_ENVS[eid] = {
+        'embodiments': list(req(e, 'embodiments', w)),
+        'medium': req(e, 'medium', w),
+        'action_fields': [req(a, 'name', w + '.action') for a in req(req(e, 'action', w), 'fields', w + '.action')],
+        'observation': [{'name': req(o, 'name', w + '.observation'), 'low': req(o, 'low', w + '.observation'),
+                         'high': req(o, 'high', w + '.observation')} for o in req(e, 'observation', w)],
+        'action_ranges': [{'name': req(a, 'name', w + '.action'), 'low': req(a, 'low', w + '.action'),
+                           'high': req(a, 'high', w + '.action')} for a in req(req(e, 'action', w), 'fields', w + '.action')],
+        'termination': [req(t, 'id', w + '.termination') for t in req(e, 'termination', w)],
+        'reward_terms': [req(r, 'term', w + '.reward') for r in req(e, 'reward', w)],
+        'cap_steps': req(req(e, 'episode_cap', w), 'steps', w + '.episode_cap'),
+        'seeds': list(req(e, 'seeds', w)),
+        'arena_half_m': req(req(e, 'world', w), 'arena_half_m', w + '.world'),
+    }
+# pose: [e, n, yaw] on land, [e, n, yaw, depth] in water - training.json's own words
+POSE_LEN = {'land': 3, 'water': 4}
+for eid, e in WORLD_ENVS.items():
+    if e['medium'] not in POSE_LEN:
+        raise AssertionError(f'{ROBOTICS_PATH}#envs.{eid}.medium {e["medium"]!r} has no pose length here')
+for kind, spec in WORLD_KINDS.items():
+    if 'ROV adds depth_m' not in req(req(spec, 'sample_shape', kind), 'pose', kind + '.sample_shape'):
+        raise AssertionError(f'{TRAINING_PATH}#world_episode_kinds.{kind}.sample_shape.pose no longer says the ROV adds depth; revisit POSE_LEN')
+
+# privacy (tc-contribution/2): keys that would carry a person, a place on
+# Earth, free text or a sensor recording of a person. A partial list, stated as
+# such; matched case-insensitively against every key at every depth of every
+# episode. Values: an email-shaped string anywhere, or a string longer than
+# FREE_TEXT_MAX (free text), is refused too.
+PRIVACY = {
+    'forbidden_keys': {
+        'person': ['name', 'first_name', 'last_name', 'full_name', 'username', 'user', 'user_id', 'email', 'phone',
+                   'dob', 'birthdate', 'age', 'gender', 'device_id', 'ip', 'ip_address'],
+        'free_text': ['text', 'comment', 'comments', 'message', 'notes', 'description', 'free_text', 'transcript', 'chat'],
+        'precise_location': ['lat', 'lon', 'lng', 'latitude', 'longitude', 'gps', 'geo', 'geolocation', 'coords',
+                             'coordinates', 'location', 'address', 'postcode', 'zip'],
+        'media_biometric': ['audio', 'voice', 'image', 'photo', 'camera', 'video', 'face', 'biometric', 'heart_rate',
+                            'fingerprint'],
+    },
+    'forbidden_keys_note': 'a partial list written here, matched case-insensitively at every depth of every episode; '
+                           'a key it does not list is not thereby proven harmless',
+    'email_pattern': '[^@\\s]+@[^@\\s]+\\.[A-Za-z]{2,}',
+    'free_text_max': 80,
+    'free_text_why': 'every string an episode legitimately carries is an id, a short gauge label or an ISO time; a '
+                     'string longer than this is treated as free text and refused',
+    'claimed': 'in a /2 package contributor.claimed is null (unsigned) or the signing wallet address - never a '
+               'label a person typed, which may be their name',
+    'applies_to': RECORD_V2 + ' packages; a ' + RECORD_V1 + ' package is verified exactly as before, and the dataset '
+                  'builder (datashare/build_dataset.mjs) applies the same scan to /1 packages before it admits them',
+}
+ORIGIN_RULE = {
+    'field': 'origin',
+    'shape': '{classroom_mode: false}',
+    'why': 'K-12 / classroom mode offers no data sharing at all (training.json#world_teleop.classroom). A /2 package '
+           'states the mode it was exported in; classroom_mode must be exactly false, and a package that says true, '
+           'or says nothing, is refused by name. A device can lie: this proves what the exporter wrote, not who held it.',
+    'classroom_from': req(WORLD_TELEOP, 'classroom', TRAINING_PATH + '#world_teleop'),
+}
+V2_ONLY_RULES = ['origin.classroom', 'privacy', 'ids.env', 'world.samples', 'world.outcome']
+
 # ---------------------------------------------------------- from auth/ ---
 SIWE = req(AUTH, 'siwe', AUTH_PATH)
 SIWE_STATEMENT = req(SIWE, 'statement', AUTH_PATH + '#siwe')
@@ -305,7 +399,8 @@ CONTRACT = {
 
 RULES = ['record.fields', 'digest', 'contributor.signature', 'consent.statement', 'consent.scope',
          'consent.license', 'consent.granted_at', 'episode.kind', 'episode.fields', 'episode.t', 'trace',
-         'ids.sim', 'ids.scenario', 'ids.hall', 'ids.campus', 'dataset.counts']
+         'ids.sim', 'ids.scenario', 'ids.hall', 'ids.campus', 'dataset.counts',
+         'origin.classroom', 'privacy', 'ids.env', 'world.samples', 'world.outcome']
 
 
 # ------------------------------------------------------------- the fixture ---
@@ -521,10 +616,120 @@ def mutants(good):
     return out
 
 
+# ------------------------------------------------- tc-contribution/2 fixture ---
+FIX_ENV = sorted(WORLD_ENVS.keys())[0]
+FIX_EMB = WORLD_ENVS[FIX_ENV]['embodiments'][0]
+WORLD_KIND = sorted(WORLD_KINDS.keys())[0]
+
+
+def world_episode(t, actor, n):
+    """One synthetic world episode: n samples of a straight, slow drive from
+    the AUTHORED spawn, in the field order training/ declares. SCRIPTED data,
+    computed from the sample index - not a learner and not a robot."""
+    env = WORLD_ENVS[FIX_ENV]
+    spec = WORLD_SPECS[WORLD_KIND]
+    plen = POSE_LEN[env['medium']]
+    samples = []
+    for i in range(n):
+        n_m = round(0.1 * i, 3)
+        # an integral float is written as an int: Python and JavaScript canonicalise alike
+        pose = [0, int(n_m) if n_m == int(n_m) else n_m, 0] + ([1] if plen == 4 else [])
+        a = [0.5 if f == 'v' else 0 for f in env['action_fields']]
+        samples.append({'i': i * 2, 'pose': pose, 'vel': [0.5, 0], 'near': [], 'a': a})
+    terms = {term: 0 for term in env['reward_terms']}
+    values = {'t': t, 'kind': WORLD_KIND, 'v': spec['v'], 'env': FIX_ENV, 'embodiment': FIX_EMB, 'world': 'fixture-world',
+              'actor': actor, 'seed': env['seeds'][0], 'hz': spec['sample_hz'], 'dt_s': spec['dt_s'], 'steps': n * 2,
+              'samples': samples,
+              'outcome': {'done': env['termination'][-1], 'success': False, 'return': 0, 'terms': terms, 'collected': 0}}
+    ep = {}
+    for f in FIELDS_BY_KIND_V2[WORLD_KIND]:
+        if f not in values:
+            raise KeyError(f'fixture: a {WORLD_KIND} episode needs {f!r}; training.json added a field this builder does not fill')
+        ep[f] = values[f]
+    if sorted(values['samples'][0].keys()) != sorted(spec['sample_keys']):
+        raise AssertionError('fixture: world sample keys drifted from training.json#world_episode_kinds sample_shape')
+    if sorted(values['outcome'].keys()) != sorted(spec['outcome_keys']):
+        raise AssertionError('fixture: world outcome keys drifted from training.json#world_episode_kinds outcome_shape')
+    return ep
+
+
+def build_fixture_v2():
+    """A /2 package: every /1 kind (gauges without any free-text label) plus
+    world episodes, origin.classroom_mode false, claimed null."""
+    base = build_fixture()
+    eps = copy.deepcopy(base['dataset']['episodes'])
+    for ep in eps:
+        if ep['kind'] == 'sim' and 'trace' in ep['outcome']:
+            for smp in ep['outcome']['trace']:
+                smp['gauges'] = {k: v for k, v in smp['gauges'].items() if k != 'note'}
+    T = lambda s: f'{BUILT}T03:01:{s:02d}.000Z'
+    eps.append(world_episode(T(0), 'human', 6))
+    eps.append(world_episode(T(1), SCRIPTED_ACTOR, 4))
+    c = counts_of(eps)
+    rec = {
+        'record': RECORD_V2,
+        'product': PRODUCT,
+        'pack_version': PACK_VERSION,
+        'exported_at': BUILT + 'T00:00:00Z',
+        'contributor': {'claimed': None, 'attested_by': UNSIGNED_ATTESTATION, 'signature': None},
+        'consent': copy.deepcopy(base['consent']),
+        'origin': {'classroom_mode': False},
+        'dataset': {'episodes': eps, 'traces_attached': c['traces_attached'],
+                    'episode_counts_by_kind': c['episode_counts_by_kind'], 'sims_covered': c['sims_covered'],
+                    'fields_by_kind': FIELDS_BY_KIND_V2},
+        'honesty': copy.deepcopy(base['honesty']),
+    }
+    rec['honesty']['fixture'] = ('this ' + RECORD_V2 + ' package is SCRIPTED by contrib/build.py from synthetic episodes '
+                                 'shaped by ' + TRAINING_PATH + ' and ' + ROBOTICS_PATH + '; it is not a learner, its '
+                                 'gauges are not a machine and its world samples are not a robot')
+    return stamp_digest(rec)
+
+
+def mutants_v2(good):
+    out = {}
+    eps = lambda m: m['dataset']['episodes']
+    wep = lambda m: next(e for e in eps(m) if e['kind'] in WORLD_KINDS)
+
+    m = copy.deepcopy(good); m['origin']['classroom_mode'] = True
+    out['classroom-mode'] = ('origin.classroom', stamp_digest(m))
+    m = copy.deepcopy(good); del m['origin']
+    out['no-origin'] = ('record.fields', stamp_digest(m))
+    m = copy.deepcopy(good); m['contributor']['claimed'] = 'Jane Learner'
+    out['claimed-label'] = ('privacy', stamp_digest(m))
+    # gauges are the one surface the verifier otherwise leaves unchecked, so
+    # privacy is proven there: each mutant fails privacy and nothing else
+    tr = lambda m: next(e for e in eps(m) if e['kind'] == 'sim' and 'trace' in e['outcome'])['outcome']['trace'][0]['gauges']
+    m = copy.deepcopy(good); tr(m)['contact'] = 'someone@example.org'
+    out['email-in-gauges'] = ('privacy', stamp_digest(m))
+    m = copy.deepcopy(good); tr(m)['lat'] = 29.95
+    out['latitude-in-gauges'] = ('privacy', stamp_digest(m))
+    m = copy.deepcopy(good); tr(m)['wind'] = 'I drove this after school near my house on the corner by the park and it was a lot of fun'
+    out['free-text-in-gauges'] = ('privacy', stamp_digest(m))
+    m = copy.deepcopy(good); tr(m)['camera'] = 1
+    out['camera-in-gauges'] = ('privacy', stamp_digest(m))
+    m = copy.deepcopy(good); wep(m)['env'] = 'world.moon-base'
+    out['unknown-env'] = ('ids.env', stamp_digest(m))
+    m = copy.deepcopy(good); wep(m)['embodiment'] = 'humanoid.biped'
+    out['wrong-embodiment'] = ('ids.env', stamp_digest(m))
+    m = copy.deepcopy(good); wep(m)['samples'][1]['a'] = [0.5]
+    out['action-length'] = ('world.samples', stamp_digest(m))
+    m = copy.deepcopy(good); wep(m)['samples'] = [copy.deepcopy(wep(m)['samples'][0]) for _ in range(WORLD_MAX_SAMPLES + 1)]
+    out['samples-over-cap'] = ('world.samples', stamp_digest(m))
+    m = copy.deepcopy(good); wep(m)['seed'] = 424242
+    out['seed-not-in-env'] = ('world.samples', stamp_digest(m))
+    m = copy.deepcopy(good); wep(m)['outcome']['done'] = 'gave-up'
+    out['unknown-termination'] = ('world.outcome', stamp_digest(m))
+    m = copy.deepcopy(good); m['dataset']['fields_by_kind'] = FIELDS_BY_KIND
+    out['v2-fields-by-kind-v1'] = ('episode.fields', stamp_digest(m))
+    return out
+
+
 # -------------------------------------------------------------------- write ---
 stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest()[:16]
 good = build_fixture()
 muts = mutants(good)
+good_v2 = build_fixture_v2()
+muts_v2 = mutants_v2(good_v2)
 
 registry = {
     'pack': 'smartcitix-trade-craft-academy-contribution',
@@ -542,6 +747,18 @@ registry = {
                         'cap': req(TRAINING_STORAGE, 'cap', TRAINING_PATH + '#storage'),
                         'export_format_this_wraps': EXPORT_FORMAT},
     'contract': CONTRACT,
+    'record_tags': {
+        RECORD_V1: {'kinds': sorted(FIELDS_BY_KIND.keys()), 'fields_by_kind': 'episode_kinds',
+                    'status': 'verified exactly as before wave 11: the same kinds, the same fields_by_kind, the same fixture'},
+        RECORD_V2: {'kinds': sorted(FIELDS_BY_KIND_V2.keys()), 'fields_by_kind': 'episode_kinds + world_episode_kinds',
+                    'adds': ['origin', 'privacy', 'world episode kinds'], 'rules_only_v2': V2_ONLY_RULES,
+                    'status': 'current: what datashare/ and the contribute page\'s Share data section export'},
+    },
+    'record_tag_current': RECORD_V2,
+    'world_episode_kinds': {k: {'fields': FIELDS_BY_KIND_V2[k], **WORLD_SPECS[k]} for k in WORLD_KINDS},
+    'world_envs': {'source': ROBOTICS_PATH + '#envs (runner robokit)', 'pose_len_by_medium': POSE_LEN, 'envs': WORLD_ENVS},
+    'privacy': PRIVACY,
+    'origin': ORIGIN_RULE,
     'consent': {
         'statement': CONSENT_STATEMENT,
         'scopes': SCOPES,
@@ -596,6 +813,12 @@ registry = {
         'traces_attached': good['dataset']['traces_attached'],
         'sims_covered': good['dataset']['sims_covered'],
     },
+    'fixture_v2': {
+        'good': 'fixture/v2/good.json',
+        'dir_why': 'a subdirectory, so the /1 fixture directory holds exactly good.json and the /1 mutants (the verify page and its test read it as the /1 set)',
+        'mutants': {name: {'file': f'fixture/v2/mutant-{name}.json', 'fails': rule} for name, (rule, _) in muts_v2.items()},
+        'episodes': good_v2['dataset']['episode_counts_by_kind'],
+    },
     'counts': {
         'episode_kinds': len(EPISODE_KINDS),
         'scopes': len(SCOPES),
@@ -613,6 +836,11 @@ OUT.write_text(json.dumps(registry, indent=1, ensure_ascii=False) + '\n', encodi
 (FIX / 'good.json').write_text(json.dumps(good, indent=1, ensure_ascii=False) + '\n', encoding='utf-8')
 for name, (rule, rec) in muts.items():
     (FIX / f'mutant-{name}.json').write_text(json.dumps(rec, indent=1, ensure_ascii=False) + '\n', encoding='utf-8')
+(FIX / 'v2').mkdir(parents=True, exist_ok=True)
+(FIX / 'v2' / 'good.json').write_text(json.dumps(good_v2, indent=1, ensure_ascii=False) + '\n', encoding='utf-8')
+for name, (rule, rec) in muts_v2.items():
+    (FIX / 'v2' / f'mutant-{name}.json').write_text(json.dumps(rec, indent=1, ensure_ascii=False) + '\n', encoding='utf-8')
 print(f'contrib: {len(RULES)} rules, {len(muts)} mutants, fixture {sum(good["dataset"]["episode_counts_by_kind"].values())} '
       f'episodes / {good["dataset"]["traces_attached"]} trace, {len(EPISODE_KINDS)} episode kinds from {TRAINING_PATH} '
-      f'(source stamp {stamp})')
+      f'(source stamp {stamp}); {RECORD_V2}: {len(muts_v2)} mutants, {len(WORLD_KINDS)} world kind(s), '
+      f'{len(WORLD_ENVS)} robokit env(s)')

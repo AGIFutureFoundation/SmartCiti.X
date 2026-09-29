@@ -231,4 +231,59 @@ ok('an episode edited under a valid signature fails digest (the bytes moved); re
     pure && diverge.length === 0 && core.LAST_LINE === V.LAST_LINE, diverge);
 }
 
+/* ------------------------------------------- tc-contribution/2 (wave 11, DATASHARE) */
+{
+  const roboticsReg = read('../robotics/registry/robotics.json');
+  const g2 = read('./fixture/v2/good.json');
+  const r2 = verify(g2);
+  ok('[v2] the registry names both record tags: tc-contribution/1 (unchanged, still verified) and tc-contribution/2 (current), and the v2-only rules',
+    reg.record_tag === 'tc-contribution/1' && reg.record_tag_current === 'tc-contribution/2'
+    && JSON.stringify(Object.keys(reg.record_tags).sort()) === JSON.stringify(['tc-contribution/1', 'tc-contribution/2'])
+    && JSON.stringify(reg.record_tags['tc-contribution/1'].kinds) === JSON.stringify(Object.keys(trainingReg.episode_kinds).sort())
+    && JSON.stringify(reg.record_tags['tc-contribution/2'].rules_only_v2) === JSON.stringify(['origin.classroom', 'privacy', 'ids.env', 'world.samples', 'world.outcome'])
+    && reg.record_tags['tc-contribution/2'].rules_only_v2.every((r) => reg.verifier.rules.includes(r)));
+  ok('[v2] world_episode_kinds are training.json#world_episode_kinds verbatim (fields, sample and outcome keys, cap, hz, dt) - read, not typed',
+    JSON.stringify(Object.keys(reg.world_episode_kinds)) === JSON.stringify(Object.keys(trainingReg.world_episode_kinds))
+    && Object.entries(reg.world_episode_kinds).every(([k, w]) => JSON.stringify(w.fields) === JSON.stringify(trainingReg.world_episode_kinds[k].fields)
+      && JSON.stringify(w.sample_keys) === JSON.stringify(Object.keys(trainingReg.world_episode_kinds[k].sample_shape))
+      && JSON.stringify(w.outcome_keys) === JSON.stringify(Object.keys(trainingReg.world_episode_kinds[k].outcome_shape))
+      && w.max_samples === trainingReg.world_teleop.max_samples && w.sample_hz === trainingReg.world_teleop.sample_hz && w.dt_s === trainingReg.world_teleop.dt_s));
+  const robokit = Object.keys(roboticsReg.envs).filter((e) => roboticsReg.envs[e].runner === 'robokit').sort();
+  ok('[v2] world_envs are exactly the robokit envs of robotics.json with their embodiments, action fields, termination ids and reward terms, read',
+    JSON.stringify(Object.keys(reg.world_envs.envs).sort()) === JSON.stringify(robokit)
+    && robokit.every((e) => { const a = reg.world_envs.envs[e], b = roboticsReg.envs[e];
+      return JSON.stringify(a.embodiments) === JSON.stringify(b.embodiments) && JSON.stringify(a.action_fields) === JSON.stringify(b.action.fields.map((f) => f.name))
+        && JSON.stringify(a.termination) === JSON.stringify(b.termination.map((t) => t.id)) && JSON.stringify(a.reward_terms) === JSON.stringify(b.reward.map((r) => r.term))
+        && a.cap_steps === b.episode_cap.steps; }));
+  ok('[v2] the privacy rule lists person, free-text, precise-location and media/biometric keys, says the list is partial, caps strings, and the origin rule quotes training.json\'s classroom sentence',
+    ['person', 'free_text', 'precise_location', 'media_biometric'].every((c) => Array.isArray(reg.privacy.forbidden_keys[c]) && reg.privacy.forbidden_keys[c].length > 3)
+    && ['name', 'email', 'lat', 'lon', 'audio', 'camera', 'biometric', 'text'].every((k) => Object.values(reg.privacy.forbidden_keys).flat().includes(k))
+    && /partial list/.test(reg.privacy.forbidden_keys_note) && Number.isInteger(reg.privacy.free_text_max)
+    && reg.origin.classroom_from === trainingReg.world_teleop.classroom && /not offered/.test(reg.origin.classroom_from));
+  ok('[v2] the v2 fixture verifies on every rule, unsigned with claimed null, origin.classroom_mode false, and carries every /1 kind plus world episodes by a human and the scripted reference',
+    Object.values(r2.tally).every((t) => t.fails.length === 0) && g2.record === 'tc-contribution/2' && g2.contributor.claimed === null
+    && g2.origin.classroom_mode === false && [...Object.keys(trainingReg.episode_kinds), ...Object.keys(trainingReg.world_episode_kinds)].every((k) => r2.summary.byKind[k] >= 1)
+    && g2.dataset.episodes.some((e) => e.kind === 'world-teleop' && e.actor === 'human') && g2.dataset.episodes.some((e) => e.kind === 'world-teleop' && e.actor === 'scripted-reference')
+    && r2.tally['ids.env'].checked > 0 && r2.tally['world.samples'].checked > 0 && r2.tally['world.outcome'].checked > 0 && r2.tally.privacy.checked > 0,
+    [Object.entries(r2.tally).filter(([, t]) => t.fails.length).map(([k, t]) => k + ': ' + t.fails[0]).join(' | ')]);
+  ok('[v2] the /1 fixture still verifies unchanged, and the v2-only rules check nothing on it (a /1 package is verified exactly as before)',
+    failsBy(good).length === 0 && ['origin.classroom', 'privacy', 'ids.env', 'world.samples', 'world.outcome'].every((r) => run.tally[r].checked === 0));
+  const v2files = readdirSync(fileURLToPath(url('./fixture/v2'))).filter((f) => f.startsWith('mutant-')).sort();
+  ok('[v2] every v2 mutant the registry names exists on disk and every one on disk is named (' + v2files.length + ')',
+    v2files.length === Object.keys(reg.fixture_v2.mutants).length && v2files.length >= 12
+    && v2files.every((f) => Object.values(reg.fixture_v2.mutants).some((m) => m.file === 'fixture/v2/' + f)));
+  for (const [name, m] of Object.entries(reg.fixture_v2.mutants)) {
+    const fails = failsBy(read('./' + m.file));
+    ok(`[v2] mutant ${name} fails by exactly one rule, ${m.fails}, and no other`, fails.length === 1 && (fails[0] === m.fails || fails[0].startsWith(m.fails + ':')), [fails.join(' | ')]);
+  }
+  ok('[v2] a /2 package that says record tc-contribution/1 (no restamp of meaning) is refused: a /1 package holds no world episode',
+    (() => { const x = JSON.parse(JSON.stringify(g2)); x.record = 'tc-contribution/1'; delete x.origin; x.digest.hex = digestOf(x); return failsBy(x).includes('episode.kind'); })());
+  ok('[v2] a /2 package verifies through verifyAsync (the browser and Worker path) exactly as through verify()',
+    await (async () => { const { webcrypto } = await import('node:crypto'); const V = await import('./verify.mjs');
+      const core = V.contribCore(Object.fromEntries(Object.entries(V.REGISTRY_FILES).map(([k, rel]) => [k, JSON.parse(readFileSync(url('../' + rel), 'utf8'))])));
+      const { recoverAddress } = await import('../auth/recover.mjs');
+      const a = await core.verifyAsync(g2, webcrypto.subtle, recoverAddress);
+      return Object.values(a.tally).every((t) => t.fails.length === 0); })());
+}
+
 console.log(`\ncontrib: ${n} checks, 0 failures`);

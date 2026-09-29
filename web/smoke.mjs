@@ -364,6 +364,16 @@ async function auditPage(url) {
       check(`${tag} tap (${a.tap.n} targets)`, a.tap.small.length === 0, `${a.tap.small.length} under 24x24 and crowded: ${clip(a.tap.small)}`);
       check(`${tag} contrast (${a.contrast.checked} text runs, ${a.contrast.skipped} over canvas/image skipped)`, a.contrast.low.length === 0,
         `${a.contrast.low.length} below AA: ${clip(a.contrast.low)}`);
+      // AUDIT row 9 (UX): on a phone every visible site-nav control and every world mode button (.ctl .tc-btn) is a
+      // 44 px tall tap target (comfort size, stricter than the 24 px rule above). 0.5 px tolerance for sub-pixel layout.
+      if (vname === 'mobile') {
+        const t44 = await page.evaluate(() => [...document.querySelectorAll('.sitenav a:not(.skip), .sitenav summary, .ctl .tc-btn')]
+          .filter((e) => { const r = e.getBoundingClientRect(); const cs = getComputedStyle(e);
+            return r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && cs.display !== 'none' && !e.closest('[hidden],details:not([open])>:not(summary)'); })
+          .map((e) => ({ d: window.__auditDesc ? window.__auditDesc(e) : e.tagName, h: e.getBoundingClientRect().height }))
+          .filter((x) => x.h < 43.5).map((x) => `${x.d} ${Math.round(x.h)}px`));
+        check(`${tag} tap44 (nav + world mode buttons)`, t44.length === 0, `${t44.length} under 44 px tall: ${clip(t44)}`);
+      }
       if (vname === 'desktop') {
         check(`${tag} img-alt`, a.imgAlt.length === 0, `${a.imgAlt.length} without alt: ${clip(a.imgAlt)}`);
         check(`${tag} ids`, a.ids.length === 0, `duplicate ids: ${clip(a.ids, 6)}`);
@@ -380,6 +390,14 @@ async function auditPage(url) {
       }
       check(`${tag} focus (${reached} tab stops)`, noRing.length === 0, `${noRing.length} with no outline/box-shadow change on focus: ${clip(noRing)}`);
       check(`${tag} warnings${driver ? ` (${driver} software-GPU driver notes not counted)` : ''}`, warns.length === 0, `${warns.length} console warning(s): ${clip([...new Set(warns)], 2)}`);
+      // AUDIT row 12 (UX): a style saved on another page is applied here on load (<html data-style>).
+      // Only pages that carry the nav's Style menu promise to remember a style (the console app has none).
+      if (vname === 'desktop' && await page.evaluate(() => !!document.querySelector('[data-sitenav-style]'))) {
+        await page.evaluate(() => { try { localStorage.setItem('tc-style', 'midnight'); } catch (e) { /* storage blocked */ } });
+        await page.reload({ waitUntil: 'domcontentloaded', timeout: 60000 });
+        const ds = await page.evaluate(() => document.documentElement.getAttribute('data-style'));
+        check(`${tag} saved style applies (tc-style=midnight -> data-style)`, ds === 'midnight', `data-style is ${ds}`);
+      }
     } catch (e) { fail(`${tag} audit runs`, e.message.split('\n')[0]); }
     finally { if (ctx) await ctx.close(); }
   }

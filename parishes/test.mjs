@@ -439,5 +439,28 @@ const webpSize = (b) => {
     '[world] build_world.py fails closed: no .get() defaults, missing fields raise a named error');
 }
 
+/* ---- WORLDS w11: ONE 2048 px ground atlas per parish and per Bay county (parishes/build_atlas.py) ---- */
+{
+  const A = J('parishes/registry/ground_atlas.json'), AT = A.atlases, bad = [];
+  const packs = [['parishes', P], ['bayarea', J('bayarea/registry/bayarea.json').counties]];
+  let n = 0;
+  for (const [pack, regs] of packs) for (const [id, r] of Object.entries(regs)) {
+    const G = r.map.ground_tiles, stem = `${pack}/maps/tiles/${id}`, a = AT[stem]; n++;
+    if (!a) { bad.push(stem + ' no atlas'); continue; }
+    const shas = [...G.tiles].sort((u, v) => u.row - v.row || u.col - v.col).map((t) => t.sha256);
+    if (JSON.stringify(a.tiles_sha256) !== JSON.stringify(shas)) bad.push(stem + ' stale tiles_sha256');
+    if (a.path !== `${pack}/maps/atlas/${id}.webp` || a.px !== 2048 || a.grid !== G.grid) bad.push(stem + ' path/px/grid');
+    if (!existsSync(join(ROOT, a.path))) { bad.push(a.path + ' missing'); continue; }
+    const b = buf(a.path);
+    if (sha(b) !== a.sha256 || b.length !== a.bytes) bad.push(a.path + ' sha/bytes');
+    const wh = webpSize(b);
+    if (b.toString('ascii', 12, 16) !== 'VP8L' || !wh || wh[0] !== 2048 || wh[1] !== 2048) bad.push(`${a.path} not a lossless 2048^2 VP8L`);
+  }
+  ok(bad.length === 0 && n === Object.keys(AT).length && n === IDS.length + 9,
+    `[atlas] ${n} ground atlases (13 parishes + 9 Bay counties): lossless 2048x2048 WebP, sha/bytes as recorded, built from exactly the registry's tiles (tiles_sha256 in row/col order)${bad.length ? ' [' + bad.slice(0, 4).join('; ') + ']' : ''}`);
+  const ba = buf('parishes/build_atlas.py').toString();
+  ok(/im\.reduce\(2\)/.test(ba) && /lossless=True/.test(ba) && /does not decode to the composed pixels/.test(ba) && !/\.get\(/.test(ba),
+    '[atlas] build_atlas.py composes each tile box-reduced 2x into its cell, saves lossless, re-decodes to prove the pixels, and fails closed (no .get defaults)');
+}
 console.log(`\n${pass} ok, ${fail} FAIL`);
 process.exit(fail ? 1 : 0);

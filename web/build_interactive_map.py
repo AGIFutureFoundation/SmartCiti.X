@@ -17,6 +17,7 @@ manifest, the hall files, the skill graph, the station registry, the
 interiors geometry and the locale catalogs. The page holds no data of its
 own, so it cannot disagree with any of them.
 """
+import html
 import json
 import pathlib
 import sys
@@ -37,7 +38,7 @@ from interiors import build as build_interiors  # noqa: E402
 from mapdata import strand_modules, PIPELINE_JS, HUES, make_codes  # noqa: E402
 from staleness import emit  # noqa: E402
 from seo import apply_seo  # noqa: E402  head tags only
-from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
+from sitenav import nav_html, labels as nav_labels, NAV_CSS, with_style_memory  # noqa: E402
 
 manifest = json.load(open(ROOT / 'pack/manifest.json'))
 L = manifest['ledger']
@@ -296,6 +297,7 @@ header{padding:30px 0 10px;border-bottom:3px solid var(--mark);
   display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 22px}
 header h1{font:700 30px/1.1 "Barlow Condensed",system-ui,sans-serif;margin:0}
 header h1 .x{color:var(--mark)}
+header .brand{margin:0 0 2px;font:600 13px/1.3 "IBM Plex Sans",system-ui,sans-serif;color:var(--muted);letter-spacing:.02em}header .brand .x{color:var(--mark)}
 header .attr{color:var(--muted);font-size:13px}
 .figs{display:flex;gap:16px;flex-wrap:wrap;margin-left:auto;color:var(--muted);font-size:13px}
 .figs b{color:var(--mark);font:600 17px "Barlow Condensed",sans-serif}
@@ -408,8 +410,8 @@ footer{color:var(--muted);font-size:12.5px;margin-top:26px;border-top:1px solid 
 <body class="L-districts L-modules L-stations">
 __SITENAV__<div class="wrap">
 <header>
-  <h1>SmartCiti<span class="x">.X</span> : Trade Craft Academy</h1>
-  <span class="attr">powered by AGI Corp</span>
+  <p class="brand">SmartCiti<span class="x">.X</span> : Trade Craft Academy · powered by AGI Corp</p>
+  <h1>__PAGE_H1__</h1>
   <div class="figs" id="figs"></div>
 </header>
 <div class="bar" id="layers"></div>
@@ -728,9 +730,13 @@ __QUEST_TAIL__</body>
 page = page.replace('__TASK_JS__', TASK_RENDER_JS + TASK_FILTER_SRC).replace('__TASKS_CSS__', TASKS_CSS)
 page = page.replace('__SITENAV_CSS__', NAV_CSS).replace('__SITENAV__', NAV)
 page = page.replace('__QUEST_TAIL__', QUEST_TAIL)
+# AUDIT row 8 (UX): the h1 is the page's own nav name; the brand is the kicker line above it
+page = page.replace('__PAGE_H1__', html.escape(nav_labels('en')['nav.page.interactive']))
 page = page.replace('__DATA__', DATA).replace('__PIPELINE_JS__', PIPELINE_JS)
 out = HERE / 'trade_craft_interactive.html'
 n_st = stations_reg['count']
 page = apply_seo(page, 'web/trade_craft_interactive.html', 'SmartCiti.X : Trade Craft Academy \u2014 interactive campus map',
     'The interactive layered campus map: districts, pipeline and module layers, training stations and each hall\'s tool crib, searchable and deep-linkable.', 'page')
+# AUDIT row 12: follow the reader's saved style (sitenav.with_style_memory, UX)
+page = with_style_memory(page)
 emit(out, page, f"{L['halls']} halls | {n_st} stations | {len(I18N)} locales")

@@ -441,5 +441,76 @@ for (let i = 0; i < 900; i++) {
 }
 ok(`on wilds world ${world.id} a land vehicle rides wildsTerrain().height and stays dry`, wOff < 1e-9 && !wWet);
 
+// ------------------------------------------------ DRIVE (wave 11) handling, HUD, medium search, physkit collisions ---
+{
+  const HM = F.fleetFamilyHandling(reg);
+  const miss = reg.families.filter((f) => !HM.has(f.id) || F.FLEET_HANDLING[HM.get(f.id).cls].medium !== f.medium).map((f) => f.id);
+  ok(`[drive] every one of ${reg.families.length} families has a handling class on its own medium`, HM.size === reg.families.length && miss.length === 0, miss);
+  const used = new Set([...HM.values()].map((h) => h.cls));
+  ok(`[drive] all ${Object.keys(F.FLEET_HANDLING).length} handling classes are used by some family`, Object.keys(F.FLEET_HANDLING).every((c) => used.has(c)), [...used]);
+  const basisBad = reg.families.filter((f) => { const es = reg.fleet.filter((e) => e.family === f.id); const mx = Math.max(...es.map((e) => e.mass_kg));
+    return reg.fleet.find((e) => e.id === HM.get(f.id).basis).mass_kg !== mx; }).map((f) => f.id);
+  ok('[drive] a family drives like its heaviest member (basis = max mass_kg)', basisBad.length === 0, basisBad);
+  const want = { kayak: 'paddle', canoe: 'paddle', bicycle: 'cycle', forklift: 'worksite', ferry: 'ship', 'compact-car': 'nimble', 'fire-engine': 'heavy', skiff: 'planing', pontoon: 'displacement' };
+  const got = Object.fromEntries(Object.keys(want).map((k) => [k, HM.get(k).cls]));
+  ok('[drive] handling rule spot checks (kayak paddle, bicycle cycle, forklift worksite, ferry ship, ...)', JSON.stringify(got) === JSON.stringify(want), [JSON.stringify(got)]);
+  ok('[drive] handling rule is AUTHORED and a missing registry field throws by name', F.FLEET_HANDLING_RULE.provenance === 'AUTHORED'
+    && (() => { try { F.fleetHandlingClass({ id: 'x', medium: 'land', top_speed_kmh: 10, accel_ms2: 1 }); return false; } catch (e) { return /mass_kg/.test(e.message); } })());
+  const tFull = (cls) => { const sh = { throttle: 0, steer: 0 }; let t = 0; while (sh.throttle < 0.99 && t < 30) { F.fleetShapeInput(sh, { throttle: 1, steer: 0, brake: 0 }, cls, 1 / 60); t += 1 / 60; } return t; };
+  ok(`[drive] a heavy vehicle ramps to full throttle slower than a nimble one (${tFull('heavy').toFixed(2)} s > ${tFull('nimble').toFixed(2)} s), a ship slowest`,
+    tFull('heavy') > tFull('nimble') * 1.5 && tFull('ship') > tFull('heavy'));
+  const b0 = F.fleetShapeInput({ throttle: 1, steer: 0 }, { throttle: 0, steer: 0, brake: 1 }, 'ship', 1 / 60);
+  const cl = F.fleetShapeInput({ throttle: 0, steer: 0 }, { throttle: 9, steer: -9, brake: 0 }, 'cycle', 10);
+  ok('[drive] the brake is never shaped (full on the first frame, even for a ship); inputs clamp to -1..1', b0.brake === 1 && cl.throttle === 1 && cl.steer === -1);
+  ok('[drive] an unknown handling class throws by name', (() => { try { F.fleetShapeInput({ throttle: 0, steer: 0 }, { throttle: 1, steer: 0, brake: 0 }, 'hover', 0.1); return false; } catch (e) { return /hover/.test(e.message); } })());
+  const sp = F.fleetSpec(reg.fleet[0]);
+  const g = (v) => F.fleetHudState({ v }, sp, 'nimble');
+  ok('[drive] HUD state: km/h = |v| x 3.6 rounded, gear D / R / N with a 0.3 m/s dead band', g(10).kmh === 36 && g(10).gear === 'D' && g(-2).gear === 'R' && g(-2).kmh === 7
+    && g(0.2).gear === 'N' && g(10).medium === 'land' && g(10).top_kmh === Math.round(sp.top * 3.6));
+  const LB = Object.fromEntries(F.FLEET_HUD_LABELS.map((k) => [k, 'x' + k]));
+  const tx = F.fleetHudText(g(-5), LB);
+  ok('[drive] HUD text uses the page labels (speed, gear, medium, class, exit hint)', tx.speed === '18 xkmh' && tx.gear === 'xgear_R' && tx.medium === 'xland' && tx.cls === 'xcls_nimble' && tx.hint === 'xexit');
+  const LB2 = { ...LB }; delete LB2.exit;
+  ok('[drive] HUD text throws by name on a missing label', (() => { try { F.fleetHudText(g(1), LB2); return false; } catch (e) { return /exit/.test(e.message); } })());
+  // medium search on a real wilds world: a boat from the trailhead finds water, a car from the water finds dry ground
+  const Wm = await import(pathToFileURL(join(ROOT, 'wilds/core.mjs')).href);
+  const wreg2 = J('wilds/registry/wilds.json');
+  const found = [];
+  for (const w of wreg2.worlds) {
+    const tr = Wm.wildsTerrain(w), G = F.fleetGroundFromWilds(tr, w.biome.water_level_m);
+    const boat = F.fleetSpec(reg.fleet.find((e) => e.family === 'skiff')), car = F.fleetSpec(reg.fleet.find((e) => e.family === 'pickup'));
+    const b = F.fleetFindMedium(boat, G, w.trailhead.x, w.trailhead.z, 0, w.extent_m / 2, 12);
+    const back = b ? F.fleetFindMedium(car, G, b.x, b.z, 0, w.extent_m / 2, 6) : null;
+    // the boat faces away from the bank it was launched from: full throttle for 5 s moves it (not bounced back by the shore)
+    let moved = 0;
+    if (b) { const bs = F.fleetState(boat, G, b.x, b.z, b.yaw); for (let i = 0; i < 300; i++) F.fleetStep(bs, boat, { throttle: 1, steer: 0, brake: 0 }, G, 1 / 60); moved = Math.hypot(bs.x - b.x, bs.z - b.z); }
+    found.push({ w: w.id, boat: !!b && F.fleetCanSpawn(boat, G, b.x, b.z, b.yaw).ok && moved > 10, moved: +moved.toFixed(1), car: !!back && F.fleetCanSpawn(car, G, back.x, back.z, back.yaw).ok });
+  }
+  ok(`[drive] on every wilds world (${found.length}) a boat finds water from the trailhead facing out (moves > 10 m in 5 s) and a pickup finds dry ground from that water`,
+    found.every((f) => f.boat && f.car), found.filter((f) => !(f.boat && f.car)).map((f) => JSON.stringify(f)));
+  const dry = F.fleetFlatGround(0, 0, () => false);
+  ok('[drive] fleetFindMedium returns null (refusal stays) when no spot of the medium is within reach', F.fleetFindMedium(F.fleetSpec(reg.fleet.find((e) => e.family === 'kayak')), dry, 0, 0, 0, 200, 10) === null);
+  // collisions with a solid building through physkit: every land family driven at a wall stops at it, never through
+  const Pdir = mkdtempSync(join(tmpdir(), 'drive-phys-'));
+  execFileSync('python3', [join(ROOT, 'web/physkit.py'), '--out', join(Pdir, 'phys.mjs')]);
+  const P = await import(pathToFileURL(join(Pdir, 'phys.mjs')).href);
+  const preg = J('physics/registry/physics.json');
+  const through = [], noCrash = [];
+  for (const f of reg.families.filter((x) => x.medium === 'land')) {
+    const Wp = P.createPhysics({ reg: preg, cell: 16, ground: () => 0, water: () => null });
+    Wp.addBoxes([{ id: 'wall', cx: 0, cz: 40, hx: 30, hz: 2, yaw: 0, y0: 0, y1: 8, kind: 'building' }]);
+    const spec = F.fleetSpec(reg.fleet.find((e) => e.family === f.id)), st = F.fleetState(spec, dry, 0, 0, 0), sh = { throttle: 0, steer: 0 };
+    let crash = false;
+    for (let i = 0; i < 60 * 40; i++) {
+      const inp = F.fleetShapeInput(sh, { throttle: 1, steer: 0, brake: 0 }, HM.get(f.id).cls, 1 / 60);
+      F.fleetPhysStep(st, spec, inp, dry, 1 / 60, { coeffs: preg, world: Wp, others: [], people: [], onEvent: (e) => { if (e.type === 'crash' && e.with === 'static') crash = true; } });
+      if (st.z + spec.L / 2 > 38 + 0.25) { through.push(f.id + ' z=' + st.z.toFixed(2)); break; }
+    }
+    if (!crash && spec.top * 40 > 40) noCrash.push(f.id);
+  }
+  ok('[drive] every land family driven (shaped input) at a solid physkit building never enters it', through.length === 0, through);
+  ok('[drive] every land family fast enough to reach the wall in 40 s reports a static crash event', noCrash.length === 0, noCrash);
+}
+
 console.log(bad ? `FAIL  fleet: ${bad} of ${n + bad} checks failed` : `fleet: all ${n} checks passed`);
 process.exit(bad ? 1 : 0);

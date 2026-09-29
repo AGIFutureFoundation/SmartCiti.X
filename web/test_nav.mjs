@@ -90,6 +90,7 @@ const BUILDERS = {
   'web/trade_craft_bay.html': 'build_bayworld.py',
   'web/trade_craft_fleet.html': 'build_fleet.py',
   'web/trade_craft_packs.html': 'build_packs.py',
+  'web/trade_craft_robotics.html': 'build_robotics.py',
 };
 
 const en = JSON.parse(readFileSync(join(ROOT, 'i18n/locales/en.json'), 'utf8')).strings;
@@ -358,6 +359,76 @@ const ref = canons.length ? canons[0][1] : '';
 const differ = canons.filter(([, c]) => c !== ref).map(([p]) => `${p}: differs from ${canons[0][0]}`);
 ok('the nav is identical on every page apart from the current marker and relative prefixes',
   canons.length === OWNED.length && differ.length === 0, differ);
+
+/* ------------------------------------------- the saved style follows -- */
+// AUDIT row 12: the Style menu is on every page, so every page carrying it must
+// apply the reader's saved style before first paint - design_kit.STYLE_HEAD_JS,
+// verbatim, in the head region (before the site nav, ahead of the first
+// <style>) - and remember a new choice with sitenav.STYLE_JS. The only pages
+// excused from the head script are the ones herovideo.STYLE_MEMORY declares
+// 'tail' (their suites read the FIRST <script> as a registry payload); they
+// still carry STYLE_JS. Pages excused from STYLE_JS are named in STYLE_NO_TAIL
+// with the reason; nothing else is.
+const sty = JSON.parse(execFileSync('python3', ['-c', [
+  'import json, sys',
+  `sys.path.insert(0, ${JSON.stringify(HERE)})`,
+  'import sitenav, design_kit, herovideo',
+  'print(json.dumps({"head": design_kit.STYLE_HEAD_JS, "tail": sitenav.STYLE_JS, "mem": herovideo.STYLE_MEMORY, "pages": herovideo.DOC_HERO_PAGES}))',
+].join('\n')], { encoding: 'utf8' }));
+const TAIL_ONLY = new Set(Object.entries(sty.mem).filter(([, m]) => m === 'tail').map(([k]) => sty.pages[k][0]));
+// auth/test.mjs holds the sign-in page to exactly ONE localStorage write (the identity record), so the page
+// takes the head script only: a saved style applies there, a choice made there lasts for the visit.
+const STYLE_NO_TAIL = new Map([['web/trade_craft_signin.html', 'auth/test.mjs allows one storage write on the page']]);
+// Pages whose builder is not UX's and has not adopted the head script yet (logged as NEEDS for the owner).
+const STYLE_HEAD_PENDING = new Map([['web/trade_craft_geomap.html', 'build_geomap.py carries STYLE_JS only (NEEDS geomap owner)']]);
+const styleHeadMiss = [];
+const styleTailMiss = [];
+let styleMenus = 0;
+for (const page of OWNED) {
+  const html = readFileSync(join(ROOT, page), 'utf8');
+  if (!/data-sitenav-style/.test(html)) continue;
+  styleMenus++;
+  const navAt = html.search(/<nav\b[^>]*\bdata-sitenav\b/);
+  const headAt = html.indexOf(sty.head);
+  const firstStyle = html.indexOf('<style');
+  const inHead = headAt > 0 && headAt < navAt && headAt < firstStyle && html.split(sty.head).length === 2;
+  if (!inHead && !TAIL_ONLY.has(page) && !STYLE_HEAD_PENDING.has(page)) styleHeadMiss.push(`${page}: carries the Style menu but not STYLE_HEAD_JS once, ahead of its first <style> and the nav`);
+  if (!html.includes(sty.tail) && !STYLE_NO_TAIL.has(page)) styleTailMiss.push(`${page}: carries the Style menu but not STYLE_JS`);
+}
+ok(`every page carrying the nav Style menu (${styleMenus}) applies the saved style from <head>: STYLE_HEAD_JS once, before its first <style> (excused: ${TAIL_ONLY.size} 'tail' pages per herovideo.STYLE_MEMORY, ${STYLE_HEAD_PENDING.size} pending)`,
+  styleMenus === OWNED.length && styleHeadMiss.length === 0, styleHeadMiss);
+ok(`every page carrying the nav Style menu remembers a new choice with STYLE_JS (excused: ${[...STYLE_NO_TAIL.keys()].join(', ')})`,
+  styleTailMiss.length === 0, styleTailMiss);
+ok('the style exemptions are live: each pending page really lacks the head script, each no-tail page really lacks STYLE_JS',
+  [...STYLE_HEAD_PENDING.keys()].every((p) => !readFileSync(join(ROOT, p), 'utf8').includes(sty.head))
+  && [...STYLE_NO_TAIL.keys()].every((p) => !readFileSync(join(ROOT, p), 'utf8').includes(sty.tail)));
+
+/* ------------------------------------------ the page says which page -- */
+// AUDIT row 8: with this many pages the heading must name the page, not the brand (the brand is the kicker line).
+// Pages whose h1 is exactly their own nav label (en catalog):
+const H1_IS_NAV = ['web/trade_craft_interactive.html', 'web/trade_craft_signin.html', 'web/trade_craft_verify.html', 'web/trade_craft_wilds.html'];
+const h1Bad = [];
+for (const page of H1_IS_NAV) {
+  const hs = [...readFileSync(join(ROOT, page), 'utf8').matchAll(/<h1\b[^>]*>([\s\S]*?)<\/h1>/g)].map((m) => textOf(m[1]));
+  if (hs.length !== 1 || hs[0] !== en[PAGES[page][1]]) h1Bad.push(`${page}: h1 ${JSON.stringify(hs)} is not ${JSON.stringify(en[PAGES[page][1]])}`);
+}
+ok(`the one h1 on each of ${H1_IS_NAV.length} pages is the page's own nav label, not the brand`, h1Bad.length === 0, h1Bad);
+
+/* ------------------------------------------- the 3D page's folded nav -- */
+// AUDIT rows 7 and 6 on web/trade_craft_3d.html: the folded, clipped nav row shows a "More" chip (from the catalog,
+// drawn only while data-more is set by measurement, never taking a pointer), and a scene-build status sits in the
+// markup ahead of the scene module and is removed once window.__tc3d exists (or on an error, or after 60 s).
+{
+  const h = readFileSync(join(ROOT, 'web/trade_craft_3d.html'), 'utf8');
+  const status = h.indexOf('<div id="uxBuild" role="status"');
+  const mod = h.indexOf('<script type="module">');
+  ok('3D page: the scene-build status (role=status, catalog text) is in the markup before the scene module and goes away on window.__tc3d, an error or 60 s',
+    status > 0 && status < mod && h.includes(`<span>${en['ux.campus.building']}</span>`)
+    && /if \(window\.__tc3d \|\| performance\.now\(\) - t0 > 60000\) \{ done\(\); return; \}/.test(h) && h.includes("addEventListener('error', done)"));
+  ok('3D page: the clipped nav row carries a "More" chip, the catalog word, only while it overflows, without taking a pointer',
+    h.includes(`nav.setAttribute('data-more', '${en['ux.nav.more']}')`) && /nav\.scrollWidth > nav\.clientWidth/.test(h)
+    && /nav\.sitenav\[data-more\]:not\(:hover\):not\(:focus-within\)::before\{content:attr\(data-more\) " \u25BE" \/ "";[^}]*pointer-events:none\}/.test(h));
+}
 
 if (bad) {
   console.error(`web/test_nav: ${bad} FAILED, ${n} passed`);

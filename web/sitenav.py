@@ -53,6 +53,12 @@ GROUPS = [
         ('web/trade_craft_fleet.html', 'nav.page.fleet'),
         ('web/trade_craft_packs.html', 'nav.page.packs'),
     ]),
+    # Robotics (wave 11): the robot training lab and the page where a learner saves, analyses and (opt-in)
+    # shares their own episode data - the contribute page, named for what it now does
+    ('nav.group.robotics', [
+        ('web/trade_craft_robotics.html', 'nav.page.robotics'),
+        ('web/trade_craft_contribute.html', 'nav.page.sharedata'),
+    ]),
     ('nav.group.maps', [
         ('web/trade_craft_map.html', 'nav.page.map'),
         ('web/trade_craft_interactive.html', 'nav.page.interactive'),
@@ -62,7 +68,6 @@ GROUPS = [
     ('nav.group.records', [
         ('web/trade_craft_progress.html', 'nav.page.progress'),
         ('web/trade_craft_verify.html', 'nav.page.verify'),
-        ('web/trade_craft_contribute.html', 'nav.page.contribute'),
     ]),
     ('nav.group.sites', [
         ('web/trade_craft_spaces.html', 'nav.page.spaces'),
@@ -204,6 +209,40 @@ STYLE_JS = ("(()=>{var K='" + STYLE_KEY + "',h=document.documentElement,v=h.getA
             "document.addEventListener('change',function(e){var t=e.target;if(!t||t.name!==K)return;"
             "h.setAttribute('data-style',t.value);try{localStorage.setItem(K,t.value)}catch(e){}});})();")
 
+
+
+def with_style_memory(page_html, remember=True):
+    """Make a finished page follow the reader's saved style (AUDIT row 12):
+    STYLE_HEAD_JS (design_kit) as <script id="style-head-js"> right before
+    the first <style> in <head>, so the stored style applies before first
+    paint, and - when `remember` - STYLE_JS as <script id="style-js"> right
+    before </body>, which checks the stored style's radio and stores a new
+    choice. remember=False is for a page whose suite allows exactly one
+    storage write of its own (sign in): the saved style still applies there,
+    a choice made on that page lasts for the visit only. Both scripts carry
+    an id, so page suites that read the first bare <script> are unaffected.
+    Each anchor must occur as stated, or the build stops by name."""
+    assert 'id="style-head-js"' not in page_html and 'id="style-js"' not in page_html, \
+        'sitenav.with_style_memory: the page already carries a style script'
+    # a page may leave </head> (and </body>) implied, as HTML allows: then the
+    # head region ends at <body
+    n_head = page_html.count('</head>')
+    assert n_head <= 1, 'sitenav.with_style_memory: more than one </head>'
+    head_end = (page_html.find('</head>') if n_head else page_html.find('<body') if '<body' in page_html
+                else page_html.find('<nav class="sitenav"'))
+    assert head_end > 0, 'sitenav.with_style_memory: no </head>, no <body and no site nav'
+    first_style = page_html.find('<style', 0, head_end)
+    assert first_style > 0, 'sitenav.with_style_memory: no <style> in <head>'
+    page_html = (page_html[:first_style] + f'<script id="style-head-js">{STYLE_HEAD_JS}</script>\n'
+                 + page_html[first_style:])
+    if remember:
+        end = '</body>' if '</body>' in page_html else '</html>' if '</html>' in page_html else None
+        assert end is None or page_html.count(end) == 1, f'sitenav.with_style_memory: more than one {end}'
+        at = page_html.rfind(end) if end else len(page_html)
+        page_html = page_html[:at] + f'<script id="style-js">{STYLE_JS}</script>\n' + page_html[at:]
+    return page_html
+
+
 NAV_CSS = (
     '.sitenav{--sn-ink:var(--ink,CanvasText);--sn-bg:var(--panel,var(--surface,Canvas));'
     '--sn-rule:var(--rule,var(--line,GrayText));--sn-mute:var(--muted,var(--ink,CanvasText));'
@@ -282,7 +321,9 @@ NAV_CSS = (
     'border-block-start:1px solid var(--sn-rule)}'
     '.sitenav-group:first-child{border-block-start:0}'
     '.sitenav-g{flex:0 0 100%;margin-block-end:2px}'
-    '.sitenav-loop{font-size:12.5px}}'
+    '.sitenav-loop{font-size:12.5px}'
+    # AUDIT row 9: every nav control is a 44 px tap target on a phone (WCAG 2.5.5 comfort size)
+    '.sitenav a:not(.skip),.sitenav-menu>summary{min-block-size:44px;display:inline-flex;align-items:center}}'
     '@media (prefers-reduced-motion:reduce){.sitenav *{transition:none!important}}'
 )
 
@@ -299,7 +340,7 @@ NAV_CSS = (
 # A page that opts into the theme layer (<body class="tc-theme">, see
 # web/pagehero.py) also gets a sticky header.
 GROUP_ICONS = {
-    'nav.group.learn': 'graduation-cap', 'nav.group.play': 'gamepad-2',
+    'nav.group.learn': 'graduation-cap', 'nav.group.play': 'gamepad-2', 'nav.group.robotics': 'wrench',
     'nav.group.maps': 'map', 'nav.group.records': 'clipboard-check',
     'nav.group.sites': 'hard-hat', 'nav.group.about': 'info',
 }

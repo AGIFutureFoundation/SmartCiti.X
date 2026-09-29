@@ -19,6 +19,7 @@ One function writes the identity record, and it refuses any method whose
 `configured` is not exactly true. That is the whole safety property of this
 page, and the suite drives it directly rather than reading the source.
 """
+import html
 import json
 import pathlib
 import sys
@@ -27,7 +28,7 @@ HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
 from seo import apply_seo  # noqa: E402  head tags only
-from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
+from sitenav import nav_html, labels as nav_labels, NAV_CSS, with_style_memory  # noqa: E402
 from style_bridge import bridge_css  # noqa: E402  HOMEUX w4: page palette -> the 5 switcher styles (CSS only, no refs)
 
 
@@ -538,6 +539,7 @@ body{margin:0;background:var(--plate);color:var(--ink);
 header{padding:40px 0 8px;border-bottom:3px solid var(--mark)}
 header h1{font:700 34px/1.1 "Barlow Condensed",system-ui,sans-serif;margin:0}
 header h1 .x{color:var(--mark)}
+header .brand{margin:0 0 2px;font:600 13px/1.3 "IBM Plex Sans",system-ui,sans-serif;color:var(--muted);letter-spacing:.02em}header .brand .x{color:var(--mark)}
 header p{color:var(--muted);margin:6px 0 14px}
 h2{font:600 22px/1.2 "Barlow Condensed",system-ui,sans-serif;margin:34px 0 8px;
   text-transform:uppercase;letter-spacing:.04em}
@@ -615,8 +617,8 @@ page = '''<!doctype html>
 <body>
 ''' + NAV + '''<div class="wrap">
 <header>
-  <h1>SmartCiti<span class="x">.X</span> : Trade Craft Academy</h1>
-  <p>powered by AGI Corp &mdash; sign in</p>
+  <p class="brand">SmartCiti<span class="x">.X</span> : Trade Craft Academy · powered by AGI Corp</p>
+  <h1>''' + html.escape(nav_labels('en')['nav.page.signin']) + '''</h1>
 </header>
 
 <div class="lede">
@@ -691,6 +693,8 @@ page = '''<!doctype html>
 out = HERE / 'trade_craft_signin.html'
 page = apply_seo(page, 'web/trade_craft_signin.html', 'SmartCiti.X : Trade Craft Academy \u2014 sign in',
     'Sign in to the academy: each sign-in method and whether it is configured to work in this build, stated plainly.', 'page')
+# AUDIT row 12: follow the reader's saved style (sitenav.with_style_memory, UX)
+page = with_style_memory(page, remember=False)
 emit(out, page,
      '%d methods, %d off, %d missing pieces named'
      % (C['methods'], C['configured_false'], C['missing_server_side_items']))

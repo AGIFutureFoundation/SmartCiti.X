@@ -73,8 +73,19 @@ def TA(k):
 # the runtime needs these keys even where no static element carries them
 for _k in ('cam', 'chase', 'trafficnote', 'spec.family', 'spec.medium', 'spec.dims', 'spec.mass', 'spec.top', 'spec.accel', 'spec.turn', 'spec.seats',
            'spec.seat', 'spec.trades', 'noseat', 'openseat', 'refused', 'drive', 'float', 'medium.land', 'medium.water',
-           'shown', 'authored', 'allfam', 'touch.group', 'touch.stick', 'touch.throttle', 'touch.brake', 'touch.enter', 'touch.exit'):
+           'shown', 'authored', 'allfam', 'touch.group', 'touch.stick', 'touch.throttle', 'touch.brake', 'touch.enter', 'touch.exit',
+           'drive.test'):
     T(_k)
+
+# DRIVE (wave 11): a Test drive link per family into the wilds page (web/build_wilds.py DRIVE mount, ?drive=<family>#<world>).
+# AUTHORED choice of world per medium; both must exist in wilds/registry/wilds.json (fleet/test.mjs proves a boat finds water
+# and a land vehicle finds dry ground from every world's trailhead).
+TESTDRIVE_WORLD = {'land': 'canyon', 'water': 'delta'}
+_WILDS_IDS = [w['id'] for w in json.loads((ROOT / 'wilds/registry/wilds.json').read_text())['worlds']]
+for _m, _w in TESTDRIVE_WORLD.items():
+    if _w not in _WILDS_IDS:
+        raise SystemExit(f'build_fleet: test-drive world {_w!r} for {_m} is not in wilds/registry/wilds.json {_WILDS_IDS}')
+TESTDRIVE = {f['id']: f'trade_craft_wilds.html?drive={f["id"]}#{TESTDRIVE_WORLD[f["medium"]]}' for f in REG['families']}
 
 # nav: the page must be declared in web/sitenav.py PAGES (lead-owned). Fail
 # closed: an undeclared page stops the build by name; nothing is registered
@@ -103,6 +114,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 const REG = JSON.parse(document.getElementById('fleet-registry').textContent);
 const PHYSREG = JSON.parse(document.getElementById('physics-registry').textContent);
 const I18N = JSON.parse(document.getElementById('fleet-i18n').textContent);
+const TESTDRIVE = JSON.parse(document.getElementById('fleet-testdrive').textContent);
 function pickLocale() {
   const q = new URLSearchParams(location.search).get('lang');
   if (q && Object.hasOwn(I18N, q)) return q;
@@ -295,6 +307,10 @@ function renderSpec() {
     p.textContent = `${tr('spec.trades')}: ${e.trades.halls.join(', ')}`; p.lang = 'en';
     seat.replaceChildren(a, p);
   }
+  const td = document.createElement('a');   // DRIVE (wave 11): Test drive this family in the wilds
+  td.className = 'tc-btn tc-btn-ghost'; td.href = TESTDRIVE[e.family]; td.dataset.testdrive = e.family; td.textContent = tr('drive.test');
+  if (typeof td.href !== 'string' || !TESTDRIVE[e.family]) throw new Error('fleet: no test-drive link for ' + e.family);
+  seat.appendChild(td);
   $('#btn-drive').textContent = e.medium === 'land' ? tr('drive') : tr('float');
   $('#btn-cam').textContent = camMode === 'chase' ? tr('cam') : tr('chase');
   $('#spec-badge').textContent = tr('authored');
@@ -539,6 +555,7 @@ body[data-fleet-mode="drive"] .fl-spec,body[data-fleet-mode="float"] .fl-spec{{d
 <script type="application/json" id="fleet-registry">__FLEET_REG__</script>
 <script type="application/json" id="physics-registry">__PHYS_REG__</script>
 <script type="application/json" id="fleet-i18n">__FLEET_I18N__</script>
+<script type="application/json" id="fleet-testdrive">{json.dumps(TESTDRIVE, sort_keys=True)}</script>
 <script type="importmap">
 {{"imports":{{
   "three":"./vendor/three.module.min.js",

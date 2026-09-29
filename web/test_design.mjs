@@ -331,5 +331,39 @@ check(PH.patterns.length >= 5 && PH.patterns.every((p) => html.includes(`<td>${p
   check(cards.length === 5 && cards.every((c) => ST.ids.includes(c[1]) && +c[2] >= 4.5 && (c[3].match(/<li>/g) || []).length === ST.pairs.length + Object.keys(ST.hero).length),
     'design page: a side-by-side preview of all five styles, each card listing its measured ratios');
 }
+// ---- Materials & colour (PATTERN, wave 11): exterior recipes + colour categories drawn by patternkit
+{
+  const EXT = JSON.parse(readFileSync(join(ROOT, 'surfaces/registry/exterior.json'), 'utf8'));
+  const en = JSON.parse(readFileSync(join(ROOT, 'i18n/locales/en.json'), 'utf8')).strings;
+  const at = html.indexOf('<section class="g-sec" id="materials"');
+  const next = html.indexOf('<section class="g-sec"', at + 1);
+  const sec = at < 0 ? '' : html.slice(at, next < 0 ? html.indexOf('</main>') : next);
+  check(sec.length > 0 && /<a href="#materials">/.test(html), 'materials: the section exists and the table of contents links it');
+  const cvs = [...sec.matchAll(/<canvas class="pk-cv" width="(\d+)" height="(\d+)" data-recipe="([^"]+)" data-part="([a-z]+)"/g)];
+  check(cvs.length === Object.keys(EXT.recipes).length && cvs.every((m) => m[3] in EXT.recipes && EXT.recipes[m[3]].uses.includes(m[4])
+    && (+m[1] & (+m[1] - 1)) === 0 && m[1] === m[2]),
+    `materials: one runtime-drawn preview canvas per recipe (${cvs.length}), square power-of-two, part from the recipe uses`);
+  check(!/<img[\s>]|\.png|\.jpg|\.webp/i.test(sec), 'materials: previews ship no image file (drawn at runtime)');
+  check(html.includes('const PatternKit') && html.includes('PatternKit.load(') && html.includes(EXT.source_stamp),
+    'materials: patternkit and the registry data (by source stamp) are inlined');
+  const sws = [...sec.matchAll(/<li class="pk-sw" style="background:(#[0-9A-F]{6});color:(#[0-9A-F]{6})"/g)];
+  const lets = [...sec.matchAll(/<li class="pk-let" style="background:(#[0-9A-F]{6});color:(#[0-9A-F]{6})"/g)];
+  const lin = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+  const L = (h) => { const c = [1, 3, 5].map((i) => lin(parseInt(h.slice(i, i + 2), 16))); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
+  const cr = (a, b) => { const x = L(a), y = L(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+  const nCol = Object.values(EXT.colour_families).reduce((a, f) => a + f.colours.length, 0);
+  const nLet = Object.values(EXT.colour_families).reduce((a, f) => a + f.lettering.length, 0);
+  const worst = Math.min(...[...sws, ...lets].map((m) => cr(m[2], m[1])));
+  check(sws.length === nCol && lets.length === nLet && worst >= 4.5,
+    `materials: every text pair the section shows (${sws.length} swatches + ${lets.length} lettering) reaches WCAG AA 4.5:1 (worst ${worst.toFixed(2)})`);
+  const fams = [...sec.matchAll(/<button type="button" class="pk-f" data-fam="([a-z]*)" aria-pressed="(true|false)"/g)];
+  check(fams.length === Object.keys(EXT.colour_families).length + 1 && fams[0][1] === '' && fams[0][2] === 'true'
+    && fams.slice(1).every((m) => m[1] in EXT.colour_families) && /role="group"/.test(sec),
+    'materials: a category filter (All + every colour category) as a labelled toggle-button group');
+  check(sec.includes('<p class="pk-prov">') && sec.includes(en['pattern.provenance']) && /AUTHORED/.test(en['pattern.provenance']) && /Machado 2009/.test(sec) && sec.includes(`dE ${EXT.checks.cvd.min_delta_e}`),
+    'materials: honest provenance line (AUTHORED) and the stated CVD method and floor');
+  check(['title', 'filter', 'all', 'swatches', 'previews', 'lettering'].every((k) => sec.includes(en['pattern.' + k].replace(/&/g, '&amp;'))),
+    'materials: UI strings come from the pattern.* locale keys');
+}
 console.log(`${oks} checks passed${fails ? `, ${fails} FAILED` : ''}.`);
 process.exit(fails ? 1 : 0);

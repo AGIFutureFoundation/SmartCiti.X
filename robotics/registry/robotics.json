@@ -1,0 +1,2887 @@
+{
+ "pack": "smartcitix-robotics",
+ "schema": "tc-robotics/1",
+ "contract_version": 1,
+ "built": "2026-09-29",
+ "source_stamp": "cd37eedbe9936a2b",
+ "honesty": {
+  "trained": "NOTHING HAS BEEN TRAINED. No model has been trained on these environments or on any episode they produce, and the repo records no training run. They are specs and a runnable schematic sandbox.",
+  "authored": "Arenas, embodiments and dynamics are AUTHORED / SCHEMATIC (unicycle kinematics, circle obstacles); not the dynamics of any real robot, vehicle or ROV.",
+  "derived": "Counts and limits named in `sources` are READ from sims/, ambient/, tasks/, restoration/, underwater/ and web/deepkit.py at build time.",
+  "scripted": "Reference policies are SCRIPTED: hand-written, deterministic, seeded - no model, no network.",
+  "formats": "Shaped after gym-style environment specs. Not an RLDS, LeRobot or ML-Agents file: no round-trip test exists in the repo, so no compatibility is claimed.",
+  "data": "Episodes (training/ kind world-teleop) are opt-in per episode, device-local, and carry no names, emails, free text, audio, camera, biometric, device id or real-world location. Classroom / K-12 mode offers neither recording nor sharing."
+ },
+ "embodiments": {
+  "rover.wheeled": {
+   "id": "rover.wheeled",
+   "name": "Wheeled rover",
+   "kind": "wheeled-rover",
+   "medium": "land",
+   "provenance": "AUTHORED",
+   "dims_m": {
+    "length": 0.9,
+    "width": 0.7,
+    "height": 0.6
+   },
+   "mass_kg": 45,
+   "limits": {
+    "v_min_ms": -0.8,
+    "v_max_ms": 1.5,
+    "w_max_rads": 1.2
+   },
+   "radius_m": 0.45,
+   "sensors": [
+    {
+     "id": "pose",
+     "what": "env-local position and heading (SCHEMATIC odometry, exact)",
+     "unit": "m, rad"
+    },
+    {
+     "id": "near",
+     "what": "ids of AUTHORED objects within 6 m (at most 4, nearest first)",
+     "unit": "ids"
+    },
+    {
+     "id": "target",
+     "what": "bearing and distance to the nearest open target",
+     "unit": "rad, m"
+    }
+   ],
+   "kinematics": "unicycle: e += v sin(yaw) dt, n += v cos(yaw) dt, yaw += w dt (SCHEMATIC)"
+  },
+  "arm.on-base": {
+   "id": "arm.on-base",
+   "name": "Arm on a wheeled base",
+   "kind": "arm-on-base",
+   "medium": "land",
+   "provenance": "AUTHORED",
+   "dims_m": {
+    "length": 1.0,
+    "width": 0.8,
+    "height": 1.2
+   },
+   "mass_kg": 70,
+   "limits": {
+    "v_min_ms": -0.6,
+    "v_max_ms": 1.0,
+    "w_max_rads": 1.0,
+    "reach_m": 0.9,
+    "payload": 1
+   },
+   "radius_m": 0.5,
+   "sensors": [
+    {
+     "id": "pose",
+     "what": "env-local position and heading (SCHEMATIC odometry, exact)",
+     "unit": "m, rad"
+    },
+    {
+     "id": "near",
+     "what": "ids of AUTHORED objects within 6 m (at most 4, nearest first)",
+     "unit": "ids"
+    },
+    {
+     "id": "grip",
+     "what": "whether the gripper holds an item",
+     "unit": "bool"
+    }
+   ],
+   "kinematics": "unicycle base; the arm is SCHEMATIC - a reach radius and a one-item gripper, no joint model"
+  },
+  "rov.survey": {
+   "id": "rov.survey",
+   "name": "Survey ROV",
+   "kind": "rov",
+   "medium": "water",
+   "provenance": "AUTHORED",
+   "dims_m": {
+    "length": 0.8,
+    "width": 0.6,
+    "height": 0.5
+   },
+   "mass_kg": 30,
+   "limits": {
+    "v_min_ms": -1.25,
+    "v_max_ms": 2.5,
+    "w_max_rads": 1.2,
+    "vz_max_ms": 1.2,
+    "depth_max_m": 8.0
+   },
+   "limits_source": "web/deepkit.py#DEEP_SPEED (rov, turn, vertical); depth_max_m AUTHORED",
+   "radius_m": 0.4,
+   "sensors": [
+    {
+     "id": "pose",
+     "what": "env-local position, heading and depth (SCHEMATIC, exact)",
+     "unit": "m, rad, m"
+    },
+    {
+     "id": "near",
+     "what": "ids of AUTHORED monitoring targets within 6 m (at most 4)",
+     "unit": "ids"
+    },
+    {
+     "id": "target",
+     "what": "bearing, distance and depth of the nearest unvisited target",
+     "unit": "rad, m, m"
+    }
+   ],
+   "kinematics": "unicycle in the horizontal plane + a depth rate (SCHEMATIC); no buoyancy, current or tether model"
+  }
+ },
+ "teleop": {
+  "rover.wheeled": {
+   "keyboard": [
+    {
+     "keys": "W / ArrowUp",
+     "field": "v",
+     "value": "max"
+    },
+    {
+     "keys": "S / ArrowDown",
+     "field": "v",
+     "value": "min"
+    },
+    {
+     "keys": "A / ArrowLeft",
+     "field": "w",
+     "value": "+max"
+    },
+    {
+     "keys": "D / ArrowRight",
+     "field": "w",
+     "value": "-max"
+    }
+   ],
+   "touch": [
+    {
+     "id": "fwd",
+     "label_key": "robo.t.fwd",
+     "field": "v",
+     "value": "max"
+    },
+    {
+     "id": "back",
+     "label_key": "robo.t.back",
+     "field": "v",
+     "value": "min"
+    },
+    {
+     "id": "left",
+     "label_key": "robo.t.left",
+     "field": "w",
+     "value": "+max"
+    },
+    {
+     "id": "right",
+     "label_key": "robo.t.right",
+     "field": "w",
+     "value": "-max"
+    }
+   ],
+   "min_touch_px": 44
+  },
+  "arm.on-base": {
+   "keyboard": [
+    {
+     "keys": "W / ArrowUp",
+     "field": "v",
+     "value": "max"
+    },
+    {
+     "keys": "S / ArrowDown",
+     "field": "v",
+     "value": "min"
+    },
+    {
+     "keys": "A / ArrowLeft",
+     "field": "w",
+     "value": "+max"
+    },
+    {
+     "keys": "D / ArrowRight",
+     "field": "w",
+     "value": "-max"
+    },
+    {
+     "keys": "G / Space",
+     "field": "grip",
+     "value": 1
+    }
+   ],
+   "touch": [
+    {
+     "id": "fwd",
+     "label_key": "robo.t.fwd",
+     "field": "v",
+     "value": "max"
+    },
+    {
+     "id": "back",
+     "label_key": "robo.t.back",
+     "field": "v",
+     "value": "min"
+    },
+    {
+     "id": "left",
+     "label_key": "robo.t.left",
+     "field": "w",
+     "value": "+max"
+    },
+    {
+     "id": "right",
+     "label_key": "robo.t.right",
+     "field": "w",
+     "value": "-max"
+    },
+    {
+     "id": "grip",
+     "label_key": "robo.t.grip",
+     "field": "grip",
+     "value": 1
+    }
+   ],
+   "min_touch_px": 44
+  },
+  "rov.survey": {
+   "keyboard": [
+    {
+     "keys": "W / ArrowUp",
+     "field": "v",
+     "value": "max"
+    },
+    {
+     "keys": "S / ArrowDown",
+     "field": "v",
+     "value": "min"
+    },
+    {
+     "keys": "A / ArrowLeft",
+     "field": "w",
+     "value": "+max"
+    },
+    {
+     "keys": "D / ArrowRight",
+     "field": "w",
+     "value": "-max"
+    },
+    {
+     "keys": "R",
+     "field": "vz",
+     "value": "-max (up)"
+    },
+    {
+     "keys": "F",
+     "field": "vz",
+     "value": "+max (down)"
+    }
+   ],
+   "touch": [
+    {
+     "id": "fwd",
+     "label_key": "robo.t.fwd",
+     "field": "v",
+     "value": "max"
+    },
+    {
+     "id": "back",
+     "label_key": "robo.t.back",
+     "field": "v",
+     "value": "min"
+    },
+    {
+     "id": "left",
+     "label_key": "robo.t.left",
+     "field": "w",
+     "value": "+max"
+    },
+    {
+     "id": "right",
+     "label_key": "robo.t.right",
+     "field": "w",
+     "value": "-max"
+    },
+    {
+     "id": "up",
+     "label_key": "robo.t.up",
+     "field": "vz",
+     "value": "-max"
+    },
+    {
+     "id": "down",
+     "label_key": "robo.t.down",
+     "field": "vz",
+     "value": "+max"
+    }
+   ],
+   "min_touch_px": 44
+  }
+ },
+ "envs": {
+  "world.litter-pickup": {
+   "id": "world.litter-pickup",
+   "version": 1,
+   "name": "Litter pickup",
+   "brief": "Drive the rover over AUTHORED litter items (types read from ambient/) to collect them all.",
+   "provenance": "AUTHORED",
+   "runner": "robokit",
+   "medium": "land",
+   "world": {
+    "pages": [
+     "web/trade_craft_parishes.html",
+     "web/trade_craft_bay.html",
+     "web/trade_craft_robotics.html"
+    ],
+    "frame": "env-local metres, origin at the AUTHORED spawn, yaw 0 = +n, CCW positive; never lat/lon",
+    "arena_half_m": 20.0
+   },
+   "embodiments": [
+    "rover.wheeled"
+   ],
+   "objects": {
+    "litter": 8,
+    "obstacles": 6,
+    "litter_types": [
+     "bag",
+     "bottle",
+     "can",
+     "cup",
+     "paper"
+    ]
+   },
+   "sources": [
+    "ambient/registry/ambient.json#litter",
+    "tasks/registry/tasks.json#tasks"
+   ],
+   "observation": [
+    {
+     "name": "pose_e",
+     "unit": "m",
+     "low": -20.0,
+     "high": 20.0,
+     "dtype": "float"
+    },
+    {
+     "name": "pose_n",
+     "unit": "m",
+     "low": -20.0,
+     "high": 20.0,
+     "dtype": "float"
+    },
+    {
+     "name": "yaw",
+     "unit": "rad",
+     "low": -3.1416,
+     "high": 3.1416,
+     "dtype": "float"
+    },
+    {
+     "name": "v",
+     "unit": "m/s",
+     "low": -0.8,
+     "high": 1.5,
+     "dtype": "float"
+    },
+    {
+     "name": "w",
+     "unit": "rad/s",
+     "low": -1.2,
+     "high": 1.2,
+     "dtype": "float"
+    },
+    {
+     "name": "target_bearing",
+     "unit": "rad",
+     "low": -3.1416,
+     "high": 3.1416,
+     "dtype": "float"
+    },
+    {
+     "name": "target_dist",
+     "unit": "m",
+     "low": 0,
+     "high": 56.57,
+     "dtype": "float"
+    },
+    {
+     "name": "near",
+     "unit": "ids",
+     "low": 0,
+     "high": 4,
+     "dtype": "id-list",
+     "shape": [
+      4
+     ]
+    },
+    {
+     "name": "collected",
+     "unit": "count",
+     "low": 0,
+     "high": 8,
+     "dtype": "int"
+    }
+   ],
+   "action": {
+    "type": "continuous",
+    "fields": [
+     {
+      "name": "v",
+      "unit": "m/s",
+      "low": -0.8,
+      "high": 1.5
+     },
+     {
+      "name": "w",
+      "unit": "rad/s",
+      "low": -1.2,
+      "high": 1.2
+     }
+    ]
+   },
+   "reward": [
+    {
+     "term": "pickup",
+     "weight": 1.0,
+     "unit": "per item",
+     "why": "an item was collected (within 0.9 m)"
+    },
+    {
+     "term": "time",
+     "weight": -0.01,
+     "unit": "per step",
+     "why": "finish sooner"
+    },
+    {
+     "term": "collision",
+     "weight": -0.5,
+     "unit": "per contact",
+     "why": "an obstacle or the arena wall was struck"
+    }
+   ],
+   "termination": [
+    {
+     "id": "all-collected",
+     "when": "every litter item is collected (success)"
+    },
+    {
+     "id": "cap",
+     "when": "600 control steps (60 s) elapsed"
+    }
+   ],
+   "episode_cap": {
+    "steps": 600,
+    "dt_s": 0.1
+   },
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "rng": "mulberry32(seed)",
+   "reference_policy": {
+    "id": "ref.litter-pickup",
+    "provenance": "SCRIPTED",
+    "steps": [
+     "turn toward the nearest open target (proportional on bearing)",
+     "drive at a speed that falls with the heading error",
+     "veer away when an obstacle sits within 2 m ahead"
+    ],
+    "note": "hand-written and deterministic; not learned, no model, no network"
+   }
+  },
+  "world.litter-sort": {
+   "id": "world.litter-sort",
+   "version": 1,
+   "name": "Litter sort",
+   "brief": "Pick each litter item with the arm (grip within reach) and drop it in the bin.",
+   "provenance": "AUTHORED",
+   "runner": "robokit",
+   "medium": "land",
+   "world": {
+    "pages": [
+     "web/trade_craft_parishes.html",
+     "web/trade_craft_bay.html",
+     "web/trade_craft_robotics.html"
+    ],
+    "frame": "env-local metres, origin at the AUTHORED spawn, yaw 0 = +n, CCW positive; never lat/lon",
+    "arena_half_m": 20.0
+   },
+   "embodiments": [
+    "arm.on-base"
+   ],
+   "objects": {
+    "litter": 4,
+    "obstacles": 4,
+    "bin": 1,
+    "litter_types": [
+     "bag",
+     "bottle",
+     "can",
+     "cup",
+     "paper"
+    ]
+   },
+   "sources": [
+    "ambient/registry/ambient.json#litter"
+   ],
+   "observation": [
+    {
+     "name": "pose_e",
+     "unit": "m",
+     "low": -20.0,
+     "high": 20.0,
+     "dtype": "float"
+    },
+    {
+     "name": "pose_n",
+     "unit": "m",
+     "low": -20.0,
+     "high": 20.0,
+     "dtype": "float"
+    },
+    {
+     "name": "yaw",
+     "unit": "rad",
+     "low": -3.1416,
+     "high": 3.1416,
+     "dtype": "float"
+    },
+    {
+     "name": "v",
+     "unit": "m/s",
+     "low": -0.6,
+     "high": 1.0,
+     "dtype": "float"
+    },
+    {
+     "name": "w",
+     "unit": "rad/s",
+     "low": -1.0,
+     "high": 1.0,
+     "dtype": "float"
+    },
+    {
+     "name": "target_bearing",
+     "unit": "rad",
+     "low": -3.1416,
+     "high": 3.1416,
+     "dtype": "float"
+    },
+    {
+     "name": "target_dist",
+     "unit": "m",
+     "low": 0,
+     "high": 56.57,
+     "dtype": "float"
+    },
+    {
+     "name": "near",
+     "unit": "ids",
+     "low": 0,
+     "high": 4,
+     "dtype": "id-list",
+     "shape": [
+      4
+     ]
+    },
+    {
+     "name": "carrying",
+     "unit": "bool",
+     "low": 0,
+     "high": 1,
+     "dtype": "bool"
+    },
+    {
+     "name": "binned",
+     "unit": "count",
+     "low": 0,
+     "high": 4,
+     "dtype": "int"
+    }
+   ],
+   "action": {
+    "type": "continuous",
+    "fields": [
+     {
+      "name": "v",
+      "unit": "m/s",
+      "low": -0.6,
+      "high": 1.0
+     },
+     {
+      "name": "w",
+      "unit": "rad/s",
+      "low": -1.0,
+      "high": 1.0
+     },
+     {
+      "name": "grip",
+      "unit": "0|1",
+      "low": 0,
+      "high": 1
+     }
+    ]
+   },
+   "reward": [
+    {
+     "term": "pickup",
+     "weight": 0.2,
+     "unit": "per grip",
+     "why": "an item was lifted"
+    },
+    {
+     "term": "deposit",
+     "weight": 1.0,
+     "unit": "per item",
+     "why": "an item was dropped in the bin"
+    },
+    {
+     "term": "time",
+     "weight": -0.01,
+     "unit": "per step",
+     "why": "finish sooner"
+    },
+    {
+     "term": "collision",
+     "weight": -0.5,
+     "unit": "per contact",
+     "why": "an obstacle or the arena wall was struck"
+    }
+   ],
+   "termination": [
+    {
+     "id": "all-binned",
+     "when": "every item is in the bin (success)"
+    },
+    {
+     "id": "cap",
+     "when": "600 control steps (60 s) elapsed"
+    }
+   ],
+   "episode_cap": {
+    "steps": 600,
+    "dt_s": 0.1
+   },
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "rng": "mulberry32(seed)",
+   "reference_policy": {
+    "id": "ref.litter-sort",
+    "provenance": "SCRIPTED",
+    "steps": [
+     "turn toward the nearest open target (proportional on bearing)",
+     "drive at a speed that falls with the heading error",
+     "veer away when an obstacle sits within 2 m ahead"
+    ],
+    "note": "hand-written and deterministic; not learned, no model, no network"
+   }
+  },
+  "world.rov-survey": {
+   "id": "world.rov-survey",
+   "version": 1,
+   "name": "ROV monitoring survey",
+   "brief": "Visit each AUTHORED monitoring target at its depth, like the restoration monitoring the Bay ROV does.",
+   "provenance": "AUTHORED",
+   "runner": "robokit",
+   "medium": "water",
+   "world": {
+    "pages": [
+     "web/trade_craft_parishes.html",
+     "web/trade_craft_bay.html",
+     "web/trade_craft_robotics.html"
+    ],
+    "frame": "env-local metres, origin at the AUTHORED spawn, yaw 0 = +n, CCW positive; never lat/lon",
+    "arena_half_m": 20.0
+   },
+   "embodiments": [
+    "rov.survey"
+   ],
+   "objects": {
+    "targets": 4,
+    "obstacles": 4
+   },
+   "sources": [
+    "web/deepkit.py#DEEP_SPEED",
+    "underwater/registry/underwater.json#restore_hooks",
+    "restoration/registry/scenarios.json#scenarios",
+    "tasks/registry/tasks.json#resto-sim-herons-head-shoreline-resilience"
+   ],
+   "observation": [
+    {
+     "name": "pose_e",
+     "unit": "m",
+     "low": -20.0,
+     "high": 20.0,
+     "dtype": "float"
+    },
+    {
+     "name": "pose_n",
+     "unit": "m",
+     "low": -20.0,
+     "high": 20.0,
+     "dtype": "float"
+    },
+    {
+     "name": "yaw",
+     "unit": "rad",
+     "low": -3.1416,
+     "high": 3.1416,
+     "dtype": "float"
+    },
+    {
+     "name": "v",
+     "unit": "m/s",
+     "low": -1.25,
+     "high": 2.5,
+     "dtype": "float"
+    },
+    {
+     "name": "w",
+     "unit": "rad/s",
+     "low": -1.2,
+     "high": 1.2,
+     "dtype": "float"
+    },
+    {
+     "name": "target_bearing",
+     "unit": "rad",
+     "low": -3.1416,
+     "high": 3.1416,
+     "dtype": "float"
+    },
+    {
+     "name": "target_dist",
+     "unit": "m",
+     "low": 0,
+     "high": 56.57,
+     "dtype": "float"
+    },
+    {
+     "name": "near",
+     "unit": "ids",
+     "low": 0,
+     "high": 4,
+     "dtype": "id-list",
+     "shape": [
+      4
+     ]
+    },
+    {
+     "name": "depth",
+     "unit": "m",
+     "low": 0,
+     "high": 8.0,
+     "dtype": "float"
+    },
+    {
+     "name": "target_depth",
+     "unit": "m",
+     "low": 0,
+     "high": 8.0,
+     "dtype": "float"
+    },
+    {
+     "name": "visited",
+     "unit": "count",
+     "low": 0,
+     "high": 4,
+     "dtype": "int"
+    }
+   ],
+   "action": {
+    "type": "continuous",
+    "fields": [
+     {
+      "name": "v",
+      "unit": "m/s",
+      "low": -1.25,
+      "high": 2.5
+     },
+     {
+      "name": "w",
+      "unit": "rad/s",
+      "low": -1.2,
+      "high": 1.2
+     },
+     {
+      "name": "vz",
+      "unit": "m/s",
+      "low": -1.2,
+      "high": 1.2
+     }
+    ]
+   },
+   "reward": [
+    {
+     "term": "visit",
+     "weight": 1.0,
+     "unit": "per target",
+     "why": "within 1.5 m across and 1 m in depth"
+    },
+    {
+     "term": "time",
+     "weight": -0.01,
+     "unit": "per step",
+     "why": "finish sooner"
+    },
+    {
+     "term": "collision",
+     "weight": -0.5,
+     "unit": "per contact",
+     "why": "an obstacle or the arena wall was struck"
+    }
+   ],
+   "termination": [
+    {
+     "id": "all-visited",
+     "when": "every target is visited (success)"
+    },
+    {
+     "id": "cap",
+     "when": "600 control steps (60 s) elapsed"
+    }
+   ],
+   "episode_cap": {
+    "steps": 600,
+    "dt_s": 0.1
+   },
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "rng": "mulberry32(seed)",
+   "reference_policy": {
+    "id": "ref.rov-survey",
+    "provenance": "SCRIPTED",
+    "steps": [
+     "turn toward the nearest open target (proportional on bearing)",
+     "drive at a speed that falls with the heading error",
+     "veer away when an obstacle sits within 2 m ahead"
+    ],
+    "note": "hand-written and deterministic; not learned, no model, no network"
+   }
+  },
+  "world.gate-drive": {
+   "id": "world.gate-drive",
+   "version": 1,
+   "name": "Gate drive",
+   "brief": "Take 4 gates in order (the gate count of the forklift-run bay-yard lane), without striking a cone.",
+   "provenance": "AUTHORED",
+   "runner": "robokit",
+   "medium": "land",
+   "world": {
+    "pages": [
+     "web/trade_craft_parishes.html",
+     "web/trade_craft_bay.html",
+     "web/trade_craft_robotics.html"
+    ],
+    "frame": "env-local metres, origin at the AUTHORED spawn, yaw 0 = +n, CCW positive; never lat/lon",
+    "arena_half_m": 20.0
+   },
+   "embodiments": [
+    "rover.wheeled"
+   ],
+   "objects": {
+    "gates": 4,
+    "obstacles": 4
+   },
+   "sources": [
+    "sims/registry/sims.json#sims.forklift-run.scenarios.bay-yard.params.gates",
+    "fleet/registry/fleet.json#honesty"
+   ],
+   "observation": [
+    {
+     "name": "pose_e",
+     "unit": "m",
+     "low": -20.0,
+     "high": 20.0,
+     "dtype": "float"
+    },
+    {
+     "name": "pose_n",
+     "unit": "m",
+     "low": -20.0,
+     "high": 20.0,
+     "dtype": "float"
+    },
+    {
+     "name": "yaw",
+     "unit": "rad",
+     "low": -3.1416,
+     "high": 3.1416,
+     "dtype": "float"
+    },
+    {
+     "name": "v",
+     "unit": "m/s",
+     "low": -0.8,
+     "high": 1.5,
+     "dtype": "float"
+    },
+    {
+     "name": "w",
+     "unit": "rad/s",
+     "low": -1.2,
+     "high": 1.2,
+     "dtype": "float"
+    },
+    {
+     "name": "target_bearing",
+     "unit": "rad",
+     "low": -3.1416,
+     "high": 3.1416,
+     "dtype": "float"
+    },
+    {
+     "name": "target_dist",
+     "unit": "m",
+     "low": 0,
+     "high": 56.57,
+     "dtype": "float"
+    },
+    {
+     "name": "near",
+     "unit": "ids",
+     "low": 0,
+     "high": 4,
+     "dtype": "id-list",
+     "shape": [
+      4
+     ]
+    },
+    {
+     "name": "gates_taken",
+     "unit": "count",
+     "low": 0,
+     "high": 4,
+     "dtype": "int"
+    }
+   ],
+   "action": {
+    "type": "continuous",
+    "fields": [
+     {
+      "name": "v",
+      "unit": "m/s",
+      "low": -0.8,
+      "high": 1.5
+     },
+     {
+      "name": "w",
+      "unit": "rad/s",
+      "low": -1.2,
+      "high": 1.2
+     }
+    ]
+   },
+   "reward": [
+    {
+     "term": "gate",
+     "weight": 1.0,
+     "unit": "per gate",
+     "why": "the next gate was passed within 1.2 m of its centre"
+    },
+    {
+     "term": "time",
+     "weight": -0.01,
+     "unit": "per step",
+     "why": "finish sooner"
+    },
+    {
+     "term": "collision",
+     "weight": -0.5,
+     "unit": "per contact",
+     "why": "an obstacle or the arena wall was struck"
+    }
+   ],
+   "termination": [
+    {
+     "id": "all-gates",
+     "when": "every gate is taken in order (success)"
+    },
+    {
+     "id": "cap",
+     "when": "600 control steps (60 s) elapsed"
+    }
+   ],
+   "episode_cap": {
+    "steps": 600,
+    "dt_s": 0.1
+   },
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "rng": "mulberry32(seed)",
+   "reference_policy": {
+    "id": "ref.gate-drive",
+    "provenance": "SCRIPTED",
+    "steps": [
+     "turn toward the nearest open target (proportional on bearing)",
+     "drive at a speed that falls with the heading error",
+     "veer away when an obstacle sits within 2 m ahead"
+    ],
+    "note": "hand-written and deterministic; not learned, no model, no network"
+   }
+  },
+  "sim.crane-lift": {
+   "id": "sim.crane-lift",
+   "version": 1,
+   "name": "Tower Crane Lift",
+   "brief": "Pick the load from the supply pad, carry it over the stacks and set it inside the target ring — swing under control the whole way.",
+   "provenance": "DERIVED",
+   "runner": "sim-seat",
+   "medium": "land",
+   "world": {
+    "pages": [
+     "web/trade_craft_3d.html"
+    ],
+    "frame": "the seat's own SCHEMATIC simulator",
+    "launch": "web/trade_craft_3d.html?sim=crane-lift"
+   },
+   "embodiments": [],
+   "sources": [
+    "sims/registry/sims.json#sims.crane-lift"
+   ],
+   "observation": [
+    {
+     "name": "slew",
+     "unit": "°",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Slew"
+    },
+    {
+     "name": "radius",
+     "unit": "m",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Radius"
+    },
+    {
+     "name": "hook",
+     "unit": "m",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Hook"
+    },
+    {
+     "name": "swing",
+     "unit": "m",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Swing"
+    },
+    {
+     "name": "strikes",
+     "unit": "",
+     "low": null,
+     "high": null,
+     "dtype": "display",
+     "label": "Strikes"
+    },
+    {
+     "name": "time",
+     "unit": "s",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "T"
+    }
+   ],
+   "observation_note": "the seat's dash[] readout (the TRACE gauges); sims/ declares names and units, not ranges, so low/high are null rather than invented",
+   "action": {
+    "type": "discrete",
+    "fields": [
+     {
+      "keys": "A / D",
+      "action": "slew the jib"
+     },
+     {
+      "keys": "W / S",
+      "action": "trolley out / in"
+     },
+     {
+      "keys": "Q / E",
+      "action": "hoist up / down"
+     },
+     {
+      "keys": "Space",
+      "action": "hook / release the load"
+     }
+    ]
+   },
+   "reward": [
+    {
+     "term": "placement",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "distance from target centre at release (m)",
+     "pass": "<= 1.2"
+    },
+    {
+     "term": "swing",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "peak load swing during carry (m)",
+     "pass": "<= 2.0"
+    },
+    {
+     "term": "strikes",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "load or hook contacts with the stacks",
+     "pass": "== 0"
+    },
+    {
+     "term": "time",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "seconds from hook to release",
+     "pass": "informational"
+    }
+   ],
+   "termination": [
+    {
+     "id": "results",
+     "when": "the seat posts its results panel (simResults)"
+    },
+    {
+     "id": "trace-cap",
+     "when": "TRACE stops sampling at its cap (the run itself continues)"
+    }
+   ],
+   "episode_cap": {
+    "steps": null,
+    "dt_s": 1,
+    "note": "TRACE ~1 Hz, capped by training/ trace.max_samples"
+   },
+   "seeds": [],
+   "scenarios": [
+    "bay-steel",
+    "oak-terminal",
+    "nola-wharf"
+   ],
+   "reference_policy": {
+    "id": "operator.crane-lift",
+    "provenance": "SCRIPTED",
+    "levels": [
+     "optimal",
+     "novice",
+     "hurried"
+    ],
+    "steps": [
+     "slew and trolley the hook over the supply pad and lower it under 4.5 m",
+     "hook the load",
+     "hoist to carry height - clear of the tallest stack - before anything moves sideways",
+     "trolley in to a short radius, moving only while the swing gauge is low",
+     "slew round to the target bearing, moving only while the swing gauge is low",
+     "trolley out to the target radius, moving only while the swing gauge is low",
+     "hold everything until the swing dies away",
+     "lower the load to the ground",
+     "release once the swing is still"
+    ],
+    "note": "the scripted reference operator sims/ declares for this seat"
+   },
+   "recorded_by": "training/ kind `sim` (existing)"
+  },
+  "sim.excavator-trench": {
+   "id": "sim.excavator-trench",
+   "version": 1,
+   "name": "Excavator Trench Cut",
+   "brief": "Cut the marked trench to grade cell by cell and land every bucket in the spoil zone — the flagged cell holds a live utility at half depth, so it stops shallow.",
+   "provenance": "DERIVED",
+   "runner": "sim-seat",
+   "medium": "land",
+   "world": {
+    "pages": [
+     "web/trade_craft_3d.html"
+    ],
+    "frame": "the seat's own SCHEMATIC simulator",
+    "launch": "web/trade_craft_3d.html?sim=excavator-trench"
+   },
+   "embodiments": [],
+   "sources": [
+    "sims/registry/sims.json#sims.excavator-trench"
+   ],
+   "observation": [
+    {
+     "name": "slew",
+     "unit": "°",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Slew"
+    },
+    {
+     "name": "reach",
+     "unit": "m",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Reach"
+    },
+    {
+     "name": "depth",
+     "unit": "m",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Bucket"
+    },
+    {
+     "name": "grade",
+     "unit": "",
+     "low": null,
+     "high": null,
+     "dtype": "display",
+     "label": "Grade"
+    },
+    {
+     "name": "spoil",
+     "unit": "",
+     "low": null,
+     "high": null,
+     "dtype": "display",
+     "label": "Spoil"
+    },
+    {
+     "name": "utility",
+     "unit": "",
+     "low": null,
+     "high": null,
+     "dtype": "display",
+     "label": "Utility"
+    },
+    {
+     "name": "time",
+     "unit": "s",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "T"
+    }
+   ],
+   "observation_note": "the seat's dash[] readout (the TRACE gauges); sims/ declares names and units, not ranges, so low/high are null rather than invented",
+   "action": {
+    "type": "discrete",
+    "fields": [
+     {
+      "keys": "A / D",
+      "action": "slew the house"
+     },
+     {
+      "keys": "W / S",
+      "action": "reach out / in"
+     },
+     {
+      "keys": "Q / E",
+      "action": "bucket up / down"
+     },
+     {
+      "keys": "Space",
+      "action": "dig / dump the bucket"
+     }
+    ]
+   },
+   "reward": [
+    {
+     "term": "grade",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "trench cells finished at their marked depth",
+     "pass": "== all"
+    },
+    {
+     "term": "utility",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "strikes on the flagged utility",
+     "pass": "== 0"
+    },
+    {
+     "term": "spoil",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "buckets landed inside the spoil zone",
+     "pass": "== all"
+    },
+    {
+     "term": "time",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "seconds first dig to last dump",
+     "pass": "informational"
+    }
+   ],
+   "termination": [
+    {
+     "id": "results",
+     "when": "the seat posts its results panel (simResults)"
+    },
+    {
+     "id": "trace-cap",
+     "when": "TRACE stops sampling at its cap (the run itself continues)"
+    }
+   ],
+   "episode_cap": {
+    "steps": null,
+    "dt_s": 1,
+    "note": "TRACE ~1 Hz, capped by training/ trace.max_samples"
+   },
+   "seeds": [],
+   "scenarios": [
+    "bay-retrofit",
+    "oak-fill",
+    "nola-below-sea"
+   ],
+   "reference_policy": {
+    "id": "operator.excavator-trench",
+    "provenance": "SCRIPTED",
+    "levels": [
+     "optimal",
+     "novice",
+     "hurried"
+    ],
+    "steps": [
+     "swing to the next cell short of grade, reach out to it and drop the bucket under 0.6 m",
+     "take one bite - the marked depth divided by the bite is the count, and a flagged cell gets no more",
+     "swing the full bucket to the spoil zone and reach to its centre",
+     "dump inside the zone, then back to the trench until every cell is at grade"
+    ],
+    "note": "the scripted reference operator sims/ declares for this seat"
+   },
+   "recorded_by": "training/ kind `sim` (existing)"
+  },
+  "sim.forklift-run": {
+   "id": "sim.forklift-run",
+   "version": 1,
+   "name": "Forklift Yard Run",
+   "brief": "Thread the cone lane, pick the pallet square on the forks, and set it down inside the dock bay — without disturbing a cone.",
+   "provenance": "DERIVED",
+   "runner": "sim-seat",
+   "medium": "land",
+   "world": {
+    "pages": [
+     "web/trade_craft_3d.html"
+    ],
+    "frame": "the seat's own SCHEMATIC simulator",
+    "launch": "web/trade_craft_3d.html?sim=forklift-run"
+   },
+   "embodiments": [],
+   "sources": [
+    "sims/registry/sims.json#sims.forklift-run"
+   ],
+   "observation": [
+    {
+     "name": "speed",
+     "unit": "km/h",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Speed"
+    },
+    {
+     "name": "steer",
+     "unit": "°",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Steer"
+    },
+    {
+     "name": "heading",
+     "unit": "°",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Heading"
+    },
+    {
+     "name": "x",
+     "unit": "m",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "X"
+    },
+    {
+     "name": "z",
+     "unit": "m",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Z"
+    },
+    {
+     "name": "load",
+     "unit": "",
+     "low": null,
+     "high": null,
+     "dtype": "display",
+     "label": "Load"
+    },
+    {
+     "name": "gates",
+     "unit": "",
+     "low": null,
+     "high": null,
+     "dtype": "display",
+     "label": "Gates"
+    },
+    {
+     "name": "cones",
+     "unit": "",
+     "low": null,
+     "high": null,
+     "dtype": "display",
+     "label": "Cones"
+    },
+    {
+     "name": "time",
+     "unit": "s",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "T"
+    }
+   ],
+   "observation_note": "the seat's dash[] readout (the TRACE gauges); sims/ declares names and units, not ranges, so low/high are null rather than invented",
+   "action": {
+    "type": "discrete",
+    "fields": [
+     {
+      "keys": "W / S",
+      "action": "drive / reverse"
+     },
+     {
+      "keys": "A / D",
+      "action": "steer"
+     },
+     {
+      "keys": "Space",
+      "action": "lift / set the pallet"
+     }
+    ]
+   },
+   "reward": [
+    {
+     "term": "gates",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "cone gates taken in order",
+     "pass": "== all"
+    },
+    {
+     "term": "cones",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "cones struck",
+     "pass": "== 0"
+    },
+    {
+     "term": "docking",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "pallet inside the dock bay at set-down",
+     "pass": "required"
+    },
+    {
+     "term": "time",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "seconds start to set-down",
+     "pass": "informational"
+    }
+   ],
+   "termination": [
+    {
+     "id": "results",
+     "when": "the seat posts its results panel (simResults)"
+    },
+    {
+     "id": "trace-cap",
+     "when": "TRACE stops sampling at its cap (the run itself continues)"
+    }
+   ],
+   "episode_cap": {
+    "steps": null,
+    "dt_s": 1,
+    "note": "TRACE ~1 Hz, capped by training/ trace.max_samples"
+   },
+   "seeds": [],
+   "scenarios": [
+    "bay-yard",
+    "oak-lane",
+    "nola-dock"
+   ],
+   "reference_policy": {
+    "id": "operator.forklift-run",
+    "provenance": "SCRIPTED",
+    "levels": [
+     "optimal",
+     "novice",
+     "hurried"
+    ],
+    "steps": [
+     "steer for the centre of the next untaken gate, slowing into every turn",
+     "roll up to the pallet on the centre line and brake to a walk",
+     "lift once the forks are on the pallet and the truck has all but stopped",
+     "carry up the clear lane outside the cone rows, never back through the gates",
+     "square up on the dock from the lane and set the pallet down inside the bay"
+    ],
+    "note": "the scripted reference operator sims/ declares for this seat"
+   },
+   "recorded_by": "training/ kind `sim` (existing)"
+  },
+  "sim.weld-bead": {
+   "id": "sim.weld-bead",
+   "version": 1,
+   "name": "Weld Bead Run",
+   "brief": "Strike the arc and run one clean bead down the marked seam — hold the gap inside the band and keep the torch travelling; linger on a segment and the plate burns through.",
+   "provenance": "DERIVED",
+   "runner": "sim-seat",
+   "medium": "land",
+   "world": {
+    "pages": [
+     "web/trade_craft_3d.html"
+    ],
+    "frame": "the seat's own SCHEMATIC simulator",
+    "launch": "web/trade_craft_3d.html?sim=weld-bead"
+   },
+   "embodiments": [],
+   "sources": [
+    "sims/registry/sims.json#sims.weld-bead"
+   ],
+   "observation": [
+    {
+     "name": "gap",
+     "unit": "mm",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Gap"
+    },
+    {
+     "name": "heat",
+     "unit": "%",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Heat"
+    },
+    {
+     "name": "seam",
+     "unit": "",
+     "low": null,
+     "high": null,
+     "dtype": "display",
+     "label": "Seam"
+    },
+    {
+     "name": "band",
+     "unit": "%",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Band"
+    },
+    {
+     "name": "burns",
+     "unit": "",
+     "low": null,
+     "high": null,
+     "dtype": "display",
+     "label": "Burns"
+    },
+    {
+     "name": "time",
+     "unit": "s",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "T"
+    }
+   ],
+   "observation_note": "the seat's dash[] readout (the TRACE gauges); sims/ declares names and units, not ranges, so low/high are null rather than invented",
+   "action": {
+    "type": "discrete",
+    "fields": [
+     {
+      "keys": "W / S",
+      "action": "travel the torch along the seam"
+     },
+     {
+      "keys": "Q / E",
+      "action": "raise / lower the torch (arc gap)"
+     },
+     {
+      "keys": "Space",
+      "action": "strike / break the arc"
+     }
+    ]
+   },
+   "reward": [
+    {
+     "term": "fusion",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "seam segments fused end to end",
+     "pass": "== all"
+    },
+    {
+     "term": "band",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "share of fused segments laid with the gap inside the band (%)",
+     "pass": ">= 90"
+    },
+    {
+     "term": "burns",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "burn-throughs from lingering heat",
+     "pass": "== 0"
+    },
+    {
+     "term": "time",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "seconds first strike to last fuse",
+     "pass": "informational"
+    }
+   ],
+   "termination": [
+    {
+     "id": "results",
+     "when": "the seat posts its results panel (simResults)"
+    },
+    {
+     "id": "trace-cap",
+     "when": "TRACE stops sampling at its cap (the run itself continues)"
+    }
+   ],
+   "episode_cap": {
+    "steps": null,
+    "dt_s": 1,
+    "note": "TRACE ~1 Hz, capped by training/ trace.max_samples"
+   },
+   "seeds": [],
+   "scenarios": [
+    "bay-deck-seam",
+    "oak-flange-bead",
+    "nola-tank-seam"
+   ],
+   "reference_policy": {
+    "id": "operator.weld-bead",
+    "provenance": "SCRIPTED",
+    "levels": [
+     "optimal",
+     "novice",
+     "hurried"
+    ],
+    "steps": [
+     "set the arc gap to the middle of the scenario's band before striking",
+     "strike the arc at the start of the seam",
+     "travel steadily to the end of the seam without pausing - every segment fuses in band and none lingers to a burn"
+    ],
+    "note": "the scripted reference operator sims/ declares for this seat"
+   },
+   "recorded_by": "training/ kind `sim` (existing)"
+  },
+  "sim.scaffold-bay": {
+   "id": "sim.scaffold-bay",
+   "version": 1,
+   "name": "Scaffold Bay Build",
+   "brief": "Erect one bay in the legal order — sills, frames, braces, planks, then guardrails. The rack refuses a part whose stage has not come, every refusal counts, and the bay is not done until the rails are on.",
+   "provenance": "DERIVED",
+   "runner": "sim-seat",
+   "medium": "land",
+   "world": {
+    "pages": [
+     "web/trade_craft_3d.html"
+    ],
+    "frame": "the seat's own SCHEMATIC simulator",
+    "launch": "web/trade_craft_3d.html?sim=scaffold-bay"
+   },
+   "embodiments": [],
+   "sources": [
+    "sims/registry/sims.json#sims.scaffold-bay"
+   ],
+   "observation": [
+    {
+     "name": "rack",
+     "unit": "",
+     "low": null,
+     "high": null,
+     "dtype": "display",
+     "label": "Rack"
+    },
+    {
+     "name": "stage",
+     "unit": "",
+     "low": null,
+     "high": null,
+     "dtype": "display",
+     "label": "Stage"
+    },
+    {
+     "name": "placed",
+     "unit": "",
+     "low": null,
+     "high": null,
+     "dtype": "display",
+     "label": "Parts"
+    },
+    {
+     "name": "faults",
+     "unit": "",
+     "low": null,
+     "high": null,
+     "dtype": "display",
+     "label": "Refused"
+    },
+    {
+     "name": "time",
+     "unit": "s",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "T"
+    }
+   ],
+   "observation_note": "the seat's dash[] readout (the TRACE gauges); sims/ declares names and units, not ranges, so low/high are null rather than invented",
+   "action": {
+    "type": "discrete",
+    "fields": [
+     {
+      "keys": "A / D",
+      "action": "choose the part rack"
+     },
+     {
+      "keys": "Space",
+      "action": "place the next part"
+     },
+     {
+      "keys": "R",
+      "action": "jump the rack to the legal stage"
+     }
+    ]
+   },
+   "reward": [
+    {
+     "term": "sequence",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "placements refused for coming before their stage",
+     "pass": "== 0"
+    },
+    {
+     "term": "complete",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "parts of the bay placed, rails last",
+     "pass": "informational"
+    },
+    {
+     "term": "time",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "seconds first sill to last rail",
+     "pass": "informational"
+    }
+   ],
+   "termination": [
+    {
+     "id": "results",
+     "when": "the seat posts its results panel (simResults)"
+    },
+    {
+     "id": "trace-cap",
+     "when": "TRACE stops sampling at its cap (the run itself continues)"
+    }
+   ],
+   "episode_cap": {
+    "steps": null,
+    "dt_s": 1,
+    "note": "TRACE ~1 Hz, capped by training/ trace.max_samples"
+   },
+   "seeds": [],
+   "scenarios": [
+    "bay-training-bay",
+    "oak-plant-bay",
+    "nola-storm-bay"
+   ],
+   "reference_policy": {
+    "id": "operator.scaffold-bay",
+    "provenance": "SCRIPTED",
+    "levels": [
+     "optimal",
+     "novice",
+     "hurried"
+    ],
+    "steps": [
+     "jump the rack to the stage the bay is legally at - the dash names it",
+     "place the next part, and repeat until the rails are on"
+    ],
+    "note": "the scripted reference operator sims/ declares for this seat"
+   },
+   "recorded_by": "training/ kind `sim` (existing)"
+  },
+  "sim.rigging-signals": {
+   "id": "sim.rigging-signals",
+   "version": 1,
+   "name": "Rigging Signal Call",
+   "brief": "You are the signalperson: the lift card calls the moves, and the crane follows YOUR hands. Give each called signal in order — a wrong signal counts against you and the crane holds — and finish the lift with the stop signal.",
+   "provenance": "DERIVED",
+   "runner": "sim-seat",
+   "medium": "land",
+   "world": {
+    "pages": [
+     "web/trade_craft_3d.html"
+    ],
+    "frame": "the seat's own SCHEMATIC simulator",
+    "launch": "web/trade_craft_3d.html?sim=rigging-signals"
+   },
+   "embodiments": [],
+   "sources": [
+    "sims/registry/sims.json#sims.rigging-signals"
+   ],
+   "observation": [
+    {
+     "name": "step",
+     "unit": "",
+     "low": null,
+     "high": null,
+     "dtype": "display",
+     "label": "Step"
+    },
+    {
+     "name": "called",
+     "unit": "",
+     "low": null,
+     "high": null,
+     "dtype": "display",
+     "label": "Called"
+    },
+    {
+     "name": "given",
+     "unit": "",
+     "low": null,
+     "high": null,
+     "dtype": "display",
+     "label": "Given"
+    },
+    {
+     "name": "wrong",
+     "unit": "",
+     "low": null,
+     "high": null,
+     "dtype": "display",
+     "label": "Wrong"
+    },
+    {
+     "name": "time",
+     "unit": "s",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "T"
+    }
+   ],
+   "observation_note": "the seat's dash[] readout (the TRACE gauges); sims/ declares names and units, not ranges, so low/high are null rather than invented",
+   "action": {
+    "type": "discrete",
+    "fields": [
+     {
+      "keys": "Q / E",
+      "action": "signal hoist up / hoist down"
+     },
+     {
+      "keys": "A / D",
+      "action": "signal swing left / swing right"
+     },
+     {
+      "keys": "W / S",
+      "action": "signal trolley out / trolley in"
+     },
+     {
+      "keys": "Space",
+      "action": "signal STOP"
+     }
+    ]
+   },
+   "reward": [
+    {
+     "term": "calls",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "called signals given, in order",
+     "pass": "== all"
+    },
+    {
+     "term": "wrong",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "signals given out of turn",
+     "pass": "== 0"
+    },
+    {
+     "term": "time",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "seconds first signal to stop",
+     "pass": "informational"
+    }
+   ],
+   "termination": [
+    {
+     "id": "results",
+     "when": "the seat posts its results panel (simResults)"
+    },
+    {
+     "id": "trace-cap",
+     "when": "TRACE stops sampling at its cap (the run itself continues)"
+    }
+   ],
+   "episode_cap": {
+    "steps": null,
+    "dt_s": 1,
+    "note": "TRACE ~1 Hz, capped by training/ trace.max_samples"
+   },
+   "seeds": [],
+   "scenarios": [
+    "bay-first-card",
+    "oak-blind-pick",
+    "nola-wind-card"
+   ],
+   "reference_policy": {
+    "id": "operator.rigging-signals",
+    "provenance": "SCRIPTED",
+    "levels": [
+     "optimal",
+     "novice",
+     "hurried"
+    ],
+    "steps": [
+     "read the called signal off the lift card - the dash shows it",
+     "give exactly that signal, wait for the crane to finish moving, and give the next; STOP ends the card"
+    ],
+    "note": "the scripted reference operator sims/ declares for this seat"
+   },
+   "recorded_by": "training/ kind `sim` (existing)"
+  },
+  "sim.load-chart": {
+   "id": "sim.load-chart",
+   "version": 1,
+   "name": "Load Chart Judgment",
+   "brief": "Work the pick list against the chart on the board: at each radius the crane has one honest number. Hook the picks the chart allows and refuse the ones it does not — an overweight pick accepted is the failure that matters.",
+   "provenance": "DERIVED",
+   "runner": "sim-seat",
+   "medium": "land",
+   "world": {
+    "pages": [
+     "web/trade_craft_3d.html"
+    ],
+    "frame": "the seat's own SCHEMATIC simulator",
+    "launch": "web/trade_craft_3d.html?sim=load-chart"
+   },
+   "embodiments": [],
+   "sources": [
+    "sims/registry/sims.json#sims.load-chart"
+   ],
+   "observation": [
+    {
+     "name": "pick",
+     "unit": "",
+     "low": null,
+     "high": null,
+     "dtype": "display",
+     "label": "Pick"
+    },
+    {
+     "name": "load",
+     "unit": "t",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Load"
+    },
+    {
+     "name": "radius",
+     "unit": "m",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Radius"
+    },
+    {
+     "name": "chart",
+     "unit": "t",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Chart"
+    },
+    {
+     "name": "errors",
+     "unit": "",
+     "low": null,
+     "high": null,
+     "dtype": "display",
+     "label": "Errors"
+    },
+    {
+     "name": "time",
+     "unit": "s",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "T"
+    }
+   ],
+   "observation_note": "the seat's dash[] readout (the TRACE gauges); sims/ declares names and units, not ranges, so low/high are null rather than invented",
+   "action": {
+    "type": "discrete",
+    "fields": [
+     {
+      "keys": "Space",
+      "action": "accept the pick - hook it"
+     },
+     {
+      "keys": "X",
+      "action": "refuse the pick - over the chart"
+     },
+     {
+      "keys": "Q / E",
+      "action": "walk the chart rows"
+     }
+    ]
+   },
+   "reward": [
+    {
+     "term": "judgments",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "picks judged with the chart",
+     "pass": "== all"
+    },
+    {
+     "term": "overloads",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "overweight picks accepted",
+     "pass": "== 0"
+    },
+    {
+     "term": "time",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "seconds first judgment to last",
+     "pass": "informational"
+    }
+   ],
+   "termination": [
+    {
+     "id": "results",
+     "when": "the seat posts its results panel (simResults)"
+    },
+    {
+     "id": "trace-cap",
+     "when": "TRACE stops sampling at its cap (the run itself continues)"
+    }
+   ],
+   "episode_cap": {
+    "steps": null,
+    "dt_s": 1,
+    "note": "TRACE ~1 Hz, capped by training/ trace.max_samples"
+   },
+   "seeds": [],
+   "scenarios": [
+    "bay-pick-list",
+    "oak-heavy-list",
+    "nola-barge-list"
+   ],
+   "reference_policy": {
+    "id": "operator.load-chart",
+    "provenance": "SCRIPTED",
+    "levels": [
+     "optimal",
+     "novice",
+     "hurried"
+    ],
+    "steps": [
+     "read the pick weight and radius against the chart line at that radius",
+     "hook the pick if its weight is inside the chart, refuse it if it is over"
+    ],
+    "note": "the scripted reference operator sims/ declares for this seat"
+   },
+   "recorded_by": "training/ kind `sim` (existing)"
+  },
+  "sim.pressure-washer": {
+   "id": "sim.pressure-washer",
+   "version": 1,
+   "name": "Pressure Washer Surface Clean",
+   "brief": "Strip the fouling off the marked test panel to a clean finish — sweep the wand cell by cell and hold your standoff; crowd the surface and linger and the substrate gouges. Set the containment berm before you ever pull the trigger, not after.",
+   "provenance": "DERIVED",
+   "runner": "sim-seat",
+   "medium": "land",
+   "world": {
+    "pages": [
+     "web/trade_craft_3d.html"
+    ],
+    "frame": "the seat's own SCHEMATIC simulator",
+    "launch": "web/trade_craft_3d.html?sim=pressure-washer"
+   },
+   "embodiments": [],
+   "sources": [
+    "sims/registry/sims.json#sims.pressure-washer"
+   ],
+   "observation": [
+    {
+     "name": "u",
+     "unit": "m",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Across"
+    },
+    {
+     "name": "v",
+     "unit": "m",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Up"
+    },
+    {
+     "name": "gap",
+     "unit": "m",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Standoff"
+    },
+    {
+     "name": "coverage",
+     "unit": "%",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Clean"
+    },
+    {
+     "name": "damage",
+     "unit": "",
+     "low": null,
+     "high": null,
+     "dtype": "display",
+     "label": "Damage"
+    },
+    {
+     "name": "containment",
+     "unit": "",
+     "low": null,
+     "high": null,
+     "dtype": "display",
+     "label": "Contain"
+    },
+    {
+     "name": "time",
+     "unit": "s",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "T"
+    }
+   ],
+   "observation_note": "the seat's dash[] readout (the TRACE gauges); sims/ declares names and units, not ranges, so low/high are null rather than invented",
+   "action": {
+    "type": "discrete",
+    "fields": [
+     {
+      "keys": "A / D",
+      "action": "sweep the wand left / right across the panel"
+     },
+     {
+      "keys": "W / S",
+      "action": "sweep the wand up / down across the panel"
+     },
+     {
+      "keys": "Q / E",
+      "action": "stand off farther / move closer to the surface"
+     },
+     {
+      "keys": "Space",
+      "action": "pull / release the spray trigger"
+     },
+     {
+      "keys": "C",
+      "action": "deploy the containment berm / drain cover"
+     }
+    ]
+   },
+   "reward": [
+    {
+     "term": "coverage",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "share of the panel surface cleaned (%)",
+     "pass": ">= 95"
+    },
+    {
+     "term": "damage",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "substrate gouges from spraying too close or lingering too long",
+     "pass": "== 0"
+    },
+    {
+     "term": "containment",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "containment berm or drain cover deployed before the first spray",
+     "pass": "required"
+    },
+    {
+     "term": "time",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "seconds first spray to last clean cell",
+     "pass": "informational"
+    }
+   ],
+   "termination": [
+    {
+     "id": "results",
+     "when": "the seat posts its results panel (simResults)"
+    },
+    {
+     "id": "trace-cap",
+     "when": "TRACE stops sampling at its cap (the run itself continues)"
+    }
+   ],
+   "episode_cap": {
+    "steps": null,
+    "dt_s": 1,
+    "note": "TRACE ~1 Hz, capped by training/ trace.max_samples"
+   },
+   "seeds": [],
+   "scenarios": [
+    "bay-seawall-clean",
+    "oak-bulkhead-clean",
+    "nola-floodwall-clean"
+   ],
+   "reference_policy": {
+    "id": "operator.pressure-washer",
+    "provenance": "SCRIPTED",
+    "levels": [
+     "optimal",
+     "novice",
+     "hurried"
+    ],
+    "steps": [
+     "deploy the containment berm before the trigger is ever pulled",
+     "set the standoff to the middle of the effective window, well clear of the damage distance",
+     "pull the trigger",
+     "sweep the panel cell by cell in rows, dwelling on each just past the clean time and never lingering"
+    ],
+    "note": "the scripted reference operator sims/ declares for this seat"
+   },
+   "recorded_by": "training/ kind `sim` (existing)"
+  },
+  "sim.airless-sprayer": {
+   "id": "sim.airless-sprayer",
+   "version": 1,
+   "name": "Airless Paint Sprayer Finish",
+   "brief": "Lay one even finish coat across the marked panel inside the masked line — hold your standoff and travel steady; crowd the surface or linger and the coat runs, rush a cell and it stays a holiday, and drift past the mask is overspray either way.",
+   "provenance": "DERIVED",
+   "runner": "sim-seat",
+   "medium": "land",
+   "world": {
+    "pages": [
+     "web/trade_craft_3d.html"
+    ],
+    "frame": "the seat's own SCHEMATIC simulator",
+    "launch": "web/trade_craft_3d.html?sim=airless-sprayer"
+   },
+   "embodiments": [],
+   "sources": [
+    "sims/registry/sims.json#sims.airless-sprayer"
+   ],
+   "observation": [
+    {
+     "name": "u",
+     "unit": "m",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Across"
+    },
+    {
+     "name": "v",
+     "unit": "m",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Up"
+    },
+    {
+     "name": "gap",
+     "unit": "m",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Standoff"
+    },
+    {
+     "name": "coverage",
+     "unit": "%",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Coat"
+    },
+    {
+     "name": "runs",
+     "unit": "",
+     "low": null,
+     "high": null,
+     "dtype": "display",
+     "label": "Runs"
+    },
+    {
+     "name": "holidays",
+     "unit": "",
+     "low": null,
+     "high": null,
+     "dtype": "display",
+     "label": "Holidays"
+    },
+    {
+     "name": "overspray",
+     "unit": "",
+     "low": null,
+     "high": null,
+     "dtype": "display",
+     "label": "Overspray"
+    },
+    {
+     "name": "time",
+     "unit": "s",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "T"
+    }
+   ],
+   "observation_note": "the seat's dash[] readout (the TRACE gauges); sims/ declares names and units, not ranges, so low/high are null rather than invented",
+   "action": {
+    "type": "discrete",
+    "fields": [
+     {
+      "keys": "A / D",
+      "action": "sweep the gun left / right across the panel"
+     },
+     {
+      "keys": "W / S",
+      "action": "sweep the gun up / down across the panel"
+     },
+     {
+      "keys": "Q / E",
+      "action": "stand off farther / move closer to the surface"
+     },
+     {
+      "keys": "Space",
+      "action": "pull / release the spray trigger"
+     }
+    ]
+   },
+   "reward": [
+    {
+     "term": "coverage",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "share of the panel evenly coated (%)",
+     "pass": ">= 95"
+    },
+    {
+     "term": "runs",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "drips from spraying too close or too slow",
+     "pass": "== 0"
+    },
+    {
+     "term": "holidays",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "missed spots left uncoated",
+     "pass": "== 0"
+    },
+    {
+     "term": "overspray",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "spray drift past the masked boundary",
+     "pass": "== 0"
+    },
+    {
+     "term": "time",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "seconds first spray to last coated cell",
+     "pass": "informational"
+    }
+   ],
+   "termination": [
+    {
+     "id": "results",
+     "when": "the seat posts its results panel (simResults)"
+    },
+    {
+     "id": "trace-cap",
+     "when": "TRACE stops sampling at its cap (the run itself continues)"
+    }
+   ],
+   "episode_cap": {
+    "steps": null,
+    "dt_s": 1,
+    "note": "TRACE ~1 Hz, capped by training/ trace.max_samples"
+   },
+   "seeds": [],
+   "scenarios": [
+    "bay-terminal-finish",
+    "oak-warehouse-finish",
+    "nola-shotgun-finish"
+   ],
+   "reference_policy": {
+    "id": "operator.airless-sprayer",
+    "provenance": "SCRIPTED",
+    "levels": [
+     "optimal",
+     "novice",
+     "hurried"
+    ],
+    "steps": [
+     "set the standoff to the middle of the effective window, well clear of the run distance",
+     "pull the trigger inside the masked line",
+     "sweep the panel cell by cell in rows, dwelling on each just past the coat time, turning inside the mask"
+    ],
+    "note": "the scripted reference operator sims/ declares for this seat"
+   },
+   "recorded_by": "training/ kind `sim` (existing)"
+  },
+  "sim.boom-lift": {
+   "id": "sim.boom-lift",
+   "version": 1,
+   "name": "Boom Lift Basket Work",
+   "brief": "Set the stabilizers on the level pad, clip your harness to the basket anchor, then take the basket to every marked work point in order and back down — keeping the load moment under the line the whole way and the basket out of the overhead-line exclusion zone.",
+   "provenance": "DERIVED",
+   "runner": "sim-seat",
+   "medium": "land",
+   "world": {
+    "pages": [
+     "web/trade_craft_3d.html"
+    ],
+    "frame": "the seat's own SCHEMATIC simulator",
+    "launch": "web/trade_craft_3d.html?sim=boom-lift"
+   },
+   "embodiments": [],
+   "sources": [
+    "sims/registry/sims.json#sims.boom-lift"
+   ],
+   "observation": [
+    {
+     "name": "height",
+     "unit": "m",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Height"
+    },
+    {
+     "name": "outreach",
+     "unit": "m",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Outreach"
+    },
+    {
+     "name": "swing",
+     "unit": "°",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Swing"
+    },
+    {
+     "name": "elev",
+     "unit": "°",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Boom"
+    },
+    {
+     "name": "moment",
+     "unit": "%",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Moment"
+    },
+    {
+     "name": "tieoff",
+     "unit": "",
+     "low": null,
+     "high": null,
+     "dtype": "display",
+     "label": "Tie-off"
+    },
+    {
+     "name": "stab",
+     "unit": "",
+     "low": null,
+     "high": null,
+     "dtype": "display",
+     "label": "Stabs"
+    },
+    {
+     "name": "points",
+     "unit": "",
+     "low": null,
+     "high": null,
+     "dtype": "display",
+     "label": "Points"
+    },
+    {
+     "name": "time",
+     "unit": "s",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "T"
+    }
+   ],
+   "observation_note": "the seat's dash[] readout (the TRACE gauges); sims/ declares names and units, not ranges, so low/high are null rather than invented",
+   "action": {
+    "type": "discrete",
+    "fields": [
+     {
+      "keys": "A / D",
+      "action": "swing the turret"
+     },
+     {
+      "keys": "W / S",
+      "action": "extend / retract the boom"
+     },
+     {
+      "keys": "Q / E",
+      "action": "raise / lower the boom"
+     },
+     {
+      "keys": "Space",
+      "action": "clip the harness (on the ground) / do the task at the work point"
+     },
+     {
+      "keys": "C",
+      "action": "set the stabilizers on the pad"
+     }
+    ]
+   },
+   "reward": [
+    {
+     "term": "reach",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "marked work points the basket was brought to, within tolerance, in order",
+     "pass": "== all"
+    },
+    {
+     "term": "envelope",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "load-moment envelope exceedances (outreach x platform load over the rated moment)",
+     "pass": "== 0"
+    },
+    {
+     "term": "tie-off",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "harness clipped before the basket left the ground",
+     "pass": "required"
+    },
+    {
+     "term": "slope",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "stabilizers set on the level pad before the first lift",
+     "pass": "required"
+    },
+    {
+     "term": "strikes",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "basket entries into the overhead-line exclusion zone",
+     "pass": "== 0"
+    },
+    {
+     "term": "time",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "seconds tie-off to stowed",
+     "pass": "informational"
+    }
+   ],
+   "termination": [
+    {
+     "id": "results",
+     "when": "the seat posts its results panel (simResults)"
+    },
+    {
+     "id": "trace-cap",
+     "when": "TRACE stops sampling at its cap (the run itself continues)"
+    }
+   ],
+   "episode_cap": {
+    "steps": null,
+    "dt_s": 1,
+    "note": "TRACE ~1 Hz, capped by training/ trace.max_samples"
+   },
+   "seeds": [],
+   "scenarios": [
+    "bay-curtainwall-run",
+    "oak-terminal-fixtures",
+    "nola-storm-shutters"
+   ],
+   "reference_policy": {
+    "id": "operator.boom-lift",
+    "provenance": "SCRIPTED",
+    "levels": [
+     "optimal",
+     "novice",
+     "hurried"
+    ],
+    "steps": [
+     "stand on the level pad with the boom stowed - nothing lifts until the base is right",
+     "set the stabilizers before the basket leaves the ground",
+     "clip the harness to the basket anchor on the ground, before the first lift",
+     "raise the boom to the transit elevation first - at that angle a fully extended boom still sits inside the envelope and clears the overhead line",
+     "swing the turret to the bearing of the next work point",
+     "extend or retract to the boom length the point needs, moment under the line",
+     "lower the boom onto the point and hold the basket inside the tolerance",
+     "do the task at the point, then back up to transit elevation for the next one",
+     "once every point is done: retract fully at transit elevation, swing back parallel to the line, then lower the basket to the stowed height"
+    ],
+    "note": "the scripted reference operator sims/ declares for this seat"
+   },
+   "recorded_by": "training/ kind `sim` (existing)"
+  },
+  "sim.overhead-crane": {
+   "id": "sim.overhead-crane",
+   "version": 1,
+   "name": "Overhead Crane Shop Move",
+   "brief": "Hook the load, hoist it to carry height, travel the bridge and then the trolley along the marked route — never over the pedestrian aisle or the workstation, always above the obstacles — and set it down inside the target square, sway under control the whole way.",
+   "provenance": "DERIVED",
+   "runner": "sim-seat",
+   "medium": "land",
+   "world": {
+    "pages": [
+     "web/trade_craft_3d.html"
+    ],
+    "frame": "the seat's own SCHEMATIC simulator",
+    "launch": "web/trade_craft_3d.html?sim=overhead-crane"
+   },
+   "embodiments": [],
+   "sources": [
+    "sims/registry/sims.json#sims.overhead-crane"
+   ],
+   "observation": [
+    {
+     "name": "bridge",
+     "unit": "m",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Bridge"
+    },
+    {
+     "name": "trolley",
+     "unit": "m",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Trolley"
+    },
+    {
+     "name": "hook",
+     "unit": "m",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Hook"
+    },
+    {
+     "name": "sway",
+     "unit": "m",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Sway"
+    },
+    {
+     "name": "load",
+     "unit": "%",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "Load"
+    },
+    {
+     "name": "time",
+     "unit": "s",
+     "low": null,
+     "high": null,
+     "dtype": "float",
+     "label": "T"
+    }
+   ],
+   "observation_note": "the seat's dash[] readout (the TRACE gauges); sims/ declares names and units, not ranges, so low/high are null rather than invented",
+   "action": {
+    "type": "discrete",
+    "fields": [
+     {
+      "keys": "A / D",
+      "action": "travel the bridge"
+     },
+     {
+      "keys": "W / S",
+      "action": "traverse the trolley"
+     },
+     {
+      "keys": "Q / E",
+      "action": "hoist up / down"
+     },
+     {
+      "keys": "Space",
+      "action": "hook / release the load"
+     }
+    ]
+   },
+   "reward": [
+    {
+     "term": "placement",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "distance from the target centre at set-down (m)",
+     "pass": "<= 0.5"
+    },
+    {
+     "term": "sway",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "peak load swing during travel (m)",
+     "pass": "<= 0.6"
+    },
+    {
+     "term": "path",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "loaded passes over the pedestrian aisle or the workstation exclusion zone",
+     "pass": "== 0"
+    },
+    {
+     "term": "limits",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "hoist upper-limit (two-block) hits",
+     "pass": "== 0"
+    },
+    {
+     "term": "clear",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "load carried above every obstacle it crossed",
+     "pass": "required"
+    },
+    {
+     "term": "time",
+     "weight": 1.0,
+     "unit": "rubric row ok",
+     "why": "seconds hook to release",
+     "pass": "informational"
+    }
+   ],
+   "termination": [
+    {
+     "id": "results",
+     "when": "the seat posts its results panel (simResults)"
+    },
+    {
+     "id": "trace-cap",
+     "when": "TRACE stops sampling at its cap (the run itself continues)"
+    }
+   ],
+   "episode_cap": {
+    "steps": null,
+    "dt_s": 1,
+    "note": "TRACE ~1 Hz, capped by training/ trace.max_samples"
+   },
+   "seeds": [],
+   "scenarios": [
+    "bay-fab-coil",
+    "oak-foundry-ladle",
+    "nola-boatshed-engine"
+   ],
+   "reference_policy": {
+    "id": "operator.overhead-crane",
+    "provenance": "SCRIPTED",
+    "levels": [
+     "optimal",
+     "novice",
+     "hurried"
+    ],
+    "steps": [
+     "bridge and trolley the hook over the pickup and lower it onto the load",
+     "hook the load",
+     "hoist to carry height - above every obstacle on the route, well short of the upper limit - before anything travels",
+     "travel the bridge to the target x, moving only while the sway gauge is low",
+     "traverse the trolley to the target z, moving only while the sway gauge is low",
+     "hold everything until the sway dies away",
+     "lower the load to just above the floor",
+     "release once the sway is still and the load is over the square"
+    ],
+    "note": "the scripted reference operator sims/ declares for this seat"
+   },
+   "recorded_by": "training/ kind `sim` (existing)"
+  }
+ },
+ "episode_kind": "world-teleop (training/registry/training.json#world_episode_kinds)",
+ "counts": {
+  "embodiments": 3,
+  "envs": 15,
+  "robokit_envs": 4,
+  "sim_seat_envs": 11,
+  "trained_models": 0
+ }
+}

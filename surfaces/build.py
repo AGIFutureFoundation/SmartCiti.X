@@ -465,3 +465,148 @@ print(f"surfaces registry: {len(SURFACES)} finishes and {len(WALLS)} walls over 
       f"pairs at 4.5+/3-4.5/under 3 of {counts['pairs']}, {len(failing)} failing, "
       f"{len(near)} near-duplicate colours under dE {DE_THRESHOLD} "
       f"(source stamp {stamp})")
+
+# ================================================== exterior (wave 11) ===
+# Exterior pattern recipes and AUTHORED colour categories (surfaces/exterior.py) -> 
+# surfaces/registry/exterior.json. Three checks with teeth, each stopping the build BY NAME:
+#   EXT-KIND   every recipe names a drawing kind patternkit implements, a known family and use
+#   EXT-AA     every lettering pair a family declares reaches WCAG AA 4.5:1 (design_kit.contrast),
+#              and every swatch's label ink (black or white, whichever is higher) reaches 4.5:1
+#   EXT-CVD    every pair inside a family stays >= CVD_MIN_DE (CIE76) under normal vision and
+#              under protanopia and deuteranopia (Machado 2009 matrices, linear sRGB)
+import exterior as X  # noqa: E402
+from design_kit import contrast as _dk_contrast  # noqa: E402  the kit's WCAG function, reused
+
+_ext_stamp = hashlib.sha256((HERE / 'exterior.py').read_bytes()).hexdigest()[:16]
+LABEL_INKS = ('#000000', '#FFFFFF')
+
+
+def _hexok(h):
+    return isinstance(h, str) and re.fullmatch(r'#[0-9A-F]{6}', h) is not None
+
+
+def _cvd(c, mat):
+    lin = [_lin(c[0]), _lin(c[1]), _lin(c[2])]
+    out = []
+    for row in mat:
+        v = min(1.0, max(0.0, sum(row[i] * lin[i] for i in range(3))))
+        s = v * 12.92 if v <= 0.0031308 else 1.055 * v ** (1 / 2.4) - 0.055
+        out.append(round(s * 255))
+    return (out[0], out[1], out[2], 1.0)
+
+
+_ext_err = []
+recipes_out = {}
+for rid, (fam, name, kind, params, tile_m, jshade, uses, why) in X.EXT_RECIPES.items():
+    if kind not in X.EXT_KINDS:
+        _ext_err.append(f'EXT-KIND {rid}: kind {kind!r} is not one patternkit draws')
+    if fam not in X.EXT_FAMILIES or not rid.startswith(fam + '.'):
+        _ext_err.append(f'EXT-KIND {rid}: family {fam!r} unknown or not the id prefix')
+    for u in uses:
+        if u not in ('wall', 'roof', 'ground'):
+            _ext_err.append(f'EXT-KIND {rid}: use {u!r} unknown')
+    if not (0 < tile_m <= 4) or not (-0.6 <= jshade <= 0):
+        _ext_err.append(f'EXT-KIND {rid}: tile_m {tile_m} or joint_shade {jshade} out of range')
+    recipes_out[rid] = {'family': fam, 'name': name, 'kind': kind, 'params': params,
+                        'tile_m': tile_m, 'joint_shade': jshade, 'uses': list(uses), 'why': why}
+
+families_out = {}
+aa_rows = []
+cvd_rows = []
+for fid, (fname, fwhy, cols, lettering) in X.COLOUR_FAMILIES.items():
+    ids = [c[0] for c in cols]
+    if len(set(ids)) != len(ids):
+        _ext_err.append(f'EXT-KIND {fid}: duplicate colour id')
+    colours = []
+    for cid, cname, hx, use in cols:
+        if not _hexok(hx):
+            _ext_err.append(f'EXT-AA {fid}.{cid}: {hx!r} is not #RRGGBB upper-case')
+            continue
+        if use not in X.COLOUR_USES:
+            _ext_err.append(f'EXT-KIND {fid}.{cid}: use {use!r} unknown')
+        ink = max(LABEL_INKS, key=lambda k: _dk_contrast(k, hx))
+        r = _dk_contrast(ink, hx)
+        aa_rows.append({'pair': f'label {ink} on {fid}.{cid}', 'ratio': _r3(r)})
+        if r < 4.5:
+            _ext_err.append(f'EXT-AA {fid}.{cid}: best label ink {ink} only {r:.2f}:1')
+        colours.append({'id': f'{fid}.{cid}', 'name': cname, 'hex': hx, 'use': use,
+                        'label_ink': ink, 'label_ratio': _r3(r)})
+    by = {c[0]: c[2] for c in cols}
+    letters = []
+    for fg, bg in lettering:
+        if fg not in by or bg not in by:
+            _ext_err.append(f'EXT-AA {fid}: lettering {fg} on {bg} names a colour the family lacks')
+            continue
+        r = _dk_contrast(by[fg], by[bg])
+        aa_rows.append({'pair': f'{fid}.{fg} on {fid}.{bg}', 'ratio': _r3(r)})
+        if r < 4.5:
+            _ext_err.append(f'EXT-AA {fid}: lettering {fg} on {bg} is {r:.2f}:1 < 4.5')
+        letters.append({'fg': f'{fid}.{fg}', 'bg': f'{fid}.{bg}', 'ratio': _r3(r)})
+    # EXT-CVD: every pair in the family, normal + each simulation
+    worst = None
+    for i in range(len(cols)):
+        for j in range(i + 1, len(cols)):
+            a, b = _rgba(cols[i][2]), _rgba(cols[j][2])
+            views = {'normal': (a, b)}
+            for mname, mat in X.CVD_MATRICES.items():
+                views[mname] = (_cvd(a, mat), _cvd(b, mat))
+            for vname, (va, vb) in views.items():
+                de = _de76(va, vb)
+                if worst is None or de < worst[0]:
+                    worst = (de, vname, cols[i][0], cols[j][0])
+                if de < X.CVD_MIN_DE:
+                    _ext_err.append(f'EXT-CVD {fid}: {cols[i][0]} vs {cols[j][0]} under {vname} '
+                                    f'dE {de:.1f} < {X.CVD_MIN_DE}')
+    cvd_rows.append({'family': fid, 'worst_delta_e': _r3(worst[0]), 'view': worst[1],
+                     'pair': [f'{fid}.{worst[2]}', f'{fid}.{worst[3]}']})
+    families_out[fid] = {'name': fname, 'why': fwhy, 'colours': colours, 'lettering': letters,
+                         'cvd_worst': cvd_rows[-1]}
+
+for lu, h in X.LANDUSE_HINTS.items():
+    for part in ('wall', 'roof', 'ground'):
+        for rid in h[part]:
+            if rid not in X.EXT_RECIPES or part not in X.EXT_RECIPES[rid][6]:
+                _ext_err.append(f'EXT-KIND hint {lu}.{part}: {rid} unknown or not usable as {part}')
+    for f in h['families']:
+        if f not in X.COLOUR_FAMILIES:
+            _ext_err.append(f'EXT-KIND hint {lu}: family {f} unknown')
+_kinds_used = {r['kind'] for r in recipes_out.values()}
+for k in X.EXT_KINDS:
+    if k not in _kinds_used:
+        _ext_err.append(f'EXT-KIND {k}: a drawing kind no recipe uses')
+assert not _ext_err, 'exterior catalogue refused:\n  ' + '\n  '.join(_ext_err)
+
+ext_doc = {
+    'pack': 'smartcitix-exterior-patterns-and-colour',
+    'pack_version': PACK_VERSION,
+    'built': BUILT,
+    'source_stamp': _ext_stamp,
+    'provenance': 'AUTHORED',
+    'honesty': 'Every recipe, tile size and colour here is AUTHORED - chosen by eye for this build. '
+               'No colour is sampled from a photograph or a supplier, none is a paint brand\'s, a '
+               'standard\'s official value or a trademarked name, and no image file is shipped: '
+               'web/patternkit.py draws each recipe at runtime.',
+    'kinds': list(X.EXT_KINDS),
+    'families': list(X.EXT_FAMILIES),
+    'colour_uses': list(X.COLOUR_USES),
+    'quality_sizes': dict(X.QUALITY_SIZES),
+    'recipes': recipes_out,
+    'colour_families': families_out,
+    'landuse_hints': X.LANDUSE_HINTS,
+    'checks': {
+        'aa': {'method': 'web/design_kit.contrast (WCAG 2.x); threshold 4.5:1 for every '
+                         'lettering pair and every swatch label', 'label_inks': list(LABEL_INKS),
+               'pairs': aa_rows, 'min_ratio': _r3(min(r['ratio'] for r in aa_rows))},
+        'cvd': {'method': 'Machado, Oliveira and Fernandes (2009) simulation matrices at severity '
+                          '1.0 applied to linear sRGB, clipped, re-encoded; CIE76 dE between every '
+                          'pair of colours in one family, under normal vision and each simulation',
+                'matrices': X.CVD_MATRICES, 'min_delta_e': X.CVD_MIN_DE, 'why': X.CVD_WHY,
+                'families': cvd_rows},
+    },
+}
+(OUT / 'exterior.json').write_text(json.dumps(ext_doc, indent=1) + '\n')
+print(f"exterior registry: {len(recipes_out)} recipes in {len(X.EXT_FAMILIES)} families over "
+      f"{len(X.EXT_KINDS)} kinds; {sum(len(f['colours']) for f in families_out.values())} colours in "
+      f"{len(families_out)} categories; AA min {ext_doc['checks']['aa']['min_ratio']}:1 over "
+      f"{len(aa_rows)} pairs; CVD min dE {min(r['worst_delta_e'] for r in cvd_rows)} "
+      f"(floor {X.CVD_MIN_DE}) (source stamp {_ext_stamp})")

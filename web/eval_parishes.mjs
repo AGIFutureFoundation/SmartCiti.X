@@ -100,12 +100,22 @@ for (const pid of PROBE) {
   for (const v of ['origin', 'border', 'overview']) {
     await page.evaluate(([name, id]) => window.__parishes.view(name, id), [v, pid]);
     await page.waitForTimeout(350);
+    /* WORLDS w11 (LEAD decision): the overview renders on demand, but this row keeps judging a RENDERED overview frame -
+       DIAG.ovAlways forces the every-frame render while the row measures; the on-demand frame is printed as info only */
+    if (v === 'overview') await page.evaluate(() => window.__parishes.diag({ ovAlways: true }));
     const times = await page.evaluate(() => window.__parishes.frameTimes(6));
+    let onDemandMs = null;
+    if (v === 'overview') {
+      await page.evaluate(() => window.__parishes.diag({}));
+      await page.waitForTimeout(150);
+      const od = (await page.evaluate(() => window.__parishes.frameTimes(6))).sort((a, b) => a - b);
+      onDemandMs = +od[Math.floor(od.length / 2)].toFixed(1);
+    }
     const st = await page.evaluate(() => window.__parishes.stats());
     times.sort((a, b) => a - b);
     const ms = +times[Math.floor(times.length / 2)].toFixed(1);
     const fabric = st.instances.block + st.instances.tree;
-    const row = { parish: pid, view: v, calls: st.calls, tris: st.triangles, ms, chunks: st.chunks, pending: st.pending, fabric, loaded: st.loaded.length, fails: [] };
+    const row = { parish: pid, view: v, calls: st.calls, tris: st.triangles, ms, chunks: st.chunks, pending: st.pending, fabric, loaded: st.loaded.length, fails: [], onDemandMs };
     if (st.pending !== 0) fail(row, `${st.pending} chunks still pending`);
     if (!st.instancedFamilies) fail(row, 'an asset family is not an InstancedMesh');
     if (st.fabricMeshes !== 2) fail(row, `${st.fabricMeshes} fabric meshes; blocks and trees are ONE InstancedMesh each`);
@@ -151,7 +161,9 @@ await page.evaluate(() => window.__parishes.renderScale(0.6));
    median with the WebGL render skipped, and with labels + minimap skipped (the page's own __parishes.diag switches);
    equal numbers everywhere = the frame is paced by fixed per-frame/compositor cost, not by the scene */
 const ovSplit = {};
-for (const [k, o] of [['all', {}], ['noRender', { noRender: true }], ['noLabelsMini', { noLabels: true, noMini: true }]]) {
+for (const [k, o] of [['all', {}], ['noRender', { noRender: true }], ['noLabelsMini', { noLabels: true, noMini: true }],
+  ['ownLand', { ownLand: true, ovAlways: true }], ['onlyLand', { onlyLand: true, ovAlways: true }], ['noLand', { noLand: true, ovAlways: true }],
+  ['ovAlways', { ovAlways: true }]]) {   // WORLDS w11: land-share split (every frame rendered) + the forced every-frame render
   await page.evaluate((d) => window.__parishes.diag(d), o);
   await page.waitForTimeout(250);
   const t = (await page.evaluate(() => window.__parishes.frameTimes(9))).sort((a, b) => a - b);
@@ -173,6 +185,26 @@ if (!gst.groundY) fail(groundRow, 'draped ground is not at y = 0');
 const label = await page.evaluate(() => (document.querySelector('[data-ground-label]') || {}).textContent || '');
 if (!/carries no text/.test(label)) fail(groundRow, `ground label next to the view is ${JSON.stringify(label)}`);
 if (groundRow.fails.length) bad++;
+/* WORLDS w11 atlas row (new): the ONE atlas the page drapes must render the same ground the 16 tiles did - the old loop
+   (each 1024 px tile drawn at 512 px into its cell of a GROUND_PX canvas) is re-run here beside the atlas drawn at
+   2048; target: max per-channel difference <= 2 of 255 (resampler rounding), for 22071 and 22103 */
+const atlasRow = { probe: 'atlas', fails: [] };
+for (const pid of ['22071', '22103']) {
+  const r = await page.evaluate(async (id) => {
+    const D = JSON.parse(document.getElementById('parishes-data').textContent), p = D.parishes.find((q) => q.id === id), g = p.ground;
+    const load = (src) => new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => rej(new Error(src)); im.src = '../' + src; });
+    const cv = (f) => { const c = document.createElement('canvas'); c.width = c.height = 2048; const x = c.getContext('2d', { willReadFrequently: true }); f(x); return x.getImageData(0, 0, 2048, 2048).data; };
+    const cell = 2048 / g.grid, tiles = [];
+    for (let r = 0; r < g.grid; r++) for (let c = 0; c < g.grid; c++) tiles.push([await load(`${g.stem}-r${r}c${c}.webp`), r, c]);
+    const at = await load(g.atlas);
+    const A = cv((x) => { for (const [im, r, c] of tiles) x.drawImage(im, c * cell, r * cell, cell, cell); }), B = cv((x) => x.drawImage(at, 0, 0, 2048, 2048));
+    let max = 0, sum = 0, n = 0; for (let i = 0; i < A.length; i += 4) for (let k = 0; k < 3; k++) { const d = Math.abs(A[i + k] - B[i + k]); if (d > max) max = d; sum += d; n++; }
+    return { id, max, mean: +(sum / n).toFixed(4) };
+  }, pid).catch((e) => ({ id: pid, error: e.message }));
+  atlasRow[pid] = r;
+  if (r.error) atlasRow.fails.push(`${pid}: ${r.error}`); else if (r.max > 2) atlasRow.fails.push(`${pid} atlas differs from the 16-tile draw by up to ${r.max}/255`);
+}
+if (atlasRow.fails.length) bad++;
 const atm = gst.atmosphere;
 const atmRow = { probe: 'atmosphere', ...atm, fails: [] };
 if (!atm.skyCss) fail(atmRow, 'the sky gradient is not on the canvas');
@@ -376,8 +408,8 @@ if (deepRow.fails.length) bad++;
 /* DIAG (not a target): lots NOT built in the 22103 border view because they stand in AUTHORED water (the w7 lake stand-in);
    the w5 fabric floor for that view was measured when such lots still stood on the lake */
 const lakeDiag = await page.evaluate(async () => {
-  const P = window.__parishes, a = P.stats().skipped.water; P.view('border', '22103'); await new Promise((r) => setTimeout(r, 900));
-  const s = P.stats(); return { skippedWater: s.skipped.water - a, fabric: s.instances.block + s.instances.tree, pending: s.pending };
+  const P = window.__parishes, a = P.stats().skipped.water, ar = P.stats().skipped.reseated; P.view('border', '22103'); await new Promise((r) => setTimeout(r, 900));
+  const s = P.stats(); return { skippedWater: s.skipped.water - a, reseated: s.skipped.reseated - ar, fabric: s.instances.block + s.instances.tree, pending: s.pending };
 });
 
 /* styles: the panels follow the Style switcher (tokens only) */
@@ -394,15 +426,19 @@ const out = { rows, cross, ride: rideRows, npcs: npcRow, satellite: satRow, grou
 if (JSON_OUT) console.log(JSON.stringify(out, null, 1));
 else {
   for (const r of rows) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.parish} ${r.view.padEnd(8)} calls ${r.calls} tris ${r.tris} ms ${r.ms} chunks ${r.chunks} fabric ${r.fabric} lamps ${r.lamps} loaded ${r.loaded}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
+  for (const r of rows.filter((x) => x.onDemandMs !== null)) console.log(`  -- INFO ${r.parish} overview on demand (WORLDS w11): ${r.onDemandMs} ms median while the view is still; the row above judges the forced every-frame render (${r.ms} ms) - info, not a target`);
   for (const r of cross) console.log(`${r.fails.length ? 'FAIL' : '  ok'} cross ${r.pair} steps ${r.steps}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
   for (const r of rideRows) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.probe} ${JSON.stringify(Object.fromEntries(Object.entries(r).filter(([k]) => k !== 'fails' && k !== 'probe')))}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
   console.log(`${npcRow.fails.length ? 'FAIL' : '  ok'} npcs ${npcRow.count} ${npcRow.id} ${npcRow.source}${npcRow.fails.length ? ' :: ' + npcRow.fails.join('; ') : ''}`);
   console.log(`${satRow.fails.length ? 'FAIL' : '  ok'} satellite ${satRow.src} :: ${satRow.msg}${satRow.fails.length ? ' :: ' + satRow.fails.join('; ') : ''}`);
   for (const r of rows.filter((x) => x.kit)) console.log(`${r.fails.length ? 'FAIL' : '  ok'} kit ${r.parish} ${r.view.padEnd(8)} buildings ${JSON.stringify(r.kit)} calls/family ${JSON.stringify(r.familyCalls)}`);
-  for (const r of [groundRow, atmRow, raceRow, rmRow]) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.probe} ${JSON.stringify(Object.fromEntries(Object.entries(r).filter(([k]) => k !== 'fails' && k !== 'probe')))}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
+  for (const r of [groundRow, atlasRow, atmRow, raceRow, rmRow]) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.probe} ${JSON.stringify(Object.fromEntries(Object.entries(r).filter(([k]) => k !== 'fails' && k !== 'probe')))}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
   for (const r of [...worldRows, ambRow, detRow, deepRow]) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.probe} ${JSON.stringify(Object.fromEntries(Object.entries(r).filter(([k]) => k !== 'fails' && k !== 'probe')))}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
   console.log(`  -- DIAG 22103 border: ${lakeDiag.skippedWater} lots not built in AUTHORED water while building this view (fabric ${lakeDiag.fabric}, pending ${lakeDiag.pending}) - diagnosis, not a target`);
+  console.log(`  -- DIAG 22103 border (WORLDS w11): ${lakeDiag.reseated} of those lots re-seated onto the nearest empty dry cell of their chunk (diagnosis, not a target)`);
   console.log(`  -- DIAG 22071 overview split at 0.6: all ${ovSplit.all} ms, render skipped ${ovSplit.noRender} ms, labels+minimap skipped ${ovSplit.noLabelsMini} ms (diagnosis, not a target)`);
+  console.log(`  -- DIAG 22071 overview land share at 0.6 (WORLDS w11): own parish land only ${ovSplit.ownLand} ms, land only (all else hidden) ${ovSplit.onlyLand} ms, no land ${ovSplit.noLand} ms (diagnosis, not a target)`);
+  console.log(`  -- DIAG 22071 overview (WORLDS w11): rendered EVERY frame ${ovSplit.ovAlways} ms vs on demand ${ovSplit.all} ms - the overview rows judge the every-frame render (diagnosis, not a target)`);
   console.log(`  -- DIAG 22071 overview median frame: scale 1 ${diag[1]} ms, scale 0.6 ${diag[0.6]} ms (diagnosis, not a target)`);
   for (const e of errors) console.log('FAIL page error: ' + e);
   console.log(bad + errors.length ? `eval_parishes: ${bad + errors.length} FAIL` : 'eval_parishes: all rows within target');

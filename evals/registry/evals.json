@@ -3565,10 +3565,10 @@
   "metrics": 9,
   "runs": 36,
   "seeds": 12,
-  "sim_elapsed_ms": 793,
+  "sim_elapsed_ms": 917,
   "strategies": 3,
   "total_attempts_simulated": 15120,
-  "wall_ms": 853
+  "wall_ms": 977
  },
  "hall_independence": {
   "contrast": {
@@ -3621,7 +3621,7 @@
    4242
   ],
   "strategy": "graph",
-  "sweep_ms": 3612,
+  "sweep_ms": 3275,
   "why": "every union carries the same eleven strands by three tiers wired by the same requires edges, so the graph handed to the sequencer is isomorphic across halls and the seeded generator is the only source of variation. Nothing in control/ reads the simulator registry, so no seat, no piece of equipment and no difference in available evidence reaches this simulation."
  },
  "honesty": {
@@ -3629,7 +3629,7 @@
   "determinism": "The subject seeds mulberry32 per run and touches no clock and no network. The 12 seeds are recorded, and evals/test.mjs re-runs every one of the 36 runs and compares field by field against what is written here. A result that cannot be reproduced is not a result.",
   "no_cohort_claim": "Nothing in this registry licenses a statement about real learners, real halls, real apprentices or real outcomes. \"The sequencer beats blocked practice by X\" is not a sentence this pack supports in any form; the supported sentence names the simulation and its assumptions in the same breath as the number.",
   "one_union": "Every run is the subject's default union, 'welders' - 33 skills. This pack does not sweep unions and says nothing about the other ladders in pack/registry/skills.json.",
-  "runtime": "The full 36-run sweep took 793 ms of simulation time inside node (853 ms wall including process start) on the machine that built this. Nothing was shortened to make it quick: attempts, per-day and session length are the subject's own constants, read out of the file rather than typed here.",
+  "runtime": "The full 36-run sweep took 917 ms of simulation time inside node (977 ms wall including process start) on the machine that built this. Nothing was shortened to make it quick: attempts, per-day and session length are the subject's own constants, read out of the file rather than typed here.",
   "status": "SCRIPTED: every number in this registry came out of running control/sim_curriculum.mjs, a hand-written deterministic simulation over an authored skill ladder and an authored learner model. Nothing here was observed of a person. Not one number is RECORDED, and the summary statistics are not promoted to DERIVED - see tier_is_not_derived.",
   "the_limit_is_the_sources_own": "The limit is not this pack's summary of the subject. It is quoted verbatim from the header of control/sim_curriculum.mjs into limit.sentence, and evals/test.mjs re-extracts it from that file and fails if the two stop matching or if the quotation is softened.",
   "the_one_field_that_is_not_reproducible": "counts.sim_elapsed_ms and counts.wall_ms are wall-clock timings of the machine that ran the build. They change on every build and no check holds them to a value; they are here so a reader knows the sweep is seconds rather than hours. Every other number in this registry is reproduced exactly by evals/test.mjs.",
@@ -3774,7 +3774,7 @@
    },
    "page": {
     "path": "web/build_3d.py",
-    "sha256": "feab541c313ed6ea3d77e4f0ee772346a14e8563b2680b7e109ff1b666935f57",
+    "sha256": "5f0302fe3fc2a20bbf7b34540b45c4dd6cec6353fe27634c90e75f16fc55d460",
     "source_stamp": null,
     "why_no_stamp": "web/build_3d.py is a builder, not a registry, and carries no source_stamp; its sha256 is the guard"
    },
@@ -3785,8 +3785,8 @@
    },
    "training": {
     "path": "training/registry/training.json",
-    "sha256": "35bb9a99a6f0783918c92bdc321b22bbc87d5d3da46a08929345fb2f97c8a98e",
-    "source_stamp": "f2ee35389d8386e5"
+    "sha256": "8976752af1d28bcd07d3b25eba745e9e2009434182d39ee331ed604adee82b36",
+    "source_stamp": "6ac8622613550c50"
    }
   },
   "kinds_that_can_carry_a_trace": [

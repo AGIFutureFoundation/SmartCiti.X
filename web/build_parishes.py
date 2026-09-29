@@ -126,8 +126,29 @@ def ground_of(mp, w):
     cells = sorted((need(t, 'row', w + '.ground_tiles[]'), need(t, 'col', w + '.ground_tiles[]')) for t in tiles)
     if cells != [(r, c) for r in range(grid) for c in range(grid)]:
         raise BuildError(f'build_parishes: {w}.map.ground_tiles does not cover the {grid}x{grid} grid exactly once')
-    return {'label': need(gt, 'label', w + '.map.ground_tiles'), 'grid': grid,
-            'tiles': [[need(t, 'path', w + '.ground_tiles[]'), t['row'], t['col']] for t in tiles]}
+    # BEGIN WORLDS w11 atlas: the page fetches ONE 2048 px atlas per region (parishes/build_atlas.py composes the
+    # grid x grid tiles exactly as the page used to), not grid^2 tiles - the published site holds at most 511 files
+    stem = need(tiles[0], 'path', w + '.ground_tiles[]').rsplit('-r', 1)[0]
+    at = need(need(ground_atlas(), 'atlases', 'parishes/registry/ground_atlas.json'), stem, 'ground_atlas.json#atlases')
+    shas = [need(t, 'sha256', w + '.ground_tiles[]') for t in sorted(tiles, key=lambda t: (t['row'], t['col']))]
+    if need(at, 'tiles_sha256', stem) != shas:
+        raise BuildError(f'build_parishes: the ground atlas for {stem} is stale (its tiles changed): python3 parishes/build_atlas.py')
+    if need(at, 'px', stem) != 2048 or need(at, 'grid', stem) != grid or not (ROOT / need(at, 'path', stem)).is_file():
+        raise BuildError(f'build_parishes: the ground atlas for {stem} is not a {grid}x{grid} 2048 px file on disk')
+    return {'label': need(gt, 'label', w + '.map.ground_tiles'), 'grid': grid, 'atlas': at['path'], 'stem': stem}
+    # END WORLDS w11 atlas
+
+
+_ATLAS = []
+
+
+def ground_atlas():
+    if not _ATLAS:
+        ap = ROOT / 'parishes/registry/ground_atlas.json'
+        if not ap.exists():
+            raise BuildError('build_parishes: parishes/registry/ground_atlas.json is not built (python3 parishes/build_atlas.py)')
+        _ATLAS.append(json.loads(ap.read_text()))
+    return _ATLAS[0]
 
 
 def normalise(reg):
@@ -599,15 +620,15 @@ if (vGroundDist < 420.0 && uGrid > 0.5) { vec2 q = mod(vGroundXZ, 100.0);
 const GROUND_PX = 2048;
 function groundTexture(p, onReady) {
   const cv = document.createElement('canvas'); cv.width = cv.height = GROUND_PX;
-  const cx = cv.getContext('2d'), g = p.ground, cell = GROUND_PX / g.grid; let left = g.tiles.length;
+  const cx = cv.getContext('2d'), g = p.ground;
   const tex = new THREE.CanvasTexture(cv); tex.flipY = false; tex.colorSpace = THREE.SRGBColorSpace;
   tex.minFilter = THREE.LinearMipmapNearestFilter;   // wave 8 (ENV): one mip level per pixel (4 taps, not 8) - the overview reads the ground minified   // no anisotropy: SwiftShader pays per tap (w6 run 1: walk frames rose)
-  for (const [src, row, col] of g.tiles) {
-    const im = new Image();
-    im.onload = () => { cx.drawImage(im, col * cell, row * cell, cell, cell); if (--left === 0) { tex.needsUpdate = true; onReady(); } };
-    im.onerror = () => { groundFailed.push(src); };
-    im.src = '../' + src;
-  }
+  /* WORLDS w11: ONE atlas image (parishes/build_atlas.py: the grid x grid tiles, each box-reduced 2x into its cell -
+     the composition this loop used to draw from 16 tiles; lossless, so the same pixels) */
+  const im = new Image();
+  im.onload = () => { cx.drawImage(im, 0, 0, GROUND_PX, GROUND_PX); tex.needsUpdate = true; onReady(); };
+  im.onerror = () => { groundFailed.push(g.atlas); };
+  im.src = '../' + g.atlas;
   return tex;
 }
 const groundFailed = [], groundReady = new Set();
@@ -1111,12 +1132,13 @@ const chunkData = new Map(); let queue = [], dirty = false;
 function lmNear(x, z) { for (const id of loaded) for (const l of PAR.get(id).landmarks) if (Math.hypot(l.x - x, l.z - z) < 45) return true; return false; }
 function buildChunk(ci, cj) {
   const out = { block: [], tree: [], lamp: [] }, n = CHUNK_M / CELL;
+  const wet = [], open = [];   // WORLDS w11: lots that fall in AUTHORED water / empty dry lot cells of this chunk
   for (let a = 0; a < n; a++) for (let b = 0; b < n; b++) {
     const ix = ci * n + a, iz = cj * n + b;
     const h = wildsHash(ix, iz, SEED, 1), jx = wildsHash(ix, iz, SEED, 2), jz = wildsHash(ix, iz, SEED, 3);
     const x = (ix + 0.2 + 0.6 * jx) * CELL, z = (iz + 0.2 + 0.6 * jz) * CELL;
     if (!parishAt(x, z) || lmNear(x, z)) continue;
-    if (inWaterAt(x, z)) { if (h < 0.55) skipped.water++; continue; }   // no building or tree stands in AUTHORED water
+    if (inWaterAt(x, z)) { if (h < 0.55) { skipped.water++; wet.push([x, z]); } continue; }   // no building or tree stands in AUTHORED water
     if (roadStreamed(x, z)) {
       // wave 7: meshed PARISH streets - a lot stands back from the nearest sidewalk edge and faces that street
       const use = landUse(x, z), rn = roadNear(x, z, 45);
@@ -1127,6 +1149,7 @@ function buildChunk(ci, cj) {
         if (rn) lot[6] = Math.atan2(-rn.nx, -rn.nz);
         out.block.push(lot);
       } else if (h < 0.8 && (!rn || rn.edge > 2.5)) out.tree.push([x, z, 0.8 + jz * 0.6, 0]);
+      else if (h >= 0.8) open.push([ix, iz, x, z, jx, jz, use, rn]);
       continue;
     }
     // streets: every fourth cell row/column stays open (AUTHORED grid, not the real street grid)
@@ -1142,7 +1165,23 @@ function buildChunk(ci, cj) {
     if (use === 'park') { if (h < 0.8) out.tree.push([x, z, 0.8 + jz * 0.6, 0]); continue; }   // a park lot: trees, no building
     if (h < 0.55) out.block.push(kitLot(use, ix, iz, x, z, jx, jz, wildsHash(ix, iz, SEED, 4)));
     else if (h < 0.8) out.tree.push([x, z, 0.8 + jz * 0.6, 0]);
+    else open.push([ix, iz, x, z, jx, jz, use, null]);
   }
+  /* BEGIN WORLDS w11 re-seat: a lot that falls in AUTHORED water is not dropped - it re-seats onto the EMPTY dry lot cell
+     of the same chunk nearest the water (cells that would stand nothing: no street, no park, no landmark, h >= 0.8), one
+     lot per cell, nearest first; the cell's own hashes size it, exactly as if the rule had kept it. Chunk-local, so every
+     view builds the same boxes. Never on the lake; wet lots with no empty dry cell left stay dropped (skipped.water). */
+  if (wet.length && open.length) {
+    const dw = (c) => { let m = Infinity; for (const [wx, wz] of wet) m = Math.min(m, (wx - c[2]) ** 2 + (wz - c[3]) ** 2); return m; };
+    const ranked = open.map((c, i) => [dw(c), i, c]).sort((u, v) => u[0] - v[0] || u[1] - v[1]);
+    for (const [, , c] of ranked.slice(0, wet.length)) {
+      const [ix, iz, x, z, jx, jz, use, rn] = c, lot = kitLot(use, ix, iz, x, z, jx, jz, wildsHash(ix, iz, SEED, 4));
+      if (rn && rn.edge < Math.hypot(lot[2], lot[4]) / 2 + 0.5) continue;   // the kerb rule still holds on a re-seated lot
+      if (rn) lot[6] = Math.atan2(-rn.nx, -rn.nz);
+      out.block.push(lot); skipped.reseated++;
+    }
+  }
+  /* END WORLDS w11 re-seat */
   // wave 7: a lamp standard every LAMP_M along each meshed street, on its sidewalk, alternating sides (AUTHORED furniture)
   const x0 = ci * CHUNK_M, z0 = cj * CHUNK_M;
   for (const s of segsNear(x0 + CHUNK_M / 2, z0 + CHUNK_M / 2, CHUNK_M * 0.75)) for (let k = 1; k * LAMP_M < s.L; k++) {
@@ -1152,7 +1191,7 @@ function buildChunk(ci, cj) {
   }
   return out;
 }
-const skipped = { water: 0, road: 0 };   // lots not built (counted per chunk build; eval reads the view's share)
+const skipped = { water: 0, road: 0, reseated: 0 };   // lots not built (counted per chunk build; eval reads the view's share)
 const LAMP_M = 160;   // w7: at 45 m the lamps alone cost ~35k triangles (985 x 36); at 120 m 22071 origin was still 1k over its tris headroom (eval run 2)
 function wantedChunks(x, z) {
   const ci = Math.floor(x / CHUNK_M), cj = Math.floor(z / CHUNK_M), s = new Set();
@@ -1557,8 +1596,25 @@ addEventListener('keydown', (e) => { if ((e.key === 't' || e.key === 'T') && pla
 function resize() { const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
 addEventListener('resize', resize);
 let labelT = 0, econParish = null;
+const diagHidden = [];   // WORLDS w11: objects the onlyLand DIAG switch hid, with their prior visibility
 const DIAG = {};   // eval-only switches (__parishes.diag): which per-frame work costs the overview its frame
 let last = performance.now(), info = { calls: 0, triangles: 0 }, frameMs = 0, miniT = 0, cell = '';
+/* BEGIN WORLDS w11 overview on demand: the overview is a still picture (the camera is fixed by the parish's bbox; water,
+   fabric, vehicles, guides and ambience are hidden there), so it re-renders only when what it shows changes - the parish,
+   the canvas size, a ground/water/parish load, the marker/landmark/station counts, the visible object set or a DIAG
+   switch - plus a 1 s heartbeat for anything else. eval run 2 (w11): a rendered overview frame costs ~50 ms in this
+   Chromium whatever is drawn (land only 50, no land 66.6, nothing rendered 16.7), so draw-work cuts measured NEUTRAL;
+   DIAG.ovAlways forces the old every-frame render (eval prints it). Walk/drive/boat always render every frame. */
+let ovKey = '', ovT = 0;
+function ovNeedsRender(now) {
+  if (mode !== 'overview' || DIAG.ovAlways) { ovKey = ''; return true; }
+  let lm = 0; for (const m of Object.values(lmMeshes)) lm += m.count;
+  let vis = 0; for (const c of scene.children) if (c.visible) vis++;
+  const k = [current && current.id, renderer.domElement.width, renderer.domElement.height, groundReady.size, waterCut.size, loaded.size, markers.count, stations.count, lm, vis, JSON.stringify(DIAG)].join('|');
+  if (k !== ovKey || now - ovT > 1000) { ovKey = k; ovT = now; return true; }
+  return false;
+}
+/* END WORLDS w11 overview on demand */
 function frame(now) {
   const dt = Math.min(0.1, (now - last) / 1000); last = now;
   /* the overview does not move the player: no parish check there (it would also pull the camera back to
@@ -1582,7 +1638,7 @@ function frame(now) {
   waterU.uTime.value = now / 1000;
   placeCamera();
   if (deep) deep.update(dt, over);   // DEEP: dive/ROV camera + underwater look (0 draw calls above the surface and in the overview)
-  const t0 = performance.now(); if (!DIAG.noRender) renderer.render(scene, camera); frameMs = performance.now() - t0;
+  const t0 = performance.now(); if (!DIAG.noRender && ovNeedsRender(now)) renderer.render(scene, camera); frameMs = performance.now() - t0;
   info = { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles };
   if (!DIAG.noLabels && (!over || now - labelT > 250)) { labelT = now; placeLabels(); }
   if (!DIAG.noMini && now - miniT > 200) { miniT = now; drawMinimap(); hud(); }
@@ -1761,7 +1817,11 @@ window.__parishes = {
   satellite: (on) => showSatellite(on), satState,
   /* wave 7 (eval): living world on/off; physics probes that walk the avatar into a building and drop it into water */
   ambient: (on) => { setAmbient(on); return amb ? amb.stats() : null; },
-  diag: (o) => { for (const k of Object.keys(DIAG)) delete DIAG[k]; Object.assign(DIAG, o); for (const m of landMesh.values()) m.visible = !DIAG.noLand; return { ...DIAG }; },
+  diag: (o) => { for (const k of Object.keys(DIAG)) delete DIAG[k]; Object.assign(DIAG, o); for (const [id, m] of landMesh) m.visible = !DIAG.noLand && (!DIAG.ownLand || !current || id === current.id);
+    /* WORLDS w11 (eval only): onlyLand hides every non-land scene object (restored by the next diag call) */
+    for (const [c, v] of diagHidden) c.visible = v; diagHidden.length = 0;
+    if (DIAG.onlyLand) for (const c of scene.children) if (!c.isLight && ![...landMesh.values()].includes(c)) { diagHidden.push([c, c.visible]); c.visible = false; }
+    return { ...DIAG }; },
   physWall() {
     if (physDirty || !W) rebuildPhysics();
     let best = null; for (const c of chunkData.values()) for (const b of c.block) { const d = Math.hypot(b[0] - eye.x, b[1] - eye.z); if (!best || d < best.d) best = { b, d }; }
@@ -1824,6 +1884,64 @@ document.documentElement.dataset.parishesReady = '1';
 
 # CLASS (wave 8): the class session HUD + lesson moments at mapped places (web/classkit.py; play only, local,
 # never a completion record). Mounted folded (compact) so it never covers the world's own controls.
+# BEGIN FACADE w11 (FACADE·Exteriors & Signs): AUTHORED facade details on the kit buildings nearest the eye and PLAY
+# signs on the economy/ commercial lots (web/facadekit.py, facades/registry/facades.json) - ONE InstancedMesh, one draw
+# call, hidden in the overview; the glue reads the streamed chunks and never changes them (details are not solid).
+if (ROOT / 'facades/registry/facades.json').exists() and (HERE / 'facadekit.py').exists():
+    from facadekit import facade_mount_js, pattern_honesty_line  # noqa: E402
+    FACADE_WORLD = 'parishes'   # the facades world these pages draw (a world target may override it)
+    _fa = 'window.__parishes = {'
+    if JS.count(_fa) != 1:
+        raise BuildError('build_parishes: FACADE mount anchor `window.__parishes = {` must occur exactly once')
+    JS = JS.replace(_fa, facade_mount_js(FACADE_WORLD, host_js=JS) + r"""
+if (typeof PatternKit !== 'undefined') setColourAdapter(facPatternAdapter(FAC_DATA, PatternKit));   // PATTERN_CONTRACT v1 colours
+/* 0 draw calls for details: the parts are written as triangles into the tail of the street mesh's merged
+   vertex-coloured buffer (roadGeo) after the streets' own vertices; a street refill rewrites from 0 and the parts are
+   re-appended. Only textured play-sign boards within 45 m of the eye use the kit's own mesh (1 call while one is near).
+   Budget (lead, w11 eval): 220 parts x 8 triangles within 75 m. */
+const FAC = createFacades(scene, { THREE, data: FAC_DATA, world: FAC_WORLD, maxBoxes: 220, radius: 75, sink: true, signNear: 45,
+  makeCanvas: () => document.createElement('canvas') });
+window.__facades = FAC;
+let facKey = '', facT = 0, facBase = 0, facEnd = -1;
+function facFlush() {
+  if (roadGeo.drawRange.count !== facEnd) facBase = roadGeo.drawRange.count;   // the streets were refilled: append after them
+  const nv = FAC.writeInto(roadPos, roadNor, roadCol, roadZeb, facBase, roadPos.length / 3);
+  facEnd = facBase + nv; roadGeo.setDrawRange(0, facEnd);
+  for (const k of ['position', 'normal', 'color']) { const at = roadGeo.attributes[k]; at.addUpdateRange(facBase * 3, nv * 3); at.needsUpdate = true; }
+  { const at = roadGeo.attributes.zebra; at.addUpdateRange(facBase, nv); at.needsUpdate = true; }
+}
+function facStep(now) {
+  const over = mode === 'overview';
+  FAC.setVisible(!over);
+  if (!over && now - facT > 250) {
+    facT = now;
+    const k = Math.round(eye.x / 12) + ',' + Math.round(eye.z / 12) + ',' + chunkData.size + ',' + [...loaded].sort().join() + ',' + FAC.stats().enabled;
+    if (k !== facKey) {
+      facKey = k;
+      const bl = []; for (const c of chunkData.values()) for (const b of c.block) bl.push(b);
+      const shops = [];
+      for (const id of loaded) {
+        const p = PAR.get(id);
+        for (const s of FAC.signsFor(id)) {
+          const x = p.origin_m[0] + s.x, z = p.origin_m[1] + s.z, rn = roadStreamed(x, z) ? roadNear(x, z, 60) : null;
+          shops.push({ sign: s, x, z, yaw: rn ? Math.atan2(-rn.nx, -rn.nz) : 0 });
+        }
+      }
+      FAC.update(bl, shops, eye); facFlush();
+    } else if (roadGeo.drawRange.count !== facEnd) facFlush();
+  }
+  requestAnimationFrame(facStep);
+}
+requestAnimationFrame(facStep);
+""" + _fa, 1)
+    # the legend line is quoted from the facades registry (lang="en"), like the other registry legend lines
+    import json as _fj
+    _fh = _fj.loads((ROOT / 'facades/registry/facades.json').read_text())['honesty']
+    _fl = '<li data-legend="help">'
+    if world_legend.count(_fl) != 1:
+        raise BuildError('build_parishes: FACADE legend anchor <li data-legend="help"> must occur exactly once')
+    world_legend = world_legend.replace(_fl, f'<li data-legend="facades" lang="en">{esc(_fh["styles"])} {esc(_fh["signs"])} {esc(pattern_honesty_line())}</li>' + _fl, 1)
+# END FACADE w11
 if (ROOT / 'classroom/registry/classroom.json').exists() and (HERE / 'classkit.py').exists():
     from classkit import class_data, class_i18n, auth_core, js_json, CLASS_CSS, CLASS_JS  # noqa: E402
     CLASS_DATA = class_data(['parishes'])
@@ -1859,6 +1977,20 @@ if NPC_CSS_BLOCK:
     HUD_PANELS.append({'id': 'npc', 'kind': 'panel', 'sel': '.npc-panel', 'slot': 'bs', 'order': 0, 'compact': 'none'})
 if ECON_PANEL:
     HUD_PANELS.append({'id': 'city', 'kind': 'flow', 'goto': '#tc-econ', 'anchor': 'id="tc-econ"', 'icon': 'city', 'label': 'hud.open.city'})
+# ROBOLAB (wave 11) BEGIN: robotics sandbox (web/robokit.py) - an AUTHORED arena beside this world where a learner
+# teleoperates an AUTHORED robot, records a world-teleop episode on purpose, and compares a SCRIPTED reference policy.
+# A section below the stage; robokit carries its own robo.* catalogue ([data-robo-i18n]) so this page's catalogue is
+# unchanged. The dock chip registers once UX's hud.open.robo key exists. Nothing is trained; the Bay page inherits this.
+if (ROOT / 'robotics/registry/robotics.json').exists() and (HERE / 'robokit.py').exists():
+    from robokit import robo_panel_html, robo_world_T, robo_world_tail  # noqa: E402
+    ROBO_WORLD = 'bay' if PAGE.endswith('trade_craft_bay.html') else 'parishes'
+    ROBO_SECTION, ROBO_TAIL = robo_panel_html(robo_world_T, ROBO_WORLD), robo_world_tail(ROBO_WORLD)
+    if 'hud.open.robo' in _CAT:
+        HUD_PANELS.append({'id': 'robo', 'kind': 'flow', 'goto': '#robo', 'anchor': '<section class="robo" id="robo"',
+                           'icon': 'screen', 'label': 'hud.open.robo'})
+else:
+    ROBO_SECTION = ROBO_TAIL = ''
+# ROBOLAB (wave 11) END
 HUD_LAYER = hud_layer(HUD_PANELS, TS, TA)
 
 page = f'''<!doctype html>
@@ -1909,6 +2041,7 @@ h2{{font:700 24px/1.1 "Barlow Condensed",system-ui,sans-serif;margin:22px 0 6px}
 code{{font:13px "IBM Plex Mono",monospace;color:var(--steel)}}
 kbd{{font:12px "IBM Plex Mono",monospace;border:1px solid var(--rule);border-radius:4px;padding:1px 5px;background:var(--sunk)}}
 @media(max-width:720px){{#minimap,#satbox{{width:120px;height:120px}}#satbox{{bottom:140px}}.ctl{{max-width:calc(100% - 20px)}}}}
+/* BEGIN UX: AUDIT row 9, phone tap targets for the world mode buttons */@media(max-width:720px){{.ctl .tc-btn{{min-block-size:44px}}}}/* END UX */
 </style>
 <style>{NAV_CSS}</style>
 <style data-tc-theme="canvas">{THEME_CSS}</style>
@@ -1994,6 +2127,56 @@ kbd{{font:12px "IBM Plex Mono",monospace;border:1px solid var(--rule);border-rad
 </html>
 '''
 
+# BEGIN DRIVE w11 (DRIVE·Drivable Fleet): the parish (and, through web/build_bayworld.py, the Bay) drive loop gets the
+# fleet's per-family handling classes (fleetkit fleetFamilyHandling / fleetShapeInput, AUTHORED from fleet/registry
+# figures; motion stays SCHEMATIC fleetPhysStep), a driving HUD registered with the HUD layout manager (hudkit panel
+# 'drive', #fleet-hud, slot t) and phone controls (fleetkit fleetTouchControls, shown only while aboard on coarse
+# pointers; minimap + satellite box step aside while aboard). Applied to the BUILT page on its own JS lines (each
+# exactly once) - the source lines above stay unchanged.
+if FLEET_REG:
+    _DRIVE_KEYS = (['fleet.touch.' + k for k in ('group', 'stick', 'throttle', 'brake', 'enter', 'exit')]
+                   + ['fleet.hud.' + k for k in ('region', 'kmh', 'gear_D', 'gear_R', 'gear_N', 'land', 'water', 'exit', 'exit_e',
+                                                 'cls_cycle', 'cls_nimble', 'cls_standard', 'cls_worksite', 'cls_heavy',
+                                                 'cls_paddle', 'cls_planing', 'cls_displacement', 'cls_ship')])
+    for _k in _DRIVE_KEYS:
+        T(_k)
+    _USED.update(_DRIVE_KEYS)
+    _DRIVE_PAGE = [
+     ("const enterBtn = document.getElementById('enter');\n",
+      "const enterBtn = document.getElementById('enter');\n"
+      "/* DRIVE w11: handling classes, driving HUD, phone controls */\n"
+      "const DRIVE_CLS = FLEETREG ? fleetFamilyHandling(FLEETREG) : null;\n"
+      "const driveHud = FLEETREG ? fleetDriveHud(document, document.getElementById('fleet-hud'), Object.fromEntries(FLEET_HUD_LABELS.map((k) => [k, tr(k === 'exit' ? 'fleet.hud.exit_e' : 'fleet.hud.' + k)]))) : null;\n"
+      "const driveTouch = FLEETREG ? fleetTouchControls(document, stage, Object.fromEntries(['group', 'stick', 'throttle', 'brake', 'enter', 'exit'].map((k) => [k, tr('fleet.touch.' + k)])), () => { if (!enterExit()) toast(tr('parishes.boat.nowater')); }) : null;\n"
+      "const driveCls = (sp) => DRIVE_CLS.get(sp.id.split('.')[0]).cls;\n"),
+     ("  stage.dataset.mode = mode; enterBtn.setAttribute('aria-pressed', String(!!riding));\n",
+      "  stage.dataset.mode = mode; enterBtn.setAttribute('aria-pressed', String(!!riding));\n"
+      "  if (driveHud) driveHud.show(!!riding); if (driveTouch) driveTouch.setAboard(!!riding);\n"),
+     ("  if (W) physDrive(input, dt); else fleetStep(riding.st, riding.spec, input, fground, dt);\n",
+      "  if (driveTouch) { const _t = driveTouch.input(); input.throttle = Math.max(-1, Math.min(1, input.throttle + _t.throttle)); input.steer = Math.max(-1, Math.min(1, input.steer + _t.steer)); input.brake = input.brake || _t.brake ? 1 : 0; }\n"
+      "  if (DRIVE_CLS) { const _s = fleetShapeInput(riding.shaped || (riding.shaped = { throttle: 0, steer: 0 }), input, driveCls(riding.spec), dt); input.throttle = _s.throttle; input.steer = _s.steer; }\n"
+      "  if (W) physDrive(input, dt); else fleetStep(riding.st, riding.spec, input, fground, dt);\n"),
+     ("  riding.h.set(riding.st); eye.x = riding.st.x; eye.z = riding.st.z;\n",
+      "  riding.h.set(riding.st); eye.x = riding.st.x; eye.z = riding.st.z;\n"
+      "  if (driveHud) driveHud.update(fleetHudState(riding.st, riding.spec, driveCls(riding.spec)));\n"),
+     ('<div id="toast" hidden role="status"></div>', '<div id="toast" hidden role="status"></div><div id="fleet-hud" class="tc-panel"></div>'),
+     ('</head>', '<style id="drive-css">#fleet-hud{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:6px 10px;'
+      'font-variant-numeric:tabular-nums}#fleet-hud[hidden]{display:none}.fleet-hud-speed{font-weight:700}'
+      '#stage:not([data-mode="drive"]):not([data-mode="boat"]) .fleet-touch{display:none!important}'
+      '@media (pointer:coarse){#stage[data-mode="drive"] #minimap,#stage[data-mode="boat"] #minimap,'
+      '#stage[data-mode="drive"] #satbox,#stage[data-mode="boat"] #satbox{display:none!important}}'
+      '@media (max-width:600px){#fleet-hud .fleet-hud-hint,#fleet-hud .fleet-hud-cls{display:none}}</style>\n</head>'),
+    ]
+    for _a, _b in _DRIVE_PAGE:
+        if page.count(_a) != 1:
+            raise BuildError(f'build_parishes: DRIVE anchor found {page.count(_a)}x: {_a[:60]!r}')
+        page = page.replace(_a, _b)
+    HUD_PANELS.append({'id': 'drive', 'kind': 'panel', 'sel': '#fleet-hud', 'slot': 't', 'order': 1, 'compact': 'none'})
+    if page.count(HUD_LAYER) != 1:
+        raise BuildError('build_parishes: DRIVE - the HUD layer is not in the page exactly once')
+    page = page.replace(HUD_LAYER, hud_layer(HUD_PANELS, TS, TA))
+# END DRIVE w11
+
 I18N_CAT = {}
 for _f in sorted((ROOT / 'i18n/locales').glob('*.json')):
     _c = json.loads(_f.read_text(encoding='utf-8'))
@@ -2007,6 +2190,13 @@ for _f in sorted((ROOT / 'i18n/locales').glob('*.json')):
     I18N_CAT[_c['locale']] = {'dir': _c['dir'], 'language': _c['language'], 'strings': _s}
 if len(I18N_CAT) != 8 or 'en' not in I18N_CAT:
     raise BuildError(f'build_parishes: expected 8 locales incl. en, found {sorted(I18N_CAT)}')
+# ROBOLAB (wave 11) BEGIN: place the robotics section before the contracts list and its kit before </body>
+if ROBO_SECTION:
+    for _ra, _rb in (('<ul data-contracts>', ROBO_SECTION + '\n<ul data-contracts>'), ('</div></body>', ROBO_TAIL + '</div></body>')):
+        if page.count(_ra) != 1:
+            raise BuildError(f'build_parishes: ROBOLAB anchor {_ra!r} must occur exactly once')
+        page = page.replace(_ra, _rb)
+# ROBOLAB (wave 11) END
 flow_anchors_present(HUD_PANELS, page)
 page = page.replace('__PARISHES_I18N__', json.dumps(I18N_CAT, ensure_ascii=False, sort_keys=True).replace('</', '<\\/'))
 

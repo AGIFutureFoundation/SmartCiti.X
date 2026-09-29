@@ -3,6 +3,7 @@
  * statuses must follow content; no price, no certification, no partner in any pack.
  * Prints `  ok ` per check, FAIL at column 0; exits non-zero on any failure. Network-free. */
 import { readFileSync, existsSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
@@ -95,6 +96,61 @@ for (const [id, [reg, count]] of Object.entries(NEW)) {
   const p = P[id];
   if (!has(reg)) { ok(p.status === 'PROPOSED' && Object.values(p.contents).every((v) => v === 0) && p.sources.length === 0, `${id}: ${reg} absent -> PROPOSED with 0, no source`); continue; }
   ok(eq(sortObj(p.contents), sortObj(count(J(reg)))) && p.sources.some((s) => s.path === reg), `${id}: counts recomputed from ${reg}`);
+}
+
+/* ---- wave 11 shared modules (TQ): present exactly when their registry exists; recounted ---- */
+const W11 = {
+  'tradesquest-stations': ['web/tqkit.py', () => {
+    const out = execFileSync('python3', ['-B', '-c', 'import json,sys; sys.path.insert(0, "web"); import tqkit; '
+      + 'print(json.dumps({"kinds": tqkit.TQKIT_KINDS, "halls": tqkit.TQKIT_HALLS}))'], { cwd: ROOT, encoding: 'utf8' });
+    const t = JSON.parse(out);
+    return { station_kinds: t.kinds.length, host_halls: new Set(t.kinds.flatMap((x) => t.halls[x].primary)).size };
+  }],
+  'materials-colour': ['surfaces/registry/exterior.json', () => {
+    const X = J('surfaces/registry/exterior.json');
+    return { pattern_recipes: Object.keys(X.recipes).length, colour_categories: Object.keys(X.colour_families).length,
+      colours: Object.values(X.colour_families).reduce((a, f) => a + f.colours.length, 0) };
+  }],
+  'exteriors-signs': ['facades/registry/facades.json', () => {
+    const F = J('facades/registry/facades.json');
+    return { styles: Object.keys(F.styles).length, signs: F.signs.length,
+      components: Object.values(F.styles).reduce((a, x) => a + x.components.length, 0) };
+  }],
+  'robotics-lab': ['robotics/registry/robotics.json', () => {
+    const R = J('robotics/registry/robotics.json'), env = Object.values(R.envs);
+    return { embodiments: Object.keys(R.embodiments).length, world_envs: env.filter((e) => e.runner === 'robokit').length,
+      sim_seat_envs: env.filter((e) => e.runner === 'sim-seat').length };
+  }],
+  'data-commons': ['datashare/registry/datashare.json', () => {
+    const X = J('datashare/registry/datashare.json');
+    return { episode_kinds: Object.keys(X.fields_by_kind).length, practices: X.best_practices.length,
+      refusal_reasons: Object.keys(X.refusals).length };
+  }],
+};
+/* a wave-11 module links a page only when that page exists and embeds the named kit */
+const W11_KIT = { 'tradesquest-stations': 'TQ_KIT:BEGIN', 'materials-colour': 'patternkit', 'exteriors-signs': '__facades', 'robotics-lab': 'robokit', 'data-commons': 'datashare' };
+const w11 = D.packs.filter((p) => p.wave === 11).map((p) => p.id);
+ok(w11.every((id) => id in W11), `every wave-11 module is one this test recounts (${w11.join(', ') || 'none'})`);
+for (const [id, [reg, count]] of Object.entries(W11)) {
+  if (!has(reg)) { ok(!(id in P), `${id}: ${reg} absent -> no module (no placeholder)`); continue; }
+  const p = P[id];
+  ok(p && p.wave === 11 && p.title_key === `packs.pack.${id}` && p.sources.some((s) => s.path === reg),
+    `${id}: ${reg} exists -> module present, sourced from it`);
+  ok(p && eq(sortObj(p.contents), sortObj(count())), `${id}: counts recomputed ${p ? JSON.stringify(p.contents) : ''}`);
+}
+ok(w11.every((id) => id in W11_KIT && (P[id].open === null || (has(P[id].open) && readFileSync(join(ROOT, P[id].open), 'utf8').includes(W11_KIT[id])))),
+  'every wave-11 deep link names a page that exists and embeds that module\'s kit');
+ok(!P['robotics-lab'] || !/train(ed|ing)/i.test(JSON.stringify(P['robotics-lab'].contents)), 'robotics-lab counts specs only; no count claims anything was trained');
+ok(!P['data-commons'] || (J('datashare/registry/datashare.json').intake.deployed === false && !/upload|deploy|train/i.test(JSON.stringify(P['data-commons'].contents))),
+  'data-commons: the intake is not deployed and no count claims an upload, a deployment or a training run');
+{
+  const p = P['tradesquest-stations'];
+  const U = J('unions/registry/unions.json').unions.map((u) => u.slug);
+  ok(!p || p.open === null || readFileSync(join(ROOT, p.open), 'utf8').includes('TQ_KIT:BEGIN'),
+    'tradesquest-stations links a world only when that page embeds the TQ kit');
+  ok(!p || JSON.parse(execFileSync('python3', ['-B', '-c', 'import json,sys; sys.path.insert(0, "web"); import tqkit; '
+    + 'print(json.dumps([h for v in tqkit.TQKIT_HALLS.values() for h in v["primary"]]))'], { cwd: ROOT, encoding: 'utf8' })).every((h) => U.includes(h)),
+    'tradesquest-stations: every host hall is a unions/ slug');
 }
 
 /* ---- statuses and links honest ---- */

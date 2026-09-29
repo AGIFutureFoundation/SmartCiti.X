@@ -121,5 +121,20 @@ t = await run({ search: '?checkout=<img>', reply: R(200, {}) });
 ok(t.ret.hidden, 'unknown checkout= value shows nothing');
 ok(!/innerHTML|insertAdjacentHTML|document\.write/.test(CORE), 'no HTML injection sinks in the checkout code');
 
+// AUDIT row 11 (UX): one scheme for nav and page. The site nav reads --panel/--ink/--rule/--muted/--mark (sitenav
+// NAV_CSS, falling back to the OS Canvas colours when a page leaves them unset - which drew a light bar over this dark
+// page under a light OS). The page binds each to the theme layer on <body>, and the bound pair holds AA.
+{
+  const m = P.match(/body\.tc-theme\{(--plate:var\(--tc-plate\);[^}]*)\}/);
+  const decl = m ? Object.fromEntries(m[1].split(';').filter(Boolean).map((d) => d.split(':').map((x) => x.trim()))) : {};
+  const want = { '--panel': 'var(--tc-panel)', '--ink': 'var(--tc-ink)', '--rule': 'var(--tc-line)', '--line': 'var(--tc-line)', '--muted': 'var(--tc-muted)', '--mark': 'var(--tc-amber)' };
+  const dark = P.match(/body\.tc-theme\{[^}]*--tc-panel:(#[0-9A-Fa-f]{6});[^}]*--tc-ink:(#[0-9A-Fa-f]{6});/);
+  // measured with the design kit's own contrast function (web/design_kit.py contrast), not a second copy
+  const ratio = dark ? Number((await import('node:child_process')).execFileSync('python3', ['-c',
+    `import sys; sys.path.insert(0, ${JSON.stringify(join(ROOT, 'web'))}); import design_kit; print(design_kit.contrast(${JSON.stringify(dark[2])}, ${JSON.stringify(dark[1])}))`], { encoding: 'utf8' })) : 0;
+  ok(!!m && Object.entries(want).every(([k, v]) => decl[k] === v) && ratio >= 4.5,
+    `row 11: the nav's tokens are bound to the page theme on <body> (no OS-colour seam); nav ink/panel ${ratio.toFixed(2)}:1 >= 4.5`);
+}
+
 console.log(`plans: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

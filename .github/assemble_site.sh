@@ -23,35 +23,43 @@ cp sitemap.xml robots.txt _site/
 # maps and require every map the registry names to be present.
 mkdir -p _site/parishes
 cp -r parishes/maps _site/parishes/maps
+rm -rf _site/parishes/maps/tiles   # the pages load one ground atlas per parish (parishes/maps/atlas)
 python3 - <<'PY'
 import json, pathlib, sys
 reg = json.load(open('parishes/registry/parishes.json'))
 named = [p['map'][k] for p in reg['parishes'].values() for k in ('path', 'preview')]
-named += [t['path'] for p in reg['parishes'].values() for t in p['map']['ground_tiles']['tiles']]
+atl = json.load(open('parishes/registry/ground_atlas.json'))['atlases']
+named += [a['path'] for k, a in atl.items() if k.startswith('parishes/')]
+if (pathlib.Path('_site') / 'parishes/maps/tiles').exists():
+    sys.exit('assemble: ground tiles must not ship; pages load parishes/maps/atlas')
 named += [p['map']['streets']['path'] for p in reg['parishes'].values()]
 missing = [m for m in named if not (pathlib.Path('_site') / m).is_file()]
 if missing:
     sys.exit('assemble: parish maps named in parishes/registry are missing from _site: ' + ', '.join(missing))
-print(f"parish maps: all {len(named)} registry-named maps, ground tiles and street files present in _site")
+print(f"parish maps: all {len(named)} registry-named maps, ground atlases and street files present in _site")
 PY
 # The Bay world loads its county maps the same way ('../' + path from
 # bayarea/registry), and both worlds fetch underwater/registry/underwater.json
 # on the first Dive/ROV press: copy them and require what the registries name.
 mkdir -p _site/bayarea _site/underwater/registry
 cp -r bayarea/maps _site/bayarea/maps
+rm -rf _site/bayarea/maps/tiles    # the pages load one ground atlas per county (bayarea/maps/atlas)
 cp underwater/registry/underwater.json _site/underwater/registry/underwater.json
 python3 - <<'PY'
 import json, pathlib, sys
 reg = json.load(open('bayarea/registry/bayarea.json'))
 cs = reg['counties']
 named = [c['map'][k] for c in cs.values() for k in ('path', 'preview')]
-named += [t['path'] for c in cs.values() for t in c['map']['ground_tiles']['tiles']]
+atl = json.load(open('parishes/registry/ground_atlas.json'))['atlases']
+named += [a['path'] for k, a in atl.items() if k.startswith('bayarea/')]
+if (pathlib.Path('_site') / 'bayarea/maps/tiles').exists():
+    sys.exit('assemble: ground tiles must not ship; pages load bayarea/maps/atlas')
 named += [c['map']['streets']['path'] for c in cs.values()]
 named += ['underwater/registry/underwater.json']
 missing = [m for m in named if not (pathlib.Path('_site') / m).is_file()]
 if missing:
     sys.exit('assemble: Bay maps / underwater registry missing from _site: ' + ', '.join(missing))
-print(f"bay maps: all {len(named)} registry-named Bay maps, tiles, street files and the underwater registry present in _site")
+print(f"bay maps: all {len(named)} registry-named Bay maps, ground atlases, street files and the underwater registry present in _site")
 PY
 
 python3 - <<'PY'

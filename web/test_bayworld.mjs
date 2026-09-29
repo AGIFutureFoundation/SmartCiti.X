@@ -105,5 +105,13 @@ ok(!/(?:fetch\(\s*|src\s*=\s*|\bfrom\s+|import\(\s*|new URL\(\s*)['"`]https?:\/\
   ok(rs.length > 0 && !/localStorage|sessionStorage|indexedDB|fetch\(|XMLHttpRequest/.test(rs),
     '[resto] the scenario runner stores nothing and fetches nothing (a run is play, never a completion record)');
 }
+/* WORLDS w11: the Bay page drapes ONE 2048 px atlas per county (parishes/build_atlas.py), never the 16 tiles */
+{
+  const AT = JSON.parse(readFileSync(join(ROOT, 'parishes/registry/ground_atlas.json'), 'utf8')).atlases;
+  const want = Object.keys(R.counties).map((id) => AT['bayarea/maps/tiles/' + id]);
+  ok(want.every((a) => a && html.includes(`"atlas": "${a.path}"`) && existsSync(join(ROOT, a.path))) && !/bayarea\/maps\/tiles\/\d+-r\d+c\d+\.webp/.test(html),
+    `[atlas] the Bay page names ${want.length} county ground atlases (files present) and no per-tile path`);
+}
+
 console.log(`\n${pass} ok, ${fail} FAIL`);
 process.exit(fail ? 1 : 0);
