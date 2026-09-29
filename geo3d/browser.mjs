@@ -2,9 +2,11 @@
  * geo3d browser agreement: the Python mirror (geo3d/registry/geo3d.json)
  * against what the 3D page actually BUILT - window.__tc3dLayout() in
  * web/trade_craft_3d.html reads every district group and hall wall-box back
- * off the scene (LAYOUT_CONTRACT v1). Every district centre and rotation and
- * every hall centre, size, wall height, roof top and roofline must agree to
- * <= 0.01 m, and the hall sets must be identical.
+ * off the scene (LAYOUT_CONTRACT v2: districts at the campus origin, psi 0;
+ * each hall on its campusplan lot). Every hall centre, size, wall height,
+ * facing (rot) and roofline must agree to <= 0.01 m, the page's top must
+ * not be below the mirrored wall-box top (the archetype roof is not
+ * mirrored), and the hall and district sets must be identical.
  *
  * Needs a browser, so it is NOT part of verify_all's static run:
  *   python3 -m http.server <port> --bind 127.0.0.1   (from the repo root)
@@ -46,16 +48,17 @@ for (const k of list) {
   ok(`[browser] ${k}: the page built exactly the halls geo3d places (${L.halls.length})`,
     JSON.stringify(Object.keys(pyH).sort()) === JSON.stringify(Object.keys(jsH).sort()));
   let worst = 0; const off = [];
+  const ang = (a2) => Math.abs(((a2 + Math.PI) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI) - Math.PI);
   for (const d of G.districts) {
     const j = L.districts.find((x) => x.key === d.key);
-    const dd = j ? Math.max(Math.hypot(j.cx - d.cx, j.cz - d.cz), Math.abs(((j.psi - d.psi + Math.PI) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI) - Math.PI) * 200) : Infinity;
+    const dd = j ? ang(j.psi - d.psi) * 200 : Infinity;
     worst = Math.max(worst, dd); if (!(dd <= TOL)) off.push(d.key);
   }
   for (const h of G.halls) {
     const j = jsH[h.slug];
-    const dd = j && j.district === h.district && j.roof === h.roof
+    const dd = j && j.district === h.district && j.roof === h.roof && j.top >= h.top - TOL
       ? Math.max(Math.hypot(j.x - h.x, j.z - h.z), Math.abs(j.w - h.w), Math.abs(j.d - h.d), Math.abs(j.h - h.h),
-                 Math.abs(j.top - h.top), Math.abs(((j.psi - h.psi + Math.PI) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI) - Math.PI) * 200)
+                 ang(j.rot - h.rot) * 200)
       : Infinity;
     worst = Math.max(worst, dd); if (!(dd <= TOL)) off.push(h.slug);
   }

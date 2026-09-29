@@ -837,7 +837,12 @@
   "campusplan.walkway": "ممر المشاة",
   "tasks.kind.resto-scenario": "سيناريو تدريبي للاستعادة البيئية",
   "resto.open": "تشغيل السيناريو التدريبي",
-  "resto.close": "إغلاق"
+  "resto.close": "إغلاق",
+  "hud.region": "عناصر التحكم في العالم",
+  "hud.open.paths": "مسارات التعلم",
+  "hud.open.city": "حياة المدينة",
+  "hud.open.legend": "المفتاح وملاحظات الشفافية",
+  "hud.toggle.reactor": "العرض المباشر للهولوديك"
  },
  "districts": {
   "structural": {

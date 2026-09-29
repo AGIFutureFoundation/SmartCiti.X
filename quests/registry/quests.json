@@ -2,7 +2,7 @@
  "pack": "quests",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
- "source_stamp": "5256345705fe0701",
+ "source_stamp": "a008a2dc0d5ffd1c",
  "reads": [
   "lessons/registry/lessons.json",
   "pack/registry/halls.json",

@@ -3,11 +3,13 @@
  * registries and to the 3D page's own data.
  *
  *   [registry]  geo3d/registry/geo3d.json against the registries it reads
- *   [mirror]    the layout recomputed HERE, in JavaScript, exactly as
- *               web/build_3d.py buildCampus()/building() compute it, from the
- *               data embedded in web/trade_craft_3d.html (D.campuses,
- *               D.districts, D.halls[].depth) - an independent second
- *               implementation, agreeing to <= 0.01 m
+ *   [mirror]    the layout recomputed HERE, in JavaScript, from the site
+ *               plan the 3D page itself embeds (web/trade_craft_3d.html
+ *               D.campusplan lots: w_m x d_m turned by rot_y about the lot
+ *               building centre) - an independent second implementation,
+ *               agreeing to <= 0.01 m (LAYOUT_CONTRACT v2)
+ *   [plan]      every hall footprint IS its campusplan/registry lot's
+ *               building footprint, every district outline its block
  *   [geometry]  closed rings, no overlap within a district, the projection
  *               formula re-applied to every corner
  *
@@ -49,9 +51,10 @@ ok('[registry] web/build_3d.py still carries the `const STYLE_OF = {...};` block
 inH.update(Buffer.from(styleBlock[0], 'utf8'));
 ok('[registry] inputs_stamp is sha256 over every input registry and module, in listed order, plus the STYLE_OF block (a registry edit without a rebuild fails here)',
   reg.inputs_stamp === inH.digest('hex').slice(0, 16));
-ok('[registry] inputs name the four registries and two modules the layout reads',
+ok('[registry] inputs name the five registries (campusplan\'s site plans included) and two modules the layout reads',
   JSON.stringify(reg.inputs) === JSON.stringify(['unions/registry/campuses.json', 'unions/registry/districts.json',
-    'pack/registry/halls.json', 'geo/registry/campuses_geo.json', 'web/interiors.py', 'web/mapdata.py']));
+    'pack/registry/halls.json', 'geo/registry/campuses_geo.json', 'web/interiors.py', 'web/mapdata.py',
+    'campusplan/registry/campusplan.json']));
 
 /* ------------------------------------------------------------ honesty --- */
 ok('[registry] provenance is SCHEMATIC and the placement sentence says north-up, no heading or survey, 3D-campus scale',
@@ -91,54 +94,74 @@ const m = page3d.match(/<script id="data" type="application\/json">([\s\S]*?)<\/
 ok('[mirror] web/trade_craft_3d.html embeds its data JSON', m !== null);
 const D = JSON.parse(m[1]);
 const STYLE = Object.fromEntries([...styleBlock[1].matchAll(/(\w+):\s*'(\w+)'/g)].map((x) => [x[1], x[2]]));
+ok('[mirror] the page embeds the campus site plan it builds from (D.campusplan, one lot per hall of every hall campus)',
+  withHalls.every((k) => D.campusplan && D.campusplan[k] && D.campusplan[k].lots.length === campuses[k].halls.length));
 let worst = 0, compared = 0;
 const expect = {};
 for (const key of withHalls) {
-  const dk = D.campuses[key].districts;
-  const R = dk.length === 2 ? 124 : 168;
-  dk.forEach((k, di) => {
-    const d = D.districts[k];
-    const ang = di / dk.length * Math.PI * 2 - Math.PI / 2;
-    const rx = Math.cos(ang), rz = Math.sin(ang);
-    const psi = Math.atan2(rx, rz);
-    const cx = rx * R, cz = rz * R;
-    const cols = Math.ceil(Math.sqrt(d.halls.length * 1.7));
-    const maxDep = Math.max(...d.halls.map((sg) => Math.max(D.halls.find((x) => x.slug === sg).depth, 5)));
-    const pitch = maxDep + 8;
-    expect[`${key}/${k}`] = { cx, cz, psi };
-    d.halls.forEach((sg, i) => {
-      const h = D.halls.find((x) => x.slug === sg);
-      const gx = (i % cols) - (cols - 1) / 2, gz = Math.floor(i / cols);
-      const u = gx * 16, v = gz * pitch;
-      const x = cx + u * Math.cos(psi) + v * Math.sin(psi);
-      const z = cz - u * Math.sin(psi) + v * Math.cos(psi);
-      const hw = 6 + (h.depth % 3) * .7, roof = STYLE[k];
-      const top = roof === 'flat' ? hw + .8 : roof === 'gable' ? hw + 1.1 + 3.6 * Math.sin(.48) + .25 * Math.cos(.48)
-        : roof === 'saw' ? hw + .55 + 1.6 * Math.sin(.42) + .75 * Math.cos(.42) : NaN;
-      expect[sg] = { key, district: k, x, z, w: 12, d: Math.max(h.depth, 5), h: hw, top, roof, psi };
-    });
-  });
+  for (const lot of D.campusplan[key].lots) {
+    const b = lot.b, h = D.halls.find((x) => x.slug === lot.hall);
+    // the building's own w_m x d_m box turned by rot_y (three.js rotation.y) about its centre
+    const c = Math.cos(b.rot_y), s2 = Math.sin(b.rot_y);
+    const ex = Math.abs(b.w_m / 2 * c) + Math.abs(b.d_m / 2 * s2), ez = Math.abs(b.w_m / 2 * s2) + Math.abs(b.d_m / 2 * c);
+    expect[lot.hall] = { key, district: lot.district, x: b.x, z: b.z, x0: b.x - ex, x1: b.x + ex, z0: b.z - ez, z1: b.z + ez,
+      w: 36, d: h.depth * 3, h: h.clear + .35, rot: b.rot_y, roof: STYLE[lot.district] };
+  }
 }
 const tol = 0.01;
 const bad = [];
 for (const [k, c] of Object.entries(G)) {
-  for (const d of c.districts) {
-    const e = expect[`${k}/${d.key}`];
-    const dd = e ? Math.max(Math.hypot(e.cx - d.cx, e.cz - d.cz), Math.abs(e.psi - d.psi) * 200) : Infinity;
-    worst = Math.max(worst, dd); compared++;
-    if (!(dd <= tol)) bad.push(`${k}/${d.key}`);
-  }
   for (const h of c.halls) {
     const e = expect[h.slug];
-    const dd = e && e.key === k && e.district === h.district
-      ? Math.max(Math.hypot(e.x - h.x, e.z - h.z), Math.abs(e.w - h.w), Math.abs(e.d - h.d), Math.abs(e.h - h.h), Math.abs(e.top - h.top), Math.abs(e.psi - h.psi) * 200) + (e.roof === h.roof ? 0 : Infinity)
+    const xs = h.corners_m.map((q) => q[0]), zs = h.corners_m.map((q) => q[1]);
+    const dd = e && e.key === k && e.district === h.district && e.roof === h.roof
+      ? Math.max(Math.hypot(e.x - h.x, e.z - h.z), Math.abs(e.w - h.w), Math.abs(e.d - h.d), Math.abs(e.h - h.h),
+        Math.abs(e.rot - h.rot) * 200, Math.abs(Math.min(...xs) - e.x0), Math.abs(Math.max(...xs) - e.x1),
+        Math.abs(Math.min(...zs) - e.z0), Math.abs(Math.max(...zs) - e.z1))
       : Infinity;
     worst = Math.max(worst, dd); compared++;
     if (!(dd <= tol)) bad.push(h.slug);
   }
 }
-ok(`[mirror] every district centre/rotation and hall centre/size/wall height/roof top/roofline agrees with the 3D page's own layout to <= ${tol} m (${compared} compared, worst ${worst.toExponential(2)} m${bad.length ? '; off: ' + bad.slice(0, 5).join(', ') : ''})`,
-  bad.length === 0 && compared === reg.counts.halls + reg.counts.districts);
+ok(`[mirror] every hall centre, footprint corners (36 x 3*depth m turned by its facing), wall height (clear + .35 slab), facing and roofline agrees with the site plan the 3D page embeds to <= ${tol} m (${compared} compared, worst ${worst.toExponential(2)} m${bad.length ? '; off: ' + bad.slice(0, 5).join(', ') : ''})`,
+  bad.length === 0 && compared === reg.counts.halls);
+
+/* ----------------------------------------------- the plan's own lots --- */
+const CP = need(js('campusplan/registry/campusplan.json'), 'campuses', 'campusplan.json');
+const lotOff = [];
+let lotN = 0;
+for (const key of withHalls) {
+  const lots = need(need(CP, key, 'campusplan'), 'lots', `campusplan ${key}`);
+  const byHall = Object.fromEntries(G[key].halls.map((h) => [h.slug, h]));
+  if (lots.length !== G[key].halls.length) lotOff.push(`${key}: ${lots.length} lots vs ${G[key].halls.length} halls`);
+  for (const l of lots) {
+    const h = byHall[l.hall], a = l.building.aabb; lotN++;
+    const want = [[a.x - a.w / 2, a.z - a.d / 2], [a.x + a.w / 2, a.z - a.d / 2], [a.x + a.w / 2, a.z + a.d / 2], [a.x - a.w / 2, a.z + a.d / 2]];
+    const same = h && h.lot === l.id && h.district === l.district
+      && h.corners_m.every(([x, z], i) => Math.abs(x - want[i][0]) <= 1e-3 && Math.abs(z - want[i][1]) <= 1e-3)
+      && Math.abs(h.x - l.building.x) <= 1e-9 && Math.abs(h.z - l.building.z) <= 1e-9
+      && h.door.x === l.building.door.x && h.door.z === l.building.door.z && h.facing === l.building.facing;
+    if (!same) lotOff.push(l.hall);
+  }
+}
+ok(`[plan] every globe hall footprint is its campusplan/registry/campusplan.json lot building (aabb corners, centre, door, facing, lot id; ${lotN} lots)${lotOff.length ? ' - off: ' + lotOff.slice(0, 5).join(', ') : ''}`,
+  lotOff.length === 0 && lotN === reg.counts.halls);
+const blkOff = [];
+for (const key of withHalls) for (const d of G[key].districts) {
+  const dp = CP[key].districts_plan.find((x) => x.key === d.key);
+  const b = dp && dp.block;
+  const xs = d.corners_m.map((q) => q[0]), zs = d.corners_m.map((q) => q[1]);
+  if (!b || Math.abs(Math.min(...xs) - (b.x - b.w / 2)) > 1e-3 || Math.abs(Math.max(...xs) - (b.x + b.w / 2)) > 1e-3
+    || Math.abs(Math.min(...zs) - (b.z - b.d / 2)) > 1e-3 || Math.abs(Math.max(...zs) - (b.z + b.d / 2)) > 1e-3) blkOff.push(`${key}/${d.key}`);
+}
+ok(`[plan] every globe district outline is its campusplan districts_plan block${blkOff.length ? ' - off: ' + blkOff.join(', ') : ''}`,
+  blkOff.length === 0 && reg.counts.districts === withHalls.reduce((n2, k) => n2 + CP[k].districts_plan.length, 0));
+ok('[plan] each hall footprint sits inside its own district block and inside the campus site',
+  withHalls.every((k) => G[k].halls.every((h) => {
+    const b = CP[k].districts_plan.find((x) => x.key === h.district).block, st = CP[k].site;
+    return h.corners_m.every(([x, z]) => x >= b.x - b.w / 2 - 1e-6 && x <= b.x + b.w / 2 + 1e-6 && z >= b.z - b.d / 2 - 1e-6
+      && z <= b.z + b.d / 2 + 1e-6 && x >= st.x0 - 1e-6 && x <= st.x1 + 1e-6 && z >= st.z0 - 1e-6 && z <= st.z1 + 1e-6);
+  })));
 
 /* ------------------------------------------------------------ geometry --- */
 const RE = 6371008.8, rad = (x) => x * Math.PI / 180, deg = (x) => x * 180 / Math.PI;
@@ -179,8 +202,11 @@ for (const [k, c] of Object.entries(G)) for (let i = 0; i < c.districts.length; 
   for (let j = i + 1; j < c.districts.length; j++)
     if (overlap(c.districts[i].corners_m, c.districts[j].corners_m)) distOver.push(`${k}:${c.districts[i].key}/${c.districts[j].key}`);
 ok(`[geometry] no two district outlines on a campus overlap${distOver.length ? ' (' + distOver.join(', ') + ')' : ''}`, distOver.length === 0);
-ok('[geometry] every hall has a positive height and a footprint no smaller than 12 x 5 m',
-  Object.values(G).every((c) => c.halls.every((h) => h.h > 0 && h.w === 12 && h.d >= 5)));
+ok('[geometry] every hall has a positive height and the walkable interior\'s own 36 x 3*depth m footprint',
+  Object.values(G).every((c) => c.halls.every((h) => h.h > 0 && h.w === 36 && h.d === h.depth_units * 3 && h.d >= 5)));
+ok('[registry] the placement says the site plan is AUTHORED and the archetype roof is not mirrored (top is the wall box)',
+  /AUTHORED/.test(reg.honesty.site_plan) && /not mirrored/.test(reg.mirrors)
+  && Object.values(G).every((c) => c.halls.every((h) => h.top === h.h)));
 ok('[registry] each hall\'s district lists it, and its name is pack/registry/halls.json\'s own',
   Object.values(G).every((c) => c.halls.every((h) => districts[h.district].halls.includes(h.slug)
     && halls.find((x) => x.slug === h.slug).name === h.name)));

@@ -837,7 +837,12 @@
   "campusplan.walkway": "Andador peatonal",
   "tasks.kind.resto-scenario": "Escenario de formación en restauración",
   "resto.open": "Iniciar escenario de formación",
-  "resto.close": "Cerrar"
+  "resto.close": "Cerrar",
+  "hud.region": "Controles del mundo",
+  "hud.open.paths": "Rutas de aprendizaje",
+  "hud.open.city": "Vida urbana",
+  "hud.open.legend": "Leyenda y notas de transparencia",
+  "hud.toggle.reactor": "Vista en vivo del holodeck"
  },
  "districts": {
   "structural": {

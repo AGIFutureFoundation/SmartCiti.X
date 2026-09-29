@@ -3058,4 +3058,99 @@ ok('a person\'s hand is palm, four-finger mitt and thumb - with a gauntlet cuff 
     && /m\.userData\.cut = hkB\.top \+ 1\.5;/.test(fnCode('buildHall')));
 }
 
+/* ---- wave 10: TradesQuest field-job stations in their union halls ------ */
+{
+  const B10 = readFileSync(new URL('./trade_craft_3d.html', import.meta.url), 'utf8');
+  const D10 = JSON.parse(B10.match(/<script id="data" type="application\/json">([\s\S]*?)<\/script>/)[1]);
+  // BRIDGE's own table, read from web/tqkit.py by Python - not restated here
+  const TQH = JSON.parse(execFileSync('python3', ['-B', '-c',
+    'import sys, json; sys.path.insert(0, "web"); from tqkit import TQKIT_HALLS; print(json.dumps(TQKIT_HALLS))'],
+    { cwd: new URL('..', import.meta.url) }).toString());
+  const want = {};
+  for (const [kind, rel] of Object.entries(TQH)) for (const sg of rel.primary) want[sg] = kind;
+  ok(`tq stations: D.tqStations is exactly web/tqkit.py's PRIMARY hall per kind (${Object.entries(want).map(([a, b]) => a + '->' + b).join(', ')}), every one a hall of the page, and the page carries the kit inline with its panel CSS and every tqkit.* string in all ${Object.keys(D10.i18n).length} locales`,
+    JSON.stringify(D10.tqStations) === JSON.stringify(want) && Object.keys(want).length === 5
+    && Object.keys(want).every((sg) => D10.halls.some((h) => h.slug === sg))
+    && B10.includes('/* TQ_KIT:BEGIN') && B10.includes('function createTQStation(kind, opts)') && B10.includes('.tqk-panel{')
+    && !/export \{ TQKIT_API/.test(B10)
+    && Object.values(D10.i18n).every((L) => Object.keys(L.strings).filter((k) => k.startsWith('tqkit.')).length === 27));
+  // tqSpot runs here, pulled out of the page it ships in
+  const fnOf = (text, name) => { const a = text.indexOf(`\nfunction ${name}(`); const b = text.indexOf('\n}\n', a + 1); return a < 0 ? '' : text.slice(a, b + 2); };
+  const consts = B10.match(/const TQ_CLEAR_M = [\d.]+, TQ_GAP_M = [\d.]+, TQ_INSET_M = [\d.]+, TQ_POINT_M = [\d.]+;/);
+  const spotSrc = fnOf(B10, 'tqSpot');
+  ok('tq spot: the page ships tqSpot() and its four stated margins (1.2 m walk-up zone as BRIDGE_CONTRACT asks)',
+    consts !== null && spotSrc.length > 200 && /TQ_CLEAR_M = 1\.2,/.test(consts[0]));
+  const tqSpot = new Function(`${consts[0]}\n${spotSrc}\nreturn tqSpot;`)();
+  const [, CLR, GAP, INS, PT] = consts[0].match(/([\d.]+), TQ_GAP_M = ([\d.]+), TQ_INSET_M = ([\d.]+), TQ_POINT_M = ([\d.]+)/).map(Number);
+  const hitR = (a, b, pad) => Math.abs(a.x - b.u) < a.hw + b.hw + pad - 1e-9 && Math.abs(a.z - b.v) < a.hd + b.hd + pad - 1e-9;
+  const inR = (b, r) => b.x - b.hw >= r.x0 + INS - 1e-6 && b.x + b.hw <= r.x1 - INS + 1e-6 && b.z - b.hd >= r.z0 + INS - 1e-6 && b.z + b.hd <= r.z1 - INS + 1e-6;
+  let seed = 7; const rnd = () => ((seed = (seed * 1103515245 + 12345) >>> 0) / 4294967296);
+  const sizes = { electrical: { w: 2.4, d: 1.2 }, plumbing: { w: 2.6, d: 1.4 }, hvac: { w: 2.8, d: 1.6 }, carpentry: { w: 3.2, d: 1.6 } };
+  let placed = 0, refused = 0, badSpot = [];
+  for (let t = 0; t < 400; t++) {
+    const size = Object.values(sizes)[t % 4];
+    const rooms = [{ label: 'a', x0: -18, x1: 0, z0: -21, z1: -15 }, { label: 'b', x0: 0, x1: 18, z0: -21, z1: -12 }];
+    const rects = Array.from({ length: t % 10 === 0 ? 60 : 2 + (t % 9) }, () => ({ u: -18 + rnd() * 36, v: -21 + rnd() * 9, hw: .2 + rnd() * 1.4, hd: .2 + rnd() * 1.2 }));
+    const pts = Array.from({ length: t % 4 }, () => ({ x: -18 + rnd() * 36, z: -21 + rnd() * 9 }));
+    const at = tqSpot(size, rooms, rects, pts);
+    if (!at) { refused++; continue; }
+    placed++;
+    const r = rooms.find((x) => x.label === at.room);
+    const P = pts.map((q) => ({ u: q.x, v: q.z, hw: PT, hd: PT }));
+    const along = Math.abs(Math.sin(at.yaw)) > .5;
+    const depthOk = Math.abs((along ? at.clear.hw : at.clear.hd) * 2 - CLR) < 1e-9 && Math.abs((along ? at.clear.hd : at.clear.hw) * 2 - size.w) < 1e-9;
+    const front = Math.abs((at.clear.x - at.x) - Math.round(Math.sin(at.yaw)) * (size.d / 2 + CLR / 2)) < 1e-9
+      && Math.abs((at.clear.z - at.z) - Math.round(Math.cos(at.yaw)) * (size.d / 2 + CLR / 2)) < 1e-9;
+    if (!r || !inR(at.foot, r) || !inR(at.clear, r) || !depthOk || !front
+      || rects.concat(P).some((o) => hitR(at.foot, o, GAP) || hitR(at.clear, o, 0))) badSpot.push(t);
+  }
+  const empty = tqSpot(sizes.carpentry, [{ label: 'x', x0: 0, x1: 4, z0: 0, z1: 3 }], [], []);
+  const full = tqSpot(sizes.hvac, [{ label: 'x', x0: 0, x1: 12, z0: 0, z1: 6 }], [{ u: 6, v: 3, hw: 6, hd: 3 }], []);
+  const posts = tqSpot(sizes.electrical, [{ label: 'x', x0: 0, x1: 8, z0: 0, z1: 8 }], [], [{ x: 4, z: 4 }]);
+  ok(`tq spot: over 400 seeded halls the spot found always keeps the footprint ${GAP} m clear of every solid and a ${CLR} m walk-up zone across the station's width on its FRONT clear of every solid, seat post and advisor, both inside one room (${placed} placed, ${refused} refused, bad ${badSpot.length}); a room too small or fully taken gets none rather than a forced spot`,
+    badSpot.length === 0 && placed > 200 && refused > 0 && empty === null && full === null && posts !== null
+    && !hitR(posts.foot, { u: 4, v: 4, hw: PT, hd: PT }, GAP) && !hitR(posts.clear, { u: 4, v: 4, hw: PT, hd: PT }, 0));
+  const bh = fnCode('buildHall'), pl = fnCode('tqPlaceInHall');
+  const iPlace = bh.indexOf('tqPlaceInHall(h);');
+  ok('tq placement: buildHall places the station LAST - after every wallRect, placeRoomProps and spawnHallAdvisors, before the hall is added and priced - reading hallSolids, the seat posts (beacons) and advisorMeshes; the footprint becomes a solid; the group goes into hallGroup (drawn only in that hall) and is disposed with its panel at the next buildHall',
+    iPlace > 0 && bh.lastIndexOf('wallRect(') < iPlace && bh.lastIndexOf('placeRoomProps(') < iPlace
+    && bh.indexOf('spawnHallAdvisors(h, W, DEP);') < iPlace && bh.indexOf('scene.add(hallGroup);') > iPlace
+    && bh.indexOf('hallCost = priceHall(sg);') > iPlace
+    && /^\s*function buildHall\(sg\) \{\s*if \(tqSt\) \{ tqSt\.dispose\(\); tqSt = null; tqAt = null; \}/.test(bh)
+    && /hallSolids\[0\]\.rects\.slice\(\)/.test(pl) && /beacons\.filter\(\(b\) => b\.userData\.station\)/.test(pl)
+    && /advisorMeshes\.map\(/.test(pl) && /const at = tqSpot\(st\.size, roomRects, rects, pts\);/.test(pl)
+    && /wallRect\(at\.foot\.x, at\.foot\.z, at\.foot\.hw, at\.foot\.hd\);/.test(pl) && /hallGroup\.add\(st\.group\);/.test(pl)
+    && /const kind = D\.tqStations\[h\.slug\];/.test(pl) && /if \(kind === undefined\) return;/.test(pl)
+    && /st\.group\.rotation\.y = at\.yaw;/.test(pl) && /if \(!at\) \{ st\.dispose\(\);/.test(pl));
+  ok('tq dock: the station panel lives in a collapsed <details> that is hidden unless the view is the hall it stands in (set every frame from view, tqSt and hallGroup.visible)',
+    /<details id="tqDock" class="tqk-dock" hidden><summary id="tqDockSum"><\/summary><div class="tqk-dock-body"><\/div><\/details>/.test(src)
+    && /const tqOff = !\(view === 'hall' && tqSt && hallGroup && hallGroup\.visible\)/.test(code)
+    && /if \(tqD\.hidden !== tqOff\) tqD\.hidden = tqOff;/.test(code) && /dock\.open = false;/.test(pl));
+}
+
+// wave 10, AUDIT finding (phone): the HUD bar is one sideways-scrolling row under 640 px, every control kept
+ok('phone HUD: under 640 px the bar is ONE row that scrolls sideways (no wrap, no control dropped - only the brand line the site nav already carries steps out), and --hudtop still follows the bar by measurement',
+  /@media \(max-width:640px\)\{\s*#bar\{flex-wrap:nowrap;overflow-x:auto;[^}]*\}\s*#bar > \*\{flex:0 0 auto\}\s*#bar \.brand\{display:none\}\s*#lang\{margin-inline-start:0\}\s*\}/.test(src)
+  && !/@media \(max-width:640px\)\{[^@]*#bar (button|select|a)[^{]*\{[^}]*display:none/.test(src)
+  && /new ResizeObserver\(fit\)\.observe\(bar\);/.test(src));
+
+// wave 10, eval_scene regression (campus: anchor plates crowding over the real-scale site)
+{
+  const bc10 = fnCode('buildCity');
+  ok('city layer: on a hall campus every SCHEMATIC anchor is moved out along its own bearing until the nearest clears the site plan radius by CITY_SITE_CLEAR_M, and one within CITY_ANCHOR_GAP_M of a nearer anchor steps further out; the city blocks, labels and minimap all draw at cityPlace(), and cityPos keeps the log-eased line campusplan reads',
+    /const CITY_SITE_CLEAR_M = 30, CITY_ANCHOR_GAP_M = 160, WAY_GAP_M = 90;/.test(code)
+    && /cityOff = Math\.max\(0, planC\.radius_m \+ CITY_SITE_CLEAR_M - Math\.min\(\.\.\.base\.map\(\(b\) => b\.len\)\)\);/.test(bc10)
+    && /while \(placed\.some\(\(\[qx, qz\]\) => Math\.hypot\(at\(extra\)\[0\] - qx, at\(extra\)\[1\] - qz\) < CITY_ANCHOR_GAP_M\)\)/.test(bc10)
+    && /cityOff = 0; cityExtra = new Map\(\);\s*if \(!pois\.length\) return;/.test(bc10)
+    && /const \[x, z\] = cityPlace\(p\);/.test(bc10) && !/cityPos\(p\)\;\s*const len/.test(bc10)
+    && /const \[px, pz\] = cityPlace\(p\);/.test(code)
+    && /const r = 96 \+ 95 \* Math\.log10\(1 \+ p\.km\);\s*return \[p\.e \/ km \* r, -p\.n \/ km \* r\];\s*\}\s*\/\* -+ orthoimagery/.test(src));
+  ok('site-plan wayfinding: plan parking lots and outdoor training yards carry a sign in the reader\'s language, tagged AUTHORED, never within WAY_GAP_M of the campus sign, a district name, the sims yard or another such sign (campusplan.parking / campusplan.yard reach the page in every locale)',
+    /for \(const r of plan\.parking\) wayPut\(cpS\['campusplan\.parking'\], r\.x, r\.z\);/.test(code)
+    && /for \(const lot of plan\.lots\) if \(lot\.yard\) wayPut\(cpS\['campusplan\.yard'\], lot\.yard\.x, lot\.yard\.z\);/.test(code)
+    && /if \(wayAt\.some\(\(\[qx, qz\]\) => Math\.hypot\(x - qx, z - qz\) < WAY_GAP_M\)\) return;/.test(code)
+    && /const l = label\(text, 'AUTHORED', 1\.4, \{ kind: 'schematic' \}\);\s*l\.position\.set\(x, 6, z\); campusGroup\.add\(l\); wayAt\.push\(\[x, z\]\);/.test(code)
+    && /\+ \('campusplan\.parking', 'campusplan\.yard'\) \+ tuple\(TQKIT_I18N_KEYS\)/.test(src));
+}
+
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);

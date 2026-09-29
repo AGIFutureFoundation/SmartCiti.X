@@ -1124,6 +1124,21 @@ if (ROOT / 'classroom/registry/classroom.json').exists() and (HERE / 'classkit.p
 else:
     CLASS_DATA, CLASS_EMBED = None, ''
 
+# UX (wave 10): the world UI is laid out by ONE manager (web/hudkit.py; same kit as the parish/Bay pages): panels are
+# registered into named slots - the class HUD no longer lands on the minimap corner (AUDIT finding, wave 10)
+from hudkit import HUD_CSS, HUD_JS, hud_layer, flow_anchors_present  # noqa: E402
+HUD_PANELS = [
+    {'id': 'mode', 'kind': 'panel', 'sel': '.ctl', 'slot': 'ts', 'order': 0, 'compact': 'scroll'},
+    {'id': 'toast', 'kind': 'panel', 'sel': '#toast', 'slot': 't', 'order': 0, 'compact': 'none'},
+    {'id': 'site', 'kind': 'panel', 'sel': '#panel', 'slot': 'te', 'order': 2, 'compact': 'none'},
+    {'id': 'stick', 'kind': 'panel', 'sel': '#stick', 'slot': 'bs', 'order': 0, 'compact': 'none'},
+    {'id': 'minimap', 'kind': 'panel', 'sel': '#minimap', 'slot': 'be', 'order': 0, 'compact': 'none'},
+    {'id': 'legend', 'kind': 'flow', 'goto': '[data-legend]', 'anchor': '<p class="help" data-legend>', 'icon': 'info', 'label': 'hud.open.legend'},
+]
+if CLASS_EMBED:
+    HUD_PANELS.append({'id': 'class', 'kind': 'panel', 'sel': '.tcc-hud', 'slot': 'te', 'order': 1, 'compact': 'none'})
+HUD_LAYER = hud_layer(HUD_PANELS, TS, TA)
+
 page = f'''<!doctype html>
 <html lang="en">
 <head>
@@ -1147,6 +1162,8 @@ body{{margin:0;background:var(--plate);color:var(--ink);font:16px/1.6 "IBM Plex 
 header{{padding:28px 0 8px;border-bottom:3px solid var(--mark)}}
 header h1{{font:700 32px/1.1 "Barlow Condensed",system-ui,sans-serif;margin:0}}
 header h1 .x{{color:var(--mark)}}
+header .brand{{margin:0 0 2px;font:600 13px/1.3 "IBM Plex Sans",system-ui,sans-serif;color:var(--muted);letter-spacing:.02em}}
+header .brand .x{{color:var(--mark)}}
 header p{{color:var(--muted);margin:6px 0 12px}}
 a{{color:var(--steel)}}
 #switch{{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}}
@@ -1211,12 +1228,14 @@ code{{font:13px "IBM Plex Mono",monospace;color:var(--steel)}}
 <style data-tc-theme="canvas">{THEME_CSS}</style>
 {QUEST_CSS_BLOCK}
 {TASK_CSS_BLOCK}
+<style id="hud-css">{HUD_CSS}</style>
 </head>
 <body class="tc-theme-canvas">
 {NAV}<div class="wrap">
 <header>
-  <h1>SmartCiti<span class="x">.X</span> : Trade Craft Academy</h1>
-  <p>powered by AGI Corp · {TS("wilds.lede")}</p>
+  <p class="brand" lang="en" dir="ltr">SmartCiti<span class="x">.X</span> : Trade Craft Academy · powered by AGI Corp</p>
+  <h1>{TS(sitenav.PAGES['web/trade_craft_wilds.html'][1])}</h1>
+  <p>{TS("wilds.lede")}</p>
 </header>
 <p class="intro" lang="en" dir="ltr">Walk <b data-fig="worlds">{c["worlds"]}</b> authored worlds, <b data-fig="area">{c["area_km2"]}</b> km² in all, with <b data-fig="sites">{c["sites"]}</b> trade work sites tied to <b data-fig="halls">{c["halls_linked"]}</b> union halls and <b data-fig="lessons">{c["lessons_linked"]}</b> lessons. Every landscape is generated from a seed: an <b>authored landscape, not a survey</b>.</p>
 <div id="switch" role="group" data-i18n-aria="wilds.switch_label" aria-label="{TA("wilds.switch_label")}">{switch}</div>
@@ -1228,6 +1247,7 @@ code{{font:13px "IBM Plex Mono",monospace;color:var(--steel)}}
   <div id="stick" aria-hidden="true"><i></i></div>
   <aside id="panel" class="tc-panel" hidden aria-live="polite"><button type="button" id="panel-close" data-i18n-aria="wilds.close" aria-label="{TA("wilds.close")}">×</button><div id="panel-body"></div></aside>
   <div id="toast" hidden role="status"></div>
+  {HUD_LAYER}
 </div>
 <p class="help">{TS("wilds.help")}</p>
 <p class="help" data-legend>{TS("wilds.legend")}</p>
@@ -1256,6 +1276,7 @@ code{{font:13px "IBM Plex Mono",monospace;color:var(--steel)}}
 {CLASS_EMBED}
 <script type="module" id="wilds-main">{JS}</script>
 {QUEST_SCRIPT}
+<script id="hud-kit">{HUD_JS}</script>
 </div></body>
 </html>
 '''
@@ -1279,6 +1300,7 @@ for _f in sorted((ROOT / 'i18n/locales').glob('*.json')):
     I18N_CAT[_c['locale']] = {'dir': _c['dir'], 'language': _c['language'], 'strings': _s}
 if len(I18N_CAT) != 8 or 'en' not in I18N_CAT or not any(v['dir'] == 'rtl' for v in I18N_CAT.values()):
     raise SystemExit(f'build_wilds: expected 8 locales incl. en and an rtl one, found {sorted(I18N_CAT)}')
+flow_anchors_present(HUD_PANELS, page)
 if page.count('__WILDS_I18N__') != 1:
     raise SystemExit('build_wilds: the i18n catalogue placeholder must appear exactly once')
 page = page.replace('__WILDS_I18N__', json.dumps(I18N_CAT, ensure_ascii=False, sort_keys=True).replace('</', '<\\/'))

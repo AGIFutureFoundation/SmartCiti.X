@@ -1752,6 +1752,41 @@ CL_STATS = [('modules', len(need(_cl, 'modules', CL_PATH)) + len(need(_clx, 'mod
             ('places', len(need(_cl, 'places', CL_PATH)))]
 
 
+# ---- "what's new" strip (UX, wave 10): the newest worlds and packs, one tap from the top of the front door. Every
+# link must be a page web/sitenav.py declares and that exists; every figure is counted from its registry here (and is
+# admitted to the prose gate below by that count, never typed). Title = the page's own nav label.
+WN_BAY_PAGE = 'web/trade_craft_bay.html'
+_wn_bay = R('bayarea/registry/bayarea.json')
+WN_BAY = len(need(need(_wn_bay, 'selection', 'bayarea/registry/bayarea.json'), 'selected', 'bayarea/registry/bayarea.json#selection'))
+_wn_sc = R('restoration/registry/scenarios.json')
+WN_SCEN = len(need(_wn_sc, 'scenarios', 'restoration/registry/scenarios.json'))
+WN_ITEMS = [
+    ('classroom', CL_PAGE, f'{n(CL_STATS[0][1])} class modules, {n(CL_STATS[1][1])} lesson moments at mapped places'),
+    ('bay', WN_BAY_PAGE, f'{n(WN_BAY)} Bay Area counties to walk and drive (outlines coarse, districts AUTHORED)'),
+    ('packs', PK_PAGE, f'{n(PK_TOTAL)} holodeck packs: {n(PK_SHIP)} shipping, {n(PK_PROP)} proposed'),
+    ('restoration', WN_BAY_PAGE, f'{n(WN_SCEN)} restoration training scenarios at Bay sites, unverified general practice'),
+]
+for _k, _pg, _t in WN_ITEMS:
+    if _pg not in PAGES or not (ROOT / _pg).is_file():
+        raise SystemExit(f'build_home: what\'s-new item {_k} links {_pg}, which web/sitenav.py does not declare or is not built')
+WN_TITLE = {'classroom': _nl(CL_PAGE), 'bay': _nl(WN_BAY_PAGE), 'packs': _nl(PK_PAGE), 'restoration': 'Restoration scenarios'}
+
+
+def whatsnew_html():
+    items = ''.join(f'<li><a class="wn-card" href="{esc(pg)}" data-wn="{k}"><span class="wn-t">{WN_TITLE[k]}</span>'
+                    f'<span class="wn-d">{esc(t)}</span></a></li>' for k, pg, t in WN_ITEMS)
+    return (f'<nav class="wn" aria-labelledby="wn-h" data-whatsnew><h2 id="wn-h" class="wn-h">What&rsquo;s new</h2>'
+            f'<ul class="wn-list">{items}</ul></nav>')
+
+
+WN_CSS = (".wn{margin:18px 0 6px}.wn-h{font-size:1rem;margin:0 0 8px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}"
+          ".wn-list{list-style:none;margin:0;padding:0;display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}"
+          ".wn-card{display:flex;flex-direction:column;gap:4px;min-block-size:44px;padding:12px 14px;border:1px solid var(--line);"
+          "border-radius:10px;background:var(--panel);color:var(--ink);text-decoration:none}"
+          ".wn-card:hover{border-color:var(--accent)}.wn-card:focus-visible{outline:3px solid var(--steel);outline-offset:2px}"
+          ".wn-t{font-weight:700;color:var(--link)}.wn-d{font-size:.9rem;color:var(--muted)}")
+
+
 def classroom_html():
     stats = ''.join(f'<div class="stat" data-cl-stat="{k}" data-src="{CL_PATH}#{k}"><dt>{_pk_t("class.stat." + k)}</dt>'
                     f'<dd>{n(v)}</dd></div>' for k, v in CL_STATS)
@@ -1822,6 +1857,7 @@ BODY = f"""<body>
 </div></header>
 
 <div class="wrap">
+{whatsnew_html()}
 <section id="paths">
   <div class="sec-head"><span class="eyebrow">Who it is for</span>
     <h2>{n(len(PATHS))} ways in, depending on why you are here</h2></div>
@@ -2095,6 +2131,8 @@ _DERIVED |= {v for v in (PW_PARISHES, PW_VEHICLES, PW_LAND, PW_WATER, PW_GUIDES,
 _DERIVED |= {PK_TOTAL, PK_SHIP, PK_PROP} | {v for _, v in PK_BY_KIND}
 # The classroom band's figures: each counted from classroom/registry/classroom.json's lists.
 _DERIVED |= {v for _, v in CL_STATS}
+# the what's-new strip's figures: counted above from their registries
+_DERIVED |= {WN_BAY, WN_SCEN}
 _loose = _figures_in(BODY) - _DERIVED
 BODY_Q = BODY.replace('</body>', QUEST_TAIL + '</body>')  # quests: engine carried after the prose lint
 assert not _loose, (
@@ -2121,7 +2159,7 @@ page = ('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
         '<link rel="stylesheet" href="web/vendor/fonts/fonts.css">\n'
         f'<style>{CSS}</style>\n<style>{NAV_CSS}</style>\n'
         f'<style>{HERO_VIDEO_CSS}{SEARCH_CSS}{UX_CSS}</style>\n'
-        f'<style>{SECTION_VIDEO_CSS}{MOTION_CSS}{POLISH_CSS}{PW_CSS}{PK_CSS}{CL_CSS}{STYLE_BRIDGE_CSS}</style>\n</head>\n{BODY_Q}\n</html>\n')
+        f'<style>{SECTION_VIDEO_CSS}{MOTION_CSS}{POLISH_CSS}{PW_CSS}{PK_CSS}{CL_CSS}{WN_CSS}{STYLE_BRIDGE_CSS}</style>\n</head>\n{BODY_Q}\n</html>\n')
 # The palette's index (registry titles, which may hold figures of their own)
 # and the two small scripts join the page after the prose gate above, like
 # the quest engine: the gate is about typed prose, and these are data.

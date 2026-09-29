@@ -64,6 +64,17 @@ ok(!/New Orleans/.test(vis.replace(/<nav[\s\S]*?<\/nav>/g, '').replace(/[^.]*New
   ok(kitOn || !/(?<!\? )makeClock\(8/.test(mods),
     '[npcstub] with the NPC kit off, the page never calls npckit makeClock unguarded (browser run 02:44 died on "makeClock is not defined")');
 }
+{
+  /* WORLDS (wave 10): restoration sites outside every coarse outline are pinned only when their own record says pin:true */
+  const RS = JSON.parse(readFileSync(join(ROOT, 'restoration/registry/restoration.json'), 'utf8')).sites;
+  const D = JSON.parse((html.match(/<script type="application\/json" id="parishes-data">([\s\S]*?)<\/script>/) || [, 'null'])[1].replace(/<\\\//g, '</'));
+  const off = D ? D.parishes.flatMap((p) => p.landmarks.filter((l) => l.kind === 'restoration site (offshore pin)').map((l) => ({ ...l, county: R.counties[p.id].name }))) : [];
+  const want = R.restoration_not_placed.filter((x) => { const s = RS.find((r) => r.id === x.id); return s && s.lat !== null && s.pin === true; });
+  ok(D && off.length === want.length && want.every((x) => { const s = RS.find((r) => r.id === x.id); const l = off.find((o) => o.name === x.name);
+    return l && l.provenance === 'RECORDED' && l.x === x.world_m[0] && l.z === -x.world_m[1] && l.county === s.county && l.note.endsWith('not walkable: ' + s.walkable_reason); })
+    && !off.some((l) => html.includes(`<li data-landmark="${l.id}"><button`)) && RS.filter((s) => s.lat === null).every((s) => !off.some((l) => l.name === s.name)),
+    `[offshore] ${want.length} restoration site(s) outside every coarse outline pinned at the RECORDED point in the county their record names, with the record's not-walkable reason, no scenario runner; unpinned sites (no point) stay unpinned`);
+}
 const ids = [...html.matchAll(/"fips": ?"(\d{5})"/g)].map((m) => m[1]);
 ok(R.selection.selected.every((f) => ids.includes(f)) && !ids.some((f) => f.startsWith('22')),
   `[data] the embedded world holds exactly the computed Bay counties (${R.selection.selected.join(' ')}) and no parish`);

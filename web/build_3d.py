@@ -208,6 +208,7 @@ def clear_height(fixtures):
 
 
 from hallkit import assign_archetypes, HALLKIT_JS  # noqa: E402
+from tqkit import tqkit_inline, TQKIT_CSS, TQKIT_HALLS, TQKIT_I18N_KEYS  # noqa: E402  BRIDGE_CONTRACT v1
 # the campus site plans (campusplan/, SITES): every hall its own building on
 # its own lot at the walkable interior's real scale. Fail closed - no plan,
 # no campus.
@@ -234,6 +235,16 @@ for _ck in campuses_reg:
     for _l in CAMPUSPLAN[_ck]['lots']:
         assert _l['b']['w_m'] == 36 and _l['b']['d_m'] == plans[_l['hall']]['envelope']['d'] * 3, (
             f"campusplan footprint for {_l['hall']} is not the walkable interior's own 36 x 3d m")
+# TradesQuest field-job stations (web/tqkit.py, BRIDGE_CONTRACT v1): the PRIMARY
+# hall of each kind gets one station, drawn inside that hall only. A slug the
+# registry does not carry, or a hall claimed by two kinds, stops the build.
+TQ_STATIONS = {}
+_tq_slugs = {h['slug'] for h in halls_json}
+for _kind, _rel in TQKIT_HALLS.items():
+    for _sg in _rel['primary']:
+        assert _sg in _tq_slugs, f'tqkit: primary hall {_sg!r} for {_kind} is not in pack/registry/halls.json'
+        assert _sg not in TQ_STATIONS, f'tqkit: hall {_sg!r} is claimed by {TQ_STATIONS[_sg]} and {_kind}'
+        TQ_STATIONS[_sg] = _kind
 HALL_ARCH = assign_archetypes({k: c['halls'] for k, c in campuses_reg.items()}, district_of)
 _unhoused = sorted({h['slug'] for h in halls_json} - set(HALL_ARCH))
 assert not _unhoused, f'halls on no campus get no building archetype: {_unhoused}'
@@ -308,7 +319,8 @@ for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
             'campus3d.treasure', 'campus3d.egg', 'campus3d.hooks',
             'campus3d.tasks', 'campus3d.tasks.all', 'campus3d.tasks.launch',
             'campus3d.tasks.lessons', 'campus3d.tasks.here', 'campus3d.tasks.showall',
-            'campus3d.tasks.none', 'tasks.nolink', 'tasks.via', 'campus3d.siteplan')},
+            'campus3d.tasks.none', 'tasks.nolink', 'tasks.via', 'campus3d.siteplan')
+            + ('campusplan.parking', 'campusplan.yard') + tuple(TQKIT_I18N_KEYS)},
         'districts': {k: v['name'] for k, v in c['districts'].items()},
         'strands': c['strands'], 'tiers': c['tiers'], 'states': c['states'],
     }
@@ -681,6 +693,7 @@ DATA = json.dumps({
                   for k, d in districts_reg.items()},
     'campuses': campuses_reg,
     'campusplan': CAMPUSPLAN,
+    'tqStations': TQ_STATIONS,
     'geo': {'campuses': {k: {'lat': v['lat'], 'lng': v['lng']}
                          for k, v in geo_reg['campuses'].items()},
             'routes': geo_reg['routes_km'],
@@ -7312,6 +7325,12 @@ body.open #bar > *:not(#guideBtn){pointer-events:none;opacity:.3}
 <style>__NAV_CSS__</style>
 <style>__THEME_CSS__</style>
 <style>__QUEST_CSS__</style>
+<style>__TQKIT_CSS__
+.tqk-dock{position:fixed;inset-inline-end:12px;top:calc(var(--hudtop) + 8px);z-index:6;max-width:min(360px,calc(100vw - 24px));
+  max-height:min(60vh,520px);overflow:auto;background:var(--panel);color:var(--ink);border:1px solid var(--rule);border-radius:10px}
+.tqk-dock>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;padding-inline:12px;font-weight:600}
+.tqk-dock>summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tqk-dock[hidden]{display:none}</style>
 <style>
 /* The site nav on a full-window canvas. It is fixed, so it takes no flow
    space and the canvas keeps innerWidth x innerHeight (every pointer and
@@ -7353,6 +7372,18 @@ nav.sitenav .sitenav-menu[open]{flex:1 1 100%;min-width:0;max-width:100%}
 nav.sitenav .sitenav-menu[open]>summary{position:absolute;top:4px;inset-inline-end:12px}
 nav.sitenav .sitenav-menu[open]>.sitenav-groups,nav.sitenav .sitenav-menu[open] .sitenav-group{min-width:0;max-width:100%}
 #bar{top:var(--navh)}
+/* PHONES: ONE SCROLLING ROW, NOT FIVE WRAPPED ONES (wave 10, AUDIT finding).
+   At 390 px the bar wrapped its twenty controls into a 390 x 291 block -
+   with the nav, 39% of the screen was chrome over the scene. Below 640 px
+   it is one row that scrolls sideways (every control still in it, in the
+   same order, still focusable), and the brand line - which the site nav
+   above already carries - steps out. --hudtop follows by measurement. */
+@media (max-width:640px){
+  #bar{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;gap:6px;padding:6px 10px}
+  #bar > *{flex:0 0 auto}
+  #bar .brand{display:none}
+  #lang{margin-inline-start:0}
+}
 #mm{top:calc(62px + var(--navh))}
 /* The panel opens BELOW the HUD bar. It used to start at top:0, and while
    a panel is open the bar is lifted over its scrim (z 12, see #guideBtn),
@@ -7460,6 +7491,7 @@ __STYLE_JS__
 <div id="nogl"></div>
 <div id="cross">+</div>
 <div id="ov"></div>
+<details id="tqDock" class="tqk-dock" hidden><summary id="tqDockSum"></summary><div class="tqk-dock-body"></div></details>
 <aside id="panel"><button id="pclose">__L_ui.close__</button><div id="pbody"></div></aside>
 </main>
 <script id="data" type="application/json">__DATA__</script>
@@ -10763,6 +10795,7 @@ const BOARD_SCALE = .14;
 const BOARD_HEAD_M = 1.55;
 
 function buildHall(sg) {
+  if (tqSt) { tqSt.dispose(); tqSt = null; tqAt = null; }   // its panel goes with the hall it stood in
   if (hallGroup) { scene.remove(hallGroup); disposeOf(hallGroup); }
   hallGroup = new THREE.Group(); beacons = []; floors = []; roomRects = []; curRoom = null;
   hallSolids = [];
@@ -11430,6 +11463,11 @@ function buildHall(sg) {
   clearAdvisors();
   clearFauna();
   spawnHallAdvisors(h, W, DEP);
+  /* A TRADESQUEST FIELD-JOB STATION stands in this hall's own clear floor
+     when the hall is one BRIDGE_CONTRACT names (D.tqStations). It is placed
+     LAST, after every bench, prop, seat post and advisor, so tqSpot() can
+     read what already stands here - see tqPlaceInHall(). */
+  tqPlaceInHall(h);
   scene.add(hallGroup);
   // the hall pays for itself before anybody sees it - see priceHall()
   hallCost = priceHall(sg);
@@ -11642,6 +11680,94 @@ function fabricOf(ck) {
 }
 
 __HALLKIT_JS__
+__TQKIT_JS__
+/* TRADESQUEST FIELD-JOB STATIONS IN THEIR UNION HALLS (wave 10).
+
+   web/tqkit.py ports four TradesQuest field-job scenes (from game-world-focus
+   @3ea15f0; AUTHORED schematic mock-ups, play only - never a completion
+   record, the panel says so). D.tqStations maps the PRIMARY hall of each kind
+   (BRIDGE_CONTRACT v1: electricians, pipefitters, hvacr, sheetmetal,
+   carpenters) to its kind. The station is built inside hallGroup, so it is
+   drawn only while you are in that hall, and it is priced by priceHall()
+   with everything else there.
+
+   WHERE IT STANDS is read off the built hall, not authored: tqSpot() takes
+   the rooms, every solid the walker already bumps into (walls, partitions,
+   benches, floor props - the same hallSolids the collision uses), and the
+   points where seat posts and advisors stand, and returns the first spot
+   (largest room first) where the station's footprint clears every solid by
+   TQ_GAP_M and its walk-up zone - TQ_CLEAR_M deep across its full width, on
+   its front - clears every solid and point, both inside one room. The
+   footprint then registers as a solid itself. No spot, no station: the
+   hook says so rather than forcing one onto a bench. */
+const TQ_CLEAR_M = 1.2, TQ_GAP_M = .15, TQ_INSET_M = .3, TQ_POINT_M = .45;
+let tqSt = null, tqAt = null;
+function tqSpot(size, rooms, rects, pts, step = .25) {
+  const hit = (a, b, pad) => Math.abs(a.x - b.u) < a.hw + b.hw + pad && Math.abs(a.z - b.v) < a.hd + b.hd + pad;
+  const obs = rects.concat(pts.map((p) => ({ u: p.x, v: p.z, hw: TQ_POINT_M, hd: TQ_POINT_M })));
+  const order = rooms.map((r, i) => ({ r, i, a: (r.x1 - r.x0) * (r.z1 - r.z0) }))
+    .sort((p, q) => q.a - p.a || p.i - q.i);
+  for (const { r } of order) for (const yaw of [Math.PI, 0, Math.PI / 2, -Math.PI / 2]) {
+    const fx = Math.round(Math.sin(yaw)), fz = Math.round(Math.cos(yaw));
+    const hw = (fx ? size.d : size.w) / 2, hd = (fx ? size.w : size.d) / 2;
+    // the walk-up zone's centre offset and half extents
+    const cOff = size.d / 2 + TQ_CLEAR_M / 2;
+    const chw = fx ? TQ_CLEAR_M / 2 : size.w / 2, chd = fx ? size.w / 2 : TQ_CLEAR_M / 2;
+    for (let z = r.z0 + TQ_INSET_M; z <= r.z1 - TQ_INSET_M + 1e-9; z += step)
+      for (let x = r.x0 + TQ_INSET_M; x <= r.x1 - TQ_INSET_M + 1e-9; x += step) {
+        const foot = { x, z, hw, hd }, clear = { x: x + fx * cOff, z: z + fz * cOff, hw: chw, hd: chd };
+        const inRoom = (b) => b.x - b.hw >= r.x0 + TQ_INSET_M - 1e-9 && b.x + b.hw <= r.x1 - TQ_INSET_M + 1e-9
+          && b.z - b.hd >= r.z0 + TQ_INSET_M - 1e-9 && b.z + b.hd <= r.z1 - TQ_INSET_M + 1e-9;
+        if (!inRoom(foot) || !inRoom(clear)) continue;
+        if (obs.some((o) => hit(foot, o, TQ_GAP_M) || hit(clear, o, 0))) continue;
+        return { x, z, yaw, room: r.label, foot, clear };
+      }
+  }
+  return null;
+}
+function tqPlaceInHall(h) {
+  const dock = document.getElementById('tqDock');
+  const kind = D.tqStations[h.slug];
+  dock.hidden = true;
+  if (kind === undefined) return;
+  const strings = D.i18n[loc].strings;
+  const st = createTQStation(kind, { THREE, strings, doc: document });
+  const rects = hallSolids.length ? hallSolids[0].rects.slice() : [];
+  const pts = beacons.filter((b) => b.userData.station).map((b) => ({ x: b.position.x, z: b.position.z }))
+    .concat(advisorMeshes.map((m) => ({ x: m.position.x, z: m.position.z })));
+  const at = tqSpot(st.size, roomRects, rects, pts);
+  if (!at) { st.dispose(); tqAt = { slug: h.slug, kind, placed: false, why: 'no clear floor' }; return; }
+  st.group.position.set(at.x, .41, at.z);      // on the room's floor finish (top .41)
+  st.group.rotation.y = at.yaw;                // its front (local +z) faces the walk-up zone
+  hallGroup.add(st.group);
+  wallRect(at.foot.x, at.foot.z, at.foot.hw, at.foot.hd);   // you cannot walk through it
+  tqSt = st;
+  tqAt = { slug: h.slug, kind, placed: true, ...at, own: hallSolids[0].rects[hallSolids[0].rects.length - 1],
+           rects, pts };
+  document.getElementById('tqDockSum').textContent = strings['tqkit.kicker'];
+  dock.querySelector('.tqk-dock-body').replaceChildren(st.panel);
+  dock.open = false;
+}
+/* Test hook: the station standing in the open hall, re-checked against the
+   hall as built (solids other than its own, seat posts, advisors, rooms). */
+window.__tc3dTQ = () => {
+  if (!tqAt) return null;
+  if (!tqAt.placed) return { slug: tqAt.slug, kind: tqAt.kind, placed: false, why: tqAt.why };
+  const hit = (a, b, pad) => Math.abs(a.x - b.u) < a.hw + b.hw + pad && Math.abs(a.z - b.v) < a.hd + b.hd + pad;
+  const now = hallSolids[0].rects.filter((b) => b !== tqAt.own);
+  const pts = tqAt.pts.map((p) => ({ u: p.x, v: p.z, hw: TQ_POINT_M, hd: TQ_POINT_M }));
+  const room = roomRects.find((r) => r.label === tqAt.room);
+  const inside = (b) => b.x - b.hw >= room.x0 && b.x + b.hw <= room.x1 && b.z - b.hd >= room.z0 && b.z + b.hd <= room.z1;
+  const box = new THREE.Box3().setFromObject(tqSt.group);
+  let meshes = 0; tqSt.group.traverse((o) => { if (o.isMesh) meshes++; });
+  return { slug: tqAt.slug, kind: tqAt.kind, placed: true, x: tqAt.x, z: tqAt.z, yaw: tqAt.yaw, room: tqAt.room,
+    foot: tqAt.foot, clear: tqAt.clear, inRoom: inside(tqAt.foot) && inside(tqAt.clear),
+    footHits: now.filter((b) => hit(tqAt.foot, b, 0)).length + pts.filter((b) => hit(tqAt.foot, b, 0)).length,
+    clearHits: now.filter((b) => hit(tqAt.clear, b, 0)).length + pts.filter((b) => hit(tqAt.clear, b, 0)).length,
+    inHall: tqSt.group.parent === hallGroup, meshes,
+    box: { x0: box.min.x, x1: box.max.x, z0: box.min.z, z1: box.max.z, y1: box.max.y },
+    provenance: tqSt.provenance, panel: !!document.querySelector('#tqDock .tqk-panel') };
+};
 const _siteT = new THREE.Matrix4(), _siteR = new THREE.Matrix4(), _siteB = new THREE.Matrix4();
 let hkRoof = null;               // the hall view's cutaway roof (hallkit)
 function building(h, style, g, pool, ox = 0, oz = 0) {   // built at the local origin, door toward -z
@@ -12544,6 +12670,16 @@ function buildRestorationSites(g) {
 // network view does - true bearings, log-eased range - because a linear
 // board that far would not be walkable. The i18n geo note states the deal.
 let cityLog = false;
+const CITY_SITE_CLEAR_M = 30, CITY_ANCHOR_GAP_M = 160, WAY_GAP_M = 90;
+let cityOff = 0, cityExtra = new Map();
+// where the city layer DRAWS a place: cityPos, moved out past a hall campus's site (see buildCity)
+function cityPlace(p) {
+  const [x, z] = cityPos(p);
+  if (!cityOff && !cityExtra.size) return [x, z];
+  const len = Math.hypot(x, z) || .001;
+  const L = len + cityOff + (cityExtra.has(p.name) ? cityExtra.get(p.name) : 0);
+  return [x / len * L, z / len * L];
+}
 function cityPos(p) {
   const km = Math.hypot(p.e, p.n) || .001;
   if (!cityLog) return [p.e * CITY_S, -p.n * CITY_S];
@@ -12633,8 +12769,32 @@ document.getElementById('satBtn').addEventListener('click', satGround);
 
 function buildCity(g, R) {
   const pois = D.geo.cityPois?.[campusKey] ?? [];
+  cityOff = 0; cityExtra = new Map();
   if (!pois.length) return;
   cityLog = pois.some((p) => p.km > 15);
+  /* THE CITY LAYER STANDS OUTSIDE THE SITE (wave 10, eval_scene regression).
+     A hall campus is now laid out at the walkable interiors' real scale, so
+     its site runs to radius_m (TI 573 m) - and the compressed city layer
+     (SCHEMATIC: log-eased, 96 + 95 log10(1 + km)) put Albany, Berkeley and
+     their neighbours at 200-250 m, INSIDE the site, their plates crowding
+     each other over the halls. Bearings and order are kept; every anchor is
+     moved out along its own bearing by the same offset until the nearest
+     one clears the site by CITY_SITE_CLEAR_M, and one that would stand
+     within CITY_ANCHOR_GAP_M of a nearer one steps further out. The places
+     were never at true distance on this layer, and the note still says so. */
+  const planC = D.campusplan[campusKey];
+  if (planC && planC.lots.length) {
+    const base = pois.map((p) => { const [x, z] = cityPos(p); return { p, x, z, len: Math.hypot(x, z) || .001 }; });
+    cityOff = Math.max(0, planC.radius_m + CITY_SITE_CLEAR_M - Math.min(...base.map((b) => b.len)));
+    const placed = [];
+    base.sort((a, b) => a.len - b.len).forEach((b) => {
+      const at = (e) => [b.x / b.len * (b.len + cityOff + e), b.z / b.len * (b.len + cityOff + e)];
+      let extra = 0;
+      while (placed.some(([qx, qz]) => Math.hypot(at(extra)[0] - qx, at(extra)[1] - qz) < CITY_ANCHOR_GAP_M))
+        extra += CITY_ANCHOR_GAP_M / 2;
+      cityExtra.set(b.p.name, extra); placed.push(at(extra));
+    });
+  }
   const grass = new THREE.MeshStandardMaterial({ color: 0x3d5238, roughness: .95 });
   /* The city blocks used to run a seven-step RAINBOW - hue 42, 152, 205,
      268, 20, 96, 330 - keyed on nothing but the index a place happened to
@@ -12660,7 +12820,7 @@ function buildCity(g, R) {
     (cityPool.get(m2) ?? cityPool.set(m2, []).get(m2)).push(ge);
   };
   pois.forEach((p, i) => {
-    const [x, z] = cityPos(p);
+    const [x, z] = cityPlace(p);
     const len = Math.hypot(x, z), ux = x / len, uz = z / len;
     if (!cityLog) {
       // the avenue: ring road out to the place's block
@@ -12957,6 +13117,22 @@ function buildCampus(key) {
     for (const r of plan.walkways) roads.push(roadRect(r.x, r.z, r.w, r.d, mat.walkway, campusGroup, .045));
     for (const r of plan.parking) roads.push(roadRect(r.x, r.z, r.w, r.d, mat.drive, campusGroup, .045));
     roadCount += roads.length;
+    /* SITE-PLAN WAYFINDING (wave 10). The plan's parking lots and outdoor
+       training yards are real places on this AUTHORED site that nothing
+       named: a sign on each, tagged AUTHORED, in the reader's language -
+       but never within WAY_GAP_M of the campus sign, a district name, the
+       sims yard or another such sign (measured: unspaced, seven of them
+       made seven overlapping pairs in the campus view). */
+    const cpS = D.i18n[loc].strings;
+    const wayAt = [[0, 0], [plan.sims_yard.x, plan.sims_yard.z]]
+      .concat(Object.values(plan.blocks).map((b) => [b.x, b.z]));
+    const wayPut = (text, x, z) => {
+      if (wayAt.some(([qx, qz]) => Math.hypot(x - qx, z - qz) < WAY_GAP_M)) return;
+      const l = label(text, 'AUTHORED', 1.4, { kind: 'schematic' });
+      l.position.set(x, 6, z); campusGroup.add(l); wayAt.push([x, z]);
+    };
+    for (const r of plan.parking) wayPut(cpS['campusplan.parking'], r.x, r.z);
+    for (const lot of plan.lots) if (lot.yard) wayPut(cpS['campusplan.yard'], lot.yard.x, lot.yard.z);
     // the guarantee: no road rectangle overlaps a building rectangle
     for (const r of roads) for (const b of allRects) {
       if (Math.abs(r.u - b.u) < r.w / 2 + b.hw - .2
@@ -13068,7 +13244,7 @@ function buildMinimap(key, R) {
   g2.beginPath(); g2.arc(75, 75, 3, 0, 7); g2.fill();
   g2.fillStyle = '#41C4D4';
   for (const p of (D.geo.cityPois?.[key] ?? [])) {
-    const [px, pz] = cityPos(p);
+    const [px, pz] = cityPlace(p);
     g2.beginPath(); g2.arc(X(px), Y(pz), 2.5, 0, 7); g2.fill();
   }
   mmBase = c; mmDirty = true;
@@ -15908,6 +16084,8 @@ __QUEST3D_JS__
 const clock = new THREE.Clock();
 renderer.setAnimationLoop(() => {
   const dt = clock.getDelta();
+  { const tqOff = !(view === 'hall' && tqSt && hallGroup && hallGroup.visible), tqD = document.getElementById('tqDock');
+    if (tqD.hidden !== tqOff) tqD.hidden = tqOff; }     // the station's panel only inside its hall
   // the controller adapter runs first: thumbsticks, trigger, grip and
   // buttons land in the same `keys` a keyboard fills (and the same
   // sim.action() a Space press calls), so nothing below can tell them apart
@@ -16445,6 +16623,8 @@ page = page.replace('__KIT_RUNS__', KIT_RUNS_JS)
 page = page.replace('__SIM_JS__', SIM_JS).replace('__XR_JS__', XR_JS)
 page = page.replace('__GUIDE_JS__', GUIDE_JS)
 page = page.replace('__HALLKIT_JS__', HALLKIT_JS)
+page = page.replace('__TQKIT_JS__', tqkit_inline())
+page = page.replace('__TQKIT_CSS__', TQKIT_CSS)
 page = page.replace('__QUEST3D_JS__', QUEST3D_JS)
 page = page.replace('__QUESTLOG_LABEL__', I18N['en']['strings']['campus3d.questlog'])
 page = page.replace('__TASKS_LABEL__', I18N['en']['strings']['campus3d.tasks'])

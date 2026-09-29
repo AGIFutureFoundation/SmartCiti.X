@@ -837,7 +837,12 @@
   "campusplan.walkway": "Passeio de pedestres",
   "tasks.kind.resto-scenario": "Cenário de treino de restauração",
   "resto.open": "Iniciar cenário de treino",
-  "resto.close": "Fechar"
+  "resto.close": "Fechar",
+  "hud.region": "Controles do mundo",
+  "hud.open.paths": "Trilhas de aprendizagem",
+  "hud.open.city": "Vida na cidade",
+  "hud.open.legend": "Legenda e notas de transparência",
+  "hud.toggle.reactor": "Visão ao vivo do holodeck"
  },
  "districts": {
   "structural": {

@@ -837,7 +837,12 @@
   "campusplan.walkway": "Fußweg",
   "tasks.kind.resto-scenario": "Trainingsszenario Renaturierung",
   "resto.open": "Trainingsszenario starten",
-  "resto.close": "Schließen"
+  "resto.close": "Schließen",
+  "hud.region": "Welt-Steuerung",
+  "hud.open.paths": "Lernpfade",
+  "hud.open.city": "Stadtleben",
+  "hud.open.legend": "Legende und Ehrlichkeitshinweise",
+  "hud.toggle.reactor": "Holodeck-Liveansicht"
  },
  "districts": {
   "structural": {

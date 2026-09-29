@@ -1541,7 +1541,7 @@ function drive(dt) {
 const NPCD = JSON.parse(document.getElementById('parish-npcs').textContent);
 const npcPanel = document.getElementById('npcpanel');
 let npcKit = null;
-const npcClock = makeClock(8, 1 / 60);
+const npcClock = NPCD ? makeClock(8, 1 / 60) : null;   // WORLDS (wave 10): makeClock is npckit's - absent when the NPC kit is stub (latent start-up crash)
 if (NPCD) {
   npcKit = TCNPC.createNPCKit({
     THREE, scene, npcs: NPCD.npcs, panelRoot: npcPanel, honesty: NPCD.honesty,
@@ -1709,10 +1709,14 @@ window.__parishes = {
   npcs: () => (npcKit ? { count: npcKit.agents.length, stats: npcKit.stats() } : null),
   /* stand beside the nearest guide of this parish and talk: returns the dialogue's first line and source */
   talkIn(fips) {
+    if (!npcKit) throw new Error('parishes: NPC guides are off on this page');   // WORLDS (wave 10): named error, not a TypeError
     const a = npcKit.agents.find((q) => q.npc.parish === fips); if (!a) throw new Error('parishes: no guide placed in ' + fips);
     teleport(a.x + 1, a.z + 1); npcKit.update(0.016, { x: eye.x, z: eye.z }, 12); npcKit.talkTo(a.id);
-    const q = npcPanel.querySelector('blockquote'), src = npcPanel.querySelector('.npc-src code');
-    return { id: a.id, line: q ? q.textContent : null, source: src ? src.textContent : null, open: !!npcPanel.querySelector('[role="dialog"]') || !npcPanel.hidden };
+    // the HUD layout manager adopts the kit's rendered .npc-panel out of #npcpanel into its slot (wave 10): read the live panel
+    const live = document.querySelector('.npc-panel');
+    if (!live) throw new Error('parishes: the NPC dialogue panel was not rendered');
+    const q = live.querySelector('blockquote'), src = live.querySelector('.npc-src code');
+    return { id: a.id, line: q ? q.textContent : null, source: src ? src.textContent : null, open: !live.hidden };
   },
   fleet: () => ({ parked: parked.length, land: parked.filter((v) => v.medium === 'land').length, water: parked.filter((v) => v.medium === 'water').length,
     riding: riding && riding.id, drawCalls: fl ? fl.drawCalls() : 0,
@@ -1831,6 +1835,32 @@ if (ROOT / 'classroom/registry/classroom.json').exists() and (HERE / 'classkit.p
 else:
     CLASS_DATA, CLASS_EMBED = None, ''
 
+# UX (wave 10): ONE layout manager for the world UI over the stage (web/hudkit.py). No kit positions itself here:
+# each panel is REGISTERED into a named slot (corners ts/te/bs/be, edges t/b; the canvas centre is an empty grid track),
+# stacked with a gap, folded to icons under 600 px of stage width, mirrored in RTL, padded for safe-area insets.
+# 'flow' registrations are the sections below the stage (path chooser, city life, legend/honesty): dock chips reach them.
+from hudkit import HUD_CSS, HUD_JS, hud_layer, flow_anchors_present  # noqa: E402
+HUD_PANELS = [
+    {'id': 'mode', 'kind': 'panel', 'sel': '.ctl', 'slot': 'ts', 'order': 0, 'compact': 'scroll'},
+    {'id': 'toast', 'kind': 'panel', 'sel': '#toast', 'slot': 't', 'order': 0, 'compact': 'none'},
+    {'id': 'satellite', 'kind': 'panel', 'sel': '#satbox', 'slot': 'be', 'order': 0, 'compact': 'none'},
+    {'id': 'minimap', 'kind': 'panel', 'sel': '#minimap', 'slot': 'be', 'order': 1, 'compact': 'none'},
+    {'id': 'paths', 'kind': 'flow', 'goto': '#paths', 'anchor': '<section id="paths" data-paths', 'icon': 'route', 'label': 'hud.open.paths'},
+    {'id': 'legend', 'kind': 'flow', 'goto': '[data-world-legend]', 'anchor': '<ul class="help" data-world-legend>', 'icon': 'info', 'label': 'hud.open.legend'},
+]
+if DEEP_PANEL:
+    HUD_PANELS.append({'id': 'deep', 'kind': 'panel', 'sel': '#deep-hud', 'slot': 'b', 'order': 0, 'compact': 'none'})
+if CLASS_EMBED:
+    HUD_PANELS.append({'id': 'class', 'kind': 'panel', 'sel': '.tcc-hud', 'slot': 'te', 'order': 1, 'compact': 'none'})
+if RK_PANEL:
+    HUD_PANELS.append({'id': 'reactor', 'kind': 'panel', 'sel': '#rk-panel', 'slot': 'bs', 'order': 1, 'compact': 'icon',
+                       'icon': 'screen', 'label': 'hud.toggle.reactor'})
+if NPC_CSS_BLOCK:
+    HUD_PANELS.append({'id': 'npc', 'kind': 'panel', 'sel': '.npc-panel', 'slot': 'bs', 'order': 0, 'compact': 'none'})
+if ECON_PANEL:
+    HUD_PANELS.append({'id': 'city', 'kind': 'flow', 'goto': '#tc-econ', 'anchor': 'id="tc-econ"', 'icon': 'city', 'label': 'hud.open.city'})
+HUD_LAYER = hud_layer(HUD_PANELS, TS, TA)
+
 page = f'''<!doctype html>
 <html lang="en">
 <head>
@@ -1887,6 +1917,7 @@ kbd{{font:12px "IBM Plex Mono",monospace;border:1px solid var(--rule);border-rad
 {NPC_CSS_BLOCK}
 {ECON_CSS_BLOCK}
 {RK_CSS_BLOCK}
+<style id="hud-css">{HUD_CSS}</style>
 </head>
 <body class="tc-theme-canvas">
 {NAV}<div class="wrap">
@@ -1909,6 +1940,7 @@ kbd{{font:12px "IBM Plex Mono",monospace;border:1px solid var(--rule);border-rad
   <canvas id="minimap" width="200" height="200" aria-label="{TA("parishes.minimap_label")}" data-i18n-aria="parishes.minimap_label"></canvas>
   <div id="satbox" hidden></div>
   <div id="toast" hidden role="status"></div>
+  {HUD_LAYER}
 </div>
 {DEEP_PANEL}
 <p class="help" id="maplabel" data-map-label></p>
@@ -1956,6 +1988,7 @@ kbd{{font:12px "IBM Plex Mono",monospace;border:1px solid var(--rule);border-rad
 {PATH_SCRIPT}
 {CLASS_EMBED}
 {RK_PANEL}
+<script id="hud-kit">{HUD_JS}</script>
 <script>{STYLE_JS}</script>
 </div></body>
 </html>
@@ -1974,6 +2007,7 @@ for _f in sorted((ROOT / 'i18n/locales').glob('*.json')):
     I18N_CAT[_c['locale']] = {'dir': _c['dir'], 'language': _c['language'], 'strings': _s}
 if len(I18N_CAT) != 8 or 'en' not in I18N_CAT:
     raise BuildError(f'build_parishes: expected 8 locales incl. en, found {sorted(I18N_CAT)}')
+flow_anchors_present(HUD_PANELS, page)
 page = page.replace('__PARISHES_I18N__', json.dumps(I18N_CAT, ensure_ascii=False, sort_keys=True).replace('</', '<\\/'))
 
 # search and link-preview head tags (web/seo.py): head region only

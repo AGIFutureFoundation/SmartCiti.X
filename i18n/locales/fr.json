@@ -837,7 +837,12 @@
   "campusplan.walkway": "Allée piétonne",
   "tasks.kind.resto-scenario": "Scénario de formation en restauration écologique",
   "resto.open": "Lancer le scénario de formation",
-  "resto.close": "Fermer"
+  "resto.close": "Fermer",
+  "hud.region": "Commandes du monde",
+  "hud.open.paths": "Parcours d'apprentissage",
+  "hud.open.city": "Vie urbaine",
+  "hud.open.legend": "Légende et notes de transparence",
+  "hud.toggle.reactor": "Vue en direct du holodeck"
  },
  "districts": {
   "structural": {

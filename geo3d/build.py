@@ -1,23 +1,27 @@
 #!/usr/bin/env python3
 """geo3d: the 3D campus layout, placed on the Earth (SCHEMATIC).
 
-The 3D environment (web/trade_craft_3d.html) lays every campus out in scene
-metres: districts on a ring about the plaza, halls on a grid inside each
-district. That layout is computed in the page's JavaScript (web/build_3d.py
-buildCampus() and building()). This pack MIRRORS it in Python from the same
-registries - never from the page - and projects every hall and district onto
-WGS84 about the campus centroid geo/registry/campuses_geo.json records, so the
-network globe (web/trade_craft_geomap.html) can stand the halls up where the
-3D campus draws them.
+The 3D environment (web/trade_craft_3d.html) lays every hall out on its own
+lot of the AUTHORED campus site plan (campusplan/registry/campusplan.json,
+CAMPUSPLAN_CONTRACT v1; LAYOUT_CONTRACT v2): one building per lot, at the
+walkable interior's own size (36 x 3*depth m), turned to face its walkway.
+This pack reads those SAME lots - never the page - and projects every hall
+footprint (the lot building's rotated footprint, building.aabb) and every
+district block (districts_plan[].block) onto WGS84 about the campus centroid
+geo/registry/campuses_geo.json records, so the network globe
+(web/trade_craft_geomap.html) stands the halls up where the 3D campus draws
+them. (Until wave 10 it mirrored the retired ring-of-sheds formula.)
 
 WHAT THIS IS NOT. No heading, scale or site survey is recorded for any
 campus: the placement is north-up about the centroid, at the scale the 3D
-campus draws, and is SCHEMATIC. A campus with no halls in
-unions/registry/campuses.json gets no building here - it is listed with zero
-halls and a sentence saying so, never an invented footprint.
+campus draws, and is SCHEMATIC; the site plan itself is AUTHORED. A campus
+with no halls in unions/registry/campuses.json gets no building here - it
+is listed with zero halls and a sentence saying so, never an invented
+footprint.
 
-Fail closed: every registry field is read with need(); a missing one stops
-the build with a named error. No default-taking lookups.
+Fail closed: every registry field is read with need(); a missing one (or a
+missing campusplan registry, or lots that are not the campus's halls in
+registry order) stops the build with a named error. No default-taking lookups.
 
     python3 geo3d/build.py            # writes geo3d/registry/geo3d.json
 """
@@ -36,7 +40,7 @@ from mapdata import HUES  # noqa: E402  the district hues the 3D page paints
 
 INPUTS = ['unions/registry/campuses.json', 'unions/registry/districts.json',
           'pack/registry/halls.json', 'geo/registry/campuses_geo.json',
-          'web/interiors.py', 'web/mapdata.py']
+          'web/interiors.py', 'web/mapdata.py', 'campusplan/registry/campusplan.json']
 
 # The local tangent plane: a sphere of the IUGG mean Earth radius (the same
 # 6371.0088 km geo/test.mjs measures routes with), tangent at the centroid.
@@ -47,18 +51,11 @@ LTP = ('east_m = x, north_m = -z (the 3D scene: north = -Z, east = +X); '
 PLACEMENT = ('SCHEMATIC: north-up about the campus centroid; no heading or site survey is recorded; '
              'scale as drawn in the 3D campus')
 
-# the 3D page's own constants (web/build_3d.py buildCampus / building)
-HALL_W = 12            # building(): wid = 12
-COL_PITCH = 16         # buildCampus(): gx * 16
-ROW_GAP = 8            # buildCampus(): pitch = maxDep + 8
-DEP_FLOOR = 5          # building(): dep = max(h.depth, 5)
-DISTRICT_PAD_M = 2     # the district outline stands this far clear of its halls
-# the highest envelope piece above the wall, per roofline (LAYOUT_CONTRACT v1):
-# flat = rooftop unit 1.6x0.8x1.2 at y = h + .4; gable = 7.2 x .5 slab at
-# y = h + 1.1 rotated .48 rad; saw = 3.2 x 1.5 tooth at y = h + .55 rotated .42 rad
-ROOF_TOP = {'flat': lambda h: h + .8,
-            'gable': lambda h: h + 1.1 + 3.6 * math.sin(.48) + .25 * math.cos(.48),
-            'saw': lambda h: h + .55 + 1.6 * math.sin(.42) + .75 * math.cos(.42)}
+# The wall box the 3D page stands on each lot (LAYOUT_CONTRACT v2): the plan's
+# eaves clear height plus the builder's .35 m slab. The hall's archetype roof
+# (web/hallkit.py) rises above it and has no closed form, so it is NOT mirrored:
+# `top` here is the wall-box top, a lower bound on what the page draws.
+SLAB_M = .35
 
 
 def style_of():
@@ -71,7 +68,7 @@ def style_of():
         fail('web/build_3d.py has no `const STYLE_OF = {...};` block')
     table = dict(re.findall(r"(\w+):\s*'(\w+)'", mt.group(1)))
     for k, v in table.items():
-        if v not in ROOF_TOP:
+        if v not in ('flat', 'gable', 'saw'):
             fail(f'STYLE_OF gives district {k} an unknown roofline {v!r}')
     return table, mt.group(0)
 
@@ -108,16 +105,11 @@ def to_ll(x, z, lat0, lng0):
     return [round(lng, 9), round(lat, 9)]
 
 
-def rect(cx, cz, psi, u, v, hw, hd):
-    """A local (u, v) rectangle in a district group rotated psi about +Y and
-    set at (cx, cz): THREE's rotation.y maps local (u, v) to world
-    x = cx + u cos psi + v sin psi, z = cz - u sin psi + v cos psi."""
-    c, s = math.cos(psi), math.sin(psi)
-    out = []
-    for du, dv in ((-hw, -hd), (hw, -hd), (hw, hd), (-hw, hd)):
-        uu, vv = u + du, v + dv
-        out.append((cx + uu * c + vv * s, cz - uu * s + vv * c))
-    return out
+def aarect(r):
+    """The four corners of an axis-aligned plan rect {x, z, w, d} (campus-site
+    frame: x east, z south), in ring order."""
+    x, z, hw, hd = r['x'], r['z'], r['w'] / 2, r['d'] / 2
+    return [(x - hw, z - hd), (x + hw, z - hd), (x + hw, z + hd), (x - hw, z + hd)]
 
 
 def main():
@@ -125,6 +117,7 @@ def main():
     districts = need(load('unions/registry/districts.json'), 'districts', 'unions/registry/districts.json')
     halls_json = need(load('pack/registry/halls.json'), 'halls', 'pack/registry/halls.json')
     geo = need(load('geo/registry/campuses_geo.json'), 'campuses', 'geo/registry/campuses_geo.json')
+    cplan = load('campusplan/registry/campusplan.json')   # SITES' AUTHORED site plans; missing -> named stop
     hall_by = {need(h, 'slug', 'halls.json#halls[]'): h for h in halls_json}
     depth = hall_depths(halls_json)
     styles, style_block = style_of()
@@ -147,67 +140,64 @@ def main():
                              'so nothing is stood up here - no building is invented')
             out_campuses[key] = entry
             continue
-        n = len(dk)
-        R = 124 if n == 2 else 168
-        entry['R_m'] = R
-        entry['ring_road_r_m'] = R - 24
+        plan = need(need(cplan, 'campuses', 'campusplan.json'), key, f'campusplan.json#campuses.{key}')
+        lots = need(plan, 'lots', f'campusplan {key}')
+        want = [sg for k in dk for sg in need(need(districts, k, f'districts.{k}'), 'halls', f'districts.{k}')]
+        if [need(l, 'hall', f'campusplan {key} lot') for l in lots] != want:
+            fail(f'campusplan/registry/campusplan.json lots for {key} are not its halls in registry order')
+        blocks = {need(dp, 'key', f'campusplan {key}.districts_plan'): need(dp, 'block', f'campusplan {key}.districts_plan')
+                  for dp in need(plan, 'districts_plan', f'campusplan {key}')}
+        site = need(plan, 'site', f'campusplan {key}')
+        entry['site_radius_m'] = need(site, 'radius_m', f'campusplan {key}.site')
+        entry['plan_stamp'] = need(cplan, 'source_stamp', 'campusplan.json')
         listed = []
-        for di, k in enumerate(dk):
+        for k in dk:
             d = need(districts, k, f'unions/registry/districts.json#districts.{k}')
-            dh = need(d, 'halls', f'districts.{k}')
-            ang = di / n * math.pi * 2 - math.pi / 2
-            rx, rz = math.cos(ang), math.sin(ang)
-            psi = math.atan2(rx, rz)
-            cx, cz = rx * R, rz * R
-            cols = math.ceil(math.sqrt(len(dh) * 1.7))
-            max_dep = max(max(depth[sg], DEP_FLOOR) for sg in dh)
-            pitch = max_dep + ROW_GAP
             if k not in HUES:
                 fail(f'web/mapdata.py HUES has no hue for district {k}')
             if k not in styles:
                 fail(f'web/build_3d.py STYLE_OF has no roofline for district {k}')
+            if k not in blocks:
+                fail(f'campusplan {key} has no districts_plan block for {k}')
             roof = styles[k]
-            hall_rows = []
-            for i, sg in enumerate(dh):
-                if sg not in hall_by:
-                    fail(f'district {k} lists hall {sg!r} that pack/registry/halls.json does not carry')
-                dval = depth[sg]
-                dep = max(dval, DEP_FLOOR)
-                hgt = 6 + (dval % 3) * .7
-                gx = (i % cols) - (cols - 1) / 2
-                gz = i // cols
-                u, v = gx * COL_PITCH, gz * pitch
-                c, s = math.cos(psi), math.sin(psi)
-                x, z = cx + u * c + v * s, cz - u * s + v * c
-                corners = rect(cx, cz, psi, u, v, HALL_W / 2, dep / 2)
-                ring = [to_ll(px, pz, lat0, lng0) for px, pz in corners]
-                ring.append(list(ring[0]))
-                hall_rows.append({
-                    'slug': sg, 'name': need(hall_by[sg], 'name', f'halls.json#{sg}'),
-                    'district': k, 'grid': {'gx': gx, 'gz': gz, 'cols': cols},
-                    'x': round(x, 4), 'z': round(z, 4), 'w': HALL_W, 'd': dep,
-                    'h': round(hgt, 4), 'roof': roof, 'top': round(ROOF_TOP[roof](hgt), 4), 'psi': round(psi, 9), 'depth_units': dval,
-                    'corners_m': [[round(px, 4), round(pz, 4)] for px, pz in corners],
-                    'polygon': ring, 'center_ll': to_ll(x, z, lat0, lng0),
-                })
-                listed.append(sg)
-            us = [r['grid']['gx'] * COL_PITCH for r in hall_rows]
-            vs = [r['grid']['gz'] * pitch for r in hall_rows]
-            u0 = min(us) - HALL_W / 2 - DISTRICT_PAD_M
-            u1 = max(us) + HALL_W / 2 + DISTRICT_PAD_M
-            v0 = min(vv - r['d'] / 2 for vv, r in zip(vs, hall_rows)) - DISTRICT_PAD_M
-            v1 = max(vv + r['d'] / 2 for vv, r in zip(vs, hall_rows)) + DISTRICT_PAD_M
-            dc = rect(cx, cz, psi, (u0 + u1) / 2, (v0 + v1) / 2, (u1 - u0) / 2, (v1 - v0) / 2)
+            blk = blocks[k]
+            dc = aarect(blk)
             dring = [to_ll(px, pz, lat0, lng0) for px, pz in dc]
             dring.append(list(dring[0]))
             entry['districts'].append({
                 'key': k, 'name': need(d, 'name', f'districts.{k}'), 'hue': HUES[k], 'roof': roof,
-                'cx': round(cx, 4), 'cz': round(cz, 4), 'psi': round(psi, 9),
-                'cols': cols, 'pitch': pitch, 'halls': list(dh),
+                'cx': need(blk, 'x', f'{key}/{k}.block'), 'cz': need(blk, 'z', f'{key}/{k}.block'), 'psi': 0,
+                'halls': list(need(d, 'halls', f'districts.{k}')),
                 'corners_m': [[round(px, 4), round(pz, 4)] for px, pz in dc],
-                'polygon': dring, 'center_ll': to_ll(cx, cz, lat0, lng0),
+                'polygon': dring, 'center_ll': to_ll(blk['x'], blk['z'], lat0, lng0),
             })
-            entry['halls'].extend(hall_rows)
+        for lot in lots:
+            sg = need(lot, 'hall', f'campusplan {key} lot')
+            if sg not in hall_by:
+                fail(f'campusplan {key} lot {sg!r} is not a hall pack/registry/halls.json carries')
+            b = need(lot, 'building', f'campusplan lot {sg}')
+            ab = need(b, 'aabb', f'campusplan lot {sg}.building')
+            dval = depth[sg]
+            if need(b, 'w_m', f'lot {sg}.building') != 36 or need(b, 'd_m', f'lot {sg}.building') != dval * 3:
+                fail(f'campusplan lot {sg}: footprint is not the walkable interior\'s own 36 x 3*depth m')
+            k = need(lot, 'district', f'campusplan lot {sg}')
+            hgt = need(b, 'height_m', f'lot {sg}.building') + SLAB_M
+            corners = aarect(ab)
+            ring = [to_ll(px, pz, lat0, lng0) for px, pz in corners]
+            ring.append(list(ring[0]))
+            door = need(b, 'door', f'lot {sg}.building')
+            entry['halls'].append({
+                'slug': sg, 'name': need(hall_by[sg], 'name', f'halls.json#{sg}'),
+                'district': k, 'lot': need(lot, 'id', f'campusplan lot {sg}'),
+                'x': need(b, 'x', f'lot {sg}.building'), 'z': need(b, 'z', f'lot {sg}.building'),
+                'w': b['w_m'], 'd': b['d_m'], 'rot': need(b, 'rot_y', f'lot {sg}.building'),
+                'facing': need(b, 'facing', f'lot {sg}.building'),
+                'door': {'x': need(door, 'x', f'lot {sg}.door'), 'z': need(door, 'z', f'lot {sg}.door')},
+                'h': round(hgt, 4), 'roof': styles[k], 'top': round(hgt, 4), 'psi': 0, 'depth_units': dval,
+                'corners_m': [[round(px, 4), round(pz, 4)] for px, pz in corners],
+                'polygon': ring, 'center_ll': to_ll(b['x'], b['z'], lat0, lng0),
+            })
+            listed.append(sg)
         if sorted(listed) != sorted(halls):
             fail(f'{key}: halls drawn from its districts {sorted(set(listed) ^ set(halls))} differ from the campus hall list')
         placed.extend(listed)
@@ -228,12 +218,13 @@ def main():
         'provenance': 'SCHEMATIC',
         'placement': PLACEMENT,
         'projection': LTP,
-        'frame': 'scene metres of web/trade_craft_3d.html: north = -Z, east = +X; psi is the district group rotation about +Y',
-        'mirrors': 'web/build_3d.py buildCampus() (district ring, hall grid) and building() (footprint 12 x max(depth,5), wall height h = 6 + (depth % 3) * 0.7; top = the roofline\'s highest piece per LAYOUT_CONTRACT v1)',
+        'frame': 'scene metres of web/trade_craft_3d.html = campusplan frame campus-site: north = -Z, east = +X, origin = the commons centre; districts sit at the origin (psi 0), each hall turned by rot (door at local -z)',
+        'mirrors': 'campusplan/registry/campusplan.json lots (LAYOUT_CONTRACT v2): hall footprint = lots[].building.aabb (36 x 3*depth m, rotated by rot_y), centre building.x/z, h = height_m + 0.35 slab; district outline = districts_plan[].block. top = the wall-box top only: the archetype roof (web/hallkit.py) rises above it and is not mirrored',
         'honesty': {
             'schematic': PLACEMENT,
             'no_invention': 'only campuses whose halls unions/registry/campuses.json lists get buildings; the others show zero halls and no footprint',
             'not_a_survey': 'a footprint here is the 3D campus drawing of a functional programme (web/interiors.py), not a building anyone surveyed or built',
+            'site_plan': 'positions, facings, streets and district blocks are the AUTHORED campus site plan (campusplan/authored/rules.json), not a real site',
         },
         'counts': {'campuses': len(out_campuses), 'campuses_with_halls': len(with_halls),
                    'campuses_without_halls': len(out_campuses) - len(with_halls),

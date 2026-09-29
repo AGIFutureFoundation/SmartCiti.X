@@ -837,7 +837,12 @@
   "campusplan.walkway": "पैदल पथ",
   "tasks.kind.resto-scenario": "पुनर्स्थापन प्रशिक्षण परिदृश्य",
   "resto.open": "प्रशिक्षण परिदृश्य चलाएँ",
-  "resto.close": "बंद करें"
+  "resto.close": "बंद करें",
+  "hud.region": "दुनिया के नियंत्रण",
+  "hud.open.paths": "सीखने के रास्ते",
+  "hud.open.city": "शहरी जीवन",
+  "hud.open.legend": "संकेत और पारदर्शिता नोट",
+  "hud.toggle.reactor": "होलोडेक लाइव दृश्य"
  },
  "districts": {
   "structural": {

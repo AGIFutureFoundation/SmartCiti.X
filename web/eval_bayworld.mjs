@@ -125,15 +125,38 @@ const fleet = await page.evaluate(() => window.__parishes.fleet());
 const fleetRow = { probe: 'fleet', parked: fleet.parked, land: fleet.land, water: fleet.water, wrongMedium: fleet.wrongMedium.length, fails: [] };
 if (fleet.wrongMedium.length) fail(fleetRow, `parked on the wrong medium: ${fleet.wrongMedium.join(', ')}`);
 if (fleetRow.fails.length) bad++;
+/* WORLDS (wave 10): offshore restoration pins (record pin:true, point outside every coarse outline) stand in open water
+   at their RECORDED point: not standable on foot, boat-standable, labelled in the 06075 walk view, and the pin costs no
+   extra draw call beyond the view's declared BASE headroom (it rides the existing 'other' landmark family) */
+const off = await page.evaluate(async () => {
+  const D = JSON.parse(document.getElementById('parishes-data').textContent);
+  const pins = D.parishes.flatMap((p) => p.landmarks.filter((l) => l.kind === 'restoration site (offshore pin)').map((l) => ({ id: l.id, x: l.x, z: l.z, county: p.id })));
+  const P = window.__parishes; const out = [];
+  for (const l of pins) {
+    P.view('origin', l.county); await new Promise((r) => setTimeout(r, 400));
+    out.push({ id: l.id, walk: P.canStand('walk', l.x, l.z), boat: P.canStand('boat', l.x, l.z), label: !!document.querySelector(`.lbl.lm[data-landmark="${l.id}"]`), calls: P.stats().calls });
+  }
+  return out;
+});
+const offRow = { probe: 'offshore', pins: off, fails: [] };
+if (SHOTS && off.length) { await page.evaluate(() => window.__parishes.view('overview', '06075')); await page.waitForTimeout(500); await page.screenshot({ path: `${SHOTS}/WORLDS-bay-offshore-overview.png` }); }
+if (off.length !== 1) fail(offRow, `${off.length} offshore pins, expected 1 (treasure-island-nsti)`);
+for (const o of off) {
+  if (o.walk !== false || o.boat !== true) fail(offRow, `${o.id} walk ${o.walk} boat ${o.boat}: an offshore pin stands in open water`);
+  if (!o.label) fail(offRow, `${o.id} has no in-world label in its county's walk view`);
+  if (!MEASURE_ONLY && BASE && o.calls > Math.ceil(BASE['06075'].origin.calls * CALL_HEADROOM)) fail(offRow, `${o.calls} calls with the pin > the 06075 origin headroom`);
+}
+if (offRow.fails.length) bad++;
 const errRow = { probe: 'errors', count: errors.length, first: errors.slice(0, 3), readyMs, fails: [] };
 if (errors.length) { fail(errRow, `${errors.length} page errors`); bad++; }
 await browser.close();
-const out = { page: URL_BASE, measure: MEASURE_ONLY, rows, cross, fleet: fleetRow, errors: errRow, bad };
+const out = { page: URL_BASE, measure: MEASURE_ONLY, rows, cross, fleet: fleetRow, offshore: offRow, errors: errRow, bad };
 if (JSON_OUT) console.log(JSON.stringify(out, null, 1));
 else {
   for (const r of rows) console.log(`${r.fails.length ? 'FAIL' : '  ok'}  ${r.county} ${r.view.padEnd(8)} calls ${r.calls} tris ${r.tris} ${r.ms} ms chunks ${r.chunks} fabric ${r.fabric} loaded ${r.loaded}${r.fails.length ? ' | ' + r.fails.join('; ') : ''}`);
   for (const r of cross) console.log(`${r.known ? 'KNOWN' : r.fails.length ? 'FAIL' : '  ok'}  cross ${r.pair} (${r.steps} steps)${r.known ? ' | ' + r.known + ', ended in ' + r.after : ''}${r.fails.length ? ' | ' + r.fails.join('; ') : ''}`);
   console.log(`${fleetRow.fails.length ? 'FAIL' : '  ok'}  fleet parked ${fleetRow.parked} (land ${fleetRow.land}, water ${fleetRow.water})`);
+  console.log(`${offRow.fails.length ? 'FAIL' : '  ok'}  offshore ${JSON.stringify(offRow.pins)}${offRow.fails.length ? ' | ' + offRow.fails.join('; ') : ''}`);
   console.log(`${errRow.fails.length ? 'FAIL' : '  ok'}  page errors ${errRow.count}, ready in ${readyMs} ms ${errRow.first.join(' || ')}`);
   console.log(`\n${bad ? bad + ' rows FAIL' : 'all rows hold'}${MEASURE_ONLY ? ' (measure mode: no targets applied)' : ''}`);
 }

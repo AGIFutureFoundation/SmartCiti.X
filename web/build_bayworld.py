@@ -25,8 +25,39 @@ import page_view  # noqa: E402
 T = types.ModuleType('__world_target__')
 T.REG, T.WORLD = page_view.load()
 T.PAGE = 'web/trade_craft_bay.html'
+
+
+def offshore_pins(reg):
+    """WORLDS (wave 10): a restoration site the county outlines cannot hold (bayarea restoration_not_placed with a
+    RECORDED point) is still pinned when ITS OWN record says pin:true - at the recorded world_m, in the county its
+    record names, as an offshore pin (never moved onto land, never a walk target, never a scenario runner). A site
+    with no recorded point (spartina-removal: lat/lng null, pin false) stays unpinned. Fail closed on every field."""
+    import json
+    rs = {s['id']: s for s in json.loads((ROOT / 'restoration/registry/restoration.json').read_text())['sites']}
+    out = []
+    for x in reg['restoration_not_placed']:
+        if x['id'] not in rs:
+            raise SystemExit(f'build_bayworld: restoration_not_placed {x["id"]} is not in restoration/registry/restoration.json')
+        s = rs[x['id']]
+        if s['lat'] is None or s['pin'] is not True:
+            continue
+        if 'world_m' not in x or x['provenance'] != 'RECORDED' or [x['lat'], x['lng']] != [s['lat'], s['lng']]:
+            raise SystemExit(f'build_bayworld: {x["id"]} offshore pin needs the RECORDED point of its restoration record')
+        hits = [f for f, p in reg['parishes'].items() if p['name'] == s['county']]
+        if len(hits) != 1:
+            raise SystemExit(f'build_bayworld: {x["id"]} record county {s["county"]!r} names {len(hits)} selected counties')
+        if s['walkable'] is not False or not s['walkable_reason']:
+            raise SystemExit(f'build_bayworld: {x["id"]} offshore pin expects walkable false with its reason')
+        reg['parishes'][hits[0]]['landmarks'].append({
+            'name': x['name'], 'kind': 'restoration site (offshore pin)', 'lat': s['lat'], 'lng': s['lng'],
+            'world_m': x['world_m'], 'provenance': 'RECORDED',
+            'note': (f'{x["source"]} - the island is absent from the 1:10m county outline, so this pin stands in open '
+                     f'water at the recorded point; not walkable: {s["walkable_reason"]}')})
+        out.append((x['id'], hits[0]))
+    return out
 T.KEYS = {f'parishes.{k}': f'bay.{k}' for k in ('title', 'lede', 'canvas_label', 'minimap_label', 'help', 'h.quests',
                                                 'quests_pending')}
+T.OFFSHORE = offshore_pins(T.REG)
 T.DEEP_WORLD = 'bay'   # DEEP's underwater.json bodies for this world (world == 'bay')
 T.FAMILY_OF = [('campus', 'hall'), ('city', 'tower'), ('restoration', 'other')]
 T.KITS_OFF = {'npcs': 'npcs/registry/npcs.json places guides in the New Orleans parishes only - no Bay county entries',
@@ -116,16 +147,22 @@ EDITS = [
  ("if qreg_path.exists() and (HERE / 'questkit.py').exists():\n", "if qreg_path.exists() and (HERE / 'questkit.py').exists() and not _OFF('quests'):\n"),
  ("page = apply_seo(page, PAGE, 'The parishes", "if _TGT is not None:\n    page = _TGT.finish(page, STATES, WHY)\npage = apply_seo(page, PAGE, 'The parishes"),
  ("emit(HERE / 'trade_craft_parishes.html', page,", "emit(ROOT / PAGE, page,"),
- # browser run 02:44: with the NPC kit off (stub) npckit's makeClock is absent and this line threw at start-up;
- # the clock is only ticked when npcKit exists (only with NPC data), so it is built only then
- ("const npcClock = makeClock(8, 1 / 60);", "const npcClock = NPCD ? makeClock(8, 1 / 60) : null;"),
  ("    DEEP_WORLD = 'parishes'   # the underwater.json world these pages draw (a world target may override it)\n",
   "    DEEP_WORLD = 'parishes'   # the underwater.json world these pages draw (a world target may override it)\n"
   "    DEEP_WORLD = _TGT.DEEP_WORLD if _TGT is not None else DEEP_WORLD\n"),
 ]
 
+# browser run 02:44: with the NPC kit off (stub) npckit's makeClock is absent and the unguarded clock line threw at
+# start-up. WORLDS (wave 10) moved the guard INTO web/build_parishes.py; this page has NPCs off, so the guarded line is
+# REQUIRED here (exactly once) - a parish builder without it stops this build by name instead of shipping the crash.
+NPC_GUARD = 'const npcClock = NPCD ? makeClock(8, 1 / 60) : null;'
+
+
 def hooked_source():
     s = (HERE / 'build_parishes.py').read_text()
+    if s.count(NPC_GUARD) != 1 or s.count('makeClock(8') != 1:
+        raise SystemExit('build_bayworld: npc clock guard missing in web/build_parishes.py - expected exactly once: '
+                         + repr(NPC_GUARD))
     for a, b in EDITS:
         if s.count(a) != 1:
             raise SystemExit(f'build_bayworld: the parish builder changed - hook anchor found {s.count(a)}x: {a[:60]!r}')

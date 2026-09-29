@@ -40,6 +40,8 @@ ok('[build] the page is what web/build_wilds.py writes (not stale, not hand-edit
 
 /* --------------------------------------------------------- structure -- */
 ok('[page] exactly one <h1>', (html.match(/<h1[\s>]/g) || []).length === 1);
+// UX (wave 10, AUDIT finding): the <h1> names this page (its nav label, translated), not the brand
+ok('[page] the <h1> is the page name from the nav (nav.page.wilds), the brand is a line above it', /<h1><span data-i18n="nav\.page\.wilds">[^<]+<\/span><\/h1>/.test(html) && !/<h1>[^]*?Trade Craft Academy[^]*?<\/h1>/.test(html));
 ok('[page] lang, viewport and title', /<html lang="en">/.test(html) && /name="viewport"/.test(html) && /<title>[^<]+<\/title>/.test(html));
 const sitenav = read('web/sitenav.py');
 const wired = sitenav.includes("'web/trade_craft_wilds.html'");

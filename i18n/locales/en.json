@@ -837,7 +837,12 @@
   "campusplan.walkway": "Walkway",
   "tasks.kind.resto-scenario": "Restoration training scenario",
   "resto.open": "Run training scenario",
-  "resto.close": "Close"
+  "resto.close": "Close",
+  "hud.region": "World controls",
+  "hud.open.paths": "Learning paths",
+  "hud.open.city": "City life",
+  "hud.open.legend": "Legend and honesty notes",
+  "hud.toggle.reactor": "Holodeck live view"
  },
  "districts": {
   "structural": {

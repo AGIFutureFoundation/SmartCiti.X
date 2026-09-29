@@ -131,7 +131,12 @@ check('[perf] overview hides fleet, skips NPC updates and chunk streaming', /if 
 check('[detail] street lamps are one InstancedMesh on AUTHORED street cells', /new THREE\.InstancedMesh\(lampGeo, matLamp, CAP\.lamp\)/.test(main) && /out\.lamp\.push/.test(main));
 check('[perf] overview replaces the water pass with a water-coloured clear', /water\.visible = !over; scene\.background = over \? WATER_BG : SKY_BG;/.test(main));
 check('[theme] quest toast text token defined from the theme (--paper)', /--paper:var\(--tc-plate\)/.test(ownStyle));
-check('[npcs] guides follow their routines on the kit clock, never in the overview', /npcClock\.tick\(dt\)/.test(main) && /const npcClock = makeClock\(8, 1 \/ 60\);/.test(main));
+check('[npcs] guides follow their routines on the kit clock, never in the overview', /npcClock\.tick\(dt\)/.test(main) && /const npcClock = NPCD \? makeClock\(8, 1 \/ 60\) : null;/.test(main));
+// WORLDS (wave 10): npckit's makeClock/TCNPC exist only when the NPC kit is wired; every use outside the kit must sit behind NPCD/npcKit
+check('[npcstub] NPC-off safe: the clock is built only with NPC data, the kit only inside if (NPCD), talkIn throws a named error without guides',
+  (main.match(/makeClock\(/g) || []).length === (/function makeClock\(/.test(main) ? 2 : 1) && /const npcClock = NPCD \? makeClock\(8, 1 \/ 60\) : null;/.test(main)
+  && /if \(NPCD\) \{\n  npcKit = TCNPC\.createNPCKit\(/.test(main) && (main.match(/TCNPC\./g) || []).length === 1
+  && /if \(!npcKit\) throw new Error\('parishes: NPC guides are off on this page'\);/.test(main));
 check('[perf] overview renders at the declared 0.6 pixel scale and skips the parish check', /const OVERVIEW_PR = 0\.6;/.test(main) && /applyPR\(m === 'overview' \? OVERVIEW_PR : 1\);/.test(main) && /if \(mode !== 'overview'\) checkParish\(\);/.test(main));
 check('[detail] water shimmer is a uniform, not a mesh', /matWater\.emissiveIntensity = /.test(main));
 
@@ -253,6 +258,8 @@ if (/labels: labelsFrom\(tr\)/.test(main)) for (const m of main.matchAll(/'(npc\
   if (pl) for (const m of pl[1].matchAll(/'([a-zA-Z]+)'/g)) used.add('parishes.path.' + m[1].toLowerCase()); }
 // DEEP (wave 9): the underwater kit's keys travel in the run-time catalogue when the kit is mounted (like npc.*)
 if (/const DEEP_ON = true/.test(main)) { for (const m of html.matchAll(/data-i18n="(deep\.[a-z0-9_.]+)"/g)) used.add(m[1]); for (const m of main.matchAll(/'(deep\.[a-z0-9.]+)'/g)) used.add(m[1]); }
+// UX (wave 10): the HUD layout manager's launcher/dock/region labels (web/hudkit.py) travel as hud.* data-i18n keys
+for (const m of html.matchAll(/data-i18n(?:-aria)?="(hud\.[a-z0-9_.]+)"/g)) used.add(m[1]);
 check('[i18n] every key the page uses is in the catalogue, and only those', CAT && JSON.stringify([...used].sort()) === JSON.stringify(Object.keys(CAT.en.strings).sort()),
   CAT ? [...used].filter((k) => !(k in CAT.en.strings)).concat(Object.keys(CAT.en.strings).filter((k) => !used.has(k))).join(',') : '');
 let same = [];

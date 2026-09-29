@@ -147,6 +147,17 @@ for (const k of [1, 0.6]) {
   diag[k] = +t[4].toFixed(1);
 }
 await page.evaluate(() => window.__parishes.renderScale(0.6));
+/* WORLDS (wave 10) DIAG (not a target): where the 22071 overview frame goes at the declared 0.6 scale - the same
+   median with the WebGL render skipped, and with labels + minimap skipped (the page's own __parishes.diag switches);
+   equal numbers everywhere = the frame is paced by fixed per-frame/compositor cost, not by the scene */
+const ovSplit = {};
+for (const [k, o] of [['all', {}], ['noRender', { noRender: true }], ['noLabelsMini', { noLabels: true, noMini: true }]]) {
+  await page.evaluate((d) => window.__parishes.diag(d), o);
+  await page.waitForTimeout(250);
+  const t = (await page.evaluate(() => window.__parishes.frameTimes(9))).sort((a, b) => a - b);
+  ovSplit[k] = +t[4].toFixed(1);
+}
+await page.evaluate(() => window.__parishes.diag({}));
 const prOk = await page.evaluate(() => window.__parishes.renderScale().prScale);
 if (prOk !== 0.6) { bad++; errors.push('overview render scale is ' + prOk + ', expected 0.6'); }
 
@@ -221,7 +232,7 @@ else {
   if (!t.open) fail(npcRow, 'the dialogue panel did not open');
   if (!me || !me.knowledge.some((k) => k.text === t.line && k.source === t.source)) fail(npcRow, `line ${JSON.stringify(t.line)} is not a verbatim registry quote with its source`);
   /* the dialogue footer carries the registry's honesty.scripted line (5a shipped 'undefined' here) */
-  const foot = await page.evaluate(() => { const e = document.querySelector('#npcpanel .npc-honesty'); return e ? e.textContent : ''; });
+  const foot = await page.evaluate(() => { const e = document.querySelector('.npc-panel .npc-honesty'); /* the HUD layout manager adopts the rendered panel out of #npcpanel (wave 10) */ return e ? e.textContent : ''; });
   const scripted = await page.evaluate(() => JSON.parse(document.getElementById('parish-npcs').textContent).honesty.scripted);
   npcRow.footer = foot.slice(0, 60);
   if (!foot.includes(scripted) || /undefined/.test(foot)) fail(npcRow, `dialogue footer is ${JSON.stringify(foot)}`);
@@ -391,6 +402,7 @@ else {
   for (const r of [groundRow, atmRow, raceRow, rmRow]) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.probe} ${JSON.stringify(Object.fromEntries(Object.entries(r).filter(([k]) => k !== 'fails' && k !== 'probe')))}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
   for (const r of [...worldRows, ambRow, detRow, deepRow]) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.probe} ${JSON.stringify(Object.fromEntries(Object.entries(r).filter(([k]) => k !== 'fails' && k !== 'probe')))}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
   console.log(`  -- DIAG 22103 border: ${lakeDiag.skippedWater} lots not built in AUTHORED water while building this view (fabric ${lakeDiag.fabric}, pending ${lakeDiag.pending}) - diagnosis, not a target`);
+  console.log(`  -- DIAG 22071 overview split at 0.6: all ${ovSplit.all} ms, render skipped ${ovSplit.noRender} ms, labels+minimap skipped ${ovSplit.noLabelsMini} ms (diagnosis, not a target)`);
   console.log(`  -- DIAG 22071 overview median frame: scale 1 ${diag[1]} ms, scale 0.6 ${diag[0.6]} ms (diagnosis, not a target)`);
   for (const e of errors) console.log('FAIL page error: ' + e);
   console.log(bad + errors.length ? `eval_parishes: ${bad + errors.length} FAIL` : 'eval_parishes: all rows within target');

@@ -1201,6 +1201,38 @@ const escLikeHome = (t) => String(t).split(/\s+/).join(' ').trim()
 }
 
 /* ============================================================ [browser] === */
+/* ---- the "what's new" strip (UX, wave 10) --------------------------- */
+{
+  const wn = (home.match(/<nav class="wn" aria-labelledby="wn-h" data-whatsnew>[\s\S]*?<\/nav>/) || [''])[0];
+  ok('[whatsnew] one strip, a labelled <nav>, placed before the "ways in" section',
+    (home.match(/data-whatsnew/g) || []).length === 1 && !!wn && /<h2 id="wn-h"/.test(wn)
+    && home.indexOf('data-whatsnew') < home.indexOf('<section id="paths">'));
+  const cards = [...wn.matchAll(/<a class="wn-card" href="([^"]+)" data-wn="([a-z]+)">([\s\S]*?)<\/a>/g)].map((m) => ({ href: m[1], k: m[2], text: m[3].replace(/<[^>]+>/g, ' ') }));
+  ok('[whatsnew] classroom, Bay world, packs and restoration scenarios, in that order',
+    JSON.stringify(cards.map((c) => c.k)) === JSON.stringify(['classroom', 'bay', 'packs', 'restoration']), [cards.map((c) => c.k).join(',')]);
+  const navSrc = readFileSync(join(HERE, 'sitenav.py'), 'utf8');
+  ok('[whatsnew] every card links a page the site nav declares and that is built',
+    cards.length === 4 && cards.every((c) => navSrc.includes(`'${c.href}'`) && existsSync(join(ROOT, c.href))), cards.map((c) => c.href));
+  const num = (t, re) => { const m = t.match(re); return m ? Number(m[1].replace(/,/g, '')) : NaN; };
+  const bayN = readJSON('bayarea/registry/bayarea.json').selection.selected.length;
+  const scN = readJSON('restoration/registry/scenarios.json').scenarios.length;
+  const pk = readJSON('holodeck/registry/packs.json').packs;
+  const by = (k) => cards.find((c) => c.k === k) || { text: '' };
+  ok('[whatsnew] figures recounted from the registries (Bay counties, scenarios, packs total/shipping/proposed)',
+    num(by('bay').text, /([\d,]+) Bay Area counties/) === bayN && num(by('restoration').text, /([\d,]+) restoration training scenarios/) === scN
+    && num(by('packs').text, /([\d,]+) holodeck packs/) === pk.length
+    && num(by('packs').text, /([\d,]+) shipping/) === pk.filter((p) => p.status === 'SHIPPING').length
+    && num(by('packs').text, /([\d,]+) proposed/) === pk.filter((p) => p.status === 'PROPOSED').length,
+    [`bay ${bayN} scenarios ${scN} packs ${pk.length}`, ...cards.map((c) => c.text)]);
+  ok('[whatsnew] the classroom figure matches the classroom band below it',
+    (() => { const m = by('classroom').text.match(/([\d,]+) class modules/); const band = (home.match(/<section id="classroom"[\s\S]*?<\/section>/) || [''])[0];
+      return !!m && band.replace(/<[^>]+>/g, ' ').includes(m[1]); })());
+  ok('[whatsnew] honest labels travel with the teasers (AUTHORED districts, unverified general practice, proposed packs)',
+    /districts AUTHORED/.test(by('bay').text) && /unverified general practice/.test(by('restoration').text) && /proposed/.test(by('packs').text));
+  ok('[whatsnew] cards are >= 44 px targets with a focus ring, coloured from the style tokens',
+    /\.wn-card\{[^}]*min-block-size:44px/.test(home) && /\.wn-card:focus-visible\{outline:3px/.test(home) && !/\.wn[^{]*\{[^}]*#[0-9a-fA-F]{3,6}/.test(home));
+}
+
 if (WANT_BROWSER) {
   let chromium;
   try { ({ chromium } = await import('/opt/node22/lib/node_modules/playwright/index.mjs')); }

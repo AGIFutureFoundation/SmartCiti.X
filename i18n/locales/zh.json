@@ -837,7 +837,12 @@
   "campusplan.walkway": "人行步道",
   "tasks.kind.resto-scenario": "生态修复培训情景",
   "resto.open": "运行培训情景",
-  "resto.close": "关闭"
+  "resto.close": "关闭",
+  "hud.region": "世界控制",
+  "hud.open.paths": "学习路径",
+  "hud.open.city": "城市生活",
+  "hud.open.legend": "图例与真实性说明",
+  "hud.toggle.reactor": "全息甲板实时画面"
  },
  "districts": {
   "structural": {
