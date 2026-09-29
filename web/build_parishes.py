@@ -2744,7 +2744,7 @@ if (ROOT / 'flora/registry/flora.json').exists() and (HERE / 'florakit.py').exis
         "  if (hex !== FLORA_LC.sha256) throw new Error('sha256 ' + hex.slice(0, 16) + ' is not the pinned land-cover grid');\n"
         "  const raw = new Uint8Array(await new Response(new Blob([gz]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer());\n"
         "  if (raw.length !== FLORA_LC.rows * FLORA_LC.cols) throw new Error('land-cover grid is ' + raw.length + ' bytes');\n"
-        "  floraLC = raw; floraLCState = 'RECORDED'; flora.reset(); }).catch((e) => { floraLCState = 'failed: ' + (e.message || e); });\n"
+        "  floraLC = raw; floraLCState = 'RECORDED'; flora.reset(); const lcLi = document.querySelector('[data-flora-landcover]'); if (lcLi) lcLi.hidden = false; }).catch((e) => { floraLCState = 'failed: ' + (e.message || e); });\n"
         "window.__floraLC = () => floraLCState;\n")
     _FLORA_HOST = _FLORA_LC_JS + _fk.flora_mount_js(_FLORA_REGION, seed='SEED', chunk_m='CHUNK_M', land_class='floraClass',
                                      is_ground='(x, z) => !!parishAt(x, z) && !inWaterAt(x, z)', is_road='isRoadAt',
@@ -2762,7 +2762,7 @@ if (ROOT / 'flora/registry/flora.json').exists() and (HERE / 'florakit.py').exis
                       f'species and exact positions AUTHORED; cells with no RECORDED class use the AUTHORED rules. {need(_LA, "text", "attribution")}')
     if any(c in _FLORA_LC_LINE for c in '<>&"'):
         raise BuildError('build_parishes: VEG land-cover legend carries markup characters')
-    _FLORA_LI += f'\n<li data-flora-landcover lang="en" data-flora-lc-sha="{_LM["sha256"][:16]}">{_FLORA_LC_LINE}</li>'
+    _FLORA_LI += f'\n<li data-flora-landcover hidden lang="en" data-flora-lc-sha="{_LM["sha256"][:16]}">{_FLORA_LC_LINE}</li>'
     for _a, _b in (('window.__parishes = {', _FLORA_HOST + 'window.__parishes = {'),
                    ('<li data-fleet-honesty>', _FLORA_LI + '\n<li data-fleet-honesty>')):
         if page.count(_a) != 1:
