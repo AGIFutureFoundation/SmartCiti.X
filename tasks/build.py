@@ -73,6 +73,12 @@ PARAM_READS = {
     ('web/build_wilds.py', '#world/site-find'): "const s = W.sites.find((x) => x.id === id);\n  if (s === undefined) throw new Error('wilds: no site ' + id + ' in ' + W.id);",
     ('web/build_worksites.py', '#site-'): 'id="site-{esc(s["id"])}"',
 }
+# restoration training scenarios (restoration/scenarios.py stages them in TASK_CONTRACT
+# shape). They go live here only once web/taskkit.py's KIND_ORDER carries the kind
+# - taskkit refuses an unknown kind, so writing them earlier would break every page
+# that renders tasks. Until then tasks.json stays byte-identical and the build says so.
+RESTO_SCEN = 'restoration/registry/scenarios.json'
+RESTO_KIND = {'label': 'Restoration training scenario', 'provenance': 'DERIVED', 'lands': 'section'}
 PAGE_3D = 'web/trade_craft_3d.html'
 PAGE_WILDS = 'web/trade_craft_wilds.html'
 PAGE_WORKSITES = 'web/trade_craft_worksites.html'
@@ -304,6 +310,30 @@ def main():
                 'brief': f'{need(w, "name", src)}: {need(s, "work", src)}',
             })
 
+    # ---- restoration training scenarios (staged by restoration/scenarios.py) --
+    sources = list(SOURCES)
+    order_m = re.search(r'KIND_ORDER = \(([^)]*)\)', (ROOT / 'web/taskkit.py').read_text())
+    if order_m is None:
+        fail('web/taskkit.py has no KIND_ORDER tuple; cannot tell whether resto-scenario is accepted')
+    staged = need(load(RESTO_SCEN), 'staged_tasks', RESTO_SCEN)
+    if "'resto-scenario'" in order_m.group(1):
+        KINDS['resto-scenario'] = RESTO_KIND
+        sources.append(RESTO_SCEN)
+        for i, t in enumerate(staged):
+            src = f'{RESTO_SCEN}#staged_tasks[{i}]'
+            pl = need(t, 'place', src)
+            if need(t, 'kind', src) != 'resto-scenario' or need(pl, 'kind', src) != 'restoration-site':
+                fail(f'{src}: not a resto-scenario task on a restoration-site')
+            if need(pl, 'id', src) not in resto_ids:
+                fail(f'{src}: restoration site "{pl["id"]}" is not in restoration/registry/restoration.json')
+            if need(pl, 'campus', src) not in campuses:
+                fail(f'{src}: campus "{pl["campus"]}" is not in unions/registry/campuses.json')
+            tasks.append(t)
+        print(f'tasks/build: resto-scenario live - {len(staged)} restoration training scenarios added')
+    else:
+        print(f'tasks/build: resto-scenario NOT live - {len(staged)} staged in {RESTO_SCEN}; '
+              'web/taskkit.py KIND_ORDER lacks the kind (NEEDS taskkit owner)')
+
     ids = [t['id'] for t in tasks]
     dup = sorted({i for i in ids if ids.count(i) > 1})
     if dup:
@@ -333,8 +363,8 @@ def main():
         'with_linked_lessons': sum(1 for t in tasks if t['requires']),
     }
     builder = pathlib.Path(__file__).read_bytes()
-    srcs = {rel: sha16((ROOT / rel).read_bytes()) for rel in SOURCES}
-    stamp = sha16(builder + b''.join((ROOT / rel).read_bytes() for rel in SOURCES))
+    srcs = {rel: sha16((ROOT / rel).read_bytes()) for rel in sources}
+    stamp = sha16(builder + b''.join((ROOT / rel).read_bytes() for rel in sources))
     reg = {
         'pack': 'smartcitix-trade-craft-academy-tasks',
         'product': need(sims, 'product', 'sims.json'),

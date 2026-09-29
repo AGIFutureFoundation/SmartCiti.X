@@ -259,6 +259,26 @@ ok(/d \|= a\.charCodeAt\(i\) \^ b\.charCodeAt\(i\)/.test(SRC) && !/mac === v|v =
 r = await J(await worker().fetch(new Request(SITE + '/api/other', { method: 'POST' }), baseEnv()));
 ok(r.s === 404, 'unknown route 404');
 ok(JSON.stringify(W.ROUTES) === JSON.stringify(['/api/checkout', '/api/stripe-webhook']), 'ROUTES = checkout + webhook');
+/* ---- the Reactor token route shares this Worker (reactor/route.mjs; reactor/test.mjs holds its full suite) ---- */
+{
+  const RK = 'rk_test_' + 'FAKE_not_a_real_key';
+  const rq = (h) => new Request(SITE + '/api/reactor/token', { method: 'POST', headers: { origin: SITE, 'content-type': 'application/json', 'cf-connecting-ip': '203.0.113.8', ...(h || {}) }, body: '{}' });
+  const rkEnv = () => ({ ...baseEnv(), REACTOR_API_KEY: RK, RATE_LIMIT_REACTOR_MAX: '5', RATE_LIMIT_REACTOR_WINDOW_S: '60' });
+  let up = [];
+  const rkFetch = async (u, i) => { up.push({ u, i }); return new Response(JSON.stringify({ jwt: 'aaa.bbb.ccc' }), { status: 200 }); };
+  const e0 = rkEnv(); delete e0.REACTOR_API_KEY;
+  r = await J(await worker({ fetch: rkFetch }).fetch(rq(), e0));
+  ok(r.s === 503 && r.b.detail === 'reactor: not configured - set REACTOR_API_KEY' && up.length === 0, 'reactor route: no REACTOR_API_KEY -> 503, no upstream call');
+  const e1 = rkEnv(); delete e1.RATE_LIMIT_REACTOR_MAX;
+  r = await J(await worker({ fetch: rkFetch }).fetch(rq(), e1));
+  ok(r.s === 503 && /RATE_LIMIT_REACTOR_MAX/.test(r.b.detail) && up.length === 0, 'reactor route: rate limit not configured -> 503');
+  const res = await worker({ fetch: rkFetch }).fetch(rq(), rkEnv());
+  const body = await res.text();
+  ok(res.status === 200 && body === JSON.stringify({ jwt: 'aaa.bbb.ccc' }) && up.length === 1 && up[0].i.headers['Reactor-API-Key'] === RK && !body.includes(RK),
+    'reactor route: returns only {jwt}; key goes upstream in Reactor-API-Key and never back');
+  ok(res.headers.get('content-security-policy') === CAT.api_headers.find((h) => h.key === 'Content-Security-Policy').value, 'reactor route: api CSP from the catalogue');
+  ok(JSON.stringify(W.ALL_ROUTES) === JSON.stringify([...W.ROUTES, '/api/reactor/token']), 'ALL_ROUTES = ROUTES + /api/reactor/token');
+}
 ok(netCalls === 0, 'no test touched the network');
 
 console.log(`payments: ${pass} passed, ${fail} failed`);

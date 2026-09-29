@@ -1,0 +1,50 @@
+{
+ "package": "@reactor-team/js-sdk",
+ "version": "3.0.2",
+ "license": "Apache-2.0",
+ "tarball": "https://registry.npmjs.org/@reactor-team/js-sdk/-/js-sdk-3.0.2.tgz",
+ "integrity": "sha512-h13EP2WpFXS/qbC7l3HGkfSibN/Gk1WPZou25kwHNtt04bj8JtqzoP/Kupn3/3tV997RHXApANoO6Bie7TssLg==",
+ "integrity_verified": "sha512 of the downloaded tarball matched the pin in reactor/registry/reactor.json",
+ "files": {
+  "index.js": {
+   "sha512": "sha512-dHxleh2XRg08ihDjY2gj0sYiEmhlikP7M9Qw3XRAXJMWsHwjAJk2BHTaF8lr2/Oom+ENaHKQ6UlfOL+vpYUUxg==",
+   "from": "https://registry.npmjs.org/@reactor-team/js-sdk/-/js-sdk-3.0.2.tgz#dist/index.js",
+   "provenance": "UPSTREAM"
+  },
+  "wasm/reactor_wasm.js": {
+   "sha512": "sha512-cHRDHXhslMCD1dPSv6Dc75yGc9ZUkd5Z10WKu/6QdwjdHe/OVmLGgPFn/qPhG2gDMTVgxd5184q144OhYSCR+A==",
+   "from": "https://registry.npmjs.org/@reactor-team/js-sdk/-/js-sdk-3.0.2.tgz#dist/wasm/reactor_wasm.js",
+   "provenance": "UPSTREAM"
+  },
+  "wasm/reactor_wasm_bg.wasm": {
+   "sha512": "sha512-GCdPfFfOpChbBPFdYt9QhM+mwuTtckUdVG4N4rYfdbJJUrD1WOwll2tG1y3WG4GGv0mOWBEfQBxmik+qMHEykw==",
+   "from": "https://registry.npmjs.org/@reactor-team/js-sdk/-/js-sdk-3.0.2.tgz#dist/wasm/reactor_wasm_bg.wasm",
+   "provenance": "UPSTREAM"
+  },
+  "LICENSE": {
+   "sha512": "sha512-FDurekRsx71ME3eWXTbTb3awT1QfR7ijrBlwf3UHVH6lPmlvz2jCQSJ652yvVGw7eXu8vhUX7xVe4XBEGrZypw==",
+   "from": "https://raw.githubusercontent.com/reactor-team/reactor-client-sdks/main/LICENSE (main branch; the npm tarball ships none)",
+   "provenance": "UPSTREAM"
+  },
+  "shims/react.js": {
+   "sha512": "sha512-Ghp8Tbo4Y83T587Smko4pfPypU5jvVpsALor9VajH7QpzBGQOfk9JbizPtH7Ff2FZ/JZsuoM2h3yxXFSJ+3L+Q==",
+   "from": "written in this repo",
+   "provenance": "AUTHORED"
+  },
+  "shims/react-jsx-runtime.js": {
+   "sha512": "sha512-ERttUz4eXNmRz1DRy6xEu3noQmHkmIWYUen0G371wyjv5BkFK7Nn7PkZhRZFf0UrUXGkWhsDGJqJU8oXi8zy4g==",
+   "from": "written in this repo",
+   "provenance": "AUTHORED"
+  },
+  "shims/awaitqueue.js": {
+   "sha512": "sha512-MHHk3Alaug1uC93hYvxfoCrHLYqVgZ1hw+294aDkCAd0y7cTa4QeUuyEckqARg9unpD1osuaemwSAFXvnRXiGA==",
+   "from": "written in this repo",
+   "provenance": "AUTHORED"
+  },
+  "shims/unavailable.js": {
+   "sha512": "sha512-5LL+7v3ZCQpM9Yf4JexHmkeSi0BGpTRzYovlf7dnFnyYiDwbqCxar1U3NoCtRCWtOCJiXrPakoZbg2+gXKSepA==",
+   "from": "written in this repo",
+   "provenance": "AUTHORED"
+  }
+ }
+}

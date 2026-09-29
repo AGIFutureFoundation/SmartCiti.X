@@ -1,0 +1,9 @@
+{
+ "provenance": "AUTHORED",
+ "method": "approximate label points placed by hand in open water for general geography only; not surveyed, not a shoreline",
+ "labels": [
+  {"name": "San Francisco Bay", "lat": 37.70, "lng": -122.29, "note": "approximate label point, AUTHORED; the bay itself is outside every land outline (open water)"},
+  {"name": "San Pablo Bay", "lat": 38.06, "lng": -122.38, "note": "approximate label point, AUTHORED"},
+  {"name": "Pacific Ocean", "lat": 37.72, "lng": -122.62, "note": "approximate label point, AUTHORED"}
+ ]
+}

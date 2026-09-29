@@ -52,7 +52,7 @@ const listed = doc.components.map((c) => c['bom-ref']).sort();
   ok(`the SBOM lists exactly the ${vendored.length} files under web/vendor/ and parishes/vendor/ — no more, no fewer`);
 }
 
-const SPDX = new Set(['MIT', 'BSD-3-Clause', 'OFL-1.1', 'ISC']);
+const SPDX = new Set(['MIT', 'BSD-3-Clause', 'OFL-1.1', 'ISC', 'Apache-2.0']);
 const PURLS = {
   three: 'pkg:npm/three@0.160.0',
   'maplibre-gl': 'pkg:npm/maplibre-gl@5.24.0',
@@ -65,6 +65,8 @@ const PURLS = {
   archivo: 'pkg:generic/archivo@v25',
   // the design kit's icons: only the SVGs web/design_kit.py draws
   'lucide-static': 'pkg:npm/lucide-static@1.48.0',
+  // the Reactor browser SDK (reactor/fetch_reactor.py; integrity pinned in reactor/registry/reactor.json)
+  '@reactor-team/js-sdk': 'pkg:npm/%40reactor-team/js-sdk@3.0.2',
   // the parish outlines: Census cartographic boundaries as packaged by us-atlas (data)
   'us-atlas': 'pkg:npm/us-atlas@3.0.1',
 };

@@ -218,6 +218,26 @@ check('[perf] the painted-grid shader block runs only nearer than its fade on un
   /if \(vGroundDist < 420\.0 && uGrid > 0\.5\) \{ vec2 q = mod\(vGroundXZ, 100\.0\);/.test(main) && /if \(!over\) \{ stepSplash\(dt\); if \(smoke && smoke\.mesh\.visible\) smoke\.update\(dt\); \}/.test(main)
   && /if \(!over && !DIAG\.noEcon && window\.TCEcon && current\)/.test(main));
 
+// [env] wave 8 (ENV): environment detail within the declared budgets (browser: web/eval_parishes.mjs detail row)
+check('[env] flat land lit by ONE baked constant (hemisphere sky + sun * max(0, sun.y), over PI) in an unlit material, applied after the grid paint, drawn first',
+  /const FLAT_LIGHT = new THREE\.Color\(\)\.copy\(hemi\.color\)\.multiplyScalar\(hemi\.intensity\)\.add\(new THREE\.Color\(\)\.copy\(sun\.color\)\.multiplyScalar\(sun\.intensity \* Math\.max\(0, SUN\.y\)\)\)\.multiplyScalar\(1 \/ Math\.PI\);/.test(main)
+  && /const m = new THREE\.MeshBasicMaterial\(\{ color: c \}\);/.test(main) && /STREET_GLSL \+ '\\ndiffuseColor\.rgb \*= uFlat;'/.test(main) && /m\.renderOrder = -1;/.test(main)
+  && /const hemi = new THREE\.HemisphereLight\(0xdde9f7, 0x5a5040, 0\.95\); scene\.add\(hemi\);/.test(main));
+check('[env] house wall tops inside the gable are dropped (never seen; pays for the street detail)',
+  /dropHiddenTop\(houseGeo\);/.test(main) && /Math\.abs\(v - 1\) < 1e-6\) && g\.attributes\.normal\.array\[t \* 9 \+ 1\] > 0\.99/.test(main));
+check('[env] ONE shared kit material; family per vertex (kitKind), AUTHORED land use per instance (kitUse), written per lot, unknown use fails closed',
+  /if \(KIT_MAT\) return KIT_MAT;/.test(main) && /attribute float kitKind; attribute float kitUse;/.test(main)
+  && /m\.geometry\.attributes\.kitUse\.array\[kn\[fam\]\] = use;/.test(main) && /throw new Error\('parishes: no kit land use ' \+ use\)/.test(main)
+  && /lot\.push\(KIT_USE\[use\] \+/.test(main) && /m\.geometry\.attributes\.kitUse\.needsUpdate = true;/.test(main));
+check('[env] crossings: sidewalks (drawn AND collided) stop at the crossing street\'s kerb line; zebra painted by the street shader; all in the ONE street mesh',
+  /const XW_R = 300, XW_CAP = 80, XW_DY = 0\.04, XW_W = 3\.0, FURN_R = 240, FURN_M = 38, FURN_CAP = 120, SHORE_R = 450, SHORE_W = 1\.6, SHORE_CAP = 300, DETAIL_V = 36000;/.test(main)
+  && (main.match(/new THREE\.Mesh\(roadGeo/g) || []).length === 1 && /for \(const \[p0, p1\] of pcs\) \{/.test(main) && /const off = sd \* \(s\.cw \+ w \/ 2\), m = \(p0 \+ p1\) \/ 2 \* s\.L, L = \(p1 - p0\) \* s\.L;/.test(main)
+  && /if \(vZebra > -50\.0\) diffuseColor\.rgb = mix\(uAsph, diffuseColor\.rgb, step\(0\.5, fract\(vZebra \/ 1\.1\)\)\);/.test(main) && /roadZeb\[o \/ 3\] = -100; o \+= 3;/.test(main));
+check('[env] furniture never in a crossing, on a lamp spot or in water, and collides as props; shoreline only where the outer side is land',
+  /if \(!pcs\.some\(\(\[p0, p1\]\) => u > p0 \* s\.L \+ 4 && u < p1 \* s\.L - 4\)\) continue;/.test(main) && /if \(Math\.abs\(u - Math\.round\(u \/ LAMP_M\) \* LAMP_M\) < 6\) continue;/.test(main)
+  && /!parishAt\(px, pz\) \|\| inWaterAt\(px, pz\)\) continue;/.test(main) && /kind: 'prop' \}\);/.test(main)
+  && /if \(!parishAt\(mx \+ ux \* SHORE_W, mz \+ uz \* SHORE_W\) \|\| inWaterAt\(mx \+ ux \* SHORE_W, mz \+ uz \* SHORE_W\)\) continue;/.test(main));
+
 // [contracts] stubs are named
 for (const k of ['fleet', 'npcs', 'layers']) {
   const m = html.match(new RegExp(`<li data-contract="${k}" data-state="(wired|stub)">([\\s\\S]*?)</li>`));
@@ -231,6 +251,8 @@ for (const m of main.matchAll(/tr\('(parishes\.[a-z0-9_.]+)'\)/g)) used.add(m[1]
 if (/labels: labelsFrom\(tr\)/.test(main)) for (const m of main.matchAll(/'(npc\.[a-z0-9.]+)'/g)) used.add(m[1]);
 { const pl = main.match(/const PATH_L = Object\.fromEntries\(\[([^\]]+)\]\.map\(\(k\) => \[k, tr\('parishes\.path\.' \+ k\.toLowerCase\(\)\)\]\)\);/);
   if (pl) for (const m of pl[1].matchAll(/'([a-zA-Z]+)'/g)) used.add('parishes.path.' + m[1].toLowerCase()); }
+// DEEP (wave 9): the underwater kit's keys travel in the run-time catalogue when the kit is mounted (like npc.*)
+if (/const DEEP_ON = true/.test(main)) { for (const m of html.matchAll(/data-i18n="(deep\.[a-z0-9_.]+)"/g)) used.add(m[1]); for (const m of main.matchAll(/'(deep\.[a-z0-9.]+)'/g)) used.add(m[1]); }
 check('[i18n] every key the page uses is in the catalogue, and only those', CAT && JSON.stringify([...used].sort()) === JSON.stringify(Object.keys(CAT.en.strings).sort()),
   CAT ? [...used].filter((k) => !(k in CAT.en.strings)).concat(Object.keys(CAT.en.strings).filter((k) => !used.has(k))).join(',') : '');
 let same = [];
@@ -244,6 +266,35 @@ for (const l of locs) {
 check('[i18n] catalogue = locale files, no English copies', same.length === 0, same.slice(0, 4).join('; '));
 check('[i18n] tr() throws by name (no fallback)', /throw new Error\(`parishes i18n: locale \$\{LOC\} has no \$\{k\}`\)/.test(main));
 
+// [class] wave 8: the class session kit (web/classkit.py) at parish stations - play only, no network
+{
+  const cd = json('class-data'), ci = json('class-i18n');
+  const creg = JSON.parse(read('classroom/registry/classroom.json'));
+  const stIds = new Set(Object.values(JSON.parse(read('layers/registry/layers.json')).parishes).flatMap((p) => p.stations.map((s) => p.fips + '/' + s.id)));
+  check('[class] class data embedded for the parishes world only, stamp = classroom registry', !!cd && cd.stamp === creg.source_stamp
+    && cd.worlds.join() === 'parishes' && cd.places.length > 0 && cd.places.every((p) => p.world === 'parishes'));
+  check('[class] every station place in the class data is a real layers station of that parish', !!cd
+    && cd.places.filter((p) => p.kind === 'station').every((p) => stIds.has(p.id.slice('parish:'.length))));
+  check('[class] opening a station tells the class kit it was reached (parish:<fips>/<station id>)',
+    main.includes("if (window.TCClass) window.TCClass.reach('parish:' + id + '/' + st.id);"));
+  const kit = (html.match(/<script id="class-kit">([\s\S]*?)<\/script>/) || [, ''])[1];
+  check('[class] class kit mounted folded, 8 locales, no network, stores only tc-class-* keys', /TCClass\.mount\(\{ compact: true \}\);/.test(kit)
+    && !!ci && Object.keys(ci).length === 8 && !/\bfetch\s*\(|XMLHttpRequest|sendBeacon|WebSocket/.test(kit)
+    && /PROG_KEY = 'tc-class-progress', PLAN_KEY = 'tc-class-plan'/.test(kit));
+}
+// [deep] wave 9: underwater regions (web/deepkit.py) - lazy registry, 0 cost until Dive/ROV, AUTHORED legend
+{
+  const kitPy = read('web/deepkit.py'), inl = kitPy.slice(kitPy.indexOf('/* DEEP_KIT:BEGIN -'), kitPy.indexOf("/* DEEP_KIT:END */\n'''"));
+  const ureg = JSON.parse(read('underwater/registry/underwater.json'));
+  check('[deep] kit inlined byte-for-byte, world = parishes', inl.length > 1000 && main.includes(inl) && /const DEEP_ON = true, DEEP_WORLD = 'parishes';/.test(main));
+  check('[deep] registry fetched on the first Dive/ROV press, never embedded (page weight unchanged)', main.includes("fetch('../underwater/registry/underwater.json')")
+    && !html.includes('"ne_shorelines_used"') && /addEventListener\('click', \(\) => deepLoad\(k\)\)/.test(main) && ureg.bodies.some((b) => b.world === 'parishes'));
+  check('[deep] kit updated once per frame after the camera is placed, told about the overview', /placeCamera\(\);\n  if \(deep\) deep\.update\(dt, over\);/.test(main)
+    && (main.match(/deep\.update\(/g) || []).length === 1);
+  check('[deep] Dive / ROV / Up / Down controls + the AUTHORED / not-dive-training line on the page', ['deep-dive', 'deep-rov', 'deep-up', 'deep-down'].every((id) => html.includes(`id="${id}"`))
+    && html.includes('data-i18n="deep.honesty"') && /AUTHORED/.test(CAT.en.strings['deep.honesty']) && /not dive training/.test(CAT.en.strings['deep.honesty']));
+  check('[deep] dive is gated on physkit water states (walk mode only)', main.includes("waterState: () => (mode === 'walk' && av ? av.water : 'dry')"));
+}
 // [build] the page is what the builder writes today
 const sha = createHash('sha256').update(html).digest('hex').slice(0, 16);
 check('[build] page carries the builder banner and one importmap', (html.match(/<script type="importmap">/g) || []).length === 1);

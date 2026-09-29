@@ -19,10 +19,10 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 REG_PATH = ROOT / 'tasks' / 'registry' / 'tasks.json'
 TASK_FIELDS = ('id', 'title', 'kind', 'place', 'launch', 'requires', 'provenance', 'source', 'brief', 'seat')
 KIND_ORDER = ('sim-scenario', 'walkaround', 'crib-drill', 'crew-handoff',
-              'restoration-walk', 'wilds-site-walk')
+              'restoration-walk', 'wilds-site-walk', 'resto-scenario')
 KIND_GLYPH = {'sim-scenario': '\U0001F3AE', 'walkaround': '\U0001F50E', 'crib-drill': '\U0001F9F0',
               'crew-handoff': '\U0001F91D', 'restoration-walk': '\U0001F33F',
-              'wilds-site-walk': '⛰️'}
+              'wilds-site-walk': '⛰️', 'resto-scenario': '\U0001F30A'}
 
 
 def _need(d, k, where):

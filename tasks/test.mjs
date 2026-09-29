@@ -121,6 +121,11 @@ for (const t of T) {
   } else if (path === 'web/trade_craft_worksites.html') {
     const anchor = L.href.split('#')[1];
     if (!pageWorks.includes(`id="${anchor}"`)) hrefBad.push(`${t.id}: worksites page has no id="${anchor}"`);
+  } else if (path === 'web/trade_craft_bay.html') {
+    // restoration training scenarios: the Bay page's restokit mount reads #resto=<site> and holds that site's run button
+    const pageBay = read(path).toString('utf8'), site = L.href.split('#resto=')[1];
+    if (t.kind !== 'resto-scenario' || !pageBay.includes("if (h.startsWith('resto=')) addEventListener('load', () => openSite(h.slice(6), null));")
+      || !site || !pageBay.includes(`data-resto-run="${site}"`) || site !== t.place.id || L.lands !== 'section') hrefBad.push(`${t.id}: Bay page does not open #resto=${site}`);
   } else hrefBad.push(`${t.id}: ${path} is not a page this pack knows the parameters of`);
 }
 ok('[launch] every href resolves to a real file and a parameter the target page reads, with a value its data accepts', hrefBad.length === 0, hrefBad);
@@ -210,7 +215,10 @@ ok('[coverage] every walkaround, crib binding, worksite, walkable restoration si
 ok('[coverage] no task comes from anywhere else', T.length === Object.values(sims.sims).reduce((a, s) => a + s.scenarios.length + (s.walkaround.length ? 1 : 0), 0)
   + Object.keys(cribs.hall_bindings).length + works.sites.length
   + resto.sites.filter((s) => s.walkable === true && s.pin && s.campus).length
-  + wilds.worlds.reduce((a, w) => a + w.sites.length, 0));
+  + wilds.worlds.reduce((a, w) => a + w.sites.length, 0)
+  // restoration training scenarios count only once taskkit accepts their kind ([resto] pins them row for row)
+  + ((read('web/taskkit.py').toString('utf8').match(/KIND_ORDER = \(([^)]*)\)/) || [, ''])[1].includes("'resto-scenario'")
+    ? J('restoration/registry/scenarios.json').staged_tasks.length : 0));
 
 /* ------------------------------------------------------ requires -- */
 const steps = (kind) => Object.values(lessons).flatMap((l) => l.steps.filter((s) => s.kind === kind).map((s) => [l, s]));
@@ -253,6 +261,15 @@ ok('[honesty] the completion contract names no task kind of its own (tasks never
 const bsrc = builder.toString('utf8').replace(/#.*$/gm, '').replace(/"""[\s\S]*?"""/g, '');
 ok('[generator] the builder never reads with .get(k, default) and fails closed on a missing key',
   !/\.get\([^)]*,/.test(bsrc) && bsrc.includes('raise KeyError'));
+
+/* -------------------------------------------- restoration scenarios -- */
+const scen = J('restoration/registry/scenarios.json');
+const kitOrder = (read('web/taskkit.py').toString('utf8').match(/KIND_ORDER = \(([^)]*)\)/) || [, ''])[1];
+const RS = T.filter((t) => t.kind === 'resto-scenario');
+const live = kitOrder.includes("'resto-scenario'");
+ok('[resto] resto-scenario tasks are live exactly when web/taskkit.py accepts the kind, and then equal restoration/scenarios.json staged_tasks row for row',
+  live ? JSON.stringify(RS) === JSON.stringify(scen.staged_tasks) && 'restoration/registry/scenarios.json' in reg.sources
+    : RS.length === 0 && !('resto-scenario' in reg.kinds), [live, RS.length, scen.staged_tasks.length]);
 
 /* ------------------------------------------------------------- theme -- */
 const kit = read('web/taskkit.py').toString('utf8');

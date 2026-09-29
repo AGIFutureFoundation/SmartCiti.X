@@ -704,6 +704,21 @@ const escLikeHome = (t) => String(t).split(/\s+/).join(' ').trim()
     + 'or a placeholder labelled as one',
     loopWrong.length === 0, loopWrong);
 
+  /* -- wave 8: the classroom band (CLASS) --------------------------------- */
+  {
+    const reg = JSON.parse(rf(join(ROOT, 'classroom/registry/classroom.json'), 'utf8'));
+    const en8 = JSON.parse(rf(join(ROOT, 'i18n/locales/en.json'), 'utf8')).strings;
+    const e8 = (x) => x.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;');
+    const band = (home.match(/<section id="classroom" class="cl-band"[\s\S]*?<\/section>/) || [''])[0];
+    const want = { modules: reg.modules.length + reg.cognitionx.modules.length, moments: reg.moments.length + reg.cognitionx.moments.length, places: reg.places.length };
+    const got = Object.fromEntries([...band.matchAll(/data-cl-stat="([^"]+)"[^>]*><dt>[^<]*<\/dt><dd>([^<]*)<\/dd>/g)]
+      .map((m) => [m[1], Number(m[2].replace(/,/g, ''))]));
+    ok(`[shipped] index.html: exactly one classroom band, its figures recounted from classroom/registry/classroom.json (${JSON.stringify(want)})`,
+      (home.match(/<section id="classroom"/g) || []).length === 1 && JSON.stringify(got) === JSON.stringify(want), [JSON.stringify(got)]);
+    ok('[shipped] index.html: the classroom band links the classroom page and says play / not access control / no data leaves',
+      band.includes('href="web/trade_craft_classroom.html"') && [['cl-play', 'class.h.play'], ['cl-plan', 'class.h.plan'], ['cl-data', 'class.h.data']].every(([h, k]) => band.includes('<li data-honest="' + h + '">' + e8(en8[k]) + '</li>')));
+  }
+
   /* -- wave 7: the holodeck packs band (PACKS) ---------------------------- */
   {
     const reg = JSON.parse(rf(join(ROOT, 'holodeck/registry/packs.json'), 'utf8'));

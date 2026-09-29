@@ -1,0 +1,293 @@
+{
+ "pack": "bayarea",
+ "layer": "world",
+ "version": "1.4",
+ "format": "PARISH_CONTRACT v1.4 world layer",
+ "source_stamp": "172a3c8734ba215432b6e3ef9336b75cbe9bf10c9897b12791e018f9b78d9cc6",
+ "source_stamp_sha256": "sha256 over bayarea/registry/bayarea.json + every bayarea/maps/streets/<fips>.json (sorted) + bayarea/world_bay.py + parishes/build_world.py",
+ "water_note": "AUTHORED water - procedural creeks, channels and ponds, NOT the real creeks or reservoirs",
+ "channels_per_kind": {
+  "bayou": 0,
+  "canal": 2,
+  "stream": 5
+ },
+ "water_source": "no water dataset is vendored (see parishes/registry/world.json#water_source for the licence search); every creek, channel and pond here is AUTHORED",
+ "provenance_rule": "water AUTHORED (procedural, seeded by FIPS); the bays and ocean are open water outside the RECORDED outlines, not modelled as lakes",
+ "water_levels": {
+  "surface_y_m": -0.4,
+  "wade_max_depth_m": 1.0,
+  "depth_m": {
+   "lake": 3.0,
+   "bayou": 1.6,
+   "canal": 2.4,
+   "stream": 0.6,
+   "pond": 1.2
+  },
+  "provenance": "AUTHORED"
+ },
+ "roads": {
+  "profile_version": 1,
+  "note": "AUTHORED cross-sections for the AUTHORED street polylines - generic, NOT a real street survey or standard",
+  "classes": {
+   "arterial": {
+    "lanes": 4,
+    "lane_width_m": 3.5,
+    "parking_lanes": 0,
+    "parking_width_m": 0.0,
+    "curb_height_m": 0.15,
+    "sidewalk_m": [
+     3.0,
+     3.0
+    ],
+    "carriageway_m": 14.0,
+    "corridor_m": 20.0,
+    "provenance": "AUTHORED"
+   },
+   "collector": {
+    "lanes": 2,
+    "lane_width_m": 3.3,
+    "parking_lanes": 2,
+    "parking_width_m": 2.4,
+    "curb_height_m": 0.15,
+    "sidewalk_m": [
+     2.4,
+     2.4
+    ],
+    "carriageway_m": 11.4,
+    "corridor_m": 16.2,
+    "provenance": "AUTHORED"
+   },
+   "local": {
+    "lanes": 2,
+    "lane_width_m": 3.0,
+    "parking_lanes": 1,
+    "parking_width_m": 2.2,
+    "curb_height_m": 0.15,
+    "sidewalk_m": [
+     1.8,
+     1.8
+    ],
+    "carriageway_m": 8.2,
+    "corridor_m": 11.8,
+    "provenance": "AUTHORED"
+   }
+  }
+ },
+ "buildings": {
+  "mode": "page-rule",
+  "why": "buildings are generated in the page (web/build_parishes.py buildChunk + kitLot, owner WILDS), not stored by PARISH; this is the rule so physkit computes the SAME boxes",
+  "source": {
+   "page_builder": "web/build_parishes.py",
+   "functions": [
+    "buildChunk",
+    "kitLot",
+    "landUse",
+    "parishAt"
+   ],
+   "hash": "wilds/core.mjs wildsHash(ix, iz, seed, k)"
+  },
+  "constants": {
+   "CELL": 25,
+   "CHUNK_M": 250,
+   "DISTRICT_M": 400,
+   "SEED": 20260928
+  },
+  "box": "[x, z, w, h, d, family, yaw, colour]: SCENE WORLD metres (x east, z = -north), base at y=0, footprint w along x by d along z rotated by yaw radians about +y, height h; family house|midrise",
+  "rule": "for each cell (ix, iz) of CELL m: x=(ix+0.2+0.6*jx)*CELL, z=(iz+0.2+0.6*jz)*CELL with jx=H(ix,iz,SEED,2), jz=H(ix,iz,SEED,3), h=H(ix,iz,SEED,1); skip if outside every parish ring or within 45 m of a loaded landmark; skip street cells ((ix mod 4)==0 or (iz mod 4)==0, positive modulo); land use = landUse(x,z) from H(floor(x/DISTRICT_M), floor(z/DISTRICT_M), SEED, 7): <0.5 residential, <0.76 commercial, <0.88 industrial, else park; park -> no building; a building when h < 0.55: kitLot(use, ix, iz, x, z, jx, jz, H(ix,iz,SEED,4))",
+  "land_use": "AUTHORED (page hash districts), NOT the real land use",
+  "provenance": "AUTHORED",
+  "hash_vectors": [
+   {
+    "args": [
+     0,
+     0,
+     20260928,
+     1
+    ],
+    "value": 0.4987560303416103
+   },
+   {
+    "args": [
+     3,
+     -7,
+     20260928,
+     2
+    ],
+    "value": 0.6654500276781619
+   },
+   {
+    "args": [
+     -12,
+     40,
+     20260928,
+     3
+    ],
+    "value": 0.82820960204117
+   },
+   {
+    "args": [
+     123,
+     456,
+     20260928,
+     4
+    ],
+    "value": 0.017014533514156938
+   },
+   {
+    "args": [
+     -1,
+     -1,
+     20260928,
+     7
+    ],
+    "value": 0.2231201771646738
+   },
+   {
+    "args": [
+     5000,
+     -9000,
+     1,
+     5
+    ],
+    "value": 0.9506528286729008
+   }
+  ]
+ },
+ "counties": {
+  "06001": {
+   "path": "bayarea/maps/world/06001.json",
+   "bytes": 90835,
+   "max_bytes": 600000,
+   "sha256": "20f72a5027550974bf5ce414c54fc4969ea59256f4ad484efbe14bd545901366",
+   "counts": {
+    "lakes": 0,
+    "bayou": 0,
+    "canal": 2,
+    "stream": 6,
+    "ponds": 8,
+    "crossings": 215,
+    "channel_vertices": 2073
+   }
+  },
+  "06013": {
+   "path": "bayarea/maps/world/06013.json",
+   "bytes": 83581,
+   "max_bytes": 600000,
+   "sha256": "4aa93d708931c5d6682b7d86f41c48866e69ca841c2405d67288a1f100bb8ebd",
+   "counts": {
+    "lakes": 0,
+    "bayou": 0,
+    "canal": 2,
+    "stream": 7,
+    "ponds": 8,
+    "crossings": 159,
+    "channel_vertices": 1832
+   }
+  },
+  "06041": {
+   "path": "bayarea/maps/world/06041.json",
+   "bytes": 103454,
+   "max_bytes": 600000,
+   "sha256": "46347ba387e797a345f026b86dee1e4b838d09a6f7878429b57baa666db9f367",
+   "counts": {
+    "lakes": 0,
+    "bayou": 0,
+    "canal": 2,
+    "stream": 5,
+    "ponds": 8,
+    "crossings": 313,
+    "channel_vertices": 2439
+   }
+  },
+  "06055": {
+   "path": "bayarea/maps/world/06055.json",
+   "bytes": 92429,
+   "max_bytes": 600000,
+   "sha256": "1241f4b3c15c148a54621307dc77b82a159d39e8523e59bba4e186f343638a0e",
+   "counts": {
+    "lakes": 0,
+    "bayou": 0,
+    "canal": 2,
+    "stream": 5,
+    "ponds": 8,
+    "crossings": 207,
+    "channel_vertices": 2191
+   }
+  },
+  "06075": {
+   "path": "bayarea/maps/world/06075.json",
+   "bytes": 27189,
+   "max_bytes": 600000,
+   "sha256": "f92c92d5098fe2ad6a38ce2187af6bbcfc55588ae9b812179ab9aed65d9cab72",
+   "counts": {
+    "lakes": 0,
+    "bayou": 0,
+    "canal": 2,
+    "stream": 5,
+    "ponds": 8,
+    "crossings": 96,
+    "channel_vertices": 592
+   }
+  },
+  "06081": {
+   "path": "bayarea/maps/world/06081.json",
+   "bytes": 77911,
+   "max_bytes": 600000,
+   "sha256": "00553f29c9d87dc58ab324d75db2ac0ac38db36a77d8e4f4024abaaf6ad8d25f",
+   "counts": {
+    "lakes": 0,
+    "bayou": 0,
+    "canal": 2,
+    "stream": 5,
+    "ponds": 8,
+    "crossings": 186,
+    "channel_vertices": 1750
+   }
+  },
+  "06085": {
+   "path": "bayarea/maps/world/06085.json",
+   "bytes": 137293,
+   "max_bytes": 600000,
+   "sha256": "e1a94d1c4076dc15ea2007771f515d54a50a2c59a50ed57422673696dfde7a35",
+   "counts": {
+    "lakes": 0,
+    "bayou": 0,
+    "canal": 3,
+    "stream": 6,
+    "ponds": 8,
+    "crossings": 254,
+    "channel_vertices": 3054
+   }
+  },
+  "06095": {
+   "path": "bayarea/maps/world/06095.json",
+   "bytes": 103001,
+   "max_bytes": 600000,
+   "sha256": "4404d15ac1ce1e9d2c344f6dbc6a76d2b3a5c12d1eed5969d5eeb50e44c2f298",
+   "counts": {
+    "lakes": 0,
+    "bayou": 0,
+    "canal": 3,
+    "stream": 5,
+    "ponds": 8,
+    "crossings": 232,
+    "channel_vertices": 2269
+   }
+  },
+  "06097": {
+   "path": "bayarea/maps/world/06097.json",
+   "bytes": 183471,
+   "max_bytes": 600000,
+   "sha256": "32dd96f900cd73b7857123947af77d3d6ec57118d7568dbe4c4e6a031e0aa890",
+   "counts": {
+    "lakes": 0,
+    "bayou": 0,
+    "canal": 2,
+    "stream": 5,
+    "ponds": 8,
+    "crossings": 307,
+    "channel_vertices": 4306
+   }
+  }
+ }
+}

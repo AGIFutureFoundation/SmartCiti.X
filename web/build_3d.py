@@ -207,6 +207,37 @@ def clear_height(fixtures):
     return round(CLEAR_BASE_M + extra, 2)
 
 
+from hallkit import assign_archetypes, HALLKIT_JS  # noqa: E402
+# the campus site plans (campusplan/, SITES): every hall its own building on
+# its own lot at the walkable interior's real scale. Fail closed - no plan,
+# no campus.
+_cp_path = ROOT / 'campusplan/registry/campusplan.json'
+if not _cp_path.exists():
+    raise SystemExit('campusplan/registry/campusplan.json missing: run python3 campusplan/build.py')
+_cp = json.load(open(_cp_path))
+CAMPUSPLAN = {}
+for _ck in campuses_reg:
+    _p = _cp['campuses'][_ck]
+    CAMPUSPLAN[_ck] = {
+        'radius_m': _p['site']['radius_m'],
+        'lots': [{'hall': l['hall'], 'district': l['district'],
+                  'b': {k: l['building'][k] for k in ('x', 'z', 'w_m', 'd_m', 'height_m', 'rot_y', 'aabb', 'door')},
+                  'yard': l['yard']} for l in _p['lots']],
+        'streets': [{k: r[k] for k in ('x', 'z', 'w', 'd')} for r in _p['streets']],
+        'walkways': [{k: r[k] for k in ('x', 'z', 'w', 'd')} for r in _p['walkways']],
+        'parking': [{k: r[k] for k in ('x', 'z', 'w', 'd')} for r in _p['parking']],
+        'blocks': {dp['key']: dp['block'] for dp in _p['districts_plan']},
+        'sims_yard': {k: _p['sims_yard'][k] for k in ('x', 'z')},
+    }
+    _want = [sg for k in campuses_reg[_ck]['districts'] for sg in districts_reg[k]['halls']]
+    assert [l['hall'] for l in CAMPUSPLAN[_ck]['lots']] == _want, f'campusplan lots for {_ck} are not its halls in registry order'
+    for _l in CAMPUSPLAN[_ck]['lots']:
+        assert _l['b']['w_m'] == 36 and _l['b']['d_m'] == plans[_l['hall']]['envelope']['d'] * 3, (
+            f"campusplan footprint for {_l['hall']} is not the walkable interior's own 36 x 3d m")
+HALL_ARCH = assign_archetypes({k: c['halls'] for k, c in campuses_reg.items()}, district_of)
+_unhoused = sorted({h['slug'] for h in halls_json} - set(HALL_ARCH))
+assert not _unhoused, f'halls on no campus get no building archetype: {_unhoused}'
+
 HALLS = [{
     'slug': h['slug'], 'name': h['name'], 'focus': h['focus'],
     'index': h['index'], 'district': district_of[h['slug']],
@@ -218,6 +249,8 @@ HALLS = [{
     'clear': clear_height({r['strand']: r['fixtures']
                            for r in plans[h['slug']]['rooms'] if r['fixtures']}),
     'stations': stations_by_hall.get(h['slug'], []),
+    # the hall's own AUTHORED building archetype (web/hallkit.py), unique on its campus
+    'arch': HALL_ARCH[h['slug']],
 } for h in halls_json]
 
 # finishes collapse the same way: 12 distinct maps across 111 halls
@@ -275,7 +308,7 @@ for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
             'campus3d.treasure', 'campus3d.egg', 'campus3d.hooks',
             'campus3d.tasks', 'campus3d.tasks.all', 'campus3d.tasks.launch',
             'campus3d.tasks.lessons', 'campus3d.tasks.here', 'campus3d.tasks.showall',
-            'campus3d.tasks.none', 'tasks.nolink', 'tasks.via')},
+            'campus3d.tasks.none', 'tasks.nolink', 'tasks.via', 'campus3d.siteplan')},
         'districts': {k: v['name'] for k, v in c['districts'].items()},
         'strands': c['strands'], 'tiers': c['tiers'], 'states': c['states'],
     }
@@ -647,6 +680,7 @@ DATA = json.dumps({
     'districts': {k: {'name': d['name'], 'halls': d['halls'], 'hue': HUES[k]}
                   for k, d in districts_reg.items()},
     'campuses': campuses_reg,
+    'campusplan': CAMPUSPLAN,
     'geo': {'campuses': {k: {'lat': v['lat'], 'lng': v['lng']}
                          for k, v in geo_reg['campuses'].items()},
             'routes': geo_reg['routes_km'],
@@ -10803,6 +10837,33 @@ function buildHall(sg) {
   const sign = label(h.name, D.i18n[loc].districts[h.district], 1.35,
     { kind: 'hall', hue: D.districts[h.district].hue });
   sign.position.set(0, EAVE + 1.55, cz(0)); hallGroup.add(sign);
+  /* THE HALL'S OWN BUILDING (wave 7b). The hall used to stand as three
+     walls and an open top - one big shed with strips inside, the same shed
+     for all 111 trades. It now wears its AUTHORED archetype (web/hallkit.py,
+     unique on its campus): cladding on the three closed faces and a header
+     over the open front, glazing, roll-up doors on the side walls sized to
+     the plant the trade moves, an entrance canopy, the union's name on the
+     facade, a roof form with its rooftop plant, and a yard kit for the
+     trades that work outside. Two merged meshes and one sign: the shell,
+     and the roof - drawn as a CUTAWAY from an orbit above the eaves (so
+     the rooms stay readable, as a section drawing is) and whole from eye
+     level, where a walker stands under it. */
+  const hkOut = [], hkTop = [];
+  const hkB = hkShell(h.arch, W, DEP, EAVE, 1, (part, c, w, hh, d2, x, y, z, rx, rz) =>
+    (part === 'roof' ? hkTop : hkOut).push(hkBoxGeo(c, w, hh, d2, x, y, z, rx, rz)));
+  for (const [list, nm] of [[hkOut, 'hk-shell'], [hkTop, 'hk-roof']]) {
+    const m = new THREE.Mesh(mergeGeometries(list), hkMat());
+    list.forEach((ge) => ge.dispose());
+    m.name = nm; m.castShadow = true; m.receiveShadow = true; hallGroup.add(m);
+    if (nm === 'hk-roof') { hkRoof = m; m.userData.cut = hkB.top + 1.5; }
+  }
+  const hkS = hkSign(h.name, Math.min(W * .45, 16), Math.min(1.8, (EAVE - hkB.headY) * .7));
+  hkS.position.set(0, (EAVE + hkB.headY) / 2, cz(0) - .36); hkS.rotation.y = Math.PI;
+  hallGroup.add(hkS);
+  // what a walker bumps into outside: the portal posts and the yard kit
+  if (h.arch.canopy === 'portal')
+    for (const sx of [-1, 1]) wallRect(sx * ((9 * W / 36 + 2) / 2 - .3), cz(0) - 3.3, .3, .3);
+  if (h.arch.yard) wallRect(W / 2 + 7, DEP * .15, 6, 2.6);
 
   /* Roof trusses across the span, and lit strips along the side walls.
 
@@ -11580,10 +11641,26 @@ function fabricOf(ck) {
   return fabMats;
 }
 
+__HALLKIT_JS__
+const _siteT = new THREE.Matrix4(), _siteR = new THREE.Matrix4(), _siteB = new THREE.Matrix4();
+let hkRoof = null;               // the hall view's cutaway roof (hallkit)
 function building(h, style, g, pool, ox = 0, oz = 0) {   // built at the local origin, door toward -z
   const fab = fabricOf(campusKey);
-  const dep = Math.max(h.depth, 5), wid = 12;
-  const hgt = 6 + (h.depth % 3) * .7;
+  // g.userData.real: the site plan's own footprint (36 m x 3d m, eaves +
+  // slab) - the walkable interior's size, so the hall you walk into is the
+  // one you see from the street
+  const real = g.userData.real || null;
+  // the schematic shed the kit registry (kit/) is PRICED on: its piece
+  // counts stay those of this envelope, spread over the real walls, so a
+  // real-scale campus carries the kit's declared pieces and triangles
+  const kitRun = (() => {
+    const dep = Math.max(h.depth, 5), wid = 12;
+    const hgt = 6 + (h.depth % 3) * .7;
+    return { dep, wid, hgt };
+  })();
+  g.userData.kitRun = kitRun;
+  const dep = real ? real.d : kitRun.dep, wid = real ? real.w : kitRun.wid;
+  const hgt = real ? real.h : kitRun.hgt;
   const bld = box(wid, hgt, dep, fab.wall, 0, hgt / 2, 0, g);
   bld.userData.slug = h.slug;
   const parts = pool;                // material -> [transformed geometries], district-wide
@@ -11607,15 +11684,19 @@ function building(h, style, g, pool, ox = 0, oz = 0) {   // built at the local o
   for (const zz of [-dep/2 - .03, dep/2 + .03])
     add(mat.win, wid * .78, .7, .06, 0, hgt * .55, zz);
   add(fab.trim, 1.6, 2.4, .1, 0, 1.2, -dep/2 - .06);   // the door surround
-  if (style === 'saw') {              // industrial sawtooth roofline
-    for (let sx = -wid/2 + 2; sx < wid/2 - .5; sx += 4)
-      add(fab.roof, 3.2, 1.5, dep - .6, sx, hgt + .55, 0, .42);
-  } else if (style === 'gable') {     // pitched pair
-    add(fab.roof, wid * .6, .5, dep + .3, -wid * .24, hgt + 1.1, 0, .48);
-    add(fab.roof, wid * .6, .5, dep + .3, wid * .24, hgt + 1.1, 0, -.48);
-  } else {                            // flat: parapet already, rooftop unit
-    add(fab.roof, 1.6, .8, 1.2, wid * .22, hgt + .4, dep * .15);
-  }
+  /* The roof is the HALL's now, not the district's (wave 7b): every hall
+     wears its own AUTHORED archetype from web/hallkit.py - roof form,
+     cladding header, roll-up door, canopy, rooftop plant, yard kit - at
+     campus LOD, into ONE vertex-coloured pool per district (hkMat), so a
+     district of 21 different buildings still costs one draw more. The
+     deck under it keeps the city's own roof colour. */
+  add(fab.roof, wid + .2, .2, dep + .2, 0, hgt + .1, 0);
+  const hkList = (parts.get(hkMat()) ?? parts.set(hkMat(), []).get(hkMat()));
+  const hk = hkShell(h.arch, wid, dep, hgt, 0, (part, c, w, hh, d2, x, y, z, rx, rz) => {
+    hkList.push(hkBoxGeo(c, w, hh, d2, x + ox, y, z + oz, rx, rz));
+  });
+  if (hk.top > top) top = hk.top;
+  bld.userData.arch = h.arch.roof; bld.userData.sig = h.arch.sig;
   // the pilasters at the corners wear the city's trim, not one shared steel
   for (const px of [-wid/2 + .3, wid/2 - .3])
     add(fab.trim, .34, hgt * .92, .34, px, hgt * .46, -dep/2 + .2);
@@ -11834,7 +11915,7 @@ function kitDress(h, style, fab, pool, ox, oz, wid, dep, hgt, bg) {
     const c = K.counts_rules[pid];
     let n;
     if (c.mode === 'per_hall') n = c.n;
-    else if (c.mode === 'per_run_m') n = Math.ceil(KIT_RUNS[pl.run](wid, dep) / c.every_m);
+    else if (c.mode === 'per_run_m') n = Math.ceil(KIT_RUNS[pl.run](bg.userData.kitRun.wid, bg.userData.kitRun.dep) / c.every_m);
     else throw new Error('kit count mode ' + c.mode + ' is not one this page resolves');
     let y;
     if (pl.datum === 'grade') y = 0;
@@ -11899,7 +11980,9 @@ window.__tc3dLayout = () => {
     const g = b.geometry.parameters;
     return { slug: b.userData.slug, district: cg.userData.district,
              x: p.x, z: p.z, w: g.width, d: g.depth, h: g.height,
-             top: b.userData.top, roof: b.userData.style, psi: cg.rotation.y };
+             top: b.userData.top, roof: b.userData.style, psi: cg.rotation.y,
+             arch: b.userData.arch, sig: b.userData.sig, rot: b.userData.rot,
+             door: b.userData.door ? { x: b.userData.door.x, z: b.userData.door.z } : null };
   });
   return { campus: k, frame: { north: '-Z', east: '+X', units: 'm' },
            districts, halls };
@@ -12264,7 +12347,7 @@ window.__tc3dChapters = openChapters;
 // change you can hear. The rect is recorded where the pad is BUILT.
 let yardPads = [];
 let seatHits = [], nearSeat = null, yardSeatsAt = [];
-function buildTrainingYard(g, R) {
+function buildTrainingYard(g, R, at = null) {
   seatHits = []; yardPads = []; yardSeatsAt = [];
   const halls = new Set(D.campuses[campusKey]?.halls ?? []);
   if (!halls.size) return;                       // a hub: no home halls, no yard
@@ -12279,6 +12362,7 @@ function buildTrainingYard(g, R) {
   // dispatcher or the chapter hall for the same ground
   const YR = Math.min(46, Math.max(26, seats.length * 4.2));
   yg.position.set(-(R * .52), 0, R * .40);
+  if (at) yg.position.set(at.x, 0, at.z);   // the square the campus site plan reserves for it
   g.add(yg);
 
   // the apron: the campus's own ground worked into a hard standing
@@ -12777,8 +12861,13 @@ function buildCampus(key) {
   const camp = D.campuses[key];
   const dk = camp.districts;
   const R = dk.length === 2 ? 124 : 168;   // the campus scale: districts this far out
-  campusR = R;
-  const rr = R - 24;
+  // a hall campus is as big as its site plan says (real-scale lots): the
+  // ring road runs just outside the plan's farthest corner
+  const plan = dk.length ? D.campusplan[key] : null;
+  if (dk.length && !plan) throw new Error('no campus site plan for ' + key);
+  const RS = plan ? Math.max(R, Math.ceil(plan.radius_m) + 30) : R;
+  campusR = RS;
+  const rr = RS - 24;
   // the ring road, dashed, and the plaza walkway
   const ring = new THREE.Mesh(new THREE.RingGeometry(rr - 2.4, rr + 2.4, 96),
     fabricOf(campusKey).road);
@@ -12799,97 +12888,84 @@ function buildCampus(key) {
   wlk.rotation.x = -Math.PI / 2; wlk.position.y = .04;
   wlk.receiveShadow = true; campusGroup.add(wlk);
 
+  /* THE SITE PLAN (wave 7b). The districts used to be three rings of 12 m
+     schematic sheds, a third of the size of the hall you then walked into.
+     Every hall now stands as its own building on its own lot from
+     campusplan/ (SITES: AUTHORED positions, setbacks, streets, walks and
+     parking; footprint and eaves DERIVED from the hall's own interior),
+     at the walkable interior's real 36 m x 3d m, turned to face its walk,
+     and wearing its own archetype (web/hallkit.py). */
+  const allRects = [];
   dk.forEach((k, di) => {
     const d = D.districts[k];
-    const ang = di / dk.length * Math.PI * 2 - Math.PI / 2;
-    const rad = new THREE.Vector2(Math.cos(ang), Math.sin(ang));
-    const psi = Math.atan2(rad.x, rad.y);
-    const cg = new THREE.Group();
-    cg.position.set(rad.x * R, 0, rad.y * R);
-    cg.rotation.y = psi;               // local +z = outward, doors face the plaza
+    const cg = new THREE.Group();      // the plan is laid out in campus axes
     cg.userData.district = k;          // read back by window.__tc3dLayout()
     campusGroup.add(cg);
-    const cols = Math.ceil(Math.sqrt(d.halls.length * 1.7));
-    // The district decides the roofline it has an opinion about (an
-    // industry district is sawtooth wherever it is); where it has none,
-    // the CITY decides, so Seattle's unopinionated districts are gabled
-    // and Houston's are flat. Two independent facts, both still visible.
-    // STYLE_OF names every district the union registry declares - the
-    // build gates it below - so the `?? fabric.roof ?? 'flat'` chain that
-    // used to sit here could not fire on any input. Dead code with a
-    // comment describing a case that does not occur is worse than no
-    // comment: it tells the next reader the fallback matters.
     const style = STYLE_OF[k];
     if (!style) throw new Error('no roofline style for district ' + k);
-    // row pitch sized to the district's deepest building, so a street
-    // always fits between rows with clearance on both sides
-    const maxDep = Math.max(...d.halls.map((sg) =>
-      Math.max(D.halls.find(x => x.slug === sg).depth, 5)));
-    const pitch = maxDep + 8;
-    const rows = {}, rects = [], roads = [], pool = new Map();
-    d.halls.forEach((sg, i) => {
-      const h = D.halls.find(x => x.slug === sg);
-      const gx = (i % cols) - (cols - 1) / 2, gz = Math.floor(i / cols);
+    const lots = plan.lots.filter((l) => l.district === k);
+    if (lots.length !== d.halls.length)
+      throw new Error('campus plan for ' + key + ' places ' + lots.length + ' of the '
+        + d.halls.length + ' halls of district ' + k);
+    const rects = [], pool = new Map();
+    lots.forEach((lot) => {
+      const h = D.halls.find(x => x.slug === lot.hall);
+      if (!h) throw new Error('campus plan lot for an unknown hall ' + lot.hall);
+      const B = lot.b;
       const bg = new THREE.Group();
-      bg.position.set(gx * 16, 0, gz * pitch);
+      bg.position.set(B.x, 0, B.z); bg.rotation.y = B.rot_y;
       cg.add(bg);
-      const b = building(h, style, bg, pool, gx * 16, gz * pitch);
+      const mark = new Map([...pool].map(([m2, l]) => [m2, l.length]));
+      const kmark = new Map([...kitInst].map(([pid, l]) => [pid, l.length]));
+      bg.userData.real = { w: B.w_m, d: B.d_m, h: B.height_m + .35 };
+      const b = building(h, style, bg, pool, B.x, B.z);
+      if (B.rot_y) {
+        // building() lays its pooled pieces out door-to--z about (ox, oz);
+        // the lot turns the building to face its walk, so they turn with it
+        _siteT.makeTranslation(B.x, 0, B.z).multiply(_siteR.makeRotationY(B.rot_y))
+          .multiply(_siteB.makeTranslation(-B.x, 0, -B.z));
+        for (const [m2, l] of pool)
+          for (let i = mark.has(m2) ? mark.get(m2) : 0; i < l.length; i++) l[i].applyMatrix4(_siteT);
+        for (const [pid, l] of kitInst)
+          for (let i = kmark.has(pid) ? kmark.get(pid) : 0; i < l.length; i++) l[i].premultiply(_siteT);
+      }
       const spot = beaconAt[beaconAt.length - 1];
       if (spot) { bg.updateWorldMatrix(true, false); bg.localToWorld(spot); }
+      b.mesh.userData.door = new THREE.Vector3(B.door.x, 0, B.door.z);
+      b.mesh.userData.rot = B.rot_y;
       buildings.push(b.mesh);
-      (rows[gz] ??= []).push({ u: gx * 16, v: gz * pitch, halfD: b.d / 2 });
-      rects.push({ u: gx * 16, v: gz * pitch, hw: b.w / 2 + .2, hd: b.d / 2 + .2 });
+      rects.push({ u: B.aabb.x, v: B.aabb.z, hw: B.aabb.w / 2 + .2, hd: B.aabb.d / 2 + .2 });
     });
-    // roads, cluster-local: a street along each row's frontage, a driveway
-    // to every door, the alley to the ring, and the spur to the plaza
-    for (const members of Object.values(rows)) {
-      const rv = members[0].v;
-      const u0 = Math.min(...members.map(m => m.u)) - 8;
-      const u1 = Math.max(...members.map(m => m.u)) + 8;
-      const maxHalfD = Math.max(...members.map(m => m.halfD));
-      const sv = rv - maxHalfD - 2.6;
-      roads.push(roadRect((u0 + u1) / 2, sv, u1 - u0, 3.6, fabricOf(campusKey).road, cg));
-      dashesU(u0, u1, sv, cg);
-      for (const m of members) {
-        const top = rv - m.halfD - .45, bot = sv + 1.8;
-        if (top - bot > .1)
-          roads.push(roadRect(m.u, (top + bot) / 2, 2.4, top - bot, mat.drive, cg, .045));
-      }
-      roadCount += 1 + members.length;
-    }
-    const lastV = Math.max(...Object.values(rows).map(m => m[0].v));
-    // the alley runs up a real gap between columns: even grids have a
-    // building at u=8 and their free lane at u=0, odd grids the reverse
-    const alleyU = (cols % 2 === 0) ? 0 : 8;
-    roads.push(roadRect(alleyU, ((rr - R) + (lastV - 2.6)) / 2, 3.2,
-      (lastV - 2.6) - (rr - R), fabricOf(campusKey).road, cg));
-    dashesV(rr - R, lastV - 2.6, alleyU, cg);
-    roads.push(roadRect(0, ((27 - R) + (rr - R)) / 2, 4.2,
-      (rr - R) - (27 - R), fabricOf(campusKey).road, cg));
-    dashesV(27 - R, rr - R, 0, cg);
-    roadCount += 2;
-    // the walker is kept out of the same rectangles the roads are: one
-    // reach that covers the district, so a stroll tests eight numbers
-    // before it tests a hundred
-    solids.push({ cx: rad.x * R, cz: rad.y * R,
-                  cos: Math.cos(psi), sin: Math.sin(psi),
+    allRects.push(...rects);
+    // the walker is kept out of every building: one reach per district
+    solids.push({ cx: 0, cz: 0, cos: 1, sin: 0,
                   reach: Math.max(...rects.map((b) =>
                     Math.hypot(Math.abs(b.u) + b.hw, Math.abs(b.v) + b.hd))) + 2,
                   rects });
+    flushParts(pool, cg);
+    const blk = plan.blocks[k];
+    if (!blk) throw new Error('campus plan has no block for district ' + k);
+    const dl = label(D.i18n[loc].districts[k], null, 3,
+      { kind: 'district', hue: d.hue });
+    dl.position.set(blk.x, 15, blk.z);
+    campusGroup.add(dl);
+  });
+  // the plan's circulation: streets, walks and parking, merged per material
+  if (plan) {
+    const roads = [];
+    for (const r of plan.streets) roads.push(roadRect(r.x, r.z, r.w, r.d, fabricOf(campusKey).road, campusGroup));
+    for (const r of plan.walkways) roads.push(roadRect(r.x, r.z, r.w, r.d, mat.walkway, campusGroup, .045));
+    for (const r of plan.parking) roads.push(roadRect(r.x, r.z, r.w, r.d, mat.drive, campusGroup, .045));
+    roadCount += roads.length;
     // the guarantee: no road rectangle overlaps a building rectangle
-    for (const r of roads) for (const b of rects) {
-      if (Math.abs(r.u - b.u) < r.w / 2 + b.hw
-        && Math.abs(r.v - b.v) < r.h / 2 + b.hd) {
+    for (const r of roads) for (const b of allRects) {
+      if (Math.abs(r.u - b.u) < r.w / 2 + b.hw - .2
+        && Math.abs(r.v - b.v) < r.h / 2 + b.hd - .2) {
         roadFaults++;
         (window.__faults ??= []).push({ r, b });
       }
     }
-    flushParts(pool, cg);
-    const dl = label(D.i18n[loc].districts[k], null, 3,
-      { kind: 'district', hue: d.hue });
-    dl.position.set(rad.x * (R - 14), 15, rad.y * (R - 14));
-    campusGroup.add(dl);
-  });
+  }
   flushRoads(campusGroup);
   flushBeacons(beaconAt.filter(Boolean), campusGroup);
   flushKit(campusGroup);
@@ -12899,13 +12975,14 @@ function buildCampus(key) {
   const sign = label(camp.name, camp.city + ', ' + camp.region, 3.2,
     { kind: 'campus' });
   sign.position.set(0, 18, 0); campusGroup.add(sign);
-  dressCampus(key, campusGroup, R + 42);
+  dressCampus(key, campusGroup, RS + 42);
   buildChapterHall(campusGroup, key);
-  buildTrainingYard(campusGroup, R);
-  buildCity(campusGroup, R);
+  buildTrainingYard(campusGroup, RS, plan ? plan.sims_yard : null);
+  buildCity(campusGroup, RS);
   buildRestorationSites(campusGroup);
   flushDashes(campusGroup);
   walkLim = cityPois ? (cityLog ? 536 : 350) : campusR + 85;
+  if (plan) walkLim = Math.max(walkLim, RS + 20);   // every lot, and the ring, on foot
   campusGroup.userData.walkLim = walkLim;
   /* Fog banks: the island's weather, drifting flat haze sheets.
      They used to be built purely from the campus's own count, which meant
@@ -12932,9 +13009,9 @@ function buildCampus(key) {
   tintTerrain(skyHorizonHex);
   clearAdvisors();
   spawnCampusAdvisors();
-  spawnFauna(key, R);
+  spawnFauna(key, RS);
   scene.add(campusGroup);
-  buildMinimap(key, R);
+  buildMinimap(key, RS);
 }
 
 /* ------------------------------------------------------------ minimap --- */
@@ -13261,7 +13338,7 @@ function showCampus(key) {
   if (curRestoSite) teardownRestoWalk();
   campusKey = key; view = 'campus';
   renderHallLessons();
-  walkLeave();
+  if (!hallExitKeep) walkLeave();       // walking out of a hall's door keeps walking
   if (avatarGroup) avatarGroup.visible = false;
   wheelShow(false);
   if (hallGroup) hallGroup.visible = false;
@@ -13283,13 +13360,16 @@ function showCampus(key) {
   } else buildCampus(key);
   setCampusFog();
   document.getElementById('mm').style.display = '';
-  controls.maxDistance = 760; controls.minDistance = 20;
-  camera.position.set(0, 300, 350); controls.target.set(0, 0, 0);
+  // a real-scale site plan is up to ~770 m across: stand back in proportion
+  const cf = Math.max(1, campusR / 330);
+  controls.maxDistance = 760 * cf; controls.minDistance = 20;
+  camera.position.set(0, 300 * cf, 350 * cf); controls.target.set(0, 0, 0);
   const camp = D.campuses[key];
   document.getElementById('hname').textContent =
     camp.name + '  ' + campusRollup(key);
   document.getElementById('hfocus').textContent =
     camp.city + ', ' + camp.region + ' — ' + camp.tagline
+    + (camp.districts.length ? ' · ' + t('campus3d.siteplan') : '')   // the site plan is AUTHORED, and says so
     + (D.geo.cityPois?.[key] ? ' · ' + t('city.note') : '');
   document.getElementById('hint').textContent = t('hint.campus');
   document.getElementById('walkBtn').style.display = '';
@@ -13373,6 +13453,8 @@ document.addEventListener('keydown', (e) => {
   }
   if (walkActive && view === 'campus' && nearSlug && !nearSeat
       && (e.code === 'Enter' || e.code === 'KeyE')) enterHallWalking(nearSlug);
+  else if (walkActive && view === 'hall' && hallExitNear && !sim
+      && (e.code === 'Enter' || e.code === 'KeyE')) exitHallWalking();
   if (walkActive && view === 'campus' && nearPoi
       && (e.code === 'Enter' || e.code === 'KeyE')) {
     plc.unlock(); openCityPoi(nearPoi);
@@ -13456,6 +13538,24 @@ function enterSeatFromYard(id) {
   startSim(id, null);
 }
 
+/* Out of a hall on foot, through its door: the campus is shown again and
+   the walker stands outside THAT hall's door on the site plan, still
+   walking - the way in, reversed. */
+let hallExitNear = false, hallExitKeep = false;
+function exitHallWalking() {
+  const sg = slug;
+  hallExitNear = false;
+  hallExitKeep = true;
+  try { showCampus(campusKey); } finally { hallExitKeep = false; }
+  const b = buildings.find((m) => m.userData.slug === sg);
+  if (!b || !b.userData.door) throw new Error('hall ' + sg + ' has no door on its campus site plan');
+  const c = b.getWorldPosition(new THREE.Vector3()), dr = b.userData.door;
+  const n = Math.hypot(dr.x - c.x, dr.z - c.z);
+  xrRig.position.x = dr.x + (dr.x - c.x) / n * 5;
+  xrRig.position.z = dr.z + (dr.z - c.z) / n * 5;
+  camera.position.set(0, 0, 0);
+  document.getElementById('hint').textContent = t('hint.walk');
+}
 function enterHallWalking(sg) {
   showHall(sg);                     // ...which writes the hall's ORBIT frame into the camera
   const [sx, sz] = walkSpawn();
@@ -13801,6 +13901,13 @@ function walkStep(dt) {
         document.getElementById('hint').textContent = t('hint.walk');
       }
     }
+    // out past the apron, through the front: the hall's door to its campus
+    const ex = !room && pz < -DEP / 2 - 18;
+    if (ex !== hallExitNear) {
+      hallExitNear = ex;
+      document.getElementById('hint').textContent = ex
+        ? '\u23ce \u2191 ' + D.campuses[campusKey].name : t('hint.walk');
+    }
     return;
   }
   if (view === 'restoration') {
@@ -13835,7 +13942,8 @@ function walkStep(dt) {
   let best = null, bd = 1e9;
   const wp = _wp;
   for (const b of buildings) {
-    b.getWorldPosition(wp);
+    // a real-scale hall is entered at its DOOR, not at its middle
+    if (b.userData.door) wp.copy(b.userData.door); else b.getWorldPosition(wp);
     const d = Math.hypot(wp.x - rig.x, wp.z - rig.z);
     if (d < bd) { bd = d; best = b; }
   }
@@ -15845,6 +15953,7 @@ renderer.setAnimationLoop(() => {
   labelStep(dt);
   questStep(dt);
   roomLitStep();
+  if (hkRoof) hkRoof.visible = view !== 'hall' || eyePos().y < hkRoof.userData.cut;
   // The sun's shadow box rides with the view, so it is placed after
   // everything that can move the camera this frame and before the frame is
   // drawn. Placed at the top of the loop it would read last frame's camera
@@ -16335,6 +16444,7 @@ page = page.replace('__DATA__', DATA).replace('__PIPELINE_JS__', PIPELINE_JS)
 page = page.replace('__KIT_RUNS__', KIT_RUNS_JS)
 page = page.replace('__SIM_JS__', SIM_JS).replace('__XR_JS__', XR_JS)
 page = page.replace('__GUIDE_JS__', GUIDE_JS)
+page = page.replace('__HALLKIT_JS__', HALLKIT_JS)
 page = page.replace('__QUEST3D_JS__', QUEST3D_JS)
 page = page.replace('__QUESTLOG_LABEL__', I18N['en']['strings']['campus3d.questlog'])
 page = page.replace('__TASKS_LABEL__', I18N['en']['strings']['campus3d.tasks'])

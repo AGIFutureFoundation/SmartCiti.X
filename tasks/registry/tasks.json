@@ -2,8 +2,8 @@
  "pack": "smartcitix-trade-craft-academy-tasks",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "built": "2026-09-16",
- "source_stamp": "e3d7fde668d2374d",
- "builder_stamp": "95f904c9ac7c4689",
+ "source_stamp": "e44693bd57dcf1e2",
+ "builder_stamp": "bf868fa9d7bbc318",
  "sources": {
   "sims/registry/sims.json": "987a9d4812b4c73b",
   "tools/registry/toolcribs.json": "653ef0fedb1caa9e",
@@ -13,7 +13,8 @@
   "lessons/registry/lessons.json": "e905659b0a718ab6",
   "spaces/registry/spaces.json": "9cbb827c54bc4a6a",
   "pack/registry/halls.json": "3807e54afe6abfe6",
-  "unions/registry/campuses.json": "80eef152a4cb9d76"
+  "unions/registry/campuses.json": "80eef152a4cb9d76",
+  "restoration/registry/scenarios.json": "cde5368260c2d61f"
  },
  "honesty": {
   "practice": "Tasks are practice. A task list certifies nothing, qualifies nobody and enters no completion record; only the completion contract in completion/ decides what a record says, and it is unchanged by this pack.",
@@ -51,13 +52,19 @@
    "label": "Wilds site walk",
    "provenance": "DERIVED",
    "lands": "site"
+  },
+  "resto-scenario": {
+   "label": "Restoration training scenario",
+   "provenance": "DERIVED",
+   "lands": "section"
   }
  },
  "counts": {
-  "tasks": 194,
+  "tasks": 209,
   "by_kind": {
    "crew-handoff": 8,
    "crib-drill": 111,
+   "resto-scenario": 15,
    "restoration-walk": 8,
    "sim-scenario": 33,
    "walkaround": 11,
@@ -66,7 +73,7 @@
   "by_place_kind": {
    "campus": 16,
    "hall": 142,
-   "restoration-site": 10,
+   "restoration-site": 25,
    "space": 3,
    "wilds-site": 23
   },
@@ -74,12 +81,12 @@
    "denver": 11,
    "new-orleans": 46,
    "none": 3,
-   "oakland": 54,
+   "oakland": 61,
    "seattle": 6,
-   "treasure-island": 74
+   "treasure-island": 82
   },
-  "launchable": 194,
-  "not_launchable": 0,
+  "launchable": 208,
+  "not_launchable": 1,
   "with_linked_lessons": 80
  },
  "tasks": [
@@ -4790,6 +4797,333 @@
    "source": "wilds/registry/wilds.json#worlds[3].sites[5]",
    "seat": null,
    "brief": "Salt Marsh Delta: A turbine erected on the ridge beside a laydown yard where blades and tower sections wait for the crane."
+  },
+  {
+   "id": "resto-sim-herons-head-shoreline-resilience",
+   "title": "Shoreline resilience - living shoreline and green infrastructure placement - Heron's Head Park Shoreline Resilience Project (Phases 1 and 2)",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "herons-head",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_bay.html#resto=herons-head",
+    "lands": "section",
+    "param": [
+     "#resto"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[0]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 6 steps, 2 safety gates"
+  },
+  {
+   "id": "resto-sim-herons-head-wq-stormwater",
+   "title": "Stormwater capture - inspecting a green-infrastructure cell - Heron's Head Park Shoreline Resilience Project (Phases 1 and 2)",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "herons-head",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_bay.html#resto=herons-head",
+    "lands": "section",
+    "param": [
+     "#resto"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[1]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 6 steps, 1 safety gates"
+  },
+  {
+   "id": "resto-sim-candlestick-point-trash-cleanup",
+   "title": "Shoreline trash clean-up - Candlestick Point Stewardship Project (Phases 1 and 2)",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "candlestick-point",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_bay.html#resto=candlestick-point",
+    "lands": "section",
+    "param": [
+     "#resto"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[2]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 5 steps, 1 safety gates"
+  },
+  {
+   "id": "resto-sim-candlestick-point-native-planting",
+   "title": "Native planting and plant propagation - Candlestick Point Stewardship Project (Phases 1 and 2)",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "candlestick-point",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_bay.html#resto=candlestick-point",
+    "lands": "section",
+    "param": [
+     "#resto"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[3]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 6 steps, 1 safety gates"
+  },
+  {
+   "id": "resto-sim-candlestick-point-habitat-monitoring",
+   "title": "Habitat monitoring - photo-points, plots and records - Candlestick Point Stewardship Project (Phases 1 and 2)",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "candlestick-point",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_bay.html#resto=candlestick-point",
+    "lands": "section",
+    "param": [
+     "#resto"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[4]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 5 steps, 1 safety gates"
+  },
+  {
+   "id": "resto-sim-candlestick-point-wq-trash-capture",
+   "title": "Trash capture device inspection - Candlestick Point Stewardship Project (Phases 1 and 2)",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "candlestick-point",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_bay.html#resto=candlestick-point",
+    "lands": "section",
+    "param": [
+     "#resto"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[5]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 5 steps, 1 safety gates"
+  },
+  {
+   "id": "resto-sim-east-oakland-youth-native-planting",
+   "title": "Native planting and plant propagation - Bay Restoration: Youth Engagement and Service Learning in East Oakland",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "east-oakland-youth",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_bay.html#resto=east-oakland-youth",
+    "lands": "section",
+    "param": [
+     "#resto"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[6]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 6 steps, 1 safety gates"
+  },
+  {
+   "id": "resto-sim-alviso-shoreline-native-planting",
+   "title": "Native planting and plant propagation - Alviso Shoreline Habitat Restoration",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "alviso-shoreline",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_bay.html#resto=alviso-shoreline",
+    "lands": "section",
+    "param": [
+     "#resto"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[7]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 6 steps, 1 safety gates"
+  },
+  {
+   "id": "resto-sim-south-bay-salt-ponds-ecotone-levee",
+   "title": "Ecotone levee - grading a gentle marsh-to-upland slope - South Bay Salt Pond Restoration — ecotone levee (Phase 1)",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "south-bay-salt-ponds",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_bay.html#resto=south-bay-salt-ponds",
+    "lands": "section",
+    "param": [
+     "#resto"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[8]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 6 steps, 2 safety gates"
+  },
+  {
+   "id": "resto-sim-south-bay-salt-ponds-tidal-marsh",
+   "title": "Tidal marsh restoration - preparing a diked or managed site for tidal return - South Bay Salt Pond Restoration — ecotone levee (Phase 1)",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "south-bay-salt-ponds",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_bay.html#resto=south-bay-salt-ponds",
+    "lands": "section",
+    "param": [
+     "#resto"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[9]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 5 steps, 2 safety gates"
+  },
+  {
+   "id": "resto-sim-montezuma-wetlands-tidal-marsh",
+   "title": "Tidal marsh restoration - preparing a diked or managed site for tidal return - Montezuma Tidal and Seasonal Wetlands Restoration Project",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "montezuma-wetlands",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_bay.html#resto=montezuma-wetlands",
+    "lands": "section",
+    "param": [
+     "#resto"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[10]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 5 steps, 2 safety gates"
+  },
+  {
+   "id": "resto-sim-american-canyon-planning-survey",
+   "title": "Baseline condition survey for a restoration plan - American Canyon Wetlands Restoration Plan",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "american-canyon",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_bay.html#resto=american-canyon",
+    "lands": "section",
+    "param": [
+     "#resto"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[11]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 5 steps, 1 safety gates"
+  },
+  {
+   "id": "resto-sim-straw-north-bay-transition-zone",
+   "title": "Wetland-upland transition zone planting - Restoring Wetland-Upland Transition Zone Habitat in the North Bay with STRAW",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "straw-north-bay",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_bay.html#resto=straw-north-bay",
+    "lands": "section",
+    "param": [
+     "#resto"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[12]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 5 steps, 1 safety gates"
+  },
+  {
+   "id": "resto-sim-hunters-point-shipyard-cleanup-support",
+   "title": "Cleanup-site safety AWARENESS - orientation, boundaries, observation and reporting only - Hunters Point Naval Shipyard — EPA Superfund Site (Bayview-Hunters Point)",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "hunters-point-shipyard",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_bay.html#resto=hunters-point-shipyard",
+    "lands": "section",
+    "param": [
+     "#resto"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[14]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 5 steps, 2 safety gates"
+  },
+  {
+   "id": "resto-sim-treasure-island-nsti-cleanup-support",
+   "title": "Cleanup-site safety AWARENESS - orientation, boundaries, observation and reporting only - Former Naval Station Treasure Island (NSTI) — Navy BRAC cleanup site (Treasure Island)",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "treasure-island-nsti",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": null,
+    "why": "the Bay world page does not place this site (bayarea/registry/bayarea.json has no restoration_sites entry for it), so no page opens its runner"
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[15]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 5 steps, 2 safety gates"
   }
  ]
 }

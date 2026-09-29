@@ -34,6 +34,25 @@ if missing:
     sys.exit('assemble: parish maps named in parishes/registry are missing from _site: ' + ', '.join(missing))
 print(f"parish maps: all {len(named)} registry-named maps, ground tiles and street files present in _site")
 PY
+# The Bay world loads its county maps the same way ('../' + path from
+# bayarea/registry), and both worlds fetch underwater/registry/underwater.json
+# on the first Dive/ROV press: copy them and require what the registries name.
+mkdir -p _site/bayarea _site/underwater/registry
+cp -r bayarea/maps _site/bayarea/maps
+cp underwater/registry/underwater.json _site/underwater/registry/underwater.json
+python3 - <<'PY'
+import json, pathlib, sys
+reg = json.load(open('bayarea/registry/bayarea.json'))
+cs = reg['counties']
+named = [c['map'][k] for c in cs.values() for k in ('path', 'preview')]
+named += [t['path'] for c in cs.values() for t in c['map']['ground_tiles']['tiles']]
+named += [c['map']['streets']['path'] for c in cs.values()]
+named += ['underwater/registry/underwater.json']
+missing = [m for m in named if not (pathlib.Path('_site') / m).is_file()]
+if missing:
+    sys.exit('assemble: Bay maps / underwater registry missing from _site: ' + ', '.join(missing))
+print(f"bay maps: all {len(named)} registry-named Bay maps, tiles, street files and the underwater registry present in _site")
+PY
 
 python3 - <<'PY'
 import pathlib, re, sys, urllib.parse

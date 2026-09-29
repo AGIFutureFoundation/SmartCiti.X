@@ -1736,6 +1736,44 @@ PK_CSS = """
 .pk-honest{margin:var(--s3) 0;padding-inline-start:1.1rem;font-size:var(--fs-sm)}
 """
 
+# ---- the classroom band (CLASS, wave 8): one band, figures counted from classroom/registry/classroom.json ----
+CL_PAGE = 'web/trade_craft_classroom.html'
+CL_PATH = 'classroom/registry/classroom.json'
+if CL_PAGE not in PAGES:
+    raise SystemExit(f'build_home: the classroom band links {CL_PAGE}, which web/sitenav.py does not declare')
+_cl = R(CL_PATH)
+_cl_counts = need(_cl, 'counts', CL_PATH)
+for _k in ('modules', 'moments', 'places'):
+    assert len(need(_cl, _k, CL_PATH)) == need(_cl_counts, _k, f'{CL_PATH}#counts'), f'build_home: classroom {_k} count differs from the list'
+_clx = need(_cl, 'cognitionx', CL_PATH)
+# curriculum modules/moments = the schools-unit ones + the Cognition.X ones, each list counted
+CL_STATS = [('modules', len(need(_cl, 'modules', CL_PATH)) + len(need(_clx, 'modules', CL_PATH + '#cognitionx'))),
+            ('moments', len(need(_cl, 'moments', CL_PATH)) + len(need(_clx, 'moments', CL_PATH + '#cognitionx'))),
+            ('places', len(need(_cl, 'places', CL_PATH)))]
+
+
+def classroom_html():
+    stats = ''.join(f'<div class="stat" data-cl-stat="{k}" data-src="{CL_PATH}#{k}"><dt>{_pk_t("class.stat." + k)}</dt>'
+                    f'<dd>{n(v)}</dd></div>' for k, v in CL_STATS)
+    return f'''<section id="classroom" class="cl-band" aria-labelledby="cl-h">
+  <div class="sec-head"><span class="eyebrow">{_pk_t('class.kicker')}</span>
+    <h2 id="cl-h">{_pk_t('class.home.title')}</h2>
+    <p class="lede">{_pk_t('class.home.body')}</p></div>
+  <dl class="stats cl-stats">{stats}</dl>
+  <ul class="cl-honest"><li data-honest="cl-play">{_pk_t('class.h.play')}</li>
+    <li data-honest="cl-plan">{_pk_t('class.h.plan')}</li>
+    <li data-honest="cl-data">{_pk_t('class.h.data')}</li></ul>
+  <p><a class="btn btn-primary" href="{CL_PAGE}">{_pk_t('class.home.cta')}<span aria-hidden="true"> →</span></a></p>
+</section>'''
+
+
+CL_CSS = """
+.cl-band{background:var(--panel);border:1px solid var(--rule);border-radius:var(--r-lg);padding:var(--s5);color:var(--ink)}
+.cl-band .lede,.cl-honest{color:var(--muted)}
+.cl-stats{margin:var(--s3) 0}
+.cl-honest{margin:var(--s3) 0;padding-inline-start:1.1rem;font-size:var(--fs-sm)}
+"""
+
 STATS_HTML = ''.join(
     f'<div class="stat" data-stat="{k}" data-src="{esc(src)}"><dt>{esc(label)}</dt>'
     f'<dd>{n(v)}</dd></div>' for k, v, label, src in STATS)
@@ -1820,6 +1858,7 @@ BODY = f"""<body>
 {parishes_html()}
 
 {packs_html()}
+{classroom_html()}
 
 <section id="loop">
   <div class="sec-head"><span class="eyebrow">How it works</span>
@@ -2054,6 +2093,8 @@ _DERIVED |= {v for v in (PW_PARISHES, PW_VEHICLES, PW_LAND, PW_WATER, PW_GUIDES,
     PW_STATIONS, PW_K12_STATIONS, PW_K12_UNITS, PW_PLANS, PW_MAP_PX, PW_PREVIEW_PX)}
 # The holodeck packs band's figures: each counted from holodeck/registry/packs.json's list.
 _DERIVED |= {PK_TOTAL, PK_SHIP, PK_PROP} | {v for _, v in PK_BY_KIND}
+# The classroom band's figures: each counted from classroom/registry/classroom.json's lists.
+_DERIVED |= {v for _, v in CL_STATS}
 _loose = _figures_in(BODY) - _DERIVED
 BODY_Q = BODY.replace('</body>', QUEST_TAIL + '</body>')  # quests: engine carried after the prose lint
 assert not _loose, (
@@ -2080,7 +2121,7 @@ page = ('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
         '<link rel="stylesheet" href="web/vendor/fonts/fonts.css">\n'
         f'<style>{CSS}</style>\n<style>{NAV_CSS}</style>\n'
         f'<style>{HERO_VIDEO_CSS}{SEARCH_CSS}{UX_CSS}</style>\n'
-        f'<style>{SECTION_VIDEO_CSS}{MOTION_CSS}{POLISH_CSS}{PW_CSS}{PK_CSS}{STYLE_BRIDGE_CSS}</style>\n</head>\n{BODY_Q}\n</html>\n')
+        f'<style>{SECTION_VIDEO_CSS}{MOTION_CSS}{POLISH_CSS}{PW_CSS}{PK_CSS}{CL_CSS}{STYLE_BRIDGE_CSS}</style>\n</head>\n{BODY_Q}\n</html>\n')
 # The palette's index (registry titles, which may hold figures of their own)
 # and the two small scripts join the page after the prose gate above, like
 # the quest engine: the gate is about typed prose, and these are data.

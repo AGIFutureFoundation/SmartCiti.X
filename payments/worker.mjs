@@ -24,6 +24,9 @@
  * Nothing is logged: no body, no header, no secret, no customer detail.
  */
 import CATALOG from './catalog.mjs';
+// POST /api/reactor/token (reactor/route.mjs): a short-lived, scoped Reactor JWT; the key is the
+// REACTOR_API_KEY Worker secret and never leaves this Worker. It shares this file's rate limiter.
+import { handleReactorToken, REACTOR_CONFIG } from '../reactor/route.mjs';
 
 // Every reply carries security/headers.json's `api` headers (copied into the catalogue by
 // payments/build.py): Cloudflare Pages does not apply _headers to Pages Functions responses,
@@ -255,12 +258,17 @@ export function makeWorker(deps) {
       const path = new URL(request.url).pathname;
       if (path === deps.catalog.checkout.endpoint) return handleCheckout(request, env, deps);
       if (path === deps.catalog.webhook.endpoint) return handleWebhook(request, env, deps);
+      if (path === REACTOR_CONFIG.token.endpoint) return handleReactorToken(request, env, {
+        reactor: REACTOR_CONFIG, api_headers: deps.catalog.api_headers, limiter: { rateLimitConfig, clientKey, takeToken },
+        subtle: deps.subtle, now: deps.now, fetch: deps.fetch });
       return refuse(404, 'not_found', 'no such route');
     },
   };
 }
 
 export const ROUTES = [CATALOG.checkout.endpoint, CATALOG.webhook.endpoint];
+// every route this Worker answers: the payments ROUTES plus the Reactor token route
+export const ALL_ROUTES = [...ROUTES, REACTOR_CONFIG.token.endpoint];
 
 export default makeWorker({
   catalog: CATALOG,

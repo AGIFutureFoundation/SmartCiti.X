@@ -789,6 +789,7 @@ function openSite(id) {
     b.addEventListener('click', () => q.click()); panelBody.appendChild(b);
   }
   panel.hidden = false; openId = id;
+  if (window.TCClass) window.TCClass.reach('wilds:' + W.id + '/' + id);
 }
 document.getElementById('panel-close').addEventListener('click', () => { panel.hidden = true; });
 function toast(msg) {
@@ -1110,6 +1111,19 @@ requestAnimationFrame(frame);
 document.documentElement.dataset.wildsReady = '1';
 '''
 
+# CLASS (wave 8): the class session HUD + lesson moments at mapped places (web/classkit.py; play only, local,
+# never a completion record). Mounted folded (compact) so it never covers the world's own controls.
+if (ROOT / 'classroom/registry/classroom.json').exists() and (HERE / 'classkit.py').exists():
+    from classkit import class_data, class_i18n, auth_core, js_json, CLASS_CSS, CLASS_JS  # noqa: E402
+    CLASS_DATA = class_data(['wilds'])
+    CLASS_EMBED = (f'<style id="class-css">{CLASS_CSS}</style>'
+                   f'<script type="application/json" id="class-data">{js_json(CLASS_DATA)}</script>'
+                   f'<script type="application/json" id="class-i18n">{js_json(class_i18n())}</script>'
+                   f'<script id="class-auth">{auth_core()}</script>'
+                   f'<script id="class-kit">{CLASS_JS}\nTCClass.mount({{ compact: true }});</script>')
+else:
+    CLASS_DATA, CLASS_EMBED = None, ''
+
 page = f'''<!doctype html>
 <html lang="en">
 <head>
@@ -1239,6 +1253,7 @@ code{{font:13px "IBM Plex Mono",monospace;color:var(--steel)}}
   "three/addons/":"./vendor/addons/"
 }}}}
 </script>
+{CLASS_EMBED}
 <script type="module" id="wilds-main">{JS}</script>
 {QUEST_SCRIPT}
 </div></body>

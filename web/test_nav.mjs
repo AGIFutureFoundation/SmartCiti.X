@@ -82,10 +82,12 @@ const BUILDERS = {
   'web/trade_craft_worksites.html': 'build_worksites.py',
   'web/trade_craft_quests.html': 'build_quests.py',
   'web/trade_craft_schools.html': 'build_schools.py',
+  'web/trade_craft_classroom.html': 'build_classroom.py',
   'web/trade_craft_design.html': 'build_design.py',
   'web/trade_craft_wilds.html': 'build_wilds.py',
   'web/trade_craft_plans.html': 'build_plans.py',
   'web/trade_craft_parishes.html': 'build_parishes.py',
+  'web/trade_craft_bay.html': 'build_bayworld.py',
   'web/trade_craft_fleet.html': 'build_fleet.py',
   'web/trade_craft_packs.html': 'build_packs.py',
 };
@@ -136,8 +138,25 @@ ok('web/sitenav.py types no nav label: every word comes from the catalog by key'
 ok('web/sitenav.py\'s CSS uses logical properties only, so the nav mirrors under dir="rtl"',
   !/\b(?:margin|padding|border)-(?:left|right)\s*:|text-align\s*:\s*(?:left|right)|float\s*:|[;{](?:left|right)\s*:/.test(navCode));
 const wiring = [];
+/* A DERIVED builder renders its page through another builder's source, re-targeted in
+   memory (web/build_bayworld.py runs build_parishes.py with PAGE set to the Bay page).
+   It is held to the same rule by a stricter route: the derived builder names its page as
+   one literal target, and the base builder makes exactly one nav_html(PAGE, ...) call
+   whose PAGE the target overrides. Nothing else is exempt. */
+const DERIVED = { 'web/trade_craft_bay.html': 'build_parishes.py' };
 for (const [page, b] of Object.entries(BUILDERS)) {
   const src = readFileSync(join(HERE, b), 'utf8');
+  if (page in DERIVED) {
+    const base = readFileSync(join(HERE, DERIVED[page]), 'utf8');
+    const targets = [...src.matchAll(/^T\.PAGE = '([^']+)'$/gm)].map((m) => m[1]);
+    if (targets.length !== 1 || targets[0] !== page) wiring.push(`${b}: derived target pages ${JSON.stringify(targets)}, want ['${page}']`);
+    if (!src.includes('PAGE = _TGT.PAGE')) wiring.push(`${b}: does not re-target the base builder's PAGE`);
+    const baseCalls = [...base.matchAll(/nav_html\(PAGE, nav_labels\('en'\)\)/g)].length;
+    if (baseCalls !== 1) wiring.push(`${DERIVED[page]}: ${baseCalls} nav_html(PAGE, ...) calls for the derived page, want 1`);
+    if (!/NAV_CSS/.test(base)) wiring.push(`${DERIVED[page]}: does not carry NAV_CSS`);
+    if (/data-sitenav|class="sitenav/.test(src + base)) wiring.push(`${b}: types site-nav markup of its own`);
+    continue;
+  }
   // the page is either a literal or a module-level constant assigned one literal in the same file
   const constOf = (name) => { const m = [...src.matchAll(new RegExp('^' + name + " = '([^']+)'$", 'gm'))]; return m.length === 1 ? m[0][1] : `<${name} is not one literal>`; };
   const calls = [...src.matchAll(/nav_html\((?:'([^']+)'|([A-Z][A-Z_]*)), nav_labels\('en'\)\)/g)].map((m) => (m[1] !== undefined ? m[1] : constOf(m[2])));

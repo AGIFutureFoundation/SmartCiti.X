@@ -644,9 +644,13 @@ ok('the walk probe leaves the page exactly as it found it, so measuring the '
 const solid = fn('pushOutOfSolids');
 ok('the walker is kept out of the SAME footprints the road layout is already '
   + 'checked against - there is no second copy of where a building is',
-  /solids\.push\(\{ cx: rad\.x \* R, cz: rad\.y \* R,/.test(src)
-  && /for \(const r of roads\) for \(const b of rects\) \{/.test(src)
-  && /rects \}\);/.test(src));
+  // wave 7b: the districts are laid out on the campus site plan in campus
+  // axes, so the solids carry the identity frame - but they are still the
+  // very rect objects the road-fault loop reads (allRects holds them)
+  /solids\.push\(\{ cx: 0, cz: 0, cos: 1, sin: 0,/.test(fnCode('buildCampus'))
+  && /allRects\.push\(\.\.\.rects\);/.test(fnCode('buildCampus'))
+  && /for \(const r of roads\) for \(const b of allRects\) \{/.test(fnCode('buildCampus'))
+  && /rects \}\);/.test(fnCode('buildCampus')));
 ok('a district is turned to face the plaza, so the walker is carried into '
   + 'its frame and back rather than its footprints being flattened',
   /let u = dx \* d\.cos - dz \* d\.sin;/.test(solid)
@@ -2954,6 +2958,104 @@ ok('a person\'s hand is palm, four-finger mitt and thumb - with a gauntlet cuff 
         'campus3d.tasks.here', 'campus3d.tasks.showall', 'campus3d.tasks.none']
       .every((k) => locs3.every((L) => typeof L[k] === 'string' && L[k].length)
         && locs3.filter((L) => L[k] === locs3[2][k]).length === 1));
+}
+
+/* ------------------------------------------ wave 7b: union halls (HALLS) ---
+   The campus used to read as one big shed with strips inside. Every hall is
+   now its own building on its own site-plan lot, at the walkable interior's
+   real size, wearing its own AUTHORED archetype (web/hallkit.py). */
+{
+  const B7 = readFileSync(new URL('./trade_craft_3d.html', import.meta.url), 'utf8');
+  const D7 = JSON.parse(B7.match(/<script id="data" type="application\/json">([\s\S]*?)<\/script>/)[1]);
+  const hallOf = (sg) => D7.halls.find((h) => h.slug === sg);
+  const hallCampuses = Object.entries(D7.campuses).filter(([, c]) => c.districts.length);
+  const aabbHit = (a, b, pad = 0) => Math.abs(a.x - b.x) < (a.w + b.w) / 2 + pad && Math.abs(a.z - b.z) < (a.d + b.d) / 2 + pad;
+  // 1. one building per hall
+  const bc = fnCode('buildCampus');
+  ok('hall buildings: every hall campus\'s site plan puts each of its halls on exactly one lot at the interior\'s own 36 m x 3d m, no two buildings overlap, and buildCampus() builds one wall box per lot (building() with the lot\'s real size, then buildings.push)',
+    hallCampuses.length === 3 && hallCampuses.every(([k, c]) => {
+      const lots = D7.campusplan[k].lots, hs = lots.map((l) => l.hall);
+      const want = c.districts.flatMap((dk) => D7.districts[dk].halls);
+      return hs.length === want.length && new Set(hs).size === hs.length && want.every((sg) => hs.includes(sg))
+        && lots.every((l) => l.b.w_m === 36 && l.b.d_m === hallOf(l.hall).depth * 3)
+        && lots.every((a, i) => lots.every((b, j) => j <= i || !aabbHit(a.b.aabb, b.b.aabb)));
+    })
+    && /lots\.forEach\(\(lot\) => \{[\s\S]*?bg\.userData\.real = \{ w: B\.w_m, d: B\.d_m, h: B\.height_m \+ \.35 \};\s+const b = building\(h, style, bg, pool, B\.x, B\.z\);[\s\S]*?buildings\.push\(b\.mesh\);/.test(bc)
+    && /bg\.rotation\.y = B\.rot_y;/.test(bc)
+    && /const dep = real \? real\.d : kitRun\.dep, wid = real \? real\.w : kitRun\.wid;/.test(fnCode('building'))
+    && /n = Math\.ceil\(KIT_RUNS\[pl\.run\]\(bg\.userData\.kitRun\.wid, bg\.userData\.kitRun\.dep\) \/ c\.every_m\);/.test(fnCode('kitDress')));
+  // 2. uniqueness
+  const fnv = (str) => { let h = 0x811c9dc5; for (const ch of Buffer.from(str, 'utf8')) { h ^= ch; h = Math.imul(h, 0x01000193) >>> 0; } return h >>> 0; };
+  ok('hall archetypes: no two halls on a campus share an archetype (family/roof/facade/glaze/canopy/plant), each seeded by its own id (FNV-1a of the slug) and signed combo#seed',
+    hallCampuses.every(([k]) => {
+      const hs = D7.campusplan[k].lots.map((l) => hallOf(l.hall));
+      return hs.every((h) => h.arch && h.arch.seed === fnv(h.slug)
+          && h.arch.sig === h.arch.combo + '#' + h.arch.seed.toString(16).padStart(8, '0')
+          && h.arch.combo === [h.arch.family, h.arch.roof, h.arch.facade, h.arch.glaze, h.arch.canopy, h.arch.plant].join('/')
+          && h.arch.family === h.district)
+        && new Set(hs.map((h) => h.arch.combo)).size === hs.length;
+    }) && D7.halls.every((h) => h.arch));
+  // 3. the archetypes are drawn: run the kit itself (its one copy lives in web/hallkit.py)
+  const hkPy = readFileSync(new URL('./hallkit.py', import.meta.url), 'utf8');
+  const q3 = '"""';
+  const k0 = hkPy.indexOf('HALLKIT_JS = r' + q3) + 17;
+  const kitJs = hkPy.slice(k0, hkPy.indexOf(q3, k0));
+  const THREE7 = await import(new URL('./vendor/three.module.min.js', import.meta.url));
+  const HK = new Function('THREE', kitJs + '\nreturn { hkShell, hkBoxGeo };')(THREE7);
+  let drawn = kitJs.length > 2000, maxLod0 = 0;
+  const forms = new Set();
+  for (const h of D7.halls) for (const lod of [0, 1]) {
+    const W = 36, Dp = h.depth * 3, H = h.clear + .35;
+    const c = { roof: 0, shell: 0, yard: 0 };
+    const r = HK.hkShell(h.arch, W, Dp, H, lod, (part) => { c[part]++; });
+    if (!lod) maxLod0 = Math.max(maxLod0, c.roof + c.shell + c.yard);
+    forms.add(h.arch.roof);
+    if (!(c.roof > 0 && c.shell > 0 && r.top > H && (c.yard > 0) === !!h.arch.yard && r.headY > 0 && r.headY < H)) drawn = false;
+  }
+  let throws = false;
+  try { HK.hkShell(null, 36, 30, 6, 0, () => {}); } catch (e) { throws = /no archetype/.test(e.message); }
+  const g7 = HK.hkBoxGeo(0xff0000, 1, 1, 1, 0, 0, 0, 0, 0);
+  ok('hall kit: every hall\'s archetype draws a roof form, cladding and (for the families that have one) a yard kit at both LODs, reaching above its eaves; all six roof forms occur; campus LOD stays <= 22 boxes a hall; a hall with no archetype throws; boxes carry vertex colour for ONE pooled material; the page carries the kit, not a copy',
+    drawn && forms.size === 6 && maxLod0 <= 22 && throws && g7.attributes.color.count === g7.attributes.position.count
+    && !src.includes('HALLKIT_JS = r') && /page\.replace\('__HALLKIT_JS__', HALLKIT_JS\)/.test(src)
+    && /hkShell\(h\.arch, wid, dep, hgt, 0,/.test(fnCode('building'))
+    && /hkShell\(h\.arch, W, DEP, EAVE, 1,/.test(fnCode('buildHall'))
+    && /hkMatShared\.userData\.shared = true;/.test(kitJs));
+  // 4. every hall reachable through its door
+  ok('hall doors: every lot\'s door sits on its building\'s face, 3 m out from it is open ground inside the walk limit, the walker finds a hall by its DOOR, E there walks in (enterHallWalking), and E past the apron walks back out of THAT hall\'s door (exitHallWalking)',
+    hallCampuses.every(([k]) => {
+      const P = D7.campusplan[k], RS = Math.max(D7.campuses[k].districts.length === 2 ? 124 : 168, Math.ceil(P.radius_m) + 30);
+      return P.lots.every((l) => {
+        const a = l.b.aabb, dr = l.b.door;
+        const onX = Math.abs(Math.abs(dr.x - a.x) - a.w / 2) < .01 && Math.abs(dr.z - a.z) <= a.d / 2;
+        const onZ = Math.abs(Math.abs(dr.z - a.z) - a.d / 2) < .01 && Math.abs(dr.x - a.x) <= a.w / 2;
+        const n = Math.hypot(dr.x - a.x, dr.z - a.z);
+        const out = { x: dr.x + (dr.x - a.x) / n * 3, z: dr.z + (dr.z - a.z) / n * 3, w: .6, d: .6 };
+        return (onX || onZ) && P.lots.every((m) => !aabbHit(out, m.b.aabb))
+          && Math.hypot(out.x, out.z) < RS + 20;
+      });
+    })
+    && /if \(b\.userData\.door\) wp\.copy\(b\.userData\.door\); else b\.getWorldPosition\(wp\);/.test(fnCode('walkStep'))
+    && /b\.mesh\.userData\.door = new THREE\.Vector3\(B\.door\.x, 0, B\.door\.z\);/.test(bc)
+    && /if \(plan\) walkLim = Math\.max\(walkLim, RS \+ 20\);/.test(bc)
+    && /&& \(e\.code === 'Enter' \|\| e\.code === 'KeyE'\)\) enterHallWalking\(nearSlug\);/.test(code)
+    && /else if \(walkActive && view === 'hall' && hallExitNear && !sim\s+&& \(e\.code === 'Enter' \|\| e\.code === 'KeyE'\)\) exitHallWalking\(\);/.test(code)
+    && /const ex = !room && pz < -DEP \/ 2 - 18;/.test(fnCode('walkStep'))
+    && /if \(!hallExitKeep\) walkLeave\(\);/.test(fnCode('showCampus'))
+    && /xrRig\.position\.x = dr\.x \+ \(dr\.x - c\.x\) \/ n \* 5;/.test(fnCode('exitHallWalking')));
+  // 5. deep links intact
+  ok('hall deep links: ?hall=<slug> still resolves for every hall (each has its archetype and exactly one lot), syncURL still writes ?hall= and ?campus=, and the layout hook reports each hall\'s own building box, archetype, facing and door',
+    /let slug = D\.halls\.some\(h => h\.slug === params\.get\('hall'\)\) \? params\.get\('hall'\) : 'bricklayers';/.test(src)
+    && /`\?hall=\$\{slug\}&lang=\$\{loc\}`/.test(src) && /`\?campus=\$\{campusKey\}&lang=\$\{loc\}`/.test(src)
+    && D7.halls.every((h) => hallCampuses.filter(([k]) => D7.campusplan[k].lots.some((l) => l.hall === h.slug)).length === 1)
+    && /arch: b\.userData\.arch, sig: b\.userData\.sig, rot: b\.userData\.rot,/.test(src)
+    && /x: p\.x, z: p\.z, w: g\.width, d: g\.depth, h: g\.height,/.test(src));
+  // 6. the walkable hall wears its shell; the roof is a cutaway from above only
+  ok('hall view: the walkable hall wears its archetype as two pooled meshes (shell, cutaway roof) and a facade sign with the hall\'s registry name; the roof hides only from an orbit above its cut height',
+    /for \(const \[list, nm\] of \[\[hkOut, 'hk-shell'\], \[hkTop, 'hk-roof'\]\]\)/.test(fnCode('buildHall'))
+    && /const hkS = hkSign\(h\.name,/.test(fnCode('buildHall'))
+    && /if \(hkRoof\) hkRoof\.visible = view !== 'hall' \|\| eyePos\(\)\.y < hkRoof\.userData\.cut;/.test(code)
+    && /m\.userData\.cut = hkB\.top \+ 1\.5;/.test(fnCode('buildHall')));
 }
 
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);

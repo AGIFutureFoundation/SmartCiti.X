@@ -282,6 +282,15 @@ if (ROOT / 'physics/registry/physics.json').exists() and (HERE / 'physkit.py').e
     STATES['physics'] = 'wired'
 else:
     PHYS_BLOCK, PHYS_EMBED = 'const PHYS_ON = false;\n', ''
+# DEEP (wave 9): underwater regions (web/deepkit.py; underwater/registry/underwater.json is FETCHED on the first
+# Dive/ROV press, never embedded: page weight and the overview are unchanged). AUTHORED depths; game camera only.
+if (ROOT / 'underwater/registry/underwater.json').exists() and (HERE / 'deepkit.py').exists():
+    from deepkit import DEEP_CSS, deep_inline, deep_panel_html, DEEP_I18N_KEYS  # noqa: E402
+    DEEP_WORLD = 'parishes'   # the underwater.json world these pages draw (a world target may override it)
+    DEEP_BLOCK = deep_inline() + f'\nconst DEEP_ON = true, DEEP_WORLD = {DEEP_WORLD!r};\n'
+    DEEP_EMBED, DEEP_PANEL = f'<style id="deep-css">{DEEP_CSS}</style>', deep_panel_html(TS)
+else:
+    DEEP_BLOCK, DEEP_EMBED, DEEP_PANEL, DEEP_I18N_KEYS = 'const DEEP_ON = false, DEEP_WORLD = null;\n', '', '', []
     STATES['physics'], WHY['physics'] = 'stub', 'physics/registry/physics.json or web/physkit.py is not built'
 # AMBIENT (AMBIENT_CONTRACT v1): registry data + the kit in the module; mounted by the Living world button
 if (ROOT / 'ambient/registry/ambient.json').exists() and (HERE / 'ambientkit.py').exists():
@@ -356,6 +365,21 @@ if (ROOT / 'layers/registry/layers.json').exists() and (HERE / 'pathkit.py').exi
 else:
     PATHS, PATH_CSS_BLOCK, PATH_SCRIPT = {}, '', ''
     STATES['layers'], WHY['layers'] = 'stub', 'layers/registry/layers.json is not built'
+# REACTOR: the Holodeck live view (web/reactorkit.py, REACTOR_CONTRACT (scratchpad)). Off by default; the SDK loads only
+# on Connect and never sees a key. The bridge sends the parish name shown in #where and a still of the world canvas.
+if (ROOT / 'reactor/registry/reactor.json').exists() and (HERE / 'reactorkit.py').exists():
+    import reactorkit  # noqa: E402
+    RK_IMPORTS, RK_CSS_BLOCK = reactorkit.reactor_import_entries('./'), f'<style>{reactorkit.REACTOR_CSS}</style>'
+    RK_PANEL = reactorkit.reactor_panel('./') + '''<script data-rk-bridge>(function(){
+var w = document.getElementById('where'), v = document.getElementById('view');
+function put(){ if (window.ReactorKit && w) ReactorKit.setContext({place: w.textContent.trim().slice(0, 80)}); }
+if (w) new MutationObserver(put).observe(w, {childList: true, characterData: true, subtree: true});
+put();
+if (window.ReactorKit && v) ReactorKit.setReferenceImage(function(){ return new Promise(function(res){
+  requestAnimationFrame(function(){ v.toBlob(res, 'image/jpeg', 0.85); }); }); });
+})();</script>'''
+else:
+    RK_IMPORTS, RK_CSS_BLOCK, RK_PANEL = '', '', ''
 
 
 # ----------------------------------------------------------------- quests --
@@ -453,12 +477,13 @@ JS_KEYS = ['parishes.mode.walk', 'parishes.mode.drive', 'parishes.mode.boat', 'p
 if NPC_DATA is not None:
     from npckit import NPC_I18N_KEYS  # noqa: E402
     JS_KEYS += list(NPC_I18N_KEYS)
+JS_KEYS += list(DEEP_I18N_KEYS)   # DEEP (wave 9): the kit's HUD/refusal text at run time
 _USED.update(JS_KEYS)
 
 JS = r'''
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-''' + CORE + '\n' + FLEET_INLINE + '\n' + NPC_JS_INLINE + '\n' + PHYS_BLOCK + '\n' + AMB_BLOCK + r'''
+''' + CORE + '\n' + FLEET_INLINE + '\n' + NPC_JS_INLINE + '\n' + PHYS_BLOCK + '\n' + DEEP_BLOCK + '\n' + AMB_BLOCK + r'''
 const D = JSON.parse(document.getElementById('parishes-data').textContent);
 const I18N = JSON.parse(document.getElementById('parishes-i18n').textContent);
 function pickLocale() {
@@ -510,10 +535,15 @@ canvas.style.backgroundImage = 'linear-gradient(180deg,' + SKY.map(([c, p]) => '
 scene.background = SKY_BG;
 scene.fog = new THREE.Fog(HORIZON, 700, 4200);
 const camera = new THREE.PerspectiveCamera(62, 1, 0.3, 60000);
-scene.add(new THREE.HemisphereLight(0xdde9f7, 0x5a5040, 0.95));
+const hemi = new THREE.HemisphereLight(0xdde9f7, 0x5a5040, 0.95); scene.add(hemi);
 /* sun direction: an AUTHORED mid-afternoon sun from the south-west, low enough that facades read as planes */
 const SUN = new THREE.Vector3(-0.55, 0.62, 0.56).normalize();
 const sun = new THREE.DirectionalLight(0xfff0d6, 1.75); sun.position.copy(SUN); scene.add(sun);
+/* wave 8 (ENV): the land is FLAT (every vertex y = 0, normal +y), so its Lambert light is ONE constant: the hemisphere's
+   sky term + the sun times max(0, sun.y), over PI (three r160 BRDF_Lambert, physically based light units). It is baked
+   into an unlit land material: the same pixels for a fraction of the per-pixel cost (w7 run 4: the overview was bound
+   by the land's fragments - 50 ms with the land, 33.4 without). Buildings, roads and water keep their lit materials. */
+const FLAT_LIGHT = new THREE.Color().copy(hemi.color).multiplyScalar(hemi.intensity).add(new THREE.Color().copy(sun.color).multiplyScalar(sun.intensity * Math.max(0, SUN.y))).multiplyScalar(1 / Math.PI);
 const lam = (c) => new THREE.MeshLambertMaterial({ color: c });
 const matWater = new THREE.MeshLambertMaterial({ color: 0x3E6E8E, emissive: 0x9FC4DC, emissiveIntensity: 0.06 }), matBlock = lam(0xB9AE9C), matTree = new THREE.MeshLambertMaterial({ color: 0x3F6B3A, side: THREE.DoubleSide }), matMark = lam(0xE8A33D), matLm = lam(0xD8D2C4);
 const LAND = [0xA7B58C, 0x9FB08F, 0xB1B790, 0x98A987];
@@ -570,7 +600,8 @@ const GROUND_PX = 2048;
 function groundTexture(p, onReady) {
   const cv = document.createElement('canvas'); cv.width = cv.height = GROUND_PX;
   const cx = cv.getContext('2d'), g = p.ground, cell = GROUND_PX / g.grid; let left = g.tiles.length;
-  const tex = new THREE.CanvasTexture(cv); tex.flipY = false; tex.colorSpace = THREE.SRGBColorSpace;   // no anisotropy: SwiftShader pays per tap (w6 run 1: walk frames rose)
+  const tex = new THREE.CanvasTexture(cv); tex.flipY = false; tex.colorSpace = THREE.SRGBColorSpace;
+  tex.minFilter = THREE.LinearMipmapNearestFilter;   // wave 8 (ENV): one mip level per pixel (4 taps, not 8) - the overview reads the ground minified   // no anisotropy: SwiftShader pays per tap (w6 run 1: walk frames rose)
   for (const [src, row, col] of g.tiles) {
     const im = new Image();
     im.onload = () => { cx.drawImage(im, col * cell, row * cell, cell, cell); if (--left === 0) { tex.needsUpdate = true; onReady(); } };
@@ -581,14 +612,14 @@ function groundTexture(p, onReady) {
 }
 const groundFailed = [], groundReady = new Set();
 function streetMat(c, p) {
-  const m = lam(c);
-  const u = { uGround: { value: groundTexture(p, () => { u.uOn.value = 1; groundReady.add(p.id); }) }, uOn: { value: 0 }, uGrid: { value: 1 },
+  const m = new THREE.MeshBasicMaterial({ color: c });   // unlit: FLAT_LIGHT is applied in the shader below
+  const u = { uFlat: { value: FLAT_LIGHT }, uGround: { value: groundTexture(p, () => { u.uOn.value = 1; groundReady.add(p.id); }) }, uOn: { value: 0 }, uGrid: { value: 1 },
     uBox: { value: new THREE.Vector4(p.map_world[0], p.map_world[1], p.map_world[2] - p.map_world[0], p.map_world[3] - p.map_world[1]) } };
   m.onBeforeCompile = (sh) => {
     Object.assign(sh.uniforms, u);
     sh.vertexShader = 'varying vec2 vGroundXZ; varying float vGroundDist;\n' + sh.vertexShader.replace('#include <project_vertex>', '#include <project_vertex>\n  vGroundXZ = position.xz; vGroundDist = -mvPosition.z;');
-    sh.fragmentShader = 'uniform sampler2D uGround; uniform float uOn; uniform float uGrid; uniform vec4 uBox; varying vec2 vGroundXZ; varying float vGroundDist;\n' + sh.fragmentShader.replace('#include <color_fragment>', '#include <color_fragment>\n' +
-      '{ vec2 guv = (vGroundXZ - uBox.xy) / uBox.zw; diffuseColor.rgb = mix(diffuseColor.rgb, texture2D(uGround, guv).rgb, uOn); }\n' + STREET_GLSL);
+    sh.fragmentShader = 'uniform vec3 uFlat; uniform sampler2D uGround; uniform float uOn; uniform float uGrid; uniform vec4 uBox; varying vec2 vGroundXZ; varying float vGroundDist;\n' + sh.fragmentShader.replace('#include <color_fragment>', '#include <color_fragment>\n' +
+      '{ vec2 guv = (vGroundXZ - uBox.xy) / uBox.zw; diffuseColor.rgb = mix(diffuseColor.rgb, texture2D(uGround, guv).rgb, uOn); }\n' + STREET_GLSL + '\ndiffuseColor.rgb *= uFlat;');
   };
   m.customProgramCacheKey = () => 'parish-ground';
   m.userData.grid = u.uGrid;
@@ -602,7 +633,9 @@ function makeLand(p) {
   const g = new THREE.ShapeGeometry(shapes); g.rotateX(-Math.PI / 2);
   // flat AUTHORED ground: exactly 0 m (the rotation leaves ~1e-13 m of float noise)
   const pa = g.attributes.position.array; for (let i = 1; i < pa.length; i += 3) pa[i] = 0;
-  const m = new THREE.Mesh(g, streetMat(LAND[p.idx % LAND.length], p)); m.userData.parish = p.id; return m;
+  const m = new THREE.Mesh(g, streetMat(LAND[p.idx % LAND.length], p)); m.userData.parish = p.id;
+  m.renderOrder = -1;   // wave 8: the land is drawn first, so the water plane below it is depth-rejected under the land instead of shaded
+  return m;
 }
 let current = null;
 const loaded = new Set();
@@ -708,13 +741,29 @@ function waterAt(x, z) {
    buildings stand back from the meshed kerbs; elsewhere (not yet fetched) the painted grid still shows. ---- */
 const ROAD_R = 600, ROAD_CAP = 4000, ROAD_Y = 0.05, BUCKET = 100, CURB_R = 250;
 const roadNet = new Map(), roadFailed = [];   // parish id -> { buckets: Map, segs: [] }
-const roadPos = new Float32Array(ROAD_CAP * 30 * 3), roadNor = new Float32Array(ROAD_CAP * 30 * 3), roadCol = new Float32Array(ROAD_CAP * 30 * 3);
+/* wave 8 (ENV): street detail rides in the SAME one-draw-call street mesh, near the refill point only: zebra crossings where
+   two meshed streets cross (the sidewalks stop at the crossing street's kerb line), street furniture (benches, bins,
+   hydrants, bus shelters on arterials/collectors) on the sidewalks, and a coping band + bank face along AUTHORED water.
+   An InstancedMesh per furniture kind would cost draw calls the walk views do not have (0-1 spare, w7 run 5); these are
+   merged geometry, distance-culled by radius and capped. AUTHORED set dressing - not a survey of real streets. */
+const XW_R = 300, XW_CAP = 80, XW_DY = 0.04, XW_W = 3.0, FURN_R = 240, FURN_M = 38, FURN_CAP = 120, SHORE_R = 450, SHORE_W = 1.6, SHORE_CAP = 300, DETAIL_V = 36000;
+const roadPos = new Float32Array((ROAD_CAP * 30 + DETAIL_V) * 3), roadNor = new Float32Array((ROAD_CAP * 30 + DETAIL_V) * 3), roadCol = new Float32Array((ROAD_CAP * 30 + DETAIL_V) * 3), roadZeb = new Float32Array(ROAD_CAP * 30 + DETAIL_V).fill(-100);
 const roadGeo = new THREE.BufferGeometry();
 roadGeo.setAttribute('position', new THREE.BufferAttribute(roadPos, 3)); roadGeo.setAttribute('normal', new THREE.BufferAttribute(roadNor, 3)); roadGeo.setAttribute('color', new THREE.BufferAttribute(roadCol, 3));
+roadGeo.setAttribute('zebra', new THREE.BufferAttribute(roadZeb, 1));   // across-street metres on a crossing quad, -100 elsewhere
 roadGeo.setDrawRange(0, 0);
 const matRoad = new THREE.MeshLambertMaterial({ vertexColors: true });
+const zebraU = { uAsph: { value: new THREE.Color(0x3d4043) } };
+matRoad.onBeforeCompile = (sh) => {
+  sh.uniforms.uAsph = zebraU.uAsph;
+  sh.vertexShader = 'attribute float zebra; varying float vZebra;\n' + sh.vertexShader.replace('#include <project_vertex>', '#include <project_vertex>\n  vZebra = zebra;');
+  sh.fragmentShader = 'uniform vec3 uAsph; varying float vZebra;\n' + sh.fragmentShader.replace('#include <color_fragment>', '#include <color_fragment>\n  if (vZebra > -50.0) diffuseColor.rgb = mix(uAsph, diffuseColor.rgb, step(0.5, fract(vZebra / 1.1)));');
+};
+matRoad.customProgramCacheKey = () => 'parish-road';
 const roads = new THREE.Mesh(roadGeo, matRoad); roads.frustumCulled = false; roads.userData.roads = true; scene.add(roads);
 const ROAD_COL = { asphalt: new THREE.Color(0x3d4043), kerb: new THREE.Color(0xc9c3b6), walk: new THREE.Color(0xb3ada1) };
+const DETAIL_COL = { paint: new THREE.Color(0xe8e6df), sand: new THREE.Color(0xb9a98a), bank: new THREE.Color(0x6b5e4a), bench: new THREE.Color(0x8a6a48), bin: new THREE.Color(0x2f4a3a),
+  hydrant: new THREE.Color(0xb8322a), roof: new THREE.Color(0x5b6166), glass: new THREE.Color(0x9fb7c4) };
 function bucketKey(bx, bz) { return bx + ',' + bz; }
 function loadRoads(p) {
   if (!p.roads || roadNet.has(p.id)) return;
@@ -762,31 +811,156 @@ function roadNear(x, z, r) {
 function roadStreamed(x, z) { const p = parishAt(x, z); return !!(p && roadNet.get(p.id)); }
 let roadCell = '', roadSegs = 0;
 function roadQuad(o, a, b, c, d, n, col) {   // two triangles a b c, a c d
-  for (const v of [a, b, c, a, c, d]) { roadPos.set(v, o); roadNor.set(n, o); roadCol[o] = col.r; roadCol[o + 1] = col.g; roadCol[o + 2] = col.b; o += 3; }
+  for (const v of [a, b, c, a, c, d]) { roadPos.set(v, o); roadNor.set(n, o); roadCol[o] = col.r; roadCol[o + 1] = col.g; roadCol[o + 2] = col.b; roadZeb[o / 3] = -100; o += 3; }
+  return o;
+}
+const detail = { first: null, junctions: 0, crosswalks: 0, cuts: 0, furniture: { bench: 0, bin: 0, hydrant: 0, shelter: 0 }, shore: 0, dropped: 0, tris: { crosswalk: 0, furniture: 0, shore: 0 } };
+/* a quad wound so its face points along nrm (the street material is single-sided) */
+function quadTo(o, a, b, c, d, nrm, col, zb) {
+  const e1 = [b[0] - a[0], b[1] - a[1], b[2] - a[2]], e2 = [c[0] - a[0], c[1] - a[1], c[2] - a[2]];
+  const cx = e1[1] * e2[2] - e1[2] * e2[1], cy = e1[2] * e2[0] - e1[0] * e2[2], cz = e1[0] * e2[1] - e1[1] * e2[0];
+  const vs = cx * nrm[0] + cy * nrm[1] + cz * nrm[2] >= 0 ? [a, b, c, a, c, d] : [a, c, b, a, d, c];
+  for (const v of vs) { roadPos.set(v, o); roadNor.set(nrm, o); roadCol[o] = col.r; roadCol[o + 1] = col.g; roadCol[o + 2] = col.b; roadZeb[o / 3] = zb; o += 3; }
+  return o;
+}
+/* a box without its bottom face (5 faces, 10 triangles), long axis (ux, uz), standing at y0 */
+function boxTo(o, cx, cz, ux, uz, y0, lx, ly, lz, col) {
+  const wx = -uz, wz = ux, hx = lx / 2, hz = lz / 2, y1 = y0 + ly;
+  const C = (i, j, y) => [cx + ux * hx * i + wx * hz * j, y, cz + uz * hx * i + wz * hz * j];
+  o = quadTo(o, C(-1, -1, y1), C(1, -1, y1), C(1, 1, y1), C(-1, 1, y1), [0, 1, 0], col, -100);
+  for (const [i, j, n] of [[1, 0, [ux, 0, uz]], [-1, 0, [-ux, 0, -uz]], [0, 1, [wx, 0, wz]], [0, -1, [-wx, 0, -wz]]]) {
+    const A = i ? [i, -1] : [-1, j], B = i ? [i, 1] : [1, j];
+    o = quadTo(o, C(A[0], A[1], y0), C(B[0], B[1], y0), C(B[0], B[1], y1), C(A[0], A[1], y1), n, col, -100);
+  }
   return o;
 }
 function refillRoads(x, z) {
   let o = 0, n = 0;
-  const UPN = [0, 1, 0], curbs = [];
+  const UPN = [0, 1, 0], curbs = [], V_MAX = roadPos.length;
+  detail.first = null; detail.cuts = 0;
+  const near = [];
   for (const s of segsNear(x, z, ROAD_R)) {
-    if (n >= ROAD_CAP) break;
+    if (near.length >= ROAD_CAP) break;
     if (segDist(x, z, [s.ax, s.az], [s.bx, s.bz]) > ROAD_R) continue;
-    const nx = -s.dz, nz = s.dx, kt = ROAD_Y + s.kh;
-    const P = (t, off, y) => [(t ? s.bx : s.ax) + nx * off, y, (t ? s.bz : s.az) + nz * off];
-    o = roadQuad(o, P(0, -s.cw, ROAD_Y), P(0, s.cw, ROAD_Y), P(1, s.cw, ROAD_Y), P(1, -s.cw, ROAD_Y), UPN, ROAD_COL.asphalt);
-    if (segDist(x, z, [s.ax, s.az], [s.bx, s.bz]) < CURB_R) for (const sd of [-1, 1]) {   // the sidewalks as kerb boxes (stepped onto, never walked through)
-      const w = sd > 0 ? s.swr : s.swl, off = sd * (s.cw + w / 2);
-      curbs.push({ id: 'k' + curbs.length, cx: (s.ax + s.bx) / 2 + nx * off, cz: (s.az + s.bz) / 2 + nz * off, hx: s.L / 2, hz: w / 2, yaw: Math.atan2(-s.dz, s.dx), y0: 0, y1: ROAD_Y + s.kh, kind: 'curb' });
+    near.push(s);
+  }
+  /* crossings: where two meshed streets cross near the refill point, each street's sidewalks stop at the other's kerb
+     line and a zebra crossing is painted across it on the line of the other's sidewalks */
+  const cuts = new Map(), xws = [];
+  let nj = 0;
+  const junction = (s, t, u, den) => {
+    const cos = s.dx * t.dx + s.dz * t.dz, ad = Math.abs(den);
+    let list = cuts.get(s); if (!list) cuts.set(s, list = []);
+    for (const sd of [-1, 1]) { const w = sd > 0 ? s.swr : s.swl, c = u + sd * (s.cw + w / 2) * cos / den, h = t.cw / ad + Math.abs(cos / den) * w / 2; list.push([sd, (c - h) / s.L, (c + h) / s.L]); }
+    for (const st of [-1, 1]) {
+      const ot = st * (t.cw + (st > 0 ? t.swr : t.swl) / 2);
+      const cs = [[-s.cw, -1], [s.cw, -1], [s.cw, 1], [-s.cw, 1]].map(([os, k]) => [u + (os * cos - (ot + k * XW_W / 2)) / den, os]);
+      if (cs.some(([uu]) => uu < 0 || uu > s.L)) continue;
+      xws.push({ s, cs });
     }
+  };
+  const cl = near.filter((s) => segDist(x, z, [s.ax, s.az], [s.bx, s.bz]) < XW_R);
+  for (let i = 0; i < cl.length && nj < XW_CAP; i++) for (let j = i + 1; j < cl.length && nj < XW_CAP; j++) {
+    const s = cl[i], t = cl[j], den = s.dx * t.dz - s.dz * t.dx; if (Math.abs(den) < 0.26) continue;   // near-parallel runs do not cross
+    const rx = t.ax - s.ax, rz = t.az - s.az, u = (rx * t.dz - rz * t.dx) / den, v = (rx * s.dz - rz * s.dx) / den;
+    if (u < 0 || u > s.L || v < 0 || v > t.L) continue;
+    const jx = s.ax + s.dx * u, jz = s.az + s.dz * u; if (Math.hypot(jx - x, jz - z) > XW_R || inWaterAt(jx, jz)) continue;
+    if (!nj) detail.first = [+jx.toFixed(1), +jz.toFixed(1)];
+    junction(s, t, u, den); junction(t, s, v, -den); nj++;
+  }
+  /* the sidewalk pieces of one side of a street: [0, 1] minus its crossing cuts (fractions of the segment) */
+  const pieces = (s, sd) => {
+    const cs = (cuts.get(s) || []).filter((c) => c[0] === sd).map(([, a, b]) => [Math.max(0, a), Math.min(1, b)]).filter(([a, b]) => b > a).sort((p, q) => p[0] - q[0]);
+    const out = []; let t0 = 0;
+    for (const [a, b] of cs) { if (a > t0) out.push([t0, a]); t0 = Math.max(t0, b); }
+    if (t0 < 1) out.push([t0, 1]);
+    return out;
+  };
+  for (const s of near) {
+    if (o + 30 * 3 > V_MAX) { detail.dropped++; break; }
+    const nx = -s.dz, nz = s.dx, kt = ROAD_Y + s.kh;
+    const P = (t, off, y) => [s.ax + s.dx * s.L * t + nx * off, y, s.az + s.dz * s.L * t + nz * off];
+    o = roadQuad(o, P(0, -s.cw, ROAD_Y), P(0, s.cw, ROAD_Y), P(1, s.cw, ROAD_Y), P(1, -s.cw, ROAD_Y), UPN, ROAD_COL.asphalt);
+    const inCurb = segDist(x, z, [s.ax, s.az], [s.bx, s.bz]) < CURB_R;
     for (const sd of [-1, 1]) {
-      const a = sd * s.cw, b = sd * (s.cw + (sd > 0 ? s.swr : s.swl)), fl = sd > 0 ? [0, 1] : [1, 0];
-      o = roadQuad(o, P(fl[0], a, kt), P(fl[0], b, kt), P(fl[1], b, kt), P(fl[1], a, kt), UPN, ROAD_COL.walk);   // sidewalk top
-      o = roadQuad(o, P(fl[0], a, ROAD_Y), P(fl[0], a, kt), P(fl[1], a, kt), P(fl[1], a, ROAD_Y), [-sd * nx, 0, -sd * nz], ROAD_COL.kerb);   // kerb face toward the road
+      const w = sd > 0 ? s.swr : s.swl, a = sd * s.cw, b = sd * (s.cw + w), pcs = pieces(s, sd);
+      detail.cuts += pcs.length - 1;
+      for (const [p0, p1] of pcs) {
+        if (o + 12 * 3 > V_MAX) { detail.dropped++; break; }
+        const fl = sd > 0 ? [p0, p1] : [p1, p0];
+        o = roadQuad(o, P(fl[0], a, kt), P(fl[0], b, kt), P(fl[1], b, kt), P(fl[1], a, kt), UPN, ROAD_COL.walk);   // sidewalk top
+        o = roadQuad(o, P(fl[0], a, ROAD_Y), P(fl[0], a, kt), P(fl[1], a, kt), P(fl[1], a, ROAD_Y), [-sd * nx, 0, -sd * nz], ROAD_COL.kerb);   // kerb face toward the road
+        if (inCurb) {   // the sidewalks as kerb boxes (stepped onto, never walked through) - the same pieces that are drawn
+          const off = sd * (s.cw + w / 2), m = (p0 + p1) / 2 * s.L, L = (p1 - p0) * s.L;
+          curbs.push({ id: 'k' + curbs.length, cx: s.ax + s.dx * m + nx * off, cz: s.az + s.dz * m + nz * off, hx: L / 2, hz: w / 2, yaw: Math.atan2(-s.dz, s.dx), y0: 0, y1: ROAD_Y + s.kh, kind: 'curb' });
+        }
+      }
     }
     n++;
   }
+  let o0 = o;
+  for (const { s, cs } of xws) {
+    if (o + 6 * 3 > V_MAX) { detail.dropped++; break; }
+    const nx = -s.dz, nz = s.dx, V3 = ([uu, os]) => [s.ax + s.dx * uu + nx * os, ROAD_Y + XW_DY, s.az + s.dz * uu + nz * os];
+    const q = cs.map(V3);
+    o = quadTo(o, q[0], q[1], q[2], q[3], UPN, DETAIL_COL.paint, 0);
+    // the across-street coordinate per vertex: rewrite from the emitted positions (winding may have been swapped)
+    for (let i = 0; i < 6; i++) { const k = o - 18 + i * 3, px = roadPos[k] - s.ax, pz = roadPos[k + 2] - s.az; roadZeb[k / 3] = px * nx + pz * nz + 50; }
+  }
+  detail.junctions = nj; detail.crosswalks = xws.length; detail.tris.crosswalk = (o - o0) / 9;
+  /* street furniture on the sidewalks near the refill point (AUTHORED set dressing, generic forms) */
+  o0 = o; const fc = { bench: 0, bin: 0, hydrant: 0, shelter: 0 }; let items = 0;
+  for (const s of near) {
+    if (items >= FURN_CAP) break;
+    if (segDist(x, z, [s.ax, s.az], [s.bx, s.bz]) > FURN_R) continue;
+    const nx = -s.dz, nz = s.dx, kt = ROAD_Y + s.kh;
+    for (const sd of [-1, 1]) {
+      const w = sd > 0 ? s.swr : s.swl, pcs = pieces(s, sd);
+      for (let u = FURN_M * (sd > 0 ? 1 : 1.5); u < s.L - 6 && items < FURN_CAP; u += FURN_M) {
+        if (Math.abs(u - Math.round(u / LAMP_M) * LAMP_M) < 6) continue;   // the lamp standards stand there
+        if (!pcs.some(([p0, p1]) => u > p0 * s.L + 4 && u < p1 * s.L - 4)) continue;   // never in a crossing
+        const h = wildsHash(Math.round(s.ax + s.dx * u), Math.round(s.az + s.dz * u), SEED, 11);
+        const kind = s.cls !== 'local' && h < 0.16 ? 'shelter' : h < 0.4 ? 'bench' : h < 0.62 ? 'bin' : h < 0.8 ? 'hydrant' : null;
+        if (!kind) continue;
+        const off = sd * (kind === 'hydrant' ? s.cw + 0.45 : s.cw + w * 0.62), px = s.ax + s.dx * u + nx * off, pz = s.az + s.dz * u + nz * off;
+        if (Math.hypot(px - x, pz - z) > FURN_R || !parishAt(px, pz) || inWaterAt(px, pz)) continue;
+        if (o + 3 * 30 * 3 > V_MAX) { detail.dropped++; break; }   // a shelter: 3 boxes x 30 vertices x 3 floats
+        const ox = nx * sd, oz = nz * sd;   // away from the road
+        let hx, hz, top;
+        if (kind === 'bench') { o = boxTo(o, px, pz, s.dx, s.dz, kt, 1.8, 0.45, 0.5, DETAIL_COL.bench); o = boxTo(o, px + ox * 0.22, pz + oz * 0.22, s.dx, s.dz, kt + 0.45, 1.8, 0.5, 0.07, DETAIL_COL.bench); hx = 0.9; hz = 0.25; top = 0.95; }
+        else if (kind === 'bin') { o = boxTo(o, px, pz, s.dx, s.dz, kt, 0.55, 0.95, 0.55, DETAIL_COL.bin); hx = hz = 0.28; top = 0.95; }
+        else if (kind === 'hydrant') { o = boxTo(o, px, pz, s.dx, s.dz, kt, 0.28, 0.75, 0.28, DETAIL_COL.hydrant); hx = hz = 0.14; top = 0.75; }
+        else { o = boxTo(o, px, pz, s.dx, s.dz, kt + 2.4, 3.4, 0.12, 1.5, DETAIL_COL.roof); o = boxTo(o, px + ox * 0.7, pz + oz * 0.7, s.dx, s.dz, kt, 3.4, 2.4, 0.06, DETAIL_COL.glass); o = boxTo(o, px + s.dx * 1.67, pz + s.dz * 1.67, s.dx, s.dz, kt, 0.06, 2.4, 1.3, DETAIL_COL.glass); hx = 1.7; hz = 0.75; top = 2.52; }
+        fc[kind]++; items++;
+        if (Math.hypot(px - x, pz - z) < CURB_R) curbs.push({ id: 'f' + curbs.length, cx: px, cz: pz, hx, hz, yaw: Math.atan2(-s.dz, s.dx), y0: 0, y1: kt + top, kind: 'prop' });
+      }
+    }
+  }
+  detail.furniture = fc; detail.tris.furniture = (o - o0) / 9;
+  /* shoreline edging along the AUTHORED water near the refill point: a coping band on the bank, a bank face down to the water */
+  o0 = o; let ne = 0;
+  for (const id of loaded) { const net = waterNet.get(id); if (!net) continue;
+    for (const f of net.feats) {
+      const b = f.bbox; if (x < b[0] - SHORE_R || x > b[2] + SHORE_R || z < b[1] - SHORE_R || z > b[3] + SHORE_R) continue;
+      if (f.area === undefined) { let A = 0; for (let i = 0, j = f.ring.length - 1; i < f.ring.length; j = i++) A += f.ring[j][0] * f.ring[i][1] - f.ring[i][0] * f.ring[j][1]; f.area = A / 2; }
+      const sg = f.area > 0 ? 1 : -1;
+      for (let i = 0, j = f.ring.length - 1; i < f.ring.length && ne < SHORE_CAP; j = i++) {
+        const [ax, az] = f.ring[j], [bx, bz] = f.ring[i], L = Math.hypot(bx - ax, bz - az); if (L < 0.5) continue;
+        const mx = (ax + bx) / 2, mz = (az + bz) / 2; if (Math.hypot(mx - x, mz - z) > SHORE_R) continue;
+        const ux = sg * (bz - az) / L, uz = -sg * (bx - ax) / L;   // outward: from the water onto the land
+        if (!parishAt(mx + ux * SHORE_W, mz + uz * SHORE_W) || inWaterAt(mx + ux * SHORE_W, mz + uz * SHORE_W)) continue;
+        if (o + 12 * 3 > V_MAX) { detail.dropped++; break; }
+        const yb = ROAD_Y * 0.6, yw = WORLD.surface_y - 0.05;
+        o = quadTo(o, [ax, yb, az], [bx, yb, bz], [bx + ux * SHORE_W, yb, bz + uz * SHORE_W], [ax + ux * SHORE_W, yb, az + uz * SHORE_W], UPN, DETAIL_COL.sand, -100);
+        o = quadTo(o, [ax, yb, az], [bx, yb, bz], [bx - ux * 0.35, yw, bz - uz * 0.35], [ax - ux * 0.35, yw, az - uz * 0.35], [-ux * 0.75, 0.66, -uz * 0.75], DETAIL_COL.bank, -100);
+        ne++;
+      }
+    }
+  }
+  detail.shore = ne; detail.tris.shore = (o - o0) / 9;
   roadSegs = n; roadGeo.setDrawRange(0, o / 3); curbBoxes = curbs; markPhys();
   for (const k of ['position', 'normal', 'color']) { const at = roadGeo.attributes[k]; at.clearUpdateRanges(); at.addUpdateRange(0, o); at.needsUpdate = true; }
+  { const at = roadGeo.attributes.zebra; at.clearUpdateRanges(); at.addUpdateRange(0, o / 3); at.needsUpdate = true; }
 }
 
 /* ---- AUTHORED fabric: blocks and trees, chunk-streamed, one InstancedMesh each ---- */
@@ -845,34 +1019,62 @@ function porch() {
 }
 const houseGeo = mergeGeometries([walls(), gable(0.42, 0.04, 0.08), porch()]);
 const blockGeo = walls();
+/* wave 8 (ENV): the house walls' top face lies inside the gable roof and is never seen - dropped (24 -> 22 triangles per
+   house; ~2k triangles a walk view, which pays for the crosswalks, furniture and shoreline in the street mesh) */
+function dropHiddenTop(g) {
+  const p = g.attributes.position.array, keep = [];
+  for (let t = 0; t < p.length / 9; t++) { const y = [p[t * 9 + 1], p[t * 9 + 4], p[t * 9 + 7]]; if (!(y.every((v) => Math.abs(v - 1) < 1e-6) && g.attributes.normal.array[t * 9 + 1] > 0.99)) keep.push(t); }
+  for (const [k, at] of Object.entries(g.attributes)) { const n = at.itemSize * 3, a = new Float32Array(keep.length * n); keep.forEach((t, i) => a.set(at.array.subarray(t * n, t * n + n), i * n)); g.setAttribute(k, new THREE.BufferAttribute(a, at.itemSize)); }
+  return g;
+}
+dropHiddenTop(houseGeo);
+/* wave 8 (ENV): ONE shared kit material for both families; the family is a vertex attribute of its geometry (kitKind) and
+   the AUTHORED land use a per-instance attribute (kitUse = use + 0.25 * variant: 0 residential, 1 commercial,
+   2 industrial) - facade bands, gloss and grime by land use at 0 draw calls and 0 triangles */
 const KIT_KIND = { house: 0, midrise: 1 };
+const KIT_USE = { residential: 0, commercial: 1, industrial: 2 };
+for (const [g, k] of [[houseGeo, KIT_KIND.house], [blockGeo, KIT_KIND.midrise]]) {
+  g.setAttribute('kitKind', new THREE.BufferAttribute(new Float32Array(g.attributes.position.count).fill(k), 1));
+  g.setAttribute('kitUse', new THREE.InstancedBufferAttribute(new Float32Array(CAP.block), 1));
+}
+let KIT_MAT = null;
 function kitMat(kind) {
+  if (!(kind in KIT_KIND)) throw new Error('parishes: unknown kit family ' + kind);
+  if (KIT_MAT) return KIT_MAT;   // one shared material (one program) for every family
   const m = new THREE.MeshLambertMaterial({ color: 0xffffff });
-  m.defines = { KIT_KIND: KIT_KIND[kind] };
   m.onBeforeCompile = (sh) => {
-    const V = 'varying vec3 vKitL; varying vec3 vKitW; varying vec3 vKitN; varying float vKitD;\n';
-    sh.vertexShader = V + sh.vertexShader.replace('#include <project_vertex>', `#include <project_vertex>
+    const V = 'varying vec3 vKitL; varying vec3 vKitW; varying vec3 vKitN; varying float vKitD; varying float vKitK; varying float vKitU;\n';
+    sh.vertexShader = 'attribute float kitKind; attribute float kitUse;\n' + V + sh.vertexShader.replace('#include <project_vertex>', `#include <project_vertex>
   vKitL = position; vKitW = (modelMatrix * instanceMatrix * vec4(transformed, 1.0)).xyz;
-  vKitN = normalize(mat3(modelMatrix) * mat3(instanceMatrix) * objectNormal); vKitD = -mvPosition.z;`);
+  vKitN = normalize(mat3(modelMatrix) * mat3(instanceMatrix) * objectNormal); vKitD = -mvPosition.z; vKitK = kitKind; vKitU = kitUse;`);
     sh.fragmentShader = V + sh.fragmentShader.replace('#include <color_fragment>', `#include <color_fragment>
 { vec3 n = normalize(vKitN);
+  float mid = step(0.5, vKitK), com = step(0.9, vKitU) * (1.0 - step(1.9, vKitU)), ind = step(1.9, vKitU), vari = step(0.2, fract(vKitU));
   float wall = (1.0 - step(0.3, abs(n.y))) * (1.0 - step(0.985, vKitL.y)) * step(abs(vKitL.z), 0.505) * step(abs(vKitL.x), 0.505);
   float u = abs(n.x) > abs(n.z) ? vKitW.z : vKitW.x;
   vec2 f = fract(vec2(u / 3.1, vKitW.y / 3.2));
   float near = 1.0 - smoothstep(160.0, 480.0, vKitD);
   float win = step(0.3, f.x) * step(f.x, 0.7) * step(0.3, f.y) * step(f.y, 0.82) * step(1.0, vKitW.y) * wall;
-  #if KIT_KIND == 1
-  win = max(win * step(3.6, vKitW.y), step(0.4, vKitW.y) * step(vKitW.y, 3.3) * step(0.08, f.x) * step(f.x, 0.92) * wall);
-  vec3 roofC = vec3(0.40, 0.40, 0.41);
-  #else
-  vec3 roofC = vec3(0.31, 0.29, 0.30);
-  #endif
-  diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.15, 0.19, 0.24), win * near * 0.85);
-  diffuseColor.rgb = mix(diffuseColor.rgb, roofC, step(0.4, n.y));
+  float shop = step(0.4, vKitW.y) * step(vKitW.y, 3.3) * step(0.08, f.x) * step(f.x, 0.92) * wall;
+  float winM = max(win * step(3.6, vKitW.y), shop);
+  /* commercial offices (variant 1): ribbon glazing per storey, a mullion every 1.55 m */
+  winM = mix(winM, max(step(0.22, f.y) * step(f.y, 0.86) * step(0.06, fract(u / 1.55)) * step(3.6, vKitW.y) * wall, shop), com * vari);
+  /* industrial shells: one clerestory strip under the eaves instead of storeys of windows */
+  winM = mix(winM, step(0.72, vKitL.y) * step(vKitL.y, 0.86) * step(0.1, fract(u / 4.0)) * wall, ind);
+  win = mix(win, winM, mid);
+  float door = step(vKitW.y, 4.2) * step(0.35, fract(u / 9.0)) * step(fract(u / 9.0), 0.75) * wall * ind;   // roller doors
+  diffuseColor.rgb *= mix(vec3(1.0), vec3(0.96, 0.98, 1.03), com) * (1.0 - 0.08 * ind * step(0.5, fract(u / 0.6)) * wall * near);   // cool render / ribbed cladding
+  diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.24, 0.25, 0.26), door * near);
+  diffuseColor.rgb = mix(diffuseColor.rgb, mix(vec3(0.15, 0.19, 0.24), vec3(0.19, 0.26, 0.32), com), win * near * 0.85);
+  /* gloss by land use (a roughness stand-in; Lambert has none): glazing and metal pick up the sky at grazing angles */
+  float fres = pow(1.0 - abs(dot(n, normalize(cameraPosition - vKitW))), 3.0);
+  diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.80, 0.86, 0.90), fres * near * (win * (0.25 + 0.45 * com) + 0.2 * ind * wall));
+  diffuseColor.rgb = mix(diffuseColor.rgb, mix(vec3(0.31, 0.29, 0.30), vec3(0.40, 0.40, 0.41), mid), step(0.4, n.y));
   diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.93, 0.92, 0.88), step(0.505, vKitL.z) * (1.0 - step(0.4, n.y)));
-  diffuseColor.rgb *= 0.82 + 0.18 * smoothstep(0.0, 0.8, vKitW.y); }`);
+  diffuseColor.rgb *= 0.82 + 0.18 * smoothstep(0.0, 0.8 + 0.7 * ind, vKitW.y); }`);
   };
-  m.customProgramCacheKey = () => 'parish-kit-' + kind;
+  m.customProgramCacheKey = () => 'parish-kit';
+  KIT_MAT = m;
   return m;
 }
 /* generic facade palettes (AUTHORED): painted timber for houses, brick/stone/render for midrises, cladding for sheds */
@@ -888,6 +1090,12 @@ const KC = new THREE.Color();
 for (const m of Object.values(KIT)) { m.setColorAt(0, KC.set(0xffffff)); m.count = 0; m.frustumCulled = false; scene.add(m); }
 /* a lot: [x, z, w, h, d, family, yaw, colour]; houses face their nearest street (porch to the kerb) */
 function kitLot(use, ix, iz, x, z, jx, jz, hh) {
+  const lot = kitLot0(use, ix, iz, x, z, jx, jz, hh);
+  if (!(use in KIT_USE)) throw new Error('parishes: no kit land use ' + use);
+  lot.push(KIT_USE[use] + (wildsHash(ix, iz, SEED, 6) < 0.5 ? 0.25 : 0));   // [8] kitUse: land use + variant
+  return lot;
+}
+function kitLot0(use, ix, iz, x, z, jx, jz, hh) {
   const c = wildsHash(ix, iz, SEED, 5);
   if (use === 'residential') {
     const ax = ((ix % 4) + 4) % 4, az = ((iz % 4) + 4) % 4;
@@ -965,15 +1173,16 @@ function refillFabric() {
   let nb = 0, nt = 0, nl = 0;
   const kn = { house: 0, midrise: 0 };
   for (const c of chunkData.values()) {
-    for (const [x, z, w, h, d, fam, yaw, col] of c.block) {
+    for (const [x, z, w, h, d, fam, yaw, col, use] of c.block) {
       if (nb >= CAP.block) break;   // CAP.block bounds the buildings of all kit families together
       const m = KIT[fam]; if (!m) throw new Error('parishes: unknown building family ' + fam);
+      m.geometry.attributes.kitUse.array[kn[fam]] = use;
       M4.compose(V.set(x, 0, z), Q.setFromAxisAngle(UP, yaw), S.set(w, h, d)); m.setMatrixAt(kn[fam], M4); m.setColorAt(kn[fam]++, KC.set(col)); nb++;
     }
     for (const [x, z, s] of c.tree) { if (nt >= CAP.tree) break; M4.compose(V.set(x, 0, z), Q.identity(), S.set(s, s, s)); trees.setMatrixAt(nt++, M4); }
     for (const [x, z, r] of c.lamp) { if (nl >= CAP.lamp) break; M4.compose(V.set(x, 0, z), Q.setFromAxisAngle(UP, r), S.set(1, 1, 1)); lamps.setMatrixAt(nl++, M4); }
   }
-  for (const [f, m] of Object.entries(KIT)) { m.count = kn[f]; m.instanceMatrix.needsUpdate = true; m.instanceColor.needsUpdate = true; }
+  for (const [f, m] of Object.entries(KIT)) { m.count = kn[f]; m.instanceMatrix.needsUpdate = true; m.instanceColor.needsUpdate = true; m.geometry.attributes.kitUse.needsUpdate = true; }
   trees.count = nt; lamps.count = nl; Q.identity();
   blocks.instanceMatrix.needsUpdate = true; trees.instanceMatrix.needsUpdate = true; lamps.instanceMatrix.needsUpdate = true; dirty = false; markPhys();
 }
@@ -1044,7 +1253,7 @@ function refillStations() {
     M4.compose(V.set(x, 0, z), Q.identity(), S.set(1, 1, 1)); stations.setMatrixAt(stations.count++, M4);
     const el = document.createElement('button'); el.type = 'button'; el.className = 'lbl lm st'; el.dataset.station = st.id;
     el.textContent = st.title; el.setAttribute('aria-label', `${st.title} (${st.layer}, ${st.provenance})`);
-    el.addEventListener('click', () => { if (window.TCPaths && PATHS[id]) { mountPaths(id); window.TCPaths.open(st.id); } });
+    el.addEventListener('click', () => { if (window.TCPaths && PATHS[id]) { mountPaths(id); window.TCPaths.open(st.id); } if (window.TCClass) window.TCClass.reach('parish:' + id + '/' + st.id); });
     labelsEl.append(el); labelItems.push({ kind: 'st', el, x, y: 6, z });
   }
   stations.instanceMatrix.needsUpdate = true;
@@ -1372,6 +1581,7 @@ function frame(now) {
   matWater.emissiveIntensity = 0.06 + 0.05 * Math.sin(now / 900);   // water shimmer: one uniform, no extra draw
   waterU.uTime.value = now / 1000;
   placeCamera();
+  if (deep) deep.update(dt, over);   // DEEP: dive/ROV camera + underwater look (0 draw calls above the surface and in the overview)
   const t0 = performance.now(); if (!DIAG.noRender) renderer.render(scene, camera); frameMs = performance.now() - t0;
   info = { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles };
   if (!DIAG.noLabels && (!over || now - labelT > 250)) { labelT = now; placeLabels(); }
@@ -1528,6 +1738,9 @@ window.__parishes = {
     ground: { ready: [...groundReady].sort(), failed: groundFailed.slice(), px: GROUND_PX },
     roads: { ready: [...roadNet.entries()].filter(([, v]) => v).map(([k]) => k).sort(), failed: roadFailed.slice(), segs: roadSegs, tris: roadGeo.drawRange.count / 3, visible: roads.visible,
       gridOff: [...landMesh.entries()].filter(([, m]) => m.material.userData.grid.value === 0).map(([k]) => k).sort() },
+    detail: JSON.parse(JSON.stringify(detail)),
+    kitUse: Object.fromEntries(Object.entries(KIT).map(([k, m]) => { const a = m.geometry.attributes.kitUse.array, c = [0, 0, 0]; for (let i = 0; i < m.count; i++) c[Math.floor(a[i] + 0.01)]++; return [k, c]; })),
+    landLit: [...landMesh.values()].every((m) => m.material.isMeshBasicMaterial && m.renderOrder === -1),
     phys: { on: !!PHYS_REG, boxes: physBoxes, curbs: curbBoxes.length, y: av ? +av.y.toFixed(3) : null, water: av ? av.water : null, log: { ...physLog }, smoke: smoke ? smoke.mesh.visible : null, splash: splash.visible },
     skipped: { ...skipped }, ambient: amb ? amb.stats() : null, econ: !!(window.TCEcon && document.querySelector('[data-tc-econ]')),
     water: { cut: [...waterCut].sort(), failed: waterFailed.slice(), feats: Object.fromEntries([...waterNet.entries()].filter(([, v]) => v).map(([k, v]) => [k, v.feats.length])) },
@@ -1555,6 +1768,18 @@ window.__parishes = {
     const lx = Math.cos(best.b[6]) * (p.x - x) - Math.sin(best.b[6]) * (p.z - z), lz = Math.sin(best.b[6]) * (p.x - x) + Math.cos(best.b[6]) * (p.z - z);
     return { inside: Math.abs(lx) < w / 2 && Math.abs(lz) < d / 2, dist: +Math.hypot(p.x - x, p.z - z).toFixed(2), half: [w / 2, d / 2], boxes: physBoxes };
   },
+  /* wave 8 (eval): the street detail gathered around the eye, or around the current parish's first AUTHORED pond ('shore',
+     which also walks the eye to 30 m south of it for a look); the street mesh re-gathers at the eye on the next frame */
+  detailProbe(what) {
+    let x = eye.x, z = eye.z;
+    if (what === 'shore') {
+      const net = current && waterNet.get(current.id), f = net && net.feats.find((q) => q.kind === 'pond'); if (!f) return null;
+      [x, z] = f.ring[0]; refillRoads(x, z); const out = JSON.parse(JSON.stringify(detail)); teleport(x, z + 30, 0); roadCell = ''; return out;
+    }
+    refillRoads(x, z); const out = JSON.parse(JSON.stringify(detail));
+    if (what === 'crossing' && out.first) teleport(out.first[0] + 4, out.first[1] + 16, 0.25);
+    roadCell = ''; return out;
+  },
   physWater() {
     if (physDirty || !W) rebuildPhysics();
     const net = current && waterNet.get(current.id); if (!net || !net.feats.length) return { feats: 0 };
@@ -1574,11 +1799,37 @@ window.__parishes = {
   },
   renderScale: (k) => { if (k !== undefined) applyPR(k); return { prScale, pixelRatio: renderer.getPixelRatio() }; },
 };
+/* ---- DEEP (wave 9): underwater regions - web/deepkit.py. The registry is fetched on the first Dive/ROV press;
+   seafloor + 3 habitat families (<= 4 draw calls), none above the surface or in the overview. Depths/habitats are
+   AUTHORED; dive/ROV is a game camera for monitoring practice, not dive training. ---- */
+let deep = null, deepLoading = false;
+function deepLoad(kind) {
+  if (!DEEP_ON || deep || deepLoading) return; deepLoading = true;
+  fetch('../underwater/registry/underwater.json').then((r) => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }).then((j) => {
+    deep = deepMount({ THREE, scene, camera, data: deepWorld(j, DEEP_WORLD), eye, getMode: () => mode, waterState: () => (mode === 'walk' && av ? av.water : 'dry'),
+      T: tr, hudParent: document.getElementById('stage'), initial: kind });
+    window.__deep = deep;
+  }).catch((e) => { deepLoading = false; window.__deepError = e.message; });
+}
+if (DEEP_ON) for (const [id, k] of [['deep-dive', 'dive'], ['deep-rov', 'rov']]) document.getElementById(id).addEventListener('click', () => deepLoad(k));
 resize();
 { const p = PAR.get('22071') || PAR.get(D.parishes[0].id); const o = startSpot(p); teleport(o[0], o[1], 0); }
 requestAnimationFrame(frame);
 document.documentElement.dataset.parishesReady = '1';
 '''
+
+# CLASS (wave 8): the class session HUD + lesson moments at mapped places (web/classkit.py; play only, local,
+# never a completion record). Mounted folded (compact) so it never covers the world's own controls.
+if (ROOT / 'classroom/registry/classroom.json').exists() and (HERE / 'classkit.py').exists():
+    from classkit import class_data, class_i18n, auth_core, js_json, CLASS_CSS, CLASS_JS  # noqa: E402
+    CLASS_DATA = class_data(['parishes'])
+    CLASS_EMBED = (f'<style id="class-css">{CLASS_CSS}</style>'
+                   f'<script type="application/json" id="class-data">{js_json(CLASS_DATA)}</script>'
+                   f'<script type="application/json" id="class-i18n">{js_json(class_i18n())}</script>'
+                   f'<script id="class-auth">{auth_core()}</script>'
+                   f'<script id="class-kit">{CLASS_JS}\nTCClass.mount({{ compact: true }});</script>')
+else:
+    CLASS_DATA, CLASS_EMBED = None, ''
 
 page = f'''<!doctype html>
 <html lang="en">
@@ -1620,7 +1871,7 @@ a{{color:var(--steel)}}
 #satbox{{position:absolute;bottom:220px;inset-inline-end:10px;width:200px;height:200px;border:2px solid var(--steel);border-radius:8px;overflow:hidden;background:var(--sunk)}}
 #satbox img{{width:100%;height:100%;object-fit:cover;display:block}}
 #toast{{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:var(--mark);color:var(--mark-ink);border-radius:6px;padding:8px 14px;font-weight:600;max-width:70%}}
-.help,.none{{color:var(--muted);font-size:14px}}
+.help,.none{{color:var(--muted);font-size:14px;overflow-wrap:anywhere}}
 .none{{font-style:italic}}
 .prov{{font:600 11px/1 "IBM Plex Mono",monospace;background:var(--sunk);color:var(--muted);border-radius:4px;padding:3px 6px}}
 .honesty{{background:var(--sunk);border-inline-start:3px solid var(--mark);border-radius:6px;padding:12px 26px;color:var(--muted);font-size:14px}}
@@ -1635,6 +1886,7 @@ kbd{{font:12px "IBM Plex Mono",monospace;border:1px solid var(--rule);border-rad
 {PATH_CSS_BLOCK}
 {NPC_CSS_BLOCK}
 {ECON_CSS_BLOCK}
+{RK_CSS_BLOCK}
 </head>
 <body class="tc-theme-canvas">
 {NAV}<div class="wrap">
@@ -1658,6 +1910,7 @@ kbd{{font:12px "IBM Plex Mono",monospace;border:1px solid var(--rule);border-rad
   <div id="satbox" hidden></div>
   <div id="toast" hidden role="status"></div>
 </div>
+{DEEP_PANEL}
 <p class="help" id="maplabel" data-map-label></p>
 <p class="help" data-ground-label lang="en">{esc(DATA["honesty"]["ground"])}</p>
 <p class="help" id="satmsg" data-sat-msg aria-live="polite"></p>
@@ -1692,14 +1945,17 @@ kbd{{font:12px "IBM Plex Mono",monospace;border:1px solid var(--rule);border-rad
 <script type="importmap">
 {{"imports":{{
   "three":"./vendor/three.module.min.js",
-  "three/addons/":"./vendor/addons/"
+  "three/addons/":"./vendor/addons/"{RK_IMPORTS}
 }}}}
 </script>
 {PHYS_EMBED}
+{DEEP_EMBED}
 {ECON_SCRIPT}
 <script type="module" id="parishes-main">{JS}</script>
 {QUEST_SCRIPT}
 {PATH_SCRIPT}
+{CLASS_EMBED}
+{RK_PANEL}
 <script>{STYLE_JS}</script>
 </div></body>
 </html>

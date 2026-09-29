@@ -43,11 +43,13 @@ GROUPS = [
         ('web/trade_craft_ladder.html', 'nav.page.ladder'),
         ('web/trade_craft_3d.html', 'nav.page.campus'),
         ('web/trade_craft_schools.html', 'nav.page.schools'),
+        ('web/trade_craft_classroom.html', 'nav.page.classroom'),
     ]),
     ('nav.group.play', [
         ('web/trade_craft_quests.html', 'nav.page.quests'),
         ('web/trade_craft_wilds.html', 'nav.page.wilds'),
         ('web/trade_craft_parishes.html', 'nav.page.parishes'),
+        ('web/trade_craft_bay.html', 'nav.page.bay'),
         ('web/trade_craft_fleet.html', 'nav.page.fleet'),
         ('web/trade_craft_packs.html', 'nav.page.packs'),
     ]),

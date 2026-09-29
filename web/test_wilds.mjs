@@ -298,5 +298,23 @@ ok('[eval] web/eval_wilds.mjs declares a target for every world and all four vie
   reg.worlds.every((w) => new RegExp(`\\b${w.id}: \\{[\\s\\S]*?overview:[\\s\\S]*?trail:[\\s\\S]*?dense:[\\s\\S]*?summit:`).test(baseBlock)),
   reg.worlds.map((w) => w.id));
 
+/* [class] wave 8: the class session kit (web/classkit.py) at wilds sites - play only, no network */
+{
+  const page = read('web/trade_craft_wilds.html');
+  const js = (id) => { const m = page.match(new RegExp('<script type="application/json" id="' + id + '">([\\s\\S]*?)</script>')); return m ? JSON.parse(m[1]) : null; };
+  const cd = js('class-data'), ci = js('class-i18n'), wreg = JSON.parse(read('wilds/registry/wilds.json'));
+  const creg = JSON.parse(read('classroom/registry/classroom.json'));
+  const sites = new Set(wreg.worlds.flatMap((w) => w.sites.map((s) => 'wilds:' + w.id + '/' + s.id)));
+  ok('[class] class data embedded for the wilds world only, stamp = classroom registry', !!cd && cd.stamp === creg.source_stamp
+    && cd.worlds.join() === 'wilds' && cd.places.length > 0 && cd.places.every((p) => p.world === 'wilds'));
+  ok('[class] every wilds place in the class data is a real wilds site', !!cd && cd.places.every((p) => sites.has(p.id)));
+  ok('[class] opening a site tells the class kit it was reached (wilds:<world>/<site id>)',
+    page.includes("if (window.TCClass) window.TCClass.reach('wilds:' + W.id + '/' + id);"));
+  const kit = (page.match(/<script id="class-kit">([\s\S]*?)<\/script>/) || [, ''])[1];
+  ok('[class] class kit mounted folded, 8 locales, no network, stores only tc-class-* keys', /TCClass\.mount\(\{ compact: true \}\);/.test(kit)
+    && !!ci && Object.keys(ci).length === 8 && !/\bfetch\s*\(|XMLHttpRequest|sendBeacon|WebSocket/.test(kit)
+    && /PROG_KEY = 'tc-class-progress', PLAN_KEY = 'tc-class-plan'/.test(kit));
+}
+
 console.log(bad ? `wilds page: ${bad} FAILED, ${n} ok` : `wilds page: all ${n} checks ok`);
 process.exit(bad ? 1 : 0);

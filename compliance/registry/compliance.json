@@ -11,7 +11,7 @@
   "halls": "3807e54afe6abfe6",
   "completion": "a95de65feb282e76",
   "manifest": "169fa4e75499d00e",
-  "build_3d": "5f40778c7fb8308f",
+  "build_3d": "a09a16635cff474a",
   "hall_signoff": "e67ba161ef70d996",
   "roadmap": "edb0a399213e9e56",
   "completion_fixture": "55c31b9c5b7ce667",
@@ -58,19 +58,19 @@
  },
  "placard_rule": {
   "hangs_when": {
-   "line": 11125,
+   "line": 11186,
    "read": "if (rc.ppe.length) { const plac = label(rc.ppe.join(' · '), ..., { kind: 'placard', items: rc.ppe })"
   },
   "rc_is": {
-   "line": 11079,
+   "line": 11140,
    "read": "const rc = condOf(h.slug, r.strand);"
   },
   "condOf": {
-   "line": 14811,
+   "line": 14919,
    "read": "return D.condOver[hallSlug]?.[strand], else D.baseCond[strand]"
   },
   "condOver": {
-   "line": 682,
+   "line": 716,
    "read": "'condOver': {sl: {st: c for st, c in h['conditions'].items() if c['hazards']} for sl, h in finishes_reg['halls'].items() if any(...)}"
   },
   "rule": "a room gets a door placard iff its merged condition record (hall conditions[strand] when that strand carries a hazard, else base_conditions[strand]) lists at least one PPE item; the placard shows that list"

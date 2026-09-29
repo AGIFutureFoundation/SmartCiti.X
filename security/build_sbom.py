@@ -21,6 +21,7 @@ registry of the pack that measured them.
 The human-readable statement of the same facts is THIRD_PARTY.md; the test
 holds the two to each other rather than letting either drift.
 """
+import base64
 import hashlib
 import json
 import pathlib
@@ -105,8 +106,20 @@ UPSTREAMS = {
         'vcs': 'https://github.com/lucide-icons/lucide',
         'website': 'https://lucide.dev/',
     },
+    # The Reactor browser SDK (wave 8): only index.js and its wasm client, taken by
+    # reactor/fetch_reactor.py from the npm tarball after its sha512 matched the pin in
+    # reactor/registry/reactor.json. The package ships no LICENSE; the Apache-2.0 text is
+    # vendored from the upstream repository (manifest says where).
+    '@reactor-team/js-sdk': {
+        'purl': 'pkg:npm/%40reactor-team/js-sdk',
+        'license': 'Apache-2.0',
+        'license_url': 'https://github.com/reactor-team/reactor-client-sdks/blob/main/LICENSE',
+        'vcs': 'https://github.com/reactor-team/reactor-client-sdks',
+        'website': 'https://www.npmjs.com/package/@reactor-team/js-sdk',
+    },
 }
 ICON_MANIFEST = VENDOR / 'icons' / 'manifest.json'
+REACTOR_MANIFEST = VENDOR / 'reactor' / 'manifest.json'
 
 # The font manifest web/fetch_fonts.py wrote: which family each file belongs
 # to, and the upstream URL it came from. Read, never restated - the family
@@ -154,6 +167,8 @@ def classify(rel, src):
         return classify_font(rel, parts[-1])
     if parts[0] == 'icons':
         return classify_icon(rel, parts[-1], src)
+    if parts[0] == 'reactor':
+        return classify_reactor(rel, '/'.join(parts[1:]), src)
     raise SystemExit(f'unclassified vendored file {rel}')
 
 
@@ -174,6 +189,31 @@ def classify_icon(rel, name, src):
     m = re.search(r'lucide-static v(\d+\.\d+\.\d+)', src)
     assert m, f'{rel}: no lucide-static version in its banner'
     return 'lucide-static', 'icons/' + name, m.group(1), m.group(0)
+
+
+def classify_reactor(rel, sub, src):
+    """A Reactor SDK file, its LICENSE, an AUTHORED shim, or the manifest
+    reactor/fetch_reactor.py wrote. Every file must be in that manifest with a
+    matching sha512. The shims (import-map targets for the SDK's bare imports)
+    are OURS: listed so the SBOM covers the whole tree, marked first-party."""
+    if sub == 'manifest.json':
+        return 'first-party', sub, None, None
+    man = json.loads(REACTOR_MANIFEST.read_text(encoding='utf-8'))
+    rec = man['files'].get(sub)
+    if rec is None:
+        raise SystemExit(f'{rel}: not in web/vendor/reactor/manifest.json - run reactor/fetch_reactor.py')
+    got = 'sha512-' + base64.b64encode(hashlib.sha512((REACTOR_MANIFEST.parent / sub).read_bytes()).digest()).decode()
+    if got != rec['sha512']:
+        raise SystemExit(f'{rel}: bytes differ from the hash recorded at fetch time')
+    if rec['provenance'] == 'AUTHORED':
+        return 'first-party', sub, None, None
+    if sub == 'index.js':
+        m = re.search(r'name: "@reactor-team/js-sdk",\s*version: "(\d+\.\d+\.\d+)"', src)
+        assert m, f'{rel}: no embedded package version'
+        return '@reactor-team/js-sdk', 'dist/index.js', m.group(1), m.group(0)
+    if sub == 'LICENSE':
+        return '@reactor-team/js-sdk', 'LICENSE', None, None
+    return '@reactor-team/js-sdk', 'dist/' + sub, None, None
 
 
 def classify_font(rel, name):

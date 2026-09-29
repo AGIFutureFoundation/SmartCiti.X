@@ -84,6 +84,11 @@ ok(R.version === 1 && JSON.stringify(R.include) === '["/api/*"]' && R.exclude.le
 const { ROUTES } = await import('../payments/worker.mjs');
 ok(ROUTES.length === 2 && ROUTES.every((r) => r.startsWith('/api/')), 'every Worker route is under /api/* (reached through _routes.json)');
 ok(JSON.stringify(REG.api_routes) === JSON.stringify(ROUTES), 'registry api_routes equal the Worker ROUTES');
+const { ALL_ROUTES } = await import('../payments/worker.mjs');
+ok(ALL_ROUTES.length > ROUTES.length && ALL_ROUTES.every((r) => r.startsWith('/api/')) && ALL_ROUTES.includes('/api/reactor/token'),
+  'every Worker route incl. /api/reactor/token is under /api/* (reached through _routes.json)');
+ok(read('README.md').includes('wrangler secret put REACTOR_API_KEY') && read('README.md').includes('cloudflare/worker/.dev.vars'),
+  'README says where the Reactor key goes (Worker secret; .dev.vars for wrangler dev)');
 const FN = read('functions/api/[[path]].js');
 ok(/env\.PAYMENTS\.fetch\(request\)/.test(FN) && /status: 503/.test(FN), 'Pages Function forwards /api/* to the PAYMENTS binding, 503 without it');
 const fnMod = await import('data:text/javascript,' + encodeURIComponent(FN));
