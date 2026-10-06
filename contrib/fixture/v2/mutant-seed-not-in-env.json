@@ -318,7 +318,7 @@
      }
     ],
     "outcome": {
-     "done": "cap",
+     "done": "stopped",
      "success": false,
      "return": 0,
      "terms": {
@@ -412,7 +412,7 @@
      }
     ],
     "outcome": {
-     "done": "cap",
+     "done": "stopped",
      "success": false,
      "return": 0,
      "terms": {
@@ -519,6 +519,6 @@
  "digest": {
   "alg": "SHA-256",
   "over": "canonical JSON of every top-level field except digest, with contributor.signature forced to null: keys sorted recursively, no whitespace, UTF-8",
-  "hex": "9a4f9259c7ba3afe03a4ed6e5ee32d0618a992ff354f1fc01ee868cf95e261a6"
+  "hex": "2ce11d7865ac4cd9975cd7dba90c91e78fa5a8939250daddbe35c8feba59167d"
  }
 }

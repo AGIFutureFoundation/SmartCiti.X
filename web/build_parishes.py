@@ -1674,6 +1674,19 @@ function setMode(m) {
     if (mode !== 'overview') return false;
     applyMode(riding.medium === 'water' ? 'boat' : 'drive'); return true;
   }
+  /* BEGIN ENV w15 (ENV·Deep Environment): goal 1 root cause - the wave-5a line below toasted 'Generic stub vehicle: the fleet
+     registry is not wired yet' on EVERY setMode('drive'|'boat') although FLEETREG is embedded (window.__parishes.setMode, as
+     the media capture called it, showed the banner and a vehicle-less 14 m/s stub). With the fleet wired, Drive / Boat now
+     board the nearest parked vehicle of that medium through enterExit (the same path as E), before the walker's 60 m
+     water / land checks (a parked boat anywhere is the boat); the stub line stays only for FLEETREG === null, where it is true. */
+  if ((m === 'drive' || m === 'boat') && FLEETREG) {
+    const medium = m === 'boat' ? 'water' : 'land'; let v = null, best = Infinity;
+    for (const q of parked) if (q.medium === medium) { const d2 = (q.st.x - eye.x) ** 2 + (q.st.z - eye.z) ** 2; if (d2 < best) { best = d2; v = q; } }
+    if (!v) return false;
+    applyMode('walk'); eye.x = v.st.x; eye.z = v.st.z; envBoardings++;
+    return enterExit();
+  }
+  /* END ENV w15 */
   if (m === 'boat' && mode !== 'boat') {
     const w = nearest(eye.x, eye.z, true); if (!w) { toast(tr('parishes.boat.nowater')); return false; }
     eye.x = w[0]; eye.z = w[1];
@@ -2770,6 +2783,47 @@ if (ROOT / 'flora/registry/flora.json').exists() and (HERE / 'florakit.py').exis
         page = page.replace(_a, _b)
     STATES['flora'] = 'wired'
 # END VEG w14
+# BEGIN ENV w15 (ENV·Deep Environment): flora footprint adapters (web/florakit.py createFlora footprint / chunkReady) -
+# no plant or kerb detail stands inside a page building. footprint(x, z) tests the oriented block boxes [x, z, w, h, d, fam,
+# yaw] of the sample's chunk and its 8 neighbours (a box centred next door can reach in; WORLDS' lake re-seats live in the
+# receiver's list) padded by ENV_FOOT_PAD; chunkReady(ci, cj) holds a flora chunk until those 9 page chunks are built (flora's
+# stream radius ceil(max lod_m / CHUNK_M) = 2 < the page's RADIUS 3, so the gate always opens). Same draw calls: only
+# fewer instances. window.__envFoot() (eval): adapter stats + drawn flora items standing inside a building box now. Also
+# counts the Drive/Boat boardings of the ENV setMode block above (envBoardings).
+if STATES.get('flora') == 'wired':
+    import florakit as _fk_env  # noqa: E402
+    _ENV_MARK = 'landClass: floraClass' + _fk_env.FLORA_ADAPTERS_MARK
+    if page.count(_ENV_MARK) != 1:
+        raise BuildError(f'build_parishes: ENV flora adapter mark found {page.count(_ENV_MARK)}x (florakit FLORA_ADAPTERS_MARK)')
+    page = page.replace(_ENV_MARK, 'landClass: floraClass, footprint: envFootprint, chunkReady: envChunkReady')
+    _ENV_JS = (
+        "/* ENV w15 flora footprint adapters (see the ENV w15 block in web/build_parishes.py) */\n"
+        "const ENV_FOOT_PAD = 0.5, envFootCache = new Map();\n"
+        "function envFootList(ci, cj) {\n"
+        "  const refs = []; for (let a = -1; a <= 1; a++) for (let b = -1; b <= 1; b++) refs.push(chunkData.get((ci + a) + ',' + (cj + b)) || null);\n"
+        "  const k = ci + ',' + cj, hit = envFootCache.get(k); if (hit && hit.refs.every((r, i) => r === refs[i])) return hit.list;\n"
+        "  const x0 = ci * CHUNK_M, z0 = cj * CHUNK_M, list = [];\n"
+        "  for (const c of refs) if (c) for (const [x, z, w, , d, , yaw] of c.block) { const r = Math.hypot(w, d) / 2 + ENV_FOOT_PAD;\n"
+        "    if (x + r >= x0 && x - r <= x0 + CHUNK_M && z + r >= z0 && z - r <= z0 + CHUNK_M) list.push([x, z, w / 2 + ENV_FOOT_PAD, d / 2 + ENV_FOOT_PAD, Math.cos(yaw), Math.sin(yaw)]); }\n"
+        "  if (envFootCache.size > 96) envFootCache.clear(); envFootCache.set(k, { refs, list }); return list;\n"
+        "}\n"
+        "function envInBox(x, z, list) { for (const [bx, bz, hx, hz, c, s] of list) { const dx = x - bx, dz = z - bz; if (Math.abs(c * dx - s * dz) <= hx && Math.abs(s * dx + c * dz) <= hz) return true; } return false; }\n"
+        "function envFootprint(x, z) { return envInBox(x, z, envFootList(Math.floor(x / CHUNK_M), Math.floor(z / CHUNK_M))); }\n"
+        "function envChunkReady(ci, cj) { for (let a = -1; a <= 1; a++) for (let b = -1; b <= 1; b++) if (!chunkData.has((ci + a) + ',' + (cj + b))) return false; return true; }\n"
+        "let envBoardings = 0;\n"
+        "window.__envFoot = () => { const all = []; for (const c of chunkData.values()) for (const [x, z, w, , d, , yaw] of c.block) all.push([x, z, w / 2, d / 2, Math.cos(yaw), Math.sin(yaw)]);\n"
+        "  const items = flora.near(eye.x, eye.z, 1e7), inside = items.filter((it) => envInBox(it.x, it.z, all));\n"
+        "  return { footprint: flora.stats().footprint, drawn: items.length, plants: items.filter((it) => it.f !== 'detail').length, inside: inside.length,\n"
+        "    insidePlants: inside.filter((it) => it.f !== 'detail').length, blocks: all.length, drawCalls: flora.stats().drawCalls, boardings: envBoardings,\n"
+        "    placed: (() => { const ci = Math.floor(eye.x / CHUNK_M), cj = Math.floor(eye.z / CHUNK_M); let n = 0, inP = 0, inD = 0;   // every item flora PLACES in its 5 x 5 window (not only the LOD-drawn ones)\n"
+        "      for (let a = -2; a <= 2; a++) for (let b = -2; b <= 2; b++) for (const it of flora.placeChunk(ci + a, cj + b)) { n++; if (envInBox(it.x, it.z, all)) { if (it.f === 'detail') inD++; else inP++; } }\n"
+        "      return { items: n, insidePlants: inP, insideDetails: inD }; })() }; };\n")
+    _ENV_A = 'window.__parishes = {'
+    if page.count(_ENV_A) != 1:
+        raise BuildError(f'build_parishes: ENV anchor found {page.count(_ENV_A)}x: {_ENV_A!r}')
+    page = page.replace(_ENV_A, _ENV_JS + _ENV_A)
+    STATES['env_foot'] = 'wired'
+# END ENV w15
 
 I18N_CAT = {}
 for _f in sorted((ROOT / 'i18n/locales').glob('*.json')):

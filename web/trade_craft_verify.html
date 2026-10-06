@@ -26956,7 +26956,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     ],
     "termination": [
      "all-collected",
-     "cap"
+     "cap",
+     "stopped"
     ],
     "reward_terms": [
      "pickup",
@@ -26969,7 +26970,22 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
      2,
      3,
      4,
-     5
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20
     ],
     "arena_half_m": 20.0
    },
@@ -27054,7 +27070,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     ],
     "termination": [
      "all-binned",
-     "cap"
+     "cap",
+     "stopped"
     ],
     "reward_terms": [
      "pickup",
@@ -27068,7 +27085,22 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
      2,
      3,
      4,
-     5
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20
     ],
     "arena_half_m": 20.0
    },
@@ -27158,7 +27190,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     ],
     "termination": [
      "all-visited",
-     "cap"
+     "cap",
+     "stopped"
     ],
     "reward_terms": [
      "visit",
@@ -27171,7 +27204,22 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
      2,
      3,
      4,
-     5
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20
     ],
     "arena_half_m": 20.0
    },
@@ -27245,7 +27293,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     ],
     "termination": [
      "all-gates",
-     "cap"
+     "cap",
+     "stopped"
     ],
     "reward_terms": [
      "gate",
@@ -27258,7 +27307,22 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
      2,
      3,
      4,
-     5
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20
     ],
     "arena_half_m": 20.0
    }
@@ -28114,7 +28178,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
  "schema": "tc-robotics/1",
  "contract_version": 1,
  "built": "2026-09-29",
- "source_stamp": "cd37eedbe9936a2b",
+ "source_stamp": "81ce01899c4e84cc",
  "honesty": {
   "trained": "NOTHING HAS BEEN TRAINED. No model has been trained on these environments or on any episode they produce, and the repo records no training run. They are specs and a runnable schematic sandbox.",
   "authored": "Arenas, embodiments and dynamics are AUTHORED / SCHEMATIC (unicycle kinematics, circle obstacles); not the dynamics of any real robot, vehicle or ROV.",
@@ -28578,6 +28642,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "id": "cap",
      "when": "600 control steps (60 s) elapsed"
+    },
+    {
+     "id": "stopped",
+     "when": "the learner pressed Stop before the task ended (human episodes only; never a success)"
     }
    ],
    "episode_cap": {
@@ -28589,7 +28657,22 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     2,
     3,
     4,
-    5
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
    ],
    "rng": "mulberry32(seed)",
    "reference_policy": {
@@ -28601,6 +28684,34 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
      "veer away when an obstacle sits within 2 m ahead"
     ],
     "note": "hand-written and deterministic; not learned, no model, no network"
+   },
+   "curriculum": {
+    "provenance": "AUTHORED",
+    "gate_gap_m": 1.8,
+    "record_levels": [
+     1
+    ],
+    "levels": [
+     {
+      "level": 1,
+      "name": "spec",
+      "params": {}
+     },
+     {
+      "level": 2,
+      "name": "cluttered",
+      "params": {
+       "obstacles": 9
+      }
+     },
+     {
+      "level": 3,
+      "name": "dense",
+      "params": {
+       "obstacles": 12
+      }
+     }
+    ]
    }
   },
   "world.litter-sort": {
@@ -28770,6 +28881,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "id": "cap",
      "when": "600 control steps (60 s) elapsed"
+    },
+    {
+     "id": "stopped",
+     "when": "the learner pressed Stop before the task ended (human episodes only; never a success)"
     }
    ],
    "episode_cap": {
@@ -28781,7 +28896,22 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     2,
     3,
     4,
-    5
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
    ],
    "rng": "mulberry32(seed)",
    "reference_policy": {
@@ -28793,6 +28923,34 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
      "veer away when an obstacle sits within 2 m ahead"
     ],
     "note": "hand-written and deterministic; not learned, no model, no network"
+   },
+   "curriculum": {
+    "provenance": "AUTHORED",
+    "gate_gap_m": 1.8,
+    "record_levels": [
+     1
+    ],
+    "levels": [
+     {
+      "level": 1,
+      "name": "spec",
+      "params": {}
+     },
+     {
+      "level": 2,
+      "name": "cluttered",
+      "params": {
+       "obstacles": 6
+      }
+     },
+     {
+      "level": 3,
+      "name": "dense",
+      "params": {
+       "obstacles": 8
+      }
+     }
+    ]
    }
   },
   "world.rov-survey": {
@@ -28958,6 +29116,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "id": "cap",
      "when": "600 control steps (60 s) elapsed"
+    },
+    {
+     "id": "stopped",
+     "when": "the learner pressed Stop before the task ended (human episodes only; never a success)"
     }
    ],
    "episode_cap": {
@@ -28969,7 +29131,22 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     2,
     3,
     4,
-    5
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
    ],
    "rng": "mulberry32(seed)",
    "reference_policy": {
@@ -28981,6 +29158,34 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
      "veer away when an obstacle sits within 2 m ahead"
     ],
     "note": "hand-written and deterministic; not learned, no model, no network"
+   },
+   "curriculum": {
+    "provenance": "AUTHORED",
+    "gate_gap_m": 1.8,
+    "record_levels": [
+     1
+    ],
+    "levels": [
+     {
+      "level": 1,
+      "name": "spec",
+      "params": {}
+     },
+     {
+      "level": 2,
+      "name": "light current",
+      "params": {
+       "current_ms": 0.1
+      }
+     },
+     {
+      "level": 3,
+      "name": "strong current",
+      "params": {
+       "current_ms": 0.2
+      }
+     }
+    ]
    }
   },
   "world.gate-drive": {
@@ -29124,6 +29329,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "id": "cap",
      "when": "600 control steps (60 s) elapsed"
+    },
+    {
+     "id": "stopped",
+     "when": "the learner pressed Stop before the task ended (human episodes only; never a success)"
     }
    ],
    "episode_cap": {
@@ -29135,7 +29344,22 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     2,
     3,
     4,
-    5
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
    ],
    "rng": "mulberry32(seed)",
    "reference_policy": {
@@ -29147,6 +29371,34 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
      "veer away when an obstacle sits within 2 m ahead"
     ],
     "note": "hand-written and deterministic; not learned, no model, no network"
+   },
+   "curriculum": {
+    "provenance": "AUTHORED",
+    "gate_gap_m": 1.8,
+    "record_levels": [
+     1
+    ],
+    "levels": [
+     {
+      "level": 1,
+      "name": "spec",
+      "params": {}
+     },
+     {
+      "level": 2,
+      "name": "narrow gates",
+      "params": {
+       "gate_gap_m": 1.4
+      }
+     },
+     {
+      "level": 3,
+      "name": "tight gates",
+      "params": {
+       "gate_gap_m": 1.1
+      }
+     }
+    ]
    }
   },
   "sim.crane-lift": {
@@ -30994,6 +31246,2013 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   "robokit_envs": 4,
   "sim_seat_envs": 11,
   "trained_models": 0
+ },
+ "reference_benchmark": {
+  "what": "MEASURED success counts of the SCRIPTED reference policy (web/robokit.py ROBOKIT_CORE) over every declared seed and curriculum level, computed headless at build time by robotics/bench.mjs and recomputed by robotics/test.mjs. Not a learned policy; not a claim about any robot.",
+  "measured_by": "robotics/bench.mjs",
+  "policy": "SCRIPTED",
+  "policy_version": "eda8dcdc55733de4",
+  "seeds": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20
+  ],
+  "levels": [
+   1,
+   2,
+   3
+  ],
+  "per_env": {
+   "world.litter-pickup": {
+    "levels": {
+     "1": {
+      "level": 1,
+      "name": "spec",
+      "runs": 20,
+      "success": 9,
+      "items": 143,
+      "collisions": 0,
+      "by_seed": [
+       [
+        1,
+        1,
+        8,
+        541,
+        2.59
+       ],
+       [
+        2,
+        0,
+        6,
+        600,
+        0
+       ],
+       [
+        3,
+        1,
+        8,
+        522,
+        2.78
+       ],
+       [
+        4,
+        0,
+        6,
+        600,
+        0
+       ],
+       [
+        5,
+        0,
+        7,
+        600,
+        1
+       ],
+       [
+        6,
+        1,
+        8,
+        551,
+        2.49
+       ],
+       [
+        7,
+        0,
+        7,
+        600,
+        1
+       ],
+       [
+        8,
+        1,
+        8,
+        586,
+        2.14
+       ],
+       [
+        9,
+        0,
+        6,
+        600,
+        0
+       ],
+       [
+        10,
+        0,
+        7,
+        600,
+        1
+       ],
+       [
+        11,
+        1,
+        8,
+        479,
+        3.21
+       ],
+       [
+        12,
+        0,
+        7,
+        600,
+        1
+       ],
+       [
+        13,
+        1,
+        8,
+        542,
+        2.58
+       ],
+       [
+        14,
+        0,
+        7,
+        600,
+        1
+       ],
+       [
+        15,
+        0,
+        5,
+        600,
+        -1
+       ],
+       [
+        16,
+        1,
+        8,
+        566,
+        2.34
+       ],
+       [
+        17,
+        1,
+        8,
+        594,
+        2.06
+       ],
+       [
+        18,
+        0,
+        7,
+        600,
+        1
+       ],
+       [
+        19,
+        0,
+        6,
+        600,
+        0
+       ],
+       [
+        20,
+        1,
+        8,
+        551,
+        2.49
+       ]
+      ],
+      "mean_return": 1.38,
+      "mean_steps": 577
+     },
+     "2": {
+      "level": 2,
+      "name": "cluttered",
+      "runs": 20,
+      "success": 5,
+      "items": 134,
+      "collisions": 0,
+      "by_seed": [
+       [
+        1,
+        0,
+        6,
+        600,
+        0
+       ],
+       [
+        2,
+        0,
+        7,
+        600,
+        1
+       ],
+       [
+        3,
+        1,
+        8,
+        547,
+        2.53
+       ],
+       [
+        4,
+        0,
+        5,
+        600,
+        -1
+       ],
+       [
+        5,
+        0,
+        6,
+        600,
+        0
+       ],
+       [
+        6,
+        0,
+        7,
+        600,
+        1
+       ],
+       [
+        7,
+        1,
+        8,
+        521,
+        2.79
+       ],
+       [
+        8,
+        1,
+        8,
+        552,
+        2.48
+       ],
+       [
+        9,
+        0,
+        6,
+        600,
+        0
+       ],
+       [
+        10,
+        0,
+        6,
+        600,
+        0
+       ],
+       [
+        11,
+        0,
+        7,
+        600,
+        1
+       ],
+       [
+        12,
+        1,
+        8,
+        510,
+        2.9
+       ],
+       [
+        13,
+        0,
+        6,
+        600,
+        0
+       ],
+       [
+        14,
+        0,
+        7,
+        600,
+        1
+       ],
+       [
+        15,
+        0,
+        6,
+        600,
+        0
+       ],
+       [
+        16,
+        0,
+        6,
+        600,
+        0
+       ],
+       [
+        17,
+        0,
+        6,
+        600,
+        0
+       ],
+       [
+        18,
+        0,
+        6,
+        600,
+        0
+       ],
+       [
+        19,
+        1,
+        8,
+        569,
+        2.31
+       ],
+       [
+        20,
+        0,
+        7,
+        600,
+        1
+       ]
+      ],
+      "mean_return": 0.85,
+      "mean_steps": 585
+     },
+     "3": {
+      "level": 3,
+      "name": "dense",
+      "runs": 20,
+      "success": 7,
+      "items": 142,
+      "collisions": 0,
+      "by_seed": [
+       [
+        1,
+        0,
+        6,
+        600,
+        0
+       ],
+       [
+        2,
+        0,
+        7,
+        600,
+        1
+       ],
+       [
+        3,
+        1,
+        8,
+        594,
+        2.06
+       ],
+       [
+        4,
+        0,
+        7,
+        600,
+        1
+       ],
+       [
+        5,
+        0,
+        7,
+        600,
+        1
+       ],
+       [
+        6,
+        0,
+        7,
+        600,
+        1
+       ],
+       [
+        7,
+        1,
+        8,
+        466,
+        3.34
+       ],
+       [
+        8,
+        1,
+        8,
+        594,
+        2.06
+       ],
+       [
+        9,
+        1,
+        8,
+        538,
+        2.62
+       ],
+       [
+        10,
+        0,
+        6,
+        600,
+        0
+       ],
+       [
+        11,
+        1,
+        8,
+        529,
+        2.71
+       ],
+       [
+        12,
+        1,
+        8,
+        559,
+        2.41
+       ],
+       [
+        13,
+        0,
+        7,
+        600,
+        1
+       ],
+       [
+        14,
+        0,
+        7,
+        600,
+        1
+       ],
+       [
+        15,
+        0,
+        6,
+        600,
+        0
+       ],
+       [
+        16,
+        1,
+        8,
+        480,
+        3.2
+       ],
+       [
+        17,
+        0,
+        6,
+        600,
+        0
+       ],
+       [
+        18,
+        0,
+        7,
+        600,
+        1
+       ],
+       [
+        19,
+        0,
+        6,
+        600,
+        0
+       ],
+       [
+        20,
+        0,
+        7,
+        600,
+        1
+       ]
+      ],
+      "mean_return": 1.32,
+      "mean_steps": 578
+     }
+    }
+   },
+   "world.litter-sort": {
+    "levels": {
+     "1": {
+      "level": 1,
+      "name": "spec",
+      "runs": 20,
+      "success": 0,
+      "items": 40,
+      "collisions": 0,
+      "by_seed": [
+       [
+        1,
+        0,
+        2,
+        600,
+        -3.6
+       ],
+       [
+        2,
+        0,
+        3,
+        600,
+        -2.4
+       ],
+       [
+        3,
+        0,
+        2,
+        600,
+        -3.6
+       ],
+       [
+        4,
+        0,
+        2,
+        600,
+        -3.6
+       ],
+       [
+        5,
+        0,
+        2,
+        600,
+        -3.6
+       ],
+       [
+        6,
+        0,
+        2,
+        600,
+        -3.6
+       ],
+       [
+        7,
+        0,
+        1,
+        600,
+        -4.8
+       ],
+       [
+        8,
+        0,
+        3,
+        600,
+        -2.4
+       ],
+       [
+        9,
+        0,
+        2,
+        600,
+        -3.6
+       ],
+       [
+        10,
+        0,
+        2,
+        600,
+        -3.4
+       ],
+       [
+        11,
+        0,
+        1,
+        600,
+        -4.6
+       ],
+       [
+        12,
+        0,
+        1,
+        600,
+        -4.6
+       ],
+       [
+        13,
+        0,
+        2,
+        600,
+        -3.4
+       ],
+       [
+        14,
+        0,
+        3,
+        600,
+        -2.4
+       ],
+       [
+        15,
+        0,
+        2,
+        600,
+        -3.4
+       ],
+       [
+        16,
+        0,
+        2,
+        600,
+        -3.6
+       ],
+       [
+        17,
+        0,
+        2,
+        600,
+        -3.6
+       ],
+       [
+        18,
+        0,
+        3,
+        600,
+        -2.4
+       ],
+       [
+        19,
+        0,
+        1,
+        600,
+        -4.6
+       ],
+       [
+        20,
+        0,
+        2,
+        600,
+        -3.4
+       ]
+      ],
+      "mean_return": -3.53,
+      "mean_steps": 600
+     },
+     "2": {
+      "level": 2,
+      "name": "cluttered",
+      "runs": 20,
+      "success": 0,
+      "items": 40,
+      "collisions": 0,
+      "by_seed": [
+       [
+        1,
+        0,
+        2,
+        600,
+        -3.4
+       ],
+       [
+        2,
+        0,
+        2,
+        600,
+        -3.4
+       ],
+       [
+        3,
+        0,
+        1,
+        600,
+        -4.6
+       ],
+       [
+        4,
+        0,
+        3,
+        600,
+        -2.4
+       ],
+       [
+        5,
+        0,
+        1,
+        600,
+        -4.6
+       ],
+       [
+        6,
+        0,
+        2,
+        600,
+        -3.6
+       ],
+       [
+        7,
+        0,
+        2,
+        600,
+        -3.6
+       ],
+       [
+        8,
+        0,
+        2,
+        600,
+        -3.6
+       ],
+       [
+        9,
+        0,
+        1,
+        600,
+        -4.6
+       ],
+       [
+        10,
+        0,
+        2,
+        600,
+        -3.6
+       ],
+       [
+        11,
+        0,
+        1,
+        600,
+        -4.6
+       ],
+       [
+        12,
+        0,
+        1,
+        600,
+        -4.6
+       ],
+       [
+        13,
+        0,
+        3,
+        600,
+        -2.4
+       ],
+       [
+        14,
+        0,
+        3,
+        600,
+        -2.4
+       ],
+       [
+        15,
+        0,
+        2,
+        600,
+        -3.6
+       ],
+       [
+        16,
+        0,
+        3,
+        600,
+        -2.2
+       ],
+       [
+        17,
+        0,
+        2,
+        600,
+        -3.6
+       ],
+       [
+        18,
+        0,
+        3,
+        600,
+        -2.2
+       ],
+       [
+        19,
+        0,
+        2,
+        600,
+        -3.6
+       ],
+       [
+        20,
+        0,
+        2,
+        600,
+        -3.4
+       ]
+      ],
+      "mean_return": -3.5,
+      "mean_steps": 600
+     },
+     "3": {
+      "level": 3,
+      "name": "dense",
+      "runs": 20,
+      "success": 0,
+      "items": 38,
+      "collisions": 0,
+      "by_seed": [
+       [
+        1,
+        0,
+        2,
+        600,
+        -3.4
+       ],
+       [
+        2,
+        0,
+        3,
+        600,
+        -2.4
+       ],
+       [
+        3,
+        0,
+        1,
+        600,
+        -4.6
+       ],
+       [
+        4,
+        0,
+        3,
+        600,
+        -2.4
+       ],
+       [
+        5,
+        0,
+        2,
+        600,
+        -3.4
+       ],
+       [
+        6,
+        0,
+        2,
+        600,
+        -3.6
+       ],
+       [
+        7,
+        0,
+        3,
+        600,
+        -2.4
+       ],
+       [
+        8,
+        0,
+        2,
+        600,
+        -3.6
+       ],
+       [
+        9,
+        0,
+        2,
+        600,
+        -3.6
+       ],
+       [
+        10,
+        0,
+        2,
+        600,
+        -3.6
+       ],
+       [
+        11,
+        0,
+        1,
+        600,
+        -4.6
+       ],
+       [
+        12,
+        0,
+        1,
+        600,
+        -4.8
+       ],
+       [
+        13,
+        0,
+        2,
+        600,
+        -3.6
+       ],
+       [
+        14,
+        0,
+        2,
+        600,
+        -3.6
+       ],
+       [
+        15,
+        0,
+        2,
+        600,
+        -3.4
+       ],
+       [
+        16,
+        0,
+        2,
+        600,
+        -3.4
+       ],
+       [
+        17,
+        0,
+        1,
+        600,
+        -4.8
+       ],
+       [
+        18,
+        0,
+        2,
+        600,
+        -3.4
+       ],
+       [
+        19,
+        0,
+        1,
+        600,
+        -4.6
+       ],
+       [
+        20,
+        0,
+        2,
+        600,
+        -3.6
+       ]
+      ],
+      "mean_return": -3.64,
+      "mean_steps": 600
+     }
+    },
+    "feasibility": {
+     "what": "reach-aware straight-line path lower bound per seed [seed, bound_m, feasible, items_bound] against the travel budget v_max x cap; a seed above the budget cannot be finished by any policy under this spec (caps are not retuned)",
+     "budget_m": 60,
+     "feasible_seeds": 1,
+     "items_bound": 45,
+     "by_seed": [
+      [
+       1,
+       136.86,
+       0,
+       2
+      ],
+      [
+       2,
+       74.18,
+       0,
+       3
+      ],
+      [
+       3,
+       147.76,
+       0,
+       2
+      ],
+      [
+       4,
+       123.01,
+       0,
+       2
+      ],
+      [
+       5,
+       127.69,
+       0,
+       2
+      ],
+      [
+       6,
+       98.7,
+       0,
+       2
+      ],
+      [
+       7,
+       168.55,
+       0,
+       1
+      ],
+      [
+       8,
+       56.5,
+       1,
+       4
+      ],
+      [
+       9,
+       138.01,
+       0,
+       2
+      ],
+      [
+       10,
+       73.34,
+       0,
+       3
+      ],
+      [
+       11,
+       176.96,
+       0,
+       1
+      ],
+      [
+       12,
+       176.25,
+       0,
+       2
+      ],
+      [
+       13,
+       103.15,
+       0,
+       2
+      ],
+      [
+       14,
+       70.03,
+       0,
+       3
+      ],
+      [
+       15,
+       102.67,
+       0,
+       2
+      ],
+      [
+       16,
+       100.29,
+       0,
+       2
+      ],
+      [
+       17,
+       135.14,
+       0,
+       2
+      ],
+      [
+       18,
+       90.05,
+       0,
+       3
+      ],
+      [
+       19,
+       165.55,
+       0,
+       2
+      ],
+      [
+       20,
+       104,
+       0,
+       3
+      ]
+     ]
+    }
+   },
+   "world.rov-survey": {
+    "levels": {
+     "1": {
+      "level": 1,
+      "name": "spec",
+      "runs": 20,
+      "success": 20,
+      "items": 80,
+      "collisions": 0,
+      "by_seed": [
+       [
+        1,
+        1,
+        4,
+        291,
+        1.09
+       ],
+       [
+        2,
+        1,
+        4,
+        183,
+        2.17
+       ],
+       [
+        3,
+        1,
+        4,
+        333,
+        0.67
+       ],
+       [
+        4,
+        1,
+        4,
+        260,
+        1.4
+       ],
+       [
+        5,
+        1,
+        4,
+        179,
+        2.21
+       ],
+       [
+        6,
+        1,
+        4,
+        206,
+        1.94
+       ],
+       [
+        7,
+        1,
+        4,
+        197,
+        2.03
+       ],
+       [
+        8,
+        1,
+        4,
+        233,
+        1.67
+       ],
+       [
+        9,
+        1,
+        4,
+        250,
+        1.5
+       ],
+       [
+        10,
+        1,
+        4,
+        334,
+        0.66
+       ],
+       [
+        11,
+        1,
+        4,
+        238,
+        1.62
+       ],
+       [
+        12,
+        1,
+        4,
+        315,
+        0.85
+       ],
+       [
+        13,
+        1,
+        4,
+        275,
+        1.25
+       ],
+       [
+        14,
+        1,
+        4,
+        272,
+        1.28
+       ],
+       [
+        15,
+        1,
+        4,
+        254,
+        1.46
+       ],
+       [
+        16,
+        1,
+        4,
+        143,
+        2.57
+       ],
+       [
+        17,
+        1,
+        4,
+        218,
+        1.82
+       ],
+       [
+        18,
+        1,
+        4,
+        218,
+        1.82
+       ],
+       [
+        19,
+        1,
+        4,
+        283,
+        1.17
+       ],
+       [
+        20,
+        1,
+        4,
+        353,
+        0.47
+       ]
+      ],
+      "mean_return": 1.48,
+      "mean_steps": 252
+     },
+     "2": {
+      "level": 2,
+      "name": "light current",
+      "runs": 20,
+      "success": 20,
+      "items": 80,
+      "collisions": 0,
+      "by_seed": [
+       [
+        1,
+        1,
+        4,
+        289,
+        1.11
+       ],
+       [
+        2,
+        1,
+        4,
+        182,
+        2.18
+       ],
+       [
+        3,
+        1,
+        4,
+        330,
+        0.7
+       ],
+       [
+        4,
+        1,
+        4,
+        261,
+        1.39
+       ],
+       [
+        5,
+        1,
+        4,
+        180,
+        2.2
+       ],
+       [
+        6,
+        1,
+        4,
+        207,
+        1.93
+       ],
+       [
+        7,
+        1,
+        4,
+        195,
+        2.05
+       ],
+       [
+        8,
+        1,
+        4,
+        233,
+        1.67
+       ],
+       [
+        9,
+        1,
+        4,
+        251,
+        1.49
+       ],
+       [
+        10,
+        1,
+        4,
+        329,
+        0.71
+       ],
+       [
+        11,
+        1,
+        4,
+        242,
+        1.58
+       ],
+       [
+        12,
+        1,
+        4,
+        317,
+        0.83
+       ],
+       [
+        13,
+        1,
+        4,
+        272,
+        1.28
+       ],
+       [
+        14,
+        1,
+        4,
+        274,
+        1.26
+       ],
+       [
+        15,
+        1,
+        4,
+        258,
+        1.42
+       ],
+       [
+        16,
+        1,
+        4,
+        144,
+        2.56
+       ],
+       [
+        17,
+        1,
+        4,
+        220,
+        1.8
+       ],
+       [
+        18,
+        1,
+        4,
+        221,
+        1.79
+       ],
+       [
+        19,
+        1,
+        4,
+        286,
+        1.14
+       ],
+       [
+        20,
+        1,
+        4,
+        372,
+        0.28
+       ]
+      ],
+      "mean_return": 1.47,
+      "mean_steps": 253
+     },
+     "3": {
+      "level": 3,
+      "name": "strong current",
+      "runs": 20,
+      "success": 20,
+      "items": 80,
+      "collisions": 0,
+      "by_seed": [
+       [
+        1,
+        1,
+        4,
+        287,
+        1.13
+       ],
+       [
+        2,
+        1,
+        4,
+        181,
+        2.19
+       ],
+       [
+        3,
+        1,
+        4,
+        327,
+        0.73
+       ],
+       [
+        4,
+        1,
+        4,
+        265,
+        1.35
+       ],
+       [
+        5,
+        1,
+        4,
+        183,
+        2.17
+       ],
+       [
+        6,
+        1,
+        4,
+        209,
+        1.91
+       ],
+       [
+        7,
+        1,
+        4,
+        192,
+        2.08
+       ],
+       [
+        8,
+        1,
+        4,
+        231,
+        1.69
+       ],
+       [
+        9,
+        1,
+        4,
+        252,
+        1.48
+       ],
+       [
+        10,
+        1,
+        4,
+        326,
+        0.74
+       ],
+       [
+        11,
+        1,
+        4,
+        245,
+        1.55
+       ],
+       [
+        12,
+        1,
+        4,
+        320,
+        0.8
+       ],
+       [
+        13,
+        1,
+        4,
+        270,
+        1.3
+       ],
+       [
+        14,
+        1,
+        4,
+        277,
+        1.23
+       ],
+       [
+        15,
+        1,
+        4,
+        259,
+        1.41
+       ],
+       [
+        16,
+        1,
+        4,
+        144,
+        2.56
+       ],
+       [
+        17,
+        1,
+        4,
+        223,
+        1.77
+       ],
+       [
+        18,
+        1,
+        4,
+        222,
+        1.78
+       ],
+       [
+        19,
+        1,
+        4,
+        291,
+        1.09
+       ],
+       [
+        20,
+        1,
+        4,
+        364,
+        0.36
+       ]
+      ],
+      "mean_return": 1.47,
+      "mean_steps": 253
+     }
+    }
+   },
+   "world.gate-drive": {
+    "levels": {
+     "1": {
+      "level": 1,
+      "name": "spec",
+      "runs": 20,
+      "success": 19,
+      "items": 77,
+      "collisions": 0,
+      "by_seed": [
+       [
+        1,
+        1,
+        4,
+        411,
+        -0.11
+       ],
+       [
+        2,
+        1,
+        4,
+        409,
+        -0.09
+       ],
+       [
+        3,
+        1,
+        4,
+        457,
+        -0.57
+       ],
+       [
+        4,
+        1,
+        4,
+        429,
+        -0.29
+       ],
+       [
+        5,
+        1,
+        4,
+        445,
+        -0.45
+       ],
+       [
+        6,
+        1,
+        4,
+        404,
+        -0.04
+       ],
+       [
+        7,
+        1,
+        4,
+        378,
+        0.22
+       ],
+       [
+        8,
+        1,
+        4,
+        433,
+        -0.33
+       ],
+       [
+        9,
+        1,
+        4,
+        369,
+        0.31
+       ],
+       [
+        10,
+        1,
+        4,
+        398,
+        0.02
+       ],
+       [
+        11,
+        0,
+        1,
+        600,
+        -5
+       ],
+       [
+        12,
+        1,
+        4,
+        369,
+        0.31
+       ],
+       [
+        13,
+        1,
+        4,
+        434,
+        -0.34
+       ],
+       [
+        14,
+        1,
+        4,
+        422,
+        -0.22
+       ],
+       [
+        15,
+        1,
+        4,
+        426,
+        -0.26
+       ],
+       [
+        16,
+        1,
+        4,
+        423,
+        -0.23
+       ],
+       [
+        17,
+        1,
+        4,
+        434,
+        -0.34
+       ],
+       [
+        18,
+        1,
+        4,
+        400,
+        0
+       ],
+       [
+        19,
+        1,
+        4,
+        409,
+        -0.09
+       ],
+       [
+        20,
+        1,
+        4,
+        408,
+        -0.08
+       ]
+      ],
+      "mean_return": -0.38,
+      "mean_steps": 423
+     },
+     "2": {
+      "level": 2,
+      "name": "narrow gates",
+      "runs": 20,
+      "success": 19,
+      "items": 77,
+      "collisions": 0,
+      "by_seed": [
+       [
+        1,
+        1,
+        4,
+        410,
+        -0.1
+       ],
+       [
+        2,
+        1,
+        4,
+        408,
+        -0.08
+       ],
+       [
+        3,
+        1,
+        4,
+        464,
+        -0.64
+       ],
+       [
+        4,
+        1,
+        4,
+        439,
+        -0.39
+       ],
+       [
+        5,
+        1,
+        4,
+        443,
+        -0.43
+       ],
+       [
+        6,
+        1,
+        4,
+        403,
+        -0.03
+       ],
+       [
+        7,
+        1,
+        4,
+        377,
+        0.23
+       ],
+       [
+        8,
+        1,
+        4,
+        432,
+        -0.32
+       ],
+       [
+        9,
+        1,
+        4,
+        368,
+        0.32
+       ],
+       [
+        10,
+        1,
+        4,
+        397,
+        0.03
+       ],
+       [
+        11,
+        0,
+        1,
+        600,
+        -5
+       ],
+       [
+        12,
+        1,
+        4,
+        368,
+        0.32
+       ],
+       [
+        13,
+        1,
+        4,
+        433,
+        -0.33
+       ],
+       [
+        14,
+        1,
+        4,
+        423,
+        -0.23
+       ],
+       [
+        15,
+        1,
+        4,
+        422,
+        -0.22
+       ],
+       [
+        16,
+        1,
+        4,
+        422,
+        -0.22
+       ],
+       [
+        17,
+        1,
+        4,
+        431,
+        -0.31
+       ],
+       [
+        18,
+        1,
+        4,
+        395,
+        0.05
+       ],
+       [
+        19,
+        1,
+        4,
+        414,
+        -0.14
+       ],
+       [
+        20,
+        1,
+        4,
+        408,
+        -0.08
+       ]
+      ],
+      "mean_return": -0.38,
+      "mean_steps": 423
+     },
+     "3": {
+      "level": 3,
+      "name": "tight gates",
+      "runs": 20,
+      "success": 19,
+      "items": 77,
+      "collisions": 0,
+      "by_seed": [
+       [
+        1,
+        1,
+        4,
+        412,
+        -0.12
+       ],
+       [
+        2,
+        1,
+        4,
+        408,
+        -0.08
+       ],
+       [
+        3,
+        1,
+        4,
+        463,
+        -0.63
+       ],
+       [
+        4,
+        1,
+        4,
+        449,
+        -0.49
+       ],
+       [
+        5,
+        1,
+        4,
+        442,
+        -0.42
+       ],
+       [
+        6,
+        1,
+        4,
+        403,
+        -0.03
+       ],
+       [
+        7,
+        1,
+        4,
+        377,
+        0.23
+       ],
+       [
+        8,
+        1,
+        4,
+        429,
+        -0.29
+       ],
+       [
+        9,
+        1,
+        4,
+        368,
+        0.32
+       ],
+       [
+        10,
+        1,
+        4,
+        397,
+        0.03
+       ],
+       [
+        11,
+        0,
+        1,
+        600,
+        -5
+       ],
+       [
+        12,
+        1,
+        4,
+        367,
+        0.33
+       ],
+       [
+        13,
+        1,
+        4,
+        431,
+        -0.31
+       ],
+       [
+        14,
+        1,
+        4,
+        423,
+        -0.23
+       ],
+       [
+        15,
+        1,
+        4,
+        420,
+        -0.2
+       ],
+       [
+        16,
+        1,
+        4,
+        422,
+        -0.22
+       ],
+       [
+        17,
+        1,
+        4,
+        431,
+        -0.31
+       ],
+       [
+        18,
+        1,
+        4,
+        393,
+        0.07
+       ],
+       [
+        19,
+        1,
+        4,
+        418,
+        -0.18
+       ],
+       [
+        20,
+        1,
+        4,
+        407,
+        -0.07
+       ]
+      ],
+      "mean_return": -0.38,
+      "mean_steps": 423
+     }
+    }
+   }
+  },
+  "totals": {
+   "runs": 80,
+   "success": 48
+  }
  }
 }
 </script>
@@ -31804,6 +34063,9 @@ function worldEpisode(ep, kind, w, check) {
   check('world.outcome', oks === okeys, `${w}: outcome keys ${oks} are not ${okeys}`);
   if (oks === okeys) {
     if (env !== null) check('world.outcome', env.termination.includes(out.done), `${w}: outcome.done ${JSON.stringify(out.done)} is not a termination id of ${envId} (${env.termination.join(', ')})`);
+    // ROBO w15: 'stopped' (the learner pressed Stop) and 'cap' are endings, never successes
+    check('world.outcome', !(out.done === 'stopped' || out.done === 'cap') || out.success === false,
+      `${w}: outcome.done ${JSON.stringify(out.done)} ends the episode without finishing the task, yet success is not false`);
     check('world.outcome', typeof out.success === 'boolean' && isNum(out.return) && isInt(out.collected) && out.collected >= 0,
       `${w}: outcome success/return/collected are not bool / finite number / non-negative integer`);
     const terms = out.terms;

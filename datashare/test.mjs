@@ -243,6 +243,41 @@ rmSync(tmp, { recursive: true, force: true });
   ok(on.status === 200 && m.size === 1, 'worker: with the flag on and a (mock) bucket the routed intake stores the package');
 }
 
+/* ---- ROBO BEGIN (wave 15): world-teleop episodes from the CURRENT robokit core are verified and admitted ----
+   The robotics registry now declares 20 seeds per env and an AUTHORED curriculum (recording at level 1 only; the
+   episode kind stays world-teleop v1). Fresh episodes from web/robokit.py's ROBOKIT_CORE - one scripted run per env
+   on its LAST declared seed, plus a human episode the learner stopped early - ride in a /2 package with a recomputed
+   digest: the contrib verifier passes it and the dataset builder admits every episode. ---- */
+{
+  const kit = R('web/robokit.py'), core = kit.slice(kit.indexOf('/* ROBOKIT_CORE:BEGIN'), kit.indexOf('/* ROBOKIT_CORE:END */'));
+  const RC = new Function(core + '\nreturn RoboCore;')();
+  const T = { kind: TRAINING.world_episode_kinds['world-teleop'], world_teleop: TRAINING.world_teleop };
+  const rk = Object.values(ROBOTICS.envs).filter((e) => e.runner === 'robokit');
+  const fresh = rk.map((e, i) => ({ t: `2026-10-06T20:00:0${i}.000Z`, ...RC.rollout(e, ROBOTICS.embodiments[e.embodiments[0]], e.seeds[e.seeds.length - 1], T, 'lab', 1) }));
+  const he = rk[0], st = RC.reset(he, ROBOTICS.embodiments[he.embodiments[0]], he.seeds[11], 1), every = Math.round(1 / (T.world_teleop.sample_hz * he.episode_cap.dt_s)), hs = [];
+  for (let i = 0; i < 40; i++) { const a = { v: 0.6, w: i < 20 ? 0.3 : -0.3 }; if (st.step % every === 0) hs.push(RC.sample(st, a)); RC.step(st, a); }
+  fresh.push({ t: '2026-10-06T20:00:09.000Z', ...RC.episode(st, 'human', 'parishes', hs, T) });
+  const g2 = J('contrib/fixture/v2/good.json'), pkg = JSON.parse(JSON.stringify(g2));
+  pkg.dataset.episodes = pkg.dataset.episodes.concat(fresh);
+  pkg.dataset.episode_counts_by_kind['world-teleop'] += fresh.length;
+  pkg.digest.hex = digestOf(pkg);
+  const v = verdictOf(pkg);
+  ok(v.ok && fresh.every((e) => e.seed > 5) && fresh[fresh.length - 1].outcome.done === 'stopped',
+    `world-teleop: ${fresh.length} fresh robokit episodes (seeds beyond the wave-11 five, one human episode stopped early) pass the /2 verifier`, v);
+  const r = await CORE.buildDataset({ packages: [{ name: 'robo-w15.json', record: pkg, verdict: v }], scope: 'robot-training',
+    built_at: '2026-10-06T20:00:00Z', revocations: { record: 'tc-revocations/1', packages: [], episodes: [] } });
+  const ids = await Promise.all(fresh.map((e) => CORE.episodeId(e)));
+  ok(r.manifest.refused.length === 0 && ids.every((id) => r.manifest.episodes.some((m) => m.id === id)),
+    'world-teleop: the dataset builder admits every fresh robokit episode (no refusal, each by its episode id)', r.manifest.refused);
+  const bad = JSON.parse(JSON.stringify(pkg)); bad.dataset.episodes[bad.dataset.episodes.length - 1].seed = 21; bad.digest.hex = digestOf(bad);
+  ok(!verdictOf(bad).ok, 'world-teleop: a seed past the 20 the registry declares is still refused by the verifier', verdictOf(bad));
+  const liar = JSON.parse(JSON.stringify(pkg)); liar.dataset.episodes[liar.dataset.episodes.length - 1].outcome.success = true; liar.digest.hex = digestOf(liar);
+  const lv = verdictOf(liar);
+  ok(!lv.ok && lv.rule === 'world.outcome' && /"stopped" ends the episode without finishing the task, yet success is not false/.test(lv.detail),
+    'world-teleop: a stopped episode that claims success is refused by name (world.outcome)', lv);
+}
+/* ---- ROBO END ---- */
+
 ok(netCalls === 0, 'no test touched the network');
 console.log(`\ndatashare: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

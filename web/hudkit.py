@@ -226,6 +226,26 @@ HUD_CSS = f"""
 .hud[data-hud-compact] .hud-chip-t{{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}}
 """
 
+# BEGIN ENV w15 (ENV·Deep Environment): goal 4 - on parish / Bay phones (390 x 844) an opened fishing panel or season board
+# ran over the Reactor icon in bs (test_hudkit --browser: fish|reactor / fields|reactor). Measured cause ($SP/ENV_w15_hudprobe.log,
+# grid rows 177 / 127 / 141.5 / 120 px): adopt() writes each registration's order INLINE (style.order), which beats the
+# stylesheet's intended compact orders - `[data-open]{order:9}` (opened panel last) and class `{order:5}` (class HUD after the
+# launchers) - so row 2 laid out [drive] [class] [fields] [opened] and the opened item started at y 360 with Reactor at 484.
+# Fix (no constant retuned): both intended orders now win (!important beats the inline order) -> [launchers] [class] [opened];
+# in compact the layer is a size container (inset:0, so its size never depends on content) and an opened row-2 panel is capped
+# at HUD_CENTRE_MIN_H as cqh less 74 px (launcher 44 + item gap 6 + grid gap 8 + 16 px) and scrolls inside itself; the slot
+# shows it over the EMPTY start cell of row 3 (never the centre: the HUD_OPEN_MAX_W_COMPACT width cap stays). Worst case, if
+# the class order did not apply, the measured geometry puts the item bottom at 360 + 50 + 67.5 = 477.5 < 484.
+_ENV_OPEN_MAX_H = f'calc({HUD_CENTRE_MIN_H.rstrip("%")}cqh - 74px)'
+HUD_CSS += f"""
+.hud[data-hud-compact]{{container-type:size}}
+.hud[data-hud-compact] .hud-slot[data-hud-slot="t"]>.hud-item[data-open]{{order:9!important}}
+.hud[data-hud-compact] .hud-slot[data-hud-slot="t"]>.hud-item[data-hud-panel="class"]{{order:5!important}}
+.hud[data-hud-compact] .hud-slot[data-hud-slot="t"]:has(>.hud-item[data-open]){{overflow:visible}}
+.hud[data-hud-compact] .hud-slot[data-hud-slot="t"]>.hud-item[data-open]>.hud-adopted{{max-block-size:{_ENV_OPEN_MAX_H}!important;overflow:auto!important}}
+"""
+# END ENV w15
+
 HUD_JS = r"""
 (function () {
   const root = document.querySelector('[data-hud]');

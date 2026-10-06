@@ -45,7 +45,9 @@ PAGE_KEYS = ['robo.nav', 'robo.kicker', 'robo.title', 'robo.lede', 'robo.seo.des
              'robo.not.2', 'robo.not.3', 'robo.l.parishes', 'robo.l.bay', 'robo.l.seats', 'robo.l.contribute',
              'robo.c.obs', 'robo.c.act', 'robo.c.reward', 'robo.c.term', 'robo.c.cap', 'robo.c.seeds', 'robo.c.ref',
              'robo.c.src', 'robo.c.limits', 'robo.c.sensors', 'robo.c.teleop', 'robo.c.env', 'robo.c.seed',
-             'robo.c.done']
+             'robo.c.done', 'robo.h.an', 'robo.an.note', 'robo.an.count', 'robo.an.steps', 'robo.an.success',
+             'robo.an.duration', 'robo.an.hist', 'robo.an.card', 'robo.an.empty', 'robo.h.bench', 'robo.bench.note',
+             'robo.bench.bound', 'robo.c.level', 'robo.c.items', 'robo.bench.feas', 'robo.bench.ibound'] + ['robo.an.b.' + b for b in ('reverse', 'stop', 'forward', 'left', 'straight', 'right', 'grip', 'dive', 'rise')]
 KEYS = PAGE_KEYS + robo_i18n_keys()
 
 I18N = {}
@@ -135,6 +137,19 @@ links = ''.join(f'<li><a href="{h}">{T(k)}</a></li>' for h, k in (
     ('trade_craft_3d.html', 'robo.l.seats'), ('trade_craft_contribute.html', 'robo.l.contribute')))
 
 
+BENCH = REG['reference_benchmark']
+if BENCH['policy'] != 'SCRIPTED' or BENCH['totals']['runs'] != len(BENCH['seeds']) * len(robokit_envs):
+    raise RoboticsPageError('build_robotics: the reference benchmark is not a full SCRIPTED run over every seed')
+bench_rows = ''.join(
+    f'<tr data-bench="{E(eid)}" data-level="{E(l)}"><td><code>{E(eid)}</code></td><td>{E(l)} · {E(row["name"])}</td>'
+    f'<td data-bench-success>{row["success"]} / {row["runs"]}</td><td>{row["items"]}</td><td>{row["mean_steps"]}</td><td>{row["mean_return"]:.2f}</td></tr>'
+    for eid, v in BENCH['per_env'].items() for l, row in v['levels'].items())
+SORT_FEAS = BENCH['per_env']['world.litter-sort']['feasibility']
+if SORT_FEAS['feasible_seeds'] * 2 >= len(BENCH['seeds']):
+    raise RoboticsPageError('build_robotics: robo.bench.bound says most seeds are ruled out, but the benchmark rules out only '
+                            f"{len(BENCH['seeds']) - SORT_FEAS['feasible_seeds']} of {len(BENCH['seeds'])} - reword the key")
+
+
 def js_json(x):
     return json.dumps(x, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
 
@@ -160,7 +175,7 @@ PAGE_JS = r'''(function () {
   Object.keys(R.envs).forEach(function (id) {
     var env = R.envs[id], emb = R.embodiments[env.embodiments[0]];
     env.seeds.forEach(function (s) {
-      var ep = RoboCore.rollout(env, emb, s, data.train, 'lab'); n++; if (ep.outcome.success) ok++;
+      var ep = RoboCore.rollout(env, emb, s, data.train, 'lab', 1); n++; if (ep.outcome.success) ok++;
       var tr = document.createElement('tr'); tr.dataset.env = id;
       [id, s, ep.outcome.done, ep.steps, ep.outcome.return.toFixed(2), t(ep.outcome.success ? 'robo.yes' : 'robo.no')].forEach(function (v) {
         var td = document.createElement('td'); td.textContent = v; tr.appendChild(td); });
@@ -168,7 +183,46 @@ PAGE_JS = r'''(function () {
     });
   });
   document.getElementById('robo-refrun-sum').textContent = ok + ' / ' + n;
-  window.__roboPage = { locale: loc, dir: I[loc].dir, classroom: classroom, refOk: ok, refN: n };
+  /* ROBO_ANALYTICS:BEGIN - the learner's own local dataset, computed here from localStorage episodes (window.__robokit
+     .episodes()); no fetch, no upload, no digest of anything personal - the episodes carry none */
+  var an = { count: 0 };
+  function analytics() {
+    var eps = window.__robokit.episodes(), out = { count: eps.length, steps: 0, success: 0, duration_s: 0, by_env: {}, by_actor: {},
+      hist: { reverse: 0, stop: 0, forward: 0, left: 0, straight: 0, right: 0, grip: 0, dive: 0, rise: 0 }, samples: 0 };
+    eps.forEach(function (ep) {
+      out.steps += ep.steps; if (ep.outcome.success) out.success++; out.duration_s += ep.steps * ep.dt_s;
+      out.by_env[ep.env] = (out.by_env[ep.env] || 0) + 1; out.by_actor[ep.actor] = (out.by_actor[ep.actor] || 0) + 1;
+      var env = R.envs[ep.env], names = env ? env.action.fields.map(function (f) { return f.name; }) : ['v', 'w'];
+      ep.samples.forEach(function (x) { out.samples++;
+        var v = x.a[names.indexOf('v')], w = x.a[names.indexOf('w')];
+        out.hist[v < -0.05 ? 'reverse' : v > 0.05 ? 'forward' : 'stop']++; out.hist[w > 0.05 ? 'left' : w < -0.05 ? 'right' : 'straight']++;
+        if (names.indexOf('grip') >= 0 && x.a[names.indexOf('grip')] >= 0.5) out.hist.grip++;
+        if (names.indexOf('vz') >= 0) { var z = x.a[names.indexOf('vz')]; if (z > 0.05) out.hist.dive++; else if (z < -0.05) out.hist.rise++; } });
+    });
+    return out;
+  }
+  function render() {
+    var a = analytics(); an = a; var root = document.getElementById('robo-an');
+    root.querySelector('[data-an="count"]').textContent = a.count; root.querySelector('[data-an="steps"]').textContent = a.steps;
+    root.querySelector('[data-an="success"]').textContent = a.success + ' / ' + a.count;
+    root.querySelector('[data-an="duration"]').textContent = a.count ? (a.duration_s / a.count).toFixed(1) : '0.0';
+    document.getElementById('robo-an-empty').hidden = a.count > 0;
+    var h = document.getElementById('robo-an-hist'); h.textContent = '';
+    var mx = Math.max(1, a.samples);
+    Object.keys(a.hist).forEach(function (k) { var row = document.createElement('div'); row.className = 'an-row'; row.dataset.bin = k;
+      var lab = document.createElement('span'); lab.textContent = t('robo.an.b.' + k); var bar = document.createElement('span'); bar.className = 'an-bar';
+      bar.style.inlineSize = Math.round(100 * a.hist[k] / mx) + '%'; var num = document.createElement('span'); num.textContent = a.hist[k];
+      row.appendChild(lab); row.appendChild(bar); row.appendChild(num); h.appendChild(row); });
+    var card = { schema: 'tc-dataset/1', preview: true, built_where: 'this browser, from this device\'s episodes only; nothing uploaded',
+      schema_versions: { episode_kind: 'world-teleop/' + data.train.kind.v, robotics: R.schema, dataset: 'tc-dataset/1' },
+      episodes: a.count, control_steps: a.steps, samples: a.samples, success: a.success, by_env: a.by_env, by_actor: a.by_actor,
+      provenance: { envs: 'AUTHORED', policy: 'SCRIPTED', trained_models: 0 },
+      note: 'A real tc-dataset/1 manifest (digests, dedupe, hashed-id splits, licence, consent scope) is built by datashare/ from packages you choose to export on the Contribute page.' };
+    document.getElementById('robo-an-card').textContent = JSON.stringify(card, null, 1);
+  }
+  render(); setInterval(function () { if (window.__robokit.episodes().length !== an.count) render(); }, 1500);
+  /* ROBO_ANALYTICS:END */
+  window.__roboPage = { locale: loc, dir: I[loc].dir, classroom: classroom, refOk: ok, refN: n, analytics: analytics };
 })();'''
 
 tcss, tjs = theme('doc')
@@ -218,6 +272,9 @@ table{{border-collapse:collapse;inline-size:100%}}
 th,td{{border-block-end:1px solid var(--tc-line);padding:4px 8px;text-align:start;font-size:14px}}
 a{{color:var(--tc-link)}}
 .links a{{display:inline-flex;align-items:center;min-block-size:44px}}
+.an-row{{display:grid;grid-template-columns:7em 1fr 3em;gap:8px;align-items:center;font:13px ui-monospace,monospace}}
+.an-bar{{display:block;block-size:12px;background:var(--tc-amber);border-radius:3px;min-inline-size:2px}}
+pre.card-pre{{white-space:pre-wrap;overflow-wrap:anywhere;font:12px ui-monospace,monospace;margin:0}}
 </style>
 </head>
 <body class="tc-theme">
@@ -240,6 +297,16 @@ a{{color:var(--tc-link)}}
 <p class="muted">{T("robo.refrun.note")} <b id="robo-refrun-sum"></b></p>
 <div class="tw"><table id="robo-refrun"><thead><tr><th>{T("robo.c.env")}</th><th>{T("robo.c.seed")}</th><th>{T("robo.c.done")}</th>
 <th>{T("robo.steps")}</th><th>{T("robo.return")}</th><th>{T("robo.success")}</th></tr></thead><tbody></tbody></table></div></section>
+<section class="box" aria-labelledby="robo-h-an" id="robo-an"><h2 id="robo-h-an" data-i18n="robo.h.an">{E(EN["robo.h.an"])}</h2>
+<p class="muted" id="robo-an-note">{T("robo.an.note")}</p><p class="muted" id="robo-an-empty">{T("robo.an.empty")}</p>
+<dl class="stats"><div class="st"><dt>{T("robo.an.count")}</dt><dd data-an="count">0</dd></div><div class="st"><dt>{T("robo.an.steps")}</dt><dd data-an="steps">0</dd></div>
+<div class="st"><dt>{T("robo.an.success")}</dt><dd data-an="success">0 / 0</dd></div><div class="st"><dt>{T("robo.an.duration")}</dt><dd data-an="duration">0.0</dd></div></dl>
+<h4>{T("robo.an.hist")}</h4><div id="robo-an-hist" aria-live="polite"></div>
+<h4>{T("robo.an.card")}</h4><pre class="card-pre" id="robo-an-card"></pre></section>
+<section class="box" aria-labelledby="robo-h-bench"><h2 id="robo-h-bench" data-i18n="robo.h.bench">{E(EN["robo.h.bench"])}</h2>
+<p class="muted">{T("robo.bench.note")} <code>policy {E(BENCH["policy_version"])}</code> · seeds {E(", ".join(str(x) for x in BENCH["seeds"]))}</p>
+<p class="muted" id="robo-bench-bound">{T("robo.bench.bound")} {T("robo.bench.feas")}: <b data-feas>{SORT_FEAS["feasible_seeds"]} / {len(BENCH["seeds"])}</b> · {T("robo.bench.ibound")}: <b data-ibound>{SORT_FEAS["items_bound"]}</b> ({E(SORT_FEAS["budget_m"])} m)</p>
+<div class="tw"><table id="robo-bench"><thead><tr><th>{T("robo.c.env")}</th><th>{T("robo.c.level")}</th><th>{T("robo.success")}</th><th>{T("robo.c.items")}</th><th>{T("robo.steps")}</th><th>{T("robo.return")}</th></tr></thead><tbody>{bench_rows}</tbody></table></div></section>
 <section class="box" aria-labelledby="robo-h-envs"><h2 id="robo-h-envs" data-i18n="robo.h.envs">{E(EN["robo.h.envs"])}</h2>{cards_env}</section>
 <section class="box" aria-labelledby="robo-h-emb"><h2 id="robo-h-emb" data-i18n="robo.h.emb">{E(EN["robo.h.emb"])}</h2><div class="cards">{cards_emb}</div></section>
 <section class="box links" aria-labelledby="robo-h-links"><h2 id="robo-h-links" data-i18n="robo.h.links">{E(EN["robo.h.links"])}</h2><ul>{links}</ul></section>

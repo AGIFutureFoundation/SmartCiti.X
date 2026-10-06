@@ -132,5 +132,59 @@ for (const [page, grid] of [['web/trade_craft_parishes.html', 'parishes'], ['web
   ok(`[landcover] ${page}: fetches landcover/vendor/${grid}.u8.gz pinned to the registry sha256, landClass wired, WorldCover attribution + modification note on the legend`,
     h.includes(`"path": "landcover/vendor/${lc.grids[grid].file}"`) && h.includes(`"sha256": "${lc.grids[grid].sha256}"`) && h.includes('landClass: floraClass') && h.includes(lc.attribution.text) && h.includes('modified: ' + lc.attribution.changes) && h.includes('CC BY 4.0'));
 }
+/* ------------------------------------------------------------------ ENV w15: footprint adapters + stub-vehicle root cause ---- */
+{
+  // kit: a footprint adapter drops every sample inside a building, nothing drawn stands in it, draw-call shape unchanged
+  const box = (x, z) => x >= 20 && x <= 180 && z >= 20 && z <= 180;
+  const off = mk('louisiana'), on = mk('louisiana', { footprint: box, chunkReady: () => true });
+  for (let i = 0; i < 40; i++) { off.fl.update({ x: 100, z: 100 }); on.fl.update({ x: 100, z: 100 }); }
+  const inOff = off.fl.near(100, 100, 1e6).filter((it) => box(it.x, it.z)).length, inOn = on.fl.near(100, 100, 1e6).filter((it) => box(it.x, it.z)).length;
+  const fs = on.fl.stats().footprint, ims = (sc) => sc.children.filter((o) => o.isInstancedMesh).length;
+  ok('[env] footprint adapter: no flora item stands inside a footprint (counted in stats().footprint), same InstancedMesh set',
+    inOff > 0 && inOn === 0 && fs && fs.adapter && fs.skipped > 0 && fs.checked >= fs.skipped && ims(on.scene) === ims(off.scene) && off.fl.stats().footprint === null, [JSON.stringify({ inOff, inOn, fs })]);
+  // kit: chunkReady false holds every chunk in the queue (deferred), true lets them place
+  let ready = false; const g = mk('louisiana', { footprint: () => false, chunkReady: () => ready });
+  for (let i = 0; i < 10; i++) g.fl.update({ x: 100, z: 100 });
+  const held = g.fl.stats(); ready = true; for (let i = 0; i < 40; i++) g.fl.update({ x: 100, z: 100 });
+  ok('[env] chunkReady false holds flora chunks back (deferred, none placed) until the page has built them',
+    held.chunks === 0 && held.footprint.deferred > 0 && g.fl.stats().chunks > 0, [JSON.stringify({ held: held.footprint, chunks: held.chunks, after: g.fl.stats().chunks })]);
+  let e4 = ''; try { mk('louisiana', { footprint: 'yes' }); } catch (e) { e4 = String(e.message); }
+  ok('[env] a non-function footprint adapter throws FloraError naming it', /footprint must be a function/.test(e4), [e4]);
+  let py2 = '';
+  try { py2 = execFileSync('python3', ['-c', 'import sys; sys.path.insert(0, "web"); import florakit as f; f.flora_mount_js("louisiana", seed="S", chunk_m="C", is_ground="g", is_road="r", is_water="w", land_use="l", eye="e", overview="o", footprint="fp")'], { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }); } catch (e) { py2 = String(e.stderr); }
+  ok('[env] flora_mount_js refuses a footprint without the chunk_ready gate (FloraKitError by name)', /FloraKitError.*chunk_ready/.test(py2), [py2.slice(-200)]);
+}
+for (const page of ['web/trade_craft_parishes.html', 'web/trade_craft_bay.html']) {
+  let h = ''; try { h = readFileSync(join(ROOT, page), 'utf8'); } catch { h = ''; }
+  // page adapters, run as written in the page against a rotated building in a NEIGHBOUR chunk that reaches across the edge
+  const a = h.indexOf('/* ENV w15 flora footprint adapters'), b = h.indexOf('let envBoardings = 0;');
+  let fx = null; try { fx = new Function('chunkData', 'CHUNK_M', h.slice(a, b) + '\nreturn { envFootprint, envChunkReady };'); } catch { fx = null; }
+  let r = { wired: h.includes('landClass: floraClass, footprint: envFootprint, chunkReady: envChunkReady') };
+  if (a > 0 && b > a && fx) {
+    const cd = new Map(); for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++) if (!(i === 1 && j === 1)) cd.set(i + ',' + j, { block: [] });
+    cd.get('0,0').block.push([248, 125, 40, 9, 10, 'midrise', Math.PI / 2]);   // centred in chunk 0,0, turned 90 deg: 40 m along world z, 10 m along x (x 243..253 reaches into chunk 1,0)
+    const F = fx(cd, 250);
+    r = { ...r, inNb: F.envFootprint(252, 140), outAlong: F.envFootprint(252, 146), inPad: F.envFootprint(253.3, 125), outPad: F.envFootprint(253.7, 125), readyMissing: F.envChunkReady(0, 0) };
+    cd.set('1,1', { block: [] }); r.readyAll = F.envChunkReady(0, 0);
+  }
+  ok(`[env] ${page}: flora footprint adapters wired; a rotated building centred next door excludes its whole footprint (+0.5 m pad); a chunk waits for its 3x3 page chunks`,
+    r.wired && r.inNb === true && r.outAlong === false && r.inPad === true && r.outPad === false && r.readyMissing === false && r.readyAll === true, [JSON.stringify(r)]);
+  // goal 1 root cause: setMode('drive'|'boat') toasted the stub-vehicle line unconditionally although FLEETREG is embedded
+  const s0 = h.indexOf('function setMode(m) {'), s1 = s0 < 0 ? -1 : h.indexOf('\n}\n', s0);
+  const reg = h.match(/<script type="application\/json" id="fleet-registry">(\{.{0,40})/);
+  const run = (m, fleet) => {
+    const toasts = [], ctx = { riding: null, mode: 'walk', eye: { x: 0, z: 0 }, toasts, toast: (t) => toasts.push(t), tr: (k) => k, applyMode: (q) => { ctx.mode = q; },
+      nearest: () => null, FLEETREG: fleet ? { fleet: [] } : null, envBoardings: 0, entered: 0,
+      parked: [{ medium: 'land', st: { x: 30, z: 40 } }, { medium: 'water', st: { x: -300, z: 10 } }] };
+    ctx.enterExit = () => { ctx.entered++; ctx.mode = ctx.eye.x === -300 ? 'boat' : 'drive'; return true; };
+    const f = new Function('ctx', 'with (ctx) { ' + h.slice(s0, s1 + 2) + ' return setMode; }')(ctx);
+    return { ret: f(m), toasts, entered: ctx.entered, mode: ctx.mode, at: [ctx.eye.x, ctx.eye.z] };
+  };
+  let d = null; try { d = s0 > 0 && s1 > s0 ? { drive: run('drive', true), boat: run('boat', true), stub: run('drive', false) } : null; } catch (e) { d = { err: String(e.message) }; }
+  ok(`[env] ${page}: with the fleet registry embedded, setMode('drive'|'boat') boards the nearest parked vehicle of that medium and never shows the stub-vehicle line (only a null registry does)`,
+    !!reg && !!d && !d.err && d.drive.ret === true && d.drive.entered === 1 && d.drive.at.join() === '30,40' && !d.drive.toasts.includes('parishes.stub_vehicle')
+      && d.boat.entered === 1 && d.boat.at.join() === '-300,10' && !d.boat.toasts.includes('parishes.stub_vehicle')
+      && d.stub.entered === 0 && d.stub.toasts.includes('parishes.stub_vehicle'), [JSON.stringify(d)]);
+}
 console.log(`\n${n} checks passed, ${bad} failed`);
 process.exit(bad ? 1 : 0);

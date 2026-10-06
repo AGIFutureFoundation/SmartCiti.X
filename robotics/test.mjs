@@ -131,5 +131,41 @@ console.log(`  (measured) scripted reference: ${succ}/${runs.length} runs reach 
   + rk.map((e) => `${e.id} ${runs.filter((r) => r.e === e && r.a.outcome.success).length}/${e.seeds.length}`).join(', '));
 ok(`the scripted reference beats an idle robot on most runs (${beat}/${runs.length} measured)`, beat >= Math.ceil(runs.length * 0.75));
 
+/* ---- wave 15: AUTHORED curriculum, MEASURED reference benchmark, litter-sort feasibility ---- */
+ok('every robokit env carries an AUTHORED 3-level curriculum whose level 1 IS the spec (empty override), recording at level 1 only',
+  rk.every((e) => e.curriculum && e.curriculum.provenance === 'AUTHORED' && e.curriculum.levels.map((l) => l.level).join() === '1,2,3'
+    && Object.keys(e.curriculum.levels[0].params).length === 0 && JSON.stringify(e.curriculum.record_levels) === '[1]'
+    && e.curriculum.levels.every((l) => Object.keys(l.params).every((k) => ['obstacles', 'gate_gap_m', 'current_ms'].includes(k)))));
+ok('levels 2 and 3 change the layout (or the dynamics) of every env, and an undeclared level is refused by name',
+  rk.every((e) => { const emb = reg.embodiments[e.embodiments[0]], a = RoboCore.rollout(e, emb, e.seeds[0], T, 'lab', 1);
+    return [2, 3].every((l) => JSON.stringify(RoboCore.rollout(e, emb, e.seeds[0], T, 'lab', l)) !== JSON.stringify(a)); })
+  && (() => { try { RoboCore.reset(rk[0], reg.embodiments[rk[0].embodiments[0]], 1, 9); return false; } catch (x) { return /level 9 is not declared/.test(x.message); } })());
+ok('no curriculum level raises an object count past the observation range the spec declares',
+  rk.every((e) => e.curriculum.levels.every((l) => !('litter' in l.params) && !('targets' in l.params) && !('gates' in l.params))));
+const B = reg.reference_benchmark;
+ok('the reference benchmark block exists: SCRIPTED policy, measured by robotics/bench.mjs, 20 declared seeds, levels 1-3',
+  B && B.policy === 'SCRIPTED' && B.measured_by === 'robotics/bench.mjs' && B.seeds.length === 20
+  && rk.every((e) => e.seeds.join() === B.seeds.join()) && B.levels.join() === '1,2,3' && /Not a learned policy/.test(B.what));
+ok('the benchmark policy version is the sha256[:16] of the CURRENT robokit core (a stale block fails here)',
+  B.policy_version === createHash('sha256').update(core).digest('hex').slice(0, 16));
+const { bench } = await import('./bench.mjs');
+const RE = bench(reg, RoboCore, T, core);
+ok('the stored benchmark counts equal a fresh headless recount: success, items, mean steps per env and level',
+  JSON.stringify(Object.fromEntries(Object.entries(RE.per_env).map(([k, v]) => [k, v.levels])))
+    === JSON.stringify(Object.fromEntries(Object.entries(B.per_env).map(([k, v]) => [k, v.levels])))
+  && B.totals.runs === RE.totals.runs && B.totals.success === RE.totals.success);
+const F = B.per_env['world.litter-sort'].feasibility, S1 = B.per_env['world.litter-sort'].levels['1'];
+ok(`litter-sort feasibility bound is stored per seed against v_max x cap (${F.budget_m} m): success never exceeds the feasible seeds, items never exceed the bound (${S1.items}/${F.items_bound} items binned, ${F.feasible_seeds}/20 feasible)`,
+  F.by_seed.length === 20 && F.budget_m === reg.embodiments['arm.on-base'].limits.v_max_ms * 600 * 0.1
+  && S1.success <= F.feasible_seeds && S1.items <= F.items_bound && F.by_seed.every((b) => b[1] > 0 && (b[2] === 1) === (b[1] <= F.budget_m)));
+ok('every robokit env declares the "stopped" ending (learner pressed Stop), and it is never a success termination',
+  rk.every((e) => e.termination.some((t) => t.id === 'stopped') && e.termination[0].id !== 'stopped'));
+{ const e = reg.envs['world.litter-sort'], emb = reg.embodiments[e.embodiments[0]], st = RoboCore.reset(e, emb, e.seeds[0], 1);
+  const P = emb.radius_m + emb.limits.reach_m; st.carrying = st.items[0]; st.items[0].taken = true;
+  st.e = st.bin.e; st.n = st.bin.n - (P + 0.2); st.yaw = 0; const a = RoboCore.policy(st); RoboCore.step(st, a);
+  ok(`policy v3: carrying, the scripted gripper closes inside the deposit circle (${(P + 0.2).toFixed(1)} m from the bin, beyond the ${P.toFixed(1)} m pickup circle) and the item is binned`,
+    a.grip === 1 && st.collected === 1 && st.carrying === null); }
+console.log(`  (measured) benchmark: ${rk.map((e) => `${e.id} ` + [1, 2, 3].map((l) => `L${l} ${B.per_env[e.id].levels[String(l)].success}/${B.per_env[e.id].levels[String(l)].runs}`).join(' ')).join('; ')}`);
+
 console.log(`robotics/test: ${pass} passed, ${fail} failed`);
 if (fail) process.exit(1);

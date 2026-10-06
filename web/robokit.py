@@ -64,7 +64,7 @@ ROBO_I18N_KEYS = ['robo.panel', 'robo.env', 'robo.seed', 'robo.reset', 'robo.rec
                   'robo.compare', 'robo.you', 'robo.refpol', 'robo.return', 'robo.steps', 'robo.success',
                   'robo.kept', 'robo.honesty', 'robo.classroom', 'robo.off', 'robo.hint', 'robo.t.fwd', 'robo.t.back',
                   'robo.t.left', 'robo.t.right', 'robo.t.grip', 'robo.t.up', 'robo.t.down', 'robo.yes', 'robo.no',
-                  'robo.export', 'robo.recording', 'robo.done']
+                  'robo.export', 'robo.recording', 'robo.done', 'robo.level', 'robo.level.note']
 
 
 def robo_i18n_keys():
@@ -140,11 +140,13 @@ def robo_panel_html(T, world):
             f'<h2 id="robo-h">{T("robo.panel")}</h2>'
             f'<div class="robo-row"><label>{T("robo.env")} <select id="robo-env"></select></label>'
             f'<label>{T("robo.seed")} <select id="robo-seed"></select></label>'
+            f'<label>{T("robo.level")} <select id="robo-level"></select></label>'
             f'<button type="button" id="robo-reset">{T("robo.reset")}</button>'
             f'<button type="button" id="robo-rec" aria-pressed="false">{T("robo.record")}</button>'
             f'<button type="button" id="robo-ref">{T("robo.ref")}</button>'
             f'<button type="button" id="robo-export">{T("robo.export")}</button></div>'
             f'<p class="robo-hud" id="robo-hint">{T("robo.hint")}</p>'
+            f'<p class="robo-hud" id="robo-lvlnote" hidden>{T("robo.level.note")}</p>'
             f'<div class="robo-stage"><canvas id="robo-canvas" width="420" height="420" tabindex="0" '
             f'aria-label="robot arena"></canvas>'
             f'<div><div class="robo-pad" id="robo-pad"></div><p class="robo-hud" id="robo-hud" aria-live="polite"></p>'
@@ -166,7 +168,14 @@ const RoboCore = (() => {
   const clamp = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
   const hash = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
   function field(env, name) { const f = env.action.fields.find((x) => x.name === name); if (!f) throw new Error('robokit: action field ' + name); return f; }
-  function layout(env, seed) {
+  /* AUTHORED curriculum: level 1 is the spec (empty override); levels 2-3 tighten knobs from env.curriculum.levels[].params */
+  function levelParams(env, level) {
+    const lv = env.curriculum.levels.find((l) => l.level === level);
+    if (!lv) throw new Error('robokit: level ' + level + ' is not declared for ' + env.id);
+    return { obstacles: env.objects.obstacles || 0, gate_gap_m: env.curriculum.gate_gap_m, current_ms: 0, ...lv.params };
+  }
+  function layout(env, seed, level) {
+    const P = levelParams(env, level === undefined ? 1 : level);
     const rnd = mulberry32((hash(env.id) ^ Math.imul(seed, 2654435761)) >>> 0), H = env.world.arena_half_m, o = env.objects;
     const obst = [], items = [], gates = [], targets = []; let bin = null;
     const free = (e, n, clear) => Math.hypot(e, n) > 3.5 && Math.abs(e) < H - 1.5 && Math.abs(n) < H - 1.5
@@ -176,19 +185,20 @@ const RoboCore = (() => {
     if (o.gates) for (let i = 0, pe = 0, pn = 0; i < o.gates; i++) { const a = (i + 0.5) / o.gates * 2 * Math.PI + (rnd() - 0.5) * 0.4, R = 9 + rnd() * 4;
       const e = -Math.sin(a) * R, n = Math.cos(a) * R, L = Math.hypot(e - pe, n - pn), ue = (e - pe) / L, un = (n - pn) / L;
       gates.push({ id: 'gate-' + (i + 1), e, n, a });   // the two cones flank the line from the previous gate (or the spawn)
-      for (const s of [-1, 1]) obst.push({ id: 'cone-' + (i + 1) + (s < 0 ? 'a' : 'b'), e: e - un * 1.8 * s, n: n + ue * 1.8 * s, r: 0.3 });
+      for (const s of [-1, 1]) obst.push({ id: 'cone-' + (i + 1) + (s < 0 ? 'a' : 'b'), e: e - un * P.gate_gap_m * s, n: n + ue * P.gate_gap_m * s, r: 0.3 });
       pe = e; pn = n; }
     if (o.bin) { const p = place(2); bin = { id: 'bin', e: p[0], n: p[1] }; }
-    for (let i = 0; i < (o.obstacles || 0); i++) { const r = 0.8 + rnd() * 0.7, p = place(r + 2.2); obst.push({ id: 'rock-' + (i + 1), e: p[0], n: p[1], r }); }
+    for (let i = 0; i < P.obstacles; i++) { const r = 0.8 + rnd() * 0.7, p = place(r + 2.2); obst.push({ id: 'rock-' + (i + 1), e: p[0], n: p[1], r }); }
     const types = o.litter_types || [];
     for (let i = 0; i < (o.litter || 0); i++) { const p = place(1.2); items.push({ id: 'litter-' + (i + 1), e: p[0], n: p[1], type: types[Math.floor(rnd() * types.length)], taken: false, binned: false }); }
     for (let i = 0; i < (o.targets || 0); i++) { const p = place(1.5); targets.push({ id: 'target-' + (i + 1), e: p[0], n: p[1], d: 1 + Math.round(rnd() * 60) / 10, visited: false }); }
-    return { obst, items, gates, targets, bin };
+    return { obst, items, gates, targets, bin, current_ms: P.current_ms };
   }
-  function reset(env, emb, seed) {
+  function reset(env, emb, seed, level) {
     if (!env.seeds.includes(seed)) throw new Error('robokit: seed ' + seed + ' is not declared for ' + env.id);
-    const L = layout(env, seed);
-    return { env, emb, seed, e: 0, n: 0, yaw: 0, v: 0, w: 0, depth: 0, step: 0, next: 0, carrying: null, contact: false,
+    level = level === undefined ? 1 : level;
+    const L = layout(env, seed, level);
+    return { env, emb, seed, level, e: 0, n: 0, yaw: 0, v: 0, w: 0, depth: 0, step: 0, next: 0, carrying: null, contact: false,
       backoff: 0, ret: 0, terms: Object.fromEntries(env.reward.map((r) => [r.term, 0])), done: null, collected: 0, ...L };
   }
   function goal(st) {
@@ -219,7 +229,7 @@ const RoboCore = (() => {
     const fv = field(env, 'v'), fw = field(env, 'w'), r0 = st.ret;
     st.v = clamp(Number(a.v) || 0, fv.low, fv.high); st.w = clamp(Number(a.w) || 0, fw.low, fw.high);
     st.yaw = wrap(st.yaw + st.w * dt);
-    const ne = st.e - Math.sin(st.yaw) * st.v * dt, nn = st.n + Math.cos(st.yaw) * st.v * dt;
+    const ne = st.e - Math.sin(st.yaw) * st.v * dt + st.current_ms * dt, nn = st.n + Math.cos(st.yaw) * st.v * dt;   // current: AUTHORED eastward drift (0 at level 1)
     const hit = Math.abs(ne) > H - R || Math.abs(nn) > H - R || st.obst.some((b) => Math.hypot(b.e - ne, b.n - nn) < b.r + R);
     if (hit) { if (!st.contact) add(st, 'collision', 1); st.contact = true; st.v = 0; } else { st.contact = false; st.e = ne; st.n = nn; }
     if (env.objects.targets) { const fz = field(env, 'vz'); st.depth = clamp(st.depth + clamp(Number(a.vz) || 0, fz.low, fz.high) * dt, 0, lim.depth_max_m); }
@@ -241,21 +251,31 @@ const RoboCore = (() => {
      speed falling with heading error, a short reverse after a strike; grip in reach; depth proportional. Deterministic. */
   function policy(st) {
     const o = obs(st), lim = st.emb.limits, g = goal(st), H = st.env.world.arena_half_m;
+    const gd = g ? Math.hypot(g.e - st.e, g.n - st.n) : 0;   // distance to the policy's own pick
     // steer on a potential field: unit pull toward the goal + a push away from every obstacle and wall within 2.5 m
     let fe = 0, fn = 0;
-    if (g) { const L = Math.max(1e-6, o.target_dist); fe = (g.e - st.e) / L; fn = (g.n - st.n) / L; }
+    if (g) { const L = Math.max(1e-6, gd); fe = (g.e - st.e) / L; fn = (g.n - st.n) / L; }
+    // gate approach: the two cones flanking the gate being taken push only inside 0.8 m (a centring nudge), not 2.5 m -
+    // at 2.5 m their pushes cancel sideways and only hold the rover off the gate line; every other obstacle pushes at 2.5 m
+    const flank = st.env.objects.gates && g ? 'cone-' + (st.next + 1) : null;
     for (const ob of st.obst) { const de = st.e - ob.e, dn = st.n - ob.n, L = Math.hypot(de, dn), c = L - ob.r - st.emb.radius_m;
-      if (c < 2.5 && L > 1e-6 && (!g || c < o.target_dist)) { const k = 1.6 * (2.5 - c) / 2.5; fe += de / L * k; fn += dn / L * k; } }
+      const reach = flank && (ob.id === flank + 'a' || ob.id === flank + 'b') ? 0.8 : 2.5;
+      if (c < reach && L > 1e-6 && (!g || c < gd)) { const k = 1.6 * (reach - c) / reach; fe += de / L * k; fn += dn / L * k; } }
     for (const [ax, sgn] of [['e', 1], ['e', -1], ['n', 1], ['n', -1]]) { const c = H - sgn * st[ax] - st.emb.radius_m;
       if (c < 2.5) { const k = -sgn * 1.6 * (2.5 - c) / 2.5; if (ax === 'e') fe += k; else fn += k; } }
     const b = wrap(Math.atan2(-fe, fn) - st.yaw);
-    let w = clamp(2.2 * b, -lim.w_max_rads, lim.w_max_rads), v = lim.v_max_ms * Math.max(0, Math.cos(b)) ** 2;
-    if (o.target_dist < 2) v = Math.min(v, 0.4 + 0.4 * o.target_dist);
+    // speed falls linearly with the heading error (the earlier square law crawled through every turn); no slowdown on
+    // approach - pickups, gates and the gripper all trigger on distance, so arriving fast costs nothing
+    let w = clamp(2.2 * b, -lim.w_max_rads, lim.w_max_rads), v = lim.v_max_ms * Math.max(0, Math.cos(b));
     if (st.contact && !st.backoff) st.backoff = 6;   // struck: reverse 0.6 s, then the field steers around
     if (st.backoff) { st.backoff--; v = lim.v_min_ms * 0.6; w = 0; }
     const a = { v, w };
-    if (st.env.objects.bin) a.grip = o.target_dist < st.emb.radius_m + lim.reach_m ? 1 : 0;
-    if (st.env.objects.targets) { a.vz = clamp(1.5 * (o.target_depth - o.depth), -lim.vz_max_ms, lim.vz_max_ms); if (Math.abs(o.target_depth - o.depth) > 1 && o.target_dist < 3) a.v = Math.min(a.v, 0.3); }
+    // grip approach: close the gripper as soon as the pick (or the bin, when carrying) is inside the reach circle
+    // v3: carrying, close it inside the deposit circle step() uses (reach + 0.3 m), not the smaller pickup circle -
+    // the old rule drove 0.3 m further into every deposit. (A whole-trip item choice, robot->item->bin, was measured
+    // too and binned fewer items over the same 20 seeds, 37 vs 40, so the pick stays the nearest item.)
+    if (st.env.objects.bin) a.grip = gd < st.emb.radius_m + lim.reach_m + (st.carrying ? 0.3 : 0) ? 1 : 0;
+    if (st.env.objects.targets) { a.vz = clamp(1.5 * (o.target_depth - o.depth), -lim.vz_max_ms, lim.vz_max_ms); if (Math.abs(o.target_depth - o.depth) > 1 && gd < 3) a.v = Math.min(a.v, 0.3); }
     return a;
   }
   function vec(st, a) { return st.env.action.fields.map((f) => Math.round((Number(a[f.name]) || 0) * 1000) / 1000); }
@@ -270,8 +290,8 @@ const RoboCore = (() => {
       outcome: { done: st.done || 'stopped', success: !!st.done && st.done !== 'cap', return: Math.round(st.ret * 1000) / 1000,
         terms: Object.fromEntries(Object.entries(st.terms).map(([k, x]) => [k, Math.round(x * 1000) / 1000])), collected: st.collected } };
   }
-  function rollout(env, emb, seed, T, world) {
-    const st = reset(env, emb, seed), every = Math.round(1 / (T.world_teleop.sample_hz * env.episode_cap.dt_s)), samples = [];
+  function rollout(env, emb, seed, T, world, level) {
+    const st = reset(env, emb, seed, level), every = Math.round(1 / (T.world_teleop.sample_hz * env.episode_cap.dt_s)), samples = [];
     while (!st.done) { const a = policy(st); if (st.step % every === 0 && samples.length < T.world_teleop.max_samples) samples.push(sample(st, a)); step(st, a); }
     return episode(st, 'scripted-reference', world, samples, T);
   }
@@ -287,7 +307,7 @@ function roboMount(root, data, opt) {
   const HZ = D_TRAIN.world_teleop.sample_hz, MAXS = D_TRAIN.world_teleop.max_samples;
   const classroom = !!opt.classroom;
   let env = null, emb = null, st = null, rec = false, samples = [], held = {}, acc = 0, last = 0, kept = 0, lastHuman = null;
-  const sel = $('#robo-env'), seedSel = $('#robo-seed'), cv = $('#robo-canvas'), g = cv.getContext('2d');
+  const sel = $('#robo-env'), seedSel = $('#robo-seed'), lvlSel = $('#robo-level'), cv = $('#robo-canvas'), g = cv.getContext('2d');
   for (const e of Object.values(R.envs)) { const o = document.createElement('option'); o.value = e.id; o.textContent = e.name; sel.appendChild(o); }
   const baseOn = () => { try { return localStorage.getItem(TR_ON) !== '0'; } catch (e) { return true; } };
   function keep(ep) {
@@ -306,13 +326,17 @@ function roboMount(root, data, opt) {
       p.appendChild(el);
     }
   }
-  function load(id, seed) {
+  /* recording is offered only at the levels the registry lists (level 1 = the registered spec); other levels are practice */
+  const canRecord = () => !classroom && env.curriculum.record_levels.includes(st.level);
+  function load(id, seed, level) {
     env = R.envs[id]; emb = R.embodiments[env.embodiments[0]];
     seedSel.textContent = ''; for (const s of env.seeds) { const o = document.createElement('option'); o.value = s; o.textContent = s; seedSel.appendChild(o); }
-    seedSel.value = String(seed || env.seeds[0]); sel.value = id;
-    st = RoboCore.reset(env, emb, Number(seedSel.value)); samples = []; setRec(false); pad(); draw(); hud();
+    lvlSel.textContent = ''; for (const l of env.curriculum.levels) { const o = document.createElement('option'); o.value = l.level; o.textContent = l.level + ' · ' + l.name; lvlSel.appendChild(o); }
+    seedSel.value = String(seed || env.seeds[0]); lvlSel.value = String(level || env.curriculum.levels[0].level); sel.value = id;
+    st = RoboCore.reset(env, emb, Number(seedSel.value), Number(lvlSel.value)); samples = []; setRec(false); pad(); draw(); hud();
+    $('#robo-rec').disabled = classroom || !canRecord(); $('#robo-lvlnote').hidden = canRecord() || classroom;
   }
-  function setRec(on) { rec = on && !classroom; $('#robo-rec').setAttribute('aria-pressed', String(rec)); $('#robo-rec').textContent = t(rec ? 'robo.stop' : 'robo.record'); }
+  function setRec(on) { rec = on && canRecord(); $('#robo-rec').setAttribute('aria-pressed', String(rec)); $('#robo-rec').textContent = t(rec ? 'robo.stop' : 'robo.record'); }
   const keys = new Set();
   /* keys are read only while focus is inside this panel (click the arena), and they stop here - a world page's own
      walk / drive keys never see them, and robokit never sees the world's */
@@ -346,7 +370,7 @@ function roboMount(root, data, opt) {
     return ep;
   }
   function runRef() {
-    const ep = RoboCore.rollout(env, emb, st.seed, D_TRAIN, world);
+    const ep = RoboCore.rollout(env, emb, st.seed, D_TRAIN, world, st.level);
     row('ref', ep);
     if (rec) { const ok = keep(ep); $('#robo-kept').textContent = ok ? t('robo.kept') + ' ' + kept : t('robo.off'); setRec(false); }
     return ep;
@@ -354,7 +378,7 @@ function roboMount(root, data, opt) {
   function hud() {
     const o = RoboCore.obs(st), r = (x) => (Math.round(x * 100) / 100).toFixed(2);
     $('#robo-hud').textContent = `e ${r(o.pose_e)} m · n ${r(o.pose_n)} m · yaw ${r(o.yaw)} rad · v ${r(o.v)} m/s` +
-      (o.depth !== undefined ? ` · depth ${r(o.depth)} m` : '') + ` · step ${st.step}/${env.episode_cap.steps} · R ${r(st.ret)}` +
+      (o.depth !== undefined ? ` · depth ${r(o.depth)} m` : '') + ` · L${st.level} · step ${st.step}/${env.episode_cap.steps} · R ${r(st.ret)}` +
       (st.done ? ' · ' + t('robo.done') + ': ' + st.done : '') + (rec ? ' · ' + t('robo.recording') + ' ' + samples.length : '');
   }
   function draw() {
@@ -366,7 +390,8 @@ function roboMount(root, data, opt) {
     if (st.bin) { g.fillStyle = '#41c4d4'; g.fillRect(X(st.bin.e) - 0.7 * s, Y(st.bin.n) - 0.7 * s, 1.4 * s, 1.4 * s); }
     for (const it of st.items) if (!it.taken || (st.carrying === it)) { g.fillStyle = R.litter_colors[it.type]; const p = st.carrying === it ? [st.e, st.n] : [it.e, it.n]; g.beginPath(); g.arc(X(p[0]), Y(p[1]), 0.45 * s, 0, 7); g.fill(); }
     for (const q of st.targets) { g.strokeStyle = q.visited ? '#5fbf7a' : '#fad08c'; g.lineWidth = 2; g.beginPath(); g.arc(X(q.e), Y(q.n), 1.5 * s, 0, 7); g.stroke(); g.fillStyle = '#fad08c'; g.font = '11px monospace'; g.fillText(q.d.toFixed(1) + ' m', X(q.e) + 1.6 * s, Y(q.n)); }
-    const rr = Math.max(7, emb.radius_m * s);   // drawn at least 14 px so it reads on a phone g.save(); g.translate(X(st.e), Y(st.n)); g.rotate(-st.yaw);
+    const rr = Math.max(7, emb.radius_m * s);   // drawn at least 14 px so it reads on a phone
+    g.save(); g.translate(X(st.e), Y(st.n)); g.rotate(-st.yaw);
     g.fillStyle = emb.kind === 'rov' ? '#fad08c' : emb.kind === 'arm-on-base' ? '#e0655b' : '#e8edec'; g.fillRect(-rr, -rr, 2 * rr, 2 * rr);
     g.fillStyle = '#12181b'; g.beginPath(); g.moveTo(0, -rr * 1.4); g.lineTo(-rr * 0.6, -rr * 0.2); g.lineTo(rr * 0.6, -rr * 0.2); g.fill(); g.restore();
   }
@@ -376,9 +401,10 @@ function roboMount(root, data, opt) {
     draw(); hud(); requestAnimationFrame(loop);
   }
   sel.addEventListener('change', () => load(sel.value));
-  seedSel.addEventListener('change', () => load(env.id, Number(seedSel.value)));
-  $('#robo-reset').addEventListener('click', () => load(env.id, st.seed));
-  $('#robo-rec').addEventListener('click', () => { if (rec) { if (st.step) finish('human'); else setRec(false); } else { load(env.id, st.seed); setRec(true); cv.focus(); } });
+  seedSel.addEventListener('change', () => load(env.id, Number(seedSel.value), st.level));
+  lvlSel.addEventListener('change', () => load(env.id, st.seed, Number(lvlSel.value)));
+  $('#robo-reset').addEventListener('click', () => load(env.id, st.seed, st.level));
+  $('#robo-rec').addEventListener('click', () => { if (rec) { if (st.step) finish('human'); else setRec(false); } else if (canRecord()) { load(env.id, st.seed, st.level); setRec(true); cv.focus(); } });
   $('#robo-ref').addEventListener('click', () => runRef());
   $('#robo-export').addEventListener('click', () => {
     let log = []; try { const a = JSON.parse(localStorage.getItem(TR_KEY_W)); if (Array.isArray(a)) log = a; } catch (e) { /* none */ }
@@ -389,12 +415,12 @@ function roboMount(root, data, opt) {
   if (classroom) { $('#robo-rec').disabled = true; $('#robo-export').disabled = true; $('#robo-class').hidden = false; }
   load(Object.keys(R.envs)[0]);
   requestAnimationFrame(loop);
-  const api = { envs: () => Object.keys(R.envs), reset: (id, seed) => { load(id, seed); return RoboCore.obs(st); },
+  const api = { envs: () => Object.keys(R.envs), reset: (id, seed, level) => { load(id, seed, level); return RoboCore.obs(st); },
     step: (a) => { if (rec && st.step % every() === 0 && samples.length < MAXS) samples.push(RoboCore.sample(st, a)); const r = RoboCore.step(st, a); return { ...r, info: { terms: st.terms } }; },
     drive: (a, n) => { for (let i = 0; i < n && !st.done; i++) tick(a); if (st.done) return lastHuman; return null; },
     stop: () => (st.step ? finish('human') : null), record: (on) => setRec(on),
-    policy: () => RoboCore.policy(st), rollout: (id, seed) => RoboCore.rollout(R.envs[id], R.embodiments[R.envs[id].embodiments[0]], seed, D_TRAIN, world),
-    runRef, recording: () => rec, kept: () => kept, state: () => ({ env: env.id, seed: st.seed, step: st.step, done: st.done, ret: st.ret, samples: samples.length }),
+    policy: () => RoboCore.policy(st), rollout: (id, seed, level) => RoboCore.rollout(R.envs[id], R.embodiments[R.envs[id].embodiments[0]], seed, D_TRAIN, world, level),
+    runRef, recording: () => rec, kept: () => kept, canRecord, state: () => ({ env: env.id, seed: st.seed, level: st.level, step: st.step, done: st.done, ret: st.ret, samples: samples.length }),
     episodes: () => { try { return (JSON.parse(localStorage.getItem(TR_KEY_W)) || []).filter((x) => x.kind === 'world-teleop'); } catch (e) { return []; } } };
   window.__robokit = api;
   return api;

@@ -261,6 +261,9 @@ function worldEpisode(ep, kind, w, check) {
   check('world.outcome', oks === okeys, `${w}: outcome keys ${oks} are not ${okeys}`);
   if (oks === okeys) {
     if (env !== null) check('world.outcome', env.termination.includes(out.done), `${w}: outcome.done ${JSON.stringify(out.done)} is not a termination id of ${envId} (${env.termination.join(', ')})`);
+    // ROBO w15: 'stopped' (the learner pressed Stop) and 'cap' are endings, never successes
+    check('world.outcome', !(out.done === 'stopped' || out.done === 'cap') || out.success === false,
+      `${w}: outcome.done ${JSON.stringify(out.done)} ends the episode without finishing the task, yet success is not false`);
     check('world.outcome', typeof out.success === 'boolean' && isNum(out.return) && isInt(out.collected) && out.collected >= 0,
       `${w}: outcome success/return/collected are not bool / finite number / non-negative integer`);
     const terms = out.terms;

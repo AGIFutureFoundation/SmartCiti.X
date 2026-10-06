@@ -797,7 +797,7 @@
    "sources": [
     {
      "path": "robotics/registry/robotics.json",
-     "sha256": "e20be2bf02e43966"
+     "sha256": "791e1be5a74ab350"
     }
    ],
    "status": "SHIPPING",
@@ -820,7 +820,7 @@
    "sources": [
     {
      "path": "datashare/registry/datashare.json",
-     "sha256": "71cf3136c9887e48"
+     "sha256": "612b18a300409e67"
     }
    ],
    "status": "SHIPPING",

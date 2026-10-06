@@ -22,6 +22,12 @@ JS API (THREE r160 in scope; no textures, no assets, no network):
   fl.placeChunk(ci, cj) the chunk's deterministic item list (pure: same inputs -> same list)
   fl.near(x, z, r)      drawn items within r (eval / tests)
   fl.dispose()
+  ENV w15 footprint adapters (optional; when given they must be functions, else FloraError by name):
+    footprint (x, z) -> true when the point stands inside a page building footprint: the sample is dropped
+      (plants AND kerb details), counted in stats().footprint {checked, skipped}; absent -> null.
+    chunkReady (ci, cj) -> false while the page has not built that chunk's buildings yet: the chunk is held
+      at the back of the stream queue (re-tried on later ticks, counted in stats().footprint.deferred), so a
+      footprint test never runs against missing buildings.
 One InstancedMesh per family (7 at most, registry budgets.draw_calls_max), two shared materials, per-instance
 colour, nearest-cap distance LOD per family (families.*.lod_m / cap) and a bounding sphere per refill so a
 family out of the view frustum is culled whole.
@@ -130,6 +136,8 @@ function createFlora(scene, o) {
   const seed = flNeed(o, 'seed', 'createFlora'), chunkM = flNeed(o, 'chunkM', 'createFlora');
   const fn = {};
   for (const k of ['isGround', 'isRoad', 'isWater', 'landUse', 'groundY', 'landClass']) { fn[k] = flNeed(o, k, 'createFlora'); if (typeof fn[k] !== 'function') throw new FloraError('florakit createFlora: ' + k + ' must be a function'); }
+  /* ENV w15: optional footprint adapters - given => a function (no silent default: a non-function is named) */
+  for (const k of ['footprint', 'chunkReady']) { fn[k] = k in o ? o[k] : null; if (fn[k] !== null && typeof fn[k] !== 'function') throw new FloraError('florakit createFlora: ' + k + ' must be a function when given'); }
   const R = flNeed(flNeed(data, 'regions', 'data'), region, 'data.regions'), B = flNeed(data, 'budgets', 'data'), FAM = flNeed(data, 'families', 'data');
   const SP = flNeed(data, 'species', 'data'), DET = flNeed(data, 'details', 'data'), MOSS = flNeed(data, 'moss', 'data');
   const S = flNeed(B, 'sample_m', 'budgets'), L = flNeed(B, 'water_lattice_m', 'budgets'), K = flNeed(B, 'kerb_probe_m', 'budgets');
@@ -160,6 +168,7 @@ function createFlora(scene, o) {
       const rnd = flRng(flHash(ci * n + i, cj * n + j, seed, 7919));
       const x = ci * chunkM + (i + rnd()) * step, z = cj * chunkM + (j + rnd()) * step;
       if (!fn.isGround(x, z) || fn.isRoad(x, z)) continue;
+      if (fn.footprint) { counts.footChecked++; if (fn.footprint(x, z)) { counts.footSkipped++; continue; } }   // ENV w15: nothing stands inside a page building
       const lu = fn.landUse(x, z);
       if (!LU.includes(lu)) throw new FloraError('florakit: landUse returned ' + JSON.stringify(lu) + ', not a ' + region + ' land use');
       const y = fn.groundY(x, z), kd = kerb(x, z), u = rnd(), v = rnd(), w = rnd(), ry = rnd() * Math.PI * 2;
@@ -182,7 +191,7 @@ function createFlora(scene, o) {
     }
     return items;
   }
-  const counts = { recordedSamples: 0, authoredSamples: 0 };
+  const counts = { recordedSamples: 0, authoredSamples: 0, footChecked: 0, footSkipped: 0, footDeferred: 0 };
   const chunks = new Map(); let queue = [], pc = null, last = null, dirty = false, overview = false, enabled = true, drawn = [], species = {}, lcDrawn = { recorded: 0, authored: 0 };
   const M = new THREE.Matrix4(), V = new THREE.Vector3(), Q = new THREE.Quaternion(), SC = new THREE.Vector3(), UP = new THREE.Vector3(0, 1, 0);
   function refill(px, pz) {
@@ -208,7 +217,11 @@ function createFlora(scene, o) {
       for (const k of [...chunks.keys()]) if (!want.has(k)) { chunks.delete(k); dirty = true; }
       queue = q.sort((s, t) => s[0] - t[0]).map((e) => [e[1], e[2]]);
     }
-    for (let i = 0; i < PER_TICK && queue.length; i++) { const [a, b] = queue.shift(); chunks.set(a + ',' + b, placeChunk(a, b)); dirty = true; }
+    for (let i = 0; i < PER_TICK && queue.length; i++) {
+      const [a, b] = queue.shift();
+      if (fn.chunkReady && !fn.chunkReady(a, b)) { queue.push([a, b]); counts.footDeferred++; break; }   // ENV w15: the page's buildings are not built there yet - back of the queue, next tick
+      chunks.set(a + ',' + b, placeChunk(a, b)); dirty = true;
+    }
     if (dirty || !last || Math.hypot(x - last[0], z - last[1]) > REFILL) refill(x, z);
   }
   function setOverview(on) { overview = !!on; for (const m of Object.values(meshes)) m.visible = enabled && !overview && m.count > 0; }
@@ -218,9 +231,11 @@ function createFlora(scene, o) {
     for (const [f, m] of Object.entries(meshes)) { const n = m.visible ? m.count : 0; families[f] = n; tris += n * FAM[f].tris; if (n) calls++; }
     const pl = lcDrawn.recorded + lcDrawn.authored;
     return { drawCalls: calls, families, species: overview || !enabled ? {} : { ...species }, tris, chunks: chunks.size, queue: queue.length, region, overview, enabled,
-      landcover: { plantsRecorded: lcDrawn.recorded, plantsAuthored: lcDrawn.authored, shareRecorded: pl ? +(lcDrawn.recorded / pl).toFixed(3) : 0, ...counts } };
+      landcover: { plantsRecorded: lcDrawn.recorded, plantsAuthored: lcDrawn.authored, shareRecorded: pl ? +(lcDrawn.recorded / pl).toFixed(3) : 0,
+        recordedSamples: counts.recordedSamples, authoredSamples: counts.authoredSamples },
+      footprint: fn.footprint || fn.chunkReady ? { adapter: !!fn.footprint, ready: !!fn.chunkReady, checked: counts.footChecked, skipped: counts.footSkipped, deferred: counts.footDeferred } : null };
   }
-  function reset() { chunks.clear(); queue = []; pc = null; last = null; counts.recordedSamples = 0; counts.authoredSamples = 0; }   // re-place (e.g. when the RECORDED land cover arrives)
+  function reset() { chunks.clear(); queue = []; pc = null; last = null; for (const k in counts) counts[k] = 0; }   // re-place (e.g. when the RECORDED land cover arrives)
   function near(x, z, r) { return drawn.filter((it) => (it.x - x) ** 2 + (it.z - z) ** 2 <= r * r); }
   function dispose() { for (const m of Object.values(meshes)) { scene.remove(m); m.geometry.dispose(); m.dispose(); } for (const mt of Object.values(mats)) mt.dispose(); chunks.clear(); }
   return { update, setOverview, setEnabled, reset, stats, placeChunk, near, dispose, meshes, materials: mats, waterClass, budgets: JSON.parse(JSON.stringify(B)) };
@@ -233,19 +248,34 @@ FLORA_JS_INLINE = FLORA_CORE
 FLORA_JS = FLORA_CORE + FLORA_EXPORT
 
 
-def flora_mount_js(region, *, seed, chunk_m, is_ground, is_road, is_water, land_use, eye, overview, ground_y=None, land_class='() => null'):
+def flora_mount_js(region, *, seed, chunk_m, is_ground, is_road, is_water, land_use, eye, overview, ground_y=None, land_class='() => null',
+                   footprint=None, chunk_ready=None):
     """JS text for a page's module script: embeds the region's data, creates the kit and ticks it on its own
     animation frame (hidden, 0 draw calls, while `overview` is true). The ground hook uses a terrain sampler
     globalThis.TCTERRAIN.heightAt(x, z) when a page mounts one, else the flat AUTHORED ground y = 0; a page with its own
-    ground function (e.g. the parish page's ELEV w14 elevY) passes it as ground_y (JS expression)."""
+    ground function (e.g. the parish page's ELEV w14 elevY) passes it as ground_y (JS expression).
+    ENV w15: footprint / chunk_ready (JS expressions) wire the optional footprint adapters; when neither is given the
+    options end in the FLORA_ADAPTERS_MARK comment, which a page's ENV block replaces exactly once (so a builder block
+    owned by another agent never has to change its call)."""
     data = json.dumps(flora_data(region), ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
     return (FLORA_JS_INLINE
             + f'\n/* VEG w14 flora mount ({region}) */\nconst FLORA_DATA = {data};\n'
             + 'const floraGroundY = (x, z) => (globalThis.TCTERRAIN && typeof globalThis.TCTERRAIN.heightAt === "function") ? globalThis.TCTERRAIN.heightAt(x, z) : 0;\n'
             + f'const flora = createFlora(scene, {{ THREE, data: FLORA_DATA, region: {json.dumps(region)}, seed: {seed}, chunkM: {chunk_m},\n'
-            + f'  isGround: {is_ground}, isRoad: {is_road}, isWater: {is_water}, landUse: {land_use}, groundY: {ground_y or "floraGroundY"}, landClass: {land_class} }});\n'
+            + f'  isGround: {is_ground}, isRoad: {is_road}, isWater: {is_water}, landUse: {land_use}, groundY: {ground_y or "floraGroundY"}, landClass: {land_class}{_adapters(footprint, chunk_ready)} }});\n'
             + f'(function floraTick() {{ const over = {overview}; flora.setOverview(over); if (!over) flora.update({eye}); requestAnimationFrame(floraTick); }})();\n'
             + 'window.__flora = flora;\n')
+
+
+
+FLORA_ADAPTERS_MARK = ' /*FLORA_ADAPTERS*/'   # ENV w15: the hook a page block replaces with ', footprint: f, chunkReady: g'
+
+
+def _adapters(footprint, chunk_ready):
+    """ENV w15: both adapters or neither - a footprint test without the readiness gate would run against missing buildings."""
+    if (footprint is None) != (chunk_ready is None):
+        raise FloraKitError('flora_mount_js: footprint and chunk_ready go together (a footprint test needs the chunkReady gate)')
+    return FLORA_ADAPTERS_MARK if footprint is None else f', footprint: {footprint}, chunkReady: {chunk_ready}'
 
 
 if __name__ == '__main__':

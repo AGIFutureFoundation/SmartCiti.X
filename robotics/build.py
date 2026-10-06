@@ -131,7 +131,7 @@ TELEOP = {
 # ---- robokit envs (AUTHORED layouts, DERIVED counts) --------------------------------------------------------------
 HALF = 20.0          # arena half-size, metres (AUTHORED)
 DT, CAP = 0.1, 600   # control step and episode cap -> 60 s
-SEEDS = [1, 2, 3, 4, 5]
+SEEDS = list(range(1, 21))     # 20 seeds: the UI offers them all; the reference benchmark below runs every one
 DIAG = round((2 * HALF) * 2 ** 0.5, 2)
 
 
@@ -156,9 +156,35 @@ def base_action(emb):
 STEP_PENALTY = {'term': 'time', 'weight': -0.01, 'unit': 'per step', 'why': 'finish sooner'}
 COLLIDE = {'term': 'collision', 'weight': -0.5, 'unit': 'per contact', 'why': 'an obstacle or the arena wall was struck'}
 CAP_TERM = {'id': 'cap', 'when': f'{CAP} control steps ({CAP * DT:.0f} s) elapsed'}
+# wave 15: a human episode the learner ends with Stop is outcome.done 'stopped' (contract v1 errata 07:43); the spec now
+# declares it, so the contrib verifier (which derives allowed ids from here) admits such episodes - success is always false
+STOP_TERM = {'id': 'stopped', 'when': 'the learner pressed Stop before the task ended (human episodes only; never a success)'}
 REF_STEPS = ['turn toward the nearest open target (proportional on bearing)',
              'drive at a speed that falls with the heading error',
              'veer away when an obstacle sits within 2 m ahead']
+
+# ---- AUTHORED difficulty curriculum (wave 15) ------------------------------------------------------------------------
+# Three seeded levels per robokit env. Level 1 IS the env spec above (an empty override), so every number measured at
+# level 1 is the spec's number; levels 2-3 only tighten layout knobs the core reads from `curriculum.levels[].params`:
+#   obstacles (count), gate_gap_m (cone offset from the gate centre; the spec's 1.8 m), current_ms (an AUTHORED
+#   eastward drift the ROV must fight; the spec has none). Observation ranges are untouched: no level raises a count
+#   past its declared high. Recording is offered at level 1 only (the registered spec); levels 2-3 are practice.
+GATE_GAP_M = 1.8
+CURRICULUM = {
+    'world.litter-pickup': [{'level': 1, 'name': 'spec', 'params': {}},
+                            {'level': 2, 'name': 'cluttered', 'params': {'obstacles': 9}},
+                            {'level': 3, 'name': 'dense', 'params': {'obstacles': 12}}],
+    'world.litter-sort': [{'level': 1, 'name': 'spec', 'params': {}},
+                          {'level': 2, 'name': 'cluttered', 'params': {'obstacles': 6}},
+                          {'level': 3, 'name': 'dense', 'params': {'obstacles': 8}}],
+    'world.rov-survey': [{'level': 1, 'name': 'spec', 'params': {}},
+                         {'level': 2, 'name': 'light current', 'params': {'current_ms': 0.1}},
+                         {'level': 3, 'name': 'strong current', 'params': {'current_ms': 0.2}}],
+    'world.gate-drive': [{'level': 1, 'name': 'spec', 'params': {}},
+                         {'level': 2, 'name': 'narrow gates', 'params': {'gate_gap_m': 1.4}},
+                         {'level': 3, 'name': 'tight gates', 'params': {'gate_gap_m': 1.1}}],
+}
+CURRICULUM_KNOBS = ('obstacles', 'gate_gap_m', 'current_ms')
 
 ENVS = {
     'world.litter-pickup': {
@@ -170,7 +196,7 @@ ENVS = {
         'action_extra': [],
         'reward': [{'term': 'pickup', 'weight': 1.0, 'unit': 'per item', 'why': 'an item was collected (within 0.9 m)'},
                    STEP_PENALTY, COLLIDE],
-        'termination': [{'id': 'all-collected', 'when': 'every litter item is collected (success)'}, CAP_TERM],
+        'termination': [{'id': 'all-collected', 'when': 'every litter item is collected (success)'}, CAP_TERM, STOP_TERM],
     },
     'world.litter-sort': {
         'name': 'Litter sort', 'embodiments': ['arm.on-base'], 'medium': 'land',
@@ -183,7 +209,7 @@ ENVS = {
         'reward': [{'term': 'pickup', 'weight': 0.2, 'unit': 'per grip', 'why': 'an item was lifted'},
                    {'term': 'deposit', 'weight': 1.0, 'unit': 'per item', 'why': 'an item was dropped in the bin'},
                    STEP_PENALTY, COLLIDE],
-        'termination': [{'id': 'all-binned', 'when': 'every item is in the bin (success)'}, CAP_TERM],
+        'termination': [{'id': 'all-binned', 'when': 'every item is in the bin (success)'}, CAP_TERM, STOP_TERM],
     },
     'world.rov-survey': {
         'name': 'ROV monitoring survey', 'embodiments': ['rov.survey'], 'medium': 'water',
@@ -197,7 +223,7 @@ ENVS = {
         'action_extra': [{'name': 'vz', 'unit': 'm/s', 'low': -DEEP_V, 'high': DEEP_V}],
         'reward': [{'term': 'visit', 'weight': 1.0, 'unit': 'per target', 'why': 'within 1.5 m across and 1 m in depth'},
                    STEP_PENALTY, COLLIDE],
-        'termination': [{'id': 'all-visited', 'when': 'every target is visited (success)'}, CAP_TERM],
+        'termination': [{'id': 'all-visited', 'when': 'every target is visited (success)'}, CAP_TERM, STOP_TERM],
     },
     'world.gate-drive': {
         'name': 'Gate drive', 'embodiments': ['rover.wheeled'], 'medium': 'land',
@@ -209,7 +235,7 @@ ENVS = {
         'action_extra': [],
         'reward': [{'term': 'gate', 'weight': 1.0, 'unit': 'per gate', 'why': 'the next gate was passed within 1.2 m of its centre'},
                    STEP_PENALTY, COLLIDE],
-        'termination': [{'id': 'all-gates', 'when': 'every gate is taken in order (success)'}, CAP_TERM],
+        'termination': [{'id': 'all-gates', 'when': 'every gate is taken in order (success)'}, CAP_TERM, STOP_TERM],
     },
 }
 
@@ -230,7 +256,15 @@ for eid, e in ENVS.items():
         'episode_cap': {'steps': CAP, 'dt_s': DT}, 'seeds': SEEDS, 'rng': 'mulberry32(seed)',
         'reference_policy': {'id': f'ref.{eid.split(".")[1]}', 'provenance': 'SCRIPTED', 'steps': REF_STEPS,
                              'note': 'hand-written and deterministic; not learned, no model, no network'},
+        'curriculum': {'provenance': 'AUTHORED', 'gate_gap_m': GATE_GAP_M, 'record_levels': [1],
+                       'levels': CURRICULUM[eid]},
     }
+    lv = CURRICULUM[eid]
+    need([x['level'] for x in lv] == [1, 2, 3] and lv[0]['params'] == {}, f'{eid}: curriculum needs levels 1-3, level 1 = the spec')
+    for x in lv:
+        need(set(x['params']) <= set(CURRICULUM_KNOBS), f'{eid}: unknown curriculum knob in level {x["level"]}')
+        for k, v in x['params'].items():
+            need(isinstance(v, (int, float)) and v > 0, f'{eid}: curriculum {k} must be a positive number')
 
 # ---- sim-seat envs (DERIVED from sims/) -----------------------------------------------------------------------------
 for sid, s in sims['sims'].items():
@@ -293,6 +327,30 @@ doc = {
 }
 OUT.parent.mkdir(exist_ok=True)
 OUT.write_text(json.dumps(doc, indent=1, ensure_ascii=False) + '\n')
+
+# ---- reference-policy benchmark (MEASURED at build time, wave 15) ---------------------------------------------------
+# robotics/bench.mjs runs the SCRIPTED policy of web/robokit.py (the very code the pages run) on every robokit env,
+# every curriculum level and every declared seed, headless, and prints the counts. They are stored here as measured
+# counts with the seed list and the policy version (sha256[:16] of the ROBOKIT_CORE block), so a stale block is
+# detectable by robotics/test.mjs, which recomputes it. Nothing is learned; this measures a hand-written policy.
+import subprocess
+import sys
+bench = subprocess.run(['node', str(HERE / 'bench.mjs'), str(OUT)], capture_output=True, text=True)
+need(bench.returncode == 0, f'robotics: bench.mjs failed:\n{bench.stderr[-2000:]}')
+BENCH = json.loads(bench.stdout)
+for k in ('policy_version', 'seeds', 'levels', 'per_env', 'totals'):
+    need(k in BENCH, f'robotics: bench.mjs printed no {k}')
+need(BENCH['seeds'] == SEEDS, 'robotics: the benchmark did not run the declared seed list')
+need(all(eid in BENCH['per_env'] for eid, e in envs.items() if e['runner'] == 'robokit'), 'robotics: benchmark misses an env')
+doc['reference_benchmark'] = {
+    'what': 'MEASURED success counts of the SCRIPTED reference policy (web/robokit.py ROBOKIT_CORE) over every '
+            'declared seed and curriculum level, computed headless at build time by robotics/bench.mjs and '
+            'recomputed by robotics/test.mjs. Not a learned policy; not a claim about any robot.',
+    'measured_by': 'robotics/bench.mjs', 'policy': 'SCRIPTED', **BENCH,
+}
+OUT.write_text(json.dumps(doc, indent=1, ensure_ascii=False) + '\n')
+print('robotics: reference benchmark (policy ' + BENCH['policy_version'] + ', seeds ' + str(len(SEEDS)) + '): '
+      + ', '.join(f"{eid} L1 {v['levels']['1']['success']}/{v['levels']['1']['runs']}" for eid, v in BENCH['per_env'].items()))
 print(f"robotics: {doc['counts']['envs']} env specs ({doc['counts']['robokit_envs']} robokit, "
       f"{doc['counts']['sim_seat_envs']} sim-seat), {len(EMBODIMENTS)} AUTHORED embodiments, 0 trained models "
       f"(source stamp {stamp})")

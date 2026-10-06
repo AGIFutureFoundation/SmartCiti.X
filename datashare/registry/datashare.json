@@ -255,7 +255,22 @@
     2,
     3,
     4,
-    5
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
    ],
    "embodiments": [
     "rover.wheeled"
@@ -311,7 +326,22 @@
     2,
     3,
     4,
-    5
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
    ],
    "embodiments": [
     "arm.on-base"
@@ -371,7 +401,22 @@
     2,
     3,
     4,
-    5
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
    ],
    "embodiments": [
     "rov.survey"
@@ -422,7 +467,22 @@
     2,
     3,
     4,
-    5
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
    ],
    "embodiments": [
     "rover.wheeled"
@@ -694,7 +754,7 @@
  },
  "fixture_revocations": {
   "file": "fixture/revocations.json",
-  "revokes_episode": "9280036b5e59e39f67b0d4f8bff716c0c7e1ff0e6a32c791ca78ca6d62983f06",
+  "revokes_episode": "200c1414a50e07b761ef69b267494cf60f14954d7bb2265162fa911acf6d7717",
   "revokes_package": "v1-email"
  },
  "counts": {

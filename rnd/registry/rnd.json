@@ -39,12 +39,12 @@
   "budget_currencies": 2,
   "budget_agreements": 7,
   "suites_run": 126,
-  "suite_checks_declared": 6209,
+  "suite_checks_declared": 6239,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 387
+  "files_read": 388
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -5384,21 +5384,21 @@
    {
     "suite": "robotics/test.mjs",
     "pack": "robotics",
-    "readme_checks": 30,
+    "readme_checks": 39,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_robotics.mjs",
     "pack": "web",
-    "readme_checks": 19,
+    "readme_checks": 28,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "datashare/test.mjs",
     "pack": "datashare",
-    "readme_checks": 67,
+    "readme_checks": 71,
     "declared": true,
     "in_readme_table": true
    },
@@ -5496,7 +5496,7 @@
    {
     "suite": "web/test_florakit.mjs",
     "pack": "web",
-    "readme_checks": 42,
+    "readme_checks": 50,
     "declared": true,
     "in_readme_table": true
    }
@@ -5507,8 +5507,8 @@
    "control/soak.mjs",
    "restoration/test_scenarios.mjs"
   ],
-  "declared_total": 6209,
-  "readme_headline": 6244,
+  "declared_total": 6239,
+  "readme_headline": 6274,
   "unaccounted_for": 35,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
@@ -5980,6 +5980,7 @@
   "roadmap/build.py",
   "roadmap/registry/roadmap.json",
   "roadmap/test.mjs",
+  "robotics/bench.mjs",
   "robotics/build.py",
   "robotics/registry/robotics.json",
   "robotics/test.mjs",
