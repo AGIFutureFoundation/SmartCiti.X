@@ -188,6 +188,58 @@ for w in {w['href'] for s in REG['sectors'] for w in s['worlds']}:
     need((HERE / w).exists(), f'sector world page {w} does not exist')
 
 bands_html = ''.join(band_panel(b) for b in REG['bands'])
+# ACCESS BEGIN world-place (wave 19, ACCESS·Internal & External Access): each K-12 card place that names a WORLD PLACE
+# gets a second link that lands on that place (the card's own page link is kept as it is). From registry data only:
+#   - parishes station 'parish:<fips>/<sid>' and K-12 path step 'k12:<fips>/<n>' (layers/registry/paths.json
+#     parishes[fips].paths[id=k12].steps[n-1].id): the station's world_m in layers/registry/layers.json ->
+#     trade_craft_parishes.html?at=<e>,<-n + 6>,0 (6 m south of the kiosk, facing it; the world page reads ?at=);
+#   - wilds site 'wilds:<world>/<site>' (wilds/registry/wilds.json) -> trade_craft_wilds.html#<world>/<site> (the wilds
+#     page's own deep link: it stands the walker at the site with its panel open).
+# A place the registries cannot resolve stops the build by name. Page marker: data-world-place.
+_WP_LAY = {p['fips']: {s['id']: s for s in p['stations']} for p in json.loads((ROOT / 'layers/registry/layers.json').read_text())['parishes']}
+_WP_PATHS = {p['fips']: p['paths'] for p in json.loads((ROOT / 'layers/registry/paths.json').read_text())['parishes']}
+_WP_WILDS = {w['id']: {s['id'] for s in w['sites']} for w in json.loads((ROOT / 'wilds/registry/wilds.json').read_text())['worlds']}
+
+
+def _wp_href(w):
+    kind, rest = w['id'].split(':', 1)
+    if kind in ('parish', 'k12'):
+        fips, tail = rest.split('/', 1)
+        need(fips in _WP_LAY, f'world place {w["id"]}: parish {fips} has no layers station list')
+        if kind == 'k12':
+            k = [p for p in _WP_PATHS.get(fips, []) if p['id'] == 'k12']
+            need(len(k) == 1 and 1 <= int(tail) <= len(k[0]['steps']), f'world place {w["id"]}: no k12 step {tail} in paths.json')
+            tail = k[0]['steps'][int(tail) - 1]['id']
+        st = _WP_LAY[fips].get(tail)
+        need(st is not None, f'world place {w["id"]}: station {tail} is not in layers.json')
+        e, n = st['world_m']
+        return f'trade_craft_parishes.html?at={e:.1f},{-n + 6:.1f},0'
+    if kind == 'wilds':
+        wid, sid = rest.split('/', 1)
+        need(sid in _WP_WILDS.get(wid, set()), f'world place {w["id"]}: site {sid} is not in wilds.json world {wid}')
+        return f'trade_craft_wilds.html#{wid}/{sid}'
+    return None
+
+
+_wp_card0 = card
+
+
+def card(c):
+    out, pos = _wp_card0(c), 0
+    for w in c['where']:   # the card writes its places in order: walk them with a cursor (titles can repeat)
+        a = f'<a lang="en" dir="ltr" href="{E(rel(w["href"]))}">{E(w["title"])}</a></li>'
+        i = out.find(a, pos)
+        need(i >= 0, f'world place {w["id"]}: its card link is missing in card {c["id"]}')
+        pos = i + len(a)
+        h = _wp_href(w)
+        if h is None:
+            continue
+        go = (f' <a class="go-place" data-world-place="{E(w["id"])}" href="{E(h)}" lang="en" dir="ltr" '
+              f'aria-label="Go to {E(w["title"])} in the world">&#8982; go</a>')
+        out = out[:pos - 5] + go + out[pos - 5:]
+        pos += len(go)
+    return out
+# ACCESS END world-place
 cards_html = ''.join(card(c) for c in REG['cards'])
 sectors_html = ''.join(sector(s) for s in REG['sectors'])
 band_opts = ''.join(f'<option value="{E(b["band"])}">{E(b["band"])} · {E(b["level"])}</option>' for b in REG['bands'])

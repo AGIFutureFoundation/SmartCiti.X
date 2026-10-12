@@ -348,6 +348,17 @@ _UP_ANCHOR = "  var first = q.get('lesson');\n"
 need(PAGE_JS.count(_UP_ANCHOR) == 1, 'the ?lesson= opener moved; the ?course= opener has no anchor')
 PAGE_JS = PAGE_JS.replace(_UP_ANCHOR, _UP_OPEN_JS + _UP_ANCHOR)
 # PATHWAYS END
+# MODULES BEGIN (wave 19): the world training modules (modules/registry/modules.json, python3 modules/build.py) listed
+# on this page with their supplements and their Omega Hive greeter (voice on a click). web/worldmodules.py builds the
+# section and adds its wmod.* words to the catalogue; apply_seo is wrapped so the section lands before the rules box.
+import worldmodules  # noqa: E402
+_WM = worldmodules.prepare(ROOT, I18N, SUP, need)
+_wm_apply_seo = apply_seo
+
+
+def apply_seo(page, *a, **k):
+    return _wm_apply_seo(worldmodules.inject(page, _WM), *a, **k)
+# MODULES END
 tcss, tjs = theme('doc')
 NAV = nav_html(PAGE, nav_labels('en'))
 ICON = ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' "

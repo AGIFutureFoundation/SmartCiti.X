@@ -1544,6 +1544,27 @@ except (WorldTexError, SystemExit) as _e:
     raise SystemExit(f'build_wilds: {_e}')
 page = page.replace(_WT_A, _WT_A + _WT_JS + "worldTexHook(matTerrain, 'terrain');   // WORLD-TEX\n", 1)
 # WORLDHD END world-tex
+# REALISM BEGIN (wave 19, REALISM·Realistic Look): ONE physically based look from web/lookkit.py - ACES Filmic, sRGB
+# output, the stated worlds exposure (0.95); the one sun and one sky hemisphere set by the kit's AUTHORED rule from the
+# sun's own elevation (Meinel air mass for intensity, a Tanner-Helland colour temperature, an 8000 K sky); the one
+# water material becomes a standard (PBR) material of the water class (roughness / metalness from the shared table).
+# Land, buildings and trees stay diffuse (Lambert = roughness 1, metalness 0): a per-pixel PBR ground would be paid on
+# every pixel of a software-rasterised frame. Only uniforms and one shader change: 0 draw calls and 0 triangles added.
+# Page JS carries only the neutral LOOK-KIT.
+from lookkit import look_js as _look_js, LookError as _LookError  # noqa: E402
+try:
+    _LOOK_JS = _look_js('wilds')
+except _LookError as _e:
+    raise SystemExit(f'build_wilds: {_e}')
+_LK_SUN = 'sun.position.set(-0.5, 0.8, 0.35);\nscene.add(hemi, sun);\n'
+_LK_WATER = 'const matWater = new THREE.MeshLambertMaterial({ color: 0x3E6E8E, transparent: true, opacity: 0.86 });\n'
+for _a in (_LK_SUN, _LK_WATER):
+    if page.count(_a) != 1:
+        raise SystemExit(f'build_wilds: LOOK-KIT anchor must occur exactly once, found {page.count(_a)}: {_a[:60]!r}')
+page = page.replace(_LK_SUN, _LK_SUN + _LOOK_JS + 'lookRenderer(renderer); lookSun(sun, hemi);   // LOOK-KIT\n', 1)
+page = page.replace(_LK_WATER, _LK_WATER.replace('MeshLambertMaterial', 'MeshStandardMaterial')
+                    + 'lookMats({ matWater });   // LOOK-KIT\n', 1)
+# REALISM END
 # exactly the chrome keys this page used, for every locale in i18n/locales;
 # a key missing (or empty) in any locale stops the build by name
 I18N_CAT = {}

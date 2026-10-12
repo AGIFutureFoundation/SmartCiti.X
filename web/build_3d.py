@@ -18200,6 +18200,87 @@ if (ROOT / 'hive/registry/hive.json').exists():
     page = page.replace('</body>', f'<script type="application/json" id="agent-avatar">{_av_json(_av)}</script>\n'
                         f'<script type="application/json" id="agent-council">{_av_json(_av_cd)}</script>\n</body>', 1)
 # AVATAR END
+# ACCESS BEGIN door-back (wave 19, ACCESS·Internal & External Access): the 3D side of the world doors.
+# (1) ?resto=<site> opens that restoration site's ground walk through the page's own entry, startRestorationWalk(),
+#     validated against D.restoration.sites exactly as ?hall= is validated against D.halls (only a site carrying the
+#     e/n offset - pin, campus, walkable - can be walked; any other value opens nothing extra).
+# (2) from=<world>&at=<x>,<z>[,<yaw>]&place=<name>, set by a world's DOOR-LINK marker, puts ONE "Back to <place>" link
+#     on the page that returns to that world point (the world page reads ?at=). The world is a closed list (parishes,
+#     bay); the point must be finite numbers; the place text is reduced to letters, digits and plain punctuation, at
+#     most 60 characters, and written with textContent. Captured at module time: syncURL() drops these params.
+# Page marker: DOOR-BACK.
+_DB_JS = r"""/* DOOR-BACK BEGIN: ?resto= deep link and the "Back to <world place>" link of a world door */
+const DOOR_WORLDS = { parishes: 'trade_craft_parishes.html', bay: 'trade_craft_bay.html' };
+const restoDeep = D.restoration.sites.some((s) => s.id === params.get('resto') && s.e !== undefined) ? params.get('resto') : null;
+if (restoDeep) startRestorationWalk(restoDeep);
+const doorBack = (() => {
+  const w = params.get('from'), at = params.get('at');
+  if (!Object.hasOwn(DOOR_WORLDS, w) || !at) return null;
+  const v = at.split(',').map(Number);
+  if (v.length < 2 || v.length > 3 || !v.every(Number.isFinite)) return null;
+  const place = (params.get('place') || '').replace(/[^\p{L}\p{N} .,'()\-]/gu, '').replace(/\s+/g, ' ').trim().slice(0, 60)
+    || (w === 'bay' ? 'the Bay world' : 'the parish world');
+  return { world: w, at: v, place, href: DOOR_WORLDS[w] + '?at=' + v.join(',') };
+})();
+if (doorBack) {
+  const st = document.createElement('style');
+  st.textContent = '.door-back{position:fixed;left:12px;bottom:12px;z-index:60;font:14px/1.3 system-ui,sans-serif;padding:8px 12px;border-radius:8px;background:#10161e;color:#fff;border:1px solid #9fd3ff;text-decoration:none;min-block-size:44px;box-sizing:border-box;display:inline-flex;align-items:center}'
+    + '.door-back:hover{text-decoration:underline}.door-back:focus-visible{outline:3px solid #ffd54a;outline-offset:2px}';
+  document.head.appendChild(st);
+  const a = document.createElement('a');
+  a.className = 'door-back'; a.id = 'door-back'; a.dataset.doorBack = doorBack.world;
+  a.href = doorBack.href; a.textContent = '← Back to ' + doorBack.place;
+  a.addEventListener('click', () => { a.href = doorBack.href + '&lang=' + loc; });
+  a.addEventListener('keydown', (e) => { if (e.key === ' ') { e.preventDefault(); a.click(); } e.stopPropagation(); });
+  document.body.appendChild(a);
+}
+window.__doorBack = { state: () => ({ back: doorBack, resto: restoDeep, view, hall: slug, campus: campusKey }) };
+/* DOOR-BACK END */
+"""
+_DB_AT = "bootMark('skyDrawn');\n"
+assert page.count(_DB_AT) == 1, 'DOOR-BACK: `bootMark(\'skyDrawn\');` must occur exactly once'
+assert page.count('function startRestorationWalk(siteId) {') == 1, 'DOOR-BACK: startRestorationWalk must exist exactly once'
+assert page.count('const params = new URLSearchParams(location.search);') == 1, 'DOOR-BACK: the module params line must exist once'
+# (3) the Bay Restoration panel: each site whose staged task (restoration/registry/scenarios.json staged_tasks, place
+#     kind restoration-site) launches a scenario runner gets a link to it (trade_craft_bay.html#resto=<site>, the Bay
+#     world's own runner). A site whose task has no launch (Treasure Island NSTI) gets none. Page marker: data-resto-runner.
+_DB_SC = json.load(open(ROOT / 'restoration/registry/scenarios.json'))
+_DB_RUN = {}
+for _t in _DB_SC['staged_tasks']:
+    if _t['place']['kind'] == 'restoration-site' and _t['launch']['href'] is not None:
+        assert _t['launch']['href'] == f'web/trade_craft_bay.html#resto={_t["place"]["id"]}', f'DOOR-BACK: runner href of {_t["id"]}'
+        _DB_RUN[_t['place']['id']] = _t['launch']['href'][len('web/'):]
+_DB_RUN_JS = ('function restoRunLink(id) {   /* DOOR-BACK: the Bay world scenario runner of a restoration site */\n'
+              f'  const R = {json.dumps(_DB_RUN, sort_keys=True)};\n'
+              "  return Object.hasOwn(R, id) ? `<br><a class=\"door-run\" data-resto-runner=\"${id}\" href=\"${R[id]}\" style=\"font-size:11px\">"
+              "Run this site's training scenario in the Bay world</a>` : '';\n}\n")
+_DB_PANEL = '${walk}${real}${facts}</li>`;'
+assert page.count(_DB_PANEL) == 1, 'DOOR-BACK: the restoration panel row end must occur exactly once'
+page = page.replace(_DB_PANEL, '${walk}${real}${facts}${restoRunLink(s.id)}</li>`;', 1)
+page = page.replace(_DB_AT, _DB_AT + _DB_JS + _DB_RUN_JS, 1)
+# ACCESS END door-back
+# REALISM BEGIN (wave 19, REALISM·Realistic Look): ONE physically based look from web/lookkit.py - ACES Filmic,
+# sRGB output and the stated exposure (1.12, the number this page already used, so the frame does not shift), and
+# roughness / metalness per surface class on the shared material table (glass, metal, masonry, paving, foliage,
+# water). The sun and sky stay on the hour/weather registry (sky/), which is this page's stated rule. Only uniforms
+# change: 0 draw calls and 0 triangles added. Page JS carries only the neutral LOOK-KIT.
+from lookkit import look_js as _look_js, LookError as _LookError  # noqa: E402
+try:
+    _LOOK_JS = _look_js('campus3d')
+except _LookError as _e:
+    raise SystemExit(f'build_3d: {_e}')
+_LK_SUBS = [
+    ('renderer.toneMapping = THREE.ACESFilmicToneMapping;\nrenderer.toneMappingExposure = 1.12;\n',
+     _LOOK_JS + 'renderer.toneMapping = THREE.ACESFilmicToneMapping;\nrenderer.toneMappingExposure = 1.12;\n'
+     'lookRenderer(renderer);   // LOOK-KIT\n'),
+    ('for (const m of Object.values(mat)) m.userData.shared = true;\n',
+     'for (const m of Object.values(mat)) m.userData.shared = true;\nlookMats(mat);   // LOOK-KIT\n'),
+]
+for _o, _n in _LK_SUBS:
+    if page.count(_o) != 1:
+        raise SystemExit(f'build_3d: LOOK-KIT anchor must occur exactly once, found {page.count(_o)}: {_o.strip()[:60]!r}')
+    page = page.replace(_o, _n, 1)
+# REALISM END
 page = apply_seo(page, 'web/trade_craft_3d.html', 'SmartCiti.X : Trade Craft Academy \u2014 3D hall environment',
     'A walkable 3D campus of the academy\'s union training halls, their rooms and sim seats, with optional play quests that certify nothing.', 'page')
 out = HERE / 'trade_craft_3d.html'

@@ -2427,6 +2427,33 @@ JS = JS.replace(_WT_ANCHORS['ground'], _WT_ANCHORS['ground'] + "  worldTexHook(m
 JS = JS.replace(_WT_ANCHORS['road'], _WT_ANCHORS['road'] + "worldTexHook(matRoad, 'road');   // WORLD-TEX\n", 1)
 JS = JS.replace(_WT_ANCHORS['kit'], _WT_ANCHORS['kit'] + "  worldTexHook(m, 'kit');   // WORLD-TEX\n", 1)
 # WORLDHD END world-tex
+# REALISM BEGIN (wave 19, REALISM·Realistic Look): ONE physically based look from web/lookkit.py - ACES Filmic, sRGB
+# output, the stated worlds exposure (0.95); the one sun and one sky hemisphere set by the kit's AUTHORED rule from the
+# sun's own elevation (Meinel air mass for intensity, a Tanner-Helland colour temperature, an 8000 K sky); the one
+# water material becomes a standard (PBR) material of the water class (roughness / metalness from the shared table).
+# Land, buildings and trees stay diffuse (Lambert = roughness 1, metalness 0): a per-pixel PBR ground would be paid on
+# every pixel of a software-rasterised frame. Only uniforms and one shader change: 0 draw calls and 0 triangles added.
+# Page JS carries only the neutral LOOK-KIT.
+from lookkit import look_js as _look_js, LookError as _LookError  # noqa: E402
+try:
+    _LOOK_JS = _look_js('parishes')
+except _LookError as _e:
+    raise BuildError(f'build_parishes: {_e}')
+_LK_SUN = 'const sun = new THREE.DirectionalLight(0xfff0d6, 1.75); sun.position.copy(SUN); scene.add(sun);\n'
+_LK_WATER = 'const matWater = new THREE.MeshLambertMaterial({ color: 0x3E6E8E, emissive: 0x9FC4DC, emissiveIntensity: 0.06 }), '
+_LK_FLAT = 'const FLAT_LIGHT = '
+for _a in (_LK_SUN, _LK_WATER, _LK_FLAT):
+    if JS.count(_a) != 1:
+        raise BuildError(f'build_parishes: LOOK-KIT anchor must occur exactly once, found {JS.count(_a)}: {_a[:60]!r}')
+if not JS.index(_LK_SUN) < JS.index(_LK_FLAT):
+    raise BuildError('build_parishes: LOOK-KIT: the sun must be set before FLAT_LIGHT bakes it into the land')
+# the sun and sky are set by the rule BEFORE FLAT_LIGHT bakes them into the unlit land, so land and lit surfaces agree
+JS = JS.replace(_LK_SUN, _LK_SUN + _LOOK_JS + 'lookRenderer(renderer); lookSun(sun, hemi);   // LOOK-KIT\n', 1)
+_lk_i = JS.index(_LK_WATER)
+_lk_e = JS.index('\n', _lk_i) + 1
+JS = (JS[:_lk_i] + _LK_WATER.replace('MeshLambertMaterial', 'MeshStandardMaterial') + JS[_lk_i + len(_LK_WATER):_lk_e]
+      + 'lookMats({ matWater });   // LOOK-KIT\n' + JS[_lk_e:])
+# REALISM END
 # BEGIN HIVE w16 (HIVE·Omega Hive Agents): the world guides walking this map speak - on a click only - with the voice
 # the Omega Hive (hive/registry/hive.json) gives them: a Speak and a Mute button join the NPC dialogue, and Speak says the
 # registry line the dialogue is showing, on an on-device voice, at the guide's AUTHORED pitch and rate (web/hivekit.py).
@@ -2800,6 +2827,181 @@ for _a, _b in _RY_ANCHORS:
         raise BuildError(f'build_parishes: ROVER-YARD anchor must occur exactly once, found {JS.count(_a)}: {_a.strip()[:60]!r}')
     JS = JS.replace(_a, _b, 1)
 # ROBOWORLD END robot-yard
+# ACCESS BEGIN door-link (wave 19, ACCESS·Internal & External Access): DOORS from the walkable world into the 3D interiors.
+# Every door comes from registry data, none is invented:
+#   - union halls on their campus lots: campusplan/registry/campusplan.json campuses.<k>.placement.parish names a parish
+#     of this page; each lot's building.door (campus frame: x east, z south, origin = commons centre) is added to the
+#     placement's world_scene point (rot_y must be 0, the registry's north-up rule); the hall name is unions.json's;
+#     the hall must be listed on that campus in unions/registry/campuses.json. Door -> trade_craft_3d.html?hall=<slug>.
+#   - the campus commons (same placement) and the Bay campus landmark (bayarea.json counties.*.campuses[].campus) ->
+#     ?campus=<key> (the chapter-hall campus view).
+#   - restoration-site landmarks (bayarea.json counties.*.restoration_sites[].id) whose restoration.json record is
+#     pin true, campus set, walkable true (exactly the sites the 3D page can walk) -> ?resto=<id> (3D page, ACCESS block).
+#   - the robot yard: robotics.json envs.world.litter-pickup.world.pages lists NO 3D page, so its door is its existing
+#     arena link (decorated for keyboard use at run time, never re-pointed); a 3D page listed there stops this build.
+# Markers are DOM <a> elements (0 draw calls), shown within DL_R of the eye, hidden in the overview. The click appends
+# from=<world>&at=<x>,<z>,<yaw>&place=<parish name> so the 3D page can offer "Back to <place>"; ?at= on this page lands
+# the walker on that point. Keyboard: Tab reaches a shown door, Enter or Space opens it, Esc closes the doors (focus
+# back to the 3D view) until the walker moves on. Page marker: DOOR-LINK. The Bay page inherits it.
+_DL_WORLD = 'bay' if PAGE.endswith('trade_craft_bay.html') else 'parishes'
+_DL_CP = json.loads((ROOT / 'campusplan/registry/campusplan.json').read_text())
+_DL_UN = {u['slug']: u for u in json.loads((ROOT / 'unions/registry/unions.json').read_text())['unions']}
+_DL_UC = json.loads((ROOT / 'unions/registry/campuses.json').read_text())['campuses']
+_DL_RS = {s['id']: s for s in json.loads((ROOT / 'restoration/registry/restoration.json').read_text())['sites']}
+_DL_PAR = {p['id']: p for p in DATA['parishes']}
+_DL_DOORS = []
+for _k, _c in _DL_CP['campuses'].items():
+    _pl = _c['placement']['parish']
+    if _pl is None or _pl['fips'] not in _DL_PAR:
+        continue
+    if _pl['rot_y'] != 0:
+        raise BuildError(f'build_parishes: DOOR-LINK campus {_k} placement rot_y {_pl["rot_y"]!r} is not the north-up rule (0)')
+    _cx, _cz = _pl['world_scene']['x'], _pl['world_scene']['z']
+    _cm = _c['commons']
+    _DL_DOORS.append({'id': f'campus:{_k}', 'kind': 'campus', 'name': _c['name'], 'x': round(_cx + _cm['x'], 2),
+                      'z': round(_cz + _cm['z'], 2), 'href': f'trade_craft_3d.html?campus={_k}', 'parish': _pl['fips'],
+                      'prov': 'DERIVED - campusplan placement.parish world_scene + commons centre'})
+    for _lot in _c['lots']:
+        _h = _lot['hall']
+        if _h not in _DL_UN:
+            raise BuildError(f'build_parishes: DOOR-LINK lot {_lot["id"]} hall {_h!r} is not in unions/registry/unions.json')
+        if _h not in _DL_UC[_k]['halls']:
+            raise BuildError(f'build_parishes: DOOR-LINK lot {_lot["id"]} hall {_h!r} is not a hall of campus {_k} (unions/registry/campuses.json)')
+        _dr = _lot['building']['door']
+        _DL_DOORS.append({'id': f'hall:{_h}', 'kind': 'hall', 'name': _DL_UN[_h]['name'], 'x': round(_cx + _dr['x'], 2),
+                          'z': round(_cz + _dr['z'], 2), 'href': f'trade_craft_3d.html?hall={_h}', 'parish': _pl['fips'],
+                          'prov': 'DERIVED - campusplan placement.parish world_scene + lot building.door'})
+if _DL_WORLD == 'bay':
+    _DL_BAY = json.loads((ROOT / 'bayarea/registry/bayarea.json').read_text())['counties']
+    for _f, _cty in _DL_BAY.items():
+        if _f not in _DL_PAR:
+            continue
+        _lms = _DL_PAR[_f]['landmarks']
+        for _rec, _kind in [(x, 'campus') for x in _cty['campuses']] + [(x, 'resto') for x in _cty['restoration_sites']]:
+            _hit = [l for l in _lms if l['name'].split('\n')[0] == _rec['name'] and [l['x'], -l['z']] == list(_rec['world_m'])]
+            if len(_hit) != 1:
+                raise BuildError(f'build_parishes: DOOR-LINK {_kind} {_rec["name"][:40]!r} matches {len(_hit)} landmarks of {_f}')
+            if _kind == 'campus':
+                _key = _rec['campus']
+                if _key not in _DL_CP['campuses']:
+                    raise BuildError(f'build_parishes: DOOR-LINK Bay campus {_key!r} is not in campusplan/registry/campusplan.json')
+                _DL_DOORS.append({'id': f'campus:{_key}', 'kind': 'campus', 'name': _DL_CP['campuses'][_key]['name'],
+                                  'x': _hit[0]['x'], 'z': _hit[0]['z'], 'href': f'trade_craft_3d.html?campus={_key}',
+                                  'parish': _f, 'prov': 'RECORDED campus landmark point (bayarea.json)'})
+            else:
+                _s = _DL_RS.get(_rec['id'])
+                if _s is None:
+                    raise BuildError(f'build_parishes: DOOR-LINK restoration site {_rec["id"]!r} is not in restoration/registry/restoration.json')
+                if not (_s.get('pin') is True and _s.get('campus') and _s.get('walkable') is True):
+                    continue   # the 3D page has no walk for this site (walkable false, or no campus): no door
+                _DL_DOORS.append({'id': f'resto:{_s["id"]}', 'kind': 'resto', 'name': _s['name'], 'x': _hit[0]['x'],
+                                  'z': _hit[0]['z'], 'href': f'trade_craft_3d.html?resto={_s["id"]}', 'parish': _f,
+                                  'prov': 'RECORDED restoration landmark point (bayarea.json)'})
+if len({d['id'] for d in _DL_DOORS}) != len(_DL_DOORS):
+    raise BuildError('build_parishes: DOOR-LINK door ids must be unique')
+_DL_RY_PAGES = _RY_REG['envs']['world.litter-pickup']['world']['pages']
+if 'web/trade_craft_3d.html' in _DL_RY_PAGES:
+    raise BuildError('build_parishes: DOOR-LINK robotics.json now lists a 3D page for world.litter-pickup - wire the robot-yard door to it')
+if 'web/trade_craft_robotics.html' not in _DL_RY_PAGES:
+    raise BuildError('build_parishes: DOOR-LINK robot yard needs web/trade_craft_robotics.html in robotics.json world.pages')
+_DL_JS = r"""/* DOOR-LINK BEGIN: doors from this world into the 3D interiors (union halls on their campus lots, the campus commons,
+   walkable restoration sites), from registry data. DOM links (no draw call) near the eye only, hidden in the overview. */
+const DL_DOORS = __DL_DOORS__, DL_WORLD = '__DL_WORLD__', DL_R = 80, DL_CLOSE_M = 6;
+const DL_KIND = { hall: 'union hall · 3D interior', campus: 'campus · 3D view', resto: 'restoration site · 3D walk' };
+const dlCss = document.createElement('style');
+dlCss.textContent = '.door-link{position:absolute;left:0;top:0;transform:translate(-50%,-100%);z-index:6;font:13px/1.3 system-ui,sans-serif;padding:4px 9px;border-radius:6px;background:#10161e;color:#fff;border:1px solid #9fd3ff;text-decoration:none;white-space:nowrap;pointer-events:auto}'
+  + '.door-link:hover{text-decoration:underline}.door-link:focus-visible,[data-robot-yard]:focus-visible{outline:3px solid #ffd54a;outline-offset:2px;box-shadow:0 0 0 6px #10161e}'
+  + '.door-link-in:focus-visible{outline:3px solid #ffd54a;outline-offset:2px}';
+document.head.appendChild(dlCss);
+const DL = { els: [], closed: null, shown: 0, arrived: null, ry: false };
+function dlHref(d) {
+  const p = current ? current.name : '';
+  return d.href + '&from=' + DL_WORLD + '&at=' + eye.x.toFixed(1) + ',' + eye.z.toFixed(1) + ',' + (eye.yaw || 0).toFixed(2) + '&place=' + encodeURIComponent(p);
+}
+function dlClose(el) {   /* Esc: the doors close until the walker moves DL_CLOSE_M, focus goes back to the 3D view */
+  DL.closed = { x: eye.x, z: eye.z };
+  for (const a of DL.els) a.hidden = true;
+  const c = renderer.domElement; if (!c.hasAttribute('tabindex')) c.setAttribute('tabindex', '-1'); c.focus();
+}
+function dlKeys(el) {
+  el.addEventListener('keydown', (e) => {
+    if (e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); e.stopPropagation(); el.click(); }
+    else if (e.key === 'Enter') { e.stopPropagation(); }
+    else if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); dlClose(el); }
+  });
+}
+for (const d of DL_DOORS) {
+  const a = document.createElement('a');
+  a.className = 'door-link'; a.href = d.href; a.hidden = true; a.dataset.door = d.id; a.dataset.doorKind = d.kind;
+  a.textContent = d.name + ' → 3D';
+  a.setAttribute('aria-label', 'Enter ' + d.name + ' (' + DL_KIND[d.kind] + ')');
+  a.addEventListener('click', () => { a.href = dlHref(d); });
+  dlKeys(a); stage.appendChild(a); DL.els.push(a);
+}
+const dlV = new THREE.Vector3();
+/* called from frame() after the robot yard: walk view only */
+function doorLinkFrame(over) {
+  if (!DL.ry) { const y = document.querySelector('[data-robot-yard]'); if (y) { DL.ry = true; y.setAttribute('aria-label', 'Robot yard: AUTHORED rover, SCRIPTED reference policy, no AI model - opens the Robotics lab arena'); dlKeys(y); } }
+  if (DL.closed && Math.hypot(eye.x - DL.closed.x, eye.z - DL.closed.z) > DL_CLOSE_M) DL.closed = null;
+  let shown = 0;
+  const el = renderer.domElement, f = document.activeElement;
+  for (let i = 0; i < DL_DOORS.length; i++) {
+    const d = DL_DOORS[i], a = DL.els[i];
+    if (over || DL.closed || Math.hypot(d.x - eye.x, d.z - eye.z) > DL_R) { if (!a.hidden) a.hidden = true; continue; }
+    dlV.set(d.x, (typeof elevY === 'function' ? elevY(d.x, d.z) : 0) + 2.4, d.z).project(camera);
+    const off = dlV.z > 1 || Math.abs(dlV.x) > 1.05 || Math.abs(dlV.y) > 1.05;
+    if (off && f !== a) { if (!a.hidden) a.hidden = true; continue; }
+    const sx = Math.min(1, Math.max(-1, dlV.x)), sy = Math.min(1, Math.max(-1, dlV.y));
+    a.hidden = false; a.style.left = ((sx + 1) / 2 * el.clientWidth).toFixed(0) + 'px'; a.style.top = ((1 - sy) / 2 * el.clientHeight).toFixed(0) + 'px';
+    shown++;
+  }
+  DL.shown = shown;
+}
+/* ?at=<x>,<z>,<yaw> (the 3D page's "Back to" link): land on that world point when it lies in a parish of this world */
+function doorLinkArrive() {
+  const q = new URLSearchParams(location.search).get('at');
+  if (!q) return;
+  const v = q.split(',').map(Number);
+  if (v.length < 2 || v.length > 3 || !v.every(Number.isFinite) || !parishAt(v[0], v[1])) { DL.arrived = { ok: false, at: q }; return; }
+  teleport(v[0], v[1], v.length === 3 ? v[2] : 0);
+  DL.arrived = { ok: true, x: v[0], z: v[1], parish: current ? current.id : null };
+}
+/* the Bay restoration panels (site panel, scenario runner) carry the site's door too: a panel that shows a site with a
+   3D walk gets one "Walk this site in 3D" link at its end (re-synced whenever the panel opens or changes site) */
+function dlPanelSync(p) {
+  for (const x of p.querySelectorAll('[data-door-panel]')) x.remove();
+  const d = !p.hidden && DL_DOORS.find((q) => q.id === 'resto:' + p.dataset.site);
+  if (!d) return;
+  const row = document.createElement('p'), a = document.createElement('a');
+  row.dataset.doorPanel = d.id; a.className = 'door-link-in'; a.href = d.href; a.textContent = 'Walk this site in 3D →';
+  a.setAttribute('aria-label', 'Enter ' + d.name + ' (' + DL_KIND.resto + ')');
+  a.addEventListener('click', () => { a.href = dlHref(d); });
+  row.appendChild(a); p.appendChild(row);
+}
+for (const id of ['resto-site', 'resto-sims']) {
+  const p = document.getElementById(id);
+  if (p) { new MutationObserver(() => dlPanelSync(p)).observe(p, { attributes: true, attributeFilter: ['hidden', 'data-site'] }); dlPanelSync(p); }
+}
+window.__doorLink = {
+  doors: () => DL_DOORS.map((d, i) => ({ ...d, shown: !DL.els[i].hidden, dist: Math.round(Math.hypot(d.x - eye.x, d.z - eye.z)) })),
+  panel: () => [...document.querySelectorAll('[data-door-panel]')].map((x) => x.dataset.doorPanel),
+  stats: () => ({ n: DL_DOORS.length, shown: DL.shown, closed: !!DL.closed, calls: 0, arrived: DL.arrived, world: DL_WORLD }),
+  href: (id) => { const d = DL_DOORS.find((x) => x.id === id); return d ? dlHref(d) : null; },
+  go: (id, dz) => { const d = DL_DOORS.find((x) => x.id === id); if (!d) return false; teleport(d.x, d.z + (dz ?? 12), 0); return true; },
+};
+/* DOOR-LINK END */
+""".replace('__DL_DOORS__', json.dumps(_DL_DOORS, ensure_ascii=False).replace('</', '<\\/')).replace('__DL_WORLD__', _DL_WORLD)
+_DL_BOOT = "{ const p = PAR.get('22071') || PAR.get(D.parishes[0].id); const o = startSpot(p); teleport(o[0], o[1], 0); }\n"
+_DL_ANCHORS = [
+    ('window.__parishes = {', _DL_JS + 'window.__parishes = {'),
+    ('  robotYardFrame(over);   // ROVER-YARD\n', '  robotYardFrame(over);   // ROVER-YARD\n  doorLinkFrame(over);   // DOOR-LINK\n'),
+    (_DL_BOOT, _DL_BOOT + 'doorLinkArrive();   // DOOR-LINK: ?at= from the 3D page\'s back link\n'),
+]
+for _a, _b in _DL_ANCHORS:
+    if JS.count(_a) != 1:
+        raise BuildError(f'build_parishes: DOOR-LINK anchor must occur exactly once, found {JS.count(_a)}: {_a.strip()[:60]!r}')
+    JS = JS.replace(_a, _b, 1)
+# ACCESS END door-link
 # BEGIN FACADE w11 (FACADE·Exteriors & Signs): AUTHORED facade details on the kit buildings nearest the eye and PLAY
 # signs on the economy/ commercial lots (web/facadekit.py, facades/registry/facades.json) - ONE InstancedMesh, one draw
 # call, hidden in the overview; the glue reads the streamed chunks and never changes them (details are not solid).

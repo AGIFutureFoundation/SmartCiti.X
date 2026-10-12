@@ -21,14 +21,14 @@
   "measured_elsewhere": 51,
   "computed_from_registry": 12,
   "measured_source_files": 11,
-  "registries_scanned": 91,
+  "registries_scanned": 92,
   "app_renderers_scanned": 38,
   "doc_renderers_scanned": 3,
-  "builders_scanned": 74,
-  "suites_scanned": 140,
-  "declared_unbuilt": 6,
+  "builders_scanned": 75,
+  "suites_scanned": 144,
+  "declared_unbuilt": 5,
   "declared_unbuilt_by_their_own_words": 2,
-  "declared_unbuilt_not_drawn": 5,
+  "declared_unbuilt_not_drawn": 4,
   "declared_unbuilt_documented_but_not_drawn": 1,
   "declared_unbuilt_read_by_nothing": 2,
   "gaps": 21,
@@ -38,13 +38,13 @@
   "budget_views": 6,
   "budget_currencies": 2,
   "budget_agreements": 7,
-  "suites_run": 142,
-  "suite_checks_declared": 6966,
+  "suites_run": 146,
+  "suite_checks_declared": 7166,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 430
+  "files_read": 436
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -1575,38 +1575,6 @@
    "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
   },
   {
-   "registry": "layers/registry/paths.json",
-   "pack": "layers",
-   "reasons": [
-    "no page generator under web/ names this path, so nothing a learner opens reads it"
-   ],
-   "says": null,
-   "read_by_app_renderers": [],
-   "read_by_doc_renderers": [],
-   "read_by_builders": [
-    "classroom/build.py",
-    "cognitionx/build.py",
-    "holodeck/build.py",
-    "npcs/build.py",
-    "programs/build.py",
-    "quests/build.py"
-   ],
-   "read_by_suites": [
-    "classroom/test.mjs",
-    "cognitionx/test.mjs",
-    "holodeck/test.mjs",
-    "npcs/test.mjs",
-    "programs/test.mjs",
-    "web/test_programs.mjs"
-   ],
-   "read_by_its_own_pack": [
-    "layers/build.py",
-    "layers/paths.py",
-    "layers/test.mjs"
-   ],
-   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
-  },
-  {
    "registry": "pack/registry/library.json",
    "pack": "pack",
    "reasons": [
@@ -1709,6 +1677,7 @@
     "courses/build.py",
     "hive/build.py",
     "lessons/build.py",
+    "modules/build.py",
     "unionpaths/build.py",
     "worksites/build.py"
    ],
@@ -1716,6 +1685,7 @@
     "courses/test.mjs",
     "hive/test.mjs",
     "lessons/test.mjs",
+    "modules/test.mjs",
     "unionpaths/test.mjs",
     "web/test_worksites.mjs",
     "worksites/test.mjs"
@@ -1802,6 +1772,7 @@
    "app_renderers": [
     "web/build_bayworld.py",
     "web/build_home.py",
+    "web/build_parishes.py",
     "web/build_whitepaper.py"
    ],
    "doc_renderers": [],
@@ -1822,6 +1793,7 @@
     "restoration/test_scenarios.mjs",
     "seasons/test.mjs",
     "underwater/test.mjs",
+    "web/test_access.mjs",
     "web/test_bayworld.mjs",
     "web/test_home.mjs"
    ],
@@ -1863,7 +1835,9 @@
   },
   "campusplan/registry/campusplan.json": {
    "app_renderers": [
-    "web/build_3d.py"
+    "web/build_3d.py",
+    "web/build_parishes.py",
+    "web/build_unions.py"
    ],
    "doc_renderers": [],
    "builders": [
@@ -1871,7 +1845,8 @@
     "geo3d/build.py"
    ],
    "suites": [
-    "geo3d/test.mjs"
+    "geo3d/test.mjs",
+    "web/test_access.mjs"
    ],
    "own_pack": [
     "campusplan/build.py",
@@ -2011,11 +1986,13 @@
    "doc_renderers": [],
    "builders": [
     "holodeck/build.py",
+    "modules/build.py",
     "programs/build.py",
     "unionpaths/build.py"
    ],
    "suites": [
     "holodeck/test.mjs",
+    "modules/test.mjs",
     "programs/test.mjs",
     "unionpaths/test.mjs",
     "web/test_courses.mjs",
@@ -2281,11 +2258,13 @@
    "doc_renderers": [],
    "builders": [
     "holodeck/build.py",
+    "modules/build.py",
     "programs/build.py",
     "unionpaths/build.py"
    ],
    "suites": [
     "holodeck/test.mjs",
+    "modules/test.mjs",
     "programs/test.mjs",
     "unionpaths/test.mjs",
     "web/test_hive.mjs",
@@ -2381,7 +2360,8 @@
     "web/build_bayworld.py",
     "web/build_home.py",
     "web/build_landing.py",
-    "web/build_parishes.py"
+    "web/build_parishes.py",
+    "web/build_programs.py"
    ],
    "doc_renderers": [],
    "builders": [
@@ -2397,6 +2377,7 @@
     "holodeck/test.mjs",
     "npcs/test.mjs",
     "quests/test.mjs",
+    "web/test_access.mjs",
     "web/test_home.mjs",
     "web/test_parishes.mjs"
    ],
@@ -2407,7 +2388,9 @@
    ]
   },
   "layers/registry/paths.json": {
-   "app_renderers": [],
+   "app_renderers": [
+    "web/build_programs.py"
+   ],
    "doc_renderers": [],
    "builders": [
     "classroom/build.py",
@@ -2423,6 +2406,7 @@
     "holodeck/test.mjs",
     "npcs/test.mjs",
     "programs/test.mjs",
+    "web/test_access.mjs",
     "web/test_programs.mjs"
    ],
    "own_pack": [
@@ -2457,6 +2441,7 @@
     "evals/build.py",
     "holodeck/build.py",
     "layers/build.py",
+    "modules/build.py",
     "npcs/build.py",
     "programs/build.py",
     "quests/build.py",
@@ -2475,6 +2460,7 @@
     "evals/test.mjs",
     "holodeck/test.mjs",
     "layers/test.mjs",
+    "modules/test.mjs",
     "npcs/test.mjs",
     "programs/test.mjs",
     "quests/test.mjs",
@@ -2535,6 +2521,20 @@
    "own_pack": [
     "meta/build.py",
     "meta/test.mjs"
+   ]
+  },
+  "modules/registry/modules.json": {
+   "app_renderers": [
+    "web/build_courses.py"
+   ],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [
+    "web/test_worldmodules.mjs"
+   ],
+   "own_pack": [
+    "modules/build.py",
+    "modules/test.mjs"
    ]
   },
   "npcs/registry/npcs.json": {
@@ -2895,6 +2895,7 @@
    "doc_renderers": [],
    "builders": [],
    "suites": [
+    "web/test_access.mjs",
     "web/test_programs.mjs",
     "web/test_whitepaper.mjs"
    ],
@@ -3012,6 +3013,7 @@
     "web/build_dashboard.py",
     "web/build_geomap.py",
     "web/build_home.py",
+    "web/build_parishes.py",
     "web/build_whitepaper.py"
    ],
    "doc_renderers": [
@@ -3020,6 +3022,7 @@
    "builders": [
     "bayarea/build.py",
     "guide/build.py",
+    "modules/build.py",
     "npcs/build.py",
     "programs/build.py",
     "spatial/build.py",
@@ -3028,10 +3031,12 @@
    ],
    "suites": [
     "bayarea/test.mjs",
+    "modules/test.mjs",
     "npcs/test.mjs",
     "programs/test.mjs",
     "spatial/test.mjs",
     "tasks/test.mjs",
+    "web/test_access.mjs",
     "web/test_bayworld.mjs",
     "web/test_geomap.mjs",
     "web/test_restoscene.mjs",
@@ -3046,22 +3051,27 @@
   },
   "restoration/registry/scenarios.json": {
    "app_renderers": [
+    "web/build_3d.py",
     "web/build_home.py",
     "web/build_whitepaper.py"
    ],
    "doc_renderers": [],
    "builders": [
+    "modules/build.py",
     "programs/build.py",
     "robotics/build.py",
     "tasks/build.py"
    ],
    "suites": [
+    "modules/test.mjs",
     "programs/test.mjs",
     "tasks/test.mjs",
+    "web/test_access.mjs",
     "web/test_bayworld.mjs",
     "web/test_home.mjs",
     "web/test_restokit.mjs",
-    "web/test_restoscene.mjs"
+    "web/test_restoscene.mjs",
+    "web/test_worldmodules.mjs"
    ],
    "own_pack": [
     "restoration/scenarios.py",
@@ -3099,6 +3109,7 @@
     "contrib/build.py",
     "datashare/build.py",
     "holodeck/build.py",
+    "modules/build.py",
     "training/build.py"
    ],
    "suites": [
@@ -3106,6 +3117,8 @@
     "contrib/verify.mjs",
     "datashare/test.mjs",
     "holodeck/test.mjs",
+    "modules/test.mjs",
+    "web/test_access.mjs",
     "web/test_arena.mjs",
     "web/test_parishes.mjs",
     "web/test_robotics.mjs",
@@ -3253,6 +3266,7 @@
     "layers/build.py",
     "lessons/build.py",
     "meta/build.py",
+    "modules/build.py",
     "npcs/build.py",
     "quests/build.py",
     "robotics/build.py",
@@ -3281,6 +3295,7 @@
     "layers/test.mjs",
     "lessons/test.mjs",
     "meta/test.mjs",
+    "modules/test.mjs",
     "npcs/test.mjs",
     "robotics/test.mjs",
     "schools/test.mjs",
@@ -3437,6 +3452,7 @@
     "completion/build.py",
     "courses/build.py",
     "lessons/build.py",
+    "modules/build.py",
     "props/build.py",
     "schools/build.py",
     "spaces/build.py",
@@ -3446,6 +3462,7 @@
     "completion/verify.mjs",
     "courses/test.mjs",
     "lessons/test.mjs",
+    "modules/test.mjs",
     "props/test.mjs",
     "schools/test.mjs",
     "spaces/test.mjs",
@@ -3626,6 +3643,7 @@
     "evals/build.py",
     "guide/build.py",
     "lessons/build.py",
+    "modules/build.py",
     "robotics/build.py",
     "sessions/build.py",
     "spatial/build.py",
@@ -3640,6 +3658,7 @@
     "evals/test.mjs",
     "guide/test.mjs",
     "lessons/test.mjs",
+    "modules/test.mjs",
     "quests/test.mjs",
     "robotics/test.mjs",
     "sessions/test.mjs",
@@ -3678,8 +3697,11 @@
     "web/build_whitepaper.py"
    ],
    "doc_renderers": [],
-   "builders": [],
+   "builders": [
+    "modules/build.py"
+   ],
    "suites": [
+    "modules/test.mjs",
     "web/test_unions.mjs",
     "web/test_whitepaper.mjs"
    ],
@@ -3696,7 +3718,8 @@
     "web/build_interactive_map.py",
     "web/build_languages.py",
     "web/build_lessons.py",
-    "web/build_map.py"
+    "web/build_map.py",
+    "web/build_parishes.py"
    ],
    "doc_renderers": [
     "wiki/build_wiki.py"
@@ -3744,6 +3767,7 @@
     "spatial/test.mjs",
     "tasks/test.mjs",
     "unionpaths/test.mjs",
+    "web/test_access.mjs",
     "web/test_geomap.mjs",
     "worksites/test.mjs",
     "world/test.mjs"
@@ -3791,6 +3815,7 @@
     "geo3d/build.py",
     "kit/build.py",
     "labels/build.py",
+    "modules/build.py",
     "npcs/build.py",
     "orbis/build.py",
     "roadmap/build.py",
@@ -3804,6 +3829,7 @@
     "i18n/test.mjs",
     "kit/test.mjs",
     "labels/test.mjs",
+    "modules/test.mjs",
     "npcs/test.mjs",
     "roadmap/test.mjs",
     "tools/test.mjs",
@@ -3818,6 +3844,7 @@
    "app_renderers": [
     "web/build_dashboard.py",
     "web/build_home.py",
+    "web/build_parishes.py",
     "web/build_whitepaper.py"
    ],
    "doc_renderers": [
@@ -3866,6 +3893,7 @@
     "surfaces/test.mjs",
     "tools/test.mjs",
     "unionpaths/test.mjs",
+    "web/test_access.mjs",
     "web/test_home.mjs",
     "web/test_tqkit.mjs",
     "web/test_worksites.mjs",
@@ -3911,6 +3939,7 @@
    "app_renderers": [
     "web/build_fleet.py",
     "web/build_geomap.py",
+    "web/build_programs.py",
     "web/build_schools.py",
     "web/build_whitepaper.py",
     "web/build_wilds.py"
@@ -3920,6 +3949,7 @@
     "classroom/build.py",
     "cognitionx/build.py",
     "lessons/build.py",
+    "modules/build.py",
     "outdoors/build.py",
     "quests/build.py",
     "tasks/build.py",
@@ -3931,13 +3961,16 @@
     "fleet/test.mjs",
     "flora/test.mjs",
     "lessons/test.mjs",
+    "modules/test.mjs",
     "outdoors/test.mjs",
     "quests/test.mjs",
     "tasks/test.mjs",
+    "web/test_access.mjs",
     "web/test_fleet.mjs",
     "web/test_geomap.mjs",
     "web/test_schools.mjs",
     "web/test_wilds.mjs",
+    "web/test_worldmodules.mjs",
     "wildlife/test.mjs"
    ],
    "own_pack": [
@@ -3955,9 +3988,11 @@
     "wiki/build_wiki.py"
    ],
    "builders": [
+    "modules/build.py",
     "tasks/build.py"
    ],
    "suites": [
+    "modules/test.mjs",
     "tasks/test.mjs",
     "web/test_geomap.mjs",
     "web/test_home.mjs",
@@ -4089,6 +4124,7 @@
    "lessons/build.py",
    "media/build.py",
    "meta/build.py",
+   "modules/build.py",
    "npcs/build.py",
    "orbis/build.py",
    "outdoors/build.py",
@@ -4176,6 +4212,7 @@
    "lessons/test.mjs",
    "media/test.mjs",
    "meta/test.mjs",
+   "modules/test.mjs",
    "npcs/test.mjs",
    "ops/test.mjs",
    "orbis/test.mjs",
@@ -4217,6 +4254,7 @@
    "unions/verify.mjs",
    "venue/test.mjs",
    "web/test_3d.mjs",
+   "web/test_access.mjs",
    "web/test_arena.mjs",
    "web/test_bayworld.mjs",
    "web/test_builddress.mjs",
@@ -4238,6 +4276,7 @@
    "web/test_hudkit.mjs",
    "web/test_interactive.mjs",
    "web/test_ladder.mjs",
+   "web/test_lookkit.mjs",
    "web/test_map.mjs",
    "web/test_nav.mjs",
    "web/test_packs.mjs",
@@ -4265,6 +4304,7 @@
    "web/test_wildkit.mjs",
    "web/test_wilds.mjs",
    "web/test_worksites.mjs",
+   "web/test_worldmodules.mjs",
    "wildlife/test.mjs",
    "wilds/test.mjs",
    "worksites/test.mjs",
@@ -5827,16 +5867,44 @@
     "readme_checks": 58,
     "declared": true,
     "in_readme_table": true
+   },
+   {
+    "suite": "modules/test.mjs",
+    "pack": "modules",
+    "readme_checks": 37,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_access.mjs",
+    "pack": "web",
+    "readme_checks": 62,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_lookkit.mjs",
+    "pack": "web",
+    "readme_checks": 67,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_worldmodules.mjs",
+    "pack": "web",
+    "readme_checks": 34,
+    "declared": true,
+    "in_readme_table": true
    }
   ],
-  "suites_run": 142,
-  "suites_declaring_a_count": 140,
+  "suites_run": 146,
+  "suites_declaring_a_count": 144,
   "suites_without_a_count": [
    "control/soak.mjs",
    "restoration/test_scenarios.mjs"
   ],
-  "declared_total": 6966,
-  "readme_headline": 7001,
+  "declared_total": 7166,
+  "readme_headline": 7201,
   "unaccounted_for": 35,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
@@ -6244,6 +6312,9 @@
   "meta/build.py",
   "meta/registry/metaverse.json",
   "meta/test.mjs",
+  "modules/build.py",
+  "modules/registry/modules.json",
+  "modules/test.mjs",
   "npcs/build.py",
   "npcs/registry/npcs.json",
   "npcs/test.mjs",
@@ -6452,6 +6523,7 @@
   "web/groundtruth.py",
   "web/interiors.py",
   "web/test_3d.mjs",
+  "web/test_access.mjs",
   "web/test_arena.mjs",
   "web/test_bayworld.mjs",
   "web/test_builddress.mjs",
@@ -6473,6 +6545,7 @@
   "web/test_hudkit.mjs",
   "web/test_interactive.mjs",
   "web/test_ladder.mjs",
+  "web/test_lookkit.mjs",
   "web/test_map.mjs",
   "web/test_nav.mjs",
   "web/test_packs.mjs",
@@ -6500,6 +6573,7 @@
   "web/test_wildkit.mjs",
   "web/test_wilds.mjs",
   "web/test_worksites.mjs",
+  "web/test_worldmodules.mjs",
   "wiki/build_wiki.py",
   "wildlife/build.py",
   "wildlife/make_eggs.py",

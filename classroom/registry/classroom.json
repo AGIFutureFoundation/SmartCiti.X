@@ -1,17 +1,17 @@
 {
  "pack": "classroom",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
- "source_stamp": "23b00458d16787ff",
+ "source_stamp": "9bfd05babe57a3ad",
  "sources": [
   {
    "id": "cognitionx",
    "path": "cognitionx/registry/cognitionx.json",
-   "sha256": "675ba451699366ea"
+   "sha256": "3d16f789f7deb504"
   },
   {
    "id": "layers",
    "path": "layers/registry/layers.json",
-   "sha256": "b047fe0bc4da27fa"
+   "sha256": "83842f1ae5f11c87"
   },
   {
    "id": "lessons",
@@ -21,7 +21,7 @@
   {
    "id": "paths",
    "path": "layers/registry/paths.json",
-   "sha256": "0390288843a7ea0e"
+   "sha256": "4e39ef2629b65f2f"
   },
   {
    "id": "schools",

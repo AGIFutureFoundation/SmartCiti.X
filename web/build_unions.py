@@ -350,6 +350,35 @@ tfoot th,tfoot td{{font-weight:700}}
 </body>
 </html>
 '''
+# ACCESS BEGIN world-door (wave 19, ACCESS·Internal & External Access): a hall card links to the hall's DOOR in the
+# walkable world when the hall has one: campusplan/registry/campusplan.json places a campus in a parish
+# (placement.parish, north-up rot_y 0) and the hall has a lot there; the door point is placement world_scene + the lot's
+# building.door - the same rule web/build_parishes.py uses for its door markers. The link stands the walker 8 m in front
+# of the door, facing it (trade_craft_parishes.html?at=<x>,<z>,<yaw>; the world page reads ?at=). A hall whose campus
+# has no parish placement (the Bay outline places only the Oakland campus point; Treasure Island is not placed) gets
+# no world-door link. Page marker: data-link="world-door".
+_WD_CP = json.loads((ROOT / 'campusplan/registry/campusplan.json').read_text())
+_WD = {}
+for _k, _c in _WD_CP['campuses'].items():
+    _pl = _c['placement']['parish']
+    if _pl is None:
+        continue
+    need(_pl['rot_y'] == 0, f'world door: campus {_k} placement rot_y is not the north-up rule')
+    for _lot in _c['lots']:
+        _b = _lot['building']
+        need(_b['facing'] in ('N', 'S'), f'world door: lot {_lot["id"]} facing {_b["facing"]!r} has no stand rule')
+        _dx, _dz = _pl['world_scene']['x'] + _b['door']['x'], _pl['world_scene']['z'] + _b['door']['z']
+        _sz, _yaw = (_dz - 8, 3.14) if _b['facing'] == 'N' else (_dz + 8, 0)
+        _WD[_lot['hall']] = (f'trade_craft_parishes.html?at={_dx:.1f},{_sz:.1f},{_yaw}', _pl['name'])
+for _h, (_href, _pname) in sorted(_WD.items()):
+    _i = page.find(f'<article class="uh" id="hall-{_h}"')
+    need(_i >= 0, f'world door: hall {_h} has a door but no card')
+    _j = page.find('</p></article>', _i)
+    need(_j > _i, f'world door: card of {_h} has no actions row')
+    page = (page[:_j] + f' <a class="pill" data-link="world-door" href="{E(_href)}" lang="en" dir="ltr" '
+            f'aria-label="Go to the {E(_pname)} door of this hall in the walkable world">&#8982; {E(_pname)} door</a>' + page[_j:])
+need(page.count('data-link="world-door"') == len(_WD), 'world door: link count differs from the door count')
+# ACCESS END world-door
 TITLE = 'SmartCiti.X : Trade Craft Academy — ' + EN['union.nav']
 page = apply_seo(page, PAGE, TITLE, EN['union.seo.desc'], 'page')
 emit(HERE / 'trade_craft_unions.html', page,
