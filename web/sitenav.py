@@ -88,6 +88,9 @@ GROUPS = [
         ('web/smartcitix_trade_craft_academy.html', 'nav.page.spec'),
         ('web/trade_craft_design.html', 'nav.page.design'),
         ('web/trade_craft_plans.html', 'nav.page.plans'),
+        # SHARE BEGIN (wave 18): the whitepaper, counted from the registries (web/build_whitepaper.py)
+        ('web/smartcitix_whitepaper.html', 'nav.page.whitepaper'),
+        # SHARE END
     ]),
 ]
 

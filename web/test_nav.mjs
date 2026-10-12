@@ -94,6 +94,7 @@ const BUILDERS = {
   'web/trade_craft_robotics.html': 'build_robotics.py',
   'web/trade_craft_smiles.html': 'build_smiles.py',
   /* HIVE BEGIN (wave 16) */ 'web/trade_craft_hive.html': 'build_hive.py', /* HIVE END */
+  /* SHARE BEGIN (wave 18) */ 'web/smartcitix_whitepaper.html': 'build_whitepaper.py', /* SHARE END */
 };
 
 const en = JSON.parse(readFileSync(join(ROOT, 'i18n/locales/en.json'), 'utf8')).strings;

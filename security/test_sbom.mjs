@@ -424,7 +424,9 @@ assert.ok(redistributed.some(([rel]) => rel === 'landcover/registry/landcover.js
   assert.equal(named.length, measured.length,
     `the SBOM names ${named.length} measurement sources; ${measured.length} CC-BY works are measured`);
   for (const [rel, a] of measured) {
-    const v = named.find((x) => x.includes(a.title));
+    // one work can be measured by more than one registry (Cognition.X by cognitionx/ and programs/): pair each
+    // registry with the entry that names it, then hold that entry to every field below
+    const v = named.find((x) => x.includes(a.title) && x.includes(rel)) || named.find((x) => x.includes(a.title));
     assert.ok(v, `the SBOM does not name the ${a.license_id} work measured in ${rel}`);
     for (const f of CC_BY_FIELDS) {
       assert.ok(v.includes(a[f]), `smartcitix:measurement_sources omits attribution.${f} of ${rel}`);

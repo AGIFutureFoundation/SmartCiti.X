@@ -46,6 +46,10 @@
    },
    {
     "name": "smartcitix:measurement_sources",
+    "value": "Cognition.X blocks dataset (data/blocks.csv) by AGI Future Foundation, CC-BY-4.0, https://github.com/AGIFutureFoundation/cognition.x (licence deed https://creativecommons.org/licenses/by/4.0/). MEASURED, NOT REDISTRIBUTED: no geometry, no texture and no part of the file is in this bundle, and no component listed here comes from it. The measurements published from it, and the licence's four attribution fields, are in programs/registry/programs.json; THIRD_PARTY.md credits it for a human reader."
+   },
+   {
+    "name": "smartcitix:measurement_sources",
     "value": "R+5_Salons Rive Gauche_Maison de la Mutualit\u00e9 by GL events Paris Venues, CC-BY-4.0, https://sketchfab.com/3d-models/r5-salons-rive-gauche-maison-de-la-mutualite-e9e40a09c82e42e8a145afa679ffac28 (licence deed http://creativecommons.org/licenses/by/4.0/). MEASURED, NOT REDISTRIBUTED: no geometry, no texture and no part of the file is in this bundle, and no component listed here comes from it. The measurements published from it, and the licence's four attribution fields, are in venue/registry/venue.json; THIRD_PARTY.md credits it for a human reader."
    }
   ]

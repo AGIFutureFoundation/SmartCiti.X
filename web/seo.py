@@ -43,6 +43,13 @@ BASE = 'https://agifuturefoundation.github.io/SmartCiti.X/'
 SITE_NAME = 'SmartCiti.X : Trade Craft Academy'
 DESC_MAX = 160
 KINDS = ('home', 'page', 'collection')
+# SHARE BEGIN (wave 18): one more kind, 'article', for the whitepaper page only.
+# og:type article, its own share card, and JSON-LD TechArticle + Organization
+# (the publisher) + WebSite. Still no rating, review, offer or price: the
+# article is a description of this bundle, counted from its registries.
+ARTICLE_PAGES = ('web/smartcitix_whitepaper.html',)
+KINDS = KINDS + ('article',)
+# SHARE END
 
 # The card image: a real screenshot of this build, committed under wiki/img
 # (the wiki is copied into the deployed site by .github/assemble_site.sh).
@@ -69,10 +76,28 @@ def canonical(path):
     return BASE if path == FRONT_DOOR else BASE + path
 
 
-def _jsonld(path, title, description, kind):
+def _jsonld(path, title, description, kind, article=None):
     url = canonical(path)
     site = {'@type': 'WebSite', '@id': BASE + '#website', 'url': BASE,
             'name': SITE_NAME, 'inLanguage': 'en'}
+    # SHARE BEGIN (wave 18): the article graph
+    if kind == 'article':
+        assert path in ARTICLE_PAGES, f'seo: {path} is not declared in ARTICLE_PAGES'
+        for k in ('date', 'image', 'publisher', 'email', 'headline'):
+            assert isinstance(article, dict) and article.get(k), f'seo: article {path} lacks {k}'
+        assert len(article['headline']) <= 110, f'seo: article headline over 110 characters'
+        pub = {'@type': 'Organization', '@id': BASE + '#publisher',
+               'name': article['publisher'], 'email': article['email']}
+        art = {'@type': 'TechArticle', '@id': url + '#article', 'url': url,
+               'mainEntityOfPage': url, 'headline': article['headline'], 'name': title,
+               'description': description, 'inLanguage': 'en',
+               'datePublished': article['date'], 'dateModified': article['date'],
+               'image': BASE + article['image'],
+               'author': {'@id': BASE + '#publisher'}, 'publisher': {'@id': BASE + '#publisher'},
+               'isPartOf': {'@id': BASE + '#website'}}
+        doc = {'@context': 'https://schema.org', '@graph': [art, pub, site]}
+        return json.dumps(doc, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
+    # SHARE END
     if kind == 'home':
         org = {'@type': 'Organization', '@id': BASE + '#organization',
                'name': SITE_NAME, 'url': BASE, 'description': description}
@@ -100,17 +125,17 @@ def _checked(path, title, description, kind):
     return description
 
 
-def seo_tail(path, title, description, kind='page'):
+def seo_tail(path, title, description, kind='page', article=None):
     """The JSON-LD block, for the END of <body>. It is kept out of <head>
     because several page suites read a page's FIRST <script> as its own
     payload or renderer; structured data is valid anywhere in the document,
     so it goes last and disturbs none of them."""
     description = _checked(path, title, description, kind)
     return (f'<script type="application/ld+json" data-seo-jsonld>'
-            f'{_jsonld(path, title, description, kind)}</script>\n')
+            f'{_jsonld(path, title, description, kind, article)}</script>\n')
 
 
-def seo_head(path, title, description, kind='page', canonical_link=True):
+def seo_head(path, title, description, kind='page', canonical_link=True, article=None):
     """The <head> tags for one page, <title> included (JSON-LD: seo_tail).
 
     The canonical <link> is written RELATIVE to the page (its own file name;
@@ -127,6 +152,16 @@ def seo_head(path, title, description, kind='page', canonical_link=True):
     img = BASE + OG_IMAGE
     E = lambda s: html.escape(s, quote=True)  # noqa: E731
     og_type = 'website'
+    img_alt, extra = OG_IMAGE_ALT, []
+    # SHARE BEGIN (wave 18): an article carries its own card and its date
+    if kind == 'article':
+        assert path in ARTICLE_PAGES and article and article.get('image') and article.get('image_alt'), \
+            f'seo: article {path} needs image and image_alt'
+        w, h = png_size(article['image'])
+        img, img_alt, og_type = BASE + article['image'], article['image_alt'], 'article'
+        extra = [f'<meta property="article:published_time" content="{E(article["date"])}">',
+                 f'<meta property="article:modified_time" content="{E(article["date"])}">']
+    # SHARE END
     tags = [
         f'<title>{E(title)}</title>',
         f'<meta name="description" content="{E(description)}">',
@@ -142,17 +177,18 @@ def seo_head(path, title, description, kind='page', canonical_link=True):
         f'<meta property="og:image" content="{E(img)}">',
         f'<meta property="og:image:width" content="{w}">',
         f'<meta property="og:image:height" content="{h}">',
-        f'<meta property="og:image:alt" content="{E(OG_IMAGE_ALT)}">',
+        f'<meta property="og:image:alt" content="{E(img_alt)}">',
         '<meta name="twitter:card" content="summary_large_image">',
         f'<meta name="twitter:title" content="{E(title)}">',
         f'<meta name="twitter:description" content="{E(description)}">',
         f'<meta name="twitter:image" content="{E(img)}">',
-        f'<meta name="twitter:image:alt" content="{E(OG_IMAGE_ALT)}">',
+        f'<meta name="twitter:image:alt" content="{E(img_alt)}">',
+        *extra,
     ]
     return '\n'.join(tags) + '\n'
 
 
-def apply_seo(page, path, title, description, kind='page', canonical_link=True, jsonld=True):
+def apply_seo(page, path, title, description, kind='page', canonical_link=True, jsonld=True, article=None):
     """Swap a built page's one hand-typed <title> for the full seo_head().
 
     For builders whose <head> is a long literal: the swap touches only the
@@ -171,10 +207,10 @@ def apply_seo(page, path, title, description, kind='page', canonical_link=True, 
         f'seo: {path} head already carries a description or canonical'
     start = head.index('<title>')
     end = head.index('</title>', start) + len('</title>')
-    out = (head[:start] + seo_head(path, title, description, kind, canonical_link).rstrip('\n')
+    out = (head[:start] + seo_head(path, title, description, kind, canonical_link, article).rstrip('\n')
            + head[end:] + rest)
     # jsonld=False: for a page whose contract is that no script on it names
     # a remote origin (the verifier); JSON-LD's @context/@id are URLs.
-    tail = seo_tail(path, title, description, kind) if jsonld else ''
+    tail = seo_tail(path, title, description, kind, article) if jsonld else ''
     at = out.rfind('</body>')
     return out[:at] + tail + out[at:] if at >= 0 else out.rstrip('\n') + '\n' + tail

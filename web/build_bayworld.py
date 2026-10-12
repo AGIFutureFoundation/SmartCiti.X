@@ -163,6 +163,32 @@ def _finish_w13(page, states, why):
     return page
 T.finish = _finish_w13
 # END WORLDS w13 co-located labels
+# RESTORE BEGIN (wave 18, RESTORE·Deep Bay Restoration): habitat scenes, crews and site panels at the restoration sites.
+# web/restoscene.py inserts, into the FINISHED Bay page: the AUTHORED habitat scene (HABITAT-SCENE: five InstancedMeshes
+# near the walkable site nearest the eye, hidden in the overview), the SCRIPTED roster crew (SITE-CREW, voice on a click
+# through hivekit's HiveVoice, Mute), and the RESTORE-SITE panel (scenarios, staged tasks, rubric, funding context
+# quoted verbatim, related courses and lessons). Non-walkable sites keep their walkable_reason verbatim and get no
+# scene and no crew. Every anchor exactly once, else the build stops by name. The i18n catalog gains only existing keys.
+_finish_w17 = T.finish
+def _finish_restore(page, states, why):
+    import json
+    import re
+    page = _finish_w17(page, states, why)
+    sys.path.insert(0, str(HERE))
+    import restoscene
+    m = re.search(r'(<script type="application/json" id="parishes-i18n">)(.*?)(</script>)', page, flags=re.S)
+    if not m:
+        raise SystemExit('build_bayworld: RESTORE - embedded i18n catalog not found')
+    cat = json.loads(m.group(2).replace('<\\/', '</'))
+    try:
+        page, _ = restoscene.mount(page, T.REG, cat)
+    except (restoscene.RestoSceneError, KeyError) as e:
+        raise SystemExit(f'build_bayworld: {e}')
+    m = re.search(r'(<script type="application/json" id="parishes-i18n">)(.*?)(</script>)', page, flags=re.S)
+    blob = json.dumps(cat, ensure_ascii=False, sort_keys=True).replace('</', '<\\/')
+    return page[:m.start(2)] + blob + page[m.end(2):]
+T.finish = _finish_restore
+# RESTORE END
 sys.modules['__world_target__'] = T
 
 EDITS = [

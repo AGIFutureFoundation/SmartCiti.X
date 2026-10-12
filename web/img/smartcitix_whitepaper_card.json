@@ -1,0 +1,34 @@
+{
+ "image": "web/img/smartcitix_whitepaper_card.png",
+ "sha256": "ebc253614aac1b34c275eadd82e721fb31b37b5a95ec7d0f72afc448c2528ada",
+ "width": 1200,
+ "height": 630,
+ "generator": "web/build_whitepaper.py",
+ "page": "web/smartcitix_whitepaper.html",
+ "figures": [
+  {
+   "label": "Courses",
+   "value": 122,
+   "fig": "courses/registry/courses.json#/counts/courses",
+   "op": null
+  },
+  {
+   "label": "Union halls",
+   "value": 111,
+   "fig": "unions/registry/unions.json#/count",
+   "op": null
+  },
+  {
+   "label": "Omega Hive agents",
+   "value": 197,
+   "fig": "hive/registry/hive.json#/counts/agents",
+   "op": null
+  },
+  {
+   "label": "Bay restoration sites",
+   "value": 11,
+   "fig": "restoration/registry/restoration.json#/sites",
+   "op": "len"
+  }
+ ]
+}

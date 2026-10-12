@@ -48,6 +48,10 @@ const seoSrc = read('web/seo.py');
 const BASE = seoSrc.match(/^BASE = '([^']+)'/m)[1];
 const DESC_MAX = Number(seoSrc.match(/^DESC_MAX = (\d+)/m)[1]);
 const canon = (p) => (p === FRONT ? BASE : BASE + p);
+// SHARE BEGIN (wave 18): web/seo.py ARTICLE_PAGES carry kind 'article' - og:type article and a
+// TechArticle + Organization + WebSite graph; every other page stays og:type website and never says TechArticle.
+const ARTICLES = new Set([...((seoSrc.match(/^ARTICLE_PAGES = \(([^)]*)\)/m) || [])[1] || '').matchAll(/'([^']+)'/g)].map((m) => m[1]));
+// SHARE END
 
 ok(`[declared] web/sitenav.py lists pages (${PAGES.length}) and web/seo.py one https BASE ending in /`,
   PAGES.length > 10 && /^https:\/\/[^/]+\/.*\/$/.test(BASE), [BASE]);
@@ -97,7 +101,7 @@ const attr = (head, sel) => {
   const m = head.match(new RegExp(`<meta (?:name|property)="${sel}" content="([^"]*)"`));
   return m ? m[1].replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>') : null;
 };
-const bad = { desc: [], canon: [], og: [], img: [], ld: [], ldTypes: [], theme: [], lang: [] };
+const bad = { desc: [], canon: [], og: [], img: [], ld: [], ldTypes: [], theme: [], lang: [], ogType: [] };
 const FORBIDDEN = /"(aggregateRating|review|offers|price|priceCurrency|hasCourseInstance|educationalCredentialAwarded|accreditation|hasCredential|Course|EducationalOccupationalCredential)"/;
 for (const p of adopted) {
   const h = heads[p];
@@ -121,12 +125,18 @@ for (const p of adopted) {
   else if (!doc || doc['@context'] !== 'https://schema.org' || !Array.isArray(doc['@graph'])) bad.ld.push(p);
   else {
     const types = doc['@graph'].map((g) => g['@type']);
-    const want = p === FRONT ? ['Organization', 'WebSite'] : null;
+    // SHARE BEGIN (wave 18): an article page's graph is fixed too
+    const want = p === FRONT ? ['Organization', 'WebSite'] : ARTICLES.has(p) ? ['TechArticle', 'Organization', 'WebSite'] : null;
+    // SHARE END
     if ((want && JSON.stringify(types) !== JSON.stringify(want))
       || (!want && !['WebPage', 'CollectionPage'].includes(types[0]))
       || FORBIDDEN.test(lds[0][1])
       || (!want && doc['@graph'][0].url !== canon(p))) bad.ldTypes.push(`${p}: ${types.join(',')}`);
   }
+  // SHARE BEGIN (wave 18)
+  if (attr(h, 'og:type') !== (ARTICLES.has(p) ? 'article' : 'website') || (h.match(/property="og:type"/g) || []).length !== 1) bad.ogType.push(`${p}: ${attr(h, 'og:type')}`);
+  if (!ARTICLES.has(p) && /"TechArticle"/.test(lds[0]?.[1] || '')) bad.ogType.push(`${p}: TechArticle on a page web/seo.py does not declare an article`);
+  // SHARE END
   if ((h.match(/<meta name="theme-color" content="#[0-9A-Fa-f]{6}" media="\(prefers-color-scheme: (dark|light)\)">/g) || []).length !== 2) bad.theme.push(p);
   if (!/<html lang="en"/.test(read(p).slice(0, 200))) bad.lang.push(p);
 }
@@ -143,6 +153,10 @@ ok('[shipped] each adopted page carries exactly one JSON-LD block, and it parses
 ok('[shipped] JSON-LD types are Organization+WebSite on the front door and WebPage/CollectionPage elsewhere - no Course, rating, price, offer or accreditation',
   bad.ldTypes.length === 0, bad.ldTypes);
 ok('[shipped] each adopted page names a theme-color for dark and for light, and declares lang', bad.theme.length === 0 && bad.lang.length === 0, [...bad.theme, ...bad.lang]);
+// SHARE BEGIN (wave 18)
+ok(`[shipped] og:type is article on the ${ARTICLES.size} page(s) web/seo.py declares in ARTICLE_PAGES and website on every other; no other page carries a TechArticle`,
+  bad.ogType.length === 0 && ARTICLES.size >= 1 && [...ARTICLES].every((p) => PAGES.includes(p)), bad.ogType);
+// SHARE END
 const descs = adopted.map((p) => attr(heads[p], 'description'));
 ok('[shipped] no two adopted pages share a description', new Set(descs).size === descs.length);
 

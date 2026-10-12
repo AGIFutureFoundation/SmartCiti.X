@@ -18,6 +18,10 @@ cp -r wiki _site/wiki
 # search-engine files web/build_seo.py writes at the root.
 cp -r web/media _site/web/media
 cp sitemap.xml robots.txt _site/
+# SHARE BEGIN (wave 18): the whitepaper's share card (web/build_whitepaper.py), named by its og:image
+cp -r web/img _site/web/img
+[ -f _site/web/img/smartcitix_whitepaper_card.png ] || { echo "assemble: web/img/smartcitix_whitepaper_card.png missing from _site"; exit 1; }
+# SHARE END
 # The parish world loads each parish's drawn map at run time ('../' + map path
 # from parishes/registry), so the link check below cannot see them: copy the
 # maps and require every map the registry names to be present.
