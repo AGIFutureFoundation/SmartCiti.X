@@ -1,5 +1,6 @@
 {
  "meta": {
+  "status_note": "PLANNING DRAFT. Regions marked built-elsewhere (the Treasure Island training city, the four Louisiana parish cities, the Bay Area hill districts) are 3D city artifacts built in other AGI Future Foundation projects; they are not in this repository and are not verified by it. Every figure quoted for them (building and parcel counts, relay capacity) is that project's, unchecked here. \"in progress\" and \"planned\" mean what they say.",
   "product": "SmartCiti.X : Trade Craft Academy, powered by AGI Corp",
   "flagship": "Louisiana (Louisiana Robotics AI Trades Initiative)",
   "doctrine": "Anything not built is labeled planned. No partners, customers or endorsements are claimed. Prices are proposals only.",
@@ -7,7 +8,7 @@
   "date": "2026-10-12"
  },
  "regions": [
-  {"name": "Treasure Island Training City (Bay Area)", "kind": "city", "status": "built",
+  {"name": "Treasure Island Training City (Bay Area)", "kind": "city", "status": "built-elsewhere",
    "features": ["3D city artifact connected to the Bay Bridge", "9 SF/Oakland hill districts with elevation; Nob Hill and Russian Hill as continuous terrain", "9,849 buildings across 10 character archetypes with per-archetype palettes", "day/night cycle; clear/overcast/rain weather with lightning", "multiplayer relay up to 2,000 per room"],
    "training_sites": ["union halls and driving yard (part of the 125 built)", "walkable jobsite interiors from the 333-site library", "bridge approach rigging and inspection zone"]},
   {"name": "San Francisco side", "kind": "district", "status": "in progress",
@@ -16,16 +17,16 @@
   {"name": "Oakland Training Center", "kind": "district", "status": "planned",
    "features": ["shown in-city as coming soon", "Pill Hill institutional and rust/industrial archetypes in the building set", "port-adjacent logistics yard layout (planned)"],
    "training_sites": ["container crane and drayage yard (planned)", "hospital MEP plant room (planned)", "rail spur and intermodal transfer (planned)"]},
-  {"name": "Orleans Parish", "kind": "parish", "status": "built",
+  {"name": "Orleans Parish", "kind": "parish", "status": "built-elsewhere",
    "features": ["3D city with creole architecture style", "14,224 real parcel points", "weather system", "GLB street furniture", "MapLibre/Mapbox GeoJSON exports"],
    "training_sites": ["heritage trades sites (plaster, ironwork, slate) from the interiors library", "floodwall and pump-station sites (utilities phase)", "riverfront wharf work (marine/coastal phase)"]},
-  {"name": "Jefferson Parish", "kind": "parish", "status": "built",
+  {"name": "Jefferson Parish", "kind": "parish", "status": "built-elsewhere",
    "features": ["3D city with suburban architecture style", "weather system", "GLB street furniture", "MapLibre/Mapbox GeoJSON exports"],
    "training_sites": ["residential HVAC and electrical service calls", "green retrofit sites", "cold chain distribution warehouse"]},
-  {"name": "St. Bernard Parish", "kind": "parish", "status": "built",
+  {"name": "St. Bernard Parish", "kind": "parish", "status": "built-elsewhere",
    "features": ["3D city with suburban/bayou mix", "weather system", "GLB street furniture", "MapLibre/Mapbox GeoJSON exports"],
    "training_sites": ["levee and floodgate maintenance", "refinery-adjacent pipefitting (planned scenario)", "storm-recovery debris and rebuild drills"]},
-  {"name": "Plaquemines Parish", "kind": "parish", "status": "built",
+  {"name": "Plaquemines Parish", "kind": "parish", "status": "built-elsewhere",
    "features": ["3D city with bayou architecture style", "weather system", "GLB street furniture", "MapLibre/Mapbox GeoJSON exports"],
    "training_sites": ["marine/coastal sites from the interiors library", "coastal restoration and marsh work (planned scenario)", "elevated-home construction on pilings (planned)"]},
   {"name": "Baton Rouge (East Baton Rouge Parish)", "kind": "parish", "status": "planned",
@@ -46,7 +47,7 @@
   {"name": "Gulf Coast Port (generic)", "kind": "city", "status": "planned",
    "features": ["configurable generic port template, not a specific real port", "terrain/water presets for Gulf shorelines", "used as the base for custom port packages"],
    "training_sites": ["container yard with AMRs (planned)", "dry dock ship repair (planned)", "offshore wind staging quay (planned)"]},
-  {"name": "Bay Area hill districts (9)", "kind": "district", "status": "built",
+  {"name": "Bay Area hill districts (9)", "kind": "district", "status": "built-elsewhere",
    "features": ["elevated SF/Oakland hill districts", "Nob Hill and Russian Hill continuous terrain", "remaining 7 districts on stepped elevation; continuous terrain conversion in progress"],
    "training_sites": ["steep-grade excavation and shoring drills (planned scenario on built terrain)", "hillside utility trenching (planned scenario)"]}
  ],

@@ -1,0 +1,32 @@
+{
+  "about": "The one honesty vocabulary for SmartCiti.X : Trade Craft Academy. loop/honesty.mjs (EV-05, courses/test.mjs) and courses/build.py both load this file, so Node and Python judge text identically. Entries are regex sources valid in both JavaScript and Python. claims and negations match case-insensitively; abbreviations match case-sensitively. A claim is excused only by a negation EARLIER in the same clause.",
+  "claims": [
+    "\\baccredited\\b",
+    "\\bendorsed\\b",
+    "\\bcertified by\\b",
+    "\\bpartnered with\\b",
+    "\\bdeployed to\\b",
+    "\\bin production at\\b"
+  ],
+  "negations": [
+    "\\bno\\b",
+    "\\bnot\\b",
+    "\\bnone\\b",
+    "\\bnever\\b",
+    "\\bnothing\\b",
+    "\\bzero\\b",
+    "\\bneither\\b",
+    "\\bnor\\b",
+    "\\bplanned\\b",
+    "\\bproposed\\b",
+    "n['’]t\\b"
+  ],
+  "abbreviations": [
+    "\\be\\.g\\.",
+    "\\bi\\.e\\.",
+    "\\bcf\\.",
+    "\\bvs\\.",
+    "\\bArt\\.(?=\\s*\\d)",
+    "\\bNo\\.(?=\\s*\\d)"
+  ]
+}

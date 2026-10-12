@@ -13,7 +13,8 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { validateLedger, validateCycle, AGENTS, GATE_IDS, manifestVersion } from './cycle.mjs';
-import { GATES, honestyHits, secretHits, parseVerify, OVERCLAIM } from './evals.mjs';
+import { GATES, honestyHits, secretHits, parseVerify, OVERCLAIM, pilotGate } from './evals.mjs';
+import { claimHits, verdict } from './honesty.mjs';
 import { heartbeatLine, registryVersions, runHeartbeat } from './heartbeat.mjs';
 
 let n = 0;
@@ -71,21 +72,34 @@ ok('cycle agents must be one of the eight named team agents',
 }
 
 /* ---------------------------------------------------------------- evals --- */
-ok('evals.mjs declares exactly the gates EV-01..EV-08, in order, matching the ledger schema',
-  GATES.map(([id]) => id).join() === 'EV-01,EV-02,EV-03,EV-04,EV-05,EV-06,EV-07,EV-08'
+ok('evals.mjs declares exactly the gates EV-01..EV-09, in order, matching the ledger schema',
+  GATES.map(([id]) => id).join() === 'EV-01,EV-02,EV-03,EV-04,EV-05,EV-06,EV-07,EV-08,EV-09'
   && GATES.map(([id]) => id).join() === GATE_IDS.join());
 ok('honesty regex catches "accredited by X" and "partnered with" claims',
   honestyHits('The course is accredited by the State Board.').length === 1
   && honestyHits('We partnered with a district last spring.').length === 1
   && OVERCLAIM.test('deployed to three schools'));
-ok('honesty regex passes negated or planned sentences: "not accredited", "planned deployment to"',
+ok('honesty scan passes negated or planned clauses only when the qualifier comes first',
   honestyHits('This course is not accredited.').length === 0
   && honestyHits('Nothing here is accredited, deployed to schools or endorsed.').length === 0
-  && honestyHits('Being deployed to a pilot site is planned for 2027.').length === 0
+  && honestyHits('A planned deployment: being deployed to a pilot site in 2027.').length === 0
+  && honestyHits('Being deployed to a pilot site is planned for 2027.').length === 1
   && honestyHits('`accredited by` is a phrase the lint hunts.').length === 0);
 ok('a regex rule table naming the phrases is not a claim; a sentence beside it still is',
   honestyHits("const CLAIM = /accredited|endorsed|certified by|partnered with/i;").length === 0
   && honestyHits('Rules: accredited|endorsed. We are endorsed by ACME.').length === 1);
+{
+  const fx = JSON.parse(readFileSync(join(HERE, 'registry/honesty_fixtures.json'), 'utf8')).cases;
+  const bad = fx.filter((c) => verdict(c.text) !== c.expect);
+  ok(`the honesty corpus: all ${fx.length} cases get their expected verdict (${fx.filter((c) => c.expect === 'flag').length} flag)`,
+    fx.length >= 16 && bad.length === 0 && honestyHits === claimHits);
+  ok('EV-05 negation is positional: "accredited by ACME, not endorsed." and "No. 4765 is accredited" are claims',
+    honestyHits('We are accredited by ACME, not endorsed.').length === 1
+    && honestyHits('No. 4765 is accredited by the state board').length === 1
+    && honestyHits('the program is |accredited| by the board').length === 1);
+  ok('EV-05 line numbers survive a fenced block: a claim after a 3-line fence is reported on its own line',
+    JSON.stringify(honestyHits('intro\n```\nx\ny\n```\nWe are accredited by X.').map((h) => h.line)) === '[6]');
+}
 ok('honesty check is per sentence: a negation in the previous sentence does not excuse a claim',
   honestyHits('This is not a demo. It is accredited by ACME.').length === 1);
 {
@@ -101,6 +115,30 @@ ok('verify_all.sh summary parser reads the total and the failing suites',
   JSON.stringify(parseVerify('ok    a.mjs  3 checks\nFAIL  b/test.mjs\n----\n1594 checks, 1 failing suites\nstderr trailing\n'))
     === JSON.stringify({ total: 1594, failing: 1, failed: ['b/test.mjs'] })
   && parseVerify('garbage') === null);
+
+/* --------------------------------------------------------------- EV-09 --- */
+{
+  const pilot = { real_learners: true, partner: 'Example Parish School Board', consent_plan_ref: 'consent/plan-01.md' };
+  ok('a cycle may carry an optional pilot record; a malformed one is refused',
+    validateCycle({ ...goodCycle, pilot }, 1).length === 0
+    && validateCycle({ ...goodCycle, pilot: { real_learners: 'yes' } }, 1).length > 0
+    && validateCycle({ ...goodCycle, pilot: { ...pilot, sponsor: 'x' } }, 1).length > 0);
+  ok('EV-09 passes with no pilot recorded, and with a pilot that names partner and consent plan',
+    pilotGate([goodCycle]).join() === 'pass,no pilot recorded'
+    && pilotGate([{ ...goodCycle, pilot, shipped: ['pilot with 12 learners started'] }])[0] === 'pass');
+  ok('EV-09 fails real learners without partner or consent plan, and pilot-with-learners talk with no record',
+    pilotGate([{ ...goodCycle, pilot: { ...pilot, consent_plan_ref: ' ' } }])[0] === 'fail'
+    && pilotGate([{ ...goodCycle, pilot: { real_learners: true, partner: 'X' } }])[0] === 'fail'
+    && pilotGate([{ ...goodCycle, shipped: ['Ran a pilot cohort at a parish school'] }])[0] === 'fail'
+    && pilotGate([{ ...goodCycle, notes: 'pilot with students next sprint' }])[0] === 'fail');
+  ok('the committed ledger passes EV-09', pilotGate(ledger.cycles)[0] === 'pass');
+}
+{
+  const r = spawnSync('node', [join(HERE, 'patch_cycle.mjs'), '999'], { encoding: 'utf8' });
+  ok('patch_cycle.mjs exits 1 for a cycle that is not in the ledger, and writes nothing',
+    r.status === 1 && /not in the ledger/.test(r.stderr)
+    && readFileSync(join(HERE, 'registry/cycles.json'), 'utf8') === JSON.stringify(ledger, null, 2) + '\n');
+}
 
 /* ------------------------------------------------------------ metaprompt --- */
 {
@@ -147,6 +185,13 @@ ok('a cycle may not record its review video by a machine path (media lives outsi
   ok('the planning draft carries no gate id the executed gates use (DRAFT-EV only, and says so)',
     draft.evals.every((e) => e.id.startsWith('DRAFT-EV-') && !GATE_IDS.includes(e.id))
     && /loop\/evals\.mjs/.test(draft.status_note));
+  const env = JSON.parse(readFileSync(join(HERE, 'registry/environments_draft.json'), 'utf8'));
+  const statuses = [...draft.stack.map((s) => s.status), ...env.regions.map((r) => r.status)];
+  ok('neither planning draft carries a bare "built" status; both say built-elsewhere is not verified here',
+    !statuses.includes('built') && statuses.includes('built-elsewhere')
+    && [draft.status_note, env.meta.status_note].every((t) => /built-elsewhere/.test(t) && /not verified by (it|this repository)/i.test(t))
+    && draft.stack.filter((s) => s.status === 'built-in-repo').every((s) => s.in_repo.split(', ')
+      .every((f) => existsSync(join(HERE, '..', f)))));
 }
 
 console.log(`${n} checks passed`);

@@ -24,6 +24,9 @@ the registry is byte-identical to a fresh build.
 
   python3 courses/build.py           writes courses/registry/courses.json
   python3 courses/build.py --stdout  prints the same bytes, writes nothing
+  python3 courses/build.py --scan-fixtures
+                                     prints the honesty verdict for every case
+                                     in loop/registry/honesty_fixtures.json
 """
 import datetime
 import hashlib
@@ -52,7 +55,17 @@ MENTORS = ['Chris', 'Joyce', 'Tessa', 'Gemma', 'Iris', 'Dana', 'Sam']
 ROSTER_NOTE = ('outside the 111-hall roster: cosmetology, nail and esthetics '
                'courses have no trade hall and are delivered through the '
                'separate Beauty School simulator, not through any hall, '
-               'station or yard simulator of this pack')
+               'station or yard simulator of this pack; Beauty School is a '
+               'separately published simulator and is not part of this repository')
+
+# What a learner can actually run in THIS bundle, stated on every course so an
+# empty floor stage is never silent (product review on PR #107).
+DELIVERY_FULL = 'all four stages can run in this bundle'
+DELIVERY_NO_FLOOR = ('home, class and gate can run in this bundle; no floor simulator '
+                     'or class station is bound yet, so practice runs as a paper or demo '
+                     'exercise and is recorded as such')
+DELIVERY_BEAUTY = ('home and class only in this bundle: the floor and gate stages need '
+                   'the separate Beauty School simulator, which is not part of this repository')
 
 # Authored curation: which real halls teach each course. Every slug is
 # asserted against unions.json below; nothing here may name a hall the
@@ -99,18 +112,82 @@ WIRED = {
     ],
 }
 
-NEGATION = re.compile(r'\b(?:no|not|none|nothing|never|neither|nor)\b', re.I)
-CLAIM = re.compile(r'accredited|endorsed|certified by|partnered with', re.I)
+# The honesty scanner. The vocabulary is loop/honesty.json, shared with
+# loop/honesty.mjs (EV-05 and courses/test.mjs); the rules below mirror that
+# module line for line, and courses/test.mjs runs both over
+# loop/registry/honesty_fixtures.json and requires identical verdicts.
+HONESTY_VOCAB = json.load(open(ROOT / 'loop/honesty.json'))
+HONESTY_FIXTURES = ROOT / 'loop/registry/honesty_fixtures.json'
+_CLAIM = re.compile('|'.join(HONESTY_VOCAB['claims']), re.I | re.A)
+_NEG = re.compile('|'.join(HONESTY_VOCAB['negations']), re.I | re.A)
+_ABBR = re.compile('|'.join(HONESTY_VOCAB['abbreviations']), re.A)
+_PLACEHOLDER = '\u00a7\u00a7'
+_BREAK = re.compile(r'[.!?;](?=\s|\Z)|,\s+(?=(?:but|not)\b)|\n', re.I | re.A)
+
+
+def _prepare(text):
+    """Blank fences (keeping newlines) and code spans; replace abbreviations."""
+    text = re.sub(r'```[\s\S]*?```', lambda m: re.sub(r'[^\n]', '', m.group(0)), text)
+    text = re.sub(r'`[^`\n]*`', ' ', text)
+    return _ABBR.sub(_PLACEHOLDER, text)
+
+
+def _soft_wrap(t, i):
+    prev = t[t.rfind('\n', 0, i) + 1:i].rstrip()
+    j = t.find('\n', i + 1)
+    nxt = t[i + 1:(j if j >= 0 else len(t))].lstrip()
+    return bool(re.search(r'[\w,):]$', prev, re.A)) and bool(re.match(r'[A-Za-z(`]', nxt))
+
+
+def _clauses(t):
+    out, start = [], 0
+    for m in _BREAK.finditer(t):
+        if m.group(0) == '\n' and _soft_wrap(t, m.start()):
+            continue
+        out.append((start, t[start:m.end()]))
+        start = m.end()
+    out.append((start, t[start:]))
+    return [c for c in out if c[1].strip()]
+
+
+def _tight(c, i):
+    def solid(k):
+        return 0 <= k < len(c) and not c[k].isspace() and c[k] != '|'
+    return 0 <= i < len(c) and c[i] == '|' and solid(i - 1) and solid(i + 1)
+
+
+def _clause_claim(c):
+    negs = [m.start() for m in _NEG.finditer(c)]
+    for m in _CLAIM.finditer(c):
+        if any(i < m.start() for i in negs):
+            continue
+        if _tight(c, m.start() - 1) or _tight(c, m.end()):
+            continue
+        return m.start()
+    return -1
+
+
+def claim_hits(text):
+    """Overclaiming clauses in a text: [(line, clause)]."""
+    t = _prepare(text)
+    hits = []
+    for start, c in _clauses(t):
+        k = _clause_claim(c)
+        if k >= 0:
+            hits.append((t[:start + k].count('\n') + 1, ' '.join(c.split())[:120]))
+    return hits
 
 
 def unnegated_claims(text):
-    """Sentences that use a forbidden claim word without a negation."""
-    out = []
-    text = re.sub(r'\b(e\.g|i\.e|Art|No)\.', r'\1', text)
-    for sentence in re.split(r'(?<=[.!?])\s+', text):
-        if CLAIM.search(sentence) and not NEGATION.search(sentence):
-            out.append(sentence)
-    return out
+    """Clauses that use a forbidden claim word without an earlier negation."""
+    return [c for _, c in claim_hits(text)]
+
+
+if '--scan-fixtures' in sys.argv:
+    cases = json.load(open(HONESTY_FIXTURES))['cases']
+    json.dump([('flag' if claim_hits(x['text']) else 'clean') for x in cases], sys.stdout)
+    sys.stdout.write('\n')
+    sys.exit(0)
 
 
 def mentor_names(text):
@@ -177,6 +254,8 @@ for c in draft['courses']:
     for k in ('mapping_note', 'roster_note', 'cross_hall', 'cross_hall_reason'):
         if k in m:
             rec[k] = m[k]
+    rec['delivery_status'] = (DELIVERY_BEAUTY if 'roster_note' in m
+                              else DELIVERY_FULL if (floor or stations) else DELIVERY_NO_FLOOR)
     rec.update({
         'floor_sims': floor, 'class_stations': stations,
         'robotics_link': c['robotics_link'],

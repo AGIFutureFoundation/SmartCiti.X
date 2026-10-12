@@ -72,7 +72,7 @@
     {"title": "Weld Symbols and Fit-Up", "flipped": {"prepare": "Primer on AWS A2.4 symbols: arrow vs other side, field weld flag, all-around.", "analyze": "Read 8 symbols from a structural drawing and state size, type and side.", "practice": "Sim: tack and fit a T-joint within 1/16 in. tolerance using a square and clamps.", "verify": "Fabricate a bracket from print; measured against drawing tolerances."}}
    ],
    "robotics_link": "Robotic GMAW welding cell (6-axis arm with torch, positioner and fume extraction), bridging to TCA-310.",
-   "licensure_note": "Welder certification (e.g. AWS D1.1 performance qualification) is done by an accredited test facility on real coupons; sim results are practice only and are not a certification."
+   "licensure_note": "Welder certification (e.g. AWS D1.1 performance qualification) is never done in this course: it is done at an independent welding test facility on real coupons; sim results are practice only and are not a certification."
   },
   {
    "code": "TCA-150",

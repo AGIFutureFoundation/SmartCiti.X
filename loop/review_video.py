@@ -16,7 +16,7 @@ Footage is the project's own generated clips, kept OUTSIDE the repository
 
 Requires ffmpeg with drawtext. Stdlib only.
 """
-import argparse, json, os, pathlib, subprocess, sys, tempfile
+import argparse, json, os, pathlib, shutil, subprocess, sys, tempfile
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 BOLD = next((f for f in ["/usr/share/fonts/truetype/google-fonts/Poppins-Bold.ttf",
@@ -125,12 +125,24 @@ def main():
     cyc = next((c for c in ledger["cycles"] if c["n"] == a.cycle), None)
     if cyc is None:
         sys.exit(f"cycle {a.cycle} is not in the ledger; add it first (node loop/cycle.mjs add)")
-    ev = json.load(open(ROOT / "loop/state/evals_latest.json"))
-    hb_lines = (ROOT / "loop/state/heartbeat.jsonl").read_text().strip().splitlines()
+    ev_path, hb_path = ROOT / "loop/state/evals_latest.json", ROOT / "loop/state/heartbeat.jsonl"
+    if not ev_path.is_file():
+        sys.exit("loop/state/evals_latest.json is missing: run `node loop/evals.mjs` first")
+    if not hb_path.is_file():
+        sys.exit("loop/state/heartbeat.jsonl is missing: run `node loop/heartbeat.mjs` first")
+    ev = json.load(open(ev_path))
+    hb_lines = hb_path.read_text().strip().splitlines()
     hb = json.loads(hb_lines[-1]) if hb_lines else {"ok": False, "checks": []}
     courses = json.load(open(ROOT / "courses/registry/courses.json"))["courses"]
 
     work = tempfile.mkdtemp(prefix="review_")
+    try:
+        render(a, ledger, cyc, ev, hb, courses, work)
+    finally:
+        shutil.rmtree(work, ignore_errors=True)
+
+
+def render(a, ledger, cyc, ev, hb, courses, work):
     c = Cutter(work, a.clips)
     gates = ev["gates"]
     passed = sum(g["status"] == "pass" for g in gates)

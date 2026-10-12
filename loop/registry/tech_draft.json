@@ -1,5 +1,5 @@
 {
-  "status_note": "PLANNING DRAFT, superseded for gates: the eval gates the loop actually executes are defined in loop/evals.mjs (EV-01..EV-08). The DRAFT-EV ids below are proposals from the 2026-10-11 roadmap brief and share no contract with them.",
+  "status_note": "PLANNING DRAFT, superseded for gates: the eval gates the loop actually executes are defined in loop/evals.mjs (EV-01..EV-09). The DRAFT-EV ids below are proposals from the 2026-10-11 roadmap brief and share no contract with them. Stack status: \"built-in-repo\" names the files in this repository that implement the layer and are exercised by verify_all.sh; \"built-elsewhere\" means the system is built in other AGI Future Foundation projects and is NOT verified by this repository (any in_repo note names the only part that is).",
   "stack": [
     {
       "layer": "Client 3D / XR",
@@ -12,8 +12,9 @@
         "device tiers (low/mid/high)",
         "WebXR-ready session entry"
       ],
-      "status": "built",
-      "why": "Browser-native 3D cities load on Chromebooks and headsets alike with no install; device tiers keep frame rate stable on school hardware. Headset certification (Quest store) is planned."
+      "status": "built-elsewhere",
+      "why": "Browser-native 3D cities load on Chromebooks and headsets alike with no install; device tiers keep frame rate stable on school hardware. Headset certification (Quest store) is planned.",
+      "in_repo": "web/trade_craft_3d.html (three.js scene, InstancedMesh) only; the asset packing pipeline, device tiers and WebXR entry are not in this repository"
     },
     {
       "layer": "Maps & geospatial",
@@ -23,8 +24,9 @@
         "city-asset layers (SF/Oakland, New Orleans)",
         "elevation / hill pass"
       ],
-      "status": "built",
-      "why": "Real street grids anchor training scenarios in places learners recognise and let the same data drive both 2D campus maps and 3D scenes."
+      "status": "built-elsewhere",
+      "why": "Real street grids anchor training scenarios in places learners recognise and let the same data drive both 2D campus maps and 3D scenes.",
+      "in_repo": "web/vendor/maplibre and geo/registry/network.geojson only; the city-asset and elevation layers are not in this repository"
     },
     {
       "layer": "Media generation",
@@ -35,7 +37,7 @@
         "Minimax",
         "brand lint on outputs"
       ],
-      "status": "built",
+      "status": "built-elsewhere",
       "why": "Generated films and photos produce orientation, safety and marketing media at a fraction of studio cost; every asset passes brand lint before use."
     },
     {
@@ -46,8 +48,9 @@
         "ACP-08 parity safeguards & stop conditions",
         "ACP-15 skill graph + sequencer"
       ],
-      "status": "built",
-      "why": "Adapts hints and task order to each learner while ACP-08 parity checks stop any adaptation that would treat learner groups unequally."
+      "status": "built-in-repo",
+      "why": "Adapts hints and task order to each learner while ACP-08 parity checks stop any adaptation that would treat learner groups unequally.",
+      "in_repo": "bus/telemetry.mjs, control/hints.mjs, bus/safeguards.mjs, control/graph.mjs, control/sequencer.mjs"
     },
     {
       "layer": "Agents & orchestration",
@@ -59,8 +62,9 @@
         "A2A agent card (/.well-known/agent-card.json)",
         "JSON-RPC skills: license-path, coverage, catalog, quote, enroll"
       ],
-      "status": "built",
-      "why": "A small team of scoped agents handles research, build and QA loops; each writes to exactly one bus topic so responsibility is traceable. Production multi-tenant hosting is planned."
+      "status": "built-elsewhere",
+      "why": "A small team of scoped agents handles research, build and QA loops; each writes to exactly one bus topic so responsibility is traceable. Production multi-tenant hosting is planned.",
+      "in_repo": "ops/registries.mjs (NANDA registration) and fabric/langgraph_reference.py only; Hermes agents, the A2A agent card and the JSON-RPC skills are not in this repository"
     },
     {
       "layer": "Data & LRS",
@@ -70,8 +74,9 @@
         "ACP-09 single-writer message bus",
         "append-only audit log"
       ],
-      "status": "built",
-      "why": "Standard xAPI statements make learner records portable to any conformant LRS; the append-only log gives an auditable history of every agent and system decision."
+      "status": "built-in-repo",
+      "why": "Standard xAPI statements make learner records portable to any conformant LRS; the append-only log gives an auditable history of every agent and system decision.",
+      "in_repo": "bus/telemetry.mjs, bus/session.mjs, bus/bus.mjs, bus/audit.mjs"
     },
     {
       "layer": "Commerce",
@@ -82,7 +87,7 @@
         "AP2-style human-present mandates",
         "daily licensing watcher"
       ],
-      "status": "built",
+      "status": "built-elsewhere",
       "why": "Agents can prepare quotes and enrolments but a human always completes payment. Runs in test mode only; live billing is planned."
     },
     {
@@ -94,8 +99,9 @@
         "data classification",
         "affect data never exported"
       ],
-      "status": "built",
-      "why": "Learner data, especially affect signals, stays inside its tenant and classification. Third-party audit (e.g. SOC 2) is planned, not obtained."
+      "status": "built-in-repo",
+      "why": "Learner data, especially affect signals, stays inside its tenant and classification. Third-party audit (e.g. SOC 2) is planned, not obtained.",
+      "in_repo": "security/authz.mjs, security/ratelimit.mjs, security/privacy.mjs"
     },
     {
       "layer": "Ops & verification",
@@ -108,8 +114,10 @@
         "228 verification checks",
         "soak + fuzz tests (16 defects found & fixed)"
       ],
-      "status": "built",
-      "why": "Staged rollout lanes and a cost governor limit the blast radius of any change; soak and fuzz testing surfaced and closed 16 defects before any deployment."
+      "status": "built-in-repo",
+      "why": "Staged rollout lanes and a cost governor limit the blast radius of any change; soak and fuzz testing surfaced and closed 16 defects before any deployment.",
+      "in_repo": "ops/registries.mjs, ops/rollout.mjs, ops/jobs.mjs, ops/fuzz.mjs, control/soak.mjs",
+      "figures_note": "the 228-check and 16-defect figures in this layer are the 2026-10-11 brief's, not a count this repository makes"
     }
   ],
   "agents": [

@@ -3,14 +3,14 @@
 SmartCiti.X : Trade Craft Academy runs its roadmap work as a loop: eight
 scoped agents, five cycles of 30 minutes, a checkpoint at the end of each
 cycle. This directory is the machinery that makes a checkpoint mean
-something — a liveness probe, eight executed eval gates, and a ledger that
+something — a liveness probe, nine executed eval gates, and a ledger that
 records what each cycle actually ran and shipped. Nothing here is deployed;
 the loop works on a branch and a human merges.
 
 ## Commands
 
     node loop/heartbeat.mjs                 # < 3 s liveness probe
-    node loop/evals.mjs                     # run gates EV-01..EV-08 (~10 s; EV-01 runs verify_all.sh)
+    node loop/evals.mjs                     # run gates EV-01..EV-09 (~10 s; EV-01 runs verify_all.sh)
     node loop/cycle.mjs show                # print and validate the ledger
     node loop/cycle.mjs add --json c.json   # validate and append one cycle
     node loop/test.mjs                      # tests for all of the above (does not run verify_all.sh)
@@ -20,11 +20,14 @@ the loop works on a branch and a human merges.
 | Path | What it is |
 |---|---|
 | `heartbeat.mjs` | git branch and dirty count, every registry `pack_version` against `pack/manifest.json`, `node`/`python3`/`ffmpeg` on PATH, age of the last cycle and the last eval run. Appends `{ts, ok, checks}` to `state/heartbeat.jsonl`. Exits 1 only on a hard failure. |
-| `evals.mjs` | The eight gates, below. Writes `state/evals_latest.json`, appends to `state/evals.jsonl`, exits 1 if any gate fails. |
+| `evals.mjs` | The nine gates, below. Writes `state/evals_latest.json`, appends to `state/evals.jsonl`, exits 1 if any gate fails. |
 | `cycle.mjs` | Ledger validator and writer. Fills gates, check count and heartbeat from `state/` when the input omits them. |
 | `registry/cycles.json` | The cycle ledger. |
 | `METAPROMPT.md` | Orchestrator meta-prompt and one role prompt per agent, each with the one directory it may write. |
-| `registry/*_draft.json` | Planning drafts the loop was adapted from. |
+| `honesty.json`, `honesty.mjs` | The one honesty vocabulary and scanner, used by EV-05 and `courses/test.mjs`; `courses/build.py` loads the same JSON. |
+| `registry/honesty_fixtures.json` | The scanner corpus (flag / clean). `loop/test.mjs` and `courses/test.mjs` run it; `courses/test.mjs` also runs `python3 courses/build.py --scan-fixtures` and requires identical verdicts. |
+| `patch_cycle.mjs` | Refresh a logged cycle's gates from `state/` and attach its video by bare file name; validates the ledger before writing. |
+| `registry/*_draft.json` | Planning drafts the loop was adapted from. A `built-elsewhere` status means built in another project and not verified here. |
 
 ## Gates
 
@@ -35,13 +38,18 @@ the loop works on a branch and a human merges.
 | EV-03 | `node brand/lint.mjs .` | — |
 | EV-04 | `node brand/figures.mjs .` | — |
 | EV-05 | honesty lint over files changed vs `origin/main` plus untracked | — |
-| EV-06 | `ffprobe` on the latest cycle's review video, 120 ± 0.5 s | no cycle or no video yet |
+| EV-06 | `ffprobe` on the latest cycle's review video; outside 120 ± 0.5 s is a **warn**, a machine path in the ledger or an unreadable file is a fail | no cycle or no video yet |
 | EV-07 | ledger schema, including `pack_version` against the manifest | — |
 | EV-08 | secret patterns in the diff and untracked files | — |
+| EV-09 | pilot precondition: fails if a cycle sets `pilot.real_learners` without a non-empty `partner` and `consent_plan_ref`, or if its shipped/notes text mentions a pilot with learners, students or a cohort without such a record | — (passes as "no pilot recorded") |
 
-EV-05 flags a sentence that uses accreditation, endorsement, partnership or
-deployment language unless the same sentence negates or qualifies it (no,
-not, none, never, zero, planned, proposed). Quoted code spans are exempt.
+EV-05 flags a clause that uses accreditation, endorsement, partnership or
+deployment language unless a negation or qualifier (no, not, none, never,
+nothing, zero, neither, nor, n't, planned, proposed) comes EARLIER in the
+same clause. Clauses end at . ! ? ; and at ", but" / ", not". Abbreviations
+(e.g., i.e., Art. 5, No. 5) neither negate nor end a sentence. Fenced blocks
+and code spans are quoting, not claiming; a claim inside a regex alternation
+(`a|b`, pipes tight on a side) is a rule table, not a claim.
 
 ## What a checkpoint does
 

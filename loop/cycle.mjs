@@ -26,7 +26,7 @@ export const AGENTS = Object.freeze([
   'Orchestrator', 'Curriculum Mapper', 'Environment Architect', 'Robotics Integrator',
   'Licensing Researcher', 'Billing Engineer', 'Eval Warden', 'Media Producer',
 ]);
-export const GATE_IDS = Object.freeze(['EV-01', 'EV-02', 'EV-03', 'EV-04', 'EV-05', 'EV-06', 'EV-07', 'EV-08']);
+export const GATE_IDS = Object.freeze(['EV-01', 'EV-02', 'EV-03', 'EV-04', 'EV-05', 'EV-06', 'EV-07', 'EV-08', 'EV-09']);
 export const STATUSES = Object.freeze(['pass', 'fail', 'warn', 'absent']);
 
 const ISO = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?Z$/;
@@ -38,7 +38,7 @@ export function validateCycle(c, expectN) {
   const e = [];
   if (!isObj(c)) return ['cycle is not an object'];
   const allowed = new Set(['n', 'started', 'ended', 'sprint', 'shipped', 'agents', 'gates',
-    'heartbeat_ok', 'checks_total', 'video', 'commit', 'notes']);
+    'heartbeat_ok', 'checks_total', 'video', 'commit', 'notes', 'pilot']);
   for (const k of Object.keys(c)) if (!allowed.has(k)) e.push(`unknown field "${k}"`);
   if (!Number.isInteger(c.n) || c.n < 1) e.push('n must be a positive integer');
   else if (expectN !== undefined && c.n !== expectN) e.push(`n is ${c.n}, the ledger expects ${expectN}`);
@@ -74,6 +74,21 @@ export function validateCycle(c, expectN) {
     else if (c.video.path.includes('/') || c.video.path.includes('\\'))
       e.push('video.path must be a bare file name (media lives outside the repo, see LOOP_MEDIA_DIR)');
   }
+  // Optional pilot record. EV-09 (loop/evals.mjs) holds the rule that real
+  // learners need a named partner and a consent plan; the schema holds types.
+  if (c.pilot !== undefined) {
+    if (!isObj(c.pilot)) e.push('pilot must be an object {real_learners, partner, consent_plan_ref}');
+    else {
+      for (const k of Object.keys(c.pilot))
+        if (!['real_learners', 'partner', 'consent_plan_ref'].includes(k)) e.push(`pilot has unknown field "${k}"`);
+      if (typeof c.pilot.real_learners !== 'boolean') e.push('pilot.real_learners must be a boolean');
+      for (const k of ['partner', 'consent_plan_ref'])
+        if (k in c.pilot && typeof c.pilot[k] !== 'string') e.push(`pilot.${k} must be a string`);
+    }
+  }
+  if (c.notes !== undefined && typeof c.notes !== 'string'
+      && !(Array.isArray(c.notes) && c.notes.every((x) => typeof x === 'string')))
+    e.push('notes must be a string or an array of strings');
   if (c.commit !== null && !/^[0-9a-f]{7,40}$/.test(c.commit ?? '')) e.push('commit must be null or a hex sha');
   if (Array.isArray(c.gates) && c.gates.some((g) => g && g.status === 'fail') && c.commit !== null)
     e.push('a cycle with a failing gate cannot record a commit: a gate failure stops the release');

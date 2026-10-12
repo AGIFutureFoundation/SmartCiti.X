@@ -12,6 +12,7 @@ import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { claimHits, verdict } from '../loop/honesty.mjs';
 
 let n = 0;
 const ok = (m, c) => { if (!c) { console.error('FAIL', m); process.exit(1); } n++; console.log('  ok ', m); };
@@ -32,7 +33,6 @@ const C = reg.courses;
 const byCode = Object.fromEntries(C.map((c) => [c.code, c]));
 const MENTORS = new Set(['Chris', 'Joyce', 'Tessa', 'Gemma', 'Iris', 'Dana', 'Sam']);
 const NEG = /\b(?:no|not|none|nothing|never|neither|nor)\b/i;
-const CLAIM = /accredited|endorsed|certified by|partnered with/i;
 const sentences = (t) => t.replace(/\b(e\.g|i\.e|Art|No)\./g, '$1').split(/(?<=[.!?])\s+/);
 function* strings(o) {
   if (typeof o === 'string') yield o;
@@ -89,6 +89,12 @@ ok('cosmetology, nail and esthetics courses have empty halls AND a Beauty School
     && byCode[k].floor_sims.length === 0 && byCode[k].class_stations.length === 0
     && /outside the 111-hall roster/.test(byCode[k].roster_note) && /Beauty School/.test(byCode[k].roster_note))
   && C.filter((c) => c.roster_note).length === 3);
+ok('every course states what can run in this bundle; an empty floor is never silent',
+  C.every((c) => typeof c.delivery_status === 'string' && c.delivery_status.length > 20)
+  && ['TCA-210', 'TCA-220', 'TCA-230'].every((k) => /not part of this repository/.test(byCode[k].delivery_status))
+  && C.filter((c) => !c.roster_note && !c.floor_sims.length && !c.class_stations.length)
+      .every((c) => /no floor simulator/.test(c.delivery_status))
+  && C.filter((c) => c.floor_sims.length || c.class_stations.length).every((c) => /all four stages/.test(c.delivery_status)));
 ok('leadership is cross_hall with a stated reason',
   byCode['TCA-410'].cross_hall === true && byCode['TCA-410'].cross_hall_reason.length > 30);
 
@@ -120,8 +126,17 @@ ok('every course carries a licensure_note that does not claim credit',
   C.every((c) => typeof c.licensure_note === 'string' && c.licensure_note.length > 20
     && sentences(c.licensure_note).every((s) => !/counts? toward licen/i.test(s) || NEG.test(s))
     && /planned|no |not|nothing/i.test(c.licensure_note)));
-ok('no forbidden claim anywhere in the registry (accredited|endorsed|certified by|partnered with, unless negated)',
-  [...strings(reg)].every((t) => sentences(t).every((s) => !CLAIM.test(s) || NEG.test(s))));
+ok('no forbidden claim anywhere in the registry (shared loop/honesty.json vocabulary, positional negation)',
+  [...strings(reg)].every((t) => claimHits(t).length === 0));
+{
+  const fx = read('../loop/registry/honesty_fixtures.json').cases;
+  ok(`the shared honesty scanner returns the expected verdict on all ${fx.length} corpus cases`,
+    fx.length >= 16 && fx.every((c) => verdict(c.text) === c.expect));
+  const py = JSON.parse(execFileSync('python3', [fileURLToPath(new URL('./build.py', import.meta.url)), '--scan-fixtures'],
+    { encoding: 'utf8' }));
+  ok('the Python scanner (build.py --scan-fixtures) gives the identical verdict on every corpus case',
+    py.length === fx.length && py.every((v, i) => v === verdict(fx[i].text) && v === fx[i].expect));
+}
 ok('brand spelling: SmartCiti with an i, no SmartCity anywhere in the registry or builder',
   !/SmartCity/i.test(regBytes) && !/SmartCity/i.test(readFileSync(new URL('./build.py', import.meta.url), 'utf8'))
   && regBytes.includes('SmartCiti.X : Trade Craft Academy'));

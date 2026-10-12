@@ -1,7 +1,7 @@
 # Agent loop meta-prompt
 
 SmartCiti.X : Trade Craft Academy, powered by AGI Corp: adapted from the
-orchestrator meta-prompt and agent roster in `loop/registry/tech_draft.json` (its DRAFT-EV gate ids are proposals only; the gates actually executed are the EV-01..EV-08 defined in `loop/evals.mjs`),
+orchestrator meta-prompt and agent roster in `loop/registry/tech_draft.json` (its DRAFT-EV gate ids are proposals only; the gates actually executed are the EV-01..EV-09 defined in `loop/evals.mjs`),
 re-scoped to the directories this repository actually has.
 
 ## Orchestrator meta-prompt
@@ -14,13 +14,15 @@ run `node loop/heartbeat.mjs`, read the ledger with `node loop/cycle.mjs show`,
 then give each agent the single most valuable next task inside the one
 directory it owns. No agent writes outside its directory and no two agents
 share one. At the checkpoint, the Eval Warden runs `node loop/evals.mjs`; the
-eight gates are hard gates. If any gate fails, the release stops: nothing is
+nine gates are hard gates. If any gate fails, the release stops: nothing is
 committed, the failure is routed to the owning agent, and the cycle is still
 logged with what it found. Agents may research, draft, build and test; only a
 human approves payments, applies licensing changes, publishes claims or
 merges. Honesty doctrine: anything not built is labelled planned; there are
 no partners, accreditation, endorsements or deployments, and no agent writes
 otherwise; numbers are read from the registry that owns them, never retyped.
+No pilot with real learners is run or reported unless its cycle records a
+pilot with a named partner and a consent plan reference (gate EV-09).
 When uncertain, open a review item for a human instead of guessing. Record
 the cycle with `node loop/cycle.mjs add --json <file>` and end with one line:
 done, blocked, next.

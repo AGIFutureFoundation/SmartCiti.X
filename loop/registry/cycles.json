@@ -31,7 +31,7 @@
         {
           "name": "Curriculum Mapper",
           "task": "build courses/ pack",
-          "result": "29 checks pass; 6 of 12 courses have a real floor sim"
+          "result": "29 checks pass; 4 of 12 courses have a real floor sim (TCA-110, 140, 150, 160)"
         },
         {
           "name": "Eval Warden",
@@ -100,12 +100,136 @@
           "status": "pass",
           "detail": "diff + 15 untracked files clean",
           "ms": 18
+        },
+        {
+          "id": "EV-09",
+          "name": "Pilot precondition",
+          "status": "absent",
+          "detail": "gate added after this cycle (PR #107 review); not executed at cycle 1",
+          "ms": 0
         }
       ],
       "checks_total": 1646,
       "heartbeat_ok": true,
       "video": {
         "path": "review_c1.mp4",
+        "duration_s": 120.067
+      },
+      "commit": null
+    },
+    {
+      "n": 2,
+      "started": "2026-10-12T09:41:00Z",
+      "ended": "2026-10-12T10:20:00Z",
+      "sprint": "S2 lesson planner and mentor scope eval",
+      "shipped": [
+        "Teacher Lesson Planner v1: 12 plans, 56 weekly plans, minutes summing exactly",
+        "Every course states what can run in this bundle; beauty courses say Beauty School is not in this repository",
+        "One honesty vocabulary shared by EV-05, the course tests and the Python builder; 25-case fixture corpus",
+        "EV-09 gate: a field trial is refused unless the ledger names a partner and a consent plan",
+        "All 8 Tenki and 2 Prelint findings fixed; cycle 1 count corrected to 4 of 12 courses with a floor sim",
+        "Mentor scope eval: S2 gate NOT MET, 4 of 50 out-of-scope prompts escalated"
+      ],
+      "agents": [
+        {
+          "name": "Orchestrator",
+          "task": "fold review findings into cycle 2, wire suites",
+          "result": "verify_all 1,693 checks, 0 failing; 9 of 9 gates pass"
+        },
+        {
+          "name": "Eval Warden",
+          "task": "harden loop and unify honesty scanners",
+          "result": "34 loop checks; found and fixed a real overclaim in the TCA-140 licensure note"
+        },
+        {
+          "name": "Curriculum Mapper",
+          "task": "Teacher Lesson Planner v1",
+          "result": "21 checks; confirmed 4 of 12 courses have a floor sim, not 6"
+        },
+        {
+          "name": "Eval Warden",
+          "task": "(second instance) mentor out-of-scope eval against the real guards",
+          "result": "gate not met: 4/50 escalated, 1/24 false, 6/10 PII redacted; baseline locked"
+        },
+        {
+          "name": "Media Producer",
+          "task": "cycle 2 review video",
+          "result": "review_c2.mp4, 120 s"
+        }
+      ],
+      "notes": [
+        "Sprint gate S2 (100% refusal on out-of-scope mentor prompts) is NOT MET; the guards have no trigger for medical, dosing or chemical-safety bypass requests. Fixing them is cycle 3 work.",
+        "One verify run failed right after a ledger write (EV-01, loop/test.mjs) and did not reproduce on four reruns; not yet root-caused, carried to cycle 3."
+      ],
+      "gates": [
+        {
+          "id": "EV-01",
+          "name": "Verification suite (verify_all.sh)",
+          "status": "pass",
+          "detail": "1693 checks, 0 failing suites",
+          "ms": 10820
+        },
+        {
+          "id": "EV-02",
+          "name": "Courses suite",
+          "status": "pass",
+          "detail": "32 checks",
+          "ms": 200
+        },
+        {
+          "id": "EV-03",
+          "name": "Brand lint",
+          "status": "pass",
+          "detail": "brand: 240 files clean \u2014 \"SmartCiti.X : Trade Craft Academy\", powered by AGI Corp",
+          "ms": 136
+        },
+        {
+          "id": "EV-04",
+          "name": "Figures lint",
+          "status": "pass",
+          "detail": "figures: 228 files agree with the pack \u2014 111 halls, 11,000,000 modules, 10 campuses, 447 avatar options, 4 proposed districts, every registry at pack 3.2.0",
+          "ms": 696
+        },
+        {
+          "id": "EV-05",
+          "name": "Honesty lint on branch changes",
+          "status": "pass",
+          "detail": "20 changed text files, 0 overclaims",
+          "ms": 74
+        },
+        {
+          "id": "EV-06",
+          "name": "Review video 120 \u00b1 0.5 s",
+          "status": "pass",
+          "detail": "cycle #2 review_c2.mp4 120.07 s",
+          "ms": 60
+        },
+        {
+          "id": "EV-07",
+          "name": "Cycle ledger schema",
+          "status": "pass",
+          "detail": "valid, 2 cycles",
+          "ms": 1
+        },
+        {
+          "id": "EV-08",
+          "name": "No secrets in diff",
+          "status": "pass",
+          "detail": "diff + 8 untracked files clean",
+          "ms": 33
+        },
+        {
+          "id": "EV-09",
+          "name": "Pilot precondition",
+          "status": "pass",
+          "detail": "no pilot recorded",
+          "ms": 0
+        }
+      ],
+      "checks_total": 1693,
+      "heartbeat_ok": true,
+      "video": {
+        "path": "review_c2.mp4",
         "duration_s": 120.067
       },
       "commit": null
