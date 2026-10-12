@@ -1,0 +1,114 @@
+{
+  "pack": "smartcitix-trade-craft-academy-agent-loop",
+  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+  "pack_version": "3.2.0",
+  "loop": {
+    "started": "2026-10-12T09:14:00Z",
+    "cadence_min": 30,
+    "cycles_planned": 5
+  },
+  "honesty": "This ledger records what each cycle of the agent loop actually ran and shipped on this branch: the gates as executed, the checks counted, the files changed. Nothing here is deployed; no partner, accreditation, endorsement or production use is claimed, and anything future is labelled planned.",
+  "cycles": [
+    {
+      "n": 1,
+      "started": "2026-10-12T09:14:00Z",
+      "ended": "2026-10-12T09:40:00Z",
+      "sprint": "S1 course schema and authoring pipeline",
+      "shipped": [
+        "courses/ pack: 12 planned courses, 56 flipped modules mapped onto home, class, floor, gate",
+        "Real hall, sim and station links; plumbing mapped to pipefitters with a note; cosmetology flagged outside the 111 halls",
+        "TCA-140 Welding modules 1-2 wired to the weld-bead sim and the welders lesson",
+        "loop/: heartbeat, 8 executed eval gates, cycle ledger, meta-prompt for 8 agents",
+        "2-minute review video generated from the ledger",
+        "verify_all: 1,594 to 1,646 checks, 0 failing"
+      ],
+      "agents": [
+        {
+          "name": "Orchestrator",
+          "task": "plan cycle 0, wire suites, schedule 4 checkpoints",
+          "result": "verify_all 1,646 checks, 0 failing"
+        },
+        {
+          "name": "Curriculum Mapper",
+          "task": "build courses/ pack",
+          "result": "29 checks pass; 6 of 12 courses have a real floor sim"
+        },
+        {
+          "name": "Eval Warden",
+          "task": "build loop/ heartbeat, evals, ledger",
+          "result": "23 checks pass; EV-05 false hit on regex lists fixed"
+        },
+        {
+          "name": "Media Producer",
+          "task": "2-minute review from the ledger",
+          "result": "review_c1.mp4, 120 s"
+        }
+      ],
+      "gates": [
+        {
+          "id": "EV-01",
+          "name": "Verification suite (verify_all.sh)",
+          "status": "pass",
+          "detail": "1646 checks, 0 failing suites",
+          "ms": 10925
+        },
+        {
+          "id": "EV-02",
+          "name": "Courses suite",
+          "status": "pass",
+          "detail": "29 checks",
+          "ms": 124
+        },
+        {
+          "id": "EV-03",
+          "name": "Brand lint",
+          "status": "pass",
+          "detail": "brand: 234 files clean — \"SmartCiti.X : Trade Craft Academy\", powered by AGI Corp",
+          "ms": 221
+        },
+        {
+          "id": "EV-04",
+          "name": "Figures lint",
+          "status": "pass",
+          "detail": "figures: 222 files agree with the pack — 111 halls, 11,000,000 modules, 10 campuses, 447 avatar options, 4 proposed districts, every registry at pack 3.2.0",
+          "ms": 728
+        },
+        {
+          "id": "EV-05",
+          "name": "Honesty lint on branch changes",
+          "status": "pass",
+          "detail": "15 changed text files, 0 overclaims",
+          "ms": 48
+        },
+        {
+          "id": "EV-06",
+          "name": "Review video 120 ± 0.5 s",
+          "status": "pass",
+          "detail": "cycle #1 /tmp/claude-0/-home-claude/717c43f1-7f00-5ef5-96d0-907cb265e63d/scratchpad/reviews/review_c1.mp4 120.07 s",
+          "ms": 58
+        },
+        {
+          "id": "EV-07",
+          "name": "Cycle ledger schema",
+          "status": "pass",
+          "detail": "valid, 1 cycles",
+          "ms": 1
+        },
+        {
+          "id": "EV-08",
+          "name": "No secrets in diff",
+          "status": "pass",
+          "detail": "diff + 15 untracked files clean",
+          "ms": 18
+        }
+      ],
+      "checks_total": 1646,
+      "heartbeat_ok": true,
+      "video": {
+        "path": "/tmp/claude-0/-home-claude/717c43f1-7f00-5ef5-96d0-907cb265e63d/scratchpad/reviews/review_c1.mp4",
+        "duration_s": 120.067
+      },
+      "commit": null
+    }
+  ]
+}

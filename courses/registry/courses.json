@@ -1,0 +1,2049 @@
+{
+ "pack": "smartcitix-trade-craft-academy-courses",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-10-12",
+ "source_stamp": "4ad8c47cb3a85bcc",
+ "honesty": {
+  "status": "every course in this pack is a PLANNED DRAFT: nothing is shipped or deployed, learning efficacy is unestablished, and only the modules marked wired are bound to sites that exist",
+  "credit": "no licensing board, jurisdiction or employer has accepted any hour of these courses; simulator, station and lesson time never count toward a licence or certification",
+  "marks": "no course is accredited, and no union, standards body or school is a partner of it; codes and standards are named as reference topics only",
+  "mapping": "hall, simulator and station bindings are authored curation read against the registries that own them; a binding means the site exists, not that the course content was reviewed by practitioners of that trade"
+ },
+ "source": {
+  "draft": "courses/draft/curriculum_2026q4.json",
+  "draft_status": "PLANNED next-phase roadmap draft, 2026-10-11. Nothing here is shipped, deployed, accredited, or union-endorsed. Learning efficacy is unestablished.",
+  "pedagogy": "Flipped loop, 4 phases per module: prepare (at home) -> analyze -> practice (in sim) -> verify (virtual job site)."
+ },
+ "stage_map": [
+  {
+   "phase": "prepare",
+   "stage": "home"
+  },
+  {
+   "phase": "analyze",
+   "stage": "class"
+  },
+  {
+   "phase": "practice",
+   "stage": "floor"
+  },
+  {
+   "phase": "verify",
+   "stage": "gate"
+  }
+ ],
+ "mentor_roster": [
+  "Chris",
+  "Joyce",
+  "Tessa",
+  "Gemma",
+  "Iris",
+  "Dana",
+  "Sam"
+ ],
+ "courses": [
+  {
+   "code": "TCA-110",
+   "title": "Residential Electrical Foundations (NEC 2023)",
+   "trade": "Electrical",
+   "status": "planned draft",
+   "level": "Foundation",
+   "hours_planned": 120,
+   "mentor_text": "Chris (lead) with Sam (safety)",
+   "mentors": [
+    "Chris",
+    "Sam"
+   ],
+   "halls": [
+    "electricians"
+   ],
+   "floor_sims": [
+    "boom-lift"
+   ],
+   "class_stations": [],
+   "robotics_link": null,
+   "licensure_note": "Planned prep only; electrical licensing is state/local and typically needs supervised OJT hours plus an exam. No state has accepted these hours and the registry has no electrical state sourced yet.",
+   "modules": [
+    {
+     "n": 1,
+     "title": "Ohm's Law, Circuits and Meter Use",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Read on series vs parallel circuits and watch a CAT III multimeter walkthrough; 10-question check on V=IR and P=VI."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Given a 3-room panel schedule, compute branch loads and flag any 15 A circuit above 80% continuous load."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim bench: measure voltage, continuity and resistance on a live-dead-live test sequence without skipping the proving step."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Virtual job site: troubleshoot a dead bedroom receptacle traced to an open neutral on a backstabbed device."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 2,
+     "title": "Grounding and Bonding (NEC Art. 250)",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Short reading on equipment grounding conductor vs grounded conductor, main bonding jumper and grounding electrode system."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Spot-the-fault on 6 panel photos: neutrals and grounds bonded in a subpanel, missing water-pipe bond, undersized GEC."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: land EGCs, separate neutral and ground bars in a subpanel, install bonding jumper at the water heater."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Job-site inspection walk with an inspector NPC; student must cite the article for each correction."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 3,
+     "title": "Branch Circuits and Conductor Sizing (Art. 210, 310.16)",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Ampacity table primer: 14 AWG Cu = 15 A, 12 AWG = 20 A, 10 AWG = 30 A (small-conductor rule 240.4(D))."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Size conductors and OCPD for a 30 A dryer and 50 A range; compute voltage drop on a 120 ft run and keep it under 3%."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim rough-in: drill studs, staple NM cable within 12 in. of boxes, box fill calculation per 314.16."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Finish trim-out of a kitchen with 20 A small-appliance circuits and GFCI/AFCI where required; pass the sim inspection."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 4,
+     "title": "GFCI, AFCI and Device Wiring",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Watch a module on line vs load terminals and 3-way/4-way switching."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Read 4 switch-loop diagrams and pick which one creates a switched neutral (code violation)."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: wire a 3-way hallway circuit and a GFCI protecting downstream bathroom receptacles."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Customer call: tripping AFCI on a bedroom circuit; isolate a shared neutral and report findings to the homeowner NPC."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 5,
+     "title": "Lockout/Tagout and Arc-Flash Awareness",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Read OSHA 1910.147 LOTO steps and NFPA 70E arc-flash boundary basics."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Order 6 shuffled LOTO steps and identify the missing verification of zero energy."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: apply personal lock and tag on a 200 A disconnect, test-before-touch with a proven meter."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Sam runs a surprise energized-equipment scenario; any skipped step ends the attempt and triggers a debrief."
+      }
+     ],
+     "wired": false
+    }
+   ]
+  },
+  {
+   "code": "TCA-120",
+   "title": "Plumbing Systems: DWV, Supply and Fixtures",
+   "trade": "Plumbing",
+   "status": "planned draft",
+   "level": "Foundation",
+   "hours_planned": 110,
+   "mentor_text": "Chris (lead) with Sam (safety)",
+   "mentors": [
+    "Chris",
+    "Sam"
+   ],
+   "halls": [
+    "pipefitters"
+   ],
+   "mapping_note": "the 111-hall roster has no plumbers hall; plumbing is mapped to the nearest piping trade, pipefitters, until a plumbing hall exists - pipefitting is not plumbing and this mapping says so",
+   "floor_sims": [],
+   "class_stations": [],
+   "robotics_link": null,
+   "licensure_note": "Planned prep only; plumbing licensure is state/local (IPC or UPC jurisdictions) with apprenticeship hours and exams. No jurisdiction sourced or accepting these hours.",
+   "modules": [
+    {
+     "n": 1,
+     "title": "Drain-Waste-Vent Principles",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Reading on traps, vents and fall: 1/4 in. per ft for drains 3 in. and smaller; why trap seals siphon."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Isometric review: find an S-trap, an unvented island sink and a horizontal wet vent sized too small."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: lay out a bathroom group DWV with correct fittings (long-sweep 90s, sanitary tees on vertical only)."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Virtual job site: water test the stack to 10 ft head and locate a leaking joint."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 2,
+     "title": "Water Supply Sizing and Materials",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Watch a primer on PEX, copper Type L/M and CPVC, and fixture units."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Compute fixture units for a 2-bath house and size the main and branches from a provided table."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: sweat a copper joint (clean, flux, heat fitting, feed solder) and crimp PEX with a go/no-go gauge."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Pressure-test the rough-in at the required test pressure and hold time; document results on a test sheet."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 3,
+     "title": "Fixture Installation",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Read install sheets for a toilet, lav faucet and tub/shower valve with anti-scald limit stop."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Diagnose 5 callback photos: rocking toilet, wax ring leak, reversed hot/cold, missing escutcheon, no air gap."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: set a toilet on a flange, install a lav with P-trap and set the shower valve limit stop to 120 F."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Customer walkthrough with homeowner NPC; explain the work and leave the site clean."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 4,
+     "title": "Water Heaters and Backflow",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Reading on T&P relief valves, expansion tanks, and cross-connection control."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Review 4 water-heater installs and flag a capped T&P discharge and a missing expansion tank on a closed system."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: replace a 50 gal gas water heater including venting check, sediment trap and gas leak test."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Job site: commercial kitchen with a cross-connection; specify the correct backflow assembly type."
+      }
+     ],
+     "wired": false
+    }
+   ]
+  },
+  {
+   "code": "TCA-130",
+   "title": "HVAC/R Service Technician",
+   "trade": "HVAC",
+   "status": "planned draft",
+   "level": "Apprentice",
+   "hours_planned": 140,
+   "mentor_text": "Chris (lead) with Sam (safety)",
+   "mentors": [
+    "Chris",
+    "Sam"
+   ],
+   "halls": [
+    "hvacr"
+   ],
+   "floor_sims": [],
+   "class_stations": [],
+   "robotics_link": null,
+   "licensure_note": "EPA Section 608 certification is federally required to buy/handle refrigerant and must be earned from an EPA-approved certifying organization; this course is planned prep only and certifies nothing.",
+   "modules": [
+    {
+     "n": 1,
+     "title": "Refrigeration Cycle",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Watch the 4-component cycle (compressor, condenser, metering device, evaporator) with a P-H diagram overlay."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Given gauge readings, determine saturation temps from a PT chart for R-410A and R-454B."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: connect manifold gauges and read suction/liquid pressures on a running split system."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Service call: system blowing warm; identify a dirty condenser coil from high head pressure."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 2,
+     "title": "Superheat and Subcooling Diagnostics",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Read on target superheat for fixed orifice and target subcooling for TXV systems."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Classify 6 reading sets as undercharge, overcharge, restriction or low airflow."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: weigh in charge to subcooling target with a digital scale; adaptive dial varies outdoor temp."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Job site: 3-ton TXV system with 2 F subcooling; find and repair the leak before recharging."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 3,
+     "title": "EPA 608 Refrigerant Handling",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Study guide covering Core, Type I, II and III content: venting prohibition, recovery and leak-repair rules."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Practice items mirroring the Core section; hint engine explains each miss."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: recover refrigerant into a DOT cylinder without exceeding 80% fill by weight."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Timed mock exam; results logged as practice only."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 4,
+     "title": "Airflow, Load and Duct Basics",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Primer on Manual J load and Manual D duct design concepts, static pressure and CFM per ton."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Read a total external static measurement and judge whether the blower can deliver 400 CFM/ton."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: measure static, swap a restrictive filter, adjust blower tap and re-measure."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Job site: comfort complaint in a 2-story home; balance dampers and document before/after temps."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 5,
+     "title": "Electrical Controls and Safety",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Watch: contactors, run capacitors, 24 V control wiring (R, C, Y, G, W)."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Ladder diagram exercise: trace why the condenser fan runs but the compressor hums and trips."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: test a dual run capacitor in microfarads after safely discharging it, replace if out of tolerance."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Sam scenario: arc-flash and LOTO before opening the disconnect; any skip fails the visit."
+      }
+     ],
+     "wired": false
+    }
+   ]
+  },
+  {
+   "code": "TCA-140",
+   "title": "Structural Welding: SMAW and GMAW Plate",
+   "trade": "Welding",
+   "status": "planned draft",
+   "level": "Apprentice",
+   "hours_planned": 160,
+   "mentor_text": "Joyce",
+   "mentors": [
+    "Joyce"
+   ],
+   "halls": [
+    "welders",
+    "fabricators"
+   ],
+   "floor_sims": [
+    "weld-bead"
+   ],
+   "class_stations": [],
+   "robotics_link": "Robotic GMAW welding cell (6-axis arm with torch, positioner and fume extraction), bridging to TCA-310.",
+   "licensure_note": "Welder certification (e.g. AWS D1.1 performance qualification) is done by an accredited test facility on real coupons; sim results are practice only and are not a certification.",
+   "modules": [
+    {
+     "n": 1,
+     "title": "Welding Safety and Setup",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Read on fume control, shade numbers (10-13 for SMAW), hot-work permits and fire watch."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Spot 6 hazards in a booth photo: cylinders unchained, wet gloves, missing screen, cracked lens."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: set amperage for 1/8 in. E7018 (about 90-140 A), check ground clamp and stinger insulation."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Sam audits the booth before Joyce allows the first arc."
+      }
+     ],
+     "wired": true,
+     "sites": [
+      {
+       "kind": "sim",
+       "id": "weld-bead",
+       "use": "practice: set-up and first arc on the Weld Bead Run seat"
+      },
+      {
+       "kind": "lesson",
+       "id": "welders-the-watch",
+       "use": "prepare/verify: fire watch and hot-work walk in the welders Induction & PPE room"
+      }
+     ]
+    },
+    {
+     "n": 2,
+     "title": "SMAW Flat and Horizontal Fillets",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Watch Joyce demo arc length, travel speed and 5-15 degree drag angle with E7018."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Grade 6 bead photos for undercut, porosity, slag inclusions and cold lap."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Haptic sim: run 2F fillets; dial adjusts travel-speed tolerance per AI-ZPD."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Visual inspection to a workmanship checklist modeled on AWS D1.1 Table 8.1 criteria."
+      }
+     ],
+     "wired": true,
+     "sites": [
+      {
+       "kind": "sim",
+       "id": "weld-bead",
+       "use": "practice: bead runs graded on fusion and gap band"
+      }
+     ]
+    },
+    {
+     "n": 3,
+     "title": "SMAW 3G Vertical-Up Groove Plate",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Read on joint prep: 22.5 degree bevel, 1/4 in. root opening, backing strip."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Review a WPS and identify essential variables (process, filler, position, preheat)."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: root, hot pass, fill and cap on 3/8 in. plate in 3G with weave control."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Virtual bend test: sim coupons are cut and bent; discontinuities over 1/8 in. fail."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 4,
+     "title": "GMAW Short-Circuit and Spray Transfer",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Watch: wire feed speed vs voltage, 75/25 Ar/CO2 vs 90/10 for spray."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Match 4 sound/spatter profiles to their transfer mode and fix the settings."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: run 1F and 2F fillets in spray, 3F in short-circuit."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Job site: steel stair stringer repair; Joyce reviews against the posted WPS."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 5,
+     "title": "Weld Symbols and Fit-Up",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Primer on AWS A2.4 symbols: arrow vs other side, field weld flag, all-around."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Read 8 symbols from a structural drawing and state size, type and side."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: tack and fit a T-joint within 1/16 in. tolerance using a square and clamps."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Fabricate a bracket from print; measured against drawing tolerances."
+      }
+     ],
+     "wired": false
+    }
+   ]
+  },
+  {
+   "code": "TCA-150",
+   "title": "Residential Framing and Finish Carpentry",
+   "trade": "Carpentry",
+   "status": "planned draft",
+   "level": "Foundation",
+   "hours_planned": 120,
+   "mentor_text": "Chris (lead) with Sam (safety)",
+   "mentors": [
+    "Chris",
+    "Sam"
+   ],
+   "halls": [
+    "carpenters"
+   ],
+   "floor_sims": [
+    "scaffold-bay"
+   ],
+   "class_stations": [],
+   "robotics_link": null,
+   "licensure_note": "Most states do not license carpenters individually (contractor licensing varies); OSHA 10/30 cards come only from OSHA-authorized trainers. Nothing here is accredited.",
+   "modules": [
+    {
+     "n": 1,
+     "title": "Tools, Layout and Measurement",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Watch: tape reading to 1/16 in., speed square, chalk line, 3-4-5 squaring method."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Check a slab layout using diagonals and find the 1/2 in. out-of-square corner."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: lay out a wall plate at 16 in. on center with king, jack and cripple locations."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Job site: snap wall lines on a slab from the foundation plan."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 2,
+     "title": "Wall Framing and Headers",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Read IRC basics on header sizing, top plate splices and 2x6 exterior walls."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Pick a header size for a 6 ft opening from a span table given load conditions."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: frame and raise a 12 ft wall with a door and window opening, plumb and brace."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Inspection NPC checks stud spacing, nailing schedule and opening sizes."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 3,
+     "title": "Stairs",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Read IRC stair limits: max riser 7-3/4 in., min tread 10 in., headroom 6 ft 8 in."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Compute riser count and size for a 108 in. total rise; check the tread run fits."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: lay out a stringer with a framing square and stair gauges, cut and test-fit."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Build a 3-stringer stair on site; tolerance check of 3/8 in. max riser variation."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 4,
+     "title": "Roof Framing",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Watch: common rafter, birdsmouth, ridge board vs ridge beam, roof pitch."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Calculate common rafter length for a 24 ft span at 6/12 pitch."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: cut a pattern rafter and set rafters with fall protection anchors in place."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Sam audits fall protection (guardrail or PFAS at 6 ft in construction) before sign-off."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 5,
+     "title": "Interior Trim and Finish",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Read on miter vs cope joints, reveals and hanging prehung doors."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Diagnose why a door binds at the head jamb and rubs at the latch side."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: hang a prehung door, case it, cope inside base corners."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Homeowner punch-list walk; fix 5 finish defects."
+      }
+     ],
+     "wired": false
+    }
+   ]
+  },
+  {
+   "code": "TCA-160",
+   "title": "Heavy Equipment Operation and Site Survey (Drone and Rover)",
+   "trade": "Heavy Equipment / Robotics",
+   "status": "planned draft",
+   "level": "Apprentice",
+   "hours_planned": 150,
+   "mentor_text": "Sam",
+   "mentors": [
+    "Sam"
+   ],
+   "halls": [
+    "heavy-equip",
+    "operating-eng",
+    "survey-drone"
+   ],
+   "floor_sims": [
+    "excavator-trench",
+    "forklift-run",
+    "load-chart"
+   ],
+   "class_stations": [],
+   "robotics_link": "Autonomous site-survey drone and RTK GNSS rover; 3D machine-control excavator/dozer.",
+   "licensure_note": "Commercial drone flight requires an FAA Part 107 Remote Pilot Certificate from an FAA knowledge test; crane work may require NCCCO. This course is planned prep only and confers neither.",
+   "modules": [
+    {
+     "n": 1,
+     "title": "Pre-Op Inspection and Site Safety",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Read on walkaround inspection, three-point contact, swing radius barricades and 811 call-before-you-dig."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Find 6 defects on an excavator walkaround photo set: hydraulic leak, cracked bucket tooth, missing seat belt."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: complete a pre-op checklist on a 20-ton excavator and a skid steer."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Sam: site start-up meeting where the student briefs utilities locates and exclusion zones."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 2,
+     "title": "Excavator Controls and Trenching",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Read OSHA 1926 Subpart P: protective systems at 5 ft and deeper, soil types A/B/C, spoil 2 ft from edge."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Choose a sloping ratio or trench box for a 7 ft trench in Type C soil (1.5:1)."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: dig a 60 ft trench to grade with ISO controls; dial adjusts depth tolerance."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Job site: trench for a sewer lateral; competent-person NPC inspects before entry."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 3,
+     "title": "Grading and GNSS Machine Control",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Watch: grade stakes, cut/fill, 2D vs 3D machine control with a site design model."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Read a cut/fill sheet and compute volumes for a 50 x 80 ft pad."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: dozer finish-grade to plus or minus 0.1 ft using 3D guidance."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Rover check-shots across the pad; out-of-tolerance cells must be reworked."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 4,
+     "title": "Drone Photogrammetry Survey",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Study FAA Part 107 topics: airspace classes, LAANC, VLOS, 400 ft AGL, weather minimums."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Plan a grid mission: 75% front / 65% side overlap, GSD target, ground control point placement."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: fly the mission, set 5 GCPs, process an orthomosaic and surface model."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Compare stockpile volume from drone vs rover; explain differences over 3%."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 5,
+     "title": "RTK Rover Stakeout",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Read on RTK base/rover, fixed vs float solutions and localization to site control."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Reject 3 shots taken in float solution from a data log."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: stake out 12 building corners from a design file with an autonomous survey rover."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "As-built report checked against plans by the superintendent NPC."
+      }
+     ],
+     "wired": false
+    }
+   ]
+  },
+  {
+   "code": "TCA-210",
+   "title": "Hair Design: Cutting and Color Theory",
+   "trade": "Cosmetology",
+   "status": "planned draft",
+   "level": "Foundation",
+   "hours_planned": 180,
+   "mentor_text": "Tessa",
+   "mentors": [
+    "Tessa"
+   ],
+   "halls": [],
+   "roster_note": "outside the 111-hall roster: cosmetology, nail and esthetics courses have no trade hall and are delivered through the separate Beauty School simulator, not through any hall, station or yard simulator of this pack",
+   "floor_sims": [],
+   "class_stations": [],
+   "robotics_link": null,
+   "licensure_note": "Cosmetology hour minimums sourced only for IL (1,500), FL (1,200), ID (1,600); no state board has approved these hours and other states are unsourced.",
+   "modules": [
+    {
+     "n": 1,
+     "title": "Infection Control and Client Consultation",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Read on EPA-registered disinfectants, contact time, and the client intake card."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Review 5 consultation transcripts and flag missed contraindications (scalp abrasions, prior henna)."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: disinfect implements and run a consultation with a client NPC asking for a dramatic change."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "State-board-style sanitation check by Tessa."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 2,
+     "title": "Sectioning and Elevation",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Watch Tessa demo 4-section parting, 0/45/90/180 degree elevation and stationary vs traveling guides."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Match 6 finished shapes to the elevation and guide used."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim mannequin: one-length bob at 0 degrees and a uniform layer at 90 degrees."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Client booking: graduated bob; Tessa scores balance and weight line."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 3,
+     "title": "Color Theory and Formulation",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Read the level system 1-10, underlying pigment, and developer volumes (10, 20, 30, 40)."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Formulate for a client at level 5 wanting level 7 neutral; identify exposed orange-gold to neutralize."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: mix, apply a root retouch with 1/2 in. partings, process and rinse."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Client returns with banding; correct it and document the formula card."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 4,
+     "title": "Lightening and Toning",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Watch on foil placement, bond builders, and strand and patch testing (24-48 h patch test per manufacturer)."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Decide whether a box-dyed client can safely be lifted in one session."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: partial highlight with lightener, then tone with a demi-permanent."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Client consultation where Tessa expects the student to decline or stage the service if unsafe."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 5,
+     "title": "Chemical Texture Services",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Read on alkaline waves and thio vs hydroxide relaxers; never overlap incompatible chemicals."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Test-curl results: decide when to rinse and neutralize."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: perm wrap with end papers on a 9-block pattern."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "State-board-style practical walkthrough timed against a mock exam clock."
+      }
+     ],
+     "wired": false
+    }
+   ]
+  },
+  {
+   "code": "TCA-220",
+   "title": "Nail Technology: Natural Nail to Enhancements",
+   "trade": "Nail Technology",
+   "status": "planned draft",
+   "level": "Foundation",
+   "hours_planned": 120,
+   "mentor_text": "Gemma",
+   "mentors": [
+    "Gemma"
+   ],
+   "halls": [],
+   "roster_note": "outside the 111-hall roster: cosmetology, nail and esthetics courses have no trade hall and are delivered through the separate Beauty School simulator, not through any hall, station or yard simulator of this pack",
+   "floor_sims": [],
+   "class_stations": [],
+   "robotics_link": null,
+   "licensure_note": "Nail technician hour requirements are set by each state board and are not yet sourced in the registry; no board has approved this course.",
+   "modules": [
+    {
+     "n": 1,
+     "title": "Nail Anatomy, Disorders and Infection Control",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Read on nail plate, matrix, eponychium vs cuticle; when to refer (paronychia, onycholysis with infection)."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Sort 10 photos into service-OK vs refer-to-physician."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: clean and disinfect a pedicure spa per manufacturer and log it."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Gemma inspects the station; single-use items must be discarded."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 2,
+     "title": "Manicure and Pedicure",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Watch Gemma demo filing shapes (square, squoval, oval, almond) and cuticle care."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Spot over-filing and cuticle nipping errors in 5 videos."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: full manicure with polish, clean cuticle line, no flooding."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Client NPC with diabetes on a pedicure booking; student must modify (no cutting, no sharp implements on calluses)."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 3,
+     "title": "E-File Safety and Gel Polish",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Read on bit types, RPM ranges and why to avoid heat spikes; LED vs UV curing."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Diagnose lifting and wrinkling: thick coats, under-curing, cuticle contact."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: gel prep, thin coats, cure per lamp spec, and safe soak-off."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Client returns in 2 weeks; evaluate wear and adjust technique."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 4,
+     "title": "Acrylic and Hard Gel Enhancements",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Read on liquid-to-powder ratio, apex placement and the MMA liquid ban in many states."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Identify a structure lacking apex and a stress area at risk of cracking."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: sculpt on forms with a smile line; adaptive dial tightens symmetry tolerance."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Board-style practical: one sculptured nail, timed, with sanitation scored."
+      }
+     ],
+     "wired": false
+    }
+   ]
+  },
+  {
+   "code": "TCA-230",
+   "title": "Esthetics: Skin Analysis and Facial Treatments",
+   "trade": "Esthetics",
+   "status": "planned draft",
+   "level": "Foundation",
+   "hours_planned": 150,
+   "mentor_text": "Iris",
+   "mentors": [
+    "Iris"
+   ],
+   "halls": [],
+   "roster_note": "outside the 111-hall roster: cosmetology, nail and esthetics courses have no trade hall and are delivered through the separate Beauty School simulator, not through any hall, station or yard simulator of this pack",
+   "floor_sims": [],
+   "class_stations": [],
+   "robotics_link": null,
+   "licensure_note": "Esthetics hour minimums vary by state and are not yet sourced in the registry; no board has approved this course.",
+   "modules": [
+    {
+     "n": 1,
+     "title": "Skin Science and Analysis",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Read on epidermis layers, Fitzpatrick types I-VI and Glogau photoaging scale."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Analyze 6 client images under woods lamp simulation; record skin type and conditions."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: full skin analysis with magnifying lamp and consultation form."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Iris reviews the treatment plan for accuracy and scope."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 2,
+     "title": "Contraindications and Scope of Practice",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Read on contraindications: isotretinoin use, active infection, recent laser, pregnancy for certain actives."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Triage 8 intake forms into proceed, modify, or refer."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: client discloses retinoid use; adjust the service and document."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Iris scenario where the client requests a medical procedure; student must decline within scope."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 3,
+     "title": "Basic Facial Protocol",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Watch Iris demo cleanse, exfoliate, steam, extract, massage, mask, protect."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Order a scrambled protocol and justify each step's purpose."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: full facial with Swedish-style effleurage and petrissage on a client avatar."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Client NPC feedback and post-care instructions including SPF."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 4,
+     "title": "Extractions and Superficial Peels",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Read on comedone types and superficial peels (low-percent glycolic, lactic) within esthetician scope."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Decide which lesions are safe to extract vs refer (cystic acne)."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: gloved extractions with proper angle and pressure; apply and neutralize a superficial peel on timing."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Client returns with mild erythema; handle the follow-up and record it."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 5,
+     "title": "Waxing and Brow Design",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Watch hard vs soft wax technique and brow mapping."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Identify lifting risk factors in 5 intake forms."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: brow wax with correct direction of pull and skin support."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Board-style practical with sanitation scoring."
+      }
+     ],
+     "wired": false
+    }
+   ]
+  },
+  {
+   "code": "TCA-310",
+   "title": "Industrial Robot Arm Operator",
+   "trade": "Robotics / Mechatronics",
+   "status": "planned draft",
+   "level": "Apprentice",
+   "hours_planned": 100,
+   "mentor_text": "Joyce (welding cell lead) with Sam (safety)",
+   "mentors": [
+    "Joyce",
+    "Sam"
+   ],
+   "halls": [
+    "robotics",
+    "automation-int"
+   ],
+   "floor_sims": [],
+   "class_stations": [],
+   "robotics_link": "6-axis industrial arm cell (palletizing and robotic GMAW variants).",
+   "licensure_note": "No state license exists for robot operators; vendor certificates (e.g. arm manufacturer training) are issued by vendors, not by this course. Nothing here is accredited.",
+   "modules": [
+    {
+     "n": 1,
+     "title": "Cell Safety and Standards",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Read on ANSI/RIA R15.06 and ISO 10218 concepts: safeguarded space, E-stop, 3-position enabling device, T1 reduced speed (250 mm/s)."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Spot 5 safeguarding failures in a cell layout: bypassed interlock, light curtain gap, no lockout point."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: enter a cell under LOTO and verify zero energy including pneumatics."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Sam audits the student's cell entry; any bypass ends the attempt."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 2,
+     "title": "Teach Pendant and Jogging Frames",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Watch: joint, world, user and tool frames; jog increments."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Predict arm motion for a jog command in each frame from a still image."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: jog a 6-axis arm in T1 to touch 4 fixture points without collision."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Timed pick-and-place setup with a part fixture."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 3,
+     "title": "TCP Calibration and Simple Programs",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Read on tool center point calibration via 4-point method and linear vs joint moves."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Debug a program where a joint move clips the fixture; choose where linear moves are needed."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: teach a palletizing program with approach, pick, retract points."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Run the program at production speed in auto with guarding closed; cycle time logged."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 4,
+     "title": "Robotic Welding Cell",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Joyce reviews how GMAW variables map to robot weld schedules."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Read a weld-schedule table and fix a travel speed causing undercut."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: touch-sense a joint and run a fillet with seam tracking."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Production lot of 10 brackets inspected visually by Joyce."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 5,
+     "title": "Faults, Recovery and Preventive Maintenance",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Read on common faults: collision detection, overtravel, encoder battery low."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Order recovery steps for a collision fault without losing position data."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: recover from a fault, replace a worn torch tip, back up the controller."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Shift-handoff report to supervisor NPC."
+      }
+     ],
+     "wired": false
+    }
+   ]
+  },
+  {
+   "code": "TCA-320",
+   "title": "Collaborative Robot (Cobot) Safety and Deployment",
+   "trade": "Robotics / Mechatronics",
+   "status": "planned draft",
+   "level": "Journey",
+   "hours_planned": 60,
+   "mentor_text": "Sam",
+   "mentors": [
+    "Sam"
+   ],
+   "halls": [
+    "robotics",
+    "automation-int",
+    "plc-techs"
+   ],
+   "floor_sims": [],
+   "class_stations": [],
+   "robotics_link": "Cobot machine-tending and screwdriving stations with area scanners.",
+   "licensure_note": "No license applies; content references public standards concepts only. Not accredited, not endorsed by any standards body.",
+   "modules": [
+    {
+     "n": 1,
+     "title": "Collaborative Operation Modes",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Read the 4 modes: safety-rated monitored stop, hand guiding, speed and separation monitoring, power and force limiting."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Assign the right mode to 6 described tasks."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: configure speed and separation monitoring zones with an area scanner."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Walk-in test with a worker avatar; arm must slow and stop at the configured distances."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 2,
+     "title": "Risk Assessment",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Read on task-based risk assessment and hazard identification (pinch points, sharp tooling)."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Complete a risk assessment for a cobot screwdriving station; rate severity and exposure."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: add mitigations (padding, reduced speed, tool change) and re-score."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Sam reviews the residual risk; unmitigated high risks block go-live."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 3,
+     "title": "Power and Force Limiting (ISO/TS 15066)",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Watch on body-region contact limits and transient vs quasi-static contact."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Interpret a force-measurement report and decide pass/fail per body region."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: tune payload, speed and force limits for a machine-tending task."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Run a validated cycle with a co-worker avatar sharing the workspace."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 4,
+     "title": "Commissioning and Change Management",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Read on safety checksums, password-protected safety config and revalidation after changes."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Find why a config change after commissioning invalidated the risk assessment."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: document commissioning, sign-off sheet and operator training record."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Audit by Sam and Dana: operator briefing delivered to a mixed crew."
+      }
+     ],
+     "wired": false
+    }
+   ]
+  },
+  {
+   "code": "TCA-410",
+   "title": "Crew Leadership and Emotional Intelligence on the Job",
+   "trade": "Leadership / EI",
+   "status": "planned draft",
+   "level": "Journey",
+   "hours_planned": 40,
+   "mentor_text": "Dana (lead) with Chris (EI author)",
+   "mentors": [
+    "Dana",
+    "Chris"
+   ],
+   "halls": [
+    "site-safety"
+   ],
+   "cross_hall": true,
+   "cross_hall_reason": "crew leadership and emotional intelligence apply on every crew in every hall; the course is anchored at site-safety, where a crew lead owns the culture of the job site",
+   "floor_sims": [],
+   "class_stations": [
+    "st013"
+   ],
+   "robotics_link": null,
+   "licensure_note": "No license or credential; any union or employer recognition would need a separate agreement and none exists today.",
+   "modules": [
+    {
+     "n": 1,
+     "title": "Self-Awareness Under Pressure",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Chris's EI reading on recognizing stress signals and naming emotions before acting."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Review a tense job-site transcript and mark where the foreman escalated."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim role-play: a late concrete truck and an angry GC; student practices pause-and-reframe."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Dana debrief scored on a behavior rubric, not personality."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 2,
+     "title": "Toolbox Talks and Clear Direction",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Watch Sam and Dana run a 10-minute toolbox talk."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Rewrite a vague assignment into who/what/when/standard."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: deliver a toolbox talk on ladder safety to a crew of avatars with questions."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Crew avatars execute the task; errors traced to unclear instructions count against the leader."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 3,
+     "title": "Feedback and Conflict Resolution",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Read on the situation-behavior-impact feedback model."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Classify 6 feedback statements as specific or vague, blaming or behavioral."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: resolve a conflict between a journeyworker and an apprentice over task assignments."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Follow-up session days later in sim; check if agreements held."
+      }
+     ],
+     "wired": false
+    },
+    {
+     "n": 4,
+     "title": "Mentoring Apprentices",
+     "stages": [
+      {
+       "stage": "home",
+       "phase": "prepare",
+       "text": "Chris reading on psychological safety and stop-work authority."
+      },
+      {
+       "stage": "class",
+       "phase": "analyze",
+       "text": "Review an incident report where an apprentice did not speak up; identify cultural causes."
+      },
+      {
+       "stage": "floor",
+       "phase": "practice",
+       "text": "Sim: coach an apprentice through a first-time task using demonstrate-observe-correct."
+      },
+      {
+       "stage": "gate",
+       "phase": "verify",
+       "text": "Dana evaluates the apprentice avatar's progress across 3 sessions."
+      }
+     ],
+     "wired": false
+    }
+   ]
+  }
+ ],
+ "teacher_kit": [
+  {
+   "name": "Lesson Planner",
+   "what": "Builds a week of flipped lessons from a course module: assigns prepare content, picks analyze cases, schedules sim practice and a verify job site; exports to a printable plan.",
+   "agent": "Chris"
+  },
+  {
+   "name": "Cohort Dashboard",
+   "what": "Per-student view of skill-graph mastery, AI-ZPD dial level, hint rungs used, and time-on-task, with flags for students stalled more than 3 sessions.",
+   "agent": "Chris"
+  },
+  {
+   "name": "Rubric Builder",
+   "what": "Generates observable-behavior rubrics per trade (e.g. weld bead visual criteria, color formulation accuracy) that the teacher edits and locks before grading.",
+   "agent": "Dana"
+  },
+  {
+   "name": "Sim Assignment Composer",
+   "what": "Assigns specific interior sites and station scripts from the 333 built sites, sets dial bounds and hint caps, and sets due dates.",
+   "agent": "Chris"
+  },
+  {
+   "name": "Parity Report",
+   "what": "Applies ACP parity safeguards to show whether outcomes, hint access and dial ceilings differ across student groups; flags gaps for teacher review, not automatic action.",
+   "agent": "Dana"
+  },
+  {
+   "name": "Safety Gate Console",
+   "what": "Lets the teacher require a passed safety module (LOTO, hot work, cell entry) before a student unlocks hazardous sim stations; logs every override.",
+   "agent": "Sam"
+  },
+  {
+   "name": "Licensure Hours Ledger (planned)",
+   "what": "Tracks sim and theory hours by trade against registry entries; marks every row as unverified by any board and only shows sourced state minimums (IL, FL, ID cosmetology).",
+   "agent": "Chris"
+  },
+  {
+   "name": "Trade Demo Library",
+   "what": "Mentor-recorded demonstrations (Joyce on 3G root pass, Tessa on sectioning, Gemma on apex placement, Iris on extractions) teachers can embed in prepare phases.",
+   "agent": "Joyce, Tessa, Gemma, Iris"
+  }
+ ],
+ "student_kit": [
+  {
+   "name": "Prepare Pack",
+   "what": "Short reading, demo video and a 10-question readiness check per module; unlocks the analyze phase at 80% or after a mentor conversation.",
+   "agent": "Chris"
+  },
+  {
+   "name": "Mentor Chat",
+   "what": "Trade mentor answers questions inside the 5-rung hint engine, starting with a nudge and only reaching a worked example after earlier rungs.",
+   "agent": "Joyce, Tessa, Gemma, Iris, Sam, Dana, Chris"
+  },
+  {
+   "name": "Skill Map",
+   "what": "Visual skill graph showing mastered, in-progress and locked skills with the next recommended mission.",
+   "agent": "Chris"
+  },
+  {
+   "name": "Practice Replay",
+   "what": "Replays a sim attempt with mentor annotations at the moments that cost points (e.g. travel speed spike, skipped LOTO step).",
+   "agent": "Joyce / Sam"
+  },
+  {
+   "name": "Portfolio Builder",
+   "what": "Collects verify-phase artifacts (weld photos, formula cards, as-built reports) into a shareable portfolio clearly labeled as simulation work.",
+   "agent": "Dana"
+  },
+  {
+   "name": "Board Exam Drill (practice only)",
+   "what": "Timed practice items for state-board-style theory and EPA 608 and Part 107 topics; results are never presented as official scores.",
+   "agent": "Tessa / Sam"
+  },
+  {
+   "name": "Safety Card Wallet",
+   "what": "Records completion of internal safety modules required to unlock hazardous stations; explicitly not an OSHA card.",
+   "agent": "Sam"
+  },
+  {
+   "name": "Reflection Journal",
+   "what": "Two-minute end-of-session reflection with prompts from Chris's EI course; private by default, shareable with teacher by choice.",
+   "agent": "Chris"
+  }
+ ],
+ "agent_assist": [
+  {
+   "agent": "Chris",
+   "role_in_course": "Main assistant and course manager: runs prepare phases, schedules work, owns the EI content in TCA-410, and leads electrical, plumbing, HVAC and carpentry until dedicated mentors exist.",
+   "guardrail": "Never claims accreditation, licensure credit, deployments or union endorsement; hands off to a trade mentor or human teacher when content is out of scope."
+  },
+  {
+   "agent": "Joyce",
+   "role_in_course": "Welding mentor for TCA-140 and the robotic welding cell in TCA-310: demos technique, grades bead visuals, reviews WPS use.",
+   "guardrail": "States that sim coupons are not certification tests; refuses to coach any bypass of fume, fire-watch or cell safety controls."
+  },
+  {
+   "agent": "Tessa",
+   "role_in_course": "Hair design mentor for TCA-210: consultation coaching, sectioning feedback, color formulation checks.",
+   "guardrail": "Requires patch/strand test steps per manufacturer before chemical services; does not give medical advice on scalp conditions, refers out."
+  },
+  {
+   "agent": "Gemma",
+   "role_in_course": "Nail technology mentor for TCA-220: filing, e-file, gel and enhancement technique.",
+   "guardrail": "Flags infection signs as refer-to-physician; never recommends MMA liquid or reuse of single-use implements."
+  },
+  {
+   "agent": "Iris",
+   "role_in_course": "Esthetics mentor for TCA-230: skin analysis, contraindications, protocol sequencing.",
+   "guardrail": "Stays within esthetician scope; declines medical procedures and diagnosis and always notes state rules vary and are unsourced outside the registry."
+  },
+  {
+   "agent": "Dana",
+   "role_in_course": "Leadership director: leads TCA-410, builds rubrics, reviews parity reports and portfolio framing.",
+   "guardrail": "Scores observable behaviors only, never personality or protected traits; parity flags go to a human for decision."
+  },
+  {
+   "agent": "Sam",
+   "role_in_course": "Safety director: owns safety gates in every course, leads TCA-160 and TCA-320, co-teaches LOTO, hot work and cell entry.",
+   "guardrail": "Hard-stops any sim attempt that skips a life-safety step; never certifies OSHA, FAA or NCCCO credentials and says so."
+  }
+ ],
+ "sprints": [
+  {
+   "sprint": "S1",
+   "start": "2026-10-12",
+   "end": "2026-10-25",
+   "weeks": "Oct 12 - Oct 25, 2026",
+   "status": "planned",
+   "ship": "Course schema and authoring pipeline; TCA-140 Welding modules 1-2 wired to existing interior sites; Prepare Pack and Mentor Chat for Joyce.",
+   "eval_gate": "All 5 modules validate against schema; hint engine never reaches rung 5 before rungs 1-4 in 200 scripted test sessions; zero honesty-doctrine violations in output lint."
+  },
+  {
+   "sprint": "S2",
+   "start": "2026-10-26",
+   "end": "2026-11-08",
+   "weeks": "Oct 26 - Nov 8, 2026",
+   "status": "planned",
+   "ship": "TCA-210 Hair and TCA-230 Esthetics modules 1-3; Tessa and Iris mentors; Teacher Lesson Planner v1.",
+   "eval_gate": "Mentor guardrail eval: 100% refusal on 50 out-of-scope medical/chemical-safety prompts; lesson plans render for all assigned modules."
+  },
+  {
+   "sprint": "S3",
+   "start": "2026-11-09",
+   "end": "2026-11-22",
+   "weeks": "Nov 9 - Nov 22, 2026",
+   "status": "planned",
+   "ship": "TCA-110 Electrical and TCA-130 HVAC modules 1-3; Sam Safety Gate Console; Safety Card Wallet.",
+   "eval_gate": "Safety gates block hazardous stations in 100% of 300 scripted bypass attempts; overrides logged."
+  },
+  {
+   "sprint": "S4",
+   "start": "2026-11-23",
+   "end": "2026-12-06",
+   "weeks": "Nov 23 - Dec 6, 2026",
+   "status": "planned",
+   "ship": "TCA-120 Plumbing, TCA-150 Carpentry, TCA-220 Nail modules 1-3; Cohort Dashboard v1 and Skill Map.",
+   "eval_gate": "Dashboard numbers reconcile with raw session logs within 1%; trade-accuracy review of all new content by a qualified human reviewer (planned; reviewer not yet engaged)."
+  },
+  {
+   "sprint": "S5",
+   "start": "2026-12-07",
+   "end": "2026-12-20",
+   "weeks": "Dec 7 - Dec 20, 2026",
+   "status": "planned",
+   "ship": "TCA-310 Robot Arm and TCA-320 Cobot sim cells; Practice Replay; Rubric Builder.",
+   "eval_gate": "Cell-entry scenarios fail on any interlock bypass in 100% of test runs; rubric items all observable (lint check for vague criteria)."
+  },
+  {
+   "sprint": "S6",
+   "start": "2026-12-21",
+   "end": "2027-01-03",
+   "weeks": "Dec 21, 2026 - Jan 3, 2027",
+   "status": "planned",
+   "ship": "TCA-160 Heavy Equipment with drone and rover survey sims; holiday-light sprint, plus bug-fix and accessibility pass.",
+   "eval_gate": "Drone mission planner enforces 400 ft AGL and VLOS in sim; WCAG 2.2 AA audit on student and teacher kits with zero critical failures."
+  },
+  {
+   "sprint": "S7",
+   "start": "2027-01-04",
+   "end": "2027-01-17",
+   "weeks": "Jan 4 - Jan 17, 2027",
+   "status": "planned",
+   "ship": "TCA-410 Leadership/EI with Dana and Chris; Parity Report; Portfolio Builder; Reflection Journal.",
+   "eval_gate": "Parity safeguards run on synthetic cohorts and flag injected disparities with no false all-clears; portfolio labels every artifact as simulation work."
+  },
+  {
+   "sprint": "S8",
+   "start": "2027-01-18",
+   "end": "2027-01-31",
+   "weeks": "Jan 18 - Jan 31, 2027",
+   "status": "planned",
+   "ship": "Remaining modules for all 12 courses; Licensure Hours Ledger (planned, unverified labels); Board Exam Drill; internal pilot readiness review targeting early Feb 2027.",
+   "eval_gate": "End-to-end flipped loop completes for all 12 courses in automated walkthroughs; honesty lint passes on every page; pilot only if a partner and IRB/consent plan exist, otherwise remain internal."
+  }
+ ]
+}
