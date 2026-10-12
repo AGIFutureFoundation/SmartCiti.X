@@ -1445,6 +1445,7 @@ function nearTrail(x, z, r) {
 }
 function refillVeg() {
   vegAt = { x: eye.x, z: eye.z };
+  wildsFloraRefill();   /* WORLD w16 ground flora */
   const cand = { conifer: [], deciduous: [], rock: [] };
   const c0 = Math.floor((eye.x - VEG_R) / VEG_CELL), c1 = Math.floor((eye.x + VEG_R) / VEG_CELL);
   const r0 = Math.floor((eye.z - VEG_R) / VEG_CELL), r1 = Math.floor((eye.z + VEG_R) / VEG_CELL);
@@ -1811,6 +1812,7 @@ function setMode(m) {
   horizonMesh.visible = walkOn;
   for (const k in veg) veg[k].visible = walkOn;
   bbMesh.visible = walkOn;
+  if (WFL) WFL.setVisible(walkOn);   /* WORLD w16 */
   cacheMesh.visible = walkOn;
   orbit.enabled = !walkOn;
   if (!walkOn) {
@@ -2069,6 +2071,277 @@ const WILD = TCWILD.mount({ root: document.getElementById('wild-panel'), data: J
   isGround: (x, z) => !!(W && T) && Math.abs(x) < W.extent_m / 2 - 10 && Math.abs(z) < W.extent_m / 2 - 10 && T.height(x, z) >= W.biome.water_level_m,
   seed: 20260929, worldId: () => (W ? W.id : 'none'),
   month: Number(new URLSearchParams(location.search).get('wildmonth')) || (new Date().getMonth() + 1) });
+/* ------------------------------------------------------- TCFLORA kit ---
+   AUTHORED vegetation and street detail: real regional plants named generally, placed by AUTHORED rules on
+   land use and distance to water - not a tree survey, species map or count. Registry: flora/registry/flora.json. */
+class FloraError extends Error {}
+function flNeed(obj, key, where) {
+  if (obj === null || typeof obj !== 'object' || !(key in obj)) throw new FloraError('florakit ' + where + ': missing "' + key + '"');
+  return obj[key];
+}
+function flHash(a, b, seed, k) {
+  let h = (Math.imul(a | 0, 374761393) + Math.imul(b | 0, 668265263) + Math.imul(seed | 0, 2246822519) + Math.imul(k | 0, 3266489917)) | 0;
+  h = Math.imul(h ^ (h >>> 13), 1274126177); h ^= h >>> 16;
+  return h >>> 0;
+}
+function flRng(s) {
+  let a = s >>> 0;
+  return () => { a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+}
+function flPick(mix, u) {
+  const ks = Object.keys(mix); let tot = 0; for (const k of ks) tot += mix[k];
+  let acc = 0; for (const k of ks) { acc += mix[k] / tot; if (u < acc) return k; }
+  return ks[ks.length - 1];
+}
+const FL_WATER = ['shore', 'near', 'far'];
+/* unit geometries: x, z span the crown (scale = crown m), y spans the height (scale = height m). Non-indexed,
+   vertex colour 1 on foliage and a dark neutral on trunks (the per-instance colour multiplies both). */
+function floraGeometry(THREE, shape) {
+  const P = [], C = [];
+  const TR = [0.42, 0.34, 0.28], LF = [1, 1, 1];
+  const tri = (a, b, c, col) => { P.push(...a, ...b, ...c); for (let i = 0; i < 3; i++) C.push(...col); };
+  const quad = (a, b, c, d, col) => { tri(a, b, c, col); tri(a, c, d, col); };
+  const trunk = (y0, y1, r) => { for (let i = 0; i < 4; i++) { const a0 = (i + 0.5) * Math.PI / 2, a1 = (i + 1.5) * Math.PI / 2;
+    const p = (a, y) => [Math.cos(a) * r, y, Math.sin(a) * r]; quad(p(a0, y0), p(a1, y0), p(a1, y1), p(a0, y1), TR); } };
+  if (shape === 'trunk4+icosa') {
+    trunk(0, 0.42, 0.05);
+    const g = new THREE.IcosahedronGeometry(1, 0), pos = g.attributes.position;
+    for (let i = 0; i < pos.count; i += 3) { const v = (k) => [pos.getX(k) * 0.5, 0.62 + pos.getY(k) * 0.36, pos.getZ(k) * 0.5]; tri(v(i), v(i + 1), v(i + 2), LF); }
+    g.dispose();
+  } else if (shape === 'trunk4+cone6') {
+    trunk(0, 0.2, 0.06);
+    for (let i = 0; i < 6; i++) { const a0 = i * Math.PI / 3, a1 = (i + 1) * Math.PI / 3;
+      tri([Math.cos(a0) * 0.5, 0.15, Math.sin(a0) * 0.5], [0, 1, 0], [Math.cos(a1) * 0.5, 0.15, Math.sin(a1) * 0.5], LF); }
+  } else if (shape === 'trunk4+fronds6') {
+    trunk(0, 0.92, 0.04);
+    for (let i = 0; i < 6; i++) { const a = i * Math.PI / 3, c = Math.cos(a), s = Math.sin(a), w = 0.07;
+      quad([-s * w, 0.93, c * w], [s * w, 0.93, -c * w], [c * 0.5 + s * w, 0.74, s * 0.5 - c * w], [c * 0.5 - s * w, 0.74, s * 0.5 + c * w], LF); }
+  } else if (shape === 'drape3') {
+    for (let i = 0; i < 3; i++) { const a = i * 2 * Math.PI / 3 + 0.4, x = Math.cos(a) * 0.3, z = Math.sin(a) * 0.3, tx = -Math.sin(a) * 0.08, tz = Math.cos(a) * 0.08;
+      quad([x - tx, 0.52, z - tz], [x + tx, 0.52, z + tz], [x + tx * 0.3, 0.3, z + tz * 0.3], [x - tx * 0.3, 0.3, z - tz * 0.3], LF); }
+  } else if (shape === 'octa') {
+    const t = [0, 1, 0], b = [0, 0, 0], r = [[0.5, 0.5, 0], [0, 0.5, 0.5], [-0.5, 0.5, 0], [0, 0.5, -0.5]];
+    for (let i = 0; i < 4; i++) { const a = r[i], c = r[(i + 1) % 4]; tri(a, t, c, LF); tri(c, b, a, LF); }
+  } else if (shape === 'blades3') {
+    for (let i = 0; i < 3; i++) { const a = i * Math.PI / 3, c = Math.cos(a) * 0.5, s = Math.sin(a) * 0.5;
+      quad([-c, 0, -s], [c, 0, s], [c * 0.25, 1, s * 0.25], [-c * 0.25, 1, -s * 0.25], LF); }
+  } else if (shape === 'box5') {
+    const v = (x, y, z) => [x - 0.5, y, z - 0.5];
+    quad(v(0, 1, 0), v(0, 1, 1), v(1, 1, 1), v(1, 1, 0), LF);                                   // top
+    quad(v(0, 0, 1), v(1, 0, 1), v(1, 1, 1), v(0, 1, 1), LF); quad(v(1, 0, 0), v(0, 0, 0), v(0, 1, 0), v(1, 1, 0), LF);
+    quad(v(1, 0, 1), v(1, 0, 0), v(1, 1, 0), v(1, 1, 1), LF); quad(v(0, 0, 0), v(0, 0, 1), v(0, 1, 1), v(0, 1, 0), LF);
+  } else throw new FloraError('florakit: unknown shape ' + shape);
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(P, 3)); g.setAttribute('color', new THREE.Float32BufferAttribute(C, 3));
+  g.computeVertexNormals(); g.computeBoundingSphere();
+  return g;
+}
+function createFlora(scene, o) {
+  const THREE = flNeed(o, 'THREE', 'createFlora'), data = flNeed(o, 'data', 'createFlora'), region = flNeed(o, 'region', 'createFlora');
+  const seed = flNeed(o, 'seed', 'createFlora'), chunkM = flNeed(o, 'chunkM', 'createFlora');
+  const fn = {};
+  for (const k of ['isGround', 'isRoad', 'isWater', 'landUse', 'groundY', 'landClass']) { fn[k] = flNeed(o, k, 'createFlora'); if (typeof fn[k] !== 'function') throw new FloraError('florakit createFlora: ' + k + ' must be a function'); }
+  /* ENV w15: optional footprint adapters - given => a function (no silent default: a non-function is named) */
+  for (const k of ['footprint', 'chunkReady']) { fn[k] = k in o ? o[k] : null; if (fn[k] !== null && typeof fn[k] !== 'function') throw new FloraError('florakit createFlora: ' + k + ' must be a function when given'); }
+  const R = flNeed(flNeed(data, 'regions', 'data'), region, 'data.regions'), B = flNeed(data, 'budgets', 'data'), FAM = flNeed(data, 'families', 'data');
+  const SP = flNeed(data, 'species', 'data'), DET = flNeed(data, 'details', 'data'), MOSS = flNeed(data, 'moss', 'data');
+  const S = flNeed(B, 'sample_m', 'budgets'), L = flNeed(B, 'water_lattice_m', 'budgets'), K = flNeed(B, 'kerb_probe_m', 'budgets');
+  const SHORE = flNeed(B, 'shore_m', 'budgets'), NEAR = flNeed(B, 'near_m', 'budgets'), REFILL = flNeed(B, 'refill_m', 'budgets'), PER_TICK = flNeed(B, 'chunks_per_tick', 'budgets');
+  const LU = flNeed(R, 'land_uses', 'region'), RULES = flNeed(R, 'rules', 'region'), DRULES = flNeed(R, 'details', 'region'), LC = flNeed(R, 'landcover', 'region');
+  const lcRule = (k) => { const key = String(k); if (!LC || !(key in LC)) throw new FloraError('florakit: land cover class ' + key + ' has no ' + region + ' rule'); return LC[key]; };
+  if (Object.keys(FAM).length > flNeed(B, 'draw_calls_max', 'budgets')) throw new FloraError('florakit: more families than budgets.draw_calls_max');
+  const mats = { solid: new THREE.MeshLambertMaterial({ vertexColors: true }), double: new THREE.MeshLambertMaterial({ vertexColors: true, side: THREE.DoubleSide }) };
+  const meshes = {}, C = new THREE.Color();
+  for (const [fid, f] of Object.entries(FAM)) {
+    const g = floraGeometry(THREE, flNeed(f, 'shape', 'families.' + fid));
+    if (g.attributes.position.count / 3 !== flNeed(f, 'tris', 'families.' + fid)) throw new FloraError('florakit: family ' + fid + ' geometry has ' + g.attributes.position.count / 3 + ' triangles, registry says ' + f.tris);
+    const m = new THREE.InstancedMesh(g, flNeed(mats, flNeed(f, 'material', 'families.' + fid), 'materials'), flNeed(f, 'cap', 'families.' + fid));
+    m.setColorAt(0, C.set('#ffffff')); m.count = 0; m.visible = false; m.name = 'flora:' + fid; m.userData.flora = fid;
+    scene.add(m); meshes[fid] = m;
+  }
+  const maxLod = Math.max(...Object.values(FAM).map((f) => flNeed(f, 'lod_m', 'families')));
+  const RC = Math.ceil(maxLod / chunkM);
+  const wcache = new Map();
+  const wet = (x, z) => { const ix = Math.round(x / L), iz = Math.round(z / L), k = ix + ',' + iz; let v = wcache.get(k); if (v === undefined) { v = !!fn.isWater(ix * L, iz * L); wcache.set(k, v); } return v; };
+  const ring = (x, z, r) => { for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4; if (wet(x + Math.cos(a) * r, z + Math.sin(a) * r)) return true; } return false; };
+  const waterClass = (x, z) => (ring(x, z, SHORE) ? 'shore' : (ring(x, z, NEAR * 0.5) || ring(x, z, NEAR)) ? 'near' : 'far');
+  const ruleFor = (lu, wc) => { for (const r of RULES) if ((r.land_use === '*' || r.land_use === lu) && (r.water === '*' || r.water === wc)) return r; throw new FloraError('florakit: no rule for ' + lu + '/' + wc + ' in ' + region); };
+  const kerb = (x, z) => { for (const [dx, dz] of [[K, 0], [-K, 0], [0, K], [0, -K]]) if (fn.isRoad(x + dx, z + dz)) return [dx / K, dz / K]; return null; };
+  function placeChunk(ci, cj) {
+    const items = [], n = Math.max(1, Math.round(chunkM / S)), step = chunkM / n;
+    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
+      const rnd = flRng(flHash(ci * n + i, cj * n + j, seed, 7919));
+      const x = ci * chunkM + (i + rnd()) * step, z = cj * chunkM + (j + rnd()) * step;
+      if (!fn.isGround(x, z) || fn.isRoad(x, z)) continue;
+      if (fn.footprint) { counts.footChecked++; if (fn.footprint(x, z)) { counts.footSkipped++; continue; } }   // ENV w15: nothing stands inside a page building
+      const lu = fn.landUse(x, z);
+      if (!LU.includes(lu)) throw new FloraError('florakit: landUse returned ' + JSON.stringify(lu) + ', not a ' + region + ' land use');
+      const y = fn.groundY(x, z), kd = kerb(x, z), u = rnd(), v = rnd(), w = rnd(), ry = rnd() * Math.PI * 2;
+      if (kd) {   // a kerb sample: AUTHORED street furniture, facing the street
+        const dr = flNeed(DRULES, lu, 'region.details');
+        if (u >= dr.p_kerb) continue;
+        const did = flPick(dr.mix, v), d = flNeed(DET, did, 'details'), rot = Math.atan2(-kd[0], -kd[1]);
+        const cs = Math.cos(rot), sn = Math.sin(rot), bx = x - kd[0] * (d.setback_m - K * 0.25), bz = z - kd[1] * (d.setback_m - K * 0.25);
+        for (const b of d.boxes) items.push({ f: 'detail', sp: did, x: bx + b[0] * cs + b[2] * sn, y: y + b[1], z: bz - b[0] * sn + b[2] * cs, sx: b[3], sy: b[4], sz: b[5], ry: rot, col: b[6] });
+        continue;
+      }
+      const wc = waterClass(x, z), k = fn.landClass(x, z);   // RECORDED land cover class, or null (no class: AUTHORED rules)
+      const src = k === null ? 'A' : 'R', rule = k === null ? ruleFor(lu, wc) : lcRule(k);
+      if (src === 'A') counts.authoredSamples++; else counts.recordedSamples++;
+      if (rule === null || u >= rule.per_ha * step * step / 10000) continue;
+      const sid = flPick(rule.mix, v), sp = flNeed(SP, sid, 'species'), hr = sp.height_m, cr = sp.crown_m;
+      const h = hr[0] + (hr[1] - hr[0]) * w, c = cr[0] + (cr[1] - cr[0]) * rnd();
+      items.push({ f: sp.family, sp: sid, x, y, z, sx: c, sy: h, sz: c, ry, col: sp.colour, src });
+      if (sp.moss_near_water && MOSS.on.includes(sid) && MOSS.water.includes(wc)) items.push({ f: 'moss', sp: 'spanish_moss', x, y, z, sx: c, sy: h, sz: c, ry, col: MOSS.colour, src });
+    }
+    return items;
+  }
+  const counts = { recordedSamples: 0, authoredSamples: 0, footChecked: 0, footSkipped: 0, footDeferred: 0 };
+  const chunks = new Map(); let queue = [], pc = null, last = null, dirty = false, overview = false, enabled = true, drawn = [], species = {}, lcDrawn = { recorded: 0, authored: 0 };
+  const M = new THREE.Matrix4(), V = new THREE.Vector3(), Q = new THREE.Quaternion(), SC = new THREE.Vector3(), UP = new THREE.Vector3(0, 1, 0);
+  function refill(px, pz) {
+    const byF = {}; for (const f in meshes) byF[f] = [];
+    for (const items of chunks.values()) for (const it of items) { const d2 = (it.x - px) ** 2 + (it.z - pz) ** 2, lod = FAM[it.f].lod_m; if (d2 <= lod * lod) byF[it.f].push([d2, it]); }
+    drawn = []; species = {}; lcDrawn = { recorded: 0, authored: 0 };
+    for (const [f, m] of Object.entries(meshes)) {
+      const list = byF[f].sort((a, b) => a[0] - b[0]).slice(0, FAM[f].cap);
+      list.forEach(([, it], i) => { M.compose(V.set(it.x, it.y, it.z), Q.setFromAxisAngle(UP, it.ry), SC.set(it.sx, it.sy, it.sz)); m.setMatrixAt(i, M); m.setColorAt(i, C.set(it.col)); drawn.push(it); species[it.sp] = (species[it.sp] || 0) + 1; if (it.src === 'R') lcDrawn.recorded++; else if (it.src === 'A') lcDrawn.authored++; });
+      m.count = list.length; m.instanceMatrix.needsUpdate = true; if (m.instanceColor) m.instanceColor.needsUpdate = true;
+      if (list.length) m.computeBoundingSphere();
+      m.visible = enabled && !overview && list.length > 0;
+    }
+    last = [px, pz]; dirty = false;
+  }
+  function update(p) {
+    if (!enabled) return;
+    const x = flNeed(p, 'x', 'update'), z = flNeed(p, 'z', 'update');
+    const ci = Math.floor(x / chunkM), cj = Math.floor(z / chunkM), key = ci + ',' + cj;
+    if (key !== pc) {
+      pc = key; const want = new Set(), q = [];
+      for (let a = -RC; a <= RC; a++) for (let b = -RC; b <= RC; b++) { const k = (ci + a) + ',' + (cj + b); want.add(k); if (!chunks.has(k)) q.push([a * a + b * b, ci + a, cj + b]); }
+      for (const k of [...chunks.keys()]) if (!want.has(k)) { chunks.delete(k); dirty = true; }
+      queue = q.sort((s, t) => s[0] - t[0]).map((e) => [e[1], e[2]]);
+    }
+    for (let i = 0; i < PER_TICK && queue.length; i++) {
+      const [a, b] = queue.shift();
+      if (fn.chunkReady && !fn.chunkReady(a, b)) { queue.push([a, b]); counts.footDeferred++; break; }   // ENV w15: the page's buildings are not built there yet - back of the queue, next tick
+      chunks.set(a + ',' + b, placeChunk(a, b)); dirty = true;
+    }
+    if (dirty || !last || Math.hypot(x - last[0], z - last[1]) > REFILL) refill(x, z);
+  }
+  function setOverview(on) { overview = !!on; for (const m of Object.values(meshes)) m.visible = enabled && !overview && m.count > 0; }
+  function setEnabled(on) { enabled = !!on; setOverview(overview); }   // eval A/B: off = every flora mesh hidden, no streaming
+  function stats() {
+    const families = {}; let tris = 0, calls = 0;
+    for (const [f, m] of Object.entries(meshes)) { const n = m.visible ? m.count : 0; families[f] = n; tris += n * FAM[f].tris; if (n) calls++; }
+    const pl = lcDrawn.recorded + lcDrawn.authored;
+    return { drawCalls: calls, families, species: overview || !enabled ? {} : { ...species }, tris, chunks: chunks.size, queue: queue.length, region, overview, enabled,
+      landcover: { plantsRecorded: lcDrawn.recorded, plantsAuthored: lcDrawn.authored, shareRecorded: pl ? +(lcDrawn.recorded / pl).toFixed(3) : 0,
+        recordedSamples: counts.recordedSamples, authoredSamples: counts.authoredSamples },
+      footprint: fn.footprint || fn.chunkReady ? { adapter: !!fn.footprint, ready: !!fn.chunkReady, checked: counts.footChecked, skipped: counts.footSkipped, deferred: counts.footDeferred } : null };
+  }
+  function reset() { chunks.clear(); queue = []; pc = null; last = null; for (const k in counts) counts[k] = 0; }   // re-place (e.g. when the RECORDED land cover arrives)
+  function near(x, z, r) { return drawn.filter((it) => (it.x - x) ** 2 + (it.z - z) ** 2 <= r * r); }
+  function dispose() { for (const m of Object.values(meshes)) { scene.remove(m); m.geometry.dispose(); m.dispose(); } for (const mt of Object.values(mats)) mt.dispose(); chunks.clear(); }
+  return { update, setOverview, setEnabled, reset, stats, placeChunk, near, dispose, meshes, materials: mats, waterClass, budgets: JSON.parse(JSON.stringify(B)) };
+}
+globalThis.TCFLORA = { createFlora, floraGeometry, flHash, flRng, flPick, FloraError };
+/* ------------------------------------------------- TCFLORA wilds ground flora (WORLD w16) ---
+   ONE InstancedMesh for every ground plant of a wilds world: florakit's shrub / reed shapes are parts of one geometry,
+   each instance draws only its own part (flPart vs flKind). AUTHORED placement by biome rule - not a survey. */
+function createWildsFlora(scene, o) {
+  const THREE = flNeed(o, 'THREE', 'createWildsFlora'), data = flNeed(o, 'data', 'createWildsFlora');
+  const biome = flNeed(o, 'biome', 'createWildsFlora'), seed = flNeed(o, 'seed', 'createWildsFlora');
+  const fn = {};
+  for (const k of ['height', 'slope', 'blocked']) { fn[k] = flNeed(o, k, 'createWildsFlora'); if (typeof fn[k] !== 'function') throw new FloraError('florakit createWildsFlora: ' + k + ' must be a function'); }
+  const waterLevel = flNeed(o, 'waterLevel', 'createWildsFlora'), snowLine = flNeed(o, 'snowLine', 'createWildsFlora'), lim = flNeed(o, 'lim', 'createWildsFlora');
+  const WL = flNeed(data, 'wilds', 'data'), FAM = flNeed(data, 'families', 'data');
+  const PARTS = flNeed(WL, 'families', 'wilds'), SPEC = flNeed(WL, 'species', 'wilds'), RULE = flNeed(flNeed(WL, 'biomes', 'wilds'), biome, 'wilds.biomes');
+  const CELL = flNeed(WL, 'cell_m', 'wilds'), RAD = flNeed(WL, 'radius_m', 'wilds'), CAP = flNeed(WL, 'cap', 'wilds');
+  const SLOPE = flNeed(WL, 'max_slope', 'wilds'), SNOW = flNeed(WL, 'snow_margin_m', 'wilds'), CLEAR = flNeed(WL, 'trail_clear_m', 'wilds');
+  const wet = flNeed(RULE, 'wet', 'wilds.biomes.' + biome);
+  /* the merged geometry: part i = florakit's shape for PARTS[i]; flPart tags its vertices */
+  const P = [], C = [], N = [], T = [];
+  PARTS.forEach((fid, i) => {
+    const g = floraGeometry(THREE, flNeed(flNeed(FAM, fid, 'families'), 'shape', 'families.' + fid));
+    const n = g.attributes.position.count;
+    P.push(...g.attributes.position.array); C.push(...g.attributes.color.array); N.push(...g.attributes.normal.array);
+    for (let k = 0; k < n; k++) T.push(i);
+    g.dispose();
+  });
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(P, 3)); geo.setAttribute('color', new THREE.Float32BufferAttribute(C, 3));
+  geo.setAttribute('normal', new THREE.Float32BufferAttribute(N, 3)); geo.setAttribute('flPart', new THREE.Float32BufferAttribute(T, 1));
+  const kind = new THREE.InstancedBufferAttribute(new Float32Array(CAP), 1);
+  kind.setUsage(THREE.DynamicDrawUsage); geo.setAttribute('flKind', kind);
+  const mat = new THREE.MeshLambertMaterial({ vertexColors: true, side: THREE.DoubleSide });
+  mat.onBeforeCompile = (sh) => {
+    sh.vertexShader = sh.vertexShader
+      .replace('#include <common>', '#include <common>\nattribute float flPart;\nattribute float flKind;')
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\ntransformed *= step(abs(flPart - flKind), 0.5);');
+  };
+  const mesh = new THREE.InstancedMesh(geo, mat, CAP);
+  mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  mesh.setColorAt(0, new THREE.Color('#ffffff')); mesh.count = 0; mesh.frustumCulled = false; mesh.name = 'flora:wilds'; mesh.userData.flora = 'wilds';
+  scene.add(mesh);
+  const triPer = geo.attributes.position.count / 3;
+  const p = (r) => r.per_ha * CELL * CELL / 10000;
+  /* pure: the plants within RAD of (x, z), nearest first, at most CAP */
+  function place(x0, z0) {
+    const out = [];
+    const c0 = Math.floor((x0 - RAD) / CELL), c1 = Math.floor((x0 + RAD) / CELL), r0 = Math.floor((z0 - RAD) / CELL), r1 = Math.floor((z0 + RAD) / CELL);
+    for (let ci = c0; ci <= c1; ci++) for (let ri = r0; ri <= r1; ri++) {
+      const rnd = flRng(flHash(ci, ri, seed, 4241));
+      const x = (ci + rnd()) * CELL, z = (ri + rnd()) * CELL, dx = x - x0, dz = z - z0, d2 = dx * dx + dz * dz;
+      if (d2 > RAD * RAD || Math.abs(x) > lim || Math.abs(z) > lim) continue;
+      const u = rnd(), v = rnd(), w = rnd(), ry = rnd() * Math.PI * 2;
+      const h = fn.height(x, z);
+      if (h < waterLevel || h > snowLine - SNOW) continue;
+      const rule = wet !== null && h < waterLevel + wet.band_m ? wet : RULE;
+      if (u >= p(rule)) continue;
+      if (fn.slope(x, z) > SLOPE || fn.blocked(x, z, CLEAR)) continue;
+      const sp = flPick(rule.mix, v), s = flNeed(SPEC, sp, 'wilds.species');
+      const crown = s.crown_m[0] + (s.crown_m[1] - s.crown_m[0]) * w, ht = s.height_m[0] + (s.height_m[1] - s.height_m[0]) * (1 - w * 0.5);
+      out.push({ d2, sp, part: PARTS.indexOf(s.family), x, y: h - 0.05, z, crown, ht, ry, tint: 0.88 + 0.24 * v });
+    }
+    out.sort((a, b) => a.d2 - b.d2);
+    if (out.length > CAP) out.length = CAP;
+    return out;
+  }
+  const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler(), sc = new THREE.Vector3(), ps = new THREE.Vector3(), col = new THREE.Color();
+  let drawn = [], species = {}, minR = Infinity, maxR = 0;
+  function refill(eye) {
+    drawn = place(eye.x, eye.z); species = {}; minR = Infinity; maxR = 0;
+    drawn.forEach((it, n) => {
+      e.set(0, it.ry, 0); q.setFromEuler(e); sc.set(it.crown, it.ht, it.crown); ps.set(it.x, it.y, it.z);
+      m4.compose(ps, q, sc); mesh.setMatrixAt(n, m4); kind.setX(n, it.part);
+      col.set(SPEC[it.sp].colour).multiplyScalar(it.tint); mesh.setColorAt(n, col);
+      species[it.sp] = (species[it.sp] || 0) + 1;
+      const r = Math.sqrt(it.d2); if (r < minR) minR = r; if (r > maxR) maxR = r;
+    });
+    mesh.count = drawn.length; mesh.instanceMatrix.needsUpdate = true; kind.needsUpdate = true;
+    if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+    return drawn.length;
+  }
+  function setVisible(on) { mesh.visible = !!on; }
+  function stats() {
+    const n = mesh.visible ? mesh.count : 0;
+    return { biome, meshes: 1, instanced: mesh.isInstancedMesh, instances: n, cap: CAP, radius: RAD, maxR: n ? +maxR.toFixed(1) : 0,
+      tris: n * triPer, triPerInstance: triPer, parts: PARTS.slice(), species: n ? { ...species } : {} };
+  }
+  function dispose() { scene.remove(mesh); geo.dispose(); mat.dispose(); }
+  return { refill, place, setVisible, stats, dispose, mesh };
+}
+globalThis.TCFLORA.createWildsFlora = createWildsFlora;
+
+/* WORLD w16 wilds ground-flora mount */
+const WILDS_FLORA_DATA = {"schema":"FLORA v1","provenance":"AUTHORED","source_stamp":"9103965d24ba2003","wilds":{"about":"Ground flora for the four AUTHORED wilds worlds (web/trade_craft_wilds.html): grass clumps, ferns, sedges and low shrubs under and between the page's own trees and rocks. Plants named generally; every size, colour, density and rule is AUTHORED set dressing, not a survey, species map or count.","biomes":{"canyon":{"mix":{"bunchgrass":2,"desert_scrub":2},"per_ha":30,"wet":{"band_m":3,"mix":{"cattail":1,"marsh_grass":1},"per_ha":60}},"delta":{"mix":{"marsh_grass":4,"marsh_shrub":1},"per_ha":70,"wet":{"band_m":1.5,"mix":{"cattail":3,"marsh_grass":2},"per_ha":120}},"forest":{"mix":{"fern":3,"forest_shrub":2},"per_ha":60,"wet":null},"mountain":{"mix":{"alpine_grass":3,"mountain_shrub":1},"per_ha":45,"wet":null}},"cap":700,"cell_m":6,"draw_calls":1,"families":["shrub","reed"],"max_slope":0.7,"page_line":"Ground flora: AUTHORED placement of generally named plants by biome - not a survey, species map or count.","radius_m":130,"snow_margin_m":30,"species":{"alpine_grass":{"colour":"#9aa36a","crown_m":[0.6,1.2],"family":"reed","height_m":[0.2,0.5],"name":"alpine grass clump (generic)"},"bunchgrass":{"colour":"#b8a46a","crown_m":[0.5,1.0],"family":"reed","height_m":[0.3,0.7],"name":"bunchgrass (generic)"},"cattail":{"colour":"#6f8a3c","crown_m":[0.6,1.2],"family":"reed","height_m":[1.2,2.2],"name":"cattail"},"desert_scrub":{"colour":"#8a8a62","crown_m":[0.8,1.8],"family":"shrub","height_m":[0.4,1.2],"name":"desert scrub (generic)"},"fern":{"colour":"#4f7a3a","crown_m":[0.8,1.6],"family":"reed","height_m":[0.4,0.9],"name":"fern clump (generic)"},"forest_shrub":{"colour":"#3f6a35","crown_m":[1.0,2.2],"family":"shrub","height_m":[0.6,1.6],"name":"understory shrub (generic)"},"marsh_grass":{"colour":"#9caa5c","crown_m":[0.8,1.6],"family":"reed","height_m":[0.5,1.2],"name":"marsh grass (generic)"},"marsh_shrub":{"colour":"#55704a","crown_m":[1.2,2.4],"family":"shrub","height_m":[0.8,2.0],"name":"marsh-edge shrub (generic)"},"mountain_shrub":{"colour":"#5f7448","crown_m":[0.8,1.6],"family":"shrub","height_m":[0.4,1.0],"name":"low mountain shrub (generic)"}},"trail_clear_m":2,"tris_max":9800,"tris_per_instance":14},"families":{"shrub":{"cap":120,"lod_m":150,"material":"solid","shape":"octa","tris":8},"reed":{"cap":200,"lod_m":120,"material":"double","shape":"blades3","tris":6}}};
+function mountWildsFlora() { return createWildsFlora(scene, { THREE, data: WILDS_FLORA_DATA, biome: W.id, seed: W.seed, height: T.height, slope: T.slope, blocked: (x, z, r) => nearTrail(x, z, r), waterLevel: W.biome.water_level_m, snowLine: W.biome.snow_line_m, lim: W.extent_m / 2 - 10 }); }
+let WFL = null;   // the current world's ground flora (one InstancedMesh)
+function wildsFloraRefill() {
+  if (!WFL || WFL.biomeId !== W.id) { if (WFL) WFL.dispose(); WFL = mountWildsFlora(); WFL.biomeId = W.id; }
+  WFL.refill(eye); WFL.setVisible(mode === 'walk');
+}
 window.__wilds = {
   worlds: () => REG.worlds.map((w) => w.id),
   load: (id) => loadWorld(id),
@@ -2089,6 +2362,7 @@ window.__wilds = {
     billboards: Object.fromEntries(BB_KINDS.map((k) => [k, bbMesh.visible ? bbCount[k] : 0])),
     billboardsInstanced: bbMesh.isInstancedMesh, billboardMeshes: scene.children.filter((o) => o.geometry === bbGeo).length,
     billboardMinR: bbMinR, vegR: VEG_R, billboardR: BB_R,
+    flora: WFL ? WFL.stats() : null,   /* WORLD w16 ground flora */
   }),
   frameTimes(n) {
     const gl = renderer.getContext(), out = [];

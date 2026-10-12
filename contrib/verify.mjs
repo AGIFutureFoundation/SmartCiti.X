@@ -172,9 +172,9 @@ if (Object.keys(REG_WORLD).length !== Object.keys(WORLD_KINDS).length) throw new
 const WORLD_ENV_RULE = need(reg, 'world_envs', 'contrib.json');
 const WORLD_ENVS = need(WORLD_ENV_RULE, 'envs', 'contrib.json#world_envs');
 const POSE_LEN = need(WORLD_ENV_RULE, 'pose_len_by_medium', 'contrib.json#world_envs');
-const ROBO_ENVS = need(roboticsReg, 'envs', 'robotics.json');
+const REG_ENVS = need(roboticsReg, 'envs', 'robotics.json');
 for (const e of Object.keys(WORLD_ENVS)) {
-  const src = need(ROBO_ENVS, e, 'robotics.json#envs');
+  const src = need(REG_ENVS, e, 'robotics.json#envs');
   if (JSON.stringify(need(src, 'embodiments', e)) !== JSON.stringify(need(WORLD_ENVS[e], 'embodiments', e))
       || JSON.stringify(need(src, 'action', e).fields.map((a) => a.name)) !== JSON.stringify(need(WORLD_ENVS[e], 'action_fields', e))) {
     throw new Error(`contrib.json#world_envs.${e} is not robotics.json's; rebuild contrib/`);
@@ -261,7 +261,7 @@ function worldEpisode(ep, kind, w, check) {
   check('world.outcome', oks === okeys, `${w}: outcome keys ${oks} are not ${okeys}`);
   if (oks === okeys) {
     if (env !== null) check('world.outcome', env.termination.includes(out.done), `${w}: outcome.done ${JSON.stringify(out.done)} is not a termination id of ${envId} (${env.termination.join(', ')})`);
-    // ROBO w15: 'stopped' (the learner pressed Stop) and 'cap' are endings, never successes
+    // wave 15: 'stopped' (the learner pressed Stop) and 'cap' are endings, never successes
     check('world.outcome', !(out.done === 'stopped' || out.done === 'cap') || out.success === false,
       `${w}: outcome.done ${JSON.stringify(out.done)} ends the episode without finishing the task, yet success is not false`);
     check('world.outcome', typeof out.success === 'boolean' && isNum(out.return) && isInt(out.collected) && out.collected >= 0,

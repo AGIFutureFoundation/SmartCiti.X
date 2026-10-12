@@ -28178,7 +28178,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
  "schema": "tc-robotics/1",
  "contract_version": 1,
  "built": "2026-09-29",
- "source_stamp": "81ce01899c4e84cc",
+ "source_stamp": "a11104bd804477d9",
  "honesty": {
   "trained": "NOTHING HAS BEEN TRAINED. No model has been trained on these environments or on any episode they produce, and the repo records no training run. They are specs and a runnable schematic sandbox.",
   "authored": "Arenas, embodiments and dynamics are AUTHORED / SCHEMATIC (unicycle kinematics, circle obstacles); not the dynamics of any real robot, vehicle or ROV.",
@@ -28948,6 +28948,13 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
       "name": "dense",
       "params": {
        "obstacles": 8
+      }
+     },
+     {
+      "level": 4,
+      "name": "reachable",
+      "params": {
+       "items_near_bin_m": 6.0
       }
      }
     ]
@@ -31248,10 +31255,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   "trained_models": 0
  },
  "reference_benchmark": {
-  "what": "MEASURED success counts of the SCRIPTED reference policy (web/robokit.py ROBOKIT_CORE) over every declared seed and curriculum level, computed headless at build time by robotics/bench.mjs and recomputed by robotics/test.mjs. Not a learned policy; not a claim about any robot.",
+  "what": "MEASURED success counts of the SCRIPTED reference policy (the SIM_CORE block of web/robokit.py) over every declared seed and curriculum level, computed headless at build time by robotics/bench.mjs and recomputed by robotics/test.mjs. Not a learned policy; not a claim about any robot.",
   "measured_by": "robotics/bench.mjs",
   "policy": "SCRIPTED",
-  "policy_version": "eda8dcdc55733de4",
+  "policy_version": "f2fd6b4610679ad9",
   "seeds": [
    1,
    2,
@@ -31277,7 +31284,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   "levels": [
    1,
    2,
-   3
+   3,
+   4
   ],
   "per_env": {
    "world.litter-pickup": {
@@ -32197,6 +32205,286 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
       ],
       "mean_return": -3.64,
       "mean_steps": 600
+     },
+     "4": {
+      "level": 4,
+      "name": "reachable",
+      "runs": 20,
+      "success": 20,
+      "items": 80,
+      "collisions": 0,
+      "by_seed": [
+       [
+        1,
+        1,
+        4,
+        330,
+        1.5
+       ],
+       [
+        2,
+        1,
+        4,
+        347,
+        1.33
+       ],
+       [
+        3,
+        1,
+        4,
+        354,
+        1.26
+       ],
+       [
+        4,
+        1,
+        4,
+        344,
+        1.36
+       ],
+       [
+        5,
+        1,
+        4,
+        435,
+        0.45
+       ],
+       [
+        6,
+        1,
+        4,
+        316,
+        1.64
+       ],
+       [
+        7,
+        1,
+        4,
+        383,
+        0.97
+       ],
+       [
+        8,
+        1,
+        4,
+        291,
+        1.89
+       ],
+       [
+        9,
+        1,
+        4,
+        385,
+        0.95
+       ],
+       [
+        10,
+        1,
+        4,
+        280,
+        2
+       ],
+       [
+        11,
+        1,
+        4,
+        426,
+        0.54
+       ],
+       [
+        12,
+        1,
+        4,
+        375,
+        1.05
+       ],
+       [
+        13,
+        1,
+        4,
+        320,
+        1.6
+       ],
+       [
+        14,
+        1,
+        4,
+        394,
+        0.86
+       ],
+       [
+        15,
+        1,
+        4,
+        306,
+        1.74
+       ],
+       [
+        16,
+        1,
+        4,
+        349,
+        1.31
+       ],
+       [
+        17,
+        1,
+        4,
+        285,
+        1.95
+       ],
+       [
+        18,
+        1,
+        4,
+        377,
+        1.03
+       ],
+       [
+        19,
+        1,
+        4,
+        442,
+        0.38
+       ],
+       [
+        20,
+        1,
+        4,
+        496,
+        -0.16
+       ]
+      ],
+      "mean_return": 1.18,
+      "mean_steps": 362,
+      "feasibility": {
+       "what": "reach-aware straight-line path lower bound per seed [seed, bound_m, feasible, items_bound] against the travel budget v_max x cap; a seed above the budget cannot be finished by any policy under this spec (caps are not retuned)",
+       "budget_m": 60,
+       "feasible_seeds": 20,
+       "items_bound": 80,
+       "by_seed": [
+        [
+         1,
+         14.3,
+         1,
+         4
+        ],
+        [
+         2,
+         16.38,
+         1,
+         4
+        ],
+        [
+         3,
+         18.08,
+         1,
+         4
+        ],
+        [
+         4,
+         14.24,
+         1,
+         4
+        ],
+        [
+         5,
+         24.06,
+         1,
+         4
+        ],
+        [
+         6,
+         12.54,
+         1,
+         4
+        ],
+        [
+         7,
+         23.22,
+         1,
+         4
+        ],
+        [
+         8,
+         11.13,
+         1,
+         4
+        ],
+        [
+         9,
+         20.27,
+         1,
+         4
+        ],
+        [
+         10,
+         10.6,
+         1,
+         4
+        ],
+        [
+         11,
+         21.9,
+         1,
+         4
+        ],
+        [
+         12,
+         24.42,
+         1,
+         4
+        ],
+        [
+         13,
+         13.39,
+         1,
+         4
+        ],
+        [
+         14,
+         18.59,
+         1,
+         4
+        ],
+        [
+         15,
+         14.11,
+         1,
+         4
+        ],
+        [
+         16,
+         15.39,
+         1,
+         4
+        ],
+        [
+         17,
+         13.16,
+         1,
+         4
+        ],
+        [
+         18,
+         16.92,
+         1,
+         4
+        ],
+        [
+         19,
+         24.06,
+         1,
+         4
+        ],
+        [
+         20,
+         25.16,
+         1,
+         4
+        ]
+       ]
+      }
      }
     },
     "feasibility": {
@@ -33974,9 +34262,9 @@ if (Object.keys(REG_WORLD).length !== Object.keys(WORLD_KINDS).length) throw new
 const WORLD_ENV_RULE = need(reg, 'world_envs', 'contrib.json');
 const WORLD_ENVS = need(WORLD_ENV_RULE, 'envs', 'contrib.json#world_envs');
 const POSE_LEN = need(WORLD_ENV_RULE, 'pose_len_by_medium', 'contrib.json#world_envs');
-const ROBO_ENVS = need(roboticsReg, 'envs', 'robotics.json');
+const REG_ENVS = need(roboticsReg, 'envs', 'robotics.json');
 for (const e of Object.keys(WORLD_ENVS)) {
-  const src = need(ROBO_ENVS, e, 'robotics.json#envs');
+  const src = need(REG_ENVS, e, 'robotics.json#envs');
   if (JSON.stringify(need(src, 'embodiments', e)) !== JSON.stringify(need(WORLD_ENVS[e], 'embodiments', e))
       || JSON.stringify(need(src, 'action', e).fields.map((a) => a.name)) !== JSON.stringify(need(WORLD_ENVS[e], 'action_fields', e))) {
     throw new Error(`contrib.json#world_envs.${e} is not robotics.json's; rebuild contrib/`);
@@ -34063,7 +34351,7 @@ function worldEpisode(ep, kind, w, check) {
   check('world.outcome', oks === okeys, `${w}: outcome keys ${oks} are not ${okeys}`);
   if (oks === okeys) {
     if (env !== null) check('world.outcome', env.termination.includes(out.done), `${w}: outcome.done ${JSON.stringify(out.done)} is not a termination id of ${envId} (${env.termination.join(', ')})`);
-    // ROBO w15: 'stopped' (the learner pressed Stop) and 'cap' are endings, never successes
+    // wave 15: 'stopped' (the learner pressed Stop) and 'cap' are endings, never successes
     check('world.outcome', !(out.done === 'stopped' || out.done === 'cap') || out.success === false,
       `${w}: outcome.done ${JSON.stringify(out.done)} ends the episode without finishing the task, yet success is not false`);
     check('world.outcome', typeof out.success === 'boolean' && isNum(out.return) && isInt(out.collected) && out.collected >= 0,

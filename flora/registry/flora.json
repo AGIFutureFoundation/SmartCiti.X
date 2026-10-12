@@ -703,7 +703,7 @@
   }
  },
  "schema": "FLORA v1",
- "source_stamp": "e575b0b2a7535f01",
+ "source_stamp": "9103965d24ba2003",
  "species": {
   "bald_cypress": {
    "colour": "#6f8c4a",
@@ -975,5 +975,189 @@
    "name": "park shade tree (generic)",
    "region": "smiles"
   }
+ },
+ "wilds": {
+  "about": "Ground flora for the four AUTHORED wilds worlds (web/trade_craft_wilds.html): grass clumps, ferns, sedges and low shrubs under and between the page's own trees and rocks. Plants named generally; every size, colour, density and rule is AUTHORED set dressing, not a survey, species map or count.",
+  "biomes": {
+   "canyon": {
+    "mix": {
+     "bunchgrass": 2,
+     "desert_scrub": 2
+    },
+    "per_ha": 30,
+    "wet": {
+     "band_m": 3,
+     "mix": {
+      "cattail": 1,
+      "marsh_grass": 1
+     },
+     "per_ha": 60
+    }
+   },
+   "delta": {
+    "mix": {
+     "marsh_grass": 4,
+     "marsh_shrub": 1
+    },
+    "per_ha": 70,
+    "wet": {
+     "band_m": 1.5,
+     "mix": {
+      "cattail": 3,
+      "marsh_grass": 2
+     },
+     "per_ha": 120
+    }
+   },
+   "forest": {
+    "mix": {
+     "fern": 3,
+     "forest_shrub": 2
+    },
+    "per_ha": 60,
+    "wet": null
+   },
+   "mountain": {
+    "mix": {
+     "alpine_grass": 3,
+     "mountain_shrub": 1
+    },
+    "per_ha": 45,
+    "wet": null
+   }
+  },
+  "cap": 700,
+  "cell_m": 6,
+  "draw_calls": 1,
+  "families": [
+   "shrub",
+   "reed"
+  ],
+  "max_slope": 0.7,
+  "page_line": "Ground flora: AUTHORED placement of generally named plants by biome - not a survey, species map or count.",
+  "radius_m": 130,
+  "snow_margin_m": 30,
+  "species": {
+   "alpine_grass": {
+    "colour": "#9aa36a",
+    "crown_m": [
+     0.6,
+     1.2
+    ],
+    "family": "reed",
+    "height_m": [
+     0.2,
+     0.5
+    ],
+    "name": "alpine grass clump (generic)"
+   },
+   "bunchgrass": {
+    "colour": "#b8a46a",
+    "crown_m": [
+     0.5,
+     1.0
+    ],
+    "family": "reed",
+    "height_m": [
+     0.3,
+     0.7
+    ],
+    "name": "bunchgrass (generic)"
+   },
+   "cattail": {
+    "colour": "#6f8a3c",
+    "crown_m": [
+     0.6,
+     1.2
+    ],
+    "family": "reed",
+    "height_m": [
+     1.2,
+     2.2
+    ],
+    "name": "cattail"
+   },
+   "desert_scrub": {
+    "colour": "#8a8a62",
+    "crown_m": [
+     0.8,
+     1.8
+    ],
+    "family": "shrub",
+    "height_m": [
+     0.4,
+     1.2
+    ],
+    "name": "desert scrub (generic)"
+   },
+   "fern": {
+    "colour": "#4f7a3a",
+    "crown_m": [
+     0.8,
+     1.6
+    ],
+    "family": "reed",
+    "height_m": [
+     0.4,
+     0.9
+    ],
+    "name": "fern clump (generic)"
+   },
+   "forest_shrub": {
+    "colour": "#3f6a35",
+    "crown_m": [
+     1.0,
+     2.2
+    ],
+    "family": "shrub",
+    "height_m": [
+     0.6,
+     1.6
+    ],
+    "name": "understory shrub (generic)"
+   },
+   "marsh_grass": {
+    "colour": "#9caa5c",
+    "crown_m": [
+     0.8,
+     1.6
+    ],
+    "family": "reed",
+    "height_m": [
+     0.5,
+     1.2
+    ],
+    "name": "marsh grass (generic)"
+   },
+   "marsh_shrub": {
+    "colour": "#55704a",
+    "crown_m": [
+     1.2,
+     2.4
+    ],
+    "family": "shrub",
+    "height_m": [
+     0.8,
+     2.0
+    ],
+    "name": "marsh-edge shrub (generic)"
+   },
+   "mountain_shrub": {
+    "colour": "#5f7448",
+    "crown_m": [
+     0.8,
+     1.6
+    ],
+    "family": "shrub",
+    "height_m": [
+     0.4,
+     1.0
+    ],
+    "name": "low mountain shrub (generic)"
+   }
+  },
+  "trail_clear_m": 2,
+  "tris_max": 9800,
+  "tris_per_instance": 14
  }
 }

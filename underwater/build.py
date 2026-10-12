@@ -337,6 +337,74 @@ def main():
                 bodies.append({'id': bid, 'world': world, 'region': fips, 'kind': 'pond', 'surface_y_m': surface,
                                'depth_max_dm': dmax, 'shoreline': {'provenance': 'AUTHORED', 'rule': 'the world file pond disc'},
                                'grid': g, 'habitats': habitats_from_grid(bid, g, 2), 'look': VIS['pond']})
+    # BEGIN GROUND w16 SF shore bathymetry (GROUND·Recorded Ground): bay-open-0 masks water with NE land at 500 m, and the
+    # Bay page's open water is a different 1:10m line (the county outlines), so Dive/ROV was refused along much of the San
+    # Francisco shore (43 % of shore-water samples had no body). This AUTHORED body follows the PAGE's own open-water rule
+    # at 100 m and is listed BEFORE bay-open-0, so deepkit's depthAt (first body wins) uses it near San Francisco.
+    sf_bid = 'bay-shore-sf-0'
+    cpolys = [req(c, 'outline_world_m', f'bayarea counties.{f}') for f, c in sorted(req(breg, 'counties', 'bayarea').items())]
+    sfo = req(req(breg, 'counties', 'bayarea'), '06075', 'bayarea counties')['outline_world_m']
+    sxs = [p[0] for poly in sfo for r in poly for p in r]
+    sys_ = [p[1] for poly in sfo for r in poly for p in r]
+    SF_CELL, SF_MARGIN, SF_SHELF_M, SF_DMAX, SF_DMIN = 100, 2500, 1500, 120, 3
+    w0 = math.floor((min(sxs) - SF_MARGIN) / SF_CELL) * SF_CELL
+    s0 = math.floor((min(sys_) - SF_MARGIN) / SF_CELL) * SF_CELL
+    nxs = int((math.ceil((max(sxs) + SF_MARGIN) / SF_CELL) * SF_CELL - w0) // SF_CELL) + 1
+    nys = int((math.ceil((max(sys_) + SF_MARGIN) / SF_CELL) * SF_CELL - s0) // SF_CELL) + 1
+
+    def _open(x, y):
+        return not any(in_polys(P, x, y) for P in cpolys)
+    hc = SF_CELL / 2
+    wet = [[any(_open(w0 + i * SF_CELL + dx, s0 + j * SF_CELL + dy) for dx, dy in ((0, 0), (-hc, -hc), (hc, -hc), (hc, hc), (-hc, hc)))
+            for i in range(nxs)] for j in range(nys)]
+    # chamfer distance (cells) to the nearest DRY cell only - the window edge is open water, not a shore
+    INF = 10 ** 6
+    dist = [[(INF if wet[j][i] else 0) for i in range(nxs)] for j in range(nys)]
+    for _ in range(2):
+        for j in range(nys):
+            for i in range(nxs):
+                if dist[j][i]:
+                    for dj, di in ((-1, 0), (0, -1), (-1, -1), (-1, 1)):
+                        jj, ii = j + dj, i + di
+                        if 0 <= jj < nys and 0 <= ii < nxs:
+                            dist[j][i] = min(dist[j][i], dist[jj][ii] + 1)
+        for j in range(nys - 1, -1, -1):
+            for i in range(nxs - 1, -1, -1):
+                if dist[j][i]:
+                    for dj, di in ((1, 0), (0, 1), (1, 1), (1, -1)):
+                        jj, ii = j + dj, i + di
+                        if 0 <= jj < nys and 0 <= ii < nxs:
+                            dist[j][i] = min(dist[j][i], dist[jj][ii] + 1)
+    sdep, ssub = [], []
+    for j in range(nys):
+        drow, srow = [], []
+        for i in range(nxs):
+            if not wet[j][i]:
+                drow.append(0)
+                srow.append(-1)
+                continue
+            t = min(1.0, max(0.0, (dist[j][i] - 1) * SF_CELL / SF_SHELF_M))   # the shore cell is t = 0
+            d = SF_DMIN + (SF_DMAX - SF_DMIN) * (3 * t * t - 2 * t * t * t)
+            d = max(SF_DMIN, min(SF_DMAX, round(d * (0.9 + 0.2 * h01(sf_bid, 'n', i, j)))))
+            drow.append(d)
+            srow.append(substrate(sf_bid, i, j, d, dist[j][i] <= 1))
+        sdep.append(drow)
+        ssub.append(srow)
+    sg = {'origin_world_m': [float(w0), float(s0)], 'cell_m': SF_CELL, 'nx': nxs, 'ny': nys, 'depth_dm': sdep, 'substrate': ssub}
+    sf_surface = json.loads((ROOT / 'bayarea/maps/world/06075.json').read_text())['water']['surface_y_m']
+    bodies.append({'id': sf_bid, 'world': 'bay', 'region': '06075-shore', 'kind': 'bay',
+                   'name': 'open water within 2.5 km of the San Francisco shore (bay, Golden Gate and ocean side)',
+                   'surface_y_m': sf_surface, 'depth_max_dm': SF_DMAX,
+                   'profile': {'provenance': 'AUTHORED', 'cell_m': SF_CELL, 'margin_m': SF_MARGIN, 'shelf_m': SF_SHELF_M,
+                               'depth_dm': [SF_DMIN, SF_DMAX],
+                               'rule': 'depth rises (smoothstep) from 0.3 m at the shore cell to 12 m at 1.5 km from the nearest dry cell, '
+                                       'x 0.9-1.1 by a hash of the cell; the window edge is open water, not a shore'},
+                   'shoreline': {'provenance': 'AUTHORED',
+                                 'rule': 'wet = a 100 m cell whose centre or any corner lies outside every county outline the Bay page draws '
+                                         '(bayarea/registry/bayarea.json outline_world_m - the Census 1:10m outlines, RECORDED there): the '
+                                         "page's own open-water rule, widened by half a cell so an ROV can launch from the shore itself"},
+                   'grid': sg, 'habitats': habitats_from_grid(sf_bid, sg, 40), 'look': VIS['bay']})
+    # END GROUND w16 SF shore bathymetry
     # Bay open water: inside BAY's DERIVED bay frame, NOT inside NE land (oakland clip) -> RECORDED shoreline at 1:10m
     bf = req(req(breg, 'bay_frame', 'bayarea'), 'bounds', 'bay_frame')
     wo = breg['frames']['world']['origin']

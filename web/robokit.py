@@ -160,7 +160,7 @@ def robo_panel_html(T, world):
 
 
 ROBO_JS = r'''
-/* ROBOKIT_CORE:BEGIN - pure env core (no DOM): AUTHORED arena, SCHEMATIC unicycle kinematics, SCRIPTED policy */
+/* SIM_CORE:BEGIN - pure env core (no DOM): AUTHORED arena, SCHEMATIC unicycle kinematics, SCRIPTED policy */
 const RoboCore = (() => {
   function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a);
     t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
@@ -182,6 +182,10 @@ const RoboCore = (() => {
       && obst.every((b) => Math.hypot(b.e - e, b.n - n) > b.r + clear) && items.concat(targets, gates).every((b) => Math.hypot(b.e - e, b.n - n) > clear + 1)
       && (!bin || Math.hypot(bin.e - e, bin.n - n) > clear + 1.5);
     const place = (clear) => { for (let k = 0; k < 400; k++) { const e = (rnd() * 2 - 1) * (H - 2), n = (rnd() * 2 - 1) * (H - 2); if (free(e, n, clear)) return [e, n]; } throw new Error('robokit: layout could not place an object'); };
+    // wave 16 (added level 'reachable'): items drawn within P.items_near_bin_m of the bin, same free() rule; absent at levels 1-3,
+    // so their random stream - and every layout they produce - is unchanged
+    const placeNear = (c, R, clear) => { for (let k = 0; k < 400; k++) { const a = rnd() * 2 * Math.PI, r = rnd() * R, e = c.e + Math.sin(a) * r, n = c.n + Math.cos(a) * r;
+      if (free(e, n, clear)) return [e, n]; } throw new Error('robokit: layout could not place an object near ' + c.id); };
     if (o.gates) for (let i = 0, pe = 0, pn = 0; i < o.gates; i++) { const a = (i + 0.5) / o.gates * 2 * Math.PI + (rnd() - 0.5) * 0.4, R = 9 + rnd() * 4;
       const e = -Math.sin(a) * R, n = Math.cos(a) * R, L = Math.hypot(e - pe, n - pn), ue = (e - pe) / L, un = (n - pn) / L;
       gates.push({ id: 'gate-' + (i + 1), e, n, a });   // the two cones flank the line from the previous gate (or the spawn)
@@ -190,7 +194,7 @@ const RoboCore = (() => {
     if (o.bin) { const p = place(2); bin = { id: 'bin', e: p[0], n: p[1] }; }
     for (let i = 0; i < P.obstacles; i++) { const r = 0.8 + rnd() * 0.7, p = place(r + 2.2); obst.push({ id: 'rock-' + (i + 1), e: p[0], n: p[1], r }); }
     const types = o.litter_types || [];
-    for (let i = 0; i < (o.litter || 0); i++) { const p = place(1.2); items.push({ id: 'litter-' + (i + 1), e: p[0], n: p[1], type: types[Math.floor(rnd() * types.length)], taken: false, binned: false }); }
+    for (let i = 0; i < (o.litter || 0); i++) { const p = P.items_near_bin_m && bin ? placeNear(bin, P.items_near_bin_m, 1.2) : place(1.2); items.push({ id: 'litter-' + (i + 1), e: p[0], n: p[1], type: types[Math.floor(rnd() * types.length)], taken: false, binned: false }); }
     for (let i = 0; i < (o.targets || 0); i++) { const p = place(1.5); targets.push({ id: 'target-' + (i + 1), e: p[0], n: p[1], d: 1 + Math.round(rnd() * 60) / 10, visited: false }); }
     return { obst, items, gates, targets, bin, current_ms: P.current_ms };
   }
@@ -297,9 +301,9 @@ const RoboCore = (() => {
   }
   return { mulberry32, layout, reset, step, obs, policy, sample, episode, rollout, near };
 })();
-/* ROBOKIT_CORE:END */
+/* SIM_CORE:END */
 
-/* ROBOKIT_UI:BEGIN - teleop, record, compare. roboMount(root, data, {world, classroom, t}) */
+/* SANDBOX_UI:BEGIN - teleop, record, compare. roboMount(root, data, {world, classroom, t}) */
 function roboMount(root, data, opt) {
   const R = data.robo, D_TRAIN = data.train, world = opt.world, $ = (s) => root.querySelector(s);
   const t = opt.t || ((k) => k);
@@ -425,5 +429,5 @@ function roboMount(root, data, opt) {
   window.__robokit = api;
   return api;
 }
-/* ROBOKIT_UI:END */
+/* SANDBOX_UI:END */
 '''

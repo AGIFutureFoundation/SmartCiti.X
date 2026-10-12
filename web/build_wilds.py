@@ -1475,6 +1475,34 @@ if (ROOT / 'wildlife/registry/wildlife.json').exists() and (HERE / 'wildkit.py')
     HUD_PANELS.append({'id': 'wild', 'kind': 'panel', 'sel': '#wild-panel', 'slot': 'bs', 'order': 1, 'compact': 'none'})
     page = page.replace(_WILD_OLD_LAYER, hud_layer(HUD_PANELS, TS, TA))
 # END BAYOU w12
+# BEGIN WORLD w16 (WORLD·Worlds & Locales): ground flora in every wilds world (web/florakit.py createWildsFlora,
+# flora/registry/flora.json#wilds) - grass clumps, ferns, sedges and low shrubs named generally, AUTHORED by biome rule.
+# Family swap: florakit's shrub and reed families are PARTS of ONE InstancedMesh here (not one mesh per family), so all
+# ground flora costs one draw call; it stands within wilds.radius_m of the eye, refills with the trees (refillVeg) and
+# is hidden in the overview. Fail closed: every wilds world needs a flora biome rule, and every anchor occurs once.
+if (ROOT / 'flora/registry/flora.json').exists() and (HERE / 'florakit.py').exists():
+    import florakit as _wfk  # noqa: E402
+    _wfd = _wfk.wilds_flora_data()
+    _wmiss = [w['id'] for w in REG['worlds'] if w['id'] not in _wfd['wilds']['biomes']]
+    if _wmiss:
+        raise SystemExit(f'build_wilds: WORLD w16 flora/registry/flora.json#wilds.biomes has no rule for world(s) {_wmiss}')
+    _WFL_HOST = (_wfk.wilds_flora_mount_js(seed='W.seed', biome='W.id', height='T.height', slope='T.slope',
+                                           blocked='(x, z, r) => nearTrail(x, z, r)', water_level='W.biome.water_level_m',
+                                           snow_line='W.biome.snow_line_m', lim='W.extent_m / 2 - 10')
+                 + "let WFL = null;   // the current world's ground flora (one InstancedMesh)\n"
+                 "function wildsFloraRefill() {\n"
+                 "  if (!WFL || WFL.biomeId !== W.id) { if (WFL) WFL.dispose(); WFL = mountWildsFlora(); WFL.biomeId = W.id; }\n"
+                 "  WFL.refill(eye); WFL.setVisible(mode === 'walk');\n"
+                 "}\n")
+    for _a, _b in (('window.__wilds = {', _WFL_HOST + 'window.__wilds = {'),
+                   ('function refillVeg() {\n  vegAt = { x: eye.x, z: eye.z };\n', 'function refillVeg() {\n  vegAt = { x: eye.x, z: eye.z };\n  wildsFloraRefill();   /* WORLD w16 ground flora */\n'),
+                   ('  bbMesh.visible = walkOn;\n', '  bbMesh.visible = walkOn;\n  if (WFL) WFL.setVisible(walkOn);   /* WORLD w16 */\n'),
+                   ('    billboardMinR: bbMinR, vegR: VEG_R, billboardR: BB_R,\n',
+                    '    billboardMinR: bbMinR, vegR: VEG_R, billboardR: BB_R,\n    flora: WFL ? WFL.stats() : null,   /* WORLD w16 ground flora */\n')):
+        if page.count(_a) != 1:
+            raise SystemExit(f'build_wilds: WORLD w16 anchor found {page.count(_a)}x: {_a[:60]!r}')
+        page = page.replace(_a, _b)
+# END WORLD w16
 # exactly the chrome keys this page used, for every locale in i18n/locales;
 # a key missing (or empty) in any locale stops the build by name
 I18N_CAT = {}

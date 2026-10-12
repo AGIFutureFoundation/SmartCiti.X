@@ -2339,6 +2339,16 @@ if 'parishes.novehicle' in json.loads((ROOT / 'i18n/locales/en.json').read_text(
         raise BuildError('build_parishes: PERF enterExit anchor (fleetNearest ... if (!v) return false;) must occur exactly once')
     JS = JS.replace(_pv, _pv.replace('if (!v) return false;', "if (!v) { toast(tr('parishes.novehicle')); return false; }"), 1)
 # END PERF w13
+# BEGIN WORLD w16 (WORLD·Worlds & Locales): Talk (T) with no NPC kit on this map (the Bay page switches NPCs off,
+# KITS_OFF['npcs']) toasted the wave-5a stub-VEHICLE line - a wrong reason. It now names the real one,
+# parishes.npc_off (8 locales). The key joins the used set, so a locale without it stops the build by name (fail closed).
+T('parishes.npc_off')   # en must carry it (fail closed, named)
+JS_KEYS.append('parishes.npc_off'); _USED.add('parishes.npc_off')
+_WT = "function talk() { if (!npcKit) { toast(tr('parishes.stub_vehicle')); return null; }"
+if JS.count(_WT) != 1:
+    raise BuildError('build_parishes: WORLD w16 talk anchor (function talk() ... stub_vehicle) must occur exactly once')
+JS = JS.replace(_WT, _WT.replace("tr('parishes.stub_vehicle')", "tr('parishes.npc_off')"), 1)
+# END WORLD w16
 # BEGIN FACADE w11 (FACADE·Exteriors & Signs): AUTHORED facade details on the kit buildings nearest the eye and PLAY
 # signs on the economy/ commercial lots (web/facadekit.py, facades/registry/facades.json) - ONE InstancedMesh, one draw
 # call, hidden in the overview; the glue reads the streamed chunks and never changes them (details are not solid).

@@ -21,7 +21,7 @@
   "measured_elsewhere": 51,
   "computed_from_registry": 12,
   "measured_source_files": 11,
-  "registries_scanned": 86,
+  "registries_scanned": 87,
   "app_renderers_scanned": 33,
   "doc_renderers_scanned": 3,
   "builders_scanned": 70,
@@ -39,12 +39,12 @@
   "budget_currencies": 2,
   "budget_agreements": 7,
   "suites_run": 126,
-  "suite_checks_declared": 6239,
+  "suite_checks_declared": 6302,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 388
+  "files_read": 390
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -2063,12 +2063,27 @@
    "builders": [],
    "suites": [
     "security/test_sbom.mjs",
+    "web/test_geomap.mjs",
     "web/test_terrainkit.mjs"
    ],
    "own_pack": [
     "elevation/build.py",
+    "elevation/hillshade.py",
     "elevation/sample.py",
     "elevation/test.mjs"
+   ]
+  },
+  "elevation/registry/hillshade.json": {
+   "app_renderers": [
+    "web/build_geomap.py"
+   ],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [
+    "web/test_geomap.mjs"
+   ],
+   "own_pack": [
+    "elevation/hillshade.py"
    ]
   },
   "evals/registry/evals.json": {
@@ -2133,12 +2148,14 @@
   "flora/registry/flora.json": {
    "app_renderers": [
     "web/build_parishes.py",
-    "web/build_smiles.py"
+    "web/build_smiles.py",
+    "web/build_wilds.py"
    ],
    "doc_renderers": [],
    "builders": [],
    "suites": [
-    "web/test_florakit.mjs"
+    "web/test_florakit.mjs",
+    "web/test_wilds.mjs"
    ],
    "own_pack": [
     "flora/build.py",
@@ -3737,6 +3754,7 @@
     "classroom/test.mjs",
     "cognitionx/test.mjs",
     "fleet/test.mjs",
+    "flora/test.mjs",
     "lessons/test.mjs",
     "outdoors/test.mjs",
     "quests/test.mjs",
@@ -4733,7 +4751,7 @@
    {
     "suite": "i18n/test.mjs",
     "pack": "i18n",
-    "readme_checks": 31,
+    "readme_checks": 44,
     "declared": true,
     "in_readme_table": true
    },
@@ -4936,7 +4954,7 @@
    {
     "suite": "web/test_wilds.mjs",
     "pack": "web",
-    "readme_checks": 54,
+    "readme_checks": 59,
     "declared": true,
     "in_readme_table": true
    },
@@ -5062,7 +5080,7 @@
    {
     "suite": "web/test_geomap.mjs",
     "pack": "web",
-    "readme_checks": 93,
+    "readme_checks": 101,
     "declared": true,
     "in_readme_table": true
    },
@@ -5349,7 +5367,7 @@
    {
     "suite": "underwater/test.mjs",
     "pack": "underwater",
-    "readme_checks": 37,
+    "readme_checks": 41,
     "declared": true,
     "in_readme_table": true
    },
@@ -5384,14 +5402,14 @@
    {
     "suite": "robotics/test.mjs",
     "pack": "robotics",
-    "readme_checks": 39,
+    "readme_checks": 43,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_robotics.mjs",
     "pack": "web",
-    "readme_checks": 28,
+    "readme_checks": 41,
     "declared": true,
     "in_readme_table": true
    },
@@ -5482,21 +5500,21 @@
    {
     "suite": "web/test_terrainkit.mjs",
     "pack": "web",
-    "readme_checks": 57,
+    "readme_checks": 60,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "flora/test.mjs",
     "pack": "flora",
-    "readme_checks": 28,
+    "readme_checks": 33,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_florakit.mjs",
     "pack": "web",
-    "readme_checks": 50,
+    "readme_checks": 58,
     "declared": true,
     "in_readme_table": true
    }
@@ -5507,13 +5525,13 @@
    "control/soak.mjs",
    "restoration/test_scenarios.mjs"
   ],
-  "declared_total": 6239,
-  "readme_headline": 6274,
+  "declared_total": 6302,
+  "readme_headline": 6337,
   "unaccounted_for": 35,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
   "max": 374,
-  "median": 41.5,
+  "median": 43.5,
   "thinnest": [
    {
     "suite": "ops/fuzz.mjs",
@@ -5841,7 +5859,9 @@
   "ei/test.mjs",
   "elevation/build.py",
   "elevation/fetch_dem.py",
+  "elevation/hillshade.py",
   "elevation/registry/elevation.json",
+  "elevation/registry/hillshade.json",
   "elevation/sample.py",
   "elevation/test.mjs",
   "evals/build.py",

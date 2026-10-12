@@ -117,6 +117,21 @@ for (const w of worlds) {
     if (st.billboardMeshes !== 1) row.fails.push(`${st.billboardMeshes} billboard meshes; wave 4 draws every species in ONE InstancedMesh`);
     if (bbN > 0 && !(st.billboardMinR >= st.vegR)) row.fails.push(`a billboard stands ${st.billboardMinR} m out, inside VEG_R ${st.vegR}`);
     if (v === 'overview' && bbN !== 0) row.fails.push(`${bbN} billboards drawn in the overview`);
+    /* BEGIN WORLD w16 (WORLD·Worlds & Locales): ground flora (web/florakit.py createWildsFlora) is ONE InstancedMesh -
+       its draw call is inside the declared calls rows above (no ceiling was raised) - hidden in the overview, standing
+       within its own radius, and present in every world's trail and dense views (a flora row bought by growing nothing
+       is not flora). */
+    const fl = st.flora;
+    row.flora = fl ? fl.instances : null; row.floraTris = fl ? fl.tris : null;
+    if (!fl) row.fails.push('no ground flora stats (stats().flora)');
+    else {
+      if (fl.meshes !== 1 || !fl.instanced) row.fails.push(`ground flora is ${fl.meshes} meshes / instanced ${fl.instanced}; WORLD w16 draws it as ONE InstancedMesh`);
+      if (v === 'overview' && fl.instances !== 0) row.fails.push(`${fl.instances} ground plants drawn in the overview`);
+      if ((v === 'trail' || v === 'dense') && !(fl.instances > 0)) row.fails.push(`no ground flora in the ${v} view`);
+      if (fl.instances > 0 && !(fl.maxR <= fl.radius)) row.fails.push(`a ground plant stands ${fl.maxR} m out, past its radius ${fl.radius}`);
+      if (fl.instances > fl.cap) row.fails.push(`ground flora ${fl.instances} > cap ${fl.cap}`);
+    }
+    /* END WORLD w16 */
     if (!MEASURE_ONLY) {
       if (!base) row.fails.push('no declared target for this view');
       else {
@@ -131,6 +146,7 @@ for (const w of worlds) {
     }
     if (row.fails.length) bad++;
     rows.push(row);
+    if (!JSON_OUT) console.log(`      ${w} ${v} ground flora (WORLD w16): ${row.flora} plants, ${row.floraTris} tris`);   /* WORLD w16 */
     if (SHOTS) await page.locator('#stage').screenshot({ path: `${SHOTS}/WILDS-${w}-${v}.png` });
     if (!JSON_OUT) console.log(`${row.fails.length ? 'FAIL' : '  ok'}  ${w.padEnd(9)} ${v.padEnd(9)} calls ${String(st.calls).padStart(4)}  tris ${String(st.triangles).padStart(7)}  inst ${String(vegN).padStart(5)}  bb ${String(bbN).padStart(5)}  chunks ${String(st.chunks).padStart(3)}  frame ${String(ms).padStart(6)} ms${row.fails.length ? '  ' + row.fails.join('; ') : ''}`);
   }

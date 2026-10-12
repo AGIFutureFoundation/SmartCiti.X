@@ -385,7 +385,33 @@ TASKS_OFF = [t for t in TASK_ROWS if not _task_on_globe(t)]
 # the tour visits every campus in unions/registry/campuses.json order
 TOUR = list(ROLLUPS)
 
+# BEGIN GROUND w16 hillshade (GROUND·Recorded Ground): a same-origin relief-shading layer made at BUILD time by
+# elevation/hillshade.py from the vendored, sha256-pinned USGS 3DEP grids (RECORDED heights, DERIVED shading, AUTHORED
+# vertical exaggeration - each declared). The page loads one PNG per region from this repository (never a tile host),
+# only when the layer is on and the view is zoomed in over that region. Fail closed: a missing registry field or a PNG
+# whose bytes do not match the registry's sha256 stops the build by name.
+def _hillshade():
+    import hashlib as _h
+    reg = json.loads((ROOT / 'elevation/registry/hillshade.json').read_text())
+    if need(reg, 'heights_provenance', 'hillshade.json') != 'RECORDED' or need(reg, 'provenance', 'hillshade.json') != 'DERIVED':
+        raise SystemExit('build_geomap: hillshade.json must be DERIVED shading of RECORDED heights')
+    regions = {}
+    for k, r in sorted(need(reg, 'regions', 'hillshade.json').items()):
+        f = need(r, 'file', f'hillshade.json#regions.{k}')
+        b = (ROOT / f).read_bytes()
+        if _h.sha256(b).hexdigest() != need(r, 'sha256', f'hillshade.json#regions.{k}'):
+            raise SystemExit(f'build_geomap: {f} does not match hillshade.json sha256 - run elevation/hillshade.py')
+        regions[k] = {'url': '../' + f, 'sha256': r['sha256'], 'bytes': len(b), 'coordinates': need(r, 'coordinates', f'regions.{k}'),
+                      'exaggeration': need(r, 'vertical_exaggeration', f'regions.{k}'), 'what': need(r, 'what', f'regions.{k}')}
+    return {'label': need(reg, 'label', 'hillshade.json'), 'credit': need(reg, 'credit', 'hillshade.json'),
+            'method': need(reg, 'method', 'hillshade.json'), 'honesty': need(reg, 'honesty', 'hillshade.json'),
+            'stamp': need(reg, 'source_stamp', 'hillshade.json'), 'minzoom': 5, 'opacity': 0.9, 'regions': regions}
+
+
+HILLSHADE = _hillshade()
+# END GROUND w16 hillshade
 DATA = json.dumps({
+    'hillshade': HILLSHADE,   # GROUND w16
     'network': network,
     'city': geo['city'],
     'honesty': geo['honesty'],
@@ -675,6 +701,7 @@ __SITENAV__<div id="stage">
 <section class="panel tc-panel" id="layers" aria-label="Layers and environments">
   <h2>Layers &amp; environments</h2>
   <div class="lyr" id="layerToggles"></div>
+  <p class="src" id="hillshadeCredit" data-hillshade-credit></p>
   <p class="src" id="g3dPlacement"></p>
   <h3>Simulated tasks, by place</h3>
   <p class="src" id="tasksHonesty"></p>
@@ -685,6 +712,7 @@ __SITENAV__<div id="stage">
 </section>
 <details id="legend" class="tc-panel">
   <summary><b>Legend: the geo registry, drawn</b> <span class="lg-hint">what is RECORDED, DERIVED, AUTHORED, SCHEMATIC</span></summary>
+  <div class="lg-row" data-legend="hillshade"><span class="dot" style="background:linear-gradient(135deg,#fff,#555)"></span>relief shading — <b>RECORDED</b> USGS 3DEP heights, shading <b>DERIVED</b> at build time, vertical exaggeration <b>AUTHORED</b>; over the parish and Bay regions from zoom 5 (same-origin files, no tile service)</div>
   <div class="lg-row"><span class="dot" style="background:var(--mark)"></span>campus — RECORDED/DERIVED for the __N_FLAGSHIP__ flagship campuses, AUTHORED for the __N_HUB__ hub campuses</div>
   <div class="lg-row"><span class="anchor-swatch rec"></span>anchor, <b>RECORDED</b> — <span data-anchor-count="RECORDED"></span> of <span data-anchor-count="total"></span>: the coordinate is copied from the source its popup cites</div>
   <div class="lg-row"><span class="anchor-swatch auth"></span>anchor, <b>AUTHORED</b> — <span data-anchor-count="AUTHORED"></span> of <span data-anchor-count="total"></span>: typed from public record, no source fetched; the popup states this plainly</div>
@@ -713,7 +741,8 @@ const RECORDS_OVERRIDE = qs.get('records');
 __GROUND_TRUTH_JS__
 document.getElementById('honesty').textContent =
   'No basemap tiles: the registry drawn on the graticule, and nothing else. '
-  + D.honesty.siting + ' ' + D.honesty.provenance;
+  + D.honesty.siting + ' ' + D.honesty.provenance
+  + ' ' + D.hillshade.label + ' over the parish and Bay regions when zoomed in (same-origin files, not tiles; layer toggle).';   // relief shading (w16)
 
 /* the graticule: 2-degree lines generated here, DERIVED trivially */
 const grat = { type: 'FeatureCollection', features: [] };
@@ -1630,6 +1659,7 @@ const LAYERS = [
   { key: 'worksites', label: 'Worksites', map: ['env-worksites'], sw: '#C98BE0' },
   { key: 'k12', label: 'K-12 districts (PROPOSED, at their campus)', map: ['env-k12'], sw: '#F2D16B' },
   { key: 'tasks', label: 'Simulated tasks (counted per campus)', map: ['env-tasks'], sw: '#5CB584' },
+  { key: 'hillshade', label: 'Relief shading (USGS 3DEP heights, RECORDED; shading DERIVED)', map: [], sw: 'linear-gradient(135deg,#fff,#555)' },   // layers added on demand by hillshadeSync()
 ];
 const layerOn = Object.fromEntries(LAYERS.map((l) => [l.key, true]));
 document.getElementById('layerToggles').innerHTML = LAYERS.map((l) =>
@@ -1642,6 +1672,31 @@ document.getElementById('layerToggles').addEventListener('change', (e) => {
   if (l.cls) document.getElementById('map').classList.toggle(l.cls, !e.target.checked);
   if (loaded) placeCampusLabels();
 });
+/* BEGIN HILLSHADE w16: one MapLibre image source per region (the PNG's four corners = the grid's bounds; its rows
+   are already at equal Web Mercator steps), added the first time the layer is on, the zoom is >= D.hillshade.minzoom and
+   the view overlaps that region - so the network view never downloads it. Drawn under the graticule and every feature. */
+const HS = { added: [], requested: [] };
+function hillshadeSync() {
+  if (!map.getLayer('grat')) return;   // before the style has loaded: the 'load' event syncs
+  const b = map.getBounds(), z = map.getZoom(), on = layerOn.hillshade;
+  for (const [k, r] of Object.entries(D.hillshade.regions)) {
+    const c = r.coordinates, id = 'hillshade-' + k;
+    const over = !(c[1][0] < b.getWest() || c[0][0] > b.getEast() || c[0][1] < b.getSouth() || c[2][1] > b.getNorth());
+    if (on && z >= D.hillshade.minzoom && over && !HS.added.includes(k)) {
+      map.addSource(id, { type: 'image', url: r.url, coordinates: c });
+      map.addLayer({ id, type: 'raster', source: id, minzoom: D.hillshade.minzoom,
+                     paint: { 'raster-opacity': D.hillshade.opacity, 'raster-fade-duration': 0 } }, 'grat');
+      HS.added.push(k); HS.requested.push(r.url);
+    }
+    if (HS.added.includes(k)) map.setLayoutProperty(id, 'visibility', on ? 'visible' : 'none');
+  }
+}
+map.on('load', hillshadeSync);
+map.on('moveend', hillshadeSync);
+document.getElementById('layerToggles').addEventListener('change', (e) => { if (e.target.dataset.layer === 'hillshade') hillshadeSync(); });
+document.getElementById('hillshadeCredit').textContent = 'Relief shading: ' + D.hillshade.credit + '. ' + D.hillshade.method + '. Vertical exaggeration (AUTHORED): '
+  + Object.values(D.hillshade.regions).map((r) => r.what.replace(/^the /, '') + ' x' + r.exaggeration).join('; ') + '. ' + D.hillshade.honesty;
+/* END HILLSHADE w16 */
 document.getElementById('g3dPlacement').textContent = D.geo3d.placement + '. ' + D.geo3d.projection;
 document.getElementById('g3dCount').textContent = D.geo3d.counts.halls + ' halls on ' + D.geo3d.counts.campuses_with_halls
   + ' campuses (' + D.geo3d.counts.campuses_without_halls + ' list no halls: none drawn)';
@@ -1694,6 +1749,7 @@ window.__geomap = () => ({
            counts: D.geo3d.counts,
            inView: loaded ? hallsInView() : 0 },
   layerOn: { ...layerOn },
+  hillshade: { added: HS.added.slice(), requested: HS.requested.slice(), visible: HS.added.map((k) => map.getLayoutProperty('hillshade-' + k, 'visibility') || 'visible') },   // relief shading (w16)
   visibility: Object.fromEntries(['halls3d', 'env-worksites', 'env-k12', 'env-tasks', 'anchors', 'campuses']
     .map((id) => [id, map.getLayoutProperty(id, 'visibility') === 'none' ? 'none' : 'visible'])),
   env: { groups: Object.keys(ENV_GROUPS), worksitesOn: D.env.worksitesOn.length,

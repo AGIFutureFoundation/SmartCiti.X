@@ -170,13 +170,21 @@ REF_STEPS = ['turn toward the nearest open target (proportional on bearing)',
 #   eastward drift the ROV must fight; the spec has none). Observation ranges are untouched: no level raises a count
 #   past its declared high. Recording is offered at level 1 only (the registered spec); levels 2-3 are practice.
 GATE_GAP_M = 1.8
+# wave 16: AUTHORED radius for the added litter-sort 'reachable' level. Worst case by construction: the bin lies within
+# 18 x sqrt(2) = 25.5 m of the spawn, so spawn -> item -> bin <= 25.5 + 6 - 1.4 + 6 - 3.1 = 33.0 m and each further item
+# <= 2 x (6 - 3.1) = 5.8 m: 33.0 + 3 x 5.8 = 50.4 m < 60 m. The bench measures the real bound per seed.
+ITEMS_NEAR_BIN_M = 6.0
 CURRICULUM = {
     'world.litter-pickup': [{'level': 1, 'name': 'spec', 'params': {}},
                             {'level': 2, 'name': 'cluttered', 'params': {'obstacles': 9}},
                             {'level': 3, 'name': 'dense', 'params': {'obstacles': 12}}],
     'world.litter-sort': [{'level': 1, 'name': 'spec', 'params': {}},
                           {'level': 2, 'name': 'cluttered', 'params': {'obstacles': 6}},
-                          {'level': 3, 'name': 'dense', 'params': {'obstacles': 8}}],
+                          {'level': 3, 'name': 'dense', 'params': {'obstacles': 8}},
+                          # wave 16, ADDED (levels 1-3 and the cap are untouched): the spec arena - same bin, same rocks,
+                          # same seeds - with the items scattered within ITEMS_NEAR_BIN_M of the bin, so the reach-aware
+                          # straight-line bound fits the 60 m travel budget (robotics/bench.mjs measures it per seed)
+                          {'level': 4, 'name': 'reachable', 'params': {'items_near_bin_m': ITEMS_NEAR_BIN_M}}],
     'world.rov-survey': [{'level': 1, 'name': 'spec', 'params': {}},
                          {'level': 2, 'name': 'light current', 'params': {'current_ms': 0.1}},
                          {'level': 3, 'name': 'strong current', 'params': {'current_ms': 0.2}}],
@@ -184,7 +192,7 @@ CURRICULUM = {
                          {'level': 2, 'name': 'narrow gates', 'params': {'gate_gap_m': 1.4}},
                          {'level': 3, 'name': 'tight gates', 'params': {'gate_gap_m': 1.1}}],
 }
-CURRICULUM_KNOBS = ('obstacles', 'gate_gap_m', 'current_ms')
+CURRICULUM_KNOBS = ('obstacles', 'gate_gap_m', 'current_ms', 'items_near_bin_m')   # items_near_bin_m: wave 16, bin envs only
 
 ENVS = {
     'world.litter-pickup': {
@@ -260,11 +268,16 @@ for eid, e in ENVS.items():
                        'levels': CURRICULUM[eid]},
     }
     lv = CURRICULUM[eid]
-    need([x['level'] for x in lv] == [1, 2, 3] and lv[0]['params'] == {}, f'{eid}: curriculum needs levels 1-3, level 1 = the spec')
+    need([x['level'] for x in lv][:3] == [1, 2, 3] and lv[0]['params'] == {}, f'{eid}: curriculum needs levels 1-3, level 1 = the spec')
+    need([x['level'] for x in lv] == list(range(1, len(lv) + 1)), f'{eid}: curriculum levels must run 1..n with no gap')
+    need(len(lv) == (4 if eid == 'world.litter-sort' else 3), f'{eid}: only litter-sort carries the added level 4 (reachable)')
+    need(eid != 'world.litter-sort' or lv[3] == {'level': 4, 'name': 'reachable', 'params': {'items_near_bin_m': ITEMS_NEAR_BIN_M}},
+         f'{eid}: level 4 must be the AUTHORED reachable layout')
     for x in lv:
         need(set(x['params']) <= set(CURRICULUM_KNOBS), f'{eid}: unknown curriculum knob in level {x["level"]}')
         for k, v in x['params'].items():
             need(isinstance(v, (int, float)) and v > 0, f'{eid}: curriculum {k} must be a positive number')
+            need(k != 'items_near_bin_m' or 'bin' in e['objects'], f'{eid}: items_near_bin_m needs a bin')
 
 # ---- sim-seat envs (DERIVED from sims/) -----------------------------------------------------------------------------
 for sid, s in sims['sims'].items():
@@ -343,7 +356,7 @@ for k in ('policy_version', 'seeds', 'levels', 'per_env', 'totals'):
 need(BENCH['seeds'] == SEEDS, 'robotics: the benchmark did not run the declared seed list')
 need(all(eid in BENCH['per_env'] for eid, e in envs.items() if e['runner'] == 'robokit'), 'robotics: benchmark misses an env')
 doc['reference_benchmark'] = {
-    'what': 'MEASURED success counts of the SCRIPTED reference policy (web/robokit.py ROBOKIT_CORE) over every '
+    'what': 'MEASURED success counts of the SCRIPTED reference policy (the SIM_CORE block of web/robokit.py) over every '
             'declared seed and curriculum level, computed headless at build time by robotics/bench.mjs and '
             'recomputed by robotics/test.mjs. Not a learned policy; not a claim about any robot.',
     'measured_by': 'robotics/bench.mjs', 'policy': 'SCRIPTED', **BENCH,

@@ -2,7 +2,8 @@
  * ELEV w14 relief row (web/terrainkit.py mounted in build_parishes; the Bay page shares it) - a NEW eval row, used by
  * web/eval_parishes.mjs and web/eval_bayworld.mjs, and runnable alone for one page pair:
  *     flock $SP/chromium.lock node web/eval_relief.mjs <page url> [--shots=<dir> --name=<tag>]
- * Relief is default OFF (the eval 'ground' row holds the flat world); ?relief=on turns it on. The row holds:
+ * The row opens the page twice, with ?relief=off and with ?relief=on (GROUND w16: explicit on both sides, whatever the
+ * page default). The row holds:
  *   provenance  the RECORDED USGS 3DEP grid loaded (sha256-pinned, gunzipped in the browser), a finite median reference;
  *   present     the patch has quads and some drawn ground stands >= 0.3 m above the reference near a relief spot;
  *   slope       the drawn surface's max slope around the eye <= the page's declared max_slope;
@@ -12,6 +13,7 @@
  *   water       the water plane and the world water level are unchanged.
  */
 import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { loadavg } from 'node:os';
 
 const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -26,12 +28,23 @@ async function openAt(browser, url, errors) {
 }
 const calls = (page) => page.evaluate(async () => { const out = []; for (let i = 0; i < 6; i++) { await new Promise((r) => requestAnimationFrame(r)); out.push(window.__parishes.stats().calls); } return Math.max(...out); });
 
+/* RELIEF_URLS:BEGIN GROUND w16: both sides name their switch explicitly (relief=off / relief=on); any relief= already in
+   the given url is dropped first, so the row compares off with on whatever the page default is and whatever url the
+   caller passes (eval_parishes / eval_bayworld may be pointed at ?relief=on). web/test_terrainkit.mjs checks it. */
+export function reliefUrls(url) {
+  const bare = url.replace(/([?&])relief=[^&#]*&?/g, '$1').replace(/[?&]$/, '');
+  const w = (v) => bare + (bare.includes('?') ? '&' : '?') + 'relief=' + v;
+  return { off: w('off'), on: w('on') };
+}
+/* RELIEF_URLS:END */
 export async function reliefRow(browser, url, opts = {}) {
   const N = opts.n || 200, errors = [], row = { probe: 'relief', url: url.replace(/^.*\/web\//, 'web/'), fails: [] };
   const fail = (m) => row.fails.push(m);
-  const off = await openAt(browser, url, errors); await sleep(1500);
+  const U = reliefUrls(url);
+  row.load = loadavg().map((v) => +v.toFixed(2));   // GROUND w16: patchMs is a time - the load average is printed beside it
+  const off = await openAt(browser, U.off, errors); await sleep(1500);
   row.callsOff = await calls(off); await off.close();
-  const on = await openAt(browser, url + (url.includes('?') ? '&' : '?') + 'relief=on', errors);
+  const on = await openAt(browser, U.on, errors);
   await on.waitForFunction(() => { const p = window.__parishes.elev.probe(1); return p.demLoaded || p.demFailed; }, null, { timeout: 25000 }).catch(() => {});
   await on.waitForFunction(() => window.__parishes.stats().pending === 0, null, { timeout: 15000 }).catch(() => {});
   await sleep(1200);

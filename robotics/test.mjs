@@ -92,7 +92,7 @@ ok('every embodiment has keyboard + touch teleop, touch targets >= 44 px, each t
 
 /* ---- the deterministic core, run here ---- */
 const kit = readFileSync(join(ROOT, 'web/robokit.py'), 'utf8');
-const core = kit.slice(kit.indexOf('/* ROBOKIT_CORE:BEGIN'), kit.indexOf('/* ROBOKIT_CORE:END */'));
+const core = kit.slice(kit.indexOf('/* SIM_CORE:BEGIN'), kit.indexOf('/* SIM_CORE:END */'));
 ok('the core is present and deterministic: no Math.random, no Date, no network', core.length > 3000
   && !/Math\.random|Date\.|fetch\(|XMLHttpRequest/.test(core));
 const RoboCore = new Function(core + '\nreturn RoboCore;')();
@@ -132,20 +132,24 @@ console.log(`  (measured) scripted reference: ${succ}/${runs.length} runs reach 
 ok(`the scripted reference beats an idle robot on most runs (${beat}/${runs.length} measured)`, beat >= Math.ceil(runs.length * 0.75));
 
 /* ---- wave 15: AUTHORED curriculum, MEASURED reference benchmark, litter-sort feasibility ---- */
-ok('every robokit env carries an AUTHORED 3-level curriculum whose level 1 IS the spec (empty override), recording at level 1 only',
-  rk.every((e) => e.curriculum && e.curriculum.provenance === 'AUTHORED' && e.curriculum.levels.map((l) => l.level).join() === '1,2,3'
+/* wave 16: litter-sort carries one ADDED level (4, reachable); every other env keeps exactly levels 1-3 */
+const LV_WANT = (e) => (e.id === 'world.litter-sort' ? '1,2,3,4' : '1,2,3');
+ok('every robokit env carries an AUTHORED curriculum whose level 1 IS the spec (empty override), recording at level 1 only; levels 1-3 everywhere, plus level 4 on litter-sort only',
+  rk.every((e) => e.curriculum && e.curriculum.provenance === 'AUTHORED' && e.curriculum.levels.map((l) => l.level).join() === LV_WANT(e)
     && Object.keys(e.curriculum.levels[0].params).length === 0 && JSON.stringify(e.curriculum.record_levels) === '[1]'
-    && e.curriculum.levels.every((l) => Object.keys(l.params).every((k) => ['obstacles', 'gate_gap_m', 'current_ms'].includes(k)))));
-ok('levels 2 and 3 change the layout (or the dynamics) of every env, and an undeclared level is refused by name',
+    && e.curriculum.levels.every((l) => Object.keys(l.params).every((k) => ['obstacles', 'gate_gap_m', 'current_ms'].includes(k)
+      || (k === 'items_near_bin_m' && e.objects.bin)))));
+ok('every level past 1 changes the layout (or the dynamics) of its env, and an undeclared level is refused by name',
   rk.every((e) => { const emb = reg.embodiments[e.embodiments[0]], a = RoboCore.rollout(e, emb, e.seeds[0], T, 'lab', 1);
-    return [2, 3].every((l) => JSON.stringify(RoboCore.rollout(e, emb, e.seeds[0], T, 'lab', l)) !== JSON.stringify(a)); })
+    return e.curriculum.levels.slice(1).every((l) => JSON.stringify(RoboCore.rollout(e, emb, e.seeds[0], T, 'lab', l.level)) !== JSON.stringify(a)); })
   && (() => { try { RoboCore.reset(rk[0], reg.embodiments[rk[0].embodiments[0]], 1, 9); return false; } catch (x) { return /level 9 is not declared/.test(x.message); } })());
 ok('no curriculum level raises an object count past the observation range the spec declares',
   rk.every((e) => e.curriculum.levels.every((l) => !('litter' in l.params) && !('targets' in l.params) && !('gates' in l.params))));
 const B = reg.reference_benchmark;
-ok('the reference benchmark block exists: SCRIPTED policy, measured by robotics/bench.mjs, 20 declared seeds, levels 1-3',
+ok('the reference benchmark block exists: SCRIPTED policy, measured by robotics/bench.mjs, 20 declared seeds, every declared level (1-4) of every env',
   B && B.policy === 'SCRIPTED' && B.measured_by === 'robotics/bench.mjs' && B.seeds.length === 20
-  && rk.every((e) => e.seeds.join() === B.seeds.join()) && B.levels.join() === '1,2,3' && /Not a learned policy/.test(B.what));
+  && rk.every((e) => e.seeds.join() === B.seeds.join() && Object.keys(B.per_env[e.id].levels).join() === LV_WANT(e))
+  && B.levels.join() === '1,2,3,4' && /Not a learned policy/.test(B.what));
 ok('the benchmark policy version is the sha256[:16] of the CURRENT robokit core (a stale block fails here)',
   B.policy_version === createHash('sha256').update(core).digest('hex').slice(0, 16));
 const { bench } = await import('./bench.mjs');
@@ -165,6 +169,28 @@ ok('every robokit env declares the "stopped" ending (learner pressed Stop), and 
   st.e = st.bin.e; st.n = st.bin.n - (P + 0.2); st.yaw = 0; const a = RoboCore.policy(st); RoboCore.step(st, a);
   ok(`policy v3: carrying, the scripted gripper closes inside the deposit circle (${(P + 0.2).toFixed(1)} m from the bin, beyond the ${P.toFixed(1)} m pickup circle) and the item is binned`,
     a.grip === 1 && st.collected === 1 && st.carrying === null); }
+/* ---- wave 16: the ADDED litter-sort level 4 'reachable' (no level, cap or threshold retuned) ---- */
+ok('levels 1-3 are exactly the wave-15 curriculum (pinned: nothing retuned), and the step cap is still 600 x 0.1 s',
+  JSON.stringify(Object.fromEntries(rk.map((e) => [e.id, e.curriculum.levels.slice(0, 3)]))) === JSON.stringify({
+    'world.litter-pickup': [{ level: 1, name: 'spec', params: {} }, { level: 2, name: 'cluttered', params: { obstacles: 9 } }, { level: 3, name: 'dense', params: { obstacles: 12 } }],
+    'world.litter-sort': [{ level: 1, name: 'spec', params: {} }, { level: 2, name: 'cluttered', params: { obstacles: 6 } }, { level: 3, name: 'dense', params: { obstacles: 8 } }],
+    'world.rov-survey': [{ level: 1, name: 'spec', params: {} }, { level: 2, name: 'light current', params: { current_ms: 0.1 } }, { level: 3, name: 'strong current', params: { current_ms: 0.2 } }],
+    'world.gate-drive': [{ level: 1, name: 'spec', params: {} }, { level: 2, name: 'narrow gates', params: { gate_gap_m: 1.4 } }, { level: 3, name: 'tight gates', params: { gate_gap_m: 1.1 } }] })
+  && rk.every((e) => e.episode_cap.steps === 600 && e.episode_cap.dt_s === 0.1));
+{ const e = reg.envs['world.litter-sort'], emb = reg.embodiments[e.embodiments[0]], L4 = e.curriculum.levels[3], R4 = L4 && L4.params.items_near_bin_m;
+  const same = e.seeds.every((s) => { const a = RoboCore.layout(e, s, 1), b = RoboCore.layout(e, s, 4);
+    return JSON.stringify(a.bin) === JSON.stringify(b.bin) && JSON.stringify(a.obst) === JSON.stringify(b.obst) && b.items.length === a.items.length
+      && b.items.every((x) => Math.hypot(x.e - b.bin.e, x.n - b.bin.n) <= R4 + 1e-9) && JSON.stringify(a.items) !== JSON.stringify(b.items); });
+  ok(`level 4 "reachable" is the spec arena (same bin, same rocks, same item count, every seed) with every item within ${R4} m of the bin; it is practice, not recorded`,
+    L4 && L4.level === 4 && L4.name === 'reachable' && R4 > 0 && same && !e.curriculum.record_levels.includes(4)
+    && JSON.stringify(e.objects) === JSON.stringify({ litter: 4, obstacles: 4, bin: 1, litter_types: e.objects.litter_types })); }
+{ const S4 = B.per_env['world.litter-sort'].levels['4'], F4 = S4 && S4.feasibility, budget = reg.embodiments['arm.on-base'].limits.v_max_ms * 600 * 0.1;
+  ok(`level 4 carries its own reach-aware bound, measured on its own layout: feasible on ${F4 && F4.feasible_seeds}/20 seeds (max ${F4 && Math.max(...F4.by_seed.map((b) => b[1]))} m of ${budget} m); the level-1 bound is unchanged`,
+    F4 && F4.budget_m === budget && F4.by_seed.length === 20 && F4.feasible_seeds === 20 && F4.by_seed.every((b) => b[2] === 1 && b[1] > 0 && b[1] <= budget)
+    && F4.items_bound === 80 && JSON.stringify(F) === JSON.stringify(RE.per_env['world.litter-sort'].feasibility) && F.feasible_seeds === 1);
+  ok(`level 4 MEASURED (recounted above): success ${S4.success}/${S4.runs} never exceeds its feasible seeds, items ${S4.items} never exceed its bound ${F4.items_bound}`,
+    S4.runs === 20 && S4.success <= F4.feasible_seeds && S4.items <= F4.items_bound && S4.by_seed.length === 20); }
+console.log(`  (measured) litter-sort level 4 reachable: ${B.per_env['world.litter-sort'].levels['4'].success}/20 seeds, ${B.per_env['world.litter-sort'].levels['4'].items} items binned, mean ${B.per_env['world.litter-sort'].levels['4'].mean_steps} steps`);
 console.log(`  (measured) benchmark: ${rk.map((e) => `${e.id} ` + [1, 2, 3].map((l) => `L${l} ${B.per_env[e.id].levels[String(l)].success}/${B.per_env[e.id].levels[String(l)].runs}`).join(' ')).join('; ')}`);
 
 console.log(`robotics/test: ${pass} passed, ${fail} failed`);

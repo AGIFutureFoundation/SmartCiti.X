@@ -61,6 +61,7 @@ def flora_data(region=None):
     if region not in reg['regions']:
         raise FloraKitError(f'florakit: unknown region {region!r} (have {sorted(reg["regions"])})')
     out = dict(reg)
+    out.pop('wilds', None)   # WORLD w16: the wilds ground-flora section is the wilds page's (wilds_flora_data)
     out['regions'] = {region: reg['regions'][region]}
     out['species'] = {k: v for k, v in reg['species'].items() if v['region'] == region}
     return out
@@ -243,9 +244,125 @@ function createFlora(scene, o) {
 globalThis.TCFLORA = { createFlora, floraGeometry, flHash, flRng, flPick, FloraError };
 """
 
-FLORA_EXPORT = '\nexport { createFlora, floraGeometry, flHash, flRng, flPick, FloraError };\n'
+FLORA_EXPORT = '\nexport { createFlora, floraGeometry, flHash, flRng, flPick, FloraError, createWildsFlora };\n'   # WORLD w16: + createWildsFlora
 FLORA_JS_INLINE = FLORA_CORE
-FLORA_JS = FLORA_CORE + FLORA_EXPORT
+
+# BEGIN WORLD w16 (WORLD·Worlds & Locales): ground flora for the wilds worlds (web/build_wilds.py WORLD w16 block).
+# The wilds already draw their own trees, rocks and billboards and have little draw-call headroom (eval_wilds forest
+# dense: 11 calls against a ceiling of 12), so the wilds take florakit's understory FAMILIES (registry wilds.families:
+# shrub, reed) as PARTS of ONE InstancedMesh - a per-instance part index and a vertex-shader collapse (the page's wave-4
+# billboard pattern) - instead of one InstancedMesh per family: one draw call for all ground flora, near the eye only
+# (wilds.radius_m), hidden in the overview. Every part is drawn (collapsed) for every instance, so the triangle worst
+# case is cap x sum(part tris) (flora/build.py holds it to wilds.tris_max).
+FLORA_WILDS_CORE = r"""/* ------------------------------------------------- TCFLORA wilds ground flora (WORLD w16) ---
+   ONE InstancedMesh for every ground plant of a wilds world: florakit's shrub / reed shapes are parts of one geometry,
+   each instance draws only its own part (flPart vs flKind). AUTHORED placement by biome rule - not a survey. */
+function createWildsFlora(scene, o) {
+  const THREE = flNeed(o, 'THREE', 'createWildsFlora'), data = flNeed(o, 'data', 'createWildsFlora');
+  const biome = flNeed(o, 'biome', 'createWildsFlora'), seed = flNeed(o, 'seed', 'createWildsFlora');
+  const fn = {};
+  for (const k of ['height', 'slope', 'blocked']) { fn[k] = flNeed(o, k, 'createWildsFlora'); if (typeof fn[k] !== 'function') throw new FloraError('florakit createWildsFlora: ' + k + ' must be a function'); }
+  const waterLevel = flNeed(o, 'waterLevel', 'createWildsFlora'), snowLine = flNeed(o, 'snowLine', 'createWildsFlora'), lim = flNeed(o, 'lim', 'createWildsFlora');
+  const WL = flNeed(data, 'wilds', 'data'), FAM = flNeed(data, 'families', 'data');
+  const PARTS = flNeed(WL, 'families', 'wilds'), SPEC = flNeed(WL, 'species', 'wilds'), RULE = flNeed(flNeed(WL, 'biomes', 'wilds'), biome, 'wilds.biomes');
+  const CELL = flNeed(WL, 'cell_m', 'wilds'), RAD = flNeed(WL, 'radius_m', 'wilds'), CAP = flNeed(WL, 'cap', 'wilds');
+  const SLOPE = flNeed(WL, 'max_slope', 'wilds'), SNOW = flNeed(WL, 'snow_margin_m', 'wilds'), CLEAR = flNeed(WL, 'trail_clear_m', 'wilds');
+  const wet = flNeed(RULE, 'wet', 'wilds.biomes.' + biome);
+  /* the merged geometry: part i = florakit's shape for PARTS[i]; flPart tags its vertices */
+  const P = [], C = [], N = [], T = [];
+  PARTS.forEach((fid, i) => {
+    const g = floraGeometry(THREE, flNeed(flNeed(FAM, fid, 'families'), 'shape', 'families.' + fid));
+    const n = g.attributes.position.count;
+    P.push(...g.attributes.position.array); C.push(...g.attributes.color.array); N.push(...g.attributes.normal.array);
+    for (let k = 0; k < n; k++) T.push(i);
+    g.dispose();
+  });
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(P, 3)); geo.setAttribute('color', new THREE.Float32BufferAttribute(C, 3));
+  geo.setAttribute('normal', new THREE.Float32BufferAttribute(N, 3)); geo.setAttribute('flPart', new THREE.Float32BufferAttribute(T, 1));
+  const kind = new THREE.InstancedBufferAttribute(new Float32Array(CAP), 1);
+  kind.setUsage(THREE.DynamicDrawUsage); geo.setAttribute('flKind', kind);
+  const mat = new THREE.MeshLambertMaterial({ vertexColors: true, side: THREE.DoubleSide });
+  mat.onBeforeCompile = (sh) => {
+    sh.vertexShader = sh.vertexShader
+      .replace('#include <common>', '#include <common>\nattribute float flPart;\nattribute float flKind;')
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\ntransformed *= step(abs(flPart - flKind), 0.5);');
+  };
+  const mesh = new THREE.InstancedMesh(geo, mat, CAP);
+  mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  mesh.setColorAt(0, new THREE.Color('#ffffff')); mesh.count = 0; mesh.frustumCulled = false; mesh.name = 'flora:wilds'; mesh.userData.flora = 'wilds';
+  scene.add(mesh);
+  const triPer = geo.attributes.position.count / 3;
+  const p = (r) => r.per_ha * CELL * CELL / 10000;
+  /* pure: the plants within RAD of (x, z), nearest first, at most CAP */
+  function place(x0, z0) {
+    const out = [];
+    const c0 = Math.floor((x0 - RAD) / CELL), c1 = Math.floor((x0 + RAD) / CELL), r0 = Math.floor((z0 - RAD) / CELL), r1 = Math.floor((z0 + RAD) / CELL);
+    for (let ci = c0; ci <= c1; ci++) for (let ri = r0; ri <= r1; ri++) {
+      const rnd = flRng(flHash(ci, ri, seed, 4241));
+      const x = (ci + rnd()) * CELL, z = (ri + rnd()) * CELL, dx = x - x0, dz = z - z0, d2 = dx * dx + dz * dz;
+      if (d2 > RAD * RAD || Math.abs(x) > lim || Math.abs(z) > lim) continue;
+      const u = rnd(), v = rnd(), w = rnd(), ry = rnd() * Math.PI * 2;
+      const h = fn.height(x, z);
+      if (h < waterLevel || h > snowLine - SNOW) continue;
+      const rule = wet !== null && h < waterLevel + wet.band_m ? wet : RULE;
+      if (u >= p(rule)) continue;
+      if (fn.slope(x, z) > SLOPE || fn.blocked(x, z, CLEAR)) continue;
+      const sp = flPick(rule.mix, v), s = flNeed(SPEC, sp, 'wilds.species');
+      const crown = s.crown_m[0] + (s.crown_m[1] - s.crown_m[0]) * w, ht = s.height_m[0] + (s.height_m[1] - s.height_m[0]) * (1 - w * 0.5);
+      out.push({ d2, sp, part: PARTS.indexOf(s.family), x, y: h - 0.05, z, crown, ht, ry, tint: 0.88 + 0.24 * v });
+    }
+    out.sort((a, b) => a.d2 - b.d2);
+    if (out.length > CAP) out.length = CAP;
+    return out;
+  }
+  const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler(), sc = new THREE.Vector3(), ps = new THREE.Vector3(), col = new THREE.Color();
+  let drawn = [], species = {}, minR = Infinity, maxR = 0;
+  function refill(eye) {
+    drawn = place(eye.x, eye.z); species = {}; minR = Infinity; maxR = 0;
+    drawn.forEach((it, n) => {
+      e.set(0, it.ry, 0); q.setFromEuler(e); sc.set(it.crown, it.ht, it.crown); ps.set(it.x, it.y, it.z);
+      m4.compose(ps, q, sc); mesh.setMatrixAt(n, m4); kind.setX(n, it.part);
+      col.set(SPEC[it.sp].colour).multiplyScalar(it.tint); mesh.setColorAt(n, col);
+      species[it.sp] = (species[it.sp] || 0) + 1;
+      const r = Math.sqrt(it.d2); if (r < minR) minR = r; if (r > maxR) maxR = r;
+    });
+    mesh.count = drawn.length; mesh.instanceMatrix.needsUpdate = true; kind.needsUpdate = true;
+    if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+    return drawn.length;
+  }
+  function setVisible(on) { mesh.visible = !!on; }
+  function stats() {
+    const n = mesh.visible ? mesh.count : 0;
+    return { biome, meshes: 1, instanced: mesh.isInstancedMesh, instances: n, cap: CAP, radius: RAD, maxR: n ? +maxR.toFixed(1) : 0,
+      tris: n * triPer, triPerInstance: triPer, parts: PARTS.slice(), species: n ? { ...species } : {} };
+  }
+  function dispose() { scene.remove(mesh); geo.dispose(); mat.dispose(); }
+  return { refill, place, setVisible, stats, dispose, mesh };
+}
+globalThis.TCFLORA.createWildsFlora = createWildsFlora;
+"""
+WILDS_FLORA_JS_INLINE = FLORA_CORE + FLORA_WILDS_CORE
+
+
+def wilds_flora_data():
+    """WORLD w16: what the wilds page embeds - the wilds section, the families it draws as parts, the honesty."""
+    reg = flora_data()
+    if 'wilds' not in reg:
+        raise FloraKitError('flora/registry/flora.json has no wilds section: run python3 flora/build.py')
+    wl = reg['wilds']
+    return {'schema': reg['schema'], 'provenance': reg['provenance'], 'source_stamp': reg['source_stamp'], 'wilds': wl,
+            'families': {f: reg['families'][f] for f in wl['families']}}
+
+
+def wilds_flora_mount_js(*, seed, biome, height, slope, blocked, water_level, snow_line, lim):
+    """JS text for the wilds page: the kit, the embedded data and a createWildsFlora call (JS expressions in)."""
+    data = json.dumps(wilds_flora_data(), ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
+    return (WILDS_FLORA_JS_INLINE + f'\n/* WORLD w16 wilds ground-flora mount */\nconst WILDS_FLORA_DATA = {data};\n'
+            + f'function mountWildsFlora() {{ return createWildsFlora(scene, {{ THREE, data: WILDS_FLORA_DATA, biome: {biome}, seed: {seed}, '
+            + f'height: {height}, slope: {slope}, blocked: {blocked}, waterLevel: {water_level}, snowLine: {snow_line}, lim: {lim} }}); }}\n')
+# END WORLD w16
+FLORA_JS = FLORA_CORE + FLORA_WILDS_CORE + FLORA_EXPORT   # WORLD w16: the module carries the wilds kit too
 
 
 def flora_mount_js(region, *, seed, chunk_m, is_ground, is_road, is_water, land_use, eye, overview, ground_y=None, land_class='() => null',

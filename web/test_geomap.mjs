@@ -548,6 +548,77 @@ ok('[generator] build_geomap.py fails closed by name (need()) and takes no `.get
     && /top: cs\.map\(\(c\) => screenAt\(c, f\.properties\.h\)\)/.test(page));
 }
 
+// BEGIN GROUND w16 hillshade: the same-origin relief-shading layer (elevation/hillshade.py -> elevation/registry/hillshade.json,
+// drawn by web/build_geomap.py). [registry] reads the registries and the PNG bytes; [shipped] the page and its JSON.
+{
+  const { createHash } = await import('node:crypto');
+  const HR = JSON.parse(readFileSync(join(ROOT, 'elevation/registry/hillshade.json'), 'utf8'));
+  const ER = JSON.parse(readFileSync(join(ROOT, 'elevation/registry/elevation.json'), 'utf8'));
+  const regs = Object.entries(HR.regions || {});
+  ok('[registry] hillshade: DERIVED shading of RECORDED heights, exaggeration AUTHORED, one region per vendored 3DEP grid',
+    HR.provenance === 'DERIVED' && HR.heights_provenance === 'RECORDED' && HR.exaggeration_provenance === 'AUTHORED'
+    && regs.length === Object.keys(ER.grids).length && regs.every(([k]) => k in ER.grids));
+  const pngBad = [];
+  for (const [k, r] of regs) {
+    const g = ER.grids[k], f = join(ROOT, r.file);
+    if (!existsSync(f)) { pngBad.push(`${k}: ${r.file} missing`); continue; }
+    const b = readFileSync(f);
+    if (createHash('sha256').update(b).digest('hex') !== r.sha256) pngBad.push(`${k}: sha256`);
+    // PNG IHDR: width, height, bit depth 8, colour type 6 (RGBA) - one pixel per grid cell
+    if (b.readUInt32BE(16) !== g.cols || b.readUInt32BE(20) !== g.rows || b[24] !== 8 || b[25] !== 6) pngBad.push(`${k}: IHDR ${b.readUInt32BE(16)}x${b.readUInt32BE(20)} d${b[24]} c${b[25]}`);
+    const bd = g.bounds_deg, c = r.coordinates;
+    if (JSON.stringify(c) !== JSON.stringify([[bd.w, bd.n], [bd.e, bd.n], [bd.e, bd.s], [bd.w, bd.s]])) pngBad.push(`${k}: corners ${JSON.stringify(c)}`);
+    if (r.grid_sha256 !== g.sha256) pngBad.push(`${k}: made from grid ${r.grid_sha256} not the pinned ${g.sha256}`);
+    if (!(r.vertical_exaggeration > 0 && typeof r.exaggeration_why === 'string' && r.exaggeration_why.length > 20)) pngBad.push(`${k}: exaggeration undeclared`);
+    if (!/^elevation\/derived\/hillshade_[a-z]+\.png$/.test(r.file)) pngBad.push(`${k}: ${r.file} is not under elevation/derived/`);
+  }
+  ok(`[registry] hillshade: each PNG matches its sha256, is RGBA at one pixel per grid cell, sits on the grid's own corners, made from the pinned grid${pngBad.length ? ' - ' + pngBad.join('; ') : ''}`, regs.length > 0 && pngBad.length === 0);
+  const H = D.hillshade || {};
+  const shipBad = [];
+  for (const [k, r] of regs) {
+    const s = (H.regions || {})[k];
+    if (!s) { shipBad.push(`${k} not shipped`); continue; }
+    if (s.url !== '../' + r.file) shipBad.push(`${k}: url ${s.url}`);
+    if (s.sha256 !== r.sha256 || JSON.stringify(s.coordinates) !== JSON.stringify(r.coordinates) || s.exaggeration !== r.vertical_exaggeration) shipBad.push(`${k}: differs from the registry`);
+    if (!existsSync(join(WEB, s.url))) shipBad.push(`${k}: ${s.url} does not resolve from the page`);
+  }
+  ok(`[shipped] hillshade: every region shipped as a same-origin relative url that resolves from the page, equal to the registry${shipBad.length ? ' - ' + shipBad.join('; ') : ''}`,
+    regs.length > 0 && shipBad.length === 0 && Object.keys(H.regions || {}).length === regs.length);
+  ok('[shipped] hillshade: the page names no agent (no GROUND codename outside the GROUND_TRUTH module name)', !/GROUND(?!_TRUTH)/.test(page));
+  ok('[shipped] hillshade: no PNG embedded and no http(s) url for the layer (no tile host)',
+    !/data:image\/png;base64/.test(page) && Object.values(H.regions || {}).every((r) => !/^(https?:)?\/\//.test(r.url)));
+  ok('[shipped] hillshade: credits - the USGS 3DEP attribution and the RECORDED/DERIVED/AUTHORED label reach the page (panel line + legend row)',
+    H.credit === `${ER.attribution.text} (${ER.attribution.author}, U.S. public domain)` && H.label === HR.label
+    && /<p class="src" id="hillshadeCredit" data-hillshade-credit><\/p>/.test(page)
+    && /textContent = 'Relief shading: ' \+ D\.hillshade\.credit/.test(page)
+    && /data-legend="hillshade"[^>]*>.*RECORDED<\/b> USGS 3DEP heights, shading <b>DERIVED<\/b>.*<b>AUTHORED<\/b>/.test(page));
+  ok("[shipped] hillshade: a layers-panel toggle labelled RECORDED/DERIVED, and the honesty line says it is not tiles",
+    /\{ key: 'hillshade', label: 'Relief shading \(USGS 3DEP heights, RECORDED; shading DERIVED\)'/.test(page)
+    && /D\.hillshade\.label \+ ' over the parish and Bay regions when zoomed in \(same-origin files, not tiles; layer toggle\)\.'/.test(page));
+  // behaviour, without a browser: run the shipped hillshadeSync against a stand-in map
+  const m = page.match(/\/\* BEGIN HILLSHADE w16[\s\S]*?\*\/\n(const HS = [\s\S]*?\n\})\nmap\.on\('load', hillshadeSync\);/);
+  let beh = null;
+  if (m) {
+    const added = [], vis = {};
+    const fake = (z, w, s, e, n) => ({ getLayer: (id) => id === 'grat', getZoom: () => z,
+      getBounds: () => ({ getWest: () => w, getEast: () => e, getSouth: () => s, getNorth: () => n }),
+      addSource: (id, o) => added.push(['src', id, o.type, o.url, JSON.stringify(o.coordinates)]), addLayer: (o, before) => added.push(['lyr', o.id, o.type, before]),
+      setLayoutProperty: (id, p, v) => { vis[id] = v; } });
+    const layerOn = { hillshade: true };
+    const mk = new Function('D', 'layerOn', 'mapRef', 'let map = mapRef.m;\n' + m[1] + '\nreturn { HS, sync: () => { map = mapRef.m; hillshadeSync(); } };');
+    const ref = { m: fake(2.5, -130, 20, -60, 50) }, api = mk(D, layerOn, ref);
+    api.sync(); const atNetwork = added.length;
+    ref.m = fake(9, -122.6, 37.6, -122.1, 37.9); api.sync(); const atSF = added.map((a) => a.slice(0, 4).join(' '));
+    layerOn.hillshade = false; api.sync(); const off = vis['hillshade-bayarea'];
+    layerOn.hillshade = true; api.sync(); const back = vis['hillshade-bayarea'];
+    beh = { atNetwork, atSF, off, back, requested: api.HS.requested };
+  }
+  ok(`[shipped] hillshade: nothing is fetched at the network view; zoomed over San Francisco only the Bay region is added (image source on its corners, under the graticule); the toggle hides and shows it${beh ? ' - ' + JSON.stringify(beh) : ' - block not found'}`,
+    beh !== null && beh.atNetwork === 0 && beh.atSF.length === 2 && beh.atSF[0] === 'src hillshade-bayarea image ' + D.hillshade.regions.bayarea.url
+    && beh.atSF[1] === 'lyr hillshade-bayarea raster grat' && beh.off === 'none' && beh.back === 'visible' && beh.requested.length === 1);
+}
+// END GROUND w16 hillshade
+
 if (failed) {
   console.error(`FAIL  web/test_geomap: ${failed} of ${n + failed} checks failed`);
   process.exit(1);

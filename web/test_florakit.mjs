@@ -186,5 +186,43 @@ for (const page of ['web/trade_craft_parishes.html', 'web/trade_craft_bay.html']
       && d.boat.entered === 1 && d.boat.at.join() === '-300,10' && !d.boat.toasts.includes('parishes.stub_vehicle')
       && d.stub.entered === 0 && d.stub.toasts.includes('parishes.stub_vehicle'), [JSON.stringify(d)]);
 }
+/* BEGIN WORLD w16 (WORLD·Worlds & Locales): createWildsFlora - the wilds ground flora as ONE InstancedMesh */
+{
+  const wd = { wilds: reg.wilds, families: Object.fromEntries(reg.wilds.families.map((f) => [f, reg.families[f]])) };
+  const W = reg.wilds;
+  const hgt = (x, z) => 10 + x / 5;                  // water (< 2) west of x = -40, snow margin (> 60 - 30) east of x = 100
+  const slope = (x, z) => (z > 90 ? 2 : 0.1);        // too steep north of z = 90
+  const blocked = (x, z, r) => Math.abs(z + 60) < r; // a trail along z = -60
+  const mkW = (biome, over = {}) => { const scene = new THREE.Scene(); const f = K.createWildsFlora(scene, { THREE, data: wd, biome, seed: 7, height: hgt, slope, blocked, waterLevel: 2, snowLine: 60, lim: 5000, ...over }); return { scene, f }; };
+  const { scene, f } = mkW('forest');
+  const n0 = f.refill({ x: 0, z: 0 }), st = f.stats(), ims = scene.children.filter((o) => o.isInstancedMesh);
+  const triPer = W.families.reduce((a, k) => a + reg.families[k].tris, 0);
+  ok('[wilds] ONE InstancedMesh holds every ground-flora part (flPart per vertex, flKind per instance); stats say 1 mesh',
+    ims.length === 1 && !!ims[0].geometry.attributes.flPart && !!ims[0].geometry.attributes.flKind && st.meshes === 1 && st.instanced === true && st.triPerInstance === triPer
+      && ims[0].geometry.attributes.position.count / 3 === triPer, [`meshes ${ims.length}, tri/inst ${st.triPerInstance} vs ${triPer}`]);
+  const list = f.place(0, 0), list2 = f.place(0, 0);
+  ok('[wilds] place() is pure (same inputs, same list), nearest first, within radius_m, at most cap; refill draws that list',
+    JSON.stringify(list) === JSON.stringify(list2) && list.every((it, i) => i === 0 || list[i - 1].d2 <= it.d2) && list.every((it) => it.d2 <= W.radius_m ** 2)
+      && list.length <= W.cap && n0 === list.length && n0 > 0 && st.instances === n0 && st.maxR <= W.radius_m, [`${n0} plants`]);
+  const out = list.filter((it) => hgt(it.x, it.z) < 2 || hgt(it.x, it.z) > 60 - W.snow_margin_m || slope(it.x, it.z) > W.max_slope || blocked(it.x, it.z, W.trail_clear_m));
+  const xs = list.map((it) => it.x);
+  ok('[wilds] no plant in water, above the snow margin, on a slope past max_slope or on a trail (each rule cuts the 130 m disc here)',
+    out.length === 0 && Math.min(...xs) >= -40 && Math.max(...xs) <= 100 && list.every((it) => it.z <= 90), [JSON.stringify(out.slice(0, 2))]);
+  const parts = list.every((it) => W.species[it.sp] && W.families[it.part] === W.species[it.sp].family);
+  const mix = Object.keys(W.biomes.forest.mix);
+  ok('[wilds] each plant draws the part of its species family and comes from its biome mix', parts && list.every((it) => mix.includes(it.sp)));
+  const dl = mkW('delta', { height: (x, z) => 2 + Math.abs(x) / 40 }).f.place(0, 0);
+  const wet = dl.filter((it) => 2 + Math.abs(it.x) / 40 < 2 + W.biomes.delta.wet.band_m), dry = dl.filter((it) => 2 + Math.abs(it.x) / 40 >= 2 + W.biomes.delta.wet.band_m);
+  ok('[wilds] delta: the wet band (just above the water) grows its wet mix only; drier ground its dry mix',
+    wet.length > 0 && dry.length > 0 && wet.every((it) => W.biomes.delta.wet.mix[it.sp]) && dry.every((it) => W.biomes.delta.mix[it.sp]));
+  f.setVisible(false);
+  ok('[wilds] setVisible(false) (the overview) leaves 0 visible instances', f.stats().instances === 0 && ims[0].visible === false);
+  let e1 = ''; try { mkW('forest', { height: undefined }); } catch (e) { e1 = String(e.message); }
+  let e2 = ''; try { mkW('tundra'); } catch (e) { e2 = String(e.message); }
+  ok('[wilds] a missing hook or an unknown biome stops createWildsFlora by name', /createWildsFlora.*height|height.*must be a function/.test(e1) && /wilds\.biomes.*tundra/.test(e2), [e1, e2]);
+  let py3 = ''; try { py3 = execFileSync('python3', ['-c', 'import sys; sys.path.insert(0, "web"); import florakit as f; print("createWildsFlora" in f.FLORA_JS_INLINE, "wilds" in f.flora_data("bay"), "createWildsFlora" in f.WILDS_FLORA_JS_INLINE)'], { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim(); } catch (e) { py3 = String(e.stderr); }
+  ok('[wilds] the regional pages carry neither the wilds kit nor the wilds section; the wilds mount carries the kit', py3 === 'False False True', [py3]);
+}
+/* END WORLD w16 */
 console.log(`\n${n} checks passed, ${bad} failed`);
 process.exit(bad ? 1 : 0);

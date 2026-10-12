@@ -1,0 +1,93 @@
+{
+ "alpha": {
+  "light_max": 110,
+  "shadow_max": 170
+ },
+ "credit": "Elevation: USGS 3D Elevation Program (3DEP), 1 arc-second DEM; resampled by this bundle (U.S. Geological Survey, U.S. public domain)",
+ "exaggeration_provenance": "AUTHORED",
+ "heights_provenance": "RECORDED",
+ "honesty": "The shading is computed from ~150-185 m cell means: it shows ridges, valleys, terraces and levee belts at that scale, not street grades or buildings. Vertical exaggeration is a styling choice (AUTHORED) declared per region. Same-origin files; no tile service is contacted.",
+ "label": "Relief shading: USGS 3DEP heights (RECORDED), shaded at build time (DERIVED)",
+ "licence_file": "elevation/vendor/USGS_3DEP_USE_CONSTRAINTS.txt",
+ "method": "Horn 3 x 3 gradient in metres per cell (east-west width x cos(latitude) per row), one sun at azimuth 315 deg, altitude 45 deg; facing the sun -> white, facing away -> black, flat -> transparent; a cell with no RECORDED height in its 3 x 3 window is transparent",
+ "pack": "elevation-hillshade",
+ "pack_version": "3.2.0",
+ "provenance": "DERIVED",
+ "regions": {
+  "bayarea": {
+   "bytes": 1075069,
+   "cell_arcsec": 6,
+   "coordinates": [
+    [
+     -123.535,
+     38.865
+    ],
+    [
+     -121.208333,
+     38.865
+    ],
+    [
+     -121.208333,
+     36.896667
+    ],
+    [
+     -123.535,
+     36.896667
+    ]
+   ],
+   "exaggeration_why": "the Bay Area grid spans -63.5 to 1432 m; x1.5 keeps the flats readable without the ranges going black",
+   "file": "elevation/derived/hillshade_bayarea.png",
+   "grid": "elevation/registry/elevation.json#grids.bayarea",
+   "grid_sha256": "ecd3673bff2e555c2f1905c047f0912f795be965da0f68025e889a1024a8935d",
+   "height": 1181,
+   "rows_resampled": "nearest source row at equal Web Mercator steps between the north and south edges (1177 distinct source rows of 1181)",
+   "sha256": "e03344a0159621a422c17a2ebdacd194499c927613c3218dffc488f7f0ec6916",
+   "shaded_cells": 1628390,
+   "transparent_cells": 20286,
+   "vertical_exaggeration": 1.5,
+   "what": "the 9 San Francisco Bay Area counties of the Bay world, California",
+   "width": 1396
+  },
+  "parishes": {
+   "bytes": 1088129,
+   "cell_arcsec": 6,
+   "coordinates": [
+    [
+     -91.336667,
+     31.0
+    ],
+    [
+     -88.815,
+     31.0
+    ],
+    [
+     -88.815,
+     28.928333
+    ],
+    [
+     -91.336667,
+     28.928333
+    ]
+   ],
+   "exaggeration_why": "the parish grid spans -8.7 to 115.9 m over about 230 km; at x1 its levees, ridges and the Pleistocene terrace edge are below one grey level",
+   "file": "elevation/derived/hillshade_parishes.png",
+   "grid": "elevation/registry/elevation.json#grids.parishes",
+   "grid_sha256": "1e256dd888337f7a0b714e244348d825a6ffa41a8e7ebeb1dc643b75e6db0b8c",
+   "height": 1243,
+   "rows_resampled": "nearest source row at equal Web Mercator steps between the north and south edges (1240 distinct source rows of 1243)",
+   "sha256": "4b836dcdfdc85e250afa446a9bde8cf13e481788989796951217caaf2c07ab3e",
+   "shaded_cells": 1772042,
+   "transparent_cells": 108617,
+   "vertical_exaggeration": 10.0,
+   "what": "the 13 parishes of the parish worlds, Louisiana",
+   "width": 1513
+  }
+ },
+ "source": "elevation/registry/elevation.json (USGS 3DEP 1 arc-second, vendored and sha256-pinned)",
+ "source_stamp": "750f54a5c53317b4",
+ "source_url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/",
+ "sun": {
+  "altitude_deg": 45.0,
+  "azimuth_deg": 315.0
+ }
+}

@@ -48,6 +48,10 @@ PAGE_KEYS = ['robo.nav', 'robo.kicker', 'robo.title', 'robo.lede', 'robo.seo.des
              'robo.c.done', 'robo.h.an', 'robo.an.note', 'robo.an.count', 'robo.an.steps', 'robo.an.success',
              'robo.an.duration', 'robo.an.hist', 'robo.an.card', 'robo.an.empty', 'robo.h.bench', 'robo.bench.note',
              'robo.bench.bound', 'robo.c.level', 'robo.c.items', 'robo.bench.feas', 'robo.bench.ibound'] + ['robo.an.b.' + b for b in ('reverse', 'stop', 'forward', 'left', 'straight', 'right', 'grip', 'dive', 'rise')]
+# wave 16: the benchmark chart and the episode replay viewer
+PAGE_KEYS += ['robo.h.chart', 'robo.chart.note', 'robo.chart.total', 'robo.h.replay', 'robo.rp.note', 'robo.rp.src', 'robo.rp.ref',
+              'robo.rp.mine', 'robo.rp.load', 'robo.rp.play', 'robo.rp.pause', 'robo.rp.scrub', 'robo.rp.actions', 'robo.rp.reward',
+              'robo.rp.exact', 'robo.rp.held', 'robo.rp.none', 'robo.bench.reach']
 KEYS = PAGE_KEYS + robo_i18n_keys()
 
 I18N = {}
@@ -150,6 +154,187 @@ if SORT_FEAS['feasible_seeds'] * 2 >= len(BENCH['seeds']):
                             f"{len(BENCH['seeds']) - SORT_FEAS['feasible_seeds']} of {len(BENCH['seeds'])} - reword the key")
 
 
+# ---- ROBO_CHART:BEGIN (wave 16) - the benchmark chart: one bar per env and curriculum level, success / runs, read from
+# robotics.json#reference_benchmark only (no number is typed here). HTML bars, so the labels are real text at every width;
+# the bench table further down is the table view of the same block.
+def bench_chart():
+    rows = []
+    for eid, v in BENCH['per_env'].items():
+        need_env = REG['envs'].get(eid)
+        if not need_env:
+            raise RoboticsPageError(f'build_robotics: the benchmark names {eid}, which is not a registry env')
+        bars = ''
+        for l, row in v['levels'].items():
+            for k in ('success', 'runs', 'name'):
+                if k not in row:
+                    raise RoboticsPageError(f'build_robotics: benchmark {eid} level {l} has no {k}')
+            if not row['runs']:
+                raise RoboticsPageError(f'build_robotics: benchmark {eid} level {l} ran no seeds')
+            pct = round(100 * row['success'] / row['runs'])
+            bars += (f'<div class="bc-row" data-chart-level="{E(l)}" data-chart-success="{row["success"]}" data-chart-runs="{row["runs"]}">'
+                     f'<span class="bc-lab">L{E(l)} · {E(row["name"])}</span>'
+                     f'<span class="bc-track" title="{E(eid)} L{E(l)}: {row["success"]} / {row["runs"]}"><span class="bc-bar" style="inline-size:{pct}%"></span></span>'
+                     f'<span class="bc-num">{row["success"]} / {row["runs"]}</span></div>')
+        rows.append(f'<div class="bc-env" data-chart-env="{E(eid)}"><h3><code>{E(eid)}</code> {E(need_env["name"])}</h3>{bars}</div>')
+    tot = BENCH['totals']
+    return (f'<figure class="bchart" id="robo-chart"><figcaption class="muted">{T("robo.chart.note")}</figcaption>{"".join(rows)}'
+            f'<p class="bc-total" data-chart-total="{tot["success"]}/{tot["runs"]}">{T("robo.chart.total")}: '
+            f'<b>{tot["success"]} / {tot["runs"]}</b></p></figure>')
+
+
+CHART_HTML = bench_chart()
+# ROBO_CHART:END
+
+# ---- ROBO_REPLAY:BEGIN (wave 16) - the episode replay viewer. rpTrace is pure (RoboCore only, no DOM) and is run
+# headless by web/test_robotics.mjs; rpMount draws it. A reference run is re-run step by step from (env, seed, level)
+# with the SCRIPTED policy - the same calls RoboCore.rollout makes, so its return, steps and samples are the rollout's.
+# A recorded human episode (level 1, the only recorded level) is re-simulated from its stored samples, each action held
+# until the next sample; the largest gap between the replayed and the stored poses is reported, never hidden.
+REPLAY_HTML = (
+    '<div class="robo-row"><label>' + T('robo.rp.src') + ' <select id="robo-rp-src"><option value="ref" data-i18n="robo.rp.ref">'
+    + E(EN['robo.rp.ref']) + '</option></select></label>'
+    '<label>' + T('robo.c.env') + ' <select id="robo-rp-env"></select></label>'
+    '<label>' + T('robo.c.seed') + ' <select id="robo-rp-seed"></select></label>'
+    '<label>' + T('robo.c.level') + ' <select id="robo-rp-level"></select></label>'
+    '<button type="button" id="robo-rp-load">' + T('robo.rp.load') + '</button></div>'
+    '<p class="muted" id="robo-rp-none" hidden>' + T('robo.rp.none') + '</p>'
+    '<div class="robo-row"><button type="button" id="robo-rp-play" aria-pressed="false">' + T('robo.rp.play') + '</button>'
+    '<label class="rp-scrub">' + T('robo.rp.scrub') + ' <input type="range" id="robo-rp-k" min="0" max="0" value="0" step="1"></label></div>'
+    '<p class="robo-hud" id="robo-rp-read" aria-live="polite"></p>'
+    '<p class="muted" id="robo-rp-mode"></p>'
+    '<div class="rp-stage"><canvas id="robo-rp-arena" width="420" height="420" aria-label="replay arena"></canvas>'
+    '<div class="rp-charts"><h4>' + T('robo.rp.actions') + '</h4><p class="rp-leg" id="robo-rp-leg"></p>'
+    '<canvas id="robo-rp-act" width="560" height="140" aria-label="actions over time"></canvas>'
+    '<h4>' + T('robo.rp.reward') + '</h4><canvas id="robo-rp-ret" width="560" height="120" aria-label="return over time"></canvas></div></div>')
+
+REPLAY_JS = r'''/* REPLAY_CORE:BEGIN - pure: rpTrace(R, train, src) with src {kind:'ref', env, seed, level} or {kind:'ep', ep} */
+function rpTrace(R, train, src) {
+  var ep = src.kind === 'ep' ? src.ep : null, id = ep ? ep.env : src.env, env = R.envs[id];
+  if (!env) throw new Error('replay: unknown env ' + id);
+  var emb = R.embodiments[env.embodiments[0]], seed = ep ? ep.seed : src.seed, level = ep ? 1 : src.level;
+  var names = env.action.fields.map(function (f) { return f.name; });
+  var st = RoboCore.reset(env, emb, seed, level), layout = RoboCore.layout(env, seed, level);
+  var policy = !ep || ep.actor === 'scripted-reference', every = Math.round(1 / (train.world_teleop.sample_hz * env.episode_cap.dt_s));
+  var frames = [], events = {}, samples = [], held = null, si = 0, zero = {};
+  names.forEach(function (n) { zero[n] = 0; });
+  var mark = function () {
+    st.items.forEach(function (x) { if (x.taken && !(x.id in events)) events[x.id] = st.step; if (x.binned && !((x.id + ':bin') in events)) events[x.id + ':bin'] = st.step; });
+    st.targets.forEach(function (x) { if (x.visited && !(x.id in events)) events[x.id] = st.step; });
+    st.gates.forEach(function (x, i) { if (i < st.next && !(x.id in events)) events[x.id] = st.step; });
+  };
+  var snap = function (a) { return { i: st.step, e: st.e, n: st.n, yaw: st.yaw, d: st.depth, ret: st.ret, got: st.collected,
+    a: names.map(function (n) { return Math.round((Number(a[n]) || 0) * 1000) / 1000; }) }; };
+  while (!st.done && (policy || st.step < ep.steps)) {
+    var a;
+    if (policy) a = RoboCore.policy(st);
+    else { while (si < ep.samples.length && ep.samples[si].i <= st.step) { held = ep.samples[si]; si++; }
+      a = {}; names.forEach(function (n, k) { a[n] = held ? held.a[k] : 0; }); }
+    if (st.step % every === 0 && samples.length < train.world_teleop.max_samples) samples.push(RoboCore.sample(st, a));
+    frames.push(snap(a)); RoboCore.step(st, a); mark();
+  }
+  frames.push(snap(zero));
+  var drift = 0, r3 = function (x) { return Math.round(x * 1000) / 1000; };
+  if (ep) ep.samples.forEach(function (x) { var f = frames[x.i]; if (!f) { drift = Infinity; return; }
+    drift = Math.max(drift, Math.abs(r3(f.e) - x.pose[0]), Math.abs(r3(f.n) - x.pose[1]), Math.abs(r3(f.yaw) - x.pose[2])); });
+  var ret = Math.round(st.ret * 1000) / 1000;
+  return { env: env, emb: emb, seed: seed, level: level, names: names, layout: layout, frames: frames, events: events, samples: samples,
+    steps: st.step, done: st.done || 'stopped', success: !!st.done && st.done !== 'cap', ret: ret, collected: st.collected,
+    mode: policy ? 'policy' : 'held', drift: drift, exact: drift < 0.0015 && (!ep || Math.abs(ret - ep.outcome.return) < 0.0015) };
+}
+/* REPLAY_CORE:END */
+function rpMount(data, t) {
+  var R = data.robo, $ = function (s) { return document.getElementById(s); }, tr = null, k = 0, playing = false, mine = [];
+  var src = $('robo-rp-src'), envSel = $('robo-rp-env'), seedSel = $('robo-rp-seed'), lvlSel = $('robo-rp-level'), rng = $('robo-rp-k');
+  var COL = ['#3987e5', '#d95926', '#199e70'];   /* dataviz dark categorical slots 1-3, validated on the #0f1a1c chart surface */
+  Object.keys(R.envs).forEach(function (id) { var o = document.createElement('option'); o.value = id; o.textContent = R.envs[id].name; envSel.appendChild(o); });
+  function fillEnv() { var env = R.envs[envSel.value]; seedSel.textContent = ''; lvlSel.textContent = '';
+    env.seeds.forEach(function (s) { var o = document.createElement('option'); o.value = s; o.textContent = s; seedSel.appendChild(o); });
+    env.curriculum.levels.forEach(function (l) { var o = document.createElement('option'); o.value = l.level; o.textContent = l.level + ' · ' + l.name; lvlSel.appendChild(o); }); }
+  function listMine() {
+    var eps = window.__robokit ? window.__robokit.episodes() : [], keep = src.value;
+    mine = eps.filter(function (x) { return R.envs[x.env] && Array.isArray(x.samples); });
+    var og = src.querySelector('optgroup'); if (og) src.removeChild(og);
+    og = document.createElement('optgroup'); og.label = t('robo.rp.mine'); if (mine.length) src.appendChild(og);
+    mine.forEach(function (x, i) { var o = document.createElement('option'); o.value = 'ep:' + i;
+      o.textContent = '#' + (i + 1) + ' · ' + x.env.replace('world.', '') + ' · ' + x.seed + ' · ' + x.actor + ' · ' + x.steps; og.appendChild(o); });
+    src.value = Array.prototype.some.call(src.options, function (o) { return o.value === keep; }) ? keep : 'ref';
+    $('robo-rp-none').hidden = mine.length > 0; refSel();
+  }
+  function refSel() { var ref = src.value === 'ref'; [envSel, seedSel, lvlSel].forEach(function (s) { s.disabled = !ref; }); }
+  function load(s) {
+    tr = rpTrace(R, data.train, s); k = 0; rng.max = String(tr.frames.length - 1); rng.value = '0';
+    $('robo-rp-mode').textContent = tr.mode === 'policy' || tr.exact ? t('robo.rp.exact') : t('robo.rp.held') + ' ' + (isFinite(tr.drift) ? tr.drift.toFixed(3) : '-') + ' m';
+    var leg = $('robo-rp-leg'); leg.textContent = '';
+    tr.names.forEach(function (n, i) { var sw = document.createElement('span'); sw.className = 'rp-sw'; sw.style.background = COL[i % COL.length];
+      var c = document.createElement('code'); c.textContent = n; leg.appendChild(sw); leg.appendChild(c); leg.appendChild(document.createTextNode(' ')); });
+    draw(); return tr;
+  }
+  function loadSel() { if (src.value === 'ref') return load({ kind: 'ref', env: envSel.value, seed: Number(seedSel.value), level: Number(lvlSel.value) });
+    return load({ kind: 'ep', ep: mine[Number(src.value.slice(3))] }); }
+  function seek(i) { k = Math.max(0, Math.min(tr.frames.length - 1, i | 0)); rng.value = String(k); draw(); return tr.frames[k]; }
+  function arena() {
+    var cv = $('robo-rp-arena'), g = cv.getContext('2d'), W = cv.width, env = tr.env, H = env.world.arena_half_m, s = W / (2 * H);
+    var X = function (e) { return W / 2 + e * s; }, Y = function (n) { return W / 2 - n * s; }, L = tr.layout, f = tr.frames[k], ev = tr.events;
+    var at = function (id) { return id in ev && ev[id] <= f.i; };
+    g.fillStyle = env.medium === 'water' ? '#0d2a3a' : '#16261d'; g.fillRect(0, 0, W, W);
+    g.strokeStyle = '#2d4448'; g.lineWidth = 1; for (var q = -H; q <= H; q += 5) { g.beginPath(); g.moveTo(X(q), 0); g.lineTo(X(q), W); g.moveTo(0, Y(q)); g.lineTo(W, Y(q)); g.stroke(); }
+    L.obst.forEach(function (b) { g.fillStyle = b.id.indexOf('cone') === 0 ? '#e8a33d' : '#6b7b80'; g.beginPath(); g.arc(X(b.e), Y(b.n), b.r * s, 0, 7); g.fill(); });
+    L.gates.forEach(function (x) { g.strokeStyle = at(x.id) ? '#5fbf7a' : '#93a3a6'; g.lineWidth = 3; g.beginPath(); g.arc(X(x.e), Y(x.n), 1.2 * s, 0, 7); g.stroke(); });
+    if (L.bin) { g.fillStyle = '#41c4d4'; g.fillRect(X(L.bin.e) - 0.7 * s, Y(L.bin.n) - 0.7 * s, 1.4 * s, 1.4 * s); }
+    L.items.forEach(function (x) { if (at(x.id)) return; g.fillStyle = R.litter_colors[x.type]; g.beginPath(); g.arc(X(x.e), Y(x.n), 0.45 * s, 0, 7); g.fill(); });
+    L.targets.forEach(function (x) { g.strokeStyle = at(x.id) ? '#5fbf7a' : '#fad08c'; g.lineWidth = 2; g.beginPath(); g.arc(X(x.e), Y(x.n), 1.5 * s, 0, 7); g.stroke(); });
+    var path = function (to, col, w) { g.strokeStyle = col; g.lineWidth = w; g.beginPath(); for (var i = 0; i <= to; i++) { var p = tr.frames[i]; if (i) g.lineTo(X(p.e), Y(p.n)); else g.moveTo(X(p.e), Y(p.n)); } g.stroke(); };
+    path(tr.frames.length - 1, 'rgba(232,237,236,0.25)', 1); path(k, '#e8edec', 2);
+    var rr = Math.max(7, tr.emb.radius_m * s); g.save(); g.translate(X(f.e), Y(f.n)); g.rotate(-f.yaw);
+    g.fillStyle = tr.emb.kind === 'rov' ? '#fad08c' : tr.emb.kind === 'arm-on-base' ? '#e0655b' : '#e8edec'; g.fillRect(-rr, -rr, 2 * rr, 2 * rr);
+    g.fillStyle = '#12181b'; g.beginPath(); g.moveTo(0, -rr * 1.4); g.lineTo(-rr * 0.6, -rr * 0.2); g.lineTo(rr * 0.6, -rr * 0.2); g.fill(); g.restore();
+  }
+  function chart(id, series) {
+    var cv = $(id), g = cv.getContext('2d'), W = cv.width, H = cv.height, n = tr.frames.length - 1 || 1, pad = 6;
+    var X = function (i) { return pad + (W - 2 * pad) * i / n; }, Y = function (v) { return H - pad - (H - 2 * pad) * (v + 1) / 2; };
+    g.fillStyle = '#0f1a1c'; g.fillRect(0, 0, W, H); g.strokeStyle = '#2d4448'; g.lineWidth = 1; g.beginPath(); g.moveTo(pad, Y(0)); g.lineTo(W - pad, Y(0)); g.stroke();
+    series.forEach(function (sr) { g.strokeStyle = sr.col; g.lineWidth = 2; g.beginPath();
+      tr.frames.forEach(function (f, i) { var y = Y(sr.val(f)); if (i) g.lineTo(X(i), y); else g.moveTo(X(i), y); }); g.stroke(); });
+    g.strokeStyle = '#e8edec'; g.lineWidth = 1; g.beginPath(); g.moveTo(X(k), 0); g.lineTo(X(k), H); g.stroke();
+  }
+  function draw() {
+    var f = tr.frames[k], r2 = function (x) { return (Math.round(x * 100) / 100).toFixed(2); };
+    arena();
+    var fields = tr.env.action.fields;
+    chart('robo-rp-act', fields.map(function (fd, i) { var m = Math.max(Math.abs(fd.low), Math.abs(fd.high)) || 1;
+      return { col: COL[i % COL.length], val: function (x) { return x.a[i] / m; } }; }));
+    var lo = 0, hi = 0; tr.frames.forEach(function (x) { lo = Math.min(lo, x.ret); hi = Math.max(hi, x.ret); }); var span = Math.max(1e-6, hi - lo);
+    chart('robo-rp-ret', [{ col: '#e8a33d', val: function (x) { return 2 * (x.ret - lo) / span - 1; } }]);
+    $('robo-rp-read').textContent = t('robo.rp.scrub') + ' ' + f.i + ' / ' + tr.steps + ' · ' + (f.i * tr.env.episode_cap.dt_s).toFixed(1) + ' s · e ' + r2(f.e) + ' m · n ' + r2(f.n) + ' m · '
+      + t('robo.return') + ' ' + r2(f.ret) + ' · ' + tr.names.map(function (n, i) { return n + ' ' + f.a[i]; }).join(' · ') + ' · L' + tr.level + ' · ' + tr.done;
+    $('robo-rp-read').dataset.k = String(k);
+  }
+  function tick() { if (!playing) return; if (k >= tr.frames.length - 1) { setPlay(false); return; } seek(k + 2); requestAnimationFrame(tick); }
+  function setPlay(on) { playing = on; var b = $('robo-rp-play'); b.setAttribute('aria-pressed', String(on)); b.textContent = t(on ? 'robo.rp.pause' : 'robo.rp.play');
+    if (on) { if (k >= tr.frames.length - 1) seek(0); requestAnimationFrame(tick); } }
+  envSel.addEventListener('change', fillEnv); src.addEventListener('focus', listMine); src.addEventListener('change', refSel);
+  $('robo-rp-load').addEventListener('click', function () { setPlay(false); loadSel(); });
+  $('robo-rp-play').addEventListener('click', function () { setPlay(!playing); });
+  rng.addEventListener('input', function () { setPlay(false); seek(Number(rng.value)); });
+  fillEnv(); listMine(); load({ kind: 'ref', env: envSel.value, seed: Number(seedSel.value), level: Number(lvlSel.value) });
+  window.__roboReplay = { trace: function () { return tr; }, k: function () { return k; }, seek: seek, list: function () { listMine(); return mine.length; },
+    loadRef: function (env, seed, level) { setPlay(false); src.value = 'ref'; refSel(); envSel.value = env; fillEnv(); seedSel.value = String(seed); lvlSel.value = String(level); return loadSel(); },
+    loadMine: function (i) { setPlay(false); listMine(); src.value = 'ep:' + i; refSel(); return loadSel(); }, play: setPlay, playing: function () { return playing; } };
+}'''
+# ROBO_REPLAY:END
+
+
+# wave 16: the ADDED litter-sort level 'reachable' carries its own bound, measured on its own layout (fail closed)
+REACH = BENCH['per_env']['world.litter-sort']['levels'].get('4')
+if not REACH or REACH['name'] != 'reachable' or 'feasibility' not in REACH:
+    raise RoboticsPageError('build_robotics: the benchmark has no litter-sort level 4 (reachable) with its own feasibility bound')
+REACH_F = REACH['feasibility']
+REACH_HTML = (f'<p class="muted" id="robo-bench-reach">{T("robo.bench.reach")} {T("robo.bench.feas")}: '
+              f'<b data-reach-feas>{REACH_F["feasible_seeds"]} / {len(BENCH["seeds"])}</b> · {T("robo.bench.ibound")}: '
+              f'<b data-reach-ibound>{REACH_F["items_bound"]}</b> ({E(REACH_F["budget_m"])} m) · {T("robo.success")}: '
+              f'<b data-reach-success>{REACH["success"]} / {REACH["runs"]}</b> · {T("robo.c.items")}: <b data-reach-items>{REACH["items"]}</b></p>')
+
+
 def js_json(x):
     return json.dumps(x, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
 
@@ -183,7 +368,7 @@ PAGE_JS = r'''(function () {
     });
   });
   document.getElementById('robo-refrun-sum').textContent = ok + ' / ' + n;
-  /* ROBO_ANALYTICS:BEGIN - the learner's own local dataset, computed here from localStorage episodes (window.__robokit
+  /* ANALYTICS_PANEL:BEGIN - the learner's own local dataset, computed here from localStorage episodes (window.__robokit
      .episodes()); no fetch, no upload, no digest of anything personal - the episodes carry none */
   var an = { count: 0 };
   function analytics() {
@@ -221,7 +406,8 @@ PAGE_JS = r'''(function () {
     document.getElementById('robo-an-card').textContent = JSON.stringify(card, null, 1);
   }
   render(); setInterval(function () { if (window.__robokit.episodes().length !== an.count) render(); }, 1500);
-  /* ROBO_ANALYTICS:END */
+  /* ANALYTICS_PANEL:END */
+  rpMount(data, t);   /* wave 16: the episode replay viewer */
   window.__roboPage = { locale: loc, dir: I[loc].dir, classroom: classroom, refOk: ok, refN: n, analytics: analytics };
 })();'''
 
@@ -274,6 +460,26 @@ a{{color:var(--tc-link)}}
 .links a{{display:inline-flex;align-items:center;min-block-size:44px}}
 .an-row{{display:grid;grid-template-columns:7em 1fr 3em;gap:8px;align-items:center;font:13px ui-monospace,monospace}}
 .an-bar{{display:block;block-size:12px;background:var(--tc-amber);border-radius:3px;min-inline-size:2px}}
+.bchart{{margin:0 0 16px}}
+.bc-env{{margin:0 0 10px}}.bc-env h3{{font-size:15px;margin:8px 0 4px}}
+.bc-row{{display:grid;grid-template-columns:minmax(7em,11em) 1fr 4.5em;gap:8px;align-items:center;font:13px ui-monospace,monospace;min-block-size:24px}}
+.bc-track{{display:block;block-size:14px;background:var(--tc-raised);border-radius:4px;overflow:hidden}}
+.bc-bar{{display:block;block-size:100%;background:var(--tc-amber);border-radius:0 4px 4px 0}}
+.bc-num{{text-align:end;font-variant-numeric:tabular-nums}}
+.bc-total{{font-size:14px;margin:6px 0 0}}
+.rp-stage{{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start}}
+.rp-stage canvas{{background:#0f1a1c;border-radius:8px}}
+#robo-rp-arena{{inline-size:min(100%,420px);aspect-ratio:1/1}}
+.rp-charts{{flex:1 1 280px;min-inline-size:0}}.rp-charts canvas{{inline-size:100%;display:block}}
+.rp-leg{{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin:0 0 4px;font-size:13px}}
+.rp-sw{{display:inline-block;inline-size:14px;block-size:4px;border-radius:2px}}
+.rp-scrub{{display:flex;align-items:center;gap:8px;flex:1 1 200px}}.rp-scrub input{{flex:1;min-block-size:44px;min-inline-size:0}}
+#robo-rp .robo-row select,#robo-rp .robo-row button{{min-block-size:44px;min-inline-size:44px;font:inherit;color:var(--tc-ink);background:var(--tc-raised);border:1px solid var(--tc-line);border-radius:8px;padding:0 12px}}
+#robo-rp .robo-row button[aria-pressed="true"]{{background:var(--tc-amber);color:var(--tc-amber-ink,#12181B)}}
+#robo-rp .robo-hud{{font:13px/1.5 ui-monospace,monospace;color:var(--tc-muted);overflow-wrap:anywhere;min-block-size:3em}}
+#robo-rp select{{max-inline-size:calc(100vw - 140px);text-overflow:ellipsis}}
+#robo-rp .robo-row label{{min-inline-size:0;max-inline-size:100%}}
+#robo-rp .robo-row{{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 8px}}
 pre.card-pre{{white-space:pre-wrap;overflow-wrap:anywhere;font:12px ui-monospace,monospace;margin:0}}
 </style>
 </head>
@@ -303,9 +509,13 @@ pre.card-pre{{white-space:pre-wrap;overflow-wrap:anywhere;font:12px ui-monospace
 <div class="st"><dt>{T("robo.an.success")}</dt><dd data-an="success">0 / 0</dd></div><div class="st"><dt>{T("robo.an.duration")}</dt><dd data-an="duration">0.0</dd></div></dl>
 <h4>{T("robo.an.hist")}</h4><div id="robo-an-hist" aria-live="polite"></div>
 <h4>{T("robo.an.card")}</h4><pre class="card-pre" id="robo-an-card"></pre></section>
+<section class="box" aria-labelledby="robo-h-rp" id="robo-rp"><h2 id="robo-h-rp" data-i18n="robo.h.replay">{E(EN["robo.h.replay"])}</h2>
+<p class="muted">{T("robo.rp.note")}</p>{REPLAY_HTML}</section>
 <section class="box" aria-labelledby="robo-h-bench"><h2 id="robo-h-bench" data-i18n="robo.h.bench">{E(EN["robo.h.bench"])}</h2>
 <p class="muted">{T("robo.bench.note")} <code>policy {E(BENCH["policy_version"])}</code> · seeds {E(", ".join(str(x) for x in BENCH["seeds"]))}</p>
 <p class="muted" id="robo-bench-bound">{T("robo.bench.bound")} {T("robo.bench.feas")}: <b data-feas>{SORT_FEAS["feasible_seeds"]} / {len(BENCH["seeds"])}</b> · {T("robo.bench.ibound")}: <b data-ibound>{SORT_FEAS["items_bound"]}</b> ({E(SORT_FEAS["budget_m"])} m)</p>
+{REACH_HTML}
+<h3 data-i18n="robo.h.chart">{E(EN["robo.h.chart"])}</h3>{CHART_HTML}
 <div class="tw"><table id="robo-bench"><thead><tr><th>{T("robo.c.env")}</th><th>{T("robo.c.level")}</th><th>{T("robo.success")}</th><th>{T("robo.c.items")}</th><th>{T("robo.steps")}</th><th>{T("robo.return")}</th></tr></thead><tbody>{bench_rows}</tbody></table></div></section>
 <section class="box" aria-labelledby="robo-h-envs"><h2 id="robo-h-envs" data-i18n="robo.h.envs">{E(EN["robo.h.envs"])}</h2>{cards_env}</section>
 <section class="box" aria-labelledby="robo-h-emb"><h2 id="robo-h-emb" data-i18n="robo.h.emb">{E(EN["robo.h.emb"])}</h2><div class="cards">{cards_emb}</div></section>
@@ -315,6 +525,7 @@ pre.card-pre{{white-space:pre-wrap;overflow-wrap:anywhere;font:12px ui-monospace
 <script type="application/json" id="robo-data">{js_json(DATA)}</script>
 <script type="application/json" id="robo-i18n">{js_json(I18N)}</script>
 <script id="robo-kit">{ROBO_JS}</script>
+<script id="robo-replay">{REPLAY_JS}</script>
 <script id="robo-page">{PAGE_JS}</script>
 <script>{tjs}</script>
 <script id="style-js">{STYLE_JS}</script>

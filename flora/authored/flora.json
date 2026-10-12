@@ -935,5 +935,188 @@
         ]
       ]
     }
+  },
+  "wilds": {
+    "about": "Ground flora for the four AUTHORED wilds worlds (web/trade_craft_wilds.html): grass clumps, ferns, sedges and low shrubs under and between the page's own trees and rocks. Plants named generally; every size, colour, density and rule is AUTHORED set dressing, not a survey, species map or count.",
+    "page_line": "Ground flora: AUTHORED placement of generally named plants by biome - not a survey, species map or count.",
+    "families": [
+      "shrub",
+      "reed"
+    ],
+    "draw_calls": 1,
+    "cell_m": 6,
+    "radius_m": 130,
+    "cap": 700,
+    "tris_max": 9800,
+    "max_slope": 0.7,
+    "snow_margin_m": 30,
+    "trail_clear_m": 2,
+    "species": {
+      "alpine_grass": {
+        "name": "alpine grass clump (generic)",
+        "family": "reed",
+        "height_m": [
+          0.2,
+          0.5
+        ],
+        "crown_m": [
+          0.6,
+          1.2
+        ],
+        "colour": "#9aa36a"
+      },
+      "mountain_shrub": {
+        "name": "low mountain shrub (generic)",
+        "family": "shrub",
+        "height_m": [
+          0.4,
+          1.0
+        ],
+        "crown_m": [
+          0.8,
+          1.6
+        ],
+        "colour": "#5f7448"
+      },
+      "fern": {
+        "name": "fern clump (generic)",
+        "family": "reed",
+        "height_m": [
+          0.4,
+          0.9
+        ],
+        "crown_m": [
+          0.8,
+          1.6
+        ],
+        "colour": "#4f7a3a"
+      },
+      "forest_shrub": {
+        "name": "understory shrub (generic)",
+        "family": "shrub",
+        "height_m": [
+          0.6,
+          1.6
+        ],
+        "crown_m": [
+          1.0,
+          2.2
+        ],
+        "colour": "#3f6a35"
+      },
+      "desert_scrub": {
+        "name": "desert scrub (generic)",
+        "family": "shrub",
+        "height_m": [
+          0.4,
+          1.2
+        ],
+        "crown_m": [
+          0.8,
+          1.8
+        ],
+        "colour": "#8a8a62"
+      },
+      "bunchgrass": {
+        "name": "bunchgrass (generic)",
+        "family": "reed",
+        "height_m": [
+          0.3,
+          0.7
+        ],
+        "crown_m": [
+          0.5,
+          1.0
+        ],
+        "colour": "#b8a46a"
+      },
+      "marsh_grass": {
+        "name": "marsh grass (generic)",
+        "family": "reed",
+        "height_m": [
+          0.5,
+          1.2
+        ],
+        "crown_m": [
+          0.8,
+          1.6
+        ],
+        "colour": "#9caa5c"
+      },
+      "cattail": {
+        "name": "cattail",
+        "family": "reed",
+        "height_m": [
+          1.2,
+          2.2
+        ],
+        "crown_m": [
+          0.6,
+          1.2
+        ],
+        "colour": "#6f8a3c"
+      },
+      "marsh_shrub": {
+        "name": "marsh-edge shrub (generic)",
+        "family": "shrub",
+        "height_m": [
+          0.8,
+          2.0
+        ],
+        "crown_m": [
+          1.2,
+          2.4
+        ],
+        "colour": "#55704a"
+      }
+    },
+    "biomes": {
+      "mountain": {
+        "per_ha": 45,
+        "mix": {
+          "alpine_grass": 3,
+          "mountain_shrub": 1
+        },
+        "wet": null
+      },
+      "forest": {
+        "per_ha": 60,
+        "mix": {
+          "fern": 3,
+          "forest_shrub": 2
+        },
+        "wet": null
+      },
+      "canyon": {
+        "per_ha": 30,
+        "mix": {
+          "desert_scrub": 2,
+          "bunchgrass": 2
+        },
+        "wet": {
+          "band_m": 3,
+          "per_ha": 60,
+          "mix": {
+            "marsh_grass": 1,
+            "cattail": 1
+          }
+        }
+      },
+      "delta": {
+        "per_ha": 70,
+        "mix": {
+          "marsh_grass": 4,
+          "marsh_shrub": 1
+        },
+        "wet": {
+          "band_m": 1.5,
+          "per_ha": 120,
+          "mix": {
+            "cattail": 3,
+            "marsh_grass": 2
+          }
+        }
+      }
+    }
   }
 }

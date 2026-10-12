@@ -183,10 +183,62 @@ def build():
     for rid in regions:
         if not regions[rid]['species']:
             raise FloraBuildError(f'FLORA-REGION regions.{rid}: no species')
+    # BEGIN WORLD w16 (WORLD·Worlds & Locales): ground flora for the wilds worlds - ONE InstancedMesh holding the
+    # listed plant families as parts (the page's shared-mesh family swap), a cap whose worst case fits tris_max, and
+    # one AUTHORED rule per wilds biome. FLORA-WILDS names every failure.
+    wl = need(src, 'wilds', 'flora.json')
+    for k in ('about', 'page_line', 'families', 'draw_calls', 'cell_m', 'radius_m', 'cap', 'tris_max', 'max_slope',
+              'snow_margin_m', 'trail_clear_m', 'species', 'biomes'):
+        need(wl, k, 'wilds')
+    if not re.search(r'AUTHORED', wl['page_line']) or 'not a survey' not in wl['page_line']:
+        raise FloraBuildError('FLORA-WILDS wilds.page_line: must say AUTHORED and "not a survey"')
+    if wl['draw_calls'] != 1:
+        raise FloraBuildError(f'FLORA-WILDS wilds.draw_calls: {wl["draw_calls"]} - the wilds ground flora is ONE InstancedMesh')
+    for k in ('cell_m', 'radius_m', 'cap', 'tris_max', 'max_slope', 'snow_margin_m', 'trail_clear_m'):
+        if not isinstance(wl[k], (int, float)) or wl[k] <= 0:
+            raise FloraBuildError(f'FLORA-WILDS wilds.{k}: must be a positive number')
+    if not wl['families'] or len(set(wl['families'])) != len(wl['families']):
+        raise FloraBuildError('FLORA-WILDS wilds.families: a non-empty list without repeats')
+    for f in wl['families']:
+        if f not in fams or f in ('moss', 'detail'):
+            raise FloraBuildError(f'FLORA-WILDS wilds.families: {f!r} is not a plant family')
+    per_inst = sum(fams[f]['tris'] for f in wl['families'])   # every part is drawn (collapsed) for every instance
+    if wl['cap'] * per_inst > wl['tris_max']:
+        raise FloraBuildError(f'FLORA-WILDS wilds: worst case cap {wl["cap"]} x {per_inst} tris > tris_max {wl["tris_max"]}')
+    wsp = {}
+    for sid, sp in wl['species'].items():
+        for k in ('name', 'family', 'height_m', 'crown_m', 'colour'):
+            need(sp, k, f'wilds.species.{sid}')
+        if sp['family'] not in wl['families']:
+            raise FloraBuildError(f'FLORA-WILDS wilds.species.{sid}: family {sp["family"]!r} is not one of wilds.families')
+        rng(sp['height_m'], f'wilds.species.{sid}.height_m'); rng(sp['crown_m'], f'wilds.species.{sid}.crown_m')
+        colour(sp['colour'], f'wilds.species.{sid}.colour')
+        wsp[sid] = dict(sp)
+    cell2 = wl['cell_m'] * wl['cell_m'] / 10000.0
+    for bid, br in wl['biomes'].items():
+        for k in ('per_ha', 'mix', 'wet'):
+            need(br, k, f'wilds.biomes.{bid}')
+        rules = [('', br)] + ([('.wet', br['wet'])] if br['wet'] is not None else [])
+        if br['wet'] is not None and not (isinstance(need(br['wet'], 'band_m', f'wilds.biomes.{bid}.wet'), (int, float)) and br['wet']['band_m'] > 0):
+            raise FloraBuildError(f'FLORA-WILDS wilds.biomes.{bid}.wet.band_m: must be > 0')
+        for tag, ru in rules:
+            for k in ('per_ha', 'mix'):
+                need(ru, k, f'wilds.biomes.{bid}{tag}')
+            if not (ru['per_ha'] > 0 and ru['per_ha'] * cell2 <= 1):
+                raise FloraBuildError(f'FLORA-WILDS wilds.biomes.{bid}{tag}.per_ha: {ru["per_ha"]} must be > 0 and fit one plant per cell_m cell')
+            if not ru['mix']:
+                raise FloraBuildError(f'FLORA-WILDS wilds.biomes.{bid}{tag}.mix: empty')
+            for sid, wt in ru['mix'].items():
+                if sid not in wsp or not wt > 0:
+                    raise FloraBuildError(f'FLORA-WILDS wilds.biomes.{bid}{tag}.mix: {sid!r} is not a wilds species (weight > 0)')
+    if not wl['biomes']:
+        raise FloraBuildError('FLORA-WILDS wilds.biomes: empty')
+    wilds = dict(wl); wilds['species'] = wsp; wilds['tris_per_instance'] = per_inst
+    # END WORLD w16
     return {
         'schema': 'FLORA v1', 'provenance': 'AUTHORED', 'inputs': INPUTS, 'source_stamp': stamp(),
         'honesty': src['honesty'], 'families': fams, 'budgets': bud, 'species': species, 'moss': moss,
-        'details': details, 'regions': regions,
+        'details': details, 'regions': regions, 'wilds': wilds,   # WORLD w16
         'counts': {'species': len(species), 'details': len(details), 'families': len(fams),
                    'worst_case_tris': worst, 'per_region': {r: len(v['species']) for r, v in regions.items()}},
     }

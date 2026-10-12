@@ -67,5 +67,27 @@ for (const r of ['louisiana', 'bay']) {
     L && JSON.stringify(Object.keys(L).sort()) === JSON.stringify([...codes].sort()) && L['50'] === null && L['80'] === null && L['90'] && Object.keys(L['90'].mix).some((s) => reg.species[s].family === 'reed'));
 }
 ok('[registry] registry species / regions are the authored ones (no additions at build time)', JSON.stringify(Object.keys(reg.species).sort()) === JSON.stringify(Object.keys(src.species).sort()) && JSON.stringify(Object.keys(reg.regions).sort()) === JSON.stringify(Object.keys(src.regions).sort()));
+/* BEGIN WORLD w16 (WORLD·Worlds & Locales): the wilds ground-flora section (web/florakit.py createWildsFlora) */
+{
+  const W = reg.wilds, F = reg.families;
+  let wreg = null; try { wreg = JSON.parse(readFileSync(join(ROOT, 'wilds/registry/wilds.json'), 'utf8')); } catch { wreg = null; }
+  ok('[wilds] a wilds section, provenance AUTHORED, a page line that says AUTHORED and "not a survey", ONE draw call', !!W && /AUTHORED/.test(W.page_line) && W.page_line.includes('not a survey') && W.draw_calls === 1);
+  const per = W ? W.families.reduce((a, f) => a + (F[f] ? F[f].tris : 1e9), 0) : 0;
+  ok('[wilds] families are plant families drawn as parts of one mesh; worst case cap x sum(part tris) <= tris_max',
+    !!W && W.families.length > 0 && W.families.every((f) => F[f] && !['moss', 'detail'].includes(f)) && W.tris_per_instance === per && W.cap * per <= W.tris_max,
+    [W ? `${W.cap} x ${per} vs ${W.tris_max}` : 'no wilds']);
+  const badSp = W ? Object.entries(W.species).filter(([, s]) => !(W.families.includes(s.family) && s.height_m[0] > 0 && s.height_m[0] <= s.height_m[1] && s.crown_m[0] > 0 && s.crown_m[0] <= s.crown_m[1] && /^#[0-9a-fA-F]{6}$/.test(s.colour) && typeof s.name === 'string' && s.name.length > 2)).map(([k]) => k) : ['no wilds'];
+  ok('[wilds] every wilds species: a wilds family, positive [min, max] height and crown, #RRGGBB colour, a general name', badSp.length === 0, badSp);
+  const worlds = wreg ? wreg.worlds.map((w) => w.id) : [];
+  const noRule = worlds.filter((id) => !W || !W.biomes[id]);
+  ok(`[wilds] every wilds world (${worlds.join(', ')}) has a ground-flora biome rule`, worlds.length > 0 && noRule.length === 0, noRule);
+  const cell2 = W ? W.cell_m * W.cell_m / 10000 : 0, badRule = [];
+  for (const [b, r] of Object.entries(W ? W.biomes : {})) for (const [tag, x] of [['', r], ['.wet', r.wet]]) {
+    if (x === null) continue;
+    if (!(x.per_ha > 0 && x.per_ha * cell2 <= 1) || !Object.keys(x.mix).length || !Object.entries(x.mix).every(([sp, wt]) => W.species[sp] && wt > 0) || (tag && !(x.band_m > 0))) badRule.push(b + tag);
+  }
+  ok('[wilds] every biome rule (and wet band): 0 < per_ha with at most one plant per cell, a mix of wilds species only', !!W && badRule.length === 0, badRule);
+}
+/* END WORLD w16 */
 console.log(`\nflora/test: ${n} checks passed, ${bad} failed`);
 process.exit(bad ? 1 : 0);

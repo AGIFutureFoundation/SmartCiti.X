@@ -192,4 +192,80 @@ ok("t() resolves dotted keys and fmt() fills placeholders",
 ok('strict lookup throws on a missing key instead of falling back silently',
   (() => { try { t('es', 'strings.does.not.exist'); return false; } catch { return true; } })());
 
+/* BEGIN WORLD w16 (WORLD·Worlds & Locales): every tr() key the parish and Bay pages use exists in all 8 locales.
+ * The pages' tr() throws on a key its embedded catalogue lacks, so a key missing from one locale is a run-time crash
+ * in that language only. Keys are read from the BUILT pages: literal tr('k') calls, data-i18n / data-i18n-aria
+ * attributes, the deep kit's T('k') (it is handed T: tr), and the known dynamic forms expanded from their own
+ * literals (fleet HUD labels, fleet touch labels, NPC labels when the page carries NPCs). Any OTHER non-literal tr()
+ * argument fails by name, so a new dynamic call cannot slip past this check. */
+{
+  const ROOT_W = new URL('../', import.meta.url);
+  const lit = (src) => [...src.matchAll(/'([a-z0-9_.]+)'/gi)].map((m) => m[1]);
+  const pageTrKeys = (html) => {
+    const keys = new Set(), unknown = [];
+    for (const m of html.matchAll(/(?<![\w.$])tr\(\s*(['"])([^'"]+)\1\s*\)/g)) keys.add(m[2]);
+    for (const m of html.matchAll(/data-i18n(?:-aria)?="([^"]+)"/g)) keys.add(m[1]);
+    if (/\bT: tr\b/.test(html)) for (const m of html.matchAll(/(?<![\w.$])T\('([a-z0-9_.]+)'\)/g)) keys.add(m[1]);
+    const npcsOn = !/id="parish-npcs">null</.test(html);
+    const known = {
+      'k': () => [],                                    // function tr(k) itself
+      'el.dataset.i18n': () => [], 'el.dataset.i18nAria': () => [],   // the data-i18n attributes, scanned above
+      "k === 'exit' ? 'fleet.hud.exit_e' : 'fleet.hud.' + k": () => {
+        const m = html.match(/const FLEET_HUD_LABELS = \[([^\]]*)\];/);
+        if (!m) { unknown.push('FLEET_HUD_LABELS literal not found'); return []; }
+        return lit(m[1]).map((k) => (k === 'exit' ? 'fleet.hud.exit_e' : 'fleet.hud.' + k));
+      },
+      "'fleet.touch.' + k": () => {
+        const m = html.match(/\[([^\]]*)\]\.map\(\(k\) => \[k, tr\('fleet\.touch\.' \+ k\)\]\)/);
+        if (!m) { unknown.push('fleet.touch label list literal not found'); return []; }
+        return lit(m[1]).map((k) => 'fleet.touch.' + k);
+      },
+      'key': () => {                                    // npckit labelsFrom(tr): LABEL_I18N + ROLE_KEYS values
+        if (!npcsOn) return [];
+        const a = html.match(/const LABEL_I18N = \{([^}]*)\}/), b = html.match(/const ROLE_KEYS = \{([^}]*)\}/);
+        if (!a || !b) { unknown.push('npc LABEL_I18N / ROLE_KEYS literal not found'); return []; }
+        return [...lit(a[1]), ...lit(b[1])].filter((k) => k.startsWith('npc.'));
+      },
+    };
+    for (const m of html.matchAll(/(?<![\w.$])tr\(((?:[^()]|\([^()]*\))*)\)/g)) {
+      const arg = m[1].trim();
+      if (/^(['"])[^'"]+\1$/.test(arg)) continue;
+      if (Object.hasOwn(known, arg)) { for (const k of known[arg]()) keys.add(k); continue; }
+      unknown.push(`tr(${arg.slice(0, 60)})`);
+    }
+    return { keys: [...keys].sort(), unknown, npcsOn };
+  };
+  const embedded = (html) => {
+    const m = html.match(/<script type="application\/json" id="parishes-i18n">([\s\S]*?)<\/script>/);
+    return m ? JSON.parse(m[1].replace(/<\\\//g, '</')) : null;
+  };
+  for (const page of ['web/trade_craft_parishes.html', 'web/trade_craft_bay.html']) {
+    const html = readFileSync(new URL(page, ROOT_W), 'utf8');
+    const { keys, unknown, npcsOn } = pageTrKeys(html);
+    ok(`${page}: every tr() argument is a literal or a known, expanded dynamic form (${keys.length} keys) — unknown: ${unknown.join('; ') || 'none'}`,
+      unknown.length === 0 && keys.length > 20);
+    const missing = LOCALES.flatMap((l) => keys.filter((k) => typeof load(l).strings[k] !== 'string' || !load(l).strings[k].trim()).map((k) => `${l}:${k}`));
+    ok(`${page}: all ${keys.length} tr() keys exist in all ${LOCALES.length} locale files — missing: ${missing.join(', ') || 'none'}`,
+      missing.length === 0);
+    const cat = embedded(html);
+    const gap = cat ? LOCALES.flatMap((l) => keys.filter((k) => !cat[l] || typeof cat[l].strings[k] !== 'string').map((k) => `${l}:${k}`)) : ['no embedded catalogue'];
+    ok(`${page}: the embedded run-time catalogue carries all ${keys.length} tr() keys for all ${LOCALES.length} locales — missing: ${gap.join(', ') || 'none'}`,
+      gap.length === 0 && Object.keys(cat).length === LOCALES.length);
+    ok(`${page}: Talk with no NPC kit names parishes.npc_off, never the stub-vehicle line (NPCs ${npcsOn ? 'on' : 'off'} here)`,
+      html.includes("function talk() { if (!npcKit) { toast(tr('parishes.npc_off')); return null; }")
+      && !/function talk\(\) \{ if \(!npcKit\) \{ toast\(tr\('parishes\.stub_vehicle'\)\)/.test(html));
+    ok(`${page}: Drive/Boat (E) with no parked vehicle in reach names parishes.novehicle`,
+      html.includes("if (!v) { toast(tr('parishes.novehicle')); return false; }") && keys.includes('parishes.novehicle'));
+  }
+  const bay = readFileSync(new URL('web/trade_craft_bay.html', ROOT_W), 'utf8');
+  ok('the Bay page carries NPCs off (the case the npc_off line exists for)', !pageTrKeys(bay).npcsOn);
+  for (const k of ['parishes.npc_off', 'parishes.novehicle']) {
+    const src = en.strings[k];
+    ok(`${k} is translated in every non-source locale (no locale copies the English text)`,
+      typeof src === 'string' && LOCALES.filter((l) => l !== 'en').every((l) => load(l).strings[k] !== src)
+      && new Set(LOCALES.map((l) => load(l).strings[k])).size === LOCALES.length);
+  }
+}
+/* END WORLD w16 */
+
 console.log(`i18n/test: ${n} checks passed — ${LOCALES.length} locales`);

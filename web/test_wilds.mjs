@@ -318,5 +318,24 @@ ok('[eval] web/eval_wilds.mjs declares a target for every world and all four vie
     && /PROG_KEY = 'tc-class-progress', PLAN_KEY = 'tc-class-plan'/.test(kit));
 }
 
+/* BEGIN WORLD w16 (WORLD·Worlds & Locales): ground flora (web/florakit.py createWildsFlora, flora/registry/flora.json#wilds) */
+{
+  let fl = null; try { fl = JSON.parse(read('flora/registry/flora.json')); } catch { fl = null; }
+  const m = main.match(/const WILDS_FLORA_DATA = (\{.*?\});\n/);
+  let emb = null; try { emb = m ? JSON.parse(m[1].replace(/<\\\//g, '</')) : null; } catch { emb = null; }
+  ok('[flora] the page embeds the registry wilds ground-flora section and its stamp, and only the families it draws as parts',
+    !!fl && !!emb && emb.source_stamp === fl.source_stamp && same(emb.wilds, fl.wilds) && same(Object.keys(emb.families).sort(), [...fl.wilds.families].sort()));
+  const noRule = reg.worlds.map((w) => w.id).filter((id) => !(emb && emb.wilds.biomes[id]));
+  ok('[flora] every world on the page has a ground-flora biome rule', reg.worlds.length > 0 && noRule.length === 0, noRule);
+  ok('[flora] ONE createWildsFlora mount (one InstancedMesh, the other parts collapsed in the vertex shader), re-made per world',
+    (main.match(/createWildsFlora\(scene, \{/g) || []).length === 1 && (main.match(/new THREE\.InstancedMesh\(geo, mat, CAP\)/g) || []).length === 1
+      && /transformed \*= step\(abs\(flPart - flKind\), 0\.5\);/.test(main) && /if \(!WFL \|\| WFL\.biomeId !== W\.id\) \{ if \(WFL\) WFL\.dispose\(\); WFL = mountWildsFlora\(\);/.test(main));
+  ok('[flora] refilled with the trees (refillVeg), hidden in the overview (setMode), counted in __wilds.stats().flora',
+    /function refillVeg\(\) \{\n  vegAt = \{ x: eye\.x, z: eye\.z \};\n  wildsFloraRefill\(\);/.test(main) && /bbMesh\.visible = walkOn;\n  if \(WFL\) WFL\.setVisible\(walkOn\);/.test(main)
+      && /flora: WFL \? WFL\.stats\(\) : null,/.test(main) && /WFL\.refill\(eye\); WFL\.setVisible\(mode === 'walk'\);/.test(main));
+  ok('[flora] ground flora stands on the AUTHORED terrain, off trails, out of water and below the snow margin (the hooks the kit gets)',
+    /height: T\.height, slope: T\.slope, blocked: \(x, z, r\) => nearTrail\(x, z, r\), waterLevel: W\.biome\.water_level_m, snowLine: W\.biome\.snow_line_m/.test(main));
+}
+/* END WORLD w16 */
 console.log(bad ? `wilds page: ${bad} FAILED, ${n} ok` : `wilds page: all ${n} checks ok`);
 process.exit(bad ? 1 : 0);

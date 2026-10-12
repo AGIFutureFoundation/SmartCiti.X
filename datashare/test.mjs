@@ -249,7 +249,7 @@ rmSync(tmp, { recursive: true, force: true });
    on its LAST declared seed, plus a human episode the learner stopped early - ride in a /2 package with a recomputed
    digest: the contrib verifier passes it and the dataset builder admits every episode. ---- */
 {
-  const kit = R('web/robokit.py'), core = kit.slice(kit.indexOf('/* ROBOKIT_CORE:BEGIN'), kit.indexOf('/* ROBOKIT_CORE:END */'));
+  const kit = R('web/robokit.py'), core = kit.slice(kit.indexOf('/* SIM_CORE:BEGIN'), kit.indexOf('/* SIM_CORE:END */'));
   const RC = new Function(core + '\nreturn RoboCore;')();
   const T = { kind: TRAINING.world_episode_kinds['world-teleop'], world_teleop: TRAINING.world_teleop };
   const rk = Object.values(ROBOTICS.envs).filter((e) => e.runner === 'robokit');

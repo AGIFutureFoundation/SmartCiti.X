@@ -1165,7 +1165,7 @@
    "url": "https://github.com/AGIFutureFoundation/vr-safety-training/blob/claude/vr-ar-safety-training-wkwmve/WebXR/smartcity/js/sims/ultrasonic-scaling.js"
   }
  ],
- "stations_check": "verified against the reference clone at 9914455d742b5347237a53da71079d5114880bda",
+ "stations_check": "reference clone absent on this machine; transcription kept as recorded",
  "stations_from": {
   "branch": "claude/vr-ar-safety-training-wkwmve",
   "from": "AGIFutureFoundation/vr-safety-training",

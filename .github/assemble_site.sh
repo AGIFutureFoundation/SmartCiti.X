@@ -52,6 +52,9 @@ mkdir -p _site/elevation/vendor && cp elevation/vendor/*.u16.gz elevation/vendor
 # ... and the vendored ESA WorldCover land-cover grids (CC BY 4.0, attribution beside them) that place the vegetation.
 mkdir -p _site/landcover/vendor && cp landcover/vendor/*.u8.gz landcover/vendor/manifest.json landcover/vendor/WORLDCOVER_ATTRIBUTION.txt landcover/vendor/LICENSE_CC-BY-4.0.txt _site/landcover/vendor/
 for f in landcover/vendor/parishes.u8.gz landcover/vendor/bayarea.u8.gz; do [ -f "_site/$f" ] || { echo "assemble: $f missing from _site"; exit 1; }; done
+# GROUND w16: the geomap's relief shading - PNGs made at build time from those grids (elevation/hillshade.py), same-origin.
+mkdir -p _site/elevation/derived && cp elevation/derived/hillshade_*.png _site/elevation/derived/
+for f in elevation/derived/hillshade_parishes.png elevation/derived/hillshade_bayarea.png; do [ -f "_site/$f" ] || { echo "assemble: $f missing from _site"; exit 1; }; done
 for f in elevation/vendor/parishes.u16.gz elevation/vendor/bayarea.u16.gz; do [ -f "_site/$f" ] || { echo "assemble: $f missing from _site"; exit 1; }; done
 for f in smiles/maps/district-4k.webp smiles/maps/atlas.webp; do [ -f "_site/$f" ] || { echo "assemble: $f missing from _site"; exit 1; }; done
 python3 - <<'PY'

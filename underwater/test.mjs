@@ -56,8 +56,8 @@ const ids = new Set(reg.bodies.map((b) => b.id));
 let want = 0, miss = [];
 for (const [, rp, key, dir] of worlds) for (const f of Object.keys(js(rp)[key])) { const w = js(`${dir}/${f}.json`).water;
   for (const k of ['lakes', 'channels', 'ponds']) for (const x of w[k]) { want++; if (!ids.has(x.id)) miss.push(x.id); } }
-ok('coverage', miss.length === 0 && ids.size === reg.bodies.length && reg.bodies.length === want + 1 && ids.has('bay-open-0'),
-  `${reg.bodies.length} bodies = ${want} world-file water bodies + bay-open-0 (missing ${miss.length})`);
+ok('coverage', miss.length === 0 && ids.size === reg.bodies.length && reg.bodies.length === want + 2 && ids.has('bay-open-0') && ids.has('bay-shore-sf-0'),
+  `${reg.bodies.length} bodies = ${want} world-file water bodies + bay-shore-sf-0 (GROUND w16) + bay-open-0 (missing ${miss.length})`);
 ok('coverage', reg.counts.bodies === reg.bodies.length && reg.counts.habitats === reg.bodies.reduce((a, b) => a + b.habitats.length, 0), 'counts recomputed');
 
 // [grid] shapes, depth bounds, substrate codes
@@ -154,6 +154,46 @@ ok('restore', kit.stats().sampled.includes('t1'), 'RESTORE hook: a target within
 const bidx = K.deepIndex(K.__BAY), bg = bay.grid; let bi = null;
 for (let j = 0; j < bg.ny && !bi; j++) for (let i = 0; i < bg.nx; i++) if (bg.depth_dm[j][i] > 80) { bi = [bg.origin_world_m[0] + i * bg.cell_m, bg.origin_world_m[1] + j * bg.cell_m]; break; }
 ok('grid', bi && bidx.depthAt(bi[0], bi[1]).d > 8, 'Bay open water depth lookup works in the Bay world frame');
+
+// BEGIN GROUND w16 [shore] AUTHORED bathymetry from the San Francisco shore (body bay-shore-sf-0, underwater/build.py GROUND block)
+{
+  const sf = reg.bodies.find((b) => b.id === 'bay-shore-sf-0');
+  const sidx = K.deepIndex(K.deepWorld(reg, 'bay'));   // the registry under test (--root), not the kit's own embed
+  const order = reg.bodies.findIndex((b) => b.id === 'bay-shore-sf-0') < reg.bodies.findIndex((b) => b.id === 'bay-open-0');
+  ok('shore', sf && sf.world === 'bay' && sf.kind === 'bay' && sf.profile.provenance === 'AUTHORED' && sf.shoreline.provenance === 'AUTHORED' && sf.habitats.every((h) => h.provenance === 'AUTHORED') && order,
+    'bay-shore-sf-0: Bay world, depth profile + shoreline mask + habitats AUTHORED, listed before bay-open-0 (depthAt: first body wins)');
+  const breg = js('bayarea/registry/bayarea.json'), polys = Object.values(breg.counties).map((c) => c.outline_world_m);
+  const inRing = (r, x, y) => { let ins = false; for (let i = 0, j = r.length - 1; i < r.length; j = i++) { const [xi, yi] = r[i], [xj, yj] = r[j]; if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) ins = !ins; } return ins; };
+  const onLand = (x, y) => polys.some((P) => P.reduce((a, poly) => a + poly.reduce((b, r) => b + (inRing(r, x, y) ? 1 : 0), 0), 0) % 2 === 1);
+  // the Bay page's open water next to the San Francisco county outline: every 100 m along it, 10/50/150/400 m out on both sides
+  let tot = 0, hit = 0, first = 0; const miss = [];
+  for (const poly of breg.counties['06075'].outline_world_m) { const ring = poly[0];
+    for (let k = 0; k < ring.length - 1; k++) { const [x0, y0] = ring[k], [x1, y1] = ring[k + 1], L = Math.hypot(x1 - x0, y1 - y0); if (L < 1) continue;
+      for (let s = 0; s < L; s += 100) { const x = x0 + (x1 - x0) * s / L, y = y0 + (y1 - y0) * s / L, nx = (y1 - y0) / L, ny = -(x1 - x0) / L;
+        for (const sg of [1, -1]) for (const d of [10, 50, 150, 400]) { const px = x + sg * nx * d, py = y + sg * ny * d; if (onLand(px, py)) continue;
+          tot++; const r = sidx.depthAt(px, py); if (r) { hit++; if (r.body.id === 'bay-shore-sf-0') first++; } else miss.push([Math.round(px), Math.round(py)]); } } } }
+  ok('shore', tot > 500 && hit === tot && first === tot, `the Bay page's open water along the San Francisco shore: ${hit} of ${tot} samples have an AUTHORED depth, ${first} from bay-shore-sf-0 (was 56.8 % before GROUND w16)${miss.length ? ' misses ' + JSON.stringify(miss.slice(0, 3)) : ''}`);
+  // depth profile: shallow at the shore cell, deep 1.5 km out, never above depth_max_dm
+  const g2 = sf.grid; let shore = [], deep = 0;
+  for (let j = 1; j < g2.ny - 1; j++) for (let i = 1; i < g2.nx - 1; i++) { const d = g2.depth_dm[j][i]; if (!d) continue;
+    const nearDry = [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([a, b]) => g2.depth_dm[j + b][i + a] === 0); if (nearDry) shore.push(d); if (d >= 100) deep++; }
+  ok('shore', shore.length > 50 && Math.max(...shore) <= 6 && deep > 1000, `profile: ${shore.length} shore cells all <= 0.6 m (max ${Math.max(...shore) / 10} m), ${deep} cells >= 10 m offshore`);
+  // from the shore: an ROV launches from a dry shore point (6 m ahead is water) and a swimmer 150 m out can Dive and reach the bed
+  const ring = breg.counties['06075'].outline_world_m[1][0]; let launch = null;
+  for (let k = 0; k < ring.length - 1 && !launch; k++) { const [x0, y0] = ring[k], [x1, y1] = ring[k + 1], L = Math.hypot(x1 - x0, y1 - y0);
+    for (let s = 50; s < L && !launch; s += 50) { const x = x0 + (x1 - x0) * s / L, y = y0 + (y1 - y0) * s / L, nx = (y1 - y0) / L, ny = -(x1 - x0) / L;
+      for (const sg of [1, -1]) { const ex = x - sg * nx * 2, ey = y - sg * ny * 2, ox = x + sg * nx * 150, oy = y + sg * ny * 150;
+        if (onLand(ex, ey) && !onLand(ox, oy)) { launch = { ex, ey, ox, oy }; break; } } } }
+  let rov = null, dive = null;
+  if (launch) { const S2 = sf.surface_y_m, ctx = (o) => ({ overview: false, surface: S2, at: sidx.depthAt, eyeYaw: 0, ...o });
+    const st1 = K.deepState(); rov = K.deepStep(st1, { rov: true }, 0.1, ctx({ waterState: 'dry', eyeE: launch.ex, eyeN: launch.ey })).map((e) => e.type).join() + ':' + st1.mode;
+    const st2 = K.deepState(); const e2 = K.deepStep(st2, { dive: true }, 0.1, ctx({ waterState: 'swim', eyeE: launch.ox, eyeN: launch.oy }));
+    for (let t = 0; t < 20; t += 0.1) K.deepStep(st2, { vertical: -1 }, 0.1, ctx({ waterState: 'swim', eyeE: launch.ox, eyeN: launch.oy }));
+    dive = { enter: e2.map((e) => e.type).join(), mode: st2.mode, bedGap: +(st2.y - (S2 - sidx.depthAt(launch.ox, launch.oy).d)).toFixed(2) }; }
+  ok('shore', launch && rov === 'enter:rov' && dive.enter === 'enter' && dive.mode === 'dive' && dive.bedGap === 0.3,
+    `from the San Francisco shore: ROV from a dry shore point ${rov}; Dive 150 m out ${JSON.stringify(dive)} (stops 0.3 m above the AUTHORED bed)`);
+}
+// END GROUND w16 [shore]
 
 console.log(`${n - bad}/${n} checks passed`);
 if (bad) { console.log(`FAIL ${bad} check(s)`); process.exit(1); }

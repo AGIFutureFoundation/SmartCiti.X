@@ -136,5 +136,21 @@ check('[kit] no "real elevation" claim for AUTHORED relief', !/AUTHORED[^.\n]{0,
   }
 }
 
+// [eval] GROUND w16: the relief row (web/eval_relief.mjs) names BOTH switches, whatever url it is given - so pointing an
+// eval at ?relief=on, or a later default flip, can never turn the off side into a second on side
+{
+  const src = readFileSync(join(HERE, 'eval_relief.mjs'), 'utf8'), m = src.match(/\/\* RELIEF_URLS:BEGIN[\s\S]*?\*\/\s*export (function reliefUrls[\s\S]*?)\n\/\* RELIEF_URLS:END \*\//);
+  check('[eval] eval_relief declares reliefUrls between its RELIEF_URLS markers', !!m);
+  if (m) {
+    const reliefUrls = new Function(m[1] + '\nreturn reliefUrls;')(), B = 'http://127.0.0.1:1/web/trade_craft_parishes.html', bad = [];
+    for (const [u, off, on] of [[B, B + '?relief=off', B + '?relief=on'], [B + '?relief=on', B + '?relief=off', B + '?relief=on'], [B + '?relief=off', B + '?relief=off', B + '?relief=on'],
+      [B + '?relief=on&lang=fr', B + '?lang=fr&relief=off', B + '?lang=fr&relief=on'], [B + '?lang=fr', B + '?lang=fr&relief=off', B + '?lang=fr&relief=on']]) {
+      const r = reliefUrls(u); if (r.off !== off || r.on !== on) bad.push([u, r]);
+    }
+    check('[eval] relief row: off side is ?relief=off and on side ?relief=on for any url (5 urls)', bad.length === 0, bad);
+  }
+  check('[eval] relief row prints the load average beside its patch time', /row\.load = loadavg\(\)/.test(src) && /patchMs: p\.ms/.test(src));
+}
+
 if (fails) { console.log(`FAIL test_terrainkit: ${fails} failed`); process.exit(1); }
 console.log('test_terrainkit: all checks ok');
