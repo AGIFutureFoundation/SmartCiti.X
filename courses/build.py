@@ -399,24 +399,50 @@ for c in draft['courses']:
 
 # A closed status set, so the registry can say what actually happened to a
 # sprint instead of reading "planned" forever (product review on PR #107).
-SPRINT_STATUSES = ('planned', 'in-progress', 'shipped', 'slipped', 'cancelled')
+SPRINT_STATUSES = ('planned', 'in-progress', 'gate-run-early', 'shipped', 'slipped', 'cancelled')
+# 'shipped' is reserved for a sprint whose window has closed and whose ship list
+# exists. 'gate-run-early' means the sprint's eval gate was run during the
+# 2026-10-12 loop, before the sprint's window opened: the gate result is real,
+# the sprint is not delivered. Each run sprint names what exists in this
+# repository (built) and what on its ship line does not (not_built).
 SPRINT_OUTCOMES = {
-    'S1': ('shipped', 'partial: the schema and honesty parts were met; the '
-                      '200-session hint-ladder run was not executed'),
-    'S2': ('shipped', 'met on the fixture set only: after cycle-3 tuning the guards '
-                      'escalate 80 of 80 out-of-scope prompts with 0 of 48 false '
-                      'escalations, but a blind held-out batch caught 2 of 12, so '
-                      'the regex guards do not generalise to unseen phrasing '
-                      '(fabric/test_mentor_scope.mjs)'),
-    'S3': ('shipped', 'met on the scripted suite: 981 of 981 bypass attempts blocked '
-                      'and 78 of 78 legitimate entries allowed, overrides audited '
-                      '(safety_gate/test.mjs); electrical and HVAC wiring partial, '
-                      '2 of 10 modules wired, to tool cribs only'),
-    'S4': ('shipped', 'partial: the cohort dashboard reconciles 310 figures with an '
-                      'independent recomputation at 0.00% error on SYNTHETIC data '
-                      '(cohort/test.mjs); its skill map uses an invented '
-                      'module-to-strand mapping; the trade-accuracy review by a '
-                      'qualified human was not done, no reviewer is engaged'),
+    'S1': ('in-progress',
+           'partial: the schema and honesty parts were met; the 200-session '
+           'hint-ladder run was not executed',
+           ['course schema and authoring pipeline (courses/build.py)',
+            'TCA-140 Welding modules 1-2 wired to existing interior sites'],
+           ['Prepare Pack for Joyce', 'Mentor Chat for Joyce',
+            'the 200-session hint-ladder run']),
+    'S2': ('gate-run-early',
+           'met on the fixture set only: after cycle-3 tuning the guards '
+           'escalate 80 of 80 out-of-scope prompts with 0 of 48 false '
+           'escalations, but a blind held-out batch caught 2 of 12 before '
+           'tuning, so the regex guards do not generalise to unseen phrasing '
+           '(fabric/test_mentor_scope.mjs)',
+           ['Teacher Lesson Planner v1 (courses/lesson_plans.py)',
+            'the mentor-scope eval (fabric/test_mentor_scope.mjs)'],
+           ['TCA-210 Hair and TCA-230 Esthetics modules 1-3 (need Beauty School, '
+            'which is not in this repository)', 'Tessa and Iris mentor content']),
+    'S3': ('gate-run-early',
+           'met on the scripted suite: 1,342 of 1,342 bypass attempts blocked '
+           'and 78 of 78 legitimate entries allowed, overrides audited '
+           '(safety_gate/test.mjs); electrical and HVAC wiring partial, '
+           '2 of 10 modules wired, to tool cribs only',
+           ['Safety Gate logic, permits, overrides and audit ledger (safety_gate/)',
+            'TCA-110 module 1 and TCA-130 module 1 wired to tool cribs'],
+           ['the remaining TCA-110 and TCA-130 modules 1-3',
+            'a Sam Safety Gate Console screen', 'Safety Card Wallet']),
+    'S4': ('gate-run-early',
+           'partial: the cohort dashboard reconciles 310 figures with an '
+           'independent recomputation at 0.00% error on SYNTHETIC data '
+           '(cohort/test.mjs); its skill map uses an invented '
+           'module-to-strand mapping; the trade-accuracy review by a '
+           'qualified human was not done, no reviewer is engaged',
+           ['Cohort Dashboard v1 and Skill Map, on synthetic data only (cohort/)',
+            'TCA-120 module 4 and TCA-150 module 1 wired'],
+           ['TCA-220 Nail modules 1-3 (need Beauty School, which is not in this '
+            'repository)', 'the remaining TCA-120 and TCA-150 modules 1-3',
+            'the trade-accuracy review by a qualified human']),
 }
 # A pilot with real learners is an ethical and legal precondition, not a note:
 # the sprint record names it and loop/evals.mjs EV-09 enforces it in the ledger.
@@ -426,13 +452,33 @@ PRECONDITIONS = {'S8': ['a named partner', 'an IRB approval or consent-plan refe
 sprints = []
 for s in draft['rapid_roadmap']:
     start, end = parse_window(s['weeks'])
-    status, result = SPRINT_OUTCOMES.get(s['sprint'], ('planned', None))
+    status, result, built, not_built = SPRINT_OUTCOMES.get(s['sprint'], ('planned', None, None, None))
+    assert status in SPRINT_STATUSES, status
     rec = {'sprint': s['sprint'], 'start': start, 'end': end,
            'weeks': s['weeks'], 'status': status, 'gate_result': result,
            'ship': s['ship'], 'eval_gate': s['eval_gate']}
+    if built is not None:
+        rec['built'] = built
+        rec['not_built'] = not_built
     if s['sprint'] in PRECONDITIONS:
         rec['preconditions'] = PRECONDITIONS[s['sprint']]
     sprints.append(rec)
+
+# What each kit item is today. Anything not listed here is planned; the
+# draft's descriptions are the plan, not a feature list.
+KIT_STATUS = {
+    'Lesson Planner': 'v1 built (courses/lesson_plans.py): plans and minute allocations; no printable export yet',
+    'Cohort Dashboard': 'v1 built on SYNTHETIC data only (cohort/); the AI-ZPD dial level and stalled-student flags are planned',
+    'Safety Gate Console': 'gate logic, permits, overrides and audit ledger built (safety_gate/); the teacher console screen is planned',
+    'Skill Map': 'v1 built on SYNTHETIC data only (cohort/), with an invented module-to-strand mapping',
+}
+
+def with_status(items):
+    out = []
+    for it in items:
+        status = KIT_STATUS.get(it['name'], 'planned')
+        out.append({**it, 'status': status})
+    return out
 
 HONESTY = {
     'status': 'every course in this pack is a PLANNED DRAFT: nothing is '
@@ -463,8 +509,8 @@ doc = {
     'stage_map': [{'phase': ph, 'stage': st} for ph, st in PHASE_TO_STAGE],
     'mentor_roster': MENTORS,
     'courses': courses,
-    'teacher_kit': draft['teacher_kit'],
-    'student_kit': draft['student_kit'],
+    'teacher_kit': with_status(draft['teacher_kit']),
+    'student_kit': with_status(draft['student_kit']),
     'agent_assist': draft['agent_assist'],
     'sprints': sprints,
 }

@@ -77,3 +77,10 @@ failing gate stops the release and is never downgraded to a warning.
 `media/`, run brand lint on every caption, and record its path and measured
 duration for the ledger. Generated media is never presented as footage of a
 real site or a real deployment.
+
+## Kept as written, not as followed
+
+The 2026-10-12 loop did not keep the one-directory rule: its ledger records
+the Robotics Integrator building `safety_gate/`, the Billing Engineer building
+`cohort/`, and the Eval Warden working in `loop/` and `fabric/`. Next loop,
+give a new directory an owner in the role table before any work starts there.

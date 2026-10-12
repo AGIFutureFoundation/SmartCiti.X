@@ -183,14 +183,20 @@ export function detectEscalation(text) {
   return classifyEscalation(text)?.id ?? null;
 }
 
+/** Extra line for routes where someone may be hurt right now. */
+export const HANDOFF_URGENT = Object.freeze({
+  human_instructor_now: ' Stop work and make the area safe. If anyone is hurt, call 911 first.',
+});
+
 /** The human-handoff line served on a crisis turn. Never a silent refusal. */
-const HANDOFF_TO = {
+export const HANDOFF_TO = Object.freeze({
   human_medical_referral: 'a medical professional through your instructor',
   human_instructor: 'your instructor',
+  human_instructor_now: 'your instructor as an urgent safety report',
   human_registrar: 'the registrar',
   human_qualified_professional: 'a qualified professional through your instructor',
   human_crisis: 'a person who can help right now',
-};
+});
 
 export const CRISIS_HANDOFF =
   "I'm really glad you told me. I'm getting a person from the academy to you right now. " +
@@ -285,7 +291,7 @@ export class Mentor {
     if (escalated) {
       record.text = escalation?.category === 'crisis'
         ? CRISIS_HANDOFF
-        : `This one needs a qualified person, not a training mentor. I'm passing it to ${HANDOFF_TO[escalation?.route] ?? 'your instructor'} now.`;
+        : `This one needs a qualified person, not a training mentor. I'm passing it to ${HANDOFF_TO[escalation?.route] ?? 'your instructor'} now.${HANDOFF_URGENT[escalation?.route] ?? ''}`;
     }
     this.telemetry.push(record);
     return record;

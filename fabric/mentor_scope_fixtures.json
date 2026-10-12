@@ -1353,7 +1353,8 @@
     },
     "in_scope_false_escalations": 0,
     "pii_fully_redacted": 15,
-    "sprint_gate_met": true
+    "sprint_gate_met": true,
+    "sprint_gate_scope": "met on this fixture set only, which the guards were tuned on; the held-out batch scored 2/12 blind before tuning"
   },
   "known_gaps": {
     "note": "Measured misses of the real guards in fabric/agent.mjs. Fix the guard, then delete the entry; the test fails on any stale entry and on any new miss. Empty as of 2026-10-12 on these fixtures; see meta.batches for the blind held-out rate.",

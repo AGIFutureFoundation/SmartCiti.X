@@ -65,7 +65,7 @@ class Cutter:
               f"drawtext=expansion=none:fontfile={BOLD}:textfile={self._tf(kicker)}:x=110:y=110:fontsize=22:fontcolor={GREEN},"
               f"drawtext=expansion=none:fontfile={BOLD}:textfile={self._tf(title)}:x=110:y=150:fontsize={tsize}:fontcolor={INK},"
               f"drawtext=expansion=none:fontfile={face}:textfile={self._tf(body or ' ')}:x=112:y=235:fontsize={size}:line_spacing=8:fontcolor={INK}@0.85,"
-              f"drawtext=expansion=none:fontfile={BOLD}:textfile={self._tf('SmartCiti.X  |  Trade Craft Academy  |  powered by AGI Corp  |  loop review')}:x=110:y=684:fontsize=16:fontcolor={INK}@0.55,"
+              f"drawtext=expansion=none:fontfile={BOLD}:textfile={self._tf('SmartCiti.X : Trade Craft Academy  |  powered by AGI Corp  |  loop review')}:x=110:y=684:fontsize=16:fontcolor={INK}@0.55,"
               f"fade=t=in:st=0:d=0.4,fade=t=out:st={dur-0.4}:d=0.4")
         self._run(["-f", "lavfi", "-i", f"color=c={PAPER}:s=1280x720:d={dur}:r=30", "-vf", vf], out, dur)
 
@@ -76,6 +76,9 @@ class Cutter:
               f"drawbox=x=0:y=596:w=1280:h=124:color=black@0.6:t=fill,"
               f"drawtext=expansion=none:fontfile={BOLD}:textfile={self._tf(label)}:x=48:y=614:fontsize=20:fontcolor=0x9fe0bf,"
               f"drawtext=expansion=none:fontfile={REG}:textfile={self._tf(caption)}:x=48:y=648:fontsize=27:fontcolor=white,"
+              # Every clip is AI-generated illustration, never footage of a real site (METAPROMPT).
+              f"drawbox=x=0:y=0:w=1280:h=34:color=black@0.55:t=fill,"
+              f"drawtext=expansion=none:fontfile={REG}:textfile={self._tf('Generated footage, illustrative only - not a real site or real learners')}:x=48:y=8:fontsize=16:fontcolor=white@0.85,"
               f"fade=t=in:st=0:d=0.3,fade=t=out:st={dur-0.3}:d=0.3")
         # loop short sources so any duration can be filled
         self._run(["-stream_loop", "-1", "-i", src, "-t", f"{dur:.3f}", "-vf", vf], out, dur)
@@ -189,6 +192,15 @@ def render(a, ledger, cyc, ev, hb, courses, work):
     # agents
     ag = "\n".join(f"{x['name'][:20]:20}  {x.get('result','')[:58]}" for x in cyc.get("agents", [])[:7])
     c.card(10, "04  TEAM AGENTS ON THIS CYCLE", f"{len(cyc.get('agents', []))} agents", ag, mono=True)
+    # on the final planned cycle, one card for the whole loop, straight from the ledger
+    if isinstance(planned, int) and cyc["n"] >= planned:
+        rows = []
+        for x in ledger["cycles"][:cyc["n"]]:
+            g = x.get("gates") or []
+            rows.append(f"#{x['n']}  {str(x.get('started',''))[11:16]}-{str(x.get('ended',''))[11:16]}  "
+                        f"{sum(y['status'] == 'pass' for y in g)}/{len(g)} gates  {x.get('checks_total','?'):>5} checks  "
+                        f"{x.get('sprint','')[:40]}")
+        c.card(12, "05  THE WHOLE LOOP", f"{len(rows)} cycles, from the ledger", "\n".join(rows), mono=True)
     # course coverage montage
     coverage = [co for co in courses if co["code"] not in {f[0]['code'] for f in feature}]
     tail_cards = 6 + 6  # next + status
@@ -206,7 +218,7 @@ def render(a, ledger, cyc, ev, hb, courses, work):
         i += 1
     gap = TOTAL - c.t - tail_cards
     if gap > 0.05:
-        c.clip(gap, FOOTAGE["maps"][a.cycle % len(FOOTAGE["maps"])], "THE CITY IS THE CLASSROOM", "Bay Area training city and four Louisiana parishes")
+        c.clip(gap, FOOTAGE["maps"][a.cycle % len(FOOTAGE["maps"])], "THE CITY IS THE CLASSROOM", "Planned map layers, built in other projects, not verified here")
     c.card(6, "NEXT", "Next checkpoint", "\n".join(wrap(a.next or "See the cycle ledger.", 60)))
     c.card(6, "STATUS, PLAINLY", "Built and in test. Not yet deployed.",
            "Courses are planned drafts. No accreditation, endorsement\nor partner is claimed. Efficacy is not yet measured.")

@@ -2,7 +2,7 @@
  "meta": {
   "status_note": "PLANNING DRAFT. Regions marked built-elsewhere (the Treasure Island training city, the four Louisiana parish cities, the Bay Area hill districts) are 3D city artifacts built in other AGI Future Foundation projects; they are not in this repository and are not verified by it. Every figure quoted for them (building and parcel counts, relay capacity) is that project's, unchecked here. \"in progress\" and \"planned\" mean what they say.",
   "product": "SmartCiti.X : Trade Craft Academy, powered by AGI Corp",
-  "flagship": "Louisiana (Louisiana Robotics AI Trades Initiative)",
+  "flagship": "Louisiana (target state, planned; the Louisiana Robotics AI Trades Initiative is AGI Future Foundation's own planned program, not an outside partner)",
   "doctrine": "Anything not built is labeled planned. No partners, customers or endorsements are claimed. Prices are proposals only.",
   "integrations_planned": ["RP1.com world integration (planned)", "ConstructionVR fork, AGIFutureFoundation/ConstructionVR (planned)"],
   "date": "2026-10-12"
@@ -10,7 +10,7 @@
  "regions": [
   {"name": "Treasure Island Training City (Bay Area)", "kind": "city", "status": "built-elsewhere",
    "features": ["3D city artifact connected to the Bay Bridge", "9 SF/Oakland hill districts with elevation; Nob Hill and Russian Hill as continuous terrain", "9,849 buildings across 10 character archetypes with per-archetype palettes", "day/night cycle; clear/overcast/rain weather with lightning", "multiplayer relay up to 2,000 per room"],
-   "training_sites": ["union halls and driving yard (part of the 125 built)", "walkable jobsite interiors from the 333-site library", "bridge approach rigging and inspection zone"]},
+   "training_sites": ["union halls and driving yard (built in another project, not verified here)", "walkable jobsite interiors from the 333-site library", "bridge approach rigging and inspection zone"]},
   {"name": "San Francisco side", "kind": "district", "status": "in progress",
    "features": ["shown in-city as coming soon", "Chinatown lacquer, mansion-hill ivory and Victorian painted archetypes already in the building set", "steep-grade street network for equipment-operation drills (planned)"],
    "training_sites": ["high-rise curtain-wall retrofit (planned)", "cable car and transit maintenance yard (planned)", "seismic retrofit of soft-story residential (planned)"]},
@@ -69,7 +69,7 @@
   {"name": "City Digital-Twin Pack", "for": "city and parish governments", "includes": ["parish 3D city with real parcel data where available", "MapLibre/Mapbox GeoJSON exports", "storm and flood scenario layer", "public-works training sites", "municipal livery and signage"], "price_hint": "proposal only: range to be set after pilot scoping; not a quote"},
   {"name": "Workforce Board Pack", "for": "regional workforce development boards", "includes": ["multi-site licensing across schools", "orientation hall and career pathway map", "all 24 interior phases as preview tours", "EN/ES onboarding", "outcome dashboards (planned)"], "price_hint": "planned, unpriced"},
   {"name": "Port & Energy Pack", "for": "port-region training programs", "includes": ["Gulf Coast port template (planned)", "Lake Charles/Calcasieu port (planned)", "marine/coastal and utilities phases", "confined space and LNG scenarios (planned)", "port robotics cells (planned)"], "price_hint": "planned, unpriced"},
-  {"name": "Robotics & AI Trades Pack", "for": "Louisiana Robotics AI Trades Initiative programs and robotics instructors", "includes": ["8 robotics cells (planned)", "ROS 2 / Isaac Sim digital-twin bridge (planned)", "cobot safety and programming modules (planned)", "data center and cold chain sites from the built library"], "price_hint": "planned, unpriced"}
+  {"name": "Robotics & AI Trades Pack", "for": "planned audience: robotics instructors and AGI Future Foundation's own planned Louisiana Robotics AI Trades Initiative (no outside partner)", "includes": ["8 robotics cells (planned)", "ROS 2 / Isaac Sim digital-twin bridge (planned)", "cobot safety and programming modules (planned)", "data center and cold chain sites from the built library"], "price_hint": "planned, unpriced"}
  ],
  "robotics_cells": [
   {"name": "Cobot Welding Cell", "where": "Lafayette oilfield fabrication shop (planned)", "robots": "cobot", "skills": ["weld path teaching", "fixture setup", "light curtain and speed-and-separation safety", "weld quality inspection"], "sim_stack": "ROS 2 + Gazebo with MoveIt, planned"},

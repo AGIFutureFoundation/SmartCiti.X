@@ -209,10 +209,17 @@ ok('mentors drawn only from {Chris, Joyce, Tessa, Gemma, Iris, Dana, Sam}, every
   && reg.agent_assist.every((a) => MENTORS.has(a.agent))
   && [...reg.teacher_kit, ...reg.student_kit].every((k) =>
     (k.agent.match(/[A-Z][a-z]+/g) || []).every((m) => MENTORS.has(m))));
-ok('teacher_kit, student_kit and agent_assist copied verbatim from the draft',
-  JSON.stringify(reg.teacher_kit) === JSON.stringify(draft.teacher_kit)
-  && JSON.stringify(reg.student_kit) === JSON.stringify(draft.student_kit)
+const noStatus = (xs) => xs.map(({ status, ...k }) => k);
+ok('teacher_kit, student_kit and agent_assist copied verbatim from the draft (kits add only a status field)',
+  JSON.stringify(noStatus(reg.teacher_kit)) === JSON.stringify(draft.teacher_kit)
+  && JSON.stringify(noStatus(reg.student_kit)) === JSON.stringify(draft.student_kit)
   && JSON.stringify(reg.agent_assist) === JSON.stringify(draft.agent_assist));
+
+ok('every teacher and student kit item carries a status; only items with code here are called built, and synthetic ones say so',
+  [...reg.teacher_kit, ...reg.student_kit].every((k) => typeof k.status === 'string'
+    && (k.status === 'planned' || /built/.test(k.status)))
+  && [...reg.teacher_kit, ...reg.student_kit].filter((k) => /dashboard|skill map/i.test(k.name)).every((k) => /SYNTHETIC/.test(k.status))
+  && [...reg.teacher_kit, ...reg.student_kit].filter((k) => k.status !== 'planned').length === 4);
 
 /* -------------------------------------------------------------- sprints --- */
 const day = 86400000;
@@ -221,11 +228,15 @@ ok('sprints S1..S8 are contiguous 14-day windows starting 2026-10-12',
   && reg.sprints[0].start === '2026-10-12'
   && reg.sprints.every((s, i) => (Date.parse(s.end) - Date.parse(s.start)) / day === 13
     && (i === 0 || (Date.parse(s.start) - Date.parse(reg.sprints[i - 1].end)) / day === 1)));
-ok('sprint status comes from a closed set; a shipped sprint states its gate result, a planned one does not',
-  reg.sprints.every((s) => ['planned', 'in-progress', 'shipped', 'slipped', 'cancelled'].includes(s.status))
-  && reg.sprints.every((s) => (s.status === 'shipped') === (typeof s.gate_result === 'string' && s.gate_result.length > 10))
+ok('sprint status comes from a closed set; a sprint whose gate ran states its result and what is and is not built; none is "shipped" before its window closes',
+  reg.sprints.every((s) => ['planned', 'in-progress', 'gate-run-early', 'shipped', 'slipped', 'cancelled'].includes(s.status))
+  && reg.sprints.every((s) => (s.status !== 'planned') === (typeof s.gate_result === 'string' && s.gate_result.length > 10))
+  && reg.sprints.filter((s) => s.status !== 'planned').every((s) => Array.isArray(s.built) && s.built.length && Array.isArray(s.not_built))
+  && reg.sprints.every((s) => s.status !== 'shipped' || (Date.parse(s.end) < Date.parse(reg.built) && s.not_built.length === 0))
+  && reg.sprints.every((s) => s.status !== 'gate-run-early' || Date.parse(s.start) > Date.parse('2026-10-12'))
   && /held-out/.test(reg.sprints.find((s) => s.sprint === 'S2').gate_result)
-  && /do not generalise/.test(reg.sprints.find((s) => s.sprint === 'S2').gate_result));
+  && /do not generalise/.test(reg.sprints.find((s) => s.sprint === 'S2').gate_result)
+  && /1,342 of 1,342/.test(reg.sprints.find((s) => s.sprint === 'S3').gate_result));
 ok('the S8 pilot carries its preconditions as a field, naming a partner, a consent plan and EV-09',
   (() => { const p = reg.sprints.find((s) => s.sprint === 'S8').preconditions || [];
     return p.some((x) => /partner/.test(x)) && p.some((x) => /consent/.test(x)) && p.some((x) => /EV-09/.test(x)); })());

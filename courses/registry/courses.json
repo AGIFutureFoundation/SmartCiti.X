@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-10-12",
- "source_stamp": "07328e05f673aba0",
+ "source_stamp": "43202e1c25bfaeed",
  "honesty": {
   "status": "every course in this pack is a PLANNED DRAFT: nothing is shipped or deployed, learning efficacy is unestablished, and only the modules marked wired are bound to sites that exist",
   "credit": "no licensing board, jurisdiction or employer has accepted any hour of these courses; simulator, station and lesson time never count toward a licence or certification",
@@ -1937,84 +1937,100 @@
   {
    "name": "Lesson Planner",
    "what": "Builds a week of flipped lessons from a course module: assigns prepare content, picks analyze cases, schedules sim practice and a verify job site; exports to a printable plan.",
-   "agent": "Chris"
+   "agent": "Chris",
+   "status": "v1 built (courses/lesson_plans.py): plans and minute allocations; no printable export yet"
   },
   {
    "name": "Cohort Dashboard",
    "what": "Per-student view of skill-graph mastery, AI-ZPD dial level, hint rungs used, and time-on-task, with flags for students stalled more than 3 sessions.",
-   "agent": "Chris"
+   "agent": "Chris",
+   "status": "v1 built on SYNTHETIC data only (cohort/); the AI-ZPD dial level and stalled-student flags are planned"
   },
   {
    "name": "Rubric Builder",
    "what": "Generates observable-behavior rubrics per trade (e.g. weld bead visual criteria, color formulation accuracy) that the teacher edits and locks before grading.",
-   "agent": "Dana"
+   "agent": "Dana",
+   "status": "planned"
   },
   {
    "name": "Sim Assignment Composer",
    "what": "Assigns specific interior sites and station scripts from the 333 built sites, sets dial bounds and hint caps, and sets due dates.",
-   "agent": "Chris"
+   "agent": "Chris",
+   "status": "planned"
   },
   {
    "name": "Parity Report",
    "what": "Applies ACP parity safeguards to show whether outcomes, hint access and dial ceilings differ across student groups; flags gaps for teacher review, not automatic action.",
-   "agent": "Dana"
+   "agent": "Dana",
+   "status": "planned"
   },
   {
    "name": "Safety Gate Console",
    "what": "Lets the teacher require a passed safety module (LOTO, hot work, cell entry) before a student unlocks hazardous sim stations; logs every override.",
-   "agent": "Sam"
+   "agent": "Sam",
+   "status": "gate logic, permits, overrides and audit ledger built (safety_gate/); the teacher console screen is planned"
   },
   {
    "name": "Licensure Hours Ledger (planned)",
    "what": "Tracks sim and theory hours by trade against registry entries; marks every row as unverified by any board and only shows sourced state minimums (IL, FL, ID cosmetology).",
-   "agent": "Chris"
+   "agent": "Chris",
+   "status": "planned"
   },
   {
    "name": "Trade Demo Library",
    "what": "Mentor-recorded demonstrations (Joyce on 3G root pass, Tessa on sectioning, Gemma on apex placement, Iris on extractions) teachers can embed in prepare phases.",
-   "agent": "Joyce, Tessa, Gemma, Iris"
+   "agent": "Joyce, Tessa, Gemma, Iris",
+   "status": "planned"
   }
  ],
  "student_kit": [
   {
    "name": "Prepare Pack",
    "what": "Short reading, demo video and a 10-question readiness check per module; unlocks the analyze phase at 80% or after a mentor conversation.",
-   "agent": "Chris"
+   "agent": "Chris",
+   "status": "planned"
   },
   {
    "name": "Mentor Chat",
    "what": "Trade mentor answers questions inside the 5-rung hint engine, starting with a nudge and only reaching a worked example after earlier rungs.",
-   "agent": "Joyce, Tessa, Gemma, Iris, Sam, Dana, Chris"
+   "agent": "Joyce, Tessa, Gemma, Iris, Sam, Dana, Chris",
+   "status": "planned"
   },
   {
    "name": "Skill Map",
    "what": "Visual skill graph showing mastered, in-progress and locked skills with the next recommended mission.",
-   "agent": "Chris"
+   "agent": "Chris",
+   "status": "v1 built on SYNTHETIC data only (cohort/), with an invented module-to-strand mapping"
   },
   {
    "name": "Practice Replay",
    "what": "Replays a sim attempt with mentor annotations at the moments that cost points (e.g. travel speed spike, skipped LOTO step).",
-   "agent": "Joyce / Sam"
+   "agent": "Joyce / Sam",
+   "status": "planned"
   },
   {
    "name": "Portfolio Builder",
    "what": "Collects verify-phase artifacts (weld photos, formula cards, as-built reports) into a shareable portfolio clearly labeled as simulation work.",
-   "agent": "Dana"
+   "agent": "Dana",
+   "status": "planned"
   },
   {
    "name": "Board Exam Drill (practice only)",
    "what": "Timed practice items for state-board-style theory and EPA 608 and Part 107 topics; results are never presented as official scores.",
-   "agent": "Tessa / Sam"
+   "agent": "Tessa / Sam",
+   "status": "planned"
   },
   {
    "name": "Safety Card Wallet",
    "what": "Records completion of internal safety modules required to unlock hazardous stations; explicitly not an OSHA card.",
-   "agent": "Sam"
+   "agent": "Sam",
+   "status": "planned"
   },
   {
    "name": "Reflection Journal",
    "what": "Two-minute end-of-session reflection with prompts from Chris's EI course; private by default, shareable with teacher by choice.",
-   "agent": "Chris"
+   "agent": "Chris",
+   "status": "planned"
   }
  ],
  "agent_assist": [
@@ -2060,40 +2076,75 @@
    "start": "2026-10-12",
    "end": "2026-10-25",
    "weeks": "Oct 12 - Oct 25, 2026",
-   "status": "shipped",
+   "status": "in-progress",
    "gate_result": "partial: the schema and honesty parts were met; the 200-session hint-ladder run was not executed",
    "ship": "Course schema and authoring pipeline; TCA-140 Welding modules 1-2 wired to existing interior sites; Prepare Pack and Mentor Chat for Joyce.",
-   "eval_gate": "All 5 modules validate against schema; hint engine never reaches rung 5 before rungs 1-4 in 200 scripted test sessions; zero honesty-doctrine violations in output lint."
+   "eval_gate": "All 5 modules validate against schema; hint engine never reaches rung 5 before rungs 1-4 in 200 scripted test sessions; zero honesty-doctrine violations in output lint.",
+   "built": [
+    "course schema and authoring pipeline (courses/build.py)",
+    "TCA-140 Welding modules 1-2 wired to existing interior sites"
+   ],
+   "not_built": [
+    "Prepare Pack for Joyce",
+    "Mentor Chat for Joyce",
+    "the 200-session hint-ladder run"
+   ]
   },
   {
    "sprint": "S2",
    "start": "2026-10-26",
    "end": "2026-11-08",
    "weeks": "Oct 26 - Nov 8, 2026",
-   "status": "shipped",
-   "gate_result": "met on the fixture set only: after cycle-3 tuning the guards escalate 80 of 80 out-of-scope prompts with 0 of 48 false escalations, but a blind held-out batch caught 2 of 12, so the regex guards do not generalise to unseen phrasing (fabric/test_mentor_scope.mjs)",
+   "status": "gate-run-early",
+   "gate_result": "met on the fixture set only: after cycle-3 tuning the guards escalate 80 of 80 out-of-scope prompts with 0 of 48 false escalations, but a blind held-out batch caught 2 of 12 before tuning, so the regex guards do not generalise to unseen phrasing (fabric/test_mentor_scope.mjs)",
    "ship": "TCA-210 Hair and TCA-230 Esthetics modules 1-3; Tessa and Iris mentors; Teacher Lesson Planner v1.",
-   "eval_gate": "Mentor guardrail eval: 100% refusal on 50 out-of-scope medical/chemical-safety prompts; lesson plans render for all assigned modules."
+   "eval_gate": "Mentor guardrail eval: 100% refusal on 50 out-of-scope medical/chemical-safety prompts; lesson plans render for all assigned modules.",
+   "built": [
+    "Teacher Lesson Planner v1 (courses/lesson_plans.py)",
+    "the mentor-scope eval (fabric/test_mentor_scope.mjs)"
+   ],
+   "not_built": [
+    "TCA-210 Hair and TCA-230 Esthetics modules 1-3 (need Beauty School, which is not in this repository)",
+    "Tessa and Iris mentor content"
+   ]
   },
   {
    "sprint": "S3",
    "start": "2026-11-09",
    "end": "2026-11-22",
    "weeks": "Nov 9 - Nov 22, 2026",
-   "status": "shipped",
-   "gate_result": "met on the scripted suite: 981 of 981 bypass attempts blocked and 78 of 78 legitimate entries allowed, overrides audited (safety_gate/test.mjs); electrical and HVAC wiring partial, 2 of 10 modules wired, to tool cribs only",
+   "status": "gate-run-early",
+   "gate_result": "met on the scripted suite: 1,342 of 1,342 bypass attempts blocked and 78 of 78 legitimate entries allowed, overrides audited (safety_gate/test.mjs); electrical and HVAC wiring partial, 2 of 10 modules wired, to tool cribs only",
    "ship": "TCA-110 Electrical and TCA-130 HVAC modules 1-3; Sam Safety Gate Console; Safety Card Wallet.",
-   "eval_gate": "Safety gates block hazardous stations in 100% of 300 scripted bypass attempts; overrides logged."
+   "eval_gate": "Safety gates block hazardous stations in 100% of 300 scripted bypass attempts; overrides logged.",
+   "built": [
+    "Safety Gate logic, permits, overrides and audit ledger (safety_gate/)",
+    "TCA-110 module 1 and TCA-130 module 1 wired to tool cribs"
+   ],
+   "not_built": [
+    "the remaining TCA-110 and TCA-130 modules 1-3",
+    "a Sam Safety Gate Console screen",
+    "Safety Card Wallet"
+   ]
   },
   {
    "sprint": "S4",
    "start": "2026-11-23",
    "end": "2026-12-06",
    "weeks": "Nov 23 - Dec 6, 2026",
-   "status": "shipped",
+   "status": "gate-run-early",
    "gate_result": "partial: the cohort dashboard reconciles 310 figures with an independent recomputation at 0.00% error on SYNTHETIC data (cohort/test.mjs); its skill map uses an invented module-to-strand mapping; the trade-accuracy review by a qualified human was not done, no reviewer is engaged",
    "ship": "TCA-120 Plumbing, TCA-150 Carpentry, TCA-220 Nail modules 1-3; Cohort Dashboard v1 and Skill Map.",
-   "eval_gate": "Dashboard numbers reconcile with raw session logs within 1%; trade-accuracy review of all new content by a qualified human reviewer (planned; reviewer not yet engaged)."
+   "eval_gate": "Dashboard numbers reconcile with raw session logs within 1%; trade-accuracy review of all new content by a qualified human reviewer (planned; reviewer not yet engaged).",
+   "built": [
+    "Cohort Dashboard v1 and Skill Map, on synthetic data only (cohort/)",
+    "TCA-120 module 4 and TCA-150 module 1 wired"
+   ],
+   "not_built": [
+    "TCA-220 Nail modules 1-3 (need Beauty School, which is not in this repository)",
+    "the remaining TCA-120 and TCA-150 modules 1-3",
+    "the trade-accuracy review by a qualified human"
+   ]
   },
   {
    "sprint": "S5",

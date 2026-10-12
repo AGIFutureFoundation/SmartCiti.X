@@ -1,8 +1,8 @@
 # loop/ — the two-hour agent loop
 
 SmartCiti.X : Trade Craft Academy runs its roadmap work as a loop: eight
-scoped agents, five cycles of 30 minutes, a checkpoint at the end of each
-cycle. This directory is the machinery that makes a checkpoint mean
+scoped agents, five cycles over two hours, with checkpoints about 30 minutes
+apart (start, +30, +60, +90 and +120 minutes, as in `METAPROMPT.md`). This directory is the machinery that makes a checkpoint mean
 something — a liveness probe, nine executed eval gates, and a ledger that
 records what each cycle actually ran and shipped. Nothing here is deployed;
 the loop works on a branch and a human merges.
@@ -62,6 +62,13 @@ Every 30 minutes from `loop.started`:
    was made. The ledger refuses a cycle that records a commit alongside a
    failing gate.
 4. The Orchestrator posts one line: done, blocked, next.
+
+A cycle's `started` is when its checkpoint fired and `ended` is when its
+commit landed, as recorded. The cadence is a target, not a guarantee: when
+a cycle's work runs past the next checkpoint, the next cycle starts before
+the previous one ends, so recorded cycles can overlap and vary in length.
+On 2026-10-12 cycles 2–3 and 3–4 overlapped (by 4 and 8 minutes), and
+cycle 4 was short (11 minutes) because it closed out review fixes.
 
 `state/` is the loop's working output (heartbeat and eval history); the
 ledger is the record.

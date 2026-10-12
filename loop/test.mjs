@@ -169,26 +169,38 @@ ok('verify_all.sh summary parser reads the total and the failing suites',
   const reset = () => writeFileSync(L, JSON.stringify(fx, null, 2) + '\n');
   const after = () => JSON.parse(readFileSync(L, 'utf8')).cycles;
   const vid = join(dir, 'review_fx.mp4');
-  spawnSync('ffmpeg', ['-v', 'error', '-y', '-f', 'lavfi', '-i', 'color=c=black:s=64x64:d=1:r=10', '-pix_fmt', 'yuv420p', vid]);
+  const enc = spawnSync('ffmpeg', ['-v', 'error', '-y', '-f', 'lavfi', '-i', 'color=c=black:s=64x64:d=1:r=10', '-pix_fmt', 'yuv420p', vid]);
+  // The video checks need ffmpeg (to make the fixture) and ffprobe (patch_cycle reads its duration).
+  // Without them those two checks are skipped, by name; every other check still runs.
+  const haveVideo = enc.status === 0 && existsSync(vid) && spawnSync('ffprobe', ['-version']).status === 0;
+  const SKIP = ' (skipped: ffmpeg/ffprobe not available)';
 
   reset(); evRun(new Date(Date.parse(last.started) + 60000).toISOString());
   const r1 = patch([String(last.n)]);
   ok('patch_cycle.mjs refreshes the latest cycle\'s gates from an eval run taken after it started',
     r1.status === 0 && after()[last.n - 1].gates.every((g) => g.status === 'warn')
     && JSON.stringify(after()[0]) === JSON.stringify(fx.cycles[0]));
-  reset();
-  const r2 = patch(['1', vid]);
-  ok('patch_cycle.mjs on an older cycle keeps its recorded gates and only attaches the video',
-    r2.status === 0 && JSON.stringify(after()[0].gates) === JSON.stringify(fx.cycles[0].gates)
-    && after()[0].checks_total === fx.cycles[0].checks_total
-    && after()[0].video && after()[0].video.path === 'review_fx.mp4' && after()[0].video.duration_s > 0);
+  if (haveVideo) {
+    reset();
+    const r2 = patch(['1', vid]);
+    ok('patch_cycle.mjs on an older cycle keeps its recorded gates and only attaches the video',
+      r2.status === 0 && JSON.stringify(after()[0].gates) === JSON.stringify(fx.cycles[0].gates)
+      && after()[0].checks_total === fx.cycles[0].checks_total
+      && after()[0].video && after()[0].video.path === 'review_fx.mp4' && after()[0].video.duration_s > 0);
+    reset(); evRun(new Date(Date.parse(last.started) - 60000).toISOString());
+    const r3 = patch([String(last.n), vid]);
+    ok('an eval run older than the latest cycle\'s start is not applied; the video is still attached',
+      r3.status === 0 && JSON.stringify(after()[last.n - 1].gates) === JSON.stringify(last.gates)
+      && after()[last.n - 1].video.path === 'review_fx.mp4');
+  } else {
+    ok('patch_cycle.mjs on an older cycle keeps its recorded gates and only attaches the video' + SKIP, true);
+    ok('an eval run older than the latest cycle\'s start is not applied; the video is still attached' + SKIP, true);
+  }
   reset(); evRun(new Date(Date.parse(last.started) - 60000).toISOString());
-  const r3 = patch([String(last.n), vid]);
   const r4 = patch([String(last.n)]);
-  ok('an eval run older than the latest cycle\'s start is not applied; without a video nothing is written',
-    r3.status === 0 && JSON.stringify(after()[last.n - 1].gates) === JSON.stringify(last.gates)
-    && after()[last.n - 1].video.path === 'review_fx.mp4'
-    && r4.status === 1 && /keeps its recorded gates/.test(r4.stderr));
+  ok('with a stale eval run and no video, patch_cycle.mjs writes nothing and says why',
+    r4.status === 1 && /keeps its recorded gates/.test(r4.stderr)
+    && JSON.stringify(after()) === JSON.stringify(fx.cycles));
   ok('patch_cycle.mjs writes atomically: no temp file is left beside the ledger',
     !readdirSync(dir).some((f) => f.endsWith('.tmp')));
 }
@@ -230,9 +242,10 @@ ok('verify_all.sh summary parser reads the total and the failing suites',
       && hbLast.checks.every((c) => 'name' in c && 'ok' in c && 'detail' in c)));
 }
 
-ok('a cycle may not record its review video by a machine path (media lives outside the repo)',
+ok('a cycle may not record its review video by a machine path, in its video field or any gate detail (media lives outside the repo)',
   validateCycle({ ...goodCycle, video: { path: '/tmp/x/review_c1.mp4', duration_s: 120 } }, 1).length > 0
-  && validateCycle({ ...goodCycle, video: { path: 'review_c1.mp4', duration_s: 120 } }, 1).length === 0);
+  && validateCycle({ ...goodCycle, video: { path: 'review_c1.mp4', duration_s: 120 } }, 1).length === 0
+  && ledger.cycles.every((c) => c.gates.every((g) => !/(?:^|\s)\/(?:tmp|home|root|Users)\//.test(g.detail))));
 {
   const draft = JSON.parse(readFileSync(join(HERE, 'registry/tech_draft.json'), 'utf8'));
   ok('the planning draft carries no gate id the executed gates use (DRAFT-EV only, and says so)',

@@ -84,7 +84,7 @@
           "id": "EV-06",
           "name": "Review video 120 ± 0.5 s",
           "status": "pass",
-          "detail": "cycle #1 /tmp/claude-0/-home-claude/717c43f1-7f00-5ef5-96d0-907cb265e63d/scratchpad/reviews/review_c1.mp4 120.07 s",
+          "detail": "cycle #1 review_c1.mp4 120.07 s",
           "ms": 58
         },
         {
@@ -458,6 +458,119 @@
       "video": {
         "path": "review_c4.mp4",
         "duration_s": 120.067
+      },
+      "commit": null
+    },
+    {
+      "n": 5,
+      "started": "2026-10-12T11:23:00Z",
+      "ended": "2026-10-12T11:37:00Z",
+      "sprint": "Final checkpoint: red-team review and close-out",
+      "shipped": [
+        "Red-team review of the whole PR diff by a separate agent: 15 findings (9 honesty, 1 brand, 5 figures), all fixed",
+        "Sprints S2-S4 recorded as gate-run-early with what is and is not built, not as shipped; S1 is in-progress",
+        "Teacher and student kit items carry a status: 4 have code here (2 on synthetic data only), the rest are planned",
+        "Safety-incident escalations now name an urgent handoff and say to call 911 if anyone is hurt",
+        "Loop tests run without ffmpeg: the two video checks are skipped by name, every other check still runs",
+        "Review videos label every clip as generated footage and carry the full brand line"
+      ],
+      "agents": [
+        {
+          "name": "Orchestrator",
+          "task": "final checkpoint, red-team routing, close-out",
+          "result": "verify_all 1,788 checks, 0 failing; 9 of 9 gates pass; PR left for a human to merge"
+        },
+        {
+          "name": "Eval Warden",
+          "task": "heartbeat, evals, mentor and loop test fixes",
+          "result": "42 loop and 19 mentor-scope checks pass"
+        },
+        {
+          "name": "Curriculum Mapper",
+          "task": "sprint records and kit statuses",
+          "result": "46 course checks pass"
+        },
+        {
+          "name": "Media Producer",
+          "task": "final review video covering all five cycles",
+          "result": "review_c5.mp4"
+        }
+      ],
+      "notes": [
+        "The red-team pass found that S2-S4 had been recorded as shipped although their windows have not opened and much of their ship lists is not built; corrected in courses/build.py.",
+        "The one-directory-per-agent rule in METAPROMPT.md was not kept during this loop; recorded there.",
+        "Still open: mentor guards are regex patterns (blind 2/12 before tuning); the dashboard runs on synthetic data; 6 of 56 modules are wired; beauty courses wait on Beauty School, which is not in this repository."
+      ],
+      "gates": [
+        {
+          "id": "EV-01",
+          "name": "Verification suite (verify_all.sh)",
+          "status": "pass",
+          "detail": "1788 checks, 0 failing suites",
+          "ms": 13289
+        },
+        {
+          "id": "EV-02",
+          "name": "Courses suite",
+          "status": "pass",
+          "detail": "46 checks",
+          "ms": 204
+        },
+        {
+          "id": "EV-03",
+          "name": "Brand lint",
+          "status": "pass",
+          "detail": "brand: 250 files clean — \"SmartCiti.X : Trade Craft Academy\", powered by AGI Corp",
+          "ms": 188
+        },
+        {
+          "id": "EV-04",
+          "name": "Figures lint",
+          "status": "pass",
+          "detail": "figures: 238 files agree with the pack — 111 halls, 11,000,000 modules, 10 campuses, 447 avatar options, 4 proposed districts, every registry at pack 3.2.0",
+          "ms": 819
+        },
+        {
+          "id": "EV-05",
+          "name": "Honesty lint on branch changes",
+          "status": "pass",
+          "detail": "32 changed text files, 0 overclaims",
+          "ms": 99
+        },
+        {
+          "id": "EV-06",
+          "name": "Review video 120 ± 0.5 s",
+          "status": "pass",
+          "detail": "cycle #5 review_c5.mp4 120.00 s",
+          "ms": 56
+        },
+        {
+          "id": "EV-07",
+          "name": "Cycle ledger schema",
+          "status": "pass",
+          "detail": "valid, 5 cycles",
+          "ms": 1
+        },
+        {
+          "id": "EV-08",
+          "name": "No secrets in diff",
+          "status": "pass",
+          "detail": "diff + 0 untracked files clean",
+          "ms": 84
+        },
+        {
+          "id": "EV-09",
+          "name": "Pilot precondition",
+          "status": "pass",
+          "detail": "no pilot recorded",
+          "ms": 2
+        }
+      ],
+      "checks_total": 1788,
+      "heartbeat_ok": true,
+      "video": {
+        "path": "review_c5.mp4",
+        "duration_s": 120
       },
       "commit": null
     }

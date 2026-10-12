@@ -13,7 +13,7 @@
         "WebXR-ready session entry"
       ],
       "status": "built-elsewhere",
-      "why": "Browser-native 3D cities load on Chromebooks and headsets alike with no install; device tiers keep frame rate stable on school hardware. Headset certification (Quest store) is planned.",
+      "why": "Browser-native 3D cities load on Chromebooks and headsets alike with no install; device tiers are intended to keep frame rate stable on school hardware (not measured here). Headset certification (Quest store) is planned.",
       "in_repo": "web/trade_craft_3d.html (three.js scene, InstancedMesh) only; the asset packing pipeline, device tiers and WebXR entry are not in this repository"
     },
     {
