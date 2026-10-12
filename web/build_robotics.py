@@ -8,7 +8,9 @@ demonstration, what is and is not trained, and links to the worlds and the Contr
 Every chrome word comes from the robo.* i18n keys (8 locales, Arabic right-to-left). Env / embodiment names, units
 and honesty lines are registry data, shown verbatim. Figures are computed from the registry at build time; the
 reference-policy results table is computed in the reader's browser from the same deterministic core the test runs.
-Nothing here says a model was trained: the registry's trained_models count is 0 and the page prints it.
+ARENA BEGIN (wave 18): the page prints the registry's trained_models count, which is the model arena's one small
+behaviour-cloning policy (robotics/arena/), trained on SCRIPTED episodes - not a language model, not on learner data.
+ARENA END
 Classroom / K-12 mode (?classroom=1 or ?class=...) offers no recording and no export.
 """
 import html
@@ -52,7 +54,17 @@ PAGE_KEYS = ['robo.nav', 'robo.kicker', 'robo.title', 'robo.lede', 'robo.seo.des
 PAGE_KEYS += ['robo.h.chart', 'robo.chart.note', 'robo.chart.total', 'robo.h.replay', 'robo.rp.note', 'robo.rp.src', 'robo.rp.ref',
               'robo.rp.mine', 'robo.rp.load', 'robo.rp.play', 'robo.rp.pause', 'robo.rp.scrub', 'robo.rp.actions', 'robo.rp.reward',
               'robo.rp.exact', 'robo.rp.held', 'robo.rp.none', 'robo.bench.reach']
+# ---- ARENA BEGIN (wave 18): the model-arena i18n keys (chrome words of the arena section; 8 locales) ---------------------
+PAGE_KEYS += ['robo.h.arena', 'robo.arena.note', 'robo.arena.match', 'robo.arena.task', 'robo.arena.pause', 'robo.arena.resume',
+              'robo.arena.speed', 'robo.arena.live', 'robo.arena.board', 'robo.arena.policy', 'robo.arena.kind',
+              'robo.arena.success', 'robo.arena.win', 'robo.arena.wins', 'robo.arena.cards', 'robo.arena.class', 'robo.arena.progress']
+# ---- ARENA END ------------------------------------------------------------------------------------------------------------
 KEYS = PAGE_KEYS + robo_i18n_keys()
+# ---- CLAW BEGIN (wave 18, keys) - the training-operations panel's i18n keys (robotics/claw/panel.py)
+sys.path.insert(0, str(ROOT / 'robotics' / 'claw'))
+import panel as train_ops  # noqa: E402
+KEYS += [k for k in train_ops.keys() if k not in KEYS]
+# ---- CLAW END (keys)
 
 I18N = {}
 for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
@@ -76,8 +88,12 @@ def T(k, tag='span', attrs=''):
 REG = json.loads((ROOT / 'robotics/registry/robotics.json').read_text())
 DATA = robo_data()
 C = REG['counts']
-if C['trained_models'] != 0:
-    raise RoboticsPageError('build_robotics: the registry claims a trained model - this page cannot say that')
+# ARENA BEGIN (wave 18): a trained-model count is printed only when it is the model arena's pinned, carded models
+_ARENA_MODELS = [m for m in json.loads((ROOT / 'robotics/arena/registry/models.json').read_text())['models'] if m['provenance'] == 'TRAINED']
+if C['trained_models'] != len(_ARENA_MODELS) or not all(m['card']['what'] in REG['honesty']['trained'] for m in _ARENA_MODELS) \
+        or not REG['honesty']['trained'].startswith("NOTHING HAS BEEN TRAINED ON ANY LEARNER'S DATA"):
+    raise RoboticsPageError('build_robotics: the registry counts a trained model the arena model registry does not card')
+# ARENA END
 
 
 def rng(o):
@@ -532,6 +548,161 @@ pre.card-pre{{white-space:pre-wrap;overflow-wrap:anywhere;font:12px ui-monospace
 </body>
 </html>
 '''
+# ---- CLAW BEGIN (wave 18, panel) - the training-operations panel (robotics/claw/panel.py): its section goes right
+# before the benchmark section, its CSS at the end of the page style, its three scripts after the page script.
+_TO_AT = '<section class="box" aria-labelledby="robo-h-bench">'
+for _a in (_TO_AT, '</style>\n</head>', '<script id="style-js">'):
+    if page.count(_a) != 1:
+        raise RoboticsPageError(f'build_robotics: the training-operations anchor {_a!r} is not unique')
+page = page.replace(_TO_AT, train_ops.panel_html(T, EN) + '\n' + _TO_AT)
+page = page.replace('</style>\n</head>', train_ops.CSS + '</style>\n</head>')
+page = page.replace('<script id="style-js">', train_ops.scripts() + '\n<script id="style-js">')
+# ---- CLAW END (panel)
+# ---- ARENA BEGIN (wave 18): the model arena - policies compete continuously in one shared seeded world ------------------
+# The arena section is spliced in at two fail-closed anchors. Everything it shows is READ: the policy block is
+# robotics/arena/policies.js verbatim (the code robotics/arena/harness.mjs measured), the BC weights are
+# robotics/arena/registry/models.json (sha256-checked here), the leaderboard and cards are robotics/arena/registry/arena.json.
+# Live matches run in the reader's browser on the SIM_CORE block already on this page; the session tally is play and is
+# never stored (no storage, no network), and classroom mode says so. Page markers are neutral: MODEL_ARENA.
+import hashlib as _hl
+_AR = json.loads((ROOT / 'robotics/arena/registry/arena.json').read_text())
+_AM = json.loads((ROOT / 'robotics/arena/registry/models.json').read_text())
+_POL = (ROOT / 'robotics/arena/policies.js').read_text()
+_POL = _POL[_POL.index('/* MODEL_ARENA_POLICIES:BEGIN'):_POL.index('/* MODEL_ARENA_POLICIES:END */') + len('/* MODEL_ARENA_POLICIES:END */')]
+_BC = [m for m in _AM['models'] if m['policy'] == 'bc']
+if len(_BC) != 1 or _hl.sha256(json.dumps(_BC[0]['weights'], separators=(',', ':')).encode()).hexdigest() != _BC[0]['weights_sha256']:
+    raise RoboticsPageError('build_robotics: the arena BC weights are missing or do not match their sha256 pin')
+_LB = _AR['leaderboard']
+for _k in ('table', 'seeds', 'rows'):
+    if _k not in _LB:
+        raise RoboticsPageError(f'build_robotics: arena leaderboard has no {_k}')
+_HO = _AR['tables'][_LB['table']]
+for _pid in _HO['policies']:
+    if _pid not in _AR['cards'] or not _AR['cards'][_pid].get('what'):
+        raise RoboticsPageError(f'build_robotics: arena policy {_pid} has no card - it cannot be shown')
+_ci = lambda x: f'{x["mean"]:.2f} <span class="muted">[{x["ci95"][0]:.2f}, {x["ci95"][1]:.2f}]</span>'
+_board = ''.join(
+    f'<tr data-arena-rank="{r["rank"]}" data-arena-policy="{E(r["policy"])}"><td>{r["rank"]}</td><td>{E(r["name"])}</td>'
+    f'<td><span class="tag">{E(r["kind"])}</span></td><td data-arena-success="{r["success_rate"]["mean"]}">{_ci(r["success_rate"])}</td>'
+    f'<td data-arena-win="{r["win_vs_ref"]["rate"]}">{_ci({"mean": r["win_vs_ref"]["rate"], "ci95": r["win_vs_ref"]["ci95"]})}</td><td>{r["n"]}</td></tr>'
+    for r in _LB['rows'])
+_cards = ''.join(f'<li data-arena-card="{E(pid)}"><b>{E(c["name"])}</b> <span class="tag">{E(c["kind"])}</span> {E(c["what"])}. '
+                 f'<span class="muted">{E(c["not"])}.</span></li>' for pid, c in _AR['cards'].items())
+_ARENA_DATA = {
+    'policies': _HO['policies'], 'cards': {k: {'name': v['name'], 'kind': v['kind']} for k, v in _AR['cards'].items()},
+    'tasks': [[t['env'], t['level']] for t in _AR['tables']['all_seeds']['tasks']], 'seeds': _AR['tables']['all_seeds']['seeds'],
+    'bc': _BC[0]['weights'], 'bc_sha256': _BC[0]['weights_sha256'], 'stamp': _AR['source_stamp'],
+}
+ARENA_HTML = (
+    '<section class="box" aria-labelledby="robo-h-arena" id="model-arena" data-model-arena>'
+    f'<h2 id="robo-h-arena" data-i18n="robo.h.arena">{E(EN["robo.h.arena"])}</h2><p class="muted">{T("robo.arena.note")}</p>'
+    f'<p class="robo-honest" id="arena-class" hidden>{T("robo.arena.class")}</p>'
+    f'<div class="robo-row"><button type="button" id="arena-play" aria-pressed="true">{T("robo.arena.pause")}</button>'
+    f'<label>{T("robo.arena.speed")} <select id="arena-speed"><option value="1">1x</option><option value="4" selected>4x</option>'
+    '<option value="16">16x</option></select></label></div>'
+    f'<p class="robo-hud" aria-live="polite"><span>{T("robo.arena.match")}</span> <b id="arena-match">1</b> · '
+    f'<span>{T("robo.arena.task")}</span> <b id="arena-task"></b></p>'
+    '<div class="rp-stage"><canvas id="arena-world" width="420" height="420" aria-label="model arena world"></canvas>'
+    f'<div class="tw"><table id="arena-score"><thead><tr><th>{T("robo.arena.policy")}</th><th>{T("robo.arena.progress")}</th>'
+    f'<th>{T("robo.steps")}</th><th>{T("robo.return")}</th><th>{T("robo.arena.wins")}</th></tr></thead><tbody></tbody></table>'
+    f'<p class="muted">{T("robo.arena.live")}</p></div></div>'
+    f'<h3>{T("robo.arena.board")}</h3><p class="muted"><code>{E(_LB["table"])}</code> · seeds {E(", ".join(str(x) for x in _LB["seeds"]))} · '
+    f'{E(_LB["order"])}</p><div class="tw"><table id="arena-board"><thead><tr><th>#</th><th>{T("robo.arena.policy")}</th>'
+    f'<th>{T("robo.arena.kind")}</th><th>{T("robo.arena.success")}</th><th>{T("robo.arena.win")}</th><th>n</th></tr></thead>'
+    f'<tbody>{_board}</tbody></table></div>'
+    f'<h3>{T("robo.arena.cards")}</h3><ul id="arena-cards">{_cards}</ul>'
+    f'<p class="muted">robotics/arena/registry/arena.json · {E(_AR["schema"])} · stamp <code>{E(_AR["source_stamp"])}</code> · '
+    f'BC weights sha256 <code>{E(_BC[0]["weights_sha256"][:16])}</code></p></section>')
+ARENA_JS = _POL + r'''
+/* MODEL_ARENA:BEGIN - live matches: every carded policy on the same seeded task, side by side in one shared world */
+(function () {
+  'use strict';
+  var A = JSON.parse(document.getElementById('model-arena-data').textContent), data = JSON.parse(document.getElementById('robo-data').textContent);
+  var R = data.robo, I = JSON.parse(document.getElementById('robo-i18n').textContent), P = window.__roboPage || { locale: 'en', classroom: false };
+  var t = function (k) { var L = I[P.locale] || I.en; return L.strings[k] || I.en.strings[k] || k; };
+  var $ = function (s) { return document.getElementById(s); };
+  var d = function (a) { return a.map(function (x) { return x / A.bc.scale; }); };
+  var W = { in: A.bc.in, hidden: A.bc.hidden, out: A.bc.out, W1: d(A.bc.W1), b1: d(A.bc.b1), W2: d(A.bc.W2), b2: d(A.bc.b2) };
+  var COL = { scripted: '#3987e5', greedy: '#d95926', random: '#93a3a6', bc: '#199e70' };
+  var match = 0, cur = null, sts = [], acts = [], trails = [], playing = true, speed = 4, acc = 0, last = 0, hold = 0, lastRes = null;
+  function snap() { return sts.map(function (st, i) { return { policy: A.policies[i], steps: st.step, done: st.done, success: st.done ? st.done !== 'cap' : null, ret: Math.round(st.ret * 1000) / 1000, collected: st.collected }; }); }
+  var tally = {}; A.policies.forEach(function (p) { tally[p] = { wins: 0, ties: 0, played: 0 }; });
+  if (P.classroom) $('arena-class').hidden = false;
+  /* the match schedule is seeded too: match m -> (task, seed) from mulberry32(hash('model-arena|' + m)) */
+  function schedule(m) { var r = ArenaPolicies.mulberry32(ArenaPolicies.hash('model-arena|' + m)), tk = A.tasks[Math.floor(r() * A.tasks.length)];
+    return { env: tk[0], level: tk[1], seed: A.seeds[Math.floor(r() * A.seeds.length)] }; }
+  function start() {
+    cur = schedule(match); var env = R.envs[cur.env], emb = R.embodiments[env.embodiments[0]];
+    sts = A.policies.map(function () { return RoboCore.reset(env, emb, cur.seed, cur.level); });
+    acts = A.policies.map(function (p) { return ArenaPolicies.make(p, { RoboCore: RoboCore, env: env, seed: cur.seed, level: cur.level, model: W }); });
+    trails = A.policies.map(function () { return [[0, 0]]; });
+    $('arena-match').textContent = String(match + 1);
+    $('arena-task').textContent = env.name + ' · L' + cur.level + ' · seed ' + cur.seed;
+  }
+  function total(st) { var o = st.env.objects; return o.gates || o.litter || o.targets; }
+  function score() {   /* success first, then return - the harness's paired rule */
+    var res = sts.map(function (st) { return [st.done !== 'cap' ? 1 : 0, Math.round(st.ret * 1000) / 1000]; });
+    var best = res.reduce(function (b, r) { return r[0] > b[0] || (r[0] === b[0] && r[1] > b[1]) ? r : b; }, [-1, -Infinity]);
+    var top = res.filter(function (r) { return r[0] === best[0] && r[1] === best[1]; }).length;
+    A.policies.forEach(function (p, i) { tally[p].played++; if (res[i][0] === best[0] && res[i][1] === best[1]) { if (top > 1) tally[p].ties++; else tally[p].wins++; } });
+  }
+  function step() {
+    if (!cur) start();
+    var live = 0;
+    sts.forEach(function (st, i) { if (!st.done) { RoboCore.step(st, acts[i](st)); trails[i].push([st.e, st.n]); } if (!st.done) live++; });
+    if (!live) { lastRes = { task: cur, states: snap() }; score(); match++; start(); return true; }
+    return false;
+  }
+  function row() {
+    var tb = $('arena-score').tBodies[0]; tb.textContent = '';
+    A.policies.forEach(function (p, i) { var st = sts[i], tr = document.createElement('tr'); tr.setAttribute('data-arena-live', p);
+      [A.cards[p].name, st.collected + ' / ' + total(st) + (st.done ? (st.done === 'cap' ? ' · cap' : ' ✓') : ''), String(st.step), st.ret.toFixed(2),
+        tally[p].wins + (tally[p].ties ? ' (+' + tally[p].ties + ')' : '') + ' / ' + tally[p].played].forEach(function (x, j) {
+        var td = document.createElement('td'); if (!j) { var sw = document.createElement('span'); sw.className = 'arena-sw'; sw.style.background = COL[p] || '#e8edec'; td.appendChild(sw); }
+        td.appendChild(document.createTextNode(x)); tr.appendChild(td); }); tb.appendChild(tr); });
+  }
+  function draw() {
+    var cv = $('arena-world'), g = cv.getContext('2d'), Wd = cv.width, st0 = sts[0], env = st0.env, H = env.world.arena_half_m, s = Wd / (2 * H);
+    var X = function (e) { return Wd / 2 + e * s; }, Y = function (n) { return Wd / 2 - n * s; };
+    g.fillStyle = env.medium === 'water' ? '#0d2a3a' : '#16261d'; g.fillRect(0, 0, Wd, Wd);
+    g.strokeStyle = '#2d4448'; g.lineWidth = 1; for (var q = -H; q <= H; q += 5) { g.beginPath(); g.moveTo(X(q), 0); g.lineTo(X(q), Wd); g.moveTo(0, Y(q)); g.lineTo(Wd, Y(q)); g.stroke(); }
+    st0.obst.forEach(function (b) { g.fillStyle = b.id.indexOf('cone') === 0 ? '#e8a33d' : '#6b7b80'; g.beginPath(); g.arc(X(b.e), Y(b.n), b.r * s, 0, 7); g.fill(); });
+    st0.gates.forEach(function (x) { g.strokeStyle = '#93a3a6'; g.lineWidth = 2; g.beginPath(); g.arc(X(x.e), Y(x.n), 1.2 * s, 0, 7); g.stroke(); });
+    if (st0.bin) { g.fillStyle = '#41c4d4'; g.fillRect(X(st0.bin.e) - 0.7 * s, Y(st0.bin.n) - 0.7 * s, 1.4 * s, 1.4 * s); }
+    st0.items.forEach(function (x, k) { var left = sts.filter(function (st) { return !st.items[k].taken; }).length; if (!left) return;
+      g.globalAlpha = 0.35 + 0.65 * left / sts.length; g.fillStyle = R.litter_colors[x.type]; g.beginPath(); g.arc(X(x.e), Y(x.n), 0.45 * s, 0, 7); g.fill(); g.globalAlpha = 1; });
+    st0.targets.forEach(function (x) { g.strokeStyle = '#fad08c'; g.lineWidth = 2; g.beginPath(); g.arc(X(x.e), Y(x.n), 1.5 * s, 0, 7); g.stroke(); });
+    sts.forEach(function (st, i) { var col = COL[A.policies[i]] || '#e8edec', tr = trails[i];
+      g.strokeStyle = col; g.globalAlpha = 0.55; g.lineWidth = 1.5; g.beginPath(); tr.forEach(function (p, j) { if (j) g.lineTo(X(p[0]), Y(p[1])); else g.moveTo(X(p[0]), Y(p[1])); }); g.stroke(); g.globalAlpha = 1;
+      var rr = Math.max(6, st.emb.radius_m * s); g.save(); g.translate(X(st.e), Y(st.n)); g.rotate(-st.yaw); g.fillStyle = col; g.fillRect(-rr, -rr, 2 * rr, 2 * rr);
+      g.fillStyle = '#12181b'; g.beginPath(); g.moveTo(0, -rr * 1.4); g.lineTo(-rr * 0.6, -rr * 0.2); g.lineTo(rr * 0.6, -rr * 0.2); g.fill(); g.restore(); });
+  }
+  function frame(ts) {
+    var dt = last ? Math.min(0.25, (ts - last) / 1000) : 0; last = ts;
+    if (playing) { if (hold > 0) hold -= dt; else { acc += dt * 10 * speed; var n = Math.floor(acc); acc -= n; for (var k = 0; k < n; k++) if (step()) { hold = 1.2; acc = 0; break; } } }
+    draw(); row(); requestAnimationFrame(frame);
+  }
+  $('arena-play').addEventListener('click', function () { playing = !playing; this.setAttribute('aria-pressed', String(playing));
+    this.textContent = t(playing ? 'robo.arena.pause' : 'robo.arena.resume'); });
+  $('arena-speed').addEventListener('change', function () { speed = Number(this.value) || 1; });
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) { playing = false; $('arena-play').setAttribute('aria-pressed', 'false'); $('arena-play').textContent = t('robo.arena.resume'); }
+  start(); draw(); row(); requestAnimationFrame(frame);
+  /* test hook: advance whole steps without the clock; state is read-only copies */
+  window.__modelArena = { schedule: schedule, match: function () { return match; }, task: function () { return cur; }, tally: function () { return JSON.parse(JSON.stringify(tally)); },
+    step: function (n) { var done = 0; for (var k = 0; k < n; k++) if (step()) done++; draw(); row(); return done; },
+    states: snap, last: function () { return lastRes; },
+    pause: function () { playing = false; }, playing: function () { return playing; }, policies: A.policies.slice(), stores: 'nothing' };
+})();
+/* MODEL_ARENA:END */'''
+_marker = '<section class="box" aria-labelledby="robo-h-envs">'
+if page.count(_marker) != 1 or page.count('<script id="style-js">') != 1:
+    raise RoboticsPageError('build_robotics: the arena anchors are missing from the page')
+page = page.replace(_marker, ARENA_HTML + '\n' + _marker, 1)
+page = page.replace('<script id="style-js">', f'<script type="application/json" id="model-arena-data">{js_json(_ARENA_DATA)}</script>\n'
+                    f'<script id="model-arena-js">{ARENA_JS}</script>\n<script id="style-js">', 1)
+page = page.replace('</style>', '#arena-world{inline-size:min(100%,420px);aspect-ratio:1/1}.arena-sw{display:inline-block;inline-size:.8em;'
+                    'block-size:.8em;border-radius:2px;margin-inline-end:.4em;vertical-align:-1px}</style>', 1)
+# ---- ARENA END ------------------------------------------------------------------------------------------------------------
 TITLE = 'SmartCiti.X : Trade Craft Academy — ' + EN['robo.nav']
 page = apply_seo(page, PAGE, TITLE, EN['robo.seo.desc'], 'page')
 emit(HERE / 'trade_craft_robotics.html', page,

@@ -8,7 +8,7 @@
  "provenance": "DERIVED",
  "provenance_note": "record tags, kinds, privacy, licence and scopes are read from contrib/registry/contrib.json; env facts from it and robotics/registry/robotics.json; the split ratios, card template, best-practice list and intake limits are AUTHORED here",
  "honesty": {
-  "trained": "NOTHING HAS BEEN TRAINED. No model has been trained on these environments or on any episode they produce, and the repo records no training run. They are specs and a runnable schematic sandbox.",
+  "trained": "NOTHING HAS BEEN TRAINED ON ANY LEARNER'S DATA, and no language model is trained or used here. 1 model has been trained in this repo, at build time by robotics/arena/train.mjs: a small behaviour-cloning policy trained on 130 SCRIPTED episodes; not a language model; not trained on any learner's data. Its weights are sha256-pinned in robotics/arena/registry/models.json, and robotics/arena/harness.mjs compares it with the SCRIPTED reference on seeds it never saw. No model has been trained on any human (world-teleop or sim) episode.",
   "no_agent_trained": "exporting this file trains nothing by itself: no agent exists in this bundle and none is claimed to, until one is actually trained against this data outside it",
   "nothing_uploaded": "nothing is uploaded by this bundle; the intake route is written, off by default and not deployed",
   "formats": "Shaped after gym-style environment specs. Not an RLDS, LeRobot or ML-Agents file: no round-trip test exists in the repo, so no compatibility is claimed.",

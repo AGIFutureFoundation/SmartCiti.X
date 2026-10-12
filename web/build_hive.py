@@ -259,6 +259,24 @@ PAGE_JS = r'''(function () {
   window.__hivePage = { locale: loc, dir: I[loc].dir, k12: k12, shown: applyFilter, convene: convene, drawLines: drawLines, state: function () { return lastState; } };
 })();'''
 
+# PATHWAYS BEGIN (wave 18): ?agent=<id> (from the union directory and the course cards) shows that agent's card and
+# scrolls to it. It never speaks: the voice stays on a click. The marker on the page is neutral (UNION-PATH).
+_UP_FOCUS_JS = '''
+  /* UNION-PATH: ?agent=<id> brings that card into view and marks it; speaking still waits for a click */
+  (function () {
+    var want = q.get('agent'); if (!want) return;
+    var el = document.querySelector('.hv-card[data-agent="' + CSS.escape(want) + '"]');
+    if (!el || el.dataset.k12hide) return;
+    search.value = ''; kind = 'all'; applyFilter();
+    el.setAttribute('data-focus', '1'); el.style.outline = '3px solid var(--tc-amber)'; el.scrollIntoView();
+    var b = el.querySelector('[data-speak]'); if (b) b.focus({ preventScroll: true });
+  })();
+'''
+_UP_ANCHOR = "  search.addEventListener('input', applyFilter);\n  applyFilter();\n"
+if PAGE_JS.count(_UP_ANCHOR) != 1:
+    raise SystemExit('build_hive: the roster filter moved; the ?agent= focus has no anchor')
+PAGE_JS = PAGE_JS.replace(_UP_ANCHOR, _UP_ANCHOR + _UP_FOCUS_JS)
+# PATHWAYS END
 tcss, tjs = theme('doc')
 NAV = nav_html(PAGE, nav_labels('en'))
 ICON = ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' "

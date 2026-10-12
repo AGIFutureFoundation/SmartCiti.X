@@ -139,6 +139,31 @@ def course_card(c):
             + f'<h4>{T("course.c.before")}</h4>{before}<h4>{T("course.c.seattime")}</h4>{seat_html}{walk}</details>')
 
 
+# PATHWAYS BEGIN (wave 18, cards): each trade course card links to its hall in the union directory and to the hall's
+# Omega Hive advisor, read from unionpaths/registry/union_paths.json (rebuilt after courses/ and hive/). Nothing stored.
+_UP = json.loads((ROOT / 'unionpaths/registry/union_paths.json').read_text(encoding='utf-8'))
+_UP_HALL = {h['course']: h for h in _UP['halls']}
+need(sorted(_UP_HALL) == sorted(k for k, v in COURSES.items() if v['kind'] == 'trade'),
+     'union_paths.json and courses.json disagree on the trade courses; run python3 unionpaths/build.py')
+for _l in I18N:
+    _s = json.loads((ROOT / f'i18n/locales/{_l}.json').read_text(encoding='utf-8'))['strings']
+    for _k in ('union.c.hall', 'union.c.advisor'):
+        need(isinstance(_s.get(_k), str) and _s[_k].strip(), f'locale {_l} is missing {_k}')
+        I18N[_l]['strings'][_k] = _s[_k]
+_course_card_base = course_card
+
+
+def course_card(c):
+    h = _course_card_base(c)
+    if c['kind'] != 'trade':
+        return h
+    u = _UP_HALL[c['id']]
+    a = u['advisor']
+    need(h.endswith('</details>'), f'{c["id"]}: the course card no longer ends with </details>')
+    return h[:-len('</details>')] + (
+        f'<p class="union-path-links" data-union-hall="{E(u["hall"])}"><a href="trade_craft_unions.html#hall-{E(u["hall"])}">{T("union.c.hall")}</a> · '
+        f'{T("union.c.advisor")}: <a href="trade_craft_hive.html?agent={E(a["id"])}" data-union-advisor="{E(a["id"])}">{E(a["name"])}</a></p></details>')
+# PATHWAYS END
 trade_html = ''
 for d in REG['districts']:
     cards = ''.join(course_card(COURSES[cid]) for cid in d['courses'])
@@ -309,6 +334,20 @@ PAGE_JS = r'''(function () {
   filter();
 })();'''
 
+# PATHWAYS BEGIN (wave 18, opener): ?course=<id> opens that course card and scrolls to it (the union directory links
+# here). The marker on the page is neutral (UNION-PATH).
+_UP_OPEN_JS = '''
+  /* UNION-PATH: ?course=<id> opens that course card and scrolls to it */
+  (function () {
+    var want = q.get('course'); if (!want) return;
+    var el = document.querySelector('details.course[data-course="' + CSS.escape(want) + '"]');
+    if (el) { el.hidden = false; el.open = true; el.scrollIntoView(); }
+  })();
+'''
+_UP_ANCHOR = "  var first = q.get('lesson');\n"
+need(PAGE_JS.count(_UP_ANCHOR) == 1, 'the ?lesson= opener moved; the ?course= opener has no anchor')
+PAGE_JS = PAGE_JS.replace(_UP_ANCHOR, _UP_OPEN_JS + _UP_ANCHOR)
+# PATHWAYS END
 tcss, tjs = theme('doc')
 NAV = nav_html(PAGE, nav_labels('en'))
 ICON = ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' "

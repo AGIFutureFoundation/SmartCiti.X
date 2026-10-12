@@ -34,7 +34,8 @@ ok('the embedded training data is training/ (same key, toggle, cap, world teleop
   && JSON.stringify(data.train.world_teleop) === JSON.stringify(tr.world_teleop));
 ok('the figures are recounted from the registry, and trained models prints 0',
   ['envs', 'robokit_envs', 'sim_seat_envs', 'embodiments', 'trained_models'].every((k) =>
-    page.includes(`data-robo-count="${k}">${reg.counts[k]}<`)) && reg.counts.trained_models === 0
+    page.includes(`data-robo-count="${k}">${reg.counts[k]}<`))
+  /* ARENA BEGIN (wave 18) */ && reg.counts.trained_models === JSON.parse(readFileSync(join(ROOT, 'robotics/arena/registry/models.json'), 'utf8')).models.filter((m) => m.provenance === 'TRAINED').length /* ARENA END */
   && Object.values(reg.envs).length === reg.counts.envs);
 ok('every env in the registry has a catalogue entry, every embodiment a card',
   Object.keys(reg.envs).every((id) => page.includes(`data-env="${id}"`))

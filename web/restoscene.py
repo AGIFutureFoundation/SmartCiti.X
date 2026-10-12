@@ -62,15 +62,9 @@ LAYER_RULE = [
 ]
 # a transition band needs a marsh to transition into
 LAYER_NEEDS = {'transition': 'tidal-marsh'}
-LAYER_TITLE = {  # AUTHORED short names shown beside each layer (English, like the registry text they sit next to)
-    'nursery': 'nursery rows', 'upland-planting': 'upland native planting', 'riprap': 'riprap revetment',
-    'living-shoreline': 'living shoreline (coir logs, planted terrace, rock sill)', 'seasonal-wetland': 'seasonal wetland',
-    'transition': 'wetland-upland transition band', 'levee-crown': 'levee crown', 'tidal-marsh': 'tidal marsh (pickleweed and cordgrass bands)',
-    'channels': 'tidal channels', 'salt-pond-cells': 'salt-pond levees and cells', 'mudflat': 'mudflat'}
-SCENE_LABEL = ('Habitat scene: AUTHORED by a fixed rule from this site\'s own recorded habitat and ground text, laid around '
-               'the RECORDED point; generic forms, not a survey and not the project\'s design.')
-CREW_LABEL = ('Crew: SCRIPTED roster agents (no AI model). They say only this site\'s scenario and staged-task lines, '
-              'quoted with their source; the device\'s own speech, on a click.')
+# The panel's own words (layer names, the AUTHORED scene label, the SCRIPTED crew label, the funding heading, the
+# RECORDED prefixes) live in i18n/locales as the resto.site.* block (8 locales, translated); none carries a number.
+LAYER_KEY = 'resto.site.layer.'
 GROUND_MIX = 0.5   # pad colour = mix(recipe base, recipe grain, GROUND_MIX) - DERIVED from world.json
 
 
@@ -213,8 +207,7 @@ def site_rows(reg, page):
         raise RestoSceneError('restoscene: a site appears on two landmarks')
     return rows, {'rubric': need(scr, 'rubric', 'scenarios.json'), 'funding': need(scr, 'funding_context', 'scenarios.json'),
                   'funding_src': 'restoration/registry/scenarios.json#funding_context', 'rubric_src': 'restoration/registry/scenarios.json#rubric',
-                  'honesty': need(scr, 'honesty', 'scenarios.json'), 'scene_label': SCENE_LABEL, 'crew_label': CREW_LABEL,
-                  'layer_title': LAYER_TITLE, 'col': ground_colours(), 'stamps': {'scenarios': scr['source_stamp'], 'restoration': rest['source_stamp'], 'hive': hive['source_stamp']}}
+                  'honesty': need(scr, 'honesty', 'scenarios.json'), 'col': ground_colours(), 'stamps': {'scenarios': scr['source_stamp'], 'restoration': rest['source_stamp'], 'hive': hive['source_stamp']}}
 
 
 # ---- the page script -------------------------------------------------------------------------------------------------
@@ -378,6 +371,21 @@ function rsPlan(site, env) {
   const crew = rsCrewSpots(site.crewN, toWorld, env).map((s) => ({ ...s, y: env.ground(s.x, s.z), yaw: yawW + Math.PI / 2 }));
   return { water: W, fam, crew, drop, cand: C.length };
 }
+/* the solids the walker meets (physkit 'prop' boxes): every levee berm segment as a stack of nested boxes, each at most
+   stepUp taller than the next wider one, so the trapezoid is a stair the walker climbs to the crown and never passes
+   through; every riprap and sill rock as one box of its footprint (0.8 of its extent) up to its top. Pure. */
+function rsSolids(fam, stepUp) {
+  const out = [];
+  for (const b of fam.berm) {
+    const k = Math.ceil(b[5] / (stepUp * 0.96));
+    for (let i = 0; i < k; i++) {
+      const top = b[5] * (i + 1) / k;
+      out.push({ id: 'h' + out.length, cx: b[0], cz: b[2], hx: b[4] / 2, hz: b[6] * (0.5 - 0.3 * (i + 1) / k), yaw: b[3], y0: b[1], y1: b[1] + top, kind: 'prop', src: 'berm' });
+    }
+  }
+  for (const b of fam.rock) out.push({ id: 'h' + out.length, cx: b[0], cz: b[2], hx: Math.max(0.4 * b[4], 0.12), hz: Math.max(0.4 * b[6], 0.12), yaw: b[3], y0: b[1] - 0.2, y1: b[1] + b[5] / 2, kind: 'prop', src: 'rock' });
+  return out;
+}
 /* HABITAT-SCENE CORE END */
 function rsTuftGeo() {   /* a clump of six thin blades leaning out from the centre: 6 triangles, unlit (MeshBasicMaterial) */
   const P = [];
@@ -406,7 +414,7 @@ for (const f of Object.keys(RS_GEO)) {
   m.setColorAt(0, new THREE.Color(0xffffff)); scene.add(m); RS_MESH[f] = m;
 }
 const RSD = JSON.parse(document.getElementById('resto-site-data').textContent);
-const RS = { on: true, site: null, key: '', t: 0, plans: {}, wd: {}, builds: 0, ms: 0, crewEls: [] };
+const RS = { on: true, site: null, plan: null, solids: [], key: '', t: 0, plans: {}, wd: {}, builds: 0, ms: 0, crewEls: [] };
 const rsM4 = new THREE.Matrix4(), rsQ = new THREE.Quaternion(), rsV = new THREE.Vector3(), rsS = new THREE.Vector3(), rsC = new THREE.Color(), rsUP = new THREE.Vector3(0, 1, 0), rsPV = new THREE.Vector3();
 function rsEnv(site) {
   const seed = [...site.id].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7);
@@ -431,7 +439,8 @@ function rsBuild(site) {
     }
     m.count = n; m.instanceMatrix.needsUpdate = true; if (m.instanceColor) m.instanceColor.needsUpdate = true;
   }
-  RS.plans[site.id] = P; RS.site = site; RS.builds++; RS.ms = +(performance.now() - t0).toFixed(1);
+  RS.plans[site.id] = P; RS.site = site; RS.plan = P; RS.builds++; RS.ms = +(performance.now() - t0).toFixed(1);
+  markPhys();   // the levees and rocks of this plan are solid (habitatSceneSolids, read by rebuildPhysics)
   for (const e of RS.crewEls) e.el.remove();
   RS.crewEls = P.crew.map((s, i) => {
     const el = document.createElement('button'); el.type = 'button'; el.className = 'lbl lm rs-crew'; el.dataset.siteCrew = site.id + ':' + i;
@@ -439,6 +448,8 @@ function rsBuild(site) {
     labelsEl.append(el); return { el, x: s.x, y: s.y + 2.3, z: s.z };
   });
 }
+/* rebuildPhysics() asks for these after the street kit's: built from the current plan with the page's own physkit step_up */
+function habitatSceneSolids() { RS.solids = RS.on && RS.plan && W ? rsSolids(RS.plan.fam, W.coeffs.avatar.step_up) : []; return RS.solids; }
 function rsNearest() {
   let best = null, bd = Infinity;
   for (const s of RSD.sites) if (s.walkable && s.on_page) { const d = Math.hypot(s.x - eye.x, s.z - eye.z); if (d < bd) { bd = d; best = s; } }
@@ -469,7 +480,9 @@ window.__habitatScene = {
   plan: (id) => { const P = RS.plans[id]; return P ? { water: P.water, drop: P.drop, cand: P.cand, crew: P.crew, n: Object.fromEntries(Object.entries(P.fam).map(([f, L]) => [f, L.length])),
     pts: Object.fromEntries(Object.entries(P.fam).map(([f, L]) => [f, L.map((b) => [b[0], b[2], b[8]])])) } : null; },
   build: (id) => { const s = RSD.sites.find((q) => q.id === id); if (!s || !s.walkable) throw new Error('habitat scene: no walkable site ' + id); rsBuild(s); RS.key = ''; return window.__habitatScene.plan(id); },
-  set: (on) => { RS.on = !!on; RS.key = ''; return RS.on; },
+  set: (on) => { RS.on = !!on; RS.key = ''; markPhys(); return RS.on; },
+  phys: () => ({ solids: RS.solids.length, berm: RS.solids.filter((b) => b.src === 'berm').length, rock: RS.solids.filter((b) => b.src === 'rock').length, boxes: physBoxes, stepUp: W ? W.coeffs.avatar.step_up : null }),
+  support: (x, z) => (W ? +W.supportAt(x, z, 100, 0.05).toFixed(3) : null),
   sites: () => RSD.sites.map((s) => ({ id: s.id, walkable: s.walkable, x: s.x, z: s.z, layers: s.layers ? s.layers.map((l) => l.layer) : [] })),
 };
 /* HABITAT-SCENE END */
@@ -493,7 +506,8 @@ PANEL_CSS = '''
 
 PANEL_I18N = ('resto.title', 'resto.crew', 'resto.close', 'resto.open', 'resto.lessons', 'tasks.title', 'tasks.launch',
               'course.s.courses', 'course.s.lessons', 'course.sup.source', 'hive.speak', 'hive.v.mute', 'hive.v.muted',
-              'hive.v.nosynth', 'hive.v.novoice', 'resto.score', 'resto.gates')
+              'hive.v.nosynth', 'hive.v.novoice', 'resto.score', 'resto.gates', 'resto.site.funding', 'resto.site.habitat',
+              'resto.site.notwalk', 'resto.site.scene', 'resto.site.crew') + tuple(LAYER_KEY + l for l, _, _ in LAYER_RULE)
 
 
 def i18n_for(loc):
@@ -523,11 +537,11 @@ PANEL_JS = r"""
   function render(s, focusCrew) {
     const F = RSD.funding, parts = [];
     parts.push(`<h2 id="rs-h">${esc(s.name)}</h2><p>${esc(s.org)} &middot; <a href="${esc(s.source_url)}" rel="noopener">${esc(s.source_url)}</a> ${src(s.src)}</p>`);
-    parts.push(`<p>RECORDED habitat: &ldquo;${esc(s.habitat)}&rdquo;</p>`);
-    if (!s.walkable) parts.push(`<p data-rs-notwalk>RECORDED: not walkable &mdash; &ldquo;${esc(s.walkable_reason)}&rdquo; ${src(s.src + '.walkable_reason')}</p>`);
+    parts.push(`<p>${esc(L('resto.site.habitat'))}: &ldquo;${esc(s.habitat)}&rdquo;</p>`);
+    if (!s.walkable) parts.push(`<p data-rs-notwalk>${esc(L('resto.site.notwalk'))} &mdash; &ldquo;${esc(s.walkable_reason)}&rdquo; ${src(s.src + '.walkable_reason')}</p>`);
     else {
-      parts.push(`<p data-rs-scene>${esc(RSD.scene_label)}</p><ul>${s.layers.map((l) => `<li>${esc(RSD.layer_title[l.layer])} &mdash; ${esc(l.field)}: &ldquo;${esc(l.quote)}&rdquo;</li>`).join('')}</ul>`);
-      parts.push(`<h3>${esc(L('resto.crew'))}</h3><p>${esc(RSD.crew_label)}</p>`);
+      parts.push(`<p data-rs-scene>${esc(L('resto.site.scene'))}</p><ul>${s.layers.map((l) => `<li>${esc(L('resto.site.layer.' + l.layer))} &mdash; ${esc(l.field)}: &ldquo;${esc(l.quote)}&rdquo;</li>`).join('')}</ul>`);
+      parts.push(`<h3>${esc(L('resto.crew'))}</h3><p>${esc(L('resto.site.crew'))}</p>`);
       parts.push(`<div class="rs-row"><button type="button" data-rs-mute aria-pressed="${window.HiveVoice && HiveVoice.muted() ? 'true' : 'false'}">${esc(L('hive.v.mute'))}</button></div><p class="rs-src" data-rs-state aria-live="polite"></p>`);
       parts.push(s.crew.map((c, i) => `<section data-rs-crew="${i}"><p><b>${esc(c.name)}</b> &middot; ${esc(c.role)} (${esc(c.trade)}) ${src(c.name_src)}</p>
 <div class="rs-row"><button type="button" data-rs-speak="${i}">${esc(L('hive.speak'))}</button></div>
@@ -540,7 +554,7 @@ ${s.runner ? `<div class="rs-row"><button type="button" data-resto-run="${esc(s.
        (a same-page #resto= link alone changes the hash and nothing else) */
     parts.push(`<h3>${esc(L('tasks.title'))}</h3><ul>${s.tasks.map((t) => `<li>${t.href === null ? esc(t.title) : `<a href="${esc(t.href.replace(/^web\//, ''))}"${s.runner ? ` data-resto-run="${esc(s.id)}"` : ''}>${esc(t.title)}</a>`} &mdash; ${esc(t.brief)} ${src(t.src)}</li>`).join('')}</ul>`);
     parts.push(`<h3>${esc(L('resto.score'))}</h3><table><tbody>${RSD.rubric.map((r) => `<tr><th>${esc(r.axis)}</th><td>${esc(r.measure)}</td><td>${esc(r.pass)}</td></tr>`).join('')}</tbody></table>${src(RSD.rubric_src)}`);
-    parts.push(`<h3 lang="en">Funding context</h3><blockquote data-rs-funding><a href="${esc(F.url)}" rel="noopener">${esc(F.headline)}</a></blockquote>
+    parts.push(`<h3>${esc(L('resto.site.funding'))}</h3><blockquote data-rs-funding><a href="${esc(F.url)}" rel="noopener">${esc(F.headline)}</a></blockquote>
 <p>${esc(F.status)} &middot; ${esc(F.source)}</p><p>${esc(F.note)}</p>${src(RSD.funding_src)}`);
     parts.push(`<h3>${esc(L('course.s.courses'))} &middot; ${esc(L('course.s.lessons'))}</h3><ul>${s.courses.map((c) => `<li><a href="${esc(c.href)}">${esc(c.title)}</a> ${src(c.src)}<ul>${c.lessons.map((l) => `<li><a href="${esc(l.href)}">${esc(l.title)}</a></li>`).join('')}</ul></li>`).join('')}</ul>`);
     parts.push(`<p class="rs-src">${esc(RSD.honesty.label)} &middot; ${esc(RSD.honesty.lessons)}. ${esc(RSD.honesty.play)}</p>`);
@@ -577,6 +591,7 @@ ANCHORS = {
     'frame': '  streetKitFrame(over);   // STREET-KIT\n',
     'head': '</head>',
     'body': '</body>',
+    'phys': '  for (const b of streetKitSolids()) list.push(b);   // STREET-KIT: the street-level boxes near the eye are solid\n',
 }
 
 
@@ -607,6 +622,7 @@ def mount(page, reg, cat):
         page = page.replace(a, a + f'<button type="button" class="rk-open" data-site-open="{r["id"]}">{r["id"]}</button> ', 1)
     page = page.replace(ANCHORS['js'], SCENE_JS + ANCHORS['js'], 1)
     page = page.replace(ANCHORS['frame'], ANCHORS['frame'] + '  habitatSceneFrame(over);   // HABITAT-SCENE\n', 1)
+    page = page.replace(ANCHORS['phys'], ANCHORS['phys'] + '  for (const b of habitatSceneSolids()) list.push(b);   // HABITAT-SCENE: levees and rocks are solid\n', 1)
     page = page.replace(ANCHORS['head'], f'<style>{PANEL_CSS}</style>\n</head>', 1)
     tail = ('<section id="resto-site" class="rs-panel" hidden role="dialog" aria-modal="false" aria-labelledby="rs-h">'
             '<div class="rs-row"><button type="button" data-rs-close></button></div><div data-rs-host></div></section>\n'

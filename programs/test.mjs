@@ -42,8 +42,8 @@ ok('honesty quotes are verbatim at their sources (districts, Cognition.X blocks,
   H.districts.text === SCH.honesty.districts && H.cognitionx.text === CX.honesty.blocks && H.standards.text === CL.honesty.standards);
 ok('every district is quoted with its PROPOSED status, none added',
   eq(reg.districts.map((d) => [d.district, d.status]), SCH.districts.map((d) => [d.district, d.status])) && reg.districts.every((d) => /proposed partner/.test(d.status)));
-ok('Cognition.X attribution is carried (CC-BY-4.0, repo and commit)',
-  reg.attribution.license === 'CC-BY-4.0' && reg.attribution.text === CX.attribution.text && reg.attribution.commit === CX.attribution.commit);
+ok('Cognition.X attribution is carried whole for CC BY (author, title, source_url, license_id, license, repo, commit), as the SBOM requires',
+  reg.attribution.license === 'CC-BY-4.0' && ['text', 'author', 'title', 'source_url', 'license_id', 'license', 'license_url', 'repo', 'commit'].every((k) => typeof reg.attribution[k] === 'string' && reg.attribution[k] === CX.attribution[k]));
 
 /* ---- the play-safe rule, re-run from the hive's hold list ---- */
 const HOLD = new RegExp('\\b(' + HV.k12.hold_words.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')\\b', 'i');

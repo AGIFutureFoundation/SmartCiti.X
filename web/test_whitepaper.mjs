@@ -178,8 +178,56 @@ const K = textOf(sec('k12')); const S = textOf(sec('sectors'));
 ok('[labels] districts, programmes and sectors are PROPOSED; the UN path PROPOSED and not affiliated',
   /PROPOSED/.test(K) && (sec('k12').match(/chip chip-open">PROPOSED/g) || []).length === (load('schools/registry/schools.json').districts || []).length
   && (!hasProg || (/PROPOSED/.test(S) && /not affiliated/.test(K))));
-ok('[labels] robotics: the reference policy SCRIPTED and trained models counted, never claimed',
-  /SCRIPTED/.test(textOf(sec('robotics'))) && /no model comparison is claimed/.test(textOf(sec('robotics'))) && /trained_models"?>0</.test(sec('robotics')));
+// SHARE (wave 18, landing 2): the robotics section follows the registries - a trained model is counted, compared and carded
+const RB = sec('robotics'); const RT = textOf(RB);
+const trained = (() => { try { return resolveFig('robotics/registry/robotics.json#/counts/trained_models'); } catch { return null; } })();
+const hasArena = existsSync(join(ROOT, 'robotics/arena/registry/arena.json')) && existsSync(join(ROOT, 'robotics/arena/registry/models.json'));
+const hasClaw = existsSync(join(ROOT, 'robotics/claw/registry/claw.json'));
+ok('[labels] robotics: the reference policy SCRIPTED, trained models counted from the registry, and no language model trained here',
+  /SCRIPTED/.test(RT) && RB.includes('data-fig="robotics/registry/robotics.json#/counts/trained_models">' + show(trained) + '<')
+  && /No language model is trained here/.test(RT) && /datasets are for training a robot-learning model elsewhere/.test(RT)
+  && (trained === 0 ? /no model comparison is claimed/.test(RT) : !/no model comparison is claimed/.test(RT)));
+const lbRows = hasArena ? JSON.parse(read('robotics/arena/registry/arena.json')).leaderboard.rows : [];
+const lbOnPage = lbRows.filter((row) => ['success_rate/mean', 'success_rate/ci95/0', 'success_rate/ci95/1', 'win_vs_ref/rate', 'win_vs_ref/ci95/0', 'win_vs_ref/ci95/1']
+  .every((f) => RB.includes(`data-fig="robotics/arena/registry/arena.json#/leaderboard/rows/[policy=${row.policy}]/${f}"`)));
+ok(`[robotics] the held-out comparison is the arena leaderboard: every policy (${lbRows.length}) with its success rate, paired win rate and both intervals, counted`,
+  trained === 0 || (hasArena && lbRows.length >= 2 && lbOnPage.length === lbRows.length
+    && JSON.parse(read('robotics/arena/registry/arena.json')).leaderboard.table === 'held_out'), lbRows.map((r) => r.policy).filter((p) => !lbOnPage.some((x) => x.policy === p)));
+let bcBad = ['no card'];
+if (hasArena && trained > 0) {
+  const models = JSON.parse(read('robotics/arena/registry/models.json')).models;
+  const arena = JSON.parse(read('robotics/arena/registry/arena.json'));
+  const dl = (RB.match(/<dl class="bccard" data-card="([^"]+)">([\s\S]*?)<\/dl>/) || []);
+  const m = models.find((x) => x.id === unesc(dl[1] || ''));
+  bcBad = [];
+  if (!m) bcBad.push('no card on the page names a model in models.json');
+  else {
+    const shown = Object.fromEntries([...(dl[2] || '').matchAll(/data-fig="robotics\/arena\/registry\/models\.json#\/models\/\[id=[^\]]+\]\/card\/([a-z_]+)"[^>]*>([^<]*)</g)].map((x) => [x[1], unesc(x[2])]));
+    for (const [k, v] of Object.entries(m.card)) if (shown[k] !== show(v)) bcBad.push(`card.${k}: page "${shown[k]}", models.json "${show(v)}"`);
+    for (const k of Object.keys(shown)) if (!(k in m.card)) bcBad.push(`card.${k} is not in models.json`);
+    const ac = arena.cards[m.policy] || {};
+    for (const [k, v] of Object.entries(m.card)) if (k in ac && JSON.stringify(ac[k]) !== JSON.stringify(v)) bcBad.push(`arena.json cards.${m.policy}.${k} disagrees with models.json`);
+    if (!/not a language model/.test(m.card.what || '')) bcBad.push('the card does not say it is not a language model');
+  }
+}
+ok('[robotics] the trained policy\'s card is printed verbatim, every field of models.json\'s card, and arena.json\'s card for it agrees',
+  trained === 0 || bcBad.length === 0, bcBad);
+let clawBad = [];
+if (hasClaw) {
+  const cl = JSON.parse(read('robotics/claw/registry/claw.json'));
+  for (const f of ['counts/tournament_runs', 'dataset/samples', 'dataset/episodes', 'dataset/learner', 'counts/agents', 'counts/models'])
+    if (!RB.includes(`data-fig="robotics/claw/registry/claw.json#/${f}"`)) clawBad.push('missing ' + f);
+  for (const sp of Object.keys(cl.dataset.splits)) for (const k of ['train', 'val', 'test'])
+    if (!RB.includes(`data-fig="robotics/claw/registry/claw.json#/dataset/splits/${sp}/${k}"`)) clawBad.push(`missing split ${sp}.${k}`);
+  for (const a of cl.agents) { if (a.model !== null || !RB.includes(`/agents/[id=${a.id}]/name"`)) clawBad.push(`agent ${a.id}`); }
+  if (cl.counts.models !== 0 || !/SCRIPTED/.test(RT) || !/no AI model/.test(RT)) clawBad.push('Omega Claw agents not SCRIPTED with no AI model');
+}
+ok(`[robotics] Omega Claw (${hasClaw ? 'present' : 'absent'}): the tournament, the dataset and its splits, and every agent from claw.json, SCRIPTED with no AI model`,
+  clawBad.length === 0, clawBad);
+const allText = textOf(html.replace(/<(script|style|svg)\b[\s\S]*?<\/\1>/g, ' ').replace(/<head>[\s\S]*?<\/head>/, ' '));
+const llm = allText.split(/(?<=[.!?;])\s+/).filter((t) => /\b(LLMs?|large language models?|language models?|GPT|chatbots?|VLA|vision-language)\b/i.test(t)
+  && !/\b(no|not|never|none|nothing|neither|nor)\b/i.test(t));
+ok('[hygiene] no language-model claim: every sentence on the page that names an LLM, a language model, GPT, a chatbot or a VLA is a denial', llm.length === 0, llm);
 const contact = brand('contact');
 const C = sec('contact');
 let qrSame = false;
@@ -202,6 +250,11 @@ ok('[hygiene] no agent codename and no internal path anywhere in the page (head,
 ok('[hygiene] page markers are neutral: every data-* attribute name is from the neutral set', [...new Set([...html.matchAll(/\bdata-([a-z0-9-]+)=/g)].map((m) => m[1]))]
   .every((n) => /^(fig|op|paper-section|paper-date|sha256|qr|seo-jsonld|sitenav|sitenav-loop|style|theme)$/.test(n) || /^[a-z-]+$/.test(n) && !CODENAMES.some((c) => n.toUpperCase().split('-').includes(c))));
 
+// SHARE (wave 18, landing 2): the 390 px overflow the browser smoke measured came from a nowrap chip and then from a
+// 56-character registry path in a quote; the page now lets any long token wrap, and no chip refuses to.
+const css = (html.match(/<style>\n:root[\s\S]*?<\/style>/) || [''])[0];
+ok('[layout] phone width: the main column wraps long registry tokens (overflow-wrap:anywhere) and no chip is white-space:nowrap',
+  /\.wrap \{[^}]*overflow-wrap:anywhere/.test(css) && !/\.chip \{[^}]*nowrap/.test(css));
 // ---- wiring --------------------------------------------------------------------------
 const nav = read('web/sitenav.py');
 const block = (nav.match(/# SHARE BEGIN[^\n]*\n([\s\S]*?)# SHARE END/) || [])[1] || '';

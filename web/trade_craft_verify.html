@@ -84,7 +84,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
 <a class="sitenav-home" href="../index.html">Front door</a>
 <details class="sitenav-menu" data-sitenav-menu><summary>Site pages</summary>
 <div class="sitenav-groups">
-<div class="sitenav-group"><span class="sitenav-g">Learn</span><ul><li><a href="trade_craft_lessons.html">Lessons</a></li><li><a href="trade_craft_courses.html">Courses</a></li><li><a href="trade_craft_ladder.html">Ladder</a></li><li><a href="trade_craft_3d.html">Walk the campus</a></li><li><a href="trade_craft_schools.html">School pathways</a></li><li><a href="trade_craft_classroom.html">Classroom</a></li></ul></div>
+<div class="sitenav-group"><span class="sitenav-g">Learn</span><ul><li><a href="trade_craft_lessons.html">Lessons</a></li><li><a href="trade_craft_courses.html">Courses</a></li><li><a href="trade_craft_unions.html">Union halls</a></li><li><a href="trade_craft_ladder.html">Ladder</a></li><li><a href="trade_craft_3d.html">Walk the campus</a></li><li><a href="trade_craft_schools.html">School pathways</a></li><li><a href="trade_craft_classroom.html">Classroom</a></li><li><a href="trade_craft_programs.html">Programs</a></li></ul></div>
 <div class="sitenav-group"><span class="sitenav-g">Play</span><ul><li><a href="trade_craft_quests.html">Quests and arcade</a></li><li><a href="trade_craft_wilds.html">The wilds</a></li><li><a href="trade_craft_parishes.html">New Orleans parishes</a></li><li><a href="trade_craft_bay.html">Bay Area</a></li><li><a href="trade_craft_smiles.html">Unspoken Smiles world</a></li><li><a href="trade_craft_fleet.html">Fleet showroom</a></li><li><a href="trade_craft_packs.html">Holodeck packs</a></li><li><a href="trade_craft_hive.html">Omega Hive</a></li></ul></div>
 <div class="sitenav-group"><span class="sitenav-g">Robotics</span><ul><li><a href="trade_craft_robotics.html">Robotics lab</a></li><li><a href="trade_craft_contribute.html">Share data</a></li></ul></div>
 <div class="sitenav-group"><span class="sitenav-g">Maps</span><ul><li><a href="trade_craft_map.html">Layered map</a></li><li><a href="trade_craft_interactive.html">Interactive map</a></li><li><a href="trade_craft_geomap.html">Geomap</a></li><li><a href="trade_craft_fabric.html">Spatial fabric</a></li></ul></div>
@@ -28178,9 +28178,9 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
  "schema": "tc-robotics/1",
  "contract_version": 1,
  "built": "2026-09-29",
- "source_stamp": "a11104bd804477d9",
+ "source_stamp": "749ce5b7792f175b",
  "honesty": {
-  "trained": "NOTHING HAS BEEN TRAINED. No model has been trained on these environments or on any episode they produce, and the repo records no training run. They are specs and a runnable schematic sandbox.",
+  "trained": "NOTHING HAS BEEN TRAINED ON ANY LEARNER'S DATA, and no language model is trained or used here. 1 model has been trained in this repo, at build time by robotics/arena/train.mjs: a small behaviour-cloning policy trained on 130 SCRIPTED episodes; not a language model; not trained on any learner's data. Its weights are sha256-pinned in robotics/arena/registry/models.json, and robotics/arena/harness.mjs compares it with the SCRIPTED reference on seeds it never saw. No model has been trained on any human (world-teleop or sim) episode.",
   "authored": "Arenas, embodiments and dynamics are AUTHORED / SCHEMATIC (unicycle kinematics, circle obstacles); not the dynamics of any real robot, vehicle or ROV.",
   "derived": "Counts and limits named in `sources` are READ from sims/, ambient/, tasks/, restoration/, underwater/ and web/deepkit.py at build time.",
   "scripted": "Reference policies are SCRIPTED: hand-written, deterministic, seeded - no model, no network.",
@@ -31252,7 +31252,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   "envs": 15,
   "robokit_envs": 4,
   "sim_seat_envs": 11,
-  "trained_models": 0
+  "trained_models": 1
  },
  "reference_benchmark": {
   "what": "MEASURED success counts of the SCRIPTED reference policy (the SIM_CORE block of web/robokit.py) over every declared seed and curriculum level, computed headless at build time by robotics/bench.mjs and recomputed by robotics/test.mjs. Not a learned policy; not a claim about any robot.",

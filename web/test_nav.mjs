@@ -76,6 +76,7 @@ const BUILDERS = {
   'web/trade_craft_languages.html': 'build_languages.py',
   'web/trade_craft_lessons.html': 'build_lessons.py',
   'web/trade_craft_courses.html': 'build_courses.py',
+  /* PATHWAYS BEGIN (wave 18) */ 'web/trade_craft_unions.html': 'build_unions.py', /* PATHWAYS END */
   'web/trade_craft_map.html': 'build_map.py',
   'web/smartcitix_trade_craft_academy.html': 'build_page.py',
   'web/trade_craft_progress.html': 'build_progress.py',
@@ -84,6 +85,7 @@ const BUILDERS = {
   'web/trade_craft_quests.html': 'build_quests.py',
   'web/trade_craft_schools.html': 'build_schools.py',
   'web/trade_craft_classroom.html': 'build_classroom.py',
+  /* PROGRAMS BEGIN (wave 18) */ 'web/trade_craft_programs.html': 'build_programs.py', /* PROGRAMS END */
   'web/trade_craft_design.html': 'build_design.py',
   'web/trade_craft_wilds.html': 'build_wilds.py',
   'web/trade_craft_plans.html': 'build_plans.py',

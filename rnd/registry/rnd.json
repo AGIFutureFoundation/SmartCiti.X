@@ -22,10 +22,10 @@
   "computed_from_registry": 12,
   "measured_source_files": 11,
   "registries_scanned": 91,
-  "app_renderers_scanned": 36,
+  "app_renderers_scanned": 38,
   "doc_renderers_scanned": 3,
   "builders_scanned": 74,
-  "suites_scanned": 137,
+  "suites_scanned": 140,
   "declared_unbuilt": 6,
   "declared_unbuilt_by_their_own_words": 2,
   "declared_unbuilt_not_drawn": 5,
@@ -38,13 +38,13 @@
   "budget_views": 6,
   "budget_currencies": 2,
   "budget_agreements": 7,
-  "suites_run": 137,
-  "suite_checks_declared": 6771,
+  "suites_run": 142,
+  "suite_checks_declared": 6961,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 413
+  "files_read": 430
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -1596,7 +1596,8 @@
     "cognitionx/test.mjs",
     "holodeck/test.mjs",
     "npcs/test.mjs",
-    "programs/test.mjs"
+    "programs/test.mjs",
+    "web/test_programs.mjs"
    ],
    "read_by_its_own_pack": [
     "layers/build.py",
@@ -2273,6 +2274,8 @@
     "web/build_3d.py",
     "web/build_hive.py",
     "web/build_parishes.py",
+    "web/build_programs.py",
+    "web/build_unions.py",
     "web/build_whitepaper.py"
    ],
    "doc_renderers": [],
@@ -2286,7 +2289,9 @@
     "programs/test.mjs",
     "unionpaths/test.mjs",
     "web/test_hive.mjs",
-    "web/test_restoscene.mjs"
+    "web/test_programs.mjs",
+    "web/test_restoscene.mjs",
+    "web/test_unions.mjs"
    ],
    "own_pack": [
     "hive/build.py",
@@ -2417,7 +2422,8 @@
     "cognitionx/test.mjs",
     "holodeck/test.mjs",
     "npcs/test.mjs",
-    "programs/test.mjs"
+    "programs/test.mjs",
+    "web/test_programs.mjs"
    ],
    "own_pack": [
     "layers/build.py",
@@ -2873,7 +2879,8 @@
     "fleet/test.mjs",
     "holodeck/test.mjs",
     "web/test_fleet.mjs",
-    "web/test_parishes.mjs"
+    "web/test_parishes.mjs",
+    "web/test_restoscene.mjs"
    ],
    "own_pack": [
     "physics/build.py",
@@ -2882,11 +2889,13 @@
   },
   "programs/registry/programs.json": {
    "app_renderers": [
+    "web/build_programs.py",
     "web/build_whitepaper.py"
    ],
    "doc_renderers": [],
    "builders": [],
    "suites": [
+    "web/test_programs.mjs",
     "web/test_whitepaper.mjs"
    ],
    "own_pack": [
@@ -3097,10 +3106,22 @@
     "contrib/verify.mjs",
     "datashare/test.mjs",
     "holodeck/test.mjs",
-    "web/test_robotics.mjs"
+    "web/test_arena.mjs",
+    "web/test_robotics.mjs",
+    "web/test_whitepaper.mjs"
    ],
    "own_pack": [
+    "robotics/arena/build.py",
+    "robotics/arena/harness.mjs",
+    "robotics/arena/test.mjs",
+    "robotics/arena/train.mjs",
     "robotics/build.py",
+    "robotics/claw/arena_adapter.mjs",
+    "robotics/claw/build.py",
+    "robotics/claw/core.mjs",
+    "robotics/claw/node.mjs",
+    "robotics/claw/panel.py",
+    "robotics/claw/test.mjs",
     "robotics/test.mjs"
    ]
   },
@@ -3312,6 +3333,7 @@
     "landcover/test.mjs",
     "programs/test.mjs",
     "quests/test.mjs",
+    "web/test_programs.mjs",
     "web/test_smiles.mjs",
     "web/test_smileskit.mjs"
    ],
@@ -3650,11 +3672,14 @@
   },
   "unionpaths/registry/union_paths.json": {
    "app_renderers": [
+    "web/build_courses.py",
+    "web/build_unions.py",
     "web/build_whitepaper.py"
    ],
    "doc_renderers": [],
    "builders": [],
    "suites": [
+    "web/test_unions.mjs",
     "web/test_whitepaper.mjs"
    ],
    "own_pack": [
@@ -4007,6 +4032,7 @@
    "web/build_page.py",
    "web/build_parishes.py",
    "web/build_plans.py",
+   "web/build_programs.py",
    "web/build_progress.py",
    "web/build_quests.py",
    "web/build_robotics.py",
@@ -4014,6 +4040,7 @@
    "web/build_seo.py",
    "web/build_smiles.py",
    "web/build_spaces.py",
+   "web/build_unions.py",
    "web/build_verify.py",
    "web/build_whitepaper.py",
    "web/build_wilds.py",
@@ -4189,6 +4216,7 @@
    "unions/verify.mjs",
    "venue/test.mjs",
    "web/test_3d.mjs",
+   "web/test_arena.mjs",
    "web/test_bayworld.mjs",
    "web/test_builddress.mjs",
    "web/test_classroom.mjs",
@@ -4215,6 +4243,7 @@
    "web/test_parishes.mjs",
    "web/test_patternkit.mjs",
    "web/test_plans.mjs",
+   "web/test_programs.mjs",
    "web/test_progress.mjs",
    "web/test_quests.mjs",
    "web/test_restokit.mjs",
@@ -4229,6 +4258,7 @@
    "web/test_spaces.mjs",
    "web/test_terrainkit.mjs",
    "web/test_tqkit.mjs",
+   "web/test_unions.mjs",
    "web/test_verify.mjs",
    "web/test_whitepaper.mjs",
    "web/test_wildkit.mjs",
@@ -5751,31 +5781,66 @@
    {
     "suite": "web/test_restoscene.mjs",
     "pack": "web",
-    "readme_checks": 34,
+    "readme_checks": 38,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_whitepaper.mjs",
     "pack": "web",
-    "readme_checks": 32,
+    "readme_checks": 37,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_unions.mjs",
+    "pack": "web",
+    "readme_checks": 38,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_programs.mjs",
+    "pack": "web",
+    "readme_checks": 38,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "robotics/arena/test.mjs",
+    "pack": "robotics",
+    "readme_checks": 36,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_arena.mjs",
+    "pack": "web",
+    "readme_checks": 11,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "robotics/claw/test.mjs",
+    "pack": "robotics",
+    "readme_checks": 58,
     "declared": true,
     "in_readme_table": true
    }
   ],
-  "suites_run": 137,
-  "suites_declaring_a_count": 135,
+  "suites_run": 142,
+  "suites_declaring_a_count": 140,
   "suites_without_a_count": [
    "control/soak.mjs",
    "restoration/test_scenarios.mjs"
   ],
-  "declared_total": 6771,
-  "readme_headline": 6806,
+  "declared_total": 6961,
+  "readme_headline": 6996,
   "unaccounted_for": 35,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
   "max": 398,
-  "median": 42,
+  "median": 41.5,
   "thinnest": [
    {
     "suite": "ops/fuzz.mjs",
@@ -5784,6 +5849,10 @@
    {
     "suite": "web/test_restokit.mjs",
     "checks": 9
+   },
+   {
+    "suite": "web/test_arena.mjs",
+    "checks": 11
    },
    {
     "suite": "control/test.mjs",
@@ -5795,10 +5864,6 @@
    },
    {
     "suite": "security/test_sbom.mjs",
-    "checks": 13
-   },
-   {
-    "suite": "tools/test.mjs",
     "checks": 13
    }
   ],
@@ -6254,8 +6319,20 @@
   "roadmap/build.py",
   "roadmap/registry/roadmap.json",
   "roadmap/test.mjs",
+  "robotics/arena/build.py",
+  "robotics/arena/harness.mjs",
+  "robotics/arena/policies.js",
+  "robotics/arena/test.mjs",
+  "robotics/arena/train.mjs",
   "robotics/bench.mjs",
   "robotics/build.py",
+  "robotics/claw/arena_adapter.mjs",
+  "robotics/claw/build.py",
+  "robotics/claw/core.mjs",
+  "robotics/claw/export.mjs",
+  "robotics/claw/node.mjs",
+  "robotics/claw/panel.py",
+  "robotics/claw/test.mjs",
   "robotics/registry/robotics.json",
   "robotics/test.mjs",
   "schools/build.py",
@@ -6356,6 +6433,7 @@
   "web/build_page.py",
   "web/build_parishes.py",
   "web/build_plans.py",
+  "web/build_programs.py",
   "web/build_progress.py",
   "web/build_quests.py",
   "web/build_robotics.py",
@@ -6363,6 +6441,7 @@
   "web/build_seo.py",
   "web/build_smiles.py",
   "web/build_spaces.py",
+  "web/build_unions.py",
   "web/build_verify.py",
   "web/build_whitepaper.py",
   "web/build_wilds.py",
@@ -6372,6 +6451,7 @@
   "web/groundtruth.py",
   "web/interiors.py",
   "web/test_3d.mjs",
+  "web/test_arena.mjs",
   "web/test_bayworld.mjs",
   "web/test_builddress.mjs",
   "web/test_classroom.mjs",
@@ -6398,6 +6478,7 @@
   "web/test_parishes.mjs",
   "web/test_patternkit.mjs",
   "web/test_plans.mjs",
+  "web/test_programs.mjs",
   "web/test_progress.mjs",
   "web/test_quests.mjs",
   "web/test_restokit.mjs",
@@ -6412,6 +6493,7 @@
   "web/test_spaces.mjs",
   "web/test_terrainkit.mjs",
   "web/test_tqkit.mjs",
+  "web/test_unions.mjs",
   "web/test_verify.mjs",
   "web/test_whitepaper.mjs",
   "web/test_wildkit.mjs",

@@ -169,12 +169,15 @@ R = dict(
     wilds='wilds/registry/wilds.json', parishes='parishes/registry/parishes.json',
     bay='bayarea/registry/bayarea.json', smiles='smiles/registry/smiles.json',
     readme='README.md',
+    arena='robotics/arena/registry/arena.json', models='robotics/arena/registry/models.json',
+    claw='robotics/claw/registry/claw.json',
 )
-OPTIONAL = {'paths', 'programs'}
+OPTIONAL = {'paths', 'programs', 'arena', 'models', 'claw'}
 for k, rel in R.items():
     if k not in OPTIONAL and not has(rel):
         raise Missing(f'build_whitepaper: registry {rel} is missing')
 HAVE_PATHS, HAVE_PROGRAMS = has(R['paths']), has(R['programs'])
+HAVE_ARENA, HAVE_CLAW = has(R['arena']) and has(R['models']), has(R['claw'])
 
 
 def r(key, ptr):
@@ -393,21 +396,88 @@ for env, v in pe.items():
         b = f'/reference_benchmark/per_env/{env}/levels/{lv}'
         brows.append([N(r('robotics', f'/reference_benchmark/per_env/{env}/levels/{lv}/name')) + f' <span class="muted">{E(env.split(".", 1)[-1].replace("-", " "))}</span>',
                       N(r('robotics', b + '/success')), N(r('robotics', b + '/runs'))])
-section('robotics', 'Robotics and model comparison',
-        chips(('scr', 'reference policy SCRIPTED'), ('sch', 'arenas SCHEMATIC'), ('open', 'nothing trained'))
+TRAINED = V(r('robotics', '/counts/trained_models'))
+body = (chips(('scr', 'reference policy SCRIPTED'), ('sch', 'arenas SCHEMATIC'),
+              ('open', 'not a language model') if TRAINED else ('open', 'nothing trained'))
         + f'<p>{N(r("robotics", "/counts/embodiments"))} embodiments and {N(r("robotics", "/counts/envs"))} '
           f'environments are specified, with a runnable sandbox. The reference benchmark below is the SCRIPTED '
           f'reference policy, measured over every declared seed and level; on level one it succeeds in '
           f'{N(r("robotics", "/reference_benchmark/totals/success"))} of {N(r("robotics", "/reference_benchmark/totals/runs"))} runs.</p>'
         + table(['Level', 'Successes', 'Runs'], brows)
-        + f'<h3>Model comparison</h3><p>Trained models: {N(r("robotics", "/counts/trained_models"))}. There is no '
-          f'trained model to compare, so no model comparison is claimed. The one comparison the bundle records is '
-          f'between {N(r("evals", "/counts/strategies"))} sequencing strategies in a simulated learner: of '
-          f'{N(r("evals", "/counts/comparisons"))} metric comparisons across {N(r("evals", "/counts/seeds"))} seeds, '
-          f'{N(r("evals", "/counts/comparisons_separating_on_every_seed"))} separate on every seed and '
-          f'{N(r("evals", "/counts/comparisons_overlapping"))} overlap. Assumptions validated against real '
-          f'learners: {N(r("evals", "/counts/assumptions_validated_against_learners"))}.</p>'
-        + Q(r('robotics', '/honesty/trained')))
+        + f'<h3>Model comparison</h3><p>Trained models in the bundle: {N(r("robotics", "/counts/trained_models"))}.')
+if TRAINED and HAVE_ARENA:
+    # SHARE (wave 18, landing 2): the arena's measured comparison, its BC card verbatim, and Omega Claw
+    lb = load(R['arena'])['leaderboard']
+    if lb['table'] != 'held_out':
+        raise Missing('build_whitepaper: arena leaderboard is not the held_out table')
+    lrows = []
+    for row in lb['rows']:
+        q = lambda f: r('arena', f'/leaderboard/rows/[policy={row["policy"]}]/{f}')  # noqa: E731
+        lrows.append([N(q('rank')), N(q('name')), N(q('kind')), N(q('n')), N(q('success_rate/mean')),
+                      '[' + N(q('success_rate/ci95/0')) + ', ' + N(q('success_rate/ci95/1')) + ']',
+                      N(q('win_vs_ref/rate')), '[' + N(q('win_vs_ref/ci95/0')) + ', ' + N(q('win_vs_ref/ci95/1')) + ']',
+                      N(q('win_vs_ref/wins')) + ' / ' + N(q('win_vs_ref/ties')) + ' / ' + N(q('win_vs_ref/losses'))])
+    model = load(R['models'])['models']
+    if len(model) != V(r('arena', '/counts/trained_models')):
+        raise Missing('build_whitepaper: models.json and arena.json disagree on trained models')
+    mid = model[0]['id']
+    card = ''.join(f'<div><dt>{E(k.replace("_", " "))}</dt><dd>{N(r("models", f"/models/[id={mid}]/card/{k}"), tag="span", cls="")}</dd></div>'
+                   for k in model[0]['card'])
+    body += (f' One is trained: {N(r("models", f"/models/[id={mid}]/card/what"), cls="")}. It is compared below with the SCRIPTED '
+             f'reference, a SCRIPTED greedy policy and a random baseline on the held-out seeds, measured at build time; '
+             f'intervals are bootstrap confidence intervals at level {N(r("arena", "/tables/held_out/bootstrap/level"))} '
+             f'over {N(r("arena", "/tables/held_out/bootstrap/resamples"))} resamples, and the win rate is paired against '
+             f'the reference on the same task, level and seed.</p>'
+             + table(['Rank', 'Policy', 'Kind', 'Runs', 'Success rate', 'Interval', 'Paired win rate vs reference',
+                      'Interval', 'Wins / ties / losses'], lrows)
+             + f'<p class="muted">Held-out seeds: {N(r("arena", "/leaderboard/seeds"), "len")}; tasks: '
+               f'{N(r("arena", "/tables/held_out/tasks"), "len")}; environments excluded, each with its reason: '
+               f'{N(r("arena", "/tables/held_out/excluded"), "len")}.</p>'
+             + '<h3>The trained policy\'s card, verbatim</h3>'
+             + f'<dl class="bccard" data-card="{E(mid)}">{card}</dl>'
+             + Q(r('arena', '/honesty/not_llm')))
+else:
+    body += (' There is no trained model to compare, so no model comparison is claimed.</p>')
+if HAVE_CLAW:
+    cp = load(R['claw'])
+    trows = [[N(r('claw', f'/tournament/policies/[id={pid["id"]}]/id')), N(r('claw', f'/tournament/per_policy/{pid["id"]}/provenance')),
+              N(r('claw', f'/tournament/per_policy/{pid["id"]}/runs')), N(r('claw', f'/tournament/per_policy/{pid["id"]}/success')),
+              N(r('claw', f'/tournament/per_policy/{pid["id"]}/collisions')), N(r('claw', f'/tournament/per_policy/{pid["id"]}/mean_return'))]
+             for pid in cp['tournament']['policies']]
+    prows = [[E(k), N(r('claw', f'/tournament/paired/{k}/pairs')), N(r('claw', f'/tournament/paired/{k}/a_only')),
+              N(r('claw', f'/tournament/paired/{k}/b_only')), N(r('claw', f'/tournament/paired/{k}/p')),
+              N(r('claw', f'/tournament/paired/{k}/mean_return_diff'))] for k in cp['tournament']['paired']]
+    srows = [[E(sp), N(r('claw', f'/dataset/splits/{sp}/train')), N(r('claw', f'/dataset/splits/{sp}/val')),
+              N(r('claw', f'/dataset/splits/{sp}/test')), N(r('claw', f'/splits/{sp}/rule'))] for sp in cp['dataset']['splits']]
+    arows = [[N(r('claw', f'/agents/[id={a["id"]}]/name')), N(r('claw', f'/agents/[id={a["id"]}]/job')),
+              '<span class="chip chip-scr">SCRIPTED</span>'] for a in cp['agents']]
+    body += ('<h3>Omega Claw: the tournament and the datasets</h3>'
+             + chips(('scr', 'agents SCRIPTED'), ('open', 'no AI model'), ('der', 'datasets for training elsewhere'))
+             + f'<p>A tournament of {N(r("claw", "/counts/tournament_runs"))} runs puts {N(r("claw", "/counts/policies"))} '
+               f'policies through the same tasks, levels and seeds. Disagreements between the referee and the success rule: '
+               f'{N(r("claw", "/tournament/referee_disagreements"))}.</p>'
+             + table(['Policy', 'Provenance', 'Runs', 'Successes', 'Collisions', 'Mean return'], trows)
+             + table(['Pair', 'Pairs', 'First only', 'Second only', 'Sign-test p', 'Mean return difference'], prows)
+             + Q(r('claw', '/tournament/said/referee'))
+             + f'<p>The dataset holds {N(r("claw", "/dataset/samples"))} samples from {N(r("claw", "/dataset/episodes"))} '
+               f'seeded episodes of the SCRIPTED reference policy; learner episodes in it: {N(r("claw", "/dataset/learner"))}; '
+               f'samples that met their success rule: {N(r("claw", "/dataset/success"))}.</p>'
+             + table(['Split', 'Train', 'Validation', 'Test', 'Rule'], srows)
+             + f'<p>{N(r("claw", "/counts/agents"))} Omega Claw agents run the tournament and the datasets. AI models behind '
+               f'them: {N(r("claw", "/counts/models"))}.</p>'
+             + table(['Agent', 'Job', 'Provenance'], arows)
+             + Q(r('claw', '/honesty/no_model')))
+body += ('<p class="deny">No language model is trained here, and no policy here uses one. The datasets are for training a '
+         'robot-learning model elsewhere.</p>'
+         + (Q(r('claw', '/honesty/trained')) if HAVE_CLAW else '')
+         + f'<h3>Learning strategies in a simulated learner</h3><p>A separate comparison is recorded '
+           f'between {N(r("evals", "/counts/strategies"))} sequencing strategies in a simulated learner: of '
+           f'{N(r("evals", "/counts/comparisons"))} metric comparisons across {N(r("evals", "/counts/seeds"))} seeds, '
+           f'{N(r("evals", "/counts/comparisons_separating_on_every_seed"))} separate on every seed and '
+           f'{N(r("evals", "/counts/comparisons_overlapping"))} overlap. Assumptions validated against real '
+           f'learners: {N(r("evals", "/counts/assumptions_validated_against_learners"))}.</p>'
+         + Q(r('robotics', '/honesty/trained')))
+section('robotics', 'Robotics and model comparison', body)
 
 # 8. Omega Hive
 section('hive', 'Omega Hive',
@@ -456,7 +526,10 @@ section('roadmap', 'Roadmap',
 # 11. honest status
 section('status', 'Honest status',
         '<ul class="status">'
-        f'<li>Trained models: {N(r("robotics", "/counts/trained_models"))}. Robots are AUTHORED, policies SCRIPTED.</li>'
+        f'<li>Trained models: {N(r("robotics", "/counts/trained_models"))}. Robots are AUTHORED and the reference policies '
+        + ('SCRIPTED; the trained policy is a small behaviour-cloning network, not a language model, trained on SCRIPTED '
+           'episodes and no learner data.</li>' if TRAINED else 'SCRIPTED.</li>')
+        + '<li>No language model is trained here.</li>'
         f'<li>AI models behind Omega Hive agents: {N(r("hive", "/counts/models"))}.</li>'
         '<li>Partners, school districts and programmes are PROPOSED; no agreement exists. Unions named are halls in '
         'the Academy\'s own taxonomy, not partners. The UN path is PROPOSED and not affiliated.</li>'
@@ -579,7 +652,7 @@ page = f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name
 * {{ box-sizing:border-box; }}
 body {{ background:var(--paper); color:var(--ink); margin:0; font:16px/1.65 "IBM Plex Sans", system-ui, sans-serif; }}
 nav.sitenav {{ --sn-mark:var(--accent-ink); }}
-.wrap {{ max-width:80ch; margin:0 auto; padding:0 16px 96px; }}
+.wrap {{ max-width:80ch; margin:0 auto; padding:0 16px 96px; overflow-wrap:anywhere; }}
 header.hero {{ padding:48px 0 24px; border-bottom:2px solid var(--ink); }}
 .eyebrow {{ font:600 12px/1 "Archivo",sans-serif; letter-spacing:.14em; text-transform:uppercase; color:var(--accent-ink); margin:0 0 14px; }}
 h1 {{ font:700 clamp(30px,5.4vw,46px)/1.08 "Archivo",sans-serif; color:var(--head); margin:0 0 12px; text-wrap:balance; }}
@@ -599,6 +672,11 @@ p {{ margin:0 0 14px; }}
 .muted {{ color:var(--muted); }}
 a {{ color:var(--accent-ink); }}
 code {{ font:13px/1.5 "IBM Plex Mono",monospace; background:var(--code-bg); padding:1px 5px; border-radius:3px; overflow-wrap:anywhere; }}
+.bccard {{ display:grid; gap:6px; margin:0 0 16px; padding:12px 14px; background:var(--surface); border:1px solid var(--line); border-radius:4px; }}
+.bccard div {{ display:grid; grid-template-columns:minmax(90px,140px) 1fr; gap:12px; }}
+.bccard dt {{ font:600 12px/1.5 "IBM Plex Mono",monospace; color:var(--muted); }}
+.bccard dd {{ margin:0; overflow-wrap:anywhere; }}
+.deny {{ font-weight:600; color:var(--head); }}
 .tiles {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin:18px 0 20px; }}
 .tiles div {{ background:var(--surface); border:1px solid var(--line); border-inline-start:4px solid var(--accent); border-radius:4px; padding:12px 14px; }}
 .tiles dt {{ font-size:13px; color:var(--muted); }}

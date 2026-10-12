@@ -80,6 +80,30 @@ ok('[habitat] tidal marsh sites carry pickleweed AND cordgrass bands and channel
 ok('[habitat] the salt-pond site has levee berms walling its cells (>= 35 segments) and pond / mudflat pads; shoreline sites carry riprap or a rock sill and coir logs',
   fam('south-bay-salt-ponds', 'berm') >= 35 && fam('south-bay-salt-ponds', 'pad') >= 20
   && ['herons-head', 'candlestick-point', 'east-oakland-youth'].every((id) => fam(id, 'rock') >= 40 && famBy(id, 'box', [0x6b5232]) >= 6));
+// solids: levees climb in steps no taller than the page's own physkit step_up; every berm and rock is covered
+const PHYS = JSON.parse(rd('physics/registry/physics.json'));
+const stepUp = PHYS.coeffs.avatar.step_up.value;
+const solidsApi = (() => { try { return new Function(core + '\nreturn rsSolids;')(); } catch (e) { return null; } })();
+const sol = [];
+for (const s of walk) {
+  const P = plans[s.id]; if (!P || !solidsApi) { sol.push(s.id + ': no solids'); continue; }
+  const S = solidsApi(P.fam, stepUp);
+  if (S.length !== S.filter((b) => b.kind === 'prop').length) sol.push(s.id + ': not prop');
+  for (const b of P.fam.berm) {
+    const st = S.filter((q) => q.src === 'berm' && q.cx === b[0] && q.cz === b[2]).sort((p, q) => p.y1 - q.y1);
+    if (!st.length || Math.abs(st[st.length - 1].y1 - (b[1] + b[5])) > 1e-6) sol.push(s.id + ': berm crown not solid');
+    let prev = b[1], hz = Infinity;
+    for (const q of st) { if (q.y1 - prev > stepUp + 1e-9 || q.hz > hz || q.y0 !== b[1]) sol.push(s.id + ': berm step'); prev = q.y1; hz = q.hz; }
+    if (st.length && Math.abs(st[0].hz - b[6] * 0.5) > b[6] * 0.08) sol.push(s.id + ': berm toe not covered');
+  }
+  for (const b of P.fam.rock) if (!S.some((q) => q.src === 'rock' && q.cx === b[0] && q.cz === b[2] && q.y1 >= b[1] + b[5] / 2 - 1e-9)) sol.push(s.id + ': rock not solid');
+}
+ok(`[solid] every levee berm is a stair of physkit prop boxes (each step <= step_up ${stepUp} m, widest at the toe, crown at the berm top) and every riprap and sill rock is a prop box`,
+  !!solidsApi && fam('south-bay-salt-ponds', 'berm') > 0 && fam('herons-head', 'rock') > 0 && sol.length === 0, sol.slice(0, 4));
+ok('[solid] rebuildPhysics adds the scene\'s solids right after the street kit\'s, from the current plan, with the page\'s own physkit step_up; a re-plan and the on/off switch mark physics dirty',
+  html.includes('  for (const b of streetKitSolids()) list.push(b);   // STREET-KIT: the street-level boxes near the eye are solid\n  for (const b of habitatSceneSolids()) list.push(b);')
+  && /function habitatSceneSolids\(\) \{ RS\.solids = RS\.on && RS\.plan && W \? rsSolids\(RS\.plan\.fam, W\.coeffs\.avatar\.step_up\) : \[\]; return RS\.solids; \}/.test(html)
+  && /RS\.plan = P;[^\n]*\n  markPhys\(\);/.test(html) && /set: \(on\) => \{ RS\.on = !!on; RS\.key = ''; markPhys\(\);/.test(html));
 const maxTris = api ? Object.keys(api.RS_CAP).reduce((a, f) => a + api.RS_CAP[f] * api.RS_TRIS[f], 0) : Infinity;
 ok(`[budget] the scene adds at most 5 draw calls and ${maxTris} triangles (Bay 06075 origin measured 17 calls / 76,991 tris against ceilings 45 / 122,020)`,
   !!api && Object.keys(api.RS_CAP).length === 5 && maxTris <= 16_000 && 76_991 + maxTris <= 122_020);
@@ -108,11 +132,22 @@ ok('[sites] every site row stands exactly on its landmark in the page frame (x, 
 ok('[layers] every layer is chosen by a word of the site\'s OWN recorded text (the quote is a substring of the field it names)',
   walk.every((s) => s.layers.length > 0 && s.layers.every((l) => {
     const r = byId[s.id], t = l.field === 'habitat+ground' ? r.habitat + '|' + r.ground : r[l.field];
-    return typeof t === 'string' && t.includes(l.quote) && typeof D.layer_title[l.layer] === 'string'; })));
-const digits = [D.scene_label, D.crew_label, ...Object.values(D.layer_title)].filter((t) => /\d/.test(t));
-ok('[numbers] the AUTHORED labels carry no number (no acreage, species count, length or funding is written by the kit)', digits.length === 0, digits);
-ok('[label] the habitat scene says AUTHORED and not a survey; the crew label says SCRIPTED and no AI model',
-  /AUTHORED/.test(D.scene_label) && /not a survey/.test(D.scene_label) && /SCRIPTED/.test(D.crew_label) && /no AI model/.test(D.crew_label));
+    return typeof t === 'string' && t.includes(l.quote) && LOC.every((lc) => typeof CAT[lc].strings['resto.site.layer.' + l.layer] === 'string'); })));
+// the panel's own words: the resto.site.* block of the 8 locales, embedded in the page catalogue, translated, no numbers
+const LOCS = Object.fromEntries(LOC.map((l) => [l, JSON.parse(rd(`i18n/locales/${l}.json`)).strings]));
+const siteKeys = Object.keys(LOCS.en).filter((k) => k.startsWith('resto.site.'));
+const LAYERS = [...kit.matchAll(/^    \('([a-z-]+)', '(?:habitat|ground|ground_why|habitat\+ground)'/gm)].map((m) => m[1]);
+ok(`[i18n] the panel's labels are the resto.site.* block (${siteKeys.length} keys: funding heading, RECORDED prefixes, scene and crew labels, ${LAYERS.length} layer names) in all 8 locales, contiguous after resto.close, embedded in the page catalogue`,
+  siteKeys.length === 5 + LAYERS.length && LAYERS.length === 11 && LAYERS.every((l) => siteKeys.includes('resto.site.layer.' + l))
+  && LOC.every((l) => { const ks = Object.keys(LOCS[l]), i = ks.indexOf('resto.close'); return siteKeys.every((k, j) => ks[i + 1 + j] === k) && siteKeys.every((k) => CAT[l] && CAT[l].strings[k] === LOCS[l][k]); }));
+const copies = LOC.filter((l) => l !== 'en').flatMap((l) => siteKeys.filter((k) => LOCS[l][k] === LOCS.en[k]).map((k) => l + ':' + k));
+ok('[i18n] every resto.site.* label is translated (no locale copies the English) and the page carries no English-only panel heading', copies.length === 0
+  && !/lang="en">Funding context|RECORDED habitat:|RECORDED: not walkable/.test(kit), copies.slice(0, 4));
+const digits = LOC.flatMap((l) => siteKeys.filter((k) => /[0-9\u0660-\u0669\u0966-\u096f]/.test(LOCS[l][k])).map((k) => l + ':' + k));
+ok('[numbers] the AUTHORED labels carry no number in any locale (no acreage, species count, length or funding is written by the kit)', siteKeys.length > 0 && digits.length === 0, digits);
+ok('[label] in every locale the scene label keeps AUTHORED and RECORDED, the crew label keeps SCRIPTED, the RECORDED prefixes keep RECORDED',
+  LOC.every((l) => /AUTHORED/.test(LOCS[l]['resto.site.scene']) && /RECORDED/.test(LOCS[l]['resto.site.scene']) && /SCRIPTED/.test(LOCS[l]['resto.site.crew'])
+    && /RECORDED/.test(LOCS[l]['resto.site.habitat']) && /RECORDED/.test(LOCS[l]['resto.site.notwalk'])) && /not a survey/.test(LOCS.en['resto.site.scene']) && /no AI model/.test(LOCS.en['resto.site.crew']));
 
 // ---- verbatim quotes ------------------------------------------------------------------------------------------------
 const at = (path) => {   // restoration/registry/scenarios.json#scenarios[3].steps[1].text -> value

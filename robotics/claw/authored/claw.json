@@ -1,0 +1,383 @@
+{
+ "provenance": "AUTHORED - every personality, voice setting, binding choice, split assignment, bound, template and coaching rule in this file is written by hand. A binding names WHERE a line is quoted from; it adds no line and no fact. Template words are AUTHORED; every number a template prints is MEASURED by robotics/claw/core.mjs at build or view time. No figure here represents a real person.",
+ "voice": {
+  "engine": "speechSynthesis",
+  "on_device_only": true,
+  "on_click_only": true,
+  "lang": "en",
+  "bounds_source": "hive/registry/hive.json#bounds"
+ },
+ "agents": {
+  "scheduler": {
+   "name": "Scheduler",
+   "glyph": "\u23f1",
+   "job": "builds the tournament queue: policies x tasks x levels x seeds",
+   "traits": [
+    "orderly",
+    "punctual",
+    "even"
+   ],
+   "style": "Reads the queue out as counts, then says which run goes first.",
+   "voice": {
+    "pitch": 1.0,
+    "rate": 1.0
+   },
+   "k12": true,
+   "lines": [
+    {
+     "id": "what",
+     "source": "robotics/registry/robotics.json#reference_benchmark.what"
+    },
+    {
+     "id": "queue",
+     "template": "The queue holds {runs} runs: {policies} policies, {tasks} tasks, {levels} task levels, {seeds} seeds each.",
+     "slots": {
+      "runs": "n",
+      "policies": "n",
+      "tasks": "n",
+      "levels": "n",
+      "seeds": "n"
+     }
+    }
+   ]
+  },
+  "referee": {
+   "name": "Referee",
+   "glyph": "\u2696",
+   "job": "applies each task's own termination and success rules",
+   "traits": [
+    "impartial",
+    "literal",
+    "brief"
+   ],
+   "style": "Quotes the rule first, then the count it produced, and nothing else.",
+   "voice": {
+    "pitch": 0.9,
+    "rate": 0.95
+   },
+   "k12": true,
+   "lines": [
+    {
+     "id": "rule-pickup",
+     "source": "robotics/registry/robotics.json#envs[\"world.litter-pickup\"].termination[0].when"
+    },
+    {
+     "id": "rule-sort",
+     "source": "robotics/registry/robotics.json#envs[\"world.litter-sort\"].termination[0].when"
+    },
+    {
+     "id": "rule-gate",
+     "source": "robotics/registry/robotics.json#envs[\"world.gate-drive\"].termination[0].when"
+    },
+    {
+     "id": "rule-rov",
+     "source": "robotics/registry/robotics.json#envs[\"world.rov-survey\"].termination[0].when"
+    },
+    {
+     "id": "rule-stopped",
+     "source": "robotics/registry/robotics.json#envs[\"world.litter-pickup\"].termination[2].when"
+    },
+    {
+     "id": "verdict",
+     "template": "{success} of {runs} runs met the success rule; {cap} reached the step cap; {disagree} outcomes disagreed with the rule.",
+     "slots": {
+      "success": "n",
+      "runs": "n",
+      "cap": "n",
+      "disagree": "n"
+     }
+    }
+   ]
+  },
+  "steward": {
+   "name": "Data Steward",
+   "glyph": "\ud83d\uddc2",
+   "job": "assembles the datasets and enforces consent scope and revocations",
+   "traits": [
+    "careful",
+    "consent-first",
+    "exact"
+   ],
+   "style": "Says what was refused before what was kept.",
+   "voice": {
+    "pitch": 1.08,
+    "rate": 0.95
+   },
+   "k12": true,
+   "lines": [
+    {
+     "id": "scope",
+     "source": "datashare/registry/datashare.json#consent_scope.rule"
+    },
+    {
+     "id": "revocation",
+     "source": "datashare/registry/datashare.json#revocation.rule"
+    },
+    {
+     "id": "trained",
+     "source": "robotics/registry/robotics.json#honesty.trained"
+    },
+    {
+     "id": "counts",
+     "template": "{samples} samples kept from {episodes} seeded episodes; {duplicates} duplicate trajectories removed; {revoked} revoked episodes excluded.",
+     "slots": {
+      "samples": "n",
+      "episodes": "n",
+      "duplicates": "n",
+      "revoked": "n"
+     }
+    }
+   ]
+  },
+  "evaluator": {
+   "name": "Evaluator",
+   "glyph": "\ud83d\udcca",
+   "job": "compares policies with paired statistics on the same task, level and seed",
+   "traits": [
+    "skeptical",
+    "numerate",
+    "plain"
+   ],
+   "style": "Gives the paired count first and the p-value second, and never calls a difference real on its own.",
+   "voice": {
+    "pitch": 0.85,
+    "rate": 0.92
+   },
+   "k12": true,
+   "lines": [
+    {
+     "id": "scripted",
+     "source": "robotics/registry/robotics.json#honesty.scripted"
+    },
+    {
+     "id": "paired",
+     "template": "Over {pairs} paired runs, {a_only} finished only under the first policy and {b_only} only under the second; exact sign-test p = {p}.",
+     "slots": {
+      "pairs": "n",
+      "a_only": "n",
+      "b_only": "n",
+      "p": "n"
+     }
+    }
+   ]
+  },
+  "coach": {
+   "name": "Coach",
+   "glyph": "\ud83e\udded",
+   "job": "turns a learner's measured episode into a next-lesson or next-level suggestion",
+   "traits": [
+    "encouraging",
+    "specific",
+    "patient"
+   ],
+   "style": "Names one measured thing that went well, then one thing to try next.",
+   "voice": {
+    "pitch": 1.12,
+    "rate": 0.94
+   },
+   "k12": true,
+   "lines": [
+    {
+     "id": "metrics",
+     "template": "Smoothness index {smooth} and {collisions} contacts on this run.",
+     "slots": {
+      "smooth": "n",
+      "collisions": "n"
+     }
+    },
+    {
+     "id": "finish",
+     "template": "Finished in {time} seconds; path efficiency {eff} against the reference on the same seed.",
+     "slots": {
+      "time": "n",
+      "eff": "n"
+     }
+    }
+   ]
+  }
+ },
+ "families": {
+  "litter": [
+   "world.litter-pickup",
+   "world.litter-sort"
+  ],
+  "yard-lane": [
+   "world.gate-drive"
+  ],
+  "survey": [
+   "world.rov-survey"
+  ]
+ },
+ "instructions": {
+  "world.litter-pickup": {
+   "instructions": [
+    "robotics/registry/robotics.json#envs[\"world.litter-pickup\"].brief"
+   ],
+   "context": [
+    "robotics/registry/robotics.json#envs[\"world.litter-pickup\"].termination[0].when"
+   ],
+   "lesson": null
+  },
+  "world.litter-sort": {
+   "instructions": [
+    "robotics/registry/robotics.json#envs[\"world.litter-sort\"].brief"
+   ],
+   "context": [
+    "robotics/registry/robotics.json#envs[\"world.litter-sort\"].termination[0].when",
+    "stations/registry/stations.json#stations[station_id=st005].name"
+   ],
+   "lesson": null
+  },
+  "world.gate-drive": {
+   "instructions": [
+    "robotics/registry/robotics.json#envs[\"world.gate-drive\"].brief",
+    "tasks/registry/tasks.json#tasks[id=sim-forklift-run-bay-yard].brief"
+   ],
+   "context": [
+    "robotics/registry/robotics.json#envs[\"world.gate-drive\"].termination[0].when",
+    "tasks/registry/tasks.json#tasks[id=sim-forklift-run-bay-yard].title"
+   ],
+   "lesson": "lessons/registry/lessons.json#lessons[\"marine-terminal-brief-the-lane\"].title"
+  },
+  "world.rov-survey": {
+   "instructions": [
+    "robotics/registry/robotics.json#envs[\"world.rov-survey\"].brief"
+   ],
+   "context": [
+    "robotics/registry/robotics.json#envs[\"world.rov-survey\"].termination[0].when",
+    "tasks/registry/tasks.json#tasks[id=resto-sim-herons-head-shoreline-resilience].title",
+    "restoration/registry/scenarios.json#scenarios[id=rs-herons-head-shoreline-resilience].label"
+   ],
+   "lesson": null
+  }
+ },
+ "splits": {
+  "seen-tasks": {
+   "by": "seed",
+   "rule": "every task family appears in every split; the seed sets are disjoint",
+   "train": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "val": [
+    17,
+    18
+   ],
+   "test": [
+    19,
+    20
+   ]
+  },
+  "unseen-tasks": {
+   "by": "family",
+   "rule": "whole task families are held out; no family, instruction or trajectory appears in two splits",
+   "train": [
+    "litter"
+   ],
+   "val": [
+    "yard-lane"
+   ],
+   "test": [
+    "survey"
+   ]
+  }
+ },
+ "balance": {
+  "max_ratio": 1.5,
+  "rule": "per-task sample counts may differ by at most max_ratio (largest / smallest); every sample carries weight = N / (tasks x n_task) so each task weighs the same in every split"
+ },
+ "provenance_fields": [
+  "registry",
+  "registry_stamp",
+  "policy",
+  "policy_version",
+  "actor",
+  "seed",
+  "level",
+  "instruction_source",
+  "generator"
+ ],
+ "metrics": {
+  "smoothness": "mean over consecutive 5 Hz samples of |delta a| / (high - low), averaged over the action fields; 0 = constant inputs, lower is smoother (changes faster than the sample rate are not seen)",
+  "path_efficiency": "reference path length / learner path length over the 5 Hz pose samples, same env, seed and level, measured only when both the learner and the reference met the success rule (otherwise -1, not shown); above 1 means a shorter path than the reference",
+  "collisions": "contacts = collision term / its reward weight, as robotics/bench.mjs counts them",
+  "time_to_success_s": "steps x dt_s when the episode met the success rule, otherwise none"
+ },
+ "coach": {
+  "bounds": {
+   "smooth_max": 0.1,
+   "efficiency_min": 0.7
+  },
+  "ladder": [
+   "world.litter-pickup",
+   "world.gate-drive",
+   "world.litter-sort",
+   "world.rov-survey"
+  ],
+  "rules": [
+   {
+    "id": "reference-fails-too",
+    "when": "!success && !ref_success",
+    "next": "practice",
+    "say": "The reference policy does not finish this seed either. Practise on the level where it finishes most often, then come back.",
+    "k12": true
+   },
+   {
+    "id": "many-contacts",
+    "when": "!success && collisions >= 2",
+    "next": "same",
+    "say": "Stay on this level. Slow down before the obstacles and watch the contact count.",
+    "k12": true
+   },
+   {
+    "id": "not-yet",
+    "when": "!success",
+    "next": "same",
+    "say": "Stay on this level. Watch the reference replay once, then drive it again.",
+    "k12": true
+   },
+   {
+    "id": "clean-up",
+    "when": "success && collisions > 0",
+    "next": "same",
+    "say": "Finished. Try the same level again with no contacts.",
+    "k12": true
+   },
+   {
+    "id": "smooth-out",
+    "when": "success && smooth > smooth_max",
+    "next": "same",
+    "say": "Finished cleanly. Try the same level again with steadier inputs.",
+    "k12": true
+   },
+   {
+    "id": "shorter-line",
+    "when": "success && eff >= 0 && eff < efficiency_min",
+    "next": "same",
+    "say": "Finished cleanly. Try the same level again on a shorter line.",
+    "k12": true
+   },
+   {
+    "id": "move-up",
+    "when": "success",
+    "next": "up",
+    "say": "Clean, smooth and efficient. Move on to the next step.",
+    "k12": true
+   }
+  ]
+ }
+}

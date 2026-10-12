@@ -43,10 +43,16 @@ GROUPS = [
         # COURSE BEGIN (wave 16): the course catalogue and the lesson supplements
         ('web/trade_craft_courses.html', 'nav.page.courses'),
         # COURSE END
+        # PATHWAYS BEGIN (wave 18): the union hall directory - one ordered path per hall, by district and cohort
+        ('web/trade_craft_unions.html', 'nav.page.unions'),
+        # PATHWAYS END
         ('web/trade_craft_ladder.html', 'nav.page.ladder'),
         ('web/trade_craft_3d.html', 'nav.page.campus'),
         ('web/trade_craft_schools.html', 'nav.page.schools'),
         ('web/trade_craft_classroom.html', 'nav.page.classroom'),
+        # PROGRAMS BEGIN (wave 18): K-12 program pathways, teacher program cards and the nonprofit sectors
+        ('web/trade_craft_programs.html', 'nav.page.programs'),
+        # PROGRAMS END
     ]),
     ('nav.group.play', [
         ('web/trade_craft_quests.html', 'nav.page.quests'),

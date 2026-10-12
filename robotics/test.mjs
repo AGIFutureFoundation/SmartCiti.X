@@ -3,7 +3,7 @@
  * Recompute, never re-read: counts are recounted, DERIVED values are re-derived from the registries they cite
  * (sims/, ambient/, web/deepkit.py), and the deterministic core is extracted from web/robokit.py and run here -
  * the same code the page runs - so determinism, sample shape and the contract's field list are proven, not
- * asserted. The most important family: NOTHING IS TRAINED (trained_models 0, honesty says so, no format claim).
+ * asserted. The most important family: NOTHING IS TRAINED ON LEARNER DATA (ARENA wave 18: trained_models = the one arena BC model, honesty says so, no format claim).
  */
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
@@ -29,8 +29,12 @@ ok('counts are recounted from the entries: envs, robokit envs, sim-seat envs, em
   && reg.counts.embodiments === Object.keys(reg.embodiments).length && rk.length === 4);
 
 /* ---- honesty: nothing trained ---- */
-ok('NOTHING HAS BEEN TRAINED: trained_models is 0 and the honesty line says so first',
-  reg.counts.trained_models === 0 && /^NOTHING HAS BEEN TRAINED/.test(reg.honesty.trained));
+// ARENA BEGIN (wave 18): one model is trained here - the BC policy of robotics/arena/ - and none on learner data
+const ARENA_TRAINED = J('robotics/arena/registry/models.json').models.filter((m) => m.provenance === 'TRAINED');
+ok('NOTHING HAS BEEN TRAINED ON ANY LEARNER\'S DATA: trained_models is the arena\'s TRAINED-model count (exactly 1, the BC card verbatim) and the honesty line says so first',
+  reg.counts.trained_models === ARENA_TRAINED.length && ARENA_TRAINED.length === 1 && /^NOTHING HAS BEEN TRAINED ON ANY LEARNER'S DATA, and no language model/.test(reg.honesty.trained)
+  && ARENA_TRAINED.every((m) => reg.honesty.trained.includes(m.card.what)) && !/records no training run/.test(reg.honesty.trained));
+// ARENA END
 ok('no external-format compatibility is claimed (RLDS / LeRobot / ML-Agents named only as "not", no round-trip test)',
   /Not an RLDS, LeRobot or ML-Agents file/.test(reg.honesty.formats) && /no round-trip/.test(reg.honesty.formats));
 ok('every embodiment is AUTHORED and every reference policy is SCRIPTED',
