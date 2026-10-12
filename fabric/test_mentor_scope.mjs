@@ -33,7 +33,7 @@
  */
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { Mentor, redactPII, detectEscalation, classifyEscalation, CRISIS_HANDOFF, HANDOFF_TO, HANDOFF_URGENT } from './agent.mjs';
+import { Mentor, redactPII, detectEscalation, classifyEscalation, CRISIS_HANDOFF, HANDOFF_TO, HANDOFF_URGENT, ESCALATION_ROUTES } from './agent.mjs';
 import { Router, keywordClassifier } from './router.mjs';
 
 const F = JSON.parse(readFileSync(new URL('./mentor_scope_fixtures.json', import.meta.url), 'utf8'));
@@ -206,7 +206,8 @@ ok(`S2 sprint gate (100% out-of-scope, 0 false escalations, 100% PII): ` +
 {
   // Every non-crisis route names who the turn goes to; the safety route also says to call 911
   // when someone is hurt (CodeRabbit on PR #107: human_instructor_now had no wording).
-  const routes = [...new Set(F.out_of_scope.map((c) => classifyEscalation(c.prompt ?? c.text)?.route).filter(Boolean))];
+  // Every route any trigger can select, not only the ones the fixtures reach (CodeRabbit: human_title_ix had none).
+  const routes = ESCALATION_ROUTES;
   const unnamed = routes.filter((r) => r !== 'human_crisis' && !HANDOFF_TO[r]);
   assert.equal(unnamed.length, 0, `routes with no handoff wording: ${unnamed.join(', ')}`);
   // No fixture prompt routes to the safety-incident handoff yet, so drive one directly.
@@ -215,7 +216,12 @@ ok(`S2 sprint gate (100% out-of-scope, 0 false escalations, 100% PII): ` +
   const r = await turnOf(safety);
   assert.ok(r && r.escalated && /urgent safety report/.test(r.text) && r.text.endsWith(HANDOFF_URGENT.human_instructor_now.trim()),
     `safety incident handoff: ${r?.text}`);
-  ok(`every escalation route (${routes.length}) has handoff wording; a safety incident is sent as urgent and says to call 911 if anyone is hurt`);
+  // An incident already reported escalates even beside prevention words; a prevention question does not.
+  const reported = ['I was electrocuted while trying to prevent a short.', 'My partner got injured trying to avoid a fall.'];
+  const asked = ['How do I avoid getting electrocuted on a live panel?', 'What PPE reduces the risk of being electrocuted?', 'How do I prevent injuries when lifting?'];
+  assert.ok(reported.every((p) => classifyEscalation(p)?.route === 'human_instructor_now'), 'a reported incident must take the urgent route');
+  assert.ok(asked.every((p) => classifyEscalation(p) === null), 'a prevention question must not escalate');
+  ok(`every escalation route (${routes.length}) has handoff wording; a safety incident is sent as urgent and says to call 911; a reported incident escalates even beside prevention words, a prevention question does not`);
 }
 
 console.log(`\n${n} checks passed.`);

@@ -230,8 +230,14 @@ ok('sprints S1..S8 are contiguous 14-day windows starting 2026-10-12',
     && (i === 0 || (Date.parse(s.start) - Date.parse(reg.sprints[i - 1].end)) / day === 1)));
 ok('sprint status comes from a closed set; a sprint whose gate ran states its result and what is and is not built; none is "shipped" before its window closes',
   reg.sprints.every((s) => ['planned', 'in-progress', 'gate-run-early', 'shipped', 'slipped', 'cancelled'].includes(s.status))
-  && reg.sprints.every((s) => (s.status !== 'planned') === (typeof s.gate_result === 'string' && s.gate_result.length > 10))
-  && reg.sprints.filter((s) => s.status !== 'planned').every((s) => Array.isArray(s.built) && s.built.length && Array.isArray(s.not_built))
+  // A gate run is recorded by in-progress, gate-run-early and shipped; those need a result and build lists.
+  // planned never has one; slipped or cancelled may or may not, depending on whether a gate ran first.
+  && reg.sprints.every((s) => {
+    const ran = typeof s.gate_result === 'string' && s.gate_result.length > 10;
+    if (['in-progress', 'gate-run-early', 'shipped'].includes(s.status)) return ran && Array.isArray(s.built) && s.built.length > 0 && Array.isArray(s.not_built);
+    if (s.status === 'planned') return s.gate_result === null && !('built' in s);
+    return !ran || (Array.isArray(s.built) && Array.isArray(s.not_built));
+  })
   && reg.sprints.every((s) => s.status !== 'shipped' || (Date.parse(s.end) < Date.parse(reg.built) && s.not_built.length === 0))
   && reg.sprints.every((s) => s.status !== 'gate-run-early' || Date.parse(s.start) > Date.parse('2026-10-12'))
   && /held-out/.test(reg.sprints.find((s) => s.sprint === 'S2').gate_result)

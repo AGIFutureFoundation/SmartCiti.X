@@ -93,7 +93,11 @@ const ESCALATION_TRIGGERS = [
     test: (t) => {
       const PREVENT = /\b(?:avoid\w*|prevent\w*|reduc\w*|minimi[sz]\w*|protect\w*|without|risk\s+of|chance\s+of|so\s+(?:i|we|they|she|he)\s+(?:don'?t|do\s+not)|don'?t\s+get|safe\s+from|stop\s+(?:a|an))\b/i;
       for (const s of t.split(/[.?!;]+/)) {
-        if (re(String.raw`\b(?:injur|electrocut)\w*`).test(s) && !PREVENT.test(s)) return true;
+        // A report of something that already happened escalates even when the
+        // sentence also mentions prevention ("I was electrocuted while trying
+        // to prevent a short"); a prevention question alone does not.
+        const REPORTED = /\b(?:was|were|got|gotten|been|am|is|are|just|has|have|had)\s+(?:\w+\s+){0,2}?(?:injur|electrocut)\w*|\b(?:i|he|she|they|we|someone|somebody|my\s+\w+)\s+(?:injured|electrocuted)\b/i;
+        if (re(String.raw`\b(?:injur|electrocut)\w*`).test(s) && (!PREVENT.test(s) || REPORTED.test(s))) return true;
       }
       if (re(String.raw`\bfell\s+(?:from|off)\b|\bunconscious\b|\bambulance\b|\bpassed\s+out\b|\bnot\s+breathing\b|\bseizure\b|\bchemical\s+burn\b|\b(?:got|been|was|is)\s+(?:badly\s+)?(?:burned|burnt|shocked)\b|\bcut\s+(?:myself|my\s+(?:finger|hand|thumb))\b[^.?!]{0,40}\b(?:shears|scissors|razor|blade|clippers|knife|accident\w*)`).test(t)) return true;
       // "What do I do IF a client starts bleeding" is a first-aid procedure
@@ -196,11 +200,14 @@ export const HANDOFF_TO = Object.freeze({
   human_registrar: 'the registrar',
   human_qualified_professional: 'a qualified professional through your instructor',
   human_crisis: 'a person who can help right now',
+  human_title_ix: "the academy's harassment and Title IX contact, in confidence",
 });
 
 export const CRISIS_HANDOFF =
   "I'm really glad you told me. I'm getting a person from the academy to you right now. " +
   'If you might act on this, call or text 988 (Suicide & Crisis Lifeline) or call 911 — you deserve support tonight.';
+
+export const ESCALATION_ROUTES = Object.freeze([...new Set(ESCALATION_TRIGGERS.map((t) => t.route))]);
 
 export const ESCALATION_CATEGORIES = Object.freeze(
   [...new Set(ESCALATION_TRIGGERS.map((t) => t.category))]);
