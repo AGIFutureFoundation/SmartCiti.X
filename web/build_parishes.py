@@ -2359,6 +2359,26 @@ if JS.count(_WM) != 1:
     raise BuildError('build_parishes: WORLD w16c setMode anchor (ENV w15 if (!v) return false; applyMode(walk) ...) must occur exactly once')
 JS = JS.replace(_WM, _WM.replace('if (!v) return false;', "if (!v) { toast(tr('parishes.novehicle_map')); return false; }"), 1)
 # END WORLD w16c
+# GROUND2 BEGIN relief-overview (wave 16): the RECORDED relief patch is not drawn in the overview. Measured with
+# ?relief=on (GROUND C, gate load 3.24): Bay overview triangles 06001 15,449 > 4,943 and 06081 8,060 > 1,980 because the
+# patch merged into the land meshes stayed drawn there. elevOverview parks it (web/terrainkit.py terrainOverviewPark:
+# the land meshes show their flat geometry) on the first overview frame and restores it on the way out, BEFORE
+# elevRefresh runs; relief off returns at once (nothing merged). Page JS carries only the neutral RELIEF-OVERVIEW name.
+_RO_CALL = '  if (!over) elevRefresh(eye.x, eye.z);'
+_RO_DEF = '/* END ELEV w14 relief */\n'
+if JS.count(_RO_CALL) != 1 or JS.count(_RO_DEF) != 1:
+    raise BuildError('build_parishes: RELIEF-OVERVIEW anchors (frame elevRefresh call, END ELEV w14 relief) must occur exactly once')
+JS = JS.replace(_RO_DEF, _RO_DEF + r"""/* RELIEF-OVERVIEW: the overview draws the flat land; the relief patch is parked there and restored on the way out */
+let elevOver = false;
+function elevOverview(over) {
+  const E = elevState(); if (!E.on || over === elevOver) return;
+  elevOver = over; const r = terrainOverviewPark(landMesh.values(), over);
+  E.overview = { over, parked: r.parked, restored: r.restored, dropped: r.dropped };
+  if (r.dropped) E.cellKey = '';   // a land mesh changed while parked: elevRefresh rebuilds the patch this frame
+}
+""", 1)
+JS = JS.replace(_RO_CALL, '  elevOverview(over);   // RELIEF-OVERVIEW: park / restore the relief patch before it follows the eye\n' + _RO_CALL, 1)
+# GROUND2 END relief-overview
 # BEGIN HIVE w16 (HIVE·Omega Hive Agents): the world guides walking this map speak - on a click only - with the voice
 # the Omega Hive (hive/registry/hive.json) gives them: a Speak and a Mute button join the NPC dialogue, and Speak says the
 # registry line the dialogue is showing, on an on-device voice, at the guide's AUTHORED pitch and rate (web/hivekit.py).

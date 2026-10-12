@@ -17560,6 +17560,28 @@ if (ROOT / 'hive/registry/hive.json').exists():
     assert page.count('</body>') == 1, 'HIVE w16: the page must have exactly one </body>'
     page = page.replace('</body>', world_embed(_hive) + '\n</body>', 1)
 # END HIVE w16
+# POLISH w16 BEGIN - crew roles through the harness hook (the marker that ships in the page is HOOK-CREW)
+# __tc3dDo('advisor', key) spread String(key).split(':') into openAdvisor(), so a crew role - keyed "<crew>:<role>" -
+# arrived as advisor "<crew>" with topic "<role>" and opened nothing. A key whose first two parts name a crew role now
+# opens that role (a third part is its topic); every other key splits exactly as before, so advisors are unchanged.
+_HOOK_OLD = "  else if (fn === 'advisor') openAdvisor(...String(arg).split(':'));\n"
+_HOOK_NEW = "  else if (fn === 'advisor') openAdvisor(...advisorHookArgs(arg));\n"
+_HOOK_AT = "  return { ...r, role: r.job, crew: r.wears, inCrew: cid };\n}\n"
+_HOOK_FN = ("/* HOOK-CREW: the harness hook's advisor key. \"<crew>:<role>[:<topic>]\" opens that crew role; any other\n"
+            "   key splits as it always has, \"<advisor>[:<topic>]\". */\n"
+            "function advisorHookArgs(arg) {\n"
+            "  const parts = String(arg).split(':');\n"
+            "  const role = parts.length >= 2 ? parts[0] + ':' + parts[1] : null;\n"
+            "  if (role && figureOf(role)) return parts.length > 2 ? [role, parts[2]] : [role];\n"
+            "  return parts;\n"
+            "}\n")
+assert page.count(_HOOK_OLD) == 1, 'HOOK-CREW: the advisor branch of __tc3dDo must occur exactly once'
+assert page.count(_HOOK_AT) == 1, 'HOOK-CREW: the tail of figureOf() must occur exactly once'
+_hook_crews = set(json.load(open(ROOT / 'agents/registry/crews.json'))['crews'])
+assert not set(agents_reg['advisors']) & _hook_crews, (
+    f'HOOK-CREW: an advisor id is also a crew id, so "<id>:<x>" would be ambiguous: {sorted(set(agents_reg["advisors"]) & _hook_crews)}')
+page = page.replace(_HOOK_OLD, _HOOK_NEW, 1).replace(_HOOK_AT, _HOOK_AT + _HOOK_FN, 1)
+# POLISH w16 END
 page = apply_seo(page, 'web/trade_craft_3d.html', 'SmartCiti.X : Trade Craft Academy \u2014 3D hall environment',
     'A walkable 3D campus of the academy\'s union training halls, their rooms and sim seats, with optional play quests that certify nothing.', 'page')
 out = HERE / 'trade_craft_3d.html'

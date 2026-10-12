@@ -79,6 +79,20 @@ const w11 = REG.packs.filter((p) => p.wave === 11);
 ok(w11.every((p) => byId[p.id] && byId[p.id].body.includes(`data-i18n="packs.pack.${p.id}"`) && p.sources.length > 0),
   `wave-11 shared modules each have a card titled from packs.pack.<id> and a source registry (${w11.map((p) => p.id).join(', ')})`);
 ok(!byId['robotics-lab'] || !/\btrained\b(?! on them)/i.test(byId['robotics-lab'].body.replace(/<[^>]+>/g, ' ')), 'robotics-lab card claims nothing was trained');
+/* POLISH w16 BEGIN - wave-16 modules (courses, Omega Hive): card, honesty line, link only to the page that embeds the kit */
+const W16 = { courses: ['courses', 'SUP_RENDER:BEGIN'], 'omega-hive': ['hive', 'HiveCore'] };
+const w16 = REG.packs.filter((p) => p.wave === 16);
+ok(w16.every((p) => p.id in W16 && byId[p.id] && byId[p.id].body.includes(`data-i18n="packs.pack.${p.id}"`) && p.sources.length > 0
+  && Object.keys(p.contents).every((k) => byId[p.id].body.includes(`data-i18n="packs.count.${k}"`))),
+  `wave-16 modules each have a card titled from packs.pack.<id>, every count labelled, and a source registry (${w16.map((p) => p.id).join(', ') || 'none'})`);
+ok(Object.entries(W16).every(([id, [k]]) => REG.packs.some((p) => p.id === id)
+  === P.includes(`data-i18n="packs.honest.${k}">${esc(EN['packs.honest.' + k])}<`)), 'wave-16 honesty lines (courses: unverified, qualify nobody; hive: SCRIPTED, no AI model) shown exactly when their module is present');
+ok(Object.entries(W16).every(([id, [, kit]]) => !byId[id] || !REG.packs.find((p) => p.id === id).open
+  || (byId[id].body.includes(`data-open="${REG.packs.find((p) => p.id === id).open}"`) && readFileSync(join(ROOT, REG.packs.find((p) => p.id === id).open), 'utf8').includes(kit))),
+  'wave-16 "Open in world" names the page that embeds that module\'s kit');
+ok(!EN['packs.honest.hive'] || (/SCRIPTED/.test(EN['packs.honest.hive']) && /no AI model/.test(EN['packs.honest.hive']) && /AUTHORED/.test(EN['packs.honest.hive'])),
+  'hive honesty line says SCRIPTED, no AI model, AUTHORED personalities');
+/* POLISH w16 END */
 const visible = P.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<style[\s\S]*?<\/style>/g, '').replace(/<[^>]+>/g, ' ');
 ok(!/[$€£¥₹]\s?\d|\d\s?(usd|eur|gbp)\b|\/\s?(mo|month|yr|year)\b|\bper (month|year)\b|% off|\bfree trial\b|\bbuy\b|\bpurchase\b|\bdownload\b|add to cart/i.test(visible), 'no price, currency, purchase or download on the page');
 ok(!/accredited|certified|official partner|endorsed by(?! the United Nations)/i.test(visible.replace(EN['packs.honest.un'], '')), 'no accreditation, certification or partner claim outside the honesty notes');

@@ -39,7 +39,7 @@
   "budget_currencies": 2,
   "budget_agreements": 7,
   "suites_run": 132,
-  "suite_checks_declared": 6508,
+  "suite_checks_declared": 6535,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
@@ -2013,8 +2013,11 @@
     "web/build_courses.py"
    ],
    "doc_renderers": [],
-   "builders": [],
+   "builders": [
+    "holodeck/build.py"
+   ],
    "suites": [
+    "holodeck/test.mjs",
     "web/test_courses.mjs"
    ],
    "own_pack": [
@@ -2271,8 +2274,11 @@
     "web/build_parishes.py"
    ],
    "doc_renderers": [],
-   "builders": [],
+   "builders": [
+    "holodeck/build.py"
+   ],
    "suites": [
+    "holodeck/test.mjs",
     "web/test_hive.mjs"
    ],
    "own_pack": [
@@ -5233,7 +5239,7 @@
    {
     "suite": "web/test_3d.mjs",
     "pack": "web",
-    "readme_checks": 394,
+    "readme_checks": 398,
     "declared": true,
     "in_readme_table": true
    },
@@ -5373,14 +5379,14 @@
    {
     "suite": "holodeck/test.mjs",
     "pack": "holodeck",
-    "readme_checks": 78,
+    "readme_checks": 89,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_packs.mjs",
     "pack": "web",
-    "readme_checks": 40,
+    "readme_checks": 44,
     "declared": true,
     "in_readme_table": true
    },
@@ -5590,7 +5596,7 @@
    {
     "suite": "web/test_terrainkit.mjs",
     "pack": "web",
-    "readme_checks": 60,
+    "readme_checks": 68,
     "declared": true,
     "in_readme_table": true
    },
@@ -5643,13 +5649,13 @@
    "control/soak.mjs",
    "restoration/test_scenarios.mjs"
   ],
-  "declared_total": 6508,
-  "readme_headline": 6543,
+  "declared_total": 6535,
+  "readme_headline": 6570,
   "unaccounted_for": 35,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
-  "max": 394,
-  "median": 42.5,
+  "max": 398,
+  "median": 43.5,
   "thinnest": [
    {
     "suite": "ops/fuzz.mjs",
@@ -5679,7 +5685,7 @@
   "thickest": [
    {
     "suite": "web/test_3d.mjs",
-    "checks": 394
+    "checks": 398
    },
    {
     "suite": "web/test_worksites.mjs",

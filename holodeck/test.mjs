@@ -153,6 +153,44 @@ ok(!P['data-commons'] || (J('datashare/registry/datashare.json').intake.deployed
     'tradesquest-stations: every host hall is a unions/ slug');
 }
 
+/* POLISH w16 BEGIN ---- wave-16 modules (courses, Omega Hive): present exactly when their registry exists; recounted ---- */
+const W16 = {
+  courses: ['courses/registry/courses.json', 'SUP_RENDER:BEGIN', () => {
+    const X = J('courses/registry/courses.json');
+    return { courses: Object.keys(X.courses).length, lessons: new Set(Object.values(X.courses).flatMap((c) => c.lessons)).size,
+      supplements: Object.keys(X.supplements).length };
+  }],
+  'omega-hive': ['hive/registry/hive.json', 'HiveCore', () => {
+    const H = J('hive/registry/hive.json');
+    return { agents: H.agents.length, advisors: H.agents.filter((a) => a.kind === 'advisor').length,
+      crew_roles: H.agents.filter((a) => a.kind === 'crew-role').length, quoted_lines: H.agents.reduce((n, a) => n + a.lines.length, 0) };
+  }],
+};
+const w16 = D.packs.filter((p) => p.wave === 16).map((p) => p.id);
+ok(w16.every((id) => id in W16), `every wave-16 module is one this test recounts (${w16.join(', ') || 'none'})`);
+ok(D.packs.every((p) => p.wave === undefined || p.wave === 11 || p.wave === 16), 'every module wave is 11 or 16');
+for (const [id, [reg, kit, count]] of Object.entries(W16)) {
+  if (!has(reg)) { ok(!(id in P), `${id}: ${reg} absent -> no module (no placeholder)`); continue; }
+  const p = P[id];
+  ok(p && p.wave === 16 && p.kind === 'system' && p.title_key === `packs.pack.${id}` && p.sources.some((s) => s.path === reg),
+    `${id}: ${reg} exists -> wave-16 module present, sourced from it`);
+  ok(p && eq(sortObj(p.contents), sortObj(count())), `${id}: counts recomputed ${p ? JSON.stringify(p.contents) : ''}`);
+  ok(p && (p.open === null || (has(p.open) && readFileSync(join(ROOT, p.open), 'utf8').includes(kit))),
+    `${id}: deep link only to a page that exists and embeds ${kit}`);
+}
+if (has('hive/registry/hive.json')) {
+  const H = J('hive/registry/hive.json');
+  ok(H.counts.models === 0 && H.agents.every((a) => a.lines.every((l) => typeof l.source === 'string' && l.source.trim())),
+    'omega-hive: the registry runs no model (counts.models 0) and every quoted line names its source');
+  ok(!/model|train|generat|\bai\b/i.test(JSON.stringify(P['omega-hive'].contents)), 'omega-hive: no count claims a model, a training run or generated text');
+}
+if (has('courses/registry/courses.json')) {
+  ok(J('courses/registry/courses.json').counts.lessons === P.courses.contents.lessons
+    && Object.keys(J('lessons/registry/lessons.json').lessons).length >= P.courses.contents.lessons,
+    'courses: lesson count matches the courses registry and never exceeds lessons/');
+}
+/* POLISH w16 END */
+
 /* ---- statuses and links honest ---- */
 ok(D.packs.every((p) => p.status === 'SHIPPING' || p.status === 'PROPOSED'), 'status is SHIPPING or PROPOSED only');
 ok(D.packs.filter((p) => p.kind !== 'path').every((p) => (p.status === 'SHIPPING') === Object.values(p.contents).some((v) => v > 0)),

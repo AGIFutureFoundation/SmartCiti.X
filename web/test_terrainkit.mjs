@@ -152,5 +152,28 @@ check('[kit] no "real elevation" claim for AUTHORED relief', !/AUTHORED[^.\n]{0,
   check('[eval] relief row prints the load average beside its patch time', /row\.load = loadavg\(\)/.test(src) && /patchMs: p\.ms/.test(src));
 }
 
+// [overview] RELIEF-OVERVIEW (wave 16): the overview draws the flat land - the relief patch merged into a land mesh is
+// parked there and restored on the way out (Bay overview triangle ceilings with ?relief=on); relief off moves nothing
+{
+  const geo = (n) => ({ n, disposed: 0, dispose() { this.disposed++; } });
+  const mk = (merged) => { const flat = geo('flat'), m = merged ? geo('merged') : null; return { geometry: m || flat, userData: { elevFlat: flat, elevMerged: m } }; };
+  const a = mk(true), b = mk(true), off = mk(false), ms = [a, b, off];
+  const r1 = T.terrainOverviewPark(ms, true);
+  check('[overview] entering the overview draws every land mesh flat (relief patch parked, not drawn)', ms.every((m) => m.geometry === m.userData.elevFlat) && r1.parked === 2, r1);
+  const r2 = T.terrainOverviewPark(ms, false);
+  check('[overview] leaving restores the same merged patch (no rebuild, nothing disposed)', a.geometry.n === 'merged' && b.geometry.n === 'merged' && a.geometry === a.userData.elevMerged && r2.restored === 2 && r2.dropped === 0 && a.geometry.disposed === 0, r2);
+  const offs = [mk(false), mk(false)], before = offs.map((m) => m.geometry), r3 = T.terrainOverviewPark(offs, true), r4 = T.terrainOverviewPark(offs, false);
+  check('[overview] relief off (nothing merged): no mesh changes either way', offs.every((m, i) => m.geometry === before[i]) && r3.parked + r4.restored + r4.dropped === 0);
+  T.terrainOverviewPark([a], true); const stale = a.userData.elevParked, fresh = geo('cut'); a.geometry = fresh;   // cutWater swaps m.geometry only
+  const r5 = T.terrainOverviewPark([a], false);
+  check('[overview] a flat mesh replaced while parked (cutWater) drops the stale patch (disposed, counted for a rebuild)', a.geometry === fresh && a.userData.elevMerged === null && !!stale && stale.disposed === 1 && r5.dropped === 1, r5);
+  for (const [name, file] of [['parish', 'trade_craft_parishes.html'], ['bay', 'trade_craft_bay.html']]) {
+    const html = readFileSync(join(HERE, file), 'utf8');
+    check(`[overview] ${name}: the frame parks/restores the patch before it follows the eye, only with relief on`,
+      /\n  elevOverview\(over\);[^\n]*\n  if \(!over\) elevRefresh\(eye\.x, eye\.z\);/.test(html) && /function elevOverview\(over\) \{\n  const E = elevState\(\); if \(!E\.on \|\| over === elevOver\) return;\n  elevOver = over; const r = terrainOverviewPark\(landMesh\.values\(\), over\);/.test(html));
+    check(`[overview] ${name}: page JS carries the neutral RELIEF-OVERVIEW name, no team codename`, html.includes('RELIEF-OVERVIEW') && !/GROUND2/.test(html));
+  }
+}
+
 if (fails) { console.log(`FAIL test_terrainkit: ${fails} failed`); process.exit(1); }
 console.log('test_terrainkit: all checks ok');

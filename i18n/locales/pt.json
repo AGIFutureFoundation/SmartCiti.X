@@ -1387,7 +1387,17 @@
   "hive.l.campus": "Os pavilhões do campus 3D (orientadores e equipes)",
   "hive.l.parishes": "O mundo das paróquias (guias em seus postos)",
   "hive.l.avatars": "O vestiário de avatares que veste as figuras",
-  "hive.src": "fonte"
+  "hive.src": "fonte",
+  "packs.pack.courses": "Cursos e suplementos de lição",
+  "packs.pack.omega-hive": "Omega Hive (agentes)",
+  "packs.count.courses": "cursos",
+  "packs.count.supplements": "suplementos de lição",
+  "packs.count.agents": "agentes com roteiro",
+  "packs.count.advisors": "conselheiros",
+  "packs.count.crew_roles": "funções de equipe",
+  "packs.count.quoted_lines": "falas citadas",
+  "packs.honest.courses": "Os cursos agrupam lições numa ordem AUTHORED e DERIVED. As lições continuam a ser prática geral não verificada; concluir um curso não qualifica ninguém nem desbloqueia nada.",
+  "packs.honest.hive": "Os agentes do Omega Hive são SCRIPTED: cada fala é citada de um registo e nenhum modelo de IA é executado. A voz é a síntese de fala do próprio dispositivo e só fala quando carrega em falar; as personalidades são AUTHORED."
  },
  "districts": {
   "structural": {

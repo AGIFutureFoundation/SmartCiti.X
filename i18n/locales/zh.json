@@ -1387,7 +1387,17 @@
   "hive.l.campus": "3D 校园各馆（顾问与班组）",
   "hive.l.parishes": "教区世界（站点旁的向导）",
   "hive.l.avatars": "为这些形象着装的形象衣柜",
-  "hive.src": "出处"
+  "hive.src": "出处",
+  "packs.pack.courses": "课程与课时补充材料",
+  "packs.pack.omega-hive": "Omega Hive 智能体名册",
+  "packs.count.courses": "门课程",
+  "packs.count.supplements": "课时补充材料",
+  "packs.count.agents": "脚本智能体",
+  "packs.count.advisors": "顾问",
+  "packs.count.crew_roles": "班组角色",
+  "packs.count.quoted_lines": "引用台词",
+  "packs.honest.courses": "课程按 AUTHORED 与 DERIVED 的顺序编排课时。课时内容仍是未经核实的一般做法；完成课程不赋予任何资格，也不解锁任何内容。",
+  "packs.honest.hive": "Omega Hive 的智能体是 SCRIPTED：每一句都引自注册表，不运行任何 AI 模型。语音来自设备自带的语音合成，只在你按下朗读时才发声；性格设定为 AUTHORED。"
  },
  "districts": {
   "structural": {

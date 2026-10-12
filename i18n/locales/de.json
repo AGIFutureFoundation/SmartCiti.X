@@ -1387,7 +1387,17 @@
   "hive.l.campus": "Die Hallen des 3D-Campus (Berater und Crews)",
   "hive.l.parishes": "Die Parish-Welt (Guides an ihren Stationen)",
   "hive.l.avatars": "Der Avatar-Spind, aus dem die Figuren gekleidet sind",
-  "hive.src": "Quelle"
+  "hive.src": "Quelle",
+  "packs.pack.courses": "Kurse und Lektionsbeilagen",
+  "packs.pack.omega-hive": "Omega Hive (Agenten)",
+  "packs.count.courses": "Kurse",
+  "packs.count.supplements": "Lektionsbeilagen",
+  "packs.count.agents": "skriptierte Agenten",
+  "packs.count.advisors": "Berater",
+  "packs.count.crew_roles": "Crew-Rollen",
+  "packs.count.quoted_lines": "zitierte Zeilen",
+  "packs.honest.courses": "Kurse ordnen Lektionen in einer AUTHORED- und DERIVED-Reihenfolge. Die Lektionen bleiben ungeprüfte allgemeine Praxis; wer einen Kurs abschließt, erwirbt keine Qualifikation, und nichts wird freigeschaltet.",
+  "packs.honest.hive": "Die Agenten des Omega Hive sind SCRIPTED: Jede Zeile ist aus einem Register zitiert, und kein KI-Modell läuft. Die Stimme ist die Sprachsynthese des eigenen Geräts und spricht nur, wenn Sie auf Sprechen drücken; die Persönlichkeiten sind AUTHORED."
  },
  "districts": {
   "structural": {

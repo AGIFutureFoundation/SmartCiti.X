@@ -1,9 +1,9 @@
 {
  "pack": "paths",
  "series": "SmartCiti.X Powered by AGI Corp",
- "source_stamp": "869d382e362bd19e",
+ "source_stamp": "0258cac0f0e62c1f",
  "sources": {
-  "layers/registry/layers.json": "066e112fa8f849ec",
+  "layers/registry/layers.json": "b89397e595f525e2",
   "respond/registry/respond.json": "8495b8a0e9827fce",
   "restoration/registry/restoration.json": "55f41bf50df7d918",
   "schools/registry/schools.json": "f16f95c0a1c639c5",

@@ -199,6 +199,35 @@ export { TERRAIN_API, TERRAIN_TIERS, terrainNeed, terrainDem, terrainSmooth, ter
   terrainPatch, terrainSeat, terrainGround, terrainFleetGround, terrainSlope, terrainAudit };
 '''
 
+# GROUND2 BEGIN relief-overview (wave 16): the overview (km above ground) draws the FLAT land. The relief patch merged
+# into a land mesh is parked (the mesh shows its flat geometry) while the camera is in the overview and put back on the
+# way out, so the overview's triangle ceilings hold with relief on; with relief off nothing is merged, so nothing moves.
+# The emitted JS carries only the neutral RELIEF-OVERVIEW name. Pure (no THREE, no DOM): meshes are plain
+# {geometry, userData: {elevFlat, elevMerged}} objects; web/test_terrainkit.mjs [overview] checks it.
+_RELIEF_OVERVIEW_JS = r'''/* RELIEF-OVERVIEW: park the relief patch while the camera is in the overview (flat land drawn there), restore it on the
+   way out. meshes: iterable of {geometry, userData: {elevFlat, elevMerged}}. A mesh whose flat geometry was replaced
+   while parked (its merged patch is stale) drops the patch (disposed) and is counted in `dropped`: the caller rebuilds. */
+function terrainOverviewPark(meshes, over) {
+  let parked = 0, restored = 0, dropped = 0;
+  for (const m of meshes) {
+    const u = terrainNeed(m, 'userData', 'overview mesh');
+    if (over) {
+      if (u.elevMerged && u.elevFlat && m.geometry === u.elevMerged) { u.elevParked = u.elevMerged; m.geometry = u.elevFlat; parked++; }
+    } else if (u.elevParked) {
+      if (m.geometry === u.elevFlat && u.elevMerged === u.elevParked) { m.geometry = u.elevParked; restored++; }
+      else { if (u.elevParked !== m.geometry && u.elevParked.dispose) u.elevParked.dispose(); if (u.elevMerged === u.elevParked) u.elevMerged = null; dropped++; }
+      u.elevParked = null;
+    }
+  }
+  return { parked, restored, dropped };
+}
+'''
+if TERRAIN_JS.count('/* TERRAIN_KIT:END */') != 1 or TERRAIN_JS.count('terrainPatch, terrainSeat,') != 1:
+    raise SystemExit('terrainkit: relief-overview anchors (TERRAIN_KIT:END, export list) must occur exactly once')
+TERRAIN_JS = TERRAIN_JS.replace('/* TERRAIN_KIT:END */', _RELIEF_OVERVIEW_JS + '/* TERRAIN_KIT:END */', 1).replace(
+    'terrainPatch, terrainSeat,', 'terrainPatch, terrainOverviewPark, terrainSeat,', 1)
+# GROUND2 END relief-overview
+
 EXPORTS = re.findall(r'export \{([^}]*)\}', TERRAIN_JS)[0].replace('\n', ' ').split(',')
 EXPORTS = [e.strip() for e in EXPORTS if e.strip()]
 BEGIN, END = '/* TERRAIN_KIT:BEGIN', '/* TERRAIN_KIT:END */'

@@ -1387,7 +1387,17 @@
   "hive.l.campus": "Les halls du campus 3D (conseillers et équipes)",
   "hive.l.parishes": "Le monde des paroisses (guides à leurs postes)",
   "hive.l.avatars": "Le vestiaire d’avatars qui habille les figures",
-  "hive.src": "source"
+  "hive.src": "source",
+  "packs.pack.courses": "Cours et suppléments de leçon",
+  "packs.pack.omega-hive": "Omega Hive (agents)",
+  "packs.count.courses": "cours",
+  "packs.count.supplements": "suppléments de leçon",
+  "packs.count.agents": "agents scriptés",
+  "packs.count.advisors": "conseillers",
+  "packs.count.crew_roles": "rôles d'équipe",
+  "packs.count.quoted_lines": "répliques citées",
+  "packs.honest.courses": "Les cours regroupent des leçons dans un ordre AUTHORED et DERIVED. Les leçons restent une pratique générale non vérifiée ; terminer un cours ne qualifie personne et ne débloque rien.",
+  "packs.honest.hive": "Les agents de l'Omega Hive sont SCRIPTED : chaque réplique est citée d'un registre et aucun modèle d'IA ne tourne. La voix est la synthèse vocale de l'appareil et ne parle que lorsque vous appuyez sur parler ; les personnalités sont AUTHORED."
  },
  "districts": {
   "structural": {

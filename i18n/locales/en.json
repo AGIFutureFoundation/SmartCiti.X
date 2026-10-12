@@ -1387,7 +1387,17 @@
   "hive.l.campus": "The 3D campus halls (advisors and crews)",
   "hive.l.parishes": "The parish world (guides at their stations)",
   "hive.l.avatars": "The avatar locker the figures are dressed from",
-  "hive.src": "source"
+  "hive.src": "source",
+  "packs.pack.courses": "Courses and lesson supplements",
+  "packs.pack.omega-hive": "Omega Hive",
+  "packs.count.courses": "courses",
+  "packs.count.supplements": "lesson supplements",
+  "packs.count.agents": "scripted agents",
+  "packs.count.advisors": "advisors",
+  "packs.count.crew_roles": "crew roles",
+  "packs.count.quoted_lines": "quoted lines",
+  "packs.honest.courses": "Courses group lessons in an AUTHORED and DERIVED order. The lessons stay unverified general practice; finishing a course qualifies nobody and unlocks nothing.",
+  "packs.honest.hive": "Omega Hive agents are SCRIPTED: every line is quoted from a registry and no AI model runs. Voice is the device's own speech synthesis and speaks only when you press speak; personalities are AUTHORED."
  },
  "districts": {
   "structural": {

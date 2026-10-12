@@ -122,6 +122,7 @@ stats = ''.join(f'<div class="tc-stat"><span class="tc-stat-v" data-stat="{k}">{
                 for k in ('packs', 'shipping', 'proposed'))
 # wave 11 (TQ): a module's own honesty line is shown exactly when that module is in the registry
 W11_HONEST = {'tradesquest-stations': 'tq', 'materials-colour': 'colour', 'robotics-lab': 'robotics', 'data-commons': 'data'}
+W11_HONEST.update({'courses': 'courses', 'omega-hive': 'hive'})  # POLISH w16: wave-16 modules' honesty lines, same rule
 PACK_IDS = [p['id'] for p in REG['packs']]
 honest = ''.join(f'<li>{T("packs.honest." + k)}</li>'
                  for k in ('counted', 'status', 'price', 'cert', 'k12', 'un', 'play', 'names')

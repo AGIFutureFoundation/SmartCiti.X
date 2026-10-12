@@ -1,7 +1,7 @@
 {
  "pack": "smartcitix-trade-craft-academy-npcs",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
- "source_stamp": "13f3fa2c5fc0950b",
+ "source_stamp": "54629d236353d7d8",
  "sources": {
   "unions": "unions/registry/unions.json",
   "districts": "unions/registry/districts.json",

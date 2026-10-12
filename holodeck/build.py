@@ -264,6 +264,10 @@ OPEN_W11 = {
     'robotics': ('web/trade_craft_robotics.html', 'robokit'),
     'contribute': ('web/trade_craft_contribute.html', 'datashare'),
     'drive': ('web/trade_craft_wilds.html', 'fleetDriveMount'),
+    # POLISH w16 BEGIN - wave-16 pages: the courses page's supplement renderer, the Omega Hive's SCRIPTED core
+    'courses': ('web/trade_craft_courses.html', 'SUP_RENDER:BEGIN'),
+    'hive': ('web/trade_craft_hive.html', 'HiveCore'),
+    # POLISH w16 END
 }
 
 
@@ -274,10 +278,10 @@ def open_w11(key, status):
     return rel
 
 
-def module(mid, kind, contents, sources, open_key, requires=()):
+def module(mid, kind, contents, sources, open_key, requires=(), wave=11):
     st = status_of(contents)
     packs.append({'id': mid, 'kind': kind, 'title_key': f'packs.pack.{mid}', 'status': st, 'contents': contents,
-                  'requires': list(requires), 'sources': sources, 'open': open_w11(open_key, st), 'wave': 11})
+                  'requires': list(requires), 'sources': sources, 'open': open_w11(open_key, st), 'wave': wave})
 
 
 # TradesQuest field-job stations (BRIDGE_CONTRACT v1): web/tqkit.py ports four TradesQuest 3D scenes
@@ -348,6 +352,42 @@ if DSH is not None:
                                       'practices': len(need(DSH, 'best_practices', R_DATASHARE)),
                                       'refusal_reasons': len(need(DSH, 'refusals', R_DATASHARE))},
            [src(R_DATASHARE)], 'contribute', requires=['robotics-lab'] if ROB is not None else [])
+
+# POLISH w16 BEGIN ------------------------------------- wave 16: courses + Omega Hive --
+# Same rule as wave 11: a module exists only when its registry exists, and every count is recounted here from the
+# registry's own lists, then held against that registry's counts block (a disagreement stops the build by name).
+R_COURSES = 'courses/registry/courses.json'
+CRS = load_new(R_COURSES)
+if CRS is not None:
+    _courses = need(CRS, 'courses', R_COURSES)
+    _sups = need(CRS, 'supplements', R_COURSES)
+    _lessons = {l for k, c in _courses.items() for l in need(c, 'lessons', f'{R_COURSES} courses.{k}')}
+    _cc, _sc = need(CRS, 'counts', R_COURSES), need(CRS, 'supplement_counts', R_COURSES)
+    for got, key, blk in ((len(_courses), 'courses', _cc), (len(_lessons), 'lessons', _cc), (len(_sups), 'supplements', _sc)):
+        if got != need(blk, key, f'{R_COURSES} counts'):
+            raise HolodeckError(f'holodeck: {R_COURSES} {key}: recounted {got}, its counts block says {blk[key]}')
+    module('courses', 'system', {'courses': len(_courses), 'lessons': len(_lessons), 'supplements': len(_sups)},
+           [src(R_COURSES)], 'courses', wave=16)
+
+R_HIVE = 'hive/registry/hive.json'
+HIV = load_new(R_HIVE)
+if HIV is not None:
+    _agents = need(HIV, 'agents', R_HIVE)
+    _kinds = [need(a, 'kind', f'{R_HIVE} agents[{i}]') for i, a in enumerate(_agents)]
+    _lines = [ln for i, a in enumerate(_agents) for ln in need(a, 'lines', f'{R_HIVE} agents[{i}]')]
+    for i, ln in enumerate(_lines):
+        if not str(need(ln, 'source', f'{R_HIVE} line {i}')).strip():
+            raise HolodeckError(f'holodeck: {R_HIVE} line {i} has an empty source; every line must be quoted from a registry')
+    _hc = need(HIV, 'counts', R_HIVE)
+    if need(_hc, 'models', f'{R_HIVE} counts') != 0:
+        raise HolodeckError(f'holodeck: {R_HIVE} counts.models is not 0; the Omega Hive runs no model')
+    _hive = {'agents': len(_agents), 'advisors': _kinds.count('advisor'), 'crew_roles': _kinds.count('crew-role'),
+             'quoted_lines': len(_lines)}
+    for key, rkey in (('agents', 'agents'), ('advisors', 'advisors'), ('crew_roles', 'crew_roles'), ('quoted_lines', 'lines')):
+        if _hive[key] != need(_hc, rkey, f'{R_HIVE} counts'):
+            raise HolodeckError(f'holodeck: {R_HIVE} {rkey}: recounted {_hive[key]}, its counts block says {_hc[rkey]}')
+    module('omega-hive', 'system', _hive, [src(R_HIVE)], 'hive', wave=16)
+# POLISH w16 END
 
 # ------------------------------------------------ checks + write -----------
 ids = [p['id'] for p in packs]

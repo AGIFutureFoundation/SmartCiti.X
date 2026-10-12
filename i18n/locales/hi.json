@@ -1387,7 +1387,17 @@
   "hive.l.campus": "3D कैंपस के हॉल (सलाहकार और क्रू)",
   "hive.l.parishes": "पैरिश दुनिया (अपने स्टेशनों पर गाइड)",
   "hive.l.avatars": "वह अवतार लॉकर जिससे आकृतियाँ सजाई गई हैं",
-  "hive.src": "स्रोत"
+  "hive.src": "स्रोत",
+  "packs.pack.courses": "पाठ्यक्रम और पाठ पूरक",
+  "packs.pack.omega-hive": "ओमेगा हाइव",
+  "packs.count.courses": "पाठ्यक्रम",
+  "packs.count.supplements": "पाठ पूरक",
+  "packs.count.agents": "स्क्रिप्टेड एजेंट",
+  "packs.count.advisors": "सलाहकार",
+  "packs.count.crew_roles": "दल भूमिकाएँ",
+  "packs.count.quoted_lines": "उद्धृत पंक्तियाँ",
+  "packs.honest.courses": "पाठ्यक्रम पाठों को AUTHORED और DERIVED क्रम में समूहित करते हैं। पाठ असत्यापित सामान्य अभ्यास ही रहते हैं; पाठ्यक्रम पूरा करने से कोई योग्य नहीं बनता और कुछ भी अनलॉक नहीं होता।",
+  "packs.honest.hive": "ओमेगा हाइव के एजेंट SCRIPTED हैं: हर पंक्ति किसी रजिस्ट्री से उद्धृत है और कोई AI मॉडल नहीं चलता। आवाज़ डिवाइस का अपना वाक् संश्लेषण है और केवल बोलें दबाने पर बोलती है; व्यक्तित्व AUTHORED हैं।"
  },
  "districts": {
   "structural": {

@@ -3,13 +3,13 @@
   "by_kind": {
    "k12": 1,
    "path": 7,
-   "system": 7,
+   "system": 9,
    "union": 10,
    "world": 3
   },
-  "packs": 28,
+  "packs": 30,
   "proposed": 1,
-  "shipping": 27
+  "shipping": 29
  },
  "honesty": {
   "certification": "no pack certifies, qualifies or licenses anybody; lessons stay unverified general practice",
@@ -430,7 +430,7 @@
     },
     {
      "path": "layers/registry/layers.json",
-     "sha256": "066e112fa8f849ec"
+     "sha256": "b89397e595f525e2"
     }
    ],
    "status": "SHIPPING",
@@ -453,7 +453,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "45fbd97f522591d9"
+     "sha256": "bba4104339f97d96"
     }
    ],
    "status": "SHIPPING",
@@ -477,7 +477,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "45fbd97f522591d9"
+     "sha256": "bba4104339f97d96"
     }
    ],
    "status": "SHIPPING",
@@ -501,7 +501,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "45fbd97f522591d9"
+     "sha256": "bba4104339f97d96"
     }
    ],
    "status": "SHIPPING",
@@ -525,7 +525,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "45fbd97f522591d9"
+     "sha256": "bba4104339f97d96"
     }
    ],
    "status": "PROPOSED",
@@ -549,7 +549,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "45fbd97f522591d9"
+     "sha256": "bba4104339f97d96"
     }
    ],
    "status": "SHIPPING",
@@ -573,7 +573,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "45fbd97f522591d9"
+     "sha256": "bba4104339f97d96"
     }
    ],
    "status": "SHIPPING",
@@ -597,7 +597,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "45fbd97f522591d9"
+     "sha256": "bba4104339f97d96"
     }
    ],
    "status": "SHIPPING",
@@ -624,7 +624,7 @@
     },
     {
      "path": "layers/registry/layers.json",
-     "sha256": "066e112fa8f849ec"
+     "sha256": "b89397e595f525e2"
     }
    ],
    "status": "SHIPPING",
@@ -826,6 +826,49 @@
    "status": "SHIPPING",
    "title_key": "packs.pack.data-commons",
    "wave": 11
+  },
+  {
+   "contents": {
+    "courses": 122,
+    "lessons": 139,
+    "supplements": 139
+   },
+   "id": "courses",
+   "kind": "system",
+   "open": "web/trade_craft_courses.html",
+   "requires": [],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "courses/registry/courses.json",
+     "sha256": "f715960ce8d25c67"
+    }
+   ],
+   "status": "SHIPPING",
+   "title_key": "packs.pack.courses",
+   "wave": 16
+  },
+  {
+   "contents": {
+    "advisors": 9,
+    "agents": 197,
+    "crew_roles": 20,
+    "quoted_lines": 1133
+   },
+   "id": "omega-hive",
+   "kind": "system",
+   "open": "web/trade_craft_hive.html",
+   "requires": [],
+   "series": "SmartCiti.X Powered by AGI Corp",
+   "sources": [
+    {
+     "path": "hive/registry/hive.json",
+     "sha256": "3934381574eae5d8"
+    }
+   ],
+   "status": "SHIPPING",
+   "title_key": "packs.pack.omega-hive",
+   "wave": 16
   }
  ],
  "paths": [
@@ -838,5 +881,5 @@
   "roam"
  ],
  "series": "SmartCiti.X Powered by AGI Corp",
- "source_stamp": "6f5d4a09a5539dc4"
+ "source_stamp": "de1ab20ceb5891ea"
 }

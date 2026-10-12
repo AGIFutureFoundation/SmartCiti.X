@@ -1387,7 +1387,17 @@
   "hive.l.campus": "قاعات الحرم ثلاثي الأبعاد (المستشارون والطواقم)",
   "hive.l.parishes": "عالم الأبرشيات (المرشدون في محطاتهم)",
   "hive.l.avatars": "خزانة الصور الرمزية التي تُلبَس منها الشخصيات",
-  "hive.src": "المصدر"
+  "hive.src": "المصدر",
+  "packs.pack.courses": "الدورات وملحقات الدروس",
+  "packs.pack.omega-hive": "خلية أوميغا",
+  "packs.count.courses": "دورات",
+  "packs.count.supplements": "ملحقات الدروس",
+  "packs.count.agents": "وكلاء بنصوص مكتوبة",
+  "packs.count.advisors": "مستشارون",
+  "packs.count.crew_roles": "أدوار الطاقم",
+  "packs.count.quoted_lines": "أسطر مقتبسة",
+  "packs.honest.courses": "تجمع الدورات الدروس بترتيب AUTHORED وDERIVED. تبقى الدروس ممارسة عامة غير موثّقة، وإتمام الدورة لا يؤهّل أحدًا ولا يفتح أي شيء.",
+  "packs.honest.hive": "وكلاء خلية أوميغا SCRIPTED: كل سطر مقتبس من سجل، ولا يعمل أي نموذج ذكاء اصطناعي. الصوت هو تركيب الكلام في الجهاز نفسه ولا يتكلم إلا عند الضغط على زر التحدث؛ والشخصيات AUTHORED."
  },
  "districts": {
   "structural": {

@@ -3371,4 +3371,28 @@ ok('campus street furniture is SOLID: every lamp standard and bench is recorded 
   && /e\.rects\.push\(\{ u: x, v: z, r \}\);/.test(fnCode('campusSolid')));
 /* BUILD END */
 
+/* POLISH w16 BEGIN - crew roles open through the harness hook; advisors split exactly as before */
+{
+  const _hi = builtPage.indexOf("window.__tc3dDo = (fn, arg) =>");
+  const disp = _hi < 0 ? '' : strip(builtPage.slice(_hi, _hi + 2500));
+  ok('the harness hook resolves an advisor key through advisorHookArgs and never spreads a raw split(\':\') into openAdvisor',
+    /fn === 'advisor'\) openAdvisor\(\.\.\.advisorHookArgs\(arg\)\)/.test(disp) && !/openAdvisor\(\.\.\.String\(arg\)\.split/.test(disp));
+  const lift = (name) => { const i = builtPage.indexOf(`\nfunction ${name}(`); return i < 0 ? '' : builtPage.slice(i, builtPage.indexOf('\n}\n', i) + 3); };
+  const [hook, fig] = new Function('ADVISOR_TABLE', 'CREW_TABLE', lift('figureOf') + lift('advisorHookArgs')
+    + 'return [typeof advisorHookArgs === "function" ? advisorHookArgs : () => null, figureOf];')(wire.advisors.who, wire.crews.crews);
+  const J = (x) => JSON.stringify(x);
+  const advs = Object.entries(wire.advisors.who);
+  const roles = Object.entries(wire.crews.crews).flatMap(([cid, c]) => Object.entries(c.roles).map(([rid, r]) => [`${cid}:${rid}`, cid, r]));
+  ok(`advisor keys split exactly as before through the hook (${advs.length} advisors, each bare and with every topic, plus an unknown key)`,
+    advs.length > 0 && advs.every(([a, x]) => J(hook(a)) === J(a.split(':'))
+      && x.topics.every((tp) => J(hook(`${a}:${tp.id}`)) === J([a, tp.id]) && J(hook(`${a}:${tp.id}`)) === J(`${a}:${tp.id}`.split(':'))))
+    && J(hook('nobody:x:y')) === J(['nobody', 'x', 'y']));
+  ok(`every crew role opens through the hook by its "<crew>:<role>" key, alone or with a topic (${roles.length} roles; HOOK-CREW)`,
+    roles.length > 0 && roles.every(([k, cid, r]) => J(hook(k)) === J([k]) && fig(hook(k)[0])?.inCrew === cid
+      && r.topics.every((tp) => J(hook(`${k}:${tp.id}`)) === J([k, tp.id]))));
+  ok('no advisor id is also a crew id, so an advisor key can never be read as a crew role',
+    advs.every(([a]) => !(a in wire.crews.crews)));
+}
+/* POLISH w16 END */
+
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);
