@@ -11,6 +11,7 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { FORBIDDEN } from '../brand/identity.mjs';
+import { claimHits } from '../loop/honesty.mjs';
 
 let n = 0;
 const ok = (m, c) => { if (!c) { console.error('FAIL', m); process.exit(1); } n++; console.log('  ok ', m); };
@@ -30,9 +31,6 @@ const courseByCode = Object.fromEntries(courses.map((c) => [c.code, c]));
 const STAGES = 'home,class,floor,gate';
 const NO_FLOOR = 'no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such';
 const BEAUTY = 'home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository';
-const NEG = /\b(?:no|not|none|nothing|never|neither|nor)\b/i;
-const CLAIM = /accredited|endorsed|certified by|partnered with/i;
-const sentences = (t) => t.replace(/\b(e\.g|i\.e|Art|No)\./g, '$1').split(/(?<=[.!?])\s+/);
 function* strings(o) {
   if (typeof o === 'string') yield o;
   else if (Array.isArray(o)) for (const v of o) yield* strings(v);
@@ -91,13 +89,13 @@ ok('floor stage names only sims in sims.json and stations in stations.json, matc
       && f.floor_sims.join() === c.floor_sims.join() && f.class_stations.join() === c.class_stations.join()
       && f.floor_sims.every((s) => f.teacher_role.includes(s)) && f.class_stations.every((s) => f.teacher_role.includes(s));
   })));
-ok('floor role uses the exact "no floor simulator" wording when nothing is bound, and only then',
-  weeks.every(({ w }) => {
+ok('floor role uses the exact "no floor simulator" wording when nothing is bound, and only then (hall courses)',
+  weeks.filter(({ p }) => p.halls.length).every(({ w }) => {
     const f = floorOf(w); const none = !f.floor_sims.length && !f.class_stations.length;
     return none ? f.teacher_role === NO_FLOOR : !f.teacher_role.includes('no floor simulator');
   }));
-ok('gate role is unaided verification and not gamified',
-  weeks.every(({ w }) => { const g = w.stages[3].teacher_role; return /unaided/.test(g) && /not gamified/.test(g); }));
+ok('gate role is unaided verification and not gamified (hall courses)',
+  weeks.filter(({ p }) => p.halls.length).every(({ w }) => { const g = w.stages[3].teacher_role; return /unaided/.test(g) && /not gamified/.test(g); }));
 ok('home role checks the prepare check; class role runs the analyze case',
   weeks.every(({ w }) => /prepare check/.test(w.stages[0].teacher_role) && /analyze case/.test(w.stages[1].teacher_role)));
 
@@ -106,6 +104,18 @@ const beauty = courses.filter((c) => c.halls.length === 0).map((c) => c.code);
 ok(`hall-less courses are exactly TCA-210/220/230 and carry the beauty delivery_status (${beauty.join(', ')})`,
   beauty.join() === 'TCA-210,TCA-220,TCA-230' && beauty.every((k) => byCode[k].delivery_status === BEAUTY)
   && P.filter((p) => !beauty.includes(p.code)).every((p) => p.delivery_status !== BEAUTY));
+
+ok('beauty courses: floor and gate are available:false with the Beauty School status as the teacher role, planned text kept',
+  weeks.filter(({ p }) => !p.halls.length).length > 0
+  && weeks.filter(({ p }) => !p.halls.length).every(({ p, w }) => w.stages.every((s) => {
+    const off = s.stage === 'floor' || s.stage === 'gate';
+    const src = courseByCode[p.code].modules[w.module - 1].stages.find((x) => x.stage === s.stage).text;
+    return s.assign === src && (off
+      ? s.available === false && s.teacher_role === BEAUTY && !/paper or demo|unaided verification/.test(s.teacher_role)
+      : !('available' in s));
+  })));
+ok('hall courses are unchanged: no stage carries an available flag',
+  weeks.filter(({ p }) => p.halls.length).every(({ w }) => w.stages.every((s) => !('available' in s))));
 
 /* -------------------------------------------------------------- honesty --- */
 ok('catalog_section copied from the courses registry; coming-soon is exactly the hall-less beauty courses',
@@ -121,8 +131,8 @@ ok('wired weeks carry the module sites and wiring_note verbatim; unwired weeks c
 ok('every plan carries a teacher_note marking it a planned draft not reviewed by a qualified instructor',
   P.every((p) => typeof p.teacher_note === 'string' && /planned draft/.test(p.teacher_note)
     && /not reviewed by a qualified instructor/.test(p.teacher_note) && p.status === 'planned draft'));
-ok('no unnegated claim word (accredited|endorsed|certified by|partnered with) anywhere',
-  [...strings(reg)].every((t) => sentences(t).every((s) => !CLAIM.test(s) || NEG.test(s))));
+ok('no forbidden claim anywhere in the plans (shared loop/honesty.json vocabulary, positional negation)',
+  [...strings(reg)].every((t) => claimHits(t).length === 0));
 ok('brand spelled SmartCiti.X : Trade Craft Academy; no forbidden spellings',
   FORBIDDEN.every((f) => !regBytes.includes(f.wrong)) && regBytes.includes('SmartCiti.X : Trade Craft Academy'));
 

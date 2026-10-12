@@ -240,7 +240,7 @@
     {
       "id": "DRAFT-EV-12",
       "name": "Honesty claims check",
-      "checks": "Copy scanned for unbacked claims of deployments, partners or accreditation; future items labelled planned",
+      "checks": "Copy scanned for unbacked deployment, partner or accrediting claims; future items labelled planned",
       "threshold": "0 unlabelled future claims"
     }
   ],

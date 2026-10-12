@@ -41,12 +41,12 @@ the loop works on a branch and a human merges.
 | EV-06 | `ffprobe` on the latest cycle's review video; outside 120 ± 0.5 s is a **warn**, a machine path in the ledger or an unreadable file is a fail | no cycle or no video yet |
 | EV-07 | ledger schema, including `pack_version` against the manifest | — |
 | EV-08 | secret patterns in the diff and untracked files | — |
-| EV-09 | pilot precondition: fails if a cycle sets `pilot.real_learners` without a non-empty `partner` and `consent_plan_ref`, or if its shipped/notes text mentions a pilot with learners, students or a cohort without such a record | — (passes as "no pilot recorded") |
+| EV-09 | pilot precondition: fails if a cycle sets `pilot.real_learners` without a non-empty `partner` and `consent_plan_ref`, or if its shipped, notes or agent result text mentions a pilot with learners, students or a cohort without such a record | — (passes as "no pilot recorded") |
 
-EV-05 flags a clause that uses accreditation, endorsement, partnership or
-deployment language unless a negation or qualifier (no, not, none, never,
-nothing, zero, neither, nor, n't, planned, proposed) comes EARLIER in the
-same clause. Clauses end at . ! ? ; and at ", but" / ", not". Abbreviations
+EV-05 flags a clause that uses claim language (the verbs and nouns listed
+in `loop/honesty.json`, from `accredited` to `partnership with`) unless a
+negation or qualifier (no, not, none, never, nothing, zero, neither, nor,
+n't, planned, proposed) comes EARLIER in the same clause. Clauses end at . ! ? ; and at ", but" / ", not". Abbreviations
 (e.g., i.e., Art. 5, No. 5) neither negate nor end a sentence. Fenced blocks
 and code spans are quoting, not claiming; a claim inside a regex alternation
 (`a|b`, pipes tight on a side) is a rule table, not a claim.

@@ -6,7 +6,11 @@
     "\\bcertified by\\b",
     "\\bpartnered with\\b",
     "\\bdeployed to\\b",
-    "\\bin production at\\b"
+    "\\bin production at\\b",
+    "\\baccreditation\\b",
+    "\\bendorsements?\\b",
+    "\\bcertification (?:by|from)\\b",
+    "\\bpartnerships? with\\b"
   ],
   "negations": [
     "\\bno\\b",

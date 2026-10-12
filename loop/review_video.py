@@ -126,12 +126,24 @@ def main():
     if cyc is None:
         sys.exit(f"cycle {a.cycle} is not in the ledger; add it first (node loop/cycle.mjs add)")
     ev_path, hb_path = ROOT / "loop/state/evals_latest.json", ROOT / "loop/state/heartbeat.jsonl"
-    if not ev_path.is_file():
-        sys.exit("loop/state/evals_latest.json is missing: run `node loop/evals.mjs` first")
-    if not hb_path.is_file():
-        sys.exit("loop/state/heartbeat.jsonl is missing: run `node loop/heartbeat.mjs` first")
-    ev = json.load(open(ev_path, encoding="utf-8"))
-    hb_lines = hb_path.read_text(encoding="utf-8").strip().splitlines()
+    # loop/state/ is gitignored, so a clean checkout has neither file. The
+    # ledger already records each cycle's gates and heartbeat_ok, so a missing
+    # state file only stops the render when the selected cycle lacks the
+    # matching recorded field.
+    if ev_path.is_file():
+        ev = json.load(open(ev_path, encoding="utf-8"))
+    elif cyc.get("gates"):
+        ev = {"gates": cyc["gates"]}
+    else:
+        sys.exit("loop/state/evals_latest.json is missing and cycle %d records no gates: "
+                 "run `node loop/evals.mjs` first" % a.cycle)
+    if hb_path.is_file():
+        hb_lines = hb_path.read_text(encoding="utf-8").strip().splitlines()
+    elif isinstance(cyc.get("heartbeat_ok"), bool):
+        hb_lines = []
+    else:
+        sys.exit("loop/state/heartbeat.jsonl is missing and cycle %d records no heartbeat_ok: "
+                 "run `node loop/heartbeat.mjs` first" % a.cycle)
     # Bind the review to the SELECTED cycle: the gates it recorded, and the last
     # heartbeat taken before it ended (not whatever ran most recently).
     beats = [json.loads(l) for l in hb_lines if l.strip()]

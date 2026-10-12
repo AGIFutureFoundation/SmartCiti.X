@@ -6,7 +6,7 @@
  * binds that hall, a station stands in it, a wired module runs on a real
  * site - and every one is proven here against the pack that owns it. The
  * draft's own honesty is held to account too: a course that claims credit,
- * accreditation or a partner it does not have fails its build.
+ * an accrediting body or a partner it does not have fails its build.
  */
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
@@ -95,7 +95,12 @@ ok('every course states what can run in this bundle; an empty floor is never sil
   && ['TCA-210', 'TCA-220', 'TCA-230'].every((k) => /not part of this repository/.test(byCode[k].delivery_status))
   && C.filter((c) => !c.roster_note && !c.floor_sims.length && !c.class_stations.length)
       .every((c) => /no floor simulator/.test(c.delivery_status))
-  && C.filter((c) => c.floor_sims.length || c.class_stations.length).every((c) => /all four stages/.test(c.delivery_status)));
+  && C.filter((c) => c.floor_sims.length).every((c) => /all four stages/.test(c.delivery_status))
+  && C.filter((c) => !c.roster_note).every((c) => !/all four stages/.test(c.delivery_status) || c.floor_sims.length > 0));
+ok('a course with class stations but no floor sim (TCA-410) is station-only, not "all four stages"',
+  C.filter((c) => !c.floor_sims.length && c.class_stations.length).map((c) => c.code).join() === 'TCA-410'
+  && /class stations are bound but no floor simulator/.test(byCode['TCA-410'].delivery_status)
+  && byCode['TCA-410'].catalog_section === 'home-and-class');
 ok('leadership is cross_hall with a stated reason',
   byCode['TCA-410'].cross_hall === true && byCode['TCA-410'].cross_hall_reason.length > 30);
 
@@ -112,7 +117,7 @@ ok('class_stations are complete: every station in a mapped hall is listed',
 
 /* ---------------------------------------------------------------- wired --- */
 const wired = C.flatMap((c) => c.modules.filter((m) => m.wired).map((m) => [c.code, m]));
-const WIRED_SET = 'TCA-110#1,TCA-130#1,TCA-140#1,TCA-140#2';
+const WIRED_SET = 'TCA-110#1,TCA-120#4,TCA-130#1,TCA-140#1,TCA-140#2,TCA-150#1';
 ok(`exactly ${WIRED_SET} are wired; every other module is wired:false with no sites`,
   wired.map(([k, m]) => `${k}#${m.n}`).join() === WIRED_SET
   && C.every((c) => c.modules.every((m) => typeof m.wired === 'boolean' && (m.wired || !('sites' in m)))));
@@ -145,13 +150,28 @@ ok('TCA-110 and TCA-130 each state a wiring_gap naming what is missing for their
   && /no hvacr simulator or class station exists/.test(byCode['TCA-130'].wiring_gap)
   && !sims.hall_bindings.hvacr && !stationsReg.some((s) => s.hall === 'hvacr'));
 
+ok('S4: TCA-120 m4 is matched to the pipe-wrench pick, TCA-150 m1 to the chalk-line pick and the carpenters crib lesson',
+  byCode['TCA-120'].modules[3].sites.length === 1
+  && byCode['TCA-120'].modules[3].sites.some((s) => s.kind === 'crib' && s.id === 'systems' && s.tool === 'pipe-wrench')
+  && /sediment trap/.test(byCode['TCA-120'].modules[3].stages[2].text)
+  && byCode['TCA-150'].modules[0].sites.some((s) => s.kind === 'crib' && s.id === 'envelope' && s.tool === 'chalk-line')
+  && byCode['TCA-150'].modules[0].sites.some((s) => s.kind === 'lesson' && s.id === 'carpenters-return-it-the-same')
+  && /chalk line|snap wall lines/i.test(byCode['TCA-150'].modules[0].stages.map((x) => x.text).join(' ')));
+ok('S4: TCA-120, TCA-150 and TCA-220 each state a wiring_gap; TCA-220 (coming-soon) has no wired module',
+  ['TCA-120', 'TCA-150', 'TCA-220'].every((k) => typeof byCode[k].wiring_gap === 'string' && byCode[k].wiring_gap.length > 60)
+  && /modules 1-3 are unwired/.test(byCode['TCA-120'].wiring_gap) && /modules 2-5 are unwired/.test(byCode['TCA-150'].wiring_gap)
+  && /scaffold-bay/.test(byCode['TCA-150'].wiring_gap)
+  && byCode['TCA-220'].modules.every((m) => !m.wired) && /no module is wired/.test(byCode['TCA-220'].wiring_gap)
+  && !sims.hall_bindings.pipefitters && !stationsReg.some((s) => s.hall === 'pipefitters')
+  && !Object.values(lessons).some((l) => l.hall === 'pipefitters'));
+
 /* ------------------------------------------------------------- catalog --- */
 const SECTIONS = ['available', 'home-and-class', 'coming-soon'];
 ok('every course has a catalog_section from the closed set available / home-and-class / coming-soon',
   C.every((c) => SECTIONS.includes(c.catalog_section)));
-ok('catalog_section follows the bundle: available iff a floor sim or station is bound, home-and-class iff none, outside beauty',
+ok('catalog_section follows the bundle: available iff a floor sim is bound, home-and-class otherwise, outside beauty',
   C.filter((c) => !c.roster_note).every((c) => c.catalog_section
-    === ((c.floor_sims.length || c.class_stations.length) ? 'available' : 'home-and-class'))
+    === (c.floor_sims.length ? 'available' : 'home-and-class'))
   && C.filter((c) => c.catalog_section === 'available').every((c) => /all four stages/.test(c.delivery_status))
   && C.filter((c) => c.catalog_section === 'home-and-class').every((c) => /no floor simulator/.test(c.delivery_status)));
 ok('coming-soon is exactly TCA-210/220/230, held out of the main catalog until a sprint commits to Beauty School, nothing deleted',

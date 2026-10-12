@@ -349,6 +349,117 @@
         "duration_s": 120.067
       },
       "commit": null
+    },
+    {
+      "n": 4,
+      "started": "2026-10-12T10:42:00Z",
+      "ended": "2026-10-12T10:53:00Z",
+      "sprint": "S4 cohort dashboard and review fixes",
+      "shipped": [
+        "Cohort Dashboard v1 on synthetic data: 310 figures reconcile with an independent recomputation at 0.00% error",
+        "Cells under 5 learners suppressed (60 of 210); no affect fields in the log or page",
+        "Skill map uses an invented module-to-strand mapping and says so; real per-module skill ids are still missing",
+        "Plumbing module 4 and carpentry module 1 wired to tool cribs; 6 of 56 modules wired in total",
+        "All 9 CodeRabbit findings fixed: noun-form claims, pilot wording in either order, atomic ledger writes, per-cycle gate refresh",
+        "Beauty floor and gate stages marked unavailable in the lesson plans; stray screenshots removed from the repo"
+      ],
+      "agents": [
+        {
+          "name": "Orchestrator",
+          "task": "route review findings and S4, wire suites",
+          "result": "verify_all 1,775 checks, 0 failing; 9 of 9 gates pass"
+        },
+        {
+          "name": "Billing Engineer",
+          "task": "Cohort Dashboard v1 and skill map",
+          "result": "26 checks; reconciliation 0.00% on synthetic data"
+        },
+        {
+          "name": "Curriculum Mapper",
+          "task": "S4 wiring and 9 review fixes",
+          "result": "45 course, 25 lesson-plan and 41 loop checks pass"
+        },
+        {
+          "name": "Media Producer",
+          "task": "cycle 4 review video",
+          "result": "review_c4.mp4, 120 s"
+        }
+      ],
+      "notes": [
+        "S4 gate is partial: the dashboard is verified on synthetic data only, and the trade-accuracy review by a qualified human reviewer has not happened (none engaged)."
+      ],
+      "gates": [
+        {
+          "id": "EV-01",
+          "name": "Verification suite (verify_all.sh)",
+          "status": "pass",
+          "detail": "1775 checks, 0 failing suites",
+          "ms": 13774
+        },
+        {
+          "id": "EV-02",
+          "name": "Courses suite",
+          "status": "pass",
+          "detail": "45 checks",
+          "ms": 229
+        },
+        {
+          "id": "EV-03",
+          "name": "Brand lint",
+          "status": "pass",
+          "detail": "brand: 250 files clean — \"SmartCiti.X : Trade Craft Academy\", powered by AGI Corp",
+          "ms": 174
+        },
+        {
+          "id": "EV-04",
+          "name": "Figures lint",
+          "status": "pass",
+          "detail": "figures: 238 files agree with the pack — 111 halls, 11,000,000 modules, 10 campuses, 447 avatar options, 4 proposed districts, every registry at pack 3.2.0",
+          "ms": 842
+        },
+        {
+          "id": "EV-05",
+          "name": "Honesty lint on branch changes",
+          "status": "pass",
+          "detail": "32 changed text files, 0 overclaims",
+          "ms": 131
+        },
+        {
+          "id": "EV-06",
+          "name": "Review video 120 ± 0.5 s",
+          "status": "pass",
+          "detail": "cycle #4 review_c4.mp4 120.07 s",
+          "ms": 58
+        },
+        {
+          "id": "EV-07",
+          "name": "Cycle ledger schema",
+          "status": "pass",
+          "detail": "valid, 4 cycles",
+          "ms": 2
+        },
+        {
+          "id": "EV-08",
+          "name": "No secrets in diff",
+          "status": "pass",
+          "detail": "diff + 7 untracked files clean",
+          "ms": 61
+        },
+        {
+          "id": "EV-09",
+          "name": "Pilot precondition",
+          "status": "pass",
+          "detail": "no pilot recorded",
+          "ms": 1
+        }
+      ],
+      "checks_total": 1775,
+      "heartbeat_ok": true,
+      "video": {
+        "path": "review_c4.mp4",
+        "duration_s": 120.067
+      },
+      "commit": null
     }
   ]
 }

@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-10-12",
- "source_stamp": "84883f1f2c6d4455",
+ "source_stamp": "07328e05f673aba0",
  "honesty": {
   "status": "every course in this pack is a PLANNED DRAFT: nothing is shipped or deployed, learning efficacy is unestablished, and only the modules marked wired are bound to sites that exist",
   "credit": "no licensing board, jurisdiction or employer has accepted any hour of these courses; simulator, station and lesson time never count toward a licence or certification",
@@ -234,6 +234,7 @@
    "mapping_review_note": "the plumbing-to-pipefitters mapping was last reviewed on 2026-10-12 and is re-reviewed whenever the hall roster (unions/registry/unions.json) changes",
    "delivery_status": "home, class and gate can run in this bundle; no floor simulator or class station is bound yet, so practice runs as a paper or demo exercise and is recorded as such",
    "catalog_section": "home-and-class",
+   "wiring_gap": "modules 1-3 are unwired: no simulator, class station or lesson in this bundle practises DWV layout, sweating copper or crimping PEX, or setting fixtures; pipefitters has no simulator binding, no class station and no lesson, and the systems crib drill asks for no plumbing tool beyond the pipe wrench (its crimper closes electrical connectors, not PEX rings)",
    "floor_sims": [],
    "class_stations": [],
    "robotics_link": null,
@@ -345,7 +346,16 @@
        "text": "Job site: commercial kitchen with a cross-connection; specify the correct backflow assembly type."
       }
      ],
-     "wired": false
+     "wired": true,
+     "sites": [
+      {
+       "kind": "crib",
+       "id": "systems",
+       "tool": "pipe-wrench",
+       "use": "prepare: name the pipe wrench in the Building-systems crib check before assembling the threaded sediment trap"
+      }
+     ],
+     "wiring_note": "the module practises replacing a gas water heater, including its sediment trap, which is assembled from threaded pipe and fittings; the systems crib drill (bound to the pipefitters hall) asks for the tool that grips and turns threaded pipe - the pipe wrench. It covers tool identification only; no simulator runs the water-heater swap, the venting check or the gas leak test, and the pipefitters hall stands in for a plumbing hall"
     }
    ]
   },
@@ -722,6 +732,7 @@
    ],
    "delivery_status": "all four stages can run in this bundle",
    "catalog_section": "available",
+   "wiring_gap": "modules 2-5 are unwired: no simulator, class station or lesson in this bundle practises wall framing, stair layout, rafter cutting or door hanging; the carpenters sim scaffold-bay erects a scaffold bay, which no module of this course practises, and the envelope crib drill asks for no framing or trim tool beyond the chalk line",
    "floor_sims": [
     "scaffold-bay"
    ],
@@ -754,7 +765,21 @@
        "text": "Job site: snap wall lines on a slab from the foundation plan."
       }
      ],
-     "wired": false
+     "wired": true,
+     "sites": [
+      {
+       "kind": "crib",
+       "id": "envelope",
+       "tool": "chalk-line",
+       "use": "prepare: name the chalk line in the Envelope & finish crib check before snapping wall lines"
+      },
+      {
+       "kind": "lesson",
+       "id": "carpenters-return-it-the-same",
+       "use": "class: the carpenters Tool Crib lesson (issue, calibration and return) that ends at that crib check"
+      }
+     ],
+     "wiring_note": "the module practises layout and has the learner snap wall lines with a chalk line; the envelope crib drill (bound to the carpenters hall) asks for the tool that snaps a straight layout line, and the carpenters lesson carpenters-return-it-the-same runs that crib check. It covers tool identification and crib discipline only; no simulator runs wall-plate layout or squaring"
     },
     {
      "n": 2,
@@ -1204,6 +1229,7 @@
    "delivery_status": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
    "catalog_section": "coming-soon",
    "catalog_note": "coming soon: held out of the main catalog until a sprint commits to Beauty School; the course stays in this registry and nothing is deleted",
+   "wiring_gap": "no module is wired: nail technology has no hall in the 111-hall roster, so no simulator, class station, lesson or tool crib in this bundle binds it; its floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
    "floor_sims": [],
    "class_stations": [],
    "robotics_link": null,
@@ -1787,8 +1813,8 @@
    ],
    "cross_hall": true,
    "cross_hall_reason": "crew leadership and emotional intelligence apply on every crew in every hall; the course is anchored at site-safety, where a crew lead owns the culture of the job site",
-   "delivery_status": "all four stages can run in this bundle",
-   "catalog_section": "available",
+   "delivery_status": "home, class and gate can run in this bundle; class stations are bound but no floor simulator is, so practice runs at the bound class station(s) or as a paper or demo exercise and is recorded as such",
+   "catalog_section": "home-and-class",
    "floor_sims": [],
    "class_stations": [
     "st013"
@@ -2064,8 +2090,8 @@
    "start": "2026-11-23",
    "end": "2026-12-06",
    "weeks": "Nov 23 - Dec 6, 2026",
-   "status": "planned",
-   "gate_result": null,
+   "status": "shipped",
+   "gate_result": "partial: the cohort dashboard reconciles 310 figures with an independent recomputation at 0.00% error on SYNTHETIC data (cohort/test.mjs); its skill map uses an invented module-to-strand mapping; the trade-accuracy review by a qualified human was not done, no reviewer is engaged",
    "ship": "TCA-120 Plumbing, TCA-150 Carpentry, TCA-220 Nail modules 1-3; Cohort Dashboard v1 and Skill Map.",
    "eval_gate": "Dashboard numbers reconcile with raw session logs within 1%; trade-accuracy review of all new content by a qualified human reviewer (planned; reviewer not yet engaged)."
   },

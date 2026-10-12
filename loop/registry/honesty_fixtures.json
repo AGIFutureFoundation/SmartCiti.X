@@ -14,7 +14,7 @@
     {"text": "Per Art. 5 the course is certified by the board.", "expect": "flag", "why": "Art. is an abbreviation, not a sentence end"},
     {"text": "The pilot is planned, but the course is deployed to two schools.", "expect": "flag", "why": "a coordinating but starts a new clause"},
     {"text": "not accredited", "expect": "clean", "why": "plain negation"},
-    {"text": "No accreditation is claimed.", "expect": "clean", "why": "no claim word at all"},
+    {"text": "No accreditation is claimed.", "expect": "clean", "why": "negation precedes the noun form"},
     {"text": "Nothing here is endorsed by any union.", "expect": "clean", "why": "negation precedes the claim"},
     {"text": "accredited|endorsed|certified by", "expect": "clean", "why": "regex alternation source"},
     {"text": "const CLAIM = /accredited|endorsed|certified by|partnered with/i;", "expect": "clean", "why": "regex literal"},
@@ -25,6 +25,12 @@
     {"text": "Example:\n```\nThe course is accredited by ACME.\n```\nNone of this is endorsed.", "expect": "clean", "why": "a fenced block is quoting, not claiming"},
     {"text": "No course is accredited, i.e. no board has reviewed it.", "expect": "clean", "why": "i.e. does not end the sentence"},
     {"text": "We aren't endorsed by anyone.", "expect": "clean", "why": "n't negation"},
-    {"text": "Nothing in this pack is\naccredited by any board.", "expect": "clean", "why": "a soft line wrap continues the sentence"}
+    {"text": "Nothing in this pack is\naccredited by any board.", "expect": "clean", "why": "a soft line wrap continues the sentence"},
+    {"text": "The academy has accreditation from the State Board.", "expect": "flag", "why": "noun form: accreditation"},
+    {"text": "The course carries an endorsement from the union.", "expect": "flag", "why": "noun form: endorsement"},
+    {"text": "Graduates receive certification from the board.", "expect": "flag", "why": "noun form: certification from"},
+    {"text": "We announced a partnership with the parish schools.", "expect": "flag", "why": "noun form: partnership with"},
+    {"text": "nothing here carries accreditation", "expect": "clean", "why": "negation precedes the noun form"},
+    {"text": "No endorsement, certification by any board or partnership with a school exists.", "expect": "clean", "why": "one negation covers the noun list that follows it"}
   ]
 }

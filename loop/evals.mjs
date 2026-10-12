@@ -28,8 +28,12 @@ export const SECRET = /\bghp_[A-Za-z0-9]{20,}|\bsk-[A-Za-z0-9_-]{20,}|\bAKIA[0-9
 /** Overclaiming clauses in a text, with line numbers (see loop/honesty.mjs). */
 export const honestyHits = claimHits;
 
-/** A text that says a pilot runs with real learners. */
-export const PILOT_TALK = /pilot.*(learner|student|cohort)/i;
+/**
+ * A text that says a pilot runs with real learners: "pilot" and a
+ * learner/student/cohort word in either order, with any text between them
+ * ("a pilot with 12 learners", "12 learners started a pilot").
+ */
+export const PILOT_TALK = /\bpilot(?:s|ed|ing)?\b[\s\S]*\b(?:learner|student|cohort)s?\b|\b(?:learner|student|cohort)s?\b[\s\S]*\bpilot(?:s|ed|ing)?\b/i;
 const isStr = (x) => typeof x === 'string' && x.trim().length > 0;
 /** A pilot record that may stand behind real learners: partner and consent plan both named. */
 export const pilotRecorded = (c) => !!(c && c.pilot && c.pilot.real_learners === true
@@ -43,8 +47,9 @@ export function pilotGate(cycles) {
     if (c.pilot && c.pilot.real_learners === true && !pilotRecorded(c))
       bad.push(`cycle #${c.n} records real learners without a partner and consent_plan_ref`);
     if (pilotRecorded(c)) recorded++;
-    const said = [...(c.shipped || []), ...[c.notes].flat().filter((x) => typeof x === 'string')]
-      .find((t) => PILOT_TALK.test(t));
+    const agentResults = (Array.isArray(c.agents) ? c.agents : []).map((a) => a && a.result);
+    const said = [...(c.shipped || []), ...[c.notes].flat(), ...agentResults]
+      .filter((x) => typeof x === 'string').find((t) => PILOT_TALK.test(t));
     if (said && !pilotRecorded(c)) bad.push(`cycle #${c.n} mentions a pilot with learners without a pilot record: "${said.slice(0, 60)}"`);
   }
   if (bad.length) return ['fail', bad.slice(0, 3).join('; ')];

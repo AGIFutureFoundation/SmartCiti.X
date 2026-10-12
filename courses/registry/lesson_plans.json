@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-10-12",
- "source_stamp": "9ebdb22b183c2fa5",
+ "source_stamp": "b73cd561a7402c2a",
  "honesty": {
   "status": "every lesson plan is a PLANNED DRAFT derived only from the courses registry; none has been reviewed by a qualified instructor and none is an approved syllabus",
   "credit": "no licensing board, jurisdiction or employer has accepted any minute of these plans; simulator and station time never count toward a licence or certification",
@@ -12,7 +12,7 @@
  },
  "source": {
   "courses": "courses/registry/courses.json",
-  "courses_stamp": "84883f1f2c6d4455"
+  "courses_stamp": "07328e05f673aba0"
  },
  "stage_split_percent": {
   "home": 20,
@@ -535,7 +535,16 @@
        "minutes": 247
       }
      ],
-     "wired": false
+     "wired": true,
+     "sites": [
+      {
+       "kind": "crib",
+       "id": "systems",
+       "tool": "pipe-wrench",
+       "use": "prepare: name the pipe wrench in the Building-systems crib check before assembling the threaded sediment trap"
+      }
+     ],
+     "wiring_note": "the module practises replacing a gas water heater, including its sediment trap, which is assembled from threaded pipe and fittings; the systems crib drill (bound to the pipefitters hall) asks for the tool that grips and turns threaded pipe - the pipe wrench. It covers tool identification only; no simulator runs the water-heater swap, the venting check or the gas leak test, and the pipefitters hall stands in for a plumbing hall"
     }
    ]
   },
@@ -1183,7 +1192,21 @@
        "minutes": 216
       }
      ],
-     "wired": false
+     "wired": true,
+     "sites": [
+      {
+       "kind": "crib",
+       "id": "envelope",
+       "tool": "chalk-line",
+       "use": "prepare: name the chalk line in the Envelope & finish crib check before snapping wall lines"
+      },
+      {
+       "kind": "lesson",
+       "id": "carpenters-return-it-the-same",
+       "use": "class: the carpenters Tool Crib lesson (issue, calibration and return) that ends at that crib check"
+      }
+     ],
+     "wiring_note": "the module practises layout and has the learner snap wall lines with a chalk line; the envelope crib drill (bound to the carpenters hall) asks for the tool that snaps a straight layout line, and the carpenters lesson carpenters-return-it-the-same runs that crib check. It covers tool identification and crib discipline only; no simulator runs wall-plate layout or squaring"
     },
     {
      "week": 2,
@@ -1717,22 +1740,24 @@
       {
        "stage": "floor",
        "assign": "Sim: disinfect implements and run a consultation with a client NPC asking for a dramatic change.",
-       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
        "mentors": [
         "Tessa"
        ],
        "minutes": 756,
+       "available": false,
        "floor_sims": [],
        "class_stations": []
       },
       {
        "stage": "gate",
        "assign": "State-board-style sanitation check by Tessa.",
-       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
        "mentors": [
         "Tessa"
        ],
-       "minutes": 324
+       "minutes": 324,
+       "available": false
       }
      ],
      "wired": false
@@ -1764,22 +1789,24 @@
       {
        "stage": "floor",
        "assign": "Sim mannequin: one-length bob at 0 degrees and a uniform layer at 90 degrees.",
-       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
        "mentors": [
         "Tessa"
        ],
        "minutes": 756,
+       "available": false,
        "floor_sims": [],
        "class_stations": []
       },
       {
        "stage": "gate",
        "assign": "Client booking: graduated bob; Tessa scores balance and weight line.",
-       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
        "mentors": [
         "Tessa"
        ],
-       "minutes": 324
+       "minutes": 324,
+       "available": false
       }
      ],
      "wired": false
@@ -1811,22 +1838,24 @@
       {
        "stage": "floor",
        "assign": "Sim: mix, apply a root retouch with 1/2 in. partings, process and rinse.",
-       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
        "mentors": [
         "Tessa"
        ],
        "minutes": 756,
+       "available": false,
        "floor_sims": [],
        "class_stations": []
       },
       {
        "stage": "gate",
        "assign": "Client returns with banding; correct it and document the formula card.",
-       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
        "mentors": [
         "Tessa"
        ],
-       "minutes": 324
+       "minutes": 324,
+       "available": false
       }
      ],
      "wired": false
@@ -1858,22 +1887,24 @@
       {
        "stage": "floor",
        "assign": "Sim: partial highlight with lightener, then tone with a demi-permanent.",
-       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
        "mentors": [
         "Tessa"
        ],
        "minutes": 756,
+       "available": false,
        "floor_sims": [],
        "class_stations": []
       },
       {
        "stage": "gate",
        "assign": "Client consultation where Tessa expects the student to decline or stage the service if unsafe.",
-       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
        "mentors": [
         "Tessa"
        ],
-       "minutes": 324
+       "minutes": 324,
+       "available": false
       }
      ],
      "wired": false
@@ -1905,22 +1936,24 @@
       {
        "stage": "floor",
        "assign": "Sim: perm wrap with end papers on a 9-block pattern.",
-       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
        "mentors": [
         "Tessa"
        ],
        "minutes": 756,
+       "available": false,
        "floor_sims": [],
        "class_stations": []
       },
       {
        "stage": "gate",
        "assign": "State-board-style practical walkthrough timed against a mock exam clock.",
-       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
        "mentors": [
         "Tessa"
        ],
-       "minutes": 324
+       "minutes": 324,
+       "available": false
       }
      ],
      "wired": false
@@ -1969,22 +2002,24 @@
       {
        "stage": "floor",
        "assign": "Sim: clean and disinfect a pedicure spa per manufacturer and log it.",
-       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
        "mentors": [
         "Gemma"
        ],
        "minutes": 630,
+       "available": false,
        "floor_sims": [],
        "class_stations": []
       },
       {
        "stage": "gate",
        "assign": "Gemma inspects the station; single-use items must be discarded.",
-       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
        "mentors": [
         "Gemma"
        ],
-       "minutes": 270
+       "minutes": 270,
+       "available": false
       }
      ],
      "wired": false
@@ -2016,22 +2051,24 @@
       {
        "stage": "floor",
        "assign": "Sim: full manicure with polish, clean cuticle line, no flooding.",
-       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
        "mentors": [
         "Gemma"
        ],
        "minutes": 630,
+       "available": false,
        "floor_sims": [],
        "class_stations": []
       },
       {
        "stage": "gate",
        "assign": "Client NPC with diabetes on a pedicure booking; student must modify (no cutting, no sharp implements on calluses).",
-       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
        "mentors": [
         "Gemma"
        ],
-       "minutes": 270
+       "minutes": 270,
+       "available": false
       }
      ],
      "wired": false
@@ -2063,22 +2100,24 @@
       {
        "stage": "floor",
        "assign": "Sim: gel prep, thin coats, cure per lamp spec, and safe soak-off.",
-       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
        "mentors": [
         "Gemma"
        ],
        "minutes": 630,
+       "available": false,
        "floor_sims": [],
        "class_stations": []
       },
       {
        "stage": "gate",
        "assign": "Client returns in 2 weeks; evaluate wear and adjust technique.",
-       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
        "mentors": [
         "Gemma"
        ],
-       "minutes": 270
+       "minutes": 270,
+       "available": false
       }
      ],
      "wired": false
@@ -2110,22 +2149,24 @@
       {
        "stage": "floor",
        "assign": "Sim: sculpt on forms with a smile line; adaptive dial tightens symmetry tolerance.",
-       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
        "mentors": [
         "Gemma"
        ],
        "minutes": 630,
+       "available": false,
        "floor_sims": [],
        "class_stations": []
       },
       {
        "stage": "gate",
        "assign": "Board-style practical: one sculptured nail, timed, with sanitation scored.",
-       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
        "mentors": [
         "Gemma"
        ],
-       "minutes": 270
+       "minutes": 270,
+       "available": false
       }
      ],
      "wired": false
@@ -2174,22 +2215,24 @@
       {
        "stage": "floor",
        "assign": "Sim: full skin analysis with magnifying lamp and consultation form.",
-       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
        "mentors": [
         "Iris"
        ],
        "minutes": 630,
+       "available": false,
        "floor_sims": [],
        "class_stations": []
       },
       {
        "stage": "gate",
        "assign": "Iris reviews the treatment plan for accuracy and scope.",
-       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
        "mentors": [
         "Iris"
        ],
-       "minutes": 270
+       "minutes": 270,
+       "available": false
       }
      ],
      "wired": false
@@ -2221,22 +2264,24 @@
       {
        "stage": "floor",
        "assign": "Sim: client discloses retinoid use; adjust the service and document.",
-       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
        "mentors": [
         "Iris"
        ],
        "minutes": 630,
+       "available": false,
        "floor_sims": [],
        "class_stations": []
       },
       {
        "stage": "gate",
        "assign": "Iris scenario where the client requests a medical procedure; student must decline within scope.",
-       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
        "mentors": [
         "Iris"
        ],
-       "minutes": 270
+       "minutes": 270,
+       "available": false
       }
      ],
      "wired": false
@@ -2268,22 +2313,24 @@
       {
        "stage": "floor",
        "assign": "Sim: full facial with Swedish-style effleurage and petrissage on a client avatar.",
-       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
        "mentors": [
         "Iris"
        ],
        "minutes": 630,
+       "available": false,
        "floor_sims": [],
        "class_stations": []
       },
       {
        "stage": "gate",
        "assign": "Client NPC feedback and post-care instructions including SPF.",
-       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
        "mentors": [
         "Iris"
        ],
-       "minutes": 270
+       "minutes": 270,
+       "available": false
       }
      ],
      "wired": false
@@ -2315,22 +2362,24 @@
       {
        "stage": "floor",
        "assign": "Sim: gloved extractions with proper angle and pressure; apply and neutralize a superficial peel on timing.",
-       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
        "mentors": [
         "Iris"
        ],
        "minutes": 630,
+       "available": false,
        "floor_sims": [],
        "class_stations": []
       },
       {
        "stage": "gate",
        "assign": "Client returns with mild erythema; handle the follow-up and record it.",
-       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
        "mentors": [
         "Iris"
        ],
-       "minutes": 270
+       "minutes": 270,
+       "available": false
       }
      ],
      "wired": false
@@ -2362,22 +2411,24 @@
       {
        "stage": "floor",
        "assign": "Sim: brow wax with correct direction of pull and skin support.",
-       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
        "mentors": [
         "Iris"
        ],
        "minutes": 630,
+       "available": false,
        "floor_sims": [],
        "class_stations": []
       },
       {
        "stage": "gate",
        "assign": "Board-style practical with sanitation scoring.",
-       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
        "mentors": [
         "Iris"
        ],
-       "minutes": 270
+       "minutes": 270,
+       "available": false
       }
      ],
      "wired": false
@@ -2884,7 +2935,7 @@
     "site-safety"
    ],
    "delivery_status": "all four stages planned: the floor stage runs on the bound simulator(s) or class station(s) named in each week, or as a paper or demo exercise where none is bound",
-   "catalog_section": "available",
+   "catalog_section": "home-and-class",
    "teacher_note": "planned draft: generated from registry data and not reviewed by a qualified instructor; adapt it, and do not present it as an approved syllabus",
    "weeks": [
     {

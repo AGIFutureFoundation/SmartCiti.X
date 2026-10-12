@@ -7,13 +7,13 @@
  * checks exercise the pure functions directly; nothing here runs
  * verify_all.sh, which would be slow and recursive.
  */
-import { readFileSync, writeFileSync, mkdtempSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdtempSync, existsSync, readdirSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { validateLedger, validateCycle, AGENTS, GATE_IDS, manifestVersion } from './cycle.mjs';
-import { GATES, honestyHits, secretHits, parseVerify, OVERCLAIM, pilotGate } from './evals.mjs';
+import { GATES, honestyHits, secretHits, parseVerify, OVERCLAIM, pilotGate, PILOT_TALK } from './evals.mjs';
 import { claimHits, verdict } from './honesty.mjs';
 import { heartbeatLine, registryVersions, runHeartbeat } from './heartbeat.mjs';
 
@@ -79,6 +79,12 @@ ok('honesty regex catches "accredited by X" and "partnered with" claims',
   honestyHits('The course is accredited by the State Board.').length === 1
   && honestyHits('We partnered with a district last spring.').length === 1
   && OVERCLAIM.test('deployed to three schools'));
+ok('honesty scan catches noun forms (accreditation, endorsement, certification from, partnership with) and passes them negated',
+  honestyHits('The academy has accreditation from the State Board.').length === 1
+  && honestyHits('We signed a partnership with the parish.').length === 1
+  && honestyHits('Graduates get certification by the board and an endorsement.').length === 1
+  && honestyHits('No accreditation is claimed.').length === 0
+  && honestyHits('nothing here carries accreditation').length === 0);
 ok('honesty scan passes negated or planned clauses only when the qualifier comes first',
   honestyHits('This course is not accredited.').length === 0
   && honestyHits('Nothing here is accredited, deployed to schools or endorsed.').length === 0
@@ -131,6 +137,15 @@ ok('verify_all.sh summary parser reads the total and the failing suites',
     && pilotGate([{ ...goodCycle, pilot: { real_learners: true, partner: 'X' } }])[0] === 'fail'
     && pilotGate([{ ...goodCycle, shipped: ['Ran a pilot cohort at a parish school'] }])[0] === 'fail'
     && pilotGate([{ ...goodCycle, notes: 'pilot with students next sprint' }])[0] === 'fail');
+  ok('EV-09 pilot talk matches either order with text between, not unrelated wording',
+    PILOT_TALK.test('12 learners started a pilot') && PILOT_TALK.test('a cohort of students joined the pilot')
+    && PILOT_TALK.test('Pilot run: twelve learners at a parish school')
+    && pilotGate([{ ...goodCycle, shipped: ['12 learners started a pilot'] }])[0] === 'fail'
+    && !PILOT_TALK.test('EV-09 gate: a field trial is refused unless the ledger names a partner and a consent plan')
+    && !PILOT_TALK.test('autopilot settings for the crane sim'));
+  ok('EV-09 also scans each agent result: pilot-with-learners talk there with no record fails',
+    pilotGate([{ ...goodCycle, agents: [{ name: 'Eval Warden', task: 'x', result: 'ran a pilot with 8 students' }] }])[0] === 'fail'
+    && pilotGate([{ ...goodCycle, pilot, agents: [{ name: 'Eval Warden', task: 'x', result: 'ran a pilot with 8 students' }] }])[0] === 'pass');
   ok('the committed ledger passes EV-09', pilotGate(ledger.cycles)[0] === 'pass');
 }
 {
@@ -138,6 +153,44 @@ ok('verify_all.sh summary parser reads the total and the failing suites',
   ok('patch_cycle.mjs exits 1 for a cycle that is not in the ledger, and writes nothing',
     r.status === 1 && /not in the ledger/.test(r.stderr)
     && readFileSync(join(HERE, 'registry/cycles.json'), 'utf8') === JSON.stringify(ledger, null, 2) + '\n');
+}
+
+{
+  // patch_cycle.mjs against temp fixtures only (LOOP_LEDGER / LOOP_STATE);
+  // the real ledger is never touched here.
+  const dir = mkdtempSync(join(tmpdir(), 'patch-test-'));
+  const L = join(dir, 'cycles.json');
+  const fx = { ...ledger, cycles: ledger.cycles.slice(0, 2).map((c) => ({ ...c, video: null })) };
+  const last = fx.cycles[fx.cycles.length - 1];
+  const fresh = GATES.map(([id, name]) => ({ id, name, status: 'warn', detail: '4242 checks fresh', ms: 7 }));
+  const evRun = (ts) => writeFileSync(join(dir, 'evals_latest.json'), JSON.stringify({ ts, gates: fresh }));
+  const patch = (args) => spawnSync('node', [join(HERE, 'patch_cycle.mjs'), ...args],
+    { encoding: 'utf8', env: { ...process.env, LOOP_LEDGER: L, LOOP_STATE: dir } });
+  const reset = () => writeFileSync(L, JSON.stringify(fx, null, 2) + '\n');
+  const after = () => JSON.parse(readFileSync(L, 'utf8')).cycles;
+  const vid = join(dir, 'review_fx.mp4');
+  spawnSync('ffmpeg', ['-v', 'error', '-y', '-f', 'lavfi', '-i', 'color=c=black:s=64x64:d=1:r=10', '-pix_fmt', 'yuv420p', vid]);
+
+  reset(); evRun(new Date(Date.parse(last.started) + 60000).toISOString());
+  const r1 = patch([String(last.n)]);
+  ok('patch_cycle.mjs refreshes the latest cycle\'s gates from an eval run taken after it started',
+    r1.status === 0 && after()[last.n - 1].gates.every((g) => g.status === 'warn')
+    && JSON.stringify(after()[0]) === JSON.stringify(fx.cycles[0]));
+  reset();
+  const r2 = patch(['1', vid]);
+  ok('patch_cycle.mjs on an older cycle keeps its recorded gates and only attaches the video',
+    r2.status === 0 && JSON.stringify(after()[0].gates) === JSON.stringify(fx.cycles[0].gates)
+    && after()[0].checks_total === fx.cycles[0].checks_total
+    && after()[0].video && after()[0].video.path === 'review_fx.mp4' && after()[0].video.duration_s > 0);
+  reset(); evRun(new Date(Date.parse(last.started) - 60000).toISOString());
+  const r3 = patch([String(last.n), vid]);
+  const r4 = patch([String(last.n)]);
+  ok('an eval run older than the latest cycle\'s start is not applied; without a video nothing is written',
+    r3.status === 0 && JSON.stringify(after()[last.n - 1].gates) === JSON.stringify(last.gates)
+    && after()[last.n - 1].video.path === 'review_fx.mp4'
+    && r4.status === 1 && /keeps its recorded gates/.test(r4.stderr));
+  ok('patch_cycle.mjs writes atomically: no temp file is left beside the ledger',
+    !readdirSync(dir).some((f) => f.endsWith('.tmp')));
 }
 
 /* ------------------------------------------------------------ metaprompt --- */

@@ -11,6 +11,8 @@ registry; nothing is invented:
   * the floor stage names only the simulators (sims/registry/sims.json) and
     class stations (stations/registry/stations.json) the course is bound to,
     or says plainly that no floor simulator is bound yet;
+  * for the hall-less beauty courses the floor and gate stages are marked
+    available: false with the Beauty School status as the teacher role;
   * the mentor agents are the course's mentors from the registry;
   * minutes come from hours_planned: the course total round(hours*60) is
     split evenly across modules and each module split 20/30/35/15 across
@@ -53,6 +55,8 @@ BEAUTY_STATUS = ('home and class only in this bundle: the floor and gate '
 HALL_STATUS = ('all four stages planned: the floor stage runs on the bound '
                'simulator(s) or class station(s) named in each week, or as a '
                'paper or demo exercise where none is bound')
+# Stages a hall-less (beauty) course cannot run in this bundle.
+BEAUTY_UNAVAILABLE = ('floor', 'gate')
 TEACHER_NOTE = ('planned draft: generated from registry data and not reviewed '
                 'by a qualified instructor; adapt it, and do not present it '
                 'as an approved syllabus')
@@ -111,6 +115,12 @@ for c in courses_reg['courses']:
         for st, m in zip(STAGES, split):
             rec = {'stage': st, 'assign': text[st], 'teacher_role': roles[st],
                    'mentors': list(c['mentors']), 'minutes': m}
+            if beauty and st in BEAUTY_UNAVAILABLE:
+                # No hall and no Beauty School in this bundle: the planned stage
+                # text is kept, but the stage cannot run here, so the teacher is
+                # told that instead of a paper exercise or a verification.
+                rec['available'] = False
+                rec['teacher_role'] = BEAUTY_STATUS
             if st == 'floor':
                 rec['floor_sims'] = sims
                 rec['class_stations'] = stations

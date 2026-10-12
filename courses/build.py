@@ -64,6 +64,9 @@ DELIVERY_FULL = 'all four stages can run in this bundle'
 DELIVERY_NO_FLOOR = ('home, class and gate can run in this bundle; no floor simulator '
                      'or class station is bound yet, so practice runs as a paper or demo '
                      'exercise and is recorded as such')
+DELIVERY_STATION_ONLY = ('home, class and gate can run in this bundle; class stations are '
+                         'bound but no floor simulator is, so practice runs at the bound '
+                         'class station(s) or as a paper or demo exercise and is recorded as such')
 DELIVERY_BEAUTY = ('home and class only in this bundle: the floor and gate stages need '
                    'the separate Beauty School simulator, which is not part of this repository')
 
@@ -132,6 +135,21 @@ WIRED = {
                 'crib check and asks the Inspector whether talk can stand in '
                 'for a measurement'},
     ],
+    # S4: TCA-120, TCA-150 and TCA-220 read against the same registries; only
+    # genuine content matches are wired.
+    ('TCA-120', 4): [
+        {'kind': 'crib', 'id': 'systems', 'tool': 'pipe-wrench',
+         'use': 'prepare: name the pipe wrench in the Building-systems crib '
+                'check before assembling the threaded sediment trap'},
+    ],
+    ('TCA-150', 1): [
+        {'kind': 'crib', 'id': 'envelope', 'tool': 'chalk-line',
+         'use': 'prepare: name the chalk line in the Envelope & finish crib '
+                'check before snapping wall lines'},
+        {'kind': 'lesson', 'id': 'carpenters-return-it-the-same',
+         'use': 'class: the carpenters Tool Crib lesson (issue, calibration '
+                'and return) that ends at that crib check'},
+    ],
 }
 
 # Why each wired module's sites match its content - stated, not implied.
@@ -149,6 +167,21 @@ WIRING_NOTES = {
                     'hvacr-prove-the-sequence runs that crib check. It covers '
                     'tool identification and a measurement-first inspection '
                     'habit only; no simulator runs a refrigeration circuit',
+    ('TCA-120', 4): 'the module practises replacing a gas water heater, '
+                    'including its sediment trap, which is assembled from '
+                    'threaded pipe and fittings; the systems crib drill (bound '
+                    'to the pipefitters hall) asks for the tool that grips and '
+                    'turns threaded pipe - the pipe wrench. It covers tool '
+                    'identification only; no simulator runs the water-heater '
+                    'swap, the venting check or the gas leak test, and the '
+                    'pipefitters hall stands in for a plumbing hall',
+    ('TCA-150', 1): 'the module practises layout and has the learner snap '
+                    'wall lines with a chalk line; the envelope crib drill '
+                    '(bound to the carpenters hall) asks for the tool that '
+                    'snaps a straight layout line, and the carpenters lesson '
+                    'carpenters-return-it-the-same runs that crib check. It '
+                    'covers tool identification and crib discipline only; no '
+                    'simulator runs wall-plate layout or squaring',
 }
 
 # What is missing for the modules left unwired, per course (S3 courses lane).
@@ -165,6 +198,23 @@ WIRING_GAPS = {
                'stations.json has no hvacr station), so charging, refrigerant '
                'recovery, airflow and controls practice have no site; the one '
                'hvacr lesson covers commissioning inspection, not these tasks',
+    'TCA-120': 'modules 1-3 are unwired: no simulator, class station or '
+               'lesson in this bundle practises DWV layout, sweating copper or '
+               'crimping PEX, or setting fixtures; pipefitters has no simulator '
+               'binding, no class station and no lesson, and the systems crib '
+               'drill asks for no plumbing tool beyond the pipe wrench (its '
+               'crimper closes electrical connectors, not PEX rings)',
+    'TCA-150': 'modules 2-5 are unwired: no simulator, class station or lesson '
+               'in this bundle practises wall framing, stair layout, rafter '
+               'cutting or door hanging; the carpenters sim scaffold-bay '
+               'erects a scaffold bay, which no module of this course '
+               'practises, and the envelope crib drill asks for no framing '
+               'or trim tool beyond the chalk line',
+    'TCA-220': 'no module is wired: nail technology has no hall in the '
+               '111-hall roster, so no simulator, class station, lesson or '
+               'tool crib in this bundle binds it; its floor and gate stages '
+               'need the separate Beauty School simulator, which is not part '
+               'of this repository',
 }
 
 CATALOG_HOLD = ('coming soon: held out of the main catalog until a sprint '
@@ -327,11 +377,14 @@ for c in draft['courses']:
               'roster_note', 'cross_hall', 'cross_hall_reason'):
         if k in m:
             rec[k] = m[k]
+    # DELIVERY_FULL needs a bound floor simulator; class stations alone
+    # (TCA-410) do not run the floor stage (CodeRabbit on PR #107).
     rec['delivery_status'] = (DELIVERY_BEAUTY if 'roster_note' in m
-                              else DELIVERY_FULL if (floor or stations) else DELIVERY_NO_FLOOR)
+                              else DELIVERY_FULL if floor
+                              else DELIVERY_STATION_ONLY if stations else DELIVERY_NO_FLOOR)
     # Catalog section (product review on PR #107): where the course is listed.
     rec['catalog_section'] = ('coming-soon' if 'roster_note' in m
-                              else 'available' if (floor or stations) else 'home-and-class')
+                              else 'available' if floor else 'home-and-class')
     if rec['catalog_section'] == 'coming-soon':
         rec['catalog_note'] = CATALOG_HOLD
     if code in WIRING_GAPS:
@@ -359,6 +412,11 @@ SPRINT_OUTCOMES = {
                       'and 78 of 78 legitimate entries allowed, overrides audited '
                       '(safety_gate/test.mjs); electrical and HVAC wiring partial, '
                       '2 of 10 modules wired, to tool cribs only'),
+    'S4': ('shipped', 'partial: the cohort dashboard reconciles 310 figures with an '
+                      'independent recomputation at 0.00% error on SYNTHETIC data '
+                      '(cohort/test.mjs); its skill map uses an invented '
+                      'module-to-strand mapping; the trade-accuracy review by a '
+                      'qualified human was not done, no reviewer is engaged'),
 }
 # A pilot with real learners is an ethical and legal precondition, not a note:
 # the sprint record names it and loop/evals.mjs EV-09 enforces it in the ledger.
