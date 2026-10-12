@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-10-12",
- "source_stamp": "74775e8ffa692fa5",
+ "source_stamp": "9ebdb22b183c2fa5",
  "honesty": {
   "status": "every lesson plan is a PLANNED DRAFT derived only from the courses registry; none has been reviewed by a qualified instructor and none is an approved syllabus",
   "credit": "no licensing board, jurisdiction or employer has accepted any minute of these plans; simulator and station time never count toward a licence or certification",
@@ -12,7 +12,7 @@
  },
  "source": {
   "courses": "courses/registry/courses.json",
-  "courses_stamp": "6d7b9dd70517d8fa"
+  "courses_stamp": "84883f1f2c6d4455"
  },
  "stage_split_percent": {
   "home": 20,
@@ -36,6 +36,7 @@
     "electricians"
    ],
    "delivery_status": "all four stages planned: the floor stage runs on the bound simulator(s) or class station(s) named in each week, or as a paper or demo exercise where none is bound",
+   "catalog_section": "available",
    "teacher_note": "planned draft: generated from registry data and not reviewed by a qualified instructor; adapt it, and do not present it as an approved syllabus",
    "weeks": [
     {
@@ -89,7 +90,16 @@
        "minutes": 216
       }
      ],
-     "wired": false
+     "wired": true,
+     "sites": [
+      {
+       "kind": "crib",
+       "id": "systems",
+       "tool": "multimeter",
+       "use": "prepare: name the multimeter in the Building-systems crib check before the meter-use practice"
+      }
+     ],
+     "wiring_note": "the module practises measuring voltage, continuity and resistance; the systems crib drill (bound to the electricians hall) asks for the tool that reads voltage, current and resistance in one instrument - the multimeter. It covers tool identification only; no simulator runs the live-dead-live sequence itself"
     },
     {
      "week": 2,
@@ -320,6 +330,7 @@
     "pipefitters"
    ],
    "delivery_status": "all four stages planned: the floor stage runs on the bound simulator(s) or class station(s) named in each week, or as a paper or demo exercise where none is bound",
+   "catalog_section": "home-and-class",
    "teacher_note": "planned draft: generated from registry data and not reviewed by a qualified instructor; adapt it, and do not present it as an approved syllabus",
    "weeks": [
     {
@@ -543,6 +554,7 @@
     "hvacr"
    ],
    "delivery_status": "all four stages planned: the floor stage runs on the bound simulator(s) or class station(s) named in each week, or as a paper or demo exercise where none is bound",
+   "catalog_section": "home-and-class",
    "teacher_note": "planned draft: generated from registry data and not reviewed by a qualified instructor; adapt it, and do not present it as an approved syllabus",
    "weeks": [
     {
@@ -594,7 +606,21 @@
        "minutes": 252
       }
      ],
-     "wired": false
+     "wired": true,
+     "sites": [
+      {
+       "kind": "crib",
+       "id": "systems",
+       "tool": "manifold-gauge",
+       "use": "prepare: name the manifold gauge set in the Building-systems crib check before connecting gauges"
+      },
+      {
+       "kind": "lesson",
+       "id": "hvacr-prove-the-sequence",
+       "use": "class: the hvacr Inspection Bench lesson that walks to that crib check and asks the Inspector whether talk can stand in for a measurement"
+      }
+     ],
+     "wiring_note": "the module practises connecting manifold gauges and reading suction and liquid pressures; the systems crib drill (bound to the hvacr hall) asks for the tool that reads both sides of a refrigeration circuit at once, and the hvacr lesson hvacr-prove-the-sequence runs that crib check. It covers tool identification and a measurement-first inspection habit only; no simulator runs a refrigeration circuit"
     },
     {
      "week": 2,
@@ -817,6 +843,7 @@
     "fabricators"
    ],
    "delivery_status": "all four stages planned: the floor stage runs on the bound simulator(s) or class station(s) named in each week, or as a paper or demo exercise where none is bound",
+   "catalog_section": "available",
    "teacher_note": "planned draft: generated from registry data and not reviewed by a qualified instructor; adapt it, and do not present it as an approved syllabus",
    "weeks": [
     {
@@ -878,7 +905,8 @@
        "id": "welders-the-watch",
        "use": "prepare/verify: fire watch and hot-work walk in the welders Induction & PPE room"
       }
-     ]
+     ],
+     "wiring_note": "the S1 welding slice: the sites named run this module"
     },
     {
      "week": 2,
@@ -934,7 +962,8 @@
        "id": "weld-bead",
        "use": "practice: bead runs graded on fusion and gap band"
       }
-     ]
+     ],
+     "wiring_note": "the S1 welding slice: the sites named run this module"
     },
     {
      "week": 3,
@@ -1100,6 +1129,7 @@
     "carpenters"
    ],
    "delivery_status": "all four stages planned: the floor stage runs on the bound simulator(s) or class station(s) named in each week, or as a paper or demo exercise where none is bound",
+   "catalog_section": "available",
    "teacher_note": "planned draft: generated from registry data and not reviewed by a qualified instructor; adapt it, and do not present it as an approved syllabus",
    "weeks": [
     {
@@ -1385,6 +1415,7 @@
     "survey-drone"
    ],
    "delivery_status": "all four stages planned: the floor stage runs on the bound simulator(s) or class station(s) named in each week, or as a paper or demo exercise where none is bound",
+   "catalog_section": "available",
    "teacher_note": "planned draft: generated from registry data and not reviewed by a qualified instructor; adapt it, and do not present it as an approved syllabus",
    "weeks": [
     {
@@ -1656,6 +1687,7 @@
    ],
    "halls": [],
    "delivery_status": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+   "catalog_section": "coming-soon",
    "teacher_note": "planned draft: generated from registry data and not reviewed by a qualified instructor; adapt it, and do not present it as an approved syllabus",
    "weeks": [
     {
@@ -1907,6 +1939,7 @@
    ],
    "halls": [],
    "delivery_status": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+   "catalog_section": "coming-soon",
    "teacher_note": "planned draft: generated from registry data and not reviewed by a qualified instructor; adapt it, and do not present it as an approved syllabus",
    "weeks": [
     {
@@ -2111,6 +2144,7 @@
    ],
    "halls": [],
    "delivery_status": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+   "catalog_section": "coming-soon",
    "teacher_note": "planned draft: generated from registry data and not reviewed by a qualified instructor; adapt it, and do not present it as an approved syllabus",
    "weeks": [
     {
@@ -2366,6 +2400,7 @@
     "automation-int"
    ],
    "delivery_status": "all four stages planned: the floor stage runs on the bound simulator(s) or class station(s) named in each week, or as a paper or demo exercise where none is bound",
+   "catalog_section": "home-and-class",
    "teacher_note": "planned draft: generated from registry data and not reviewed by a qualified instructor; adapt it, and do not present it as an approved syllabus",
    "weeks": [
     {
@@ -2641,6 +2676,7 @@
     "plc-techs"
    ],
    "delivery_status": "all four stages planned: the floor stage runs on the bound simulator(s) or class station(s) named in each week, or as a paper or demo exercise where none is bound",
+   "catalog_section": "home-and-class",
    "teacher_note": "planned draft: generated from registry data and not reviewed by a qualified instructor; adapt it, and do not present it as an approved syllabus",
    "weeks": [
     {
@@ -2848,6 +2884,7 @@
     "site-safety"
    ],
    "delivery_status": "all four stages planned: the floor stage runs on the bound simulator(s) or class station(s) named in each week, or as a paper or demo exercise where none is bound",
+   "catalog_section": "available",
    "teacher_note": "planned draft: generated from registry data and not reviewed by a qualified instructor; adapt it, and do not present it as an approved syllabus",
    "weeks": [
     {

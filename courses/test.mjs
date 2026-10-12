@@ -28,6 +28,7 @@ const sims = read('../sims/registry/sims.json');
 const stationsReg = read('../stations/registry/stations.json').stations;
 const stationHall = new Map(stationsReg.map((s) => [s.station_id, s.hall]));
 const lessons = read('../lessons/registry/lessons.json').lessons;
+const cribs = read('../tools/registry/toolcribs.json');
 
 const C = reg.courses;
 const byCode = Object.fromEntries(C.map((c) => [c.code, c]));
@@ -111,15 +112,56 @@ ok('class_stations are complete: every station in a mapped hall is listed',
 
 /* ---------------------------------------------------------------- wired --- */
 const wired = C.flatMap((c) => c.modules.filter((m) => m.wired).map((m) => [c.code, m]));
-ok('exactly TCA-140 modules 1-2 are wired; every other module is wired:false',
-  wired.map(([k, m]) => `${k}#${m.n}`).join() === 'TCA-140#1,TCA-140#2'
+const WIRED_SET = 'TCA-110#1,TCA-130#1,TCA-140#1,TCA-140#2';
+ok(`exactly ${WIRED_SET} are wired; every other module is wired:false with no sites`,
+  wired.map(([k, m]) => `${k}#${m.n}`).join() === WIRED_SET
   && C.every((c) => c.modules.every((m) => typeof m.wired === 'boolean' && (m.wired || !('sites' in m)))));
-ok('each wired module names at least one real site, and the weld-bead sim is among them',
-  wired.every(([, m]) => m.sites.length > 0
-    && m.sites.some((s) => s.kind === 'sim' && s.id === 'weld-bead')
-    && m.sites.every((s) => (s.kind === 'sim' && sims.sims[s.id])
-      || (s.kind === 'station' && stationHall.has(s.id))
-      || (s.kind === 'lesson' && lessons[s.id] && byCode['TCA-140'].halls.includes(lessons[s.id].hall)))));
+const siteResolves = (code, s) => {
+  const halls = byCode[code].halls;
+  if (s.kind === 'sim') return !!sims.sims[s.id] && halls.some((h) => (sims.hall_bindings[h] || []).some((b) => b.sim === s.id));
+  if (s.kind === 'station') return stationHall.has(s.id) && halls.includes(stationHall.get(s.id));
+  if (s.kind === 'lesson') return !!lessons[s.id] && halls.includes(lessons[s.id].hall);
+  if (s.kind === 'crib') return !!cribs.cribs[s.id]
+    && halls.some((h) => cribs.hall_bindings[h] && cribs.hall_bindings[h].district === s.id)
+    && cribs.cribs[s.id].tools.some((t) => t.id === s.tool)
+    && cribs.drills[s.id].some((d) => d.tool === s.tool);
+  return false;
+};
+ok('every site id of every wired module resolves in the registry that owns it and binds a course hall',
+  wired.length > 0 && wired.every(([k, m]) => m.sites.length > 0 && m.sites.every((s) => siteResolves(k, s))));
+ok('the welding slice still runs on the weld-bead sim',
+  wired.filter(([k]) => k === 'TCA-140').every(([, m]) => m.sites.some((s) => s.kind === 'sim' && s.id === 'weld-bead')));
+ok('every wired module explains its match in a wiring_note; unwired modules carry none',
+  C.every((c) => c.modules.every((m) => (m.wired ? typeof m.wiring_note === 'string' && m.wiring_note.length > 30 : !('wiring_note' in m)))));
+ok('TCA-110 m1 is matched to the multimeter drill pick and TCA-130 m1 to the manifold gauge and the hvacr lesson',
+  byCode['TCA-110'].modules[0].sites.some((s) => s.kind === 'crib' && s.tool === 'multimeter')
+  && /multimeter|meter/i.test(byCode['TCA-110'].modules[0].title)
+  && byCode['TCA-130'].modules[0].sites.some((s) => s.kind === 'crib' && s.tool === 'manifold-gauge')
+  && byCode['TCA-130'].modules[0].sites.some((s) => s.kind === 'lesson' && s.id === 'hvacr-prove-the-sequence')
+  && byCode['TCA-130'].modules[0].stages.some((st) => /manifold gauges/.test(st.text)));
+ok('TCA-110 and TCA-130 each state a wiring_gap naming what is missing for their unwired modules',
+  ['TCA-110', 'TCA-130'].every((k) => typeof byCode[k].wiring_gap === 'string'
+    && byCode[k].modules.some((m) => !m.wired) && /modules 2-5 are unwired/.test(byCode[k].wiring_gap))
+  && /no hvacr simulator or class station exists/.test(byCode['TCA-130'].wiring_gap)
+  && !sims.hall_bindings.hvacr && !stationsReg.some((s) => s.hall === 'hvacr'));
+
+/* ------------------------------------------------------------- catalog --- */
+const SECTIONS = ['available', 'home-and-class', 'coming-soon'];
+ok('every course has a catalog_section from the closed set available / home-and-class / coming-soon',
+  C.every((c) => SECTIONS.includes(c.catalog_section)));
+ok('catalog_section follows the bundle: available iff a floor sim or station is bound, home-and-class iff none, outside beauty',
+  C.filter((c) => !c.roster_note).every((c) => c.catalog_section
+    === ((c.floor_sims.length || c.class_stations.length) ? 'available' : 'home-and-class'))
+  && C.filter((c) => c.catalog_section === 'available').every((c) => /all four stages/.test(c.delivery_status))
+  && C.filter((c) => c.catalog_section === 'home-and-class').every((c) => /no floor simulator/.test(c.delivery_status)));
+ok('coming-soon is exactly TCA-210/220/230, held out of the main catalog until a sprint commits to Beauty School, nothing deleted',
+  C.filter((c) => c.catalog_section === 'coming-soon').map((c) => c.code).join() === 'TCA-210,TCA-220,TCA-230'
+  && ['TCA-210', 'TCA-220', 'TCA-230'].every((k) => /held out of the main catalog until a sprint commits to Beauty School/.test(byCode[k].catalog_note)
+    && /nothing is deleted/.test(byCode[k].catalog_note) && byCode[k].modules.length > 0)
+  && C.filter((c) => c.catalog_section !== 'coming-soon').every((c) => !('catalog_note' in c)));
+ok('plumbing mapping carries mapping_review 2026-10-12 and a re-review-on-roster-change note',
+  byCode['TCA-120'].mapping_review === '2026-10-12'
+  && /re-reviewed whenever the hall roster/.test(byCode['TCA-120'].mapping_review_note));
 
 /* -------------------------------------------------------------- honesty --- */
 ok('every course carries a licensure_note that does not claim credit',
@@ -162,7 +204,8 @@ ok('sprints S1..S8 are contiguous 14-day windows starting 2026-10-12',
 ok('sprint status comes from a closed set; a shipped sprint states its gate result, a planned one does not',
   reg.sprints.every((s) => ['planned', 'in-progress', 'shipped', 'slipped', 'cancelled'].includes(s.status))
   && reg.sprints.every((s) => (s.status === 'shipped') === (typeof s.gate_result === 'string' && s.gate_result.length > 10))
-  && /^not met/.test(reg.sprints.find((s) => s.sprint === 'S2').gate_result));
+  && /held-out/.test(reg.sprints.find((s) => s.sprint === 'S2').gate_result)
+  && /do not generalise/.test(reg.sprints.find((s) => s.sprint === 'S2').gate_result));
 ok('the S8 pilot carries its preconditions as a field, naming a partner, a consent plan and EV-09',
   (() => { const p = reg.sprints.find((s) => s.sprint === 'S8').preconditions || [];
     return p.some((x) => /partner/.test(x)) && p.some((x) => /consent/.test(x)) && p.some((x) => /EV-09/.test(x)); })());

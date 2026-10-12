@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-10-12",
- "source_stamp": "6d7b9dd70517d8fa",
+ "source_stamp": "84883f1f2c6d4455",
  "honesty": {
   "status": "every course in this pack is a PLANNED DRAFT: nothing is shipped or deployed, learning efficacy is unestablished, and only the modules marked wired are bound to sites that exist",
   "credit": "no licensing board, jurisdiction or employer has accepted any hour of these courses; simulator, station and lesson time never count toward a licence or certification",
@@ -59,6 +59,8 @@
     "electricians"
    ],
    "delivery_status": "all four stages can run in this bundle",
+   "catalog_section": "available",
+   "wiring_gap": "modules 2-5 are unwired: no simulator, class station or lesson in this bundle practises grounding and bonding, conductor sizing, device wiring or lockout/tagout; the only electricians sim (boom-lift) and lesson (electricians-clip-in-first) teach aerial-lift basket work, which no module of this course covers, and the bas-controls, fire-alarm and instrumentation halls bind only the same systems crib",
    "floor_sims": [
     "boom-lift"
    ],
@@ -91,7 +93,16 @@
        "text": "Virtual job site: troubleshoot a dead bedroom receptacle traced to an open neutral on a backstabbed device."
       }
      ],
-     "wired": false
+     "wired": true,
+     "sites": [
+      {
+       "kind": "crib",
+       "id": "systems",
+       "tool": "multimeter",
+       "use": "prepare: name the multimeter in the Building-systems crib check before the meter-use practice"
+      }
+     ],
+     "wiring_note": "the module practises measuring voltage, continuity and resistance; the systems crib drill (bound to the electricians hall) asks for the tool that reads voltage, current and resistance in one instrument - the multimeter. It covers tool identification only; no simulator runs the live-dead-live sequence itself"
     },
     {
      "n": 2,
@@ -219,7 +230,10 @@
     "pipefitters"
    ],
    "mapping_note": "the 111-hall roster has no plumbers hall; plumbing is mapped to the nearest piping trade, pipefitters, until a plumbing hall exists - pipefitting is not plumbing and this mapping says so",
+   "mapping_review": "2026-10-12",
+   "mapping_review_note": "the plumbing-to-pipefitters mapping was last reviewed on 2026-10-12 and is re-reviewed whenever the hall roster (unions/registry/unions.json) changes",
    "delivery_status": "home, class and gate can run in this bundle; no floor simulator or class station is bound yet, so practice runs as a paper or demo exercise and is recorded as such",
+   "catalog_section": "home-and-class",
    "floor_sims": [],
    "class_stations": [],
    "robotics_link": null,
@@ -351,6 +365,8 @@
     "hvacr"
    ],
    "delivery_status": "home, class and gate can run in this bundle; no floor simulator or class station is bound yet, so practice runs as a paper or demo exercise and is recorded as such",
+   "catalog_section": "home-and-class",
+   "wiring_gap": "modules 2-5 are unwired: no hvacr simulator or class station exists in this bundle (sims.json has no hvacr hall binding and stations.json has no hvacr station), so charging, refrigerant recovery, airflow and controls practice have no site; the one hvacr lesson covers commissioning inspection, not these tasks",
    "floor_sims": [],
    "class_stations": [],
    "robotics_link": null,
@@ -381,7 +397,21 @@
        "text": "Service call: system blowing warm; identify a dirty condenser coil from high head pressure."
       }
      ],
-     "wired": false
+     "wired": true,
+     "sites": [
+      {
+       "kind": "crib",
+       "id": "systems",
+       "tool": "manifold-gauge",
+       "use": "prepare: name the manifold gauge set in the Building-systems crib check before connecting gauges"
+      },
+      {
+       "kind": "lesson",
+       "id": "hvacr-prove-the-sequence",
+       "use": "class: the hvacr Inspection Bench lesson that walks to that crib check and asks the Inspector whether talk can stand in for a measurement"
+      }
+     ],
+     "wiring_note": "the module practises connecting manifold gauges and reading suction and liquid pressures; the systems crib drill (bound to the hvacr hall) asks for the tool that reads both sides of a refrigeration circuit at once, and the hvacr lesson hvacr-prove-the-sequence runs that crib check. It covers tool identification and a measurement-first inspection habit only; no simulator runs a refrigeration circuit"
     },
     {
      "n": 2,
@@ -509,6 +539,7 @@
     "fabricators"
    ],
    "delivery_status": "all four stages can run in this bundle",
+   "catalog_section": "available",
    "floor_sims": [
     "weld-bead"
    ],
@@ -553,7 +584,8 @@
        "id": "welders-the-watch",
        "use": "prepare/verify: fire watch and hot-work walk in the welders Induction & PPE room"
       }
-     ]
+     ],
+     "wiring_note": "the S1 welding slice: the sites named run this module"
     },
     {
      "n": 2,
@@ -587,7 +619,8 @@
        "id": "weld-bead",
        "use": "practice: bead runs graded on fusion and gap band"
       }
-     ]
+     ],
+     "wiring_note": "the S1 welding slice: the sites named run this module"
     },
     {
      "n": 3,
@@ -688,6 +721,7 @@
     "carpenters"
    ],
    "delivery_status": "all four stages can run in this bundle",
+   "catalog_section": "available",
    "floor_sims": [
     "scaffold-bay"
    ],
@@ -849,6 +883,7 @@
     "survey-drone"
    ],
    "delivery_status": "all four stages can run in this bundle",
+   "catalog_section": "available",
    "floor_sims": [
     "excavator-trench",
     "forklift-run",
@@ -1009,6 +1044,8 @@
    "halls": [],
    "roster_note": "outside the 111-hall roster: cosmetology, nail and esthetics courses have no trade hall and are delivered through the separate Beauty School simulator, not through any hall, station or yard simulator of this pack; Beauty School is a separately published simulator and is not part of this repository",
    "delivery_status": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+   "catalog_section": "coming-soon",
+   "catalog_note": "coming soon: held out of the main catalog until a sprint commits to Beauty School; the course stays in this registry and nothing is deleted",
    "floor_sims": [],
    "class_stations": [],
    "robotics_link": null,
@@ -1165,6 +1202,8 @@
    "halls": [],
    "roster_note": "outside the 111-hall roster: cosmetology, nail and esthetics courses have no trade hall and are delivered through the separate Beauty School simulator, not through any hall, station or yard simulator of this pack; Beauty School is a separately published simulator and is not part of this repository",
    "delivery_status": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+   "catalog_section": "coming-soon",
+   "catalog_note": "coming soon: held out of the main catalog until a sprint commits to Beauty School; the course stays in this registry and nothing is deleted",
    "floor_sims": [],
    "class_stations": [],
    "robotics_link": null,
@@ -1294,6 +1333,8 @@
    "halls": [],
    "roster_note": "outside the 111-hall roster: cosmetology, nail and esthetics courses have no trade hall and are delivered through the separate Beauty School simulator, not through any hall, station or yard simulator of this pack; Beauty School is a separately published simulator and is not part of this repository",
    "delivery_status": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+   "catalog_section": "coming-soon",
+   "catalog_note": "coming soon: held out of the main catalog until a sprint commits to Beauty School; the course stays in this registry and nothing is deleted",
    "floor_sims": [],
    "class_stations": [],
    "robotics_link": null,
@@ -1453,6 +1494,7 @@
     "automation-int"
    ],
    "delivery_status": "home, class and gate can run in this bundle; no floor simulator or class station is bound yet, so practice runs as a paper or demo exercise and is recorded as such",
+   "catalog_section": "home-and-class",
    "floor_sims": [],
    "class_stations": [],
    "robotics_link": "6-axis industrial arm cell (palletizing and robotic GMAW variants).",
@@ -1612,6 +1654,7 @@
     "plc-techs"
    ],
    "delivery_status": "home, class and gate can run in this bundle; no floor simulator or class station is bound yet, so practice runs as a paper or demo exercise and is recorded as such",
+   "catalog_section": "home-and-class",
    "floor_sims": [],
    "class_stations": [],
    "robotics_link": "Cobot machine-tending and screwdriving stations with area scanners.",
@@ -1745,6 +1788,7 @@
    "cross_hall": true,
    "cross_hall_reason": "crew leadership and emotional intelligence apply on every crew in every hall; the course is anchored at site-safety, where a crew lead owns the culture of the job site",
    "delivery_status": "all four stages can run in this bundle",
+   "catalog_section": "available",
    "floor_sims": [],
    "class_stations": [
     "st013"
@@ -2001,7 +2045,7 @@
    "end": "2026-11-08",
    "weeks": "Oct 26 - Nov 8, 2026",
    "status": "shipped",
-   "gate_result": "not met: the real mentor guards escalated 4 of 50 out-of-scope prompts (fabric/test_mentor_scope.mjs)",
+   "gate_result": "met on the fixture set only: after cycle-3 tuning the guards escalate 80 of 80 out-of-scope prompts with 0 of 48 false escalations, but a blind held-out batch caught 2 of 12, so the regex guards do not generalise to unseen phrasing (fabric/test_mentor_scope.mjs)",
    "ship": "TCA-210 Hair and TCA-230 Esthetics modules 1-3; Tessa and Iris mentors; Teacher Lesson Planner v1.",
    "eval_gate": "Mentor guardrail eval: 100% refusal on 50 out-of-scope medical/chemical-safety prompts; lesson plans render for all assigned modules."
   },
@@ -2010,8 +2054,8 @@
    "start": "2026-11-09",
    "end": "2026-11-22",
    "weeks": "Nov 9 - Nov 22, 2026",
-   "status": "planned",
-   "gate_result": null,
+   "status": "shipped",
+   "gate_result": "met on the scripted suite: 981 of 981 bypass attempts blocked and 78 of 78 legitimate entries allowed, overrides audited (safety_gate/test.mjs); electrical and HVAC wiring partial, 2 of 10 modules wired, to tool cribs only",
    "ship": "TCA-110 Electrical and TCA-130 HVAC modules 1-3; Sam Safety Gate Console; Safety Card Wallet.",
    "eval_gate": "Safety gates block hazardous stations in 100% of 300 scripted bypass attempts; overrides logged."
   },

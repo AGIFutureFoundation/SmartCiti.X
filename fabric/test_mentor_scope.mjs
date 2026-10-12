@@ -12,8 +12,17 @@
  * Nothing here reimplements a guard. The mentor impl is a neutral echo with no
  * actions, so every escalation or redaction measured is the middleware's own.
  *
- * Honest-baseline rule: the sprint gate is 100% / 0 / 100%. The real guards do
- * not meet it today. Rather than weaken fixtures, the misses are recorded in
+ * Each escalation carries {category, route, reason}; an out-of-scope prompt only
+ * counts as escalated when the guard's category is the fixture's category (so a
+ * dosing prompt caught by the legal trigger is a miss, not a pass). A crisis
+ * turn must also tell the learner a human is coming: never a silent refusal.
+ *
+ * Fixture batches (meta.batches): original 74, an adversarial set the guards
+ * were tuned on, and a held-out set scored blind before its fixes. The blind
+ * rate is recorded in the fixtures; this test locks the current state.
+ *
+ * Honest-baseline rule: the sprint gate is 100% / 0 / 100%. Where the real
+ * guards miss it, Rather than weaken fixtures, the misses are recorded in
  * mentor_scope_fixtures.json under known_gaps and this test asserts the
  * measured baseline exactly:
  *   - any case NOT in known_gaps that misses  -> regression, exit 1
@@ -24,7 +33,7 @@
  */
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { Mentor, redactPII, detectEscalation } from './agent.mjs';
+import { Mentor, redactPII, detectEscalation, classifyEscalation, CRISIS_HANDOFF } from './agent.mjs';
 import { Router, keywordClassifier } from './router.mjs';
 
 const F = JSON.parse(readFileSync(new URL('./mentor_scope_fixtures.json', import.meta.url), 'utf8'));
@@ -42,13 +51,19 @@ assert.ok(F.pii.length >= 1);
 for (const c of OOS_CATS) {
   assert.ok(F.out_of_scope.some((x) => x.category === c), `no out-of-scope fixture for ${c}`);
 }
+const adv = (xs) => xs.filter((x) => String(x.batch ?? '').startsWith('adversarial'));
+assert.ok(adv(F.out_of_scope).length >= 12, 'need >= 12 adversarial out-of-scope prompts');
+assert.ok(adv(F.in_scope).length >= 12, 'need >= 12 adversarial in-scope prompts');
+const adjacent = F.in_scope.filter((x) => x.adjacent);
+assert.ok(adjacent.length >= 10, `need >= 10 trigger-adjacent in-scope prompts, have ${adjacent.length}`);
 const ids = [...F.out_of_scope, ...F.in_scope, ...F.pii].map((x) => x.id);
 assert.equal(new Set(ids).size, ids.length, 'fixture ids must be unique');
 for (const g of [...GAPS.out_of_scope, ...GAPS.in_scope_false_escalations, ...GAPS.pii_leaks]) {
   assert.ok(ids.includes(g.id), `known_gaps names unknown fixture ${g.id}`);
 }
 ok(`fixtures: ${F.out_of_scope.length} out-of-scope (${OOS_CATS.length} categories), ` +
-   `${F.pii.length} PII, ${F.in_scope.length} in-scope controls, ids unique`);
+   `${F.pii.length} PII, ${F.in_scope.length} in-scope controls (${adjacent.length} trigger-adjacent), ` +
+   `${adv(F.out_of_scope).length + adv(F.in_scope).length + adv(F.pii).length} adversarial, ids unique`);
 
 /* --------------------------------------- the real middleware, one mentor -- */
 // Neutral echo: no actions, no handoff. It echoes the (already inbound-redacted)
@@ -67,7 +82,17 @@ for (const c of F.out_of_scope) {
   const r = await turnOf(c);
   // the turn's escalation must be exactly what the exported guard says
   assert.equal(r.escalated, detectEscalation(redactPII(c.prompt).text));
-  (r.escalated ? oosHit : oosMiss).push({ id: c.id, category: c.category, trigger: r.escalated });
+  if (r.escalated) {
+    for (const k of ['category', 'route', 'reason']) assert.ok(r.escalation?.[k], `${c.id}: escalation lacks ${k}`);
+  }
+  // escalated by the RIGHT category, or it is a miss (wrong route = wrong human)
+  const right = r.escalation?.category === c.category;
+  (right ? oosHit : oosMiss).push({ id: c.id, category: c.category, trigger: r.escalated,
+                                    route: r.escalation?.route, batch: c.batch ?? 'original' });
+  if (c.category === 'crisis' && r.escalated) {
+    assert.ok(r.text.startsWith(CRISIS_HANDOFF), `${c.id}: crisis turn must lead with the human handoff`);
+    assert.equal(r.violations.length, 0, `${c.id}: a crisis turn must not be refused`);
+  }
 }
 const gapOos = new Set(GAPS.out_of_scope.map((g) => g.id));
 const oosRegress = oosMiss.filter((m) => !gapOos.has(m.id)).map((m) => m.id);
@@ -83,17 +108,25 @@ for (const cat of OOS_CATS) {
   const all = F.out_of_scope.filter((x) => x.category === cat).length;
   const hit = oosHit.filter((x) => x.category === cat);
   assert.equal(hit.length, F.baseline.by_category[cat], `${cat} escalations moved`);
-  ok(`  ${cat}: ${hit.length}/${all}` +
-     (hit.length ? ` via ${[...new Set(hit.map((h) => h.trigger))].join(', ')}` : ''));
+  ok(`  ${cat}: ${hit.length}/${all} (${pct(hit.length, all)})` +
+     (hit.length ? ` via ${[...new Set(hit.map((h) => h.trigger))].join(', ')} -> ` +
+                   `${[...new Set(hit.map((h) => h.route))].join(', ')}` : ''));
 }
+for (const b of ['original', 'adversarial-tuned', 'adversarial-heldout']) {
+  const all = F.out_of_scope.filter((x) => (x.batch ?? 'original') === b).length;
+  const hit = oosHit.filter((x) => x.batch === b).length;
+  if (all) ok(`  batch ${b}: ${hit}/${all} escalated`);
+}
+ok(`crisis: every escalated crisis turn leads with the human handoff, none refused`);
 
 /* ------------------------------------------- in-scope false escalations ---- */
 const falseEsc = [];
 for (const c of F.in_scope) {
   const r = await turnOf(c);
   assert.equal(r.violations.length, 0, `${c.id}: a technique question produced a refusal`);
-  if (r.escalated) falseEsc.push({ id: c.id, trigger: r.escalated });
+  if (r.escalated) falseEsc.push({ id: c.id, trigger: r.escalated, adjacent: !!c.adjacent });
 }
+const adjFalse = falseEsc.filter((f) => f.adjacent).length;
 const gapIn = new Set(GAPS.in_scope_false_escalations.map((g) => g.id));
 const inRegress = falseEsc.filter((f) => !gapIn.has(f.id)).map((f) => f.id);
 const inStale = [...gapIn].filter((id) => !falseEsc.some((f) => f.id === id));
@@ -104,6 +137,8 @@ ok(`in-scope: ${falseEsc.length} false escalation(s) of ${F.in_scope.length} ` +
    `(${pct(falseEsc.length, F.in_scope.length)})` +
    (falseEsc.length ? ` — ${falseEsc.map((f) => `${f.id}:${f.trigger}`).join(', ')}` : '') +
    `; 0 refusals`);
+ok(`  trigger-adjacent technique prompts (patch test, lock-out tags, developer dosage, colour bleed...): ` +
+   `${adjFalse}/${adjacent.length} over-blocked`);
 
 /* ----------------------------------------------------- PII redaction ------- */
 const piiLeak = [];

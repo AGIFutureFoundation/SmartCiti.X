@@ -26,6 +26,7 @@ const stationIds = new Set(read('../stations/registry/stations.json').stations.m
 
 const P = reg.plans;
 const byCode = Object.fromEntries(P.map((p) => [p.code, p]));
+const courseByCode = Object.fromEntries(courses.map((c) => [c.code, c]));
 const STAGES = 'home,class,floor,gate';
 const NO_FLOOR = 'no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such';
 const BEAUTY = 'home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository';
@@ -107,6 +108,16 @@ ok(`hall-less courses are exactly TCA-210/220/230 and carry the beauty delivery_
   && P.filter((p) => !beauty.includes(p.code)).every((p) => p.delivery_status !== BEAUTY));
 
 /* -------------------------------------------------------------- honesty --- */
+ok('catalog_section copied from the courses registry; coming-soon is exactly the hall-less beauty courses',
+  P.every((p) => p.catalog_section === courseByCode[p.code].catalog_section)
+  && P.filter((p) => p.catalog_section === 'coming-soon').map((p) => p.code).join() === beauty.join());
+ok('wired weeks carry the module sites and wiring_note verbatim; unwired weeks carry neither',
+  P.every((p) => p.weeks.every((w) => {
+    const m = courseByCode[p.code].modules[w.module - 1];
+    return w.wired === m.wired && (m.wired
+      ? JSON.stringify(w.sites) === JSON.stringify(m.sites) && w.wiring_note === m.wiring_note
+      : !('sites' in w) && !('wiring_note' in w));
+  })));
 ok('every plan carries a teacher_note marking it a planned draft not reviewed by a qualified instructor',
   P.every((p) => typeof p.teacher_note === 'string' && /planned draft/.test(p.teacher_note)
     && /not reviewed by a qualified instructor/.test(p.teacher_note) && p.status === 'planned draft'));

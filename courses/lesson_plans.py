@@ -119,6 +119,7 @@ for c in courses_reg['courses']:
                 'minutes': mins, 'stages': stages, 'wired': mod['wired']}
         if mod.get('sites'):
             week['sites'] = mod['sites']
+            week['wiring_note'] = mod['wiring_note']
         weeks.append(week)
     plans.append({
         'code': c['code'], 'title': c['title'], 'trade': c['trade'],
@@ -126,6 +127,7 @@ for c in courses_reg['courses']:
         'hours_planned': c['hours_planned'], 'minutes_total': total,
         'mentors': list(c['mentors']), 'halls': list(c['halls']),
         'delivery_status': BEAUTY_STATUS if beauty else HALL_STATUS,
+        'catalog_section': c['catalog_section'],
         'teacher_note': TEACHER_NOTE,
         'weeks': weeks,
     })

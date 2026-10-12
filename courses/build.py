@@ -77,7 +77,12 @@ HALLS = {
                                 'plumbing is mapped to the nearest piping '
                                 'trade, pipefitters, until a plumbing hall '
                                 'exists - pipefitting is not plumbing and '
-                                'this mapping says so'},
+                                'this mapping says so',
+                'mapping_review': '2026-10-12',
+                'mapping_review_note': 'the plumbing-to-pipefitters mapping was '
+                                       'last reviewed on 2026-10-12 and is '
+                                       're-reviewed whenever the hall roster '
+                                       '(unions/registry/unions.json) changes'},
     'TCA-130': {'halls': ['hvacr']},
     'TCA-140': {'halls': ['welders', 'fabricators']},
     'TCA-150': {'halls': ['carpenters']},
@@ -110,7 +115,61 @@ WIRED = {
         {'kind': 'sim', 'id': 'weld-bead',
          'use': 'practice: bead runs graded on fusion and gap band'},
     ],
+    # S3: TCA-110 and TCA-130 read against every registry that binds the
+    # electricians and hvacr halls. A crib site names the district crib
+    # (tools/registry/toolcribs.json) and the one tool its drill asks for.
+    ('TCA-110', 1): [
+        {'kind': 'crib', 'id': 'systems', 'tool': 'multimeter',
+         'use': 'prepare: name the multimeter in the Building-systems crib '
+                'check before the meter-use practice'},
+    ],
+    ('TCA-130', 1): [
+        {'kind': 'crib', 'id': 'systems', 'tool': 'manifold-gauge',
+         'use': 'prepare: name the manifold gauge set in the Building-systems '
+                'crib check before connecting gauges'},
+        {'kind': 'lesson', 'id': 'hvacr-prove-the-sequence',
+         'use': 'class: the hvacr Inspection Bench lesson that walks to that '
+                'crib check and asks the Inspector whether talk can stand in '
+                'for a measurement'},
+    ],
 }
+
+# Why each wired module's sites match its content - stated, not implied.
+WIRING_NOTES = {
+    ('TCA-110', 1): 'the module practises measuring voltage, continuity and '
+                    'resistance; the systems crib drill (bound to the '
+                    'electricians hall) asks for the tool that reads voltage, '
+                    'current and resistance in one instrument - the multimeter. '
+                    'It covers tool identification only; no simulator runs the '
+                    'live-dead-live sequence itself',
+    ('TCA-130', 1): 'the module practises connecting manifold gauges and reading '
+                    'suction and liquid pressures; the systems crib drill (bound '
+                    'to the hvacr hall) asks for the tool that reads both sides '
+                    'of a refrigeration circuit at once, and the hvacr lesson '
+                    'hvacr-prove-the-sequence runs that crib check. It covers '
+                    'tool identification and a measurement-first inspection '
+                    'habit only; no simulator runs a refrigeration circuit',
+}
+
+# What is missing for the modules left unwired, per course (S3 courses lane).
+WIRING_GAPS = {
+    'TCA-110': 'modules 2-5 are unwired: no simulator, class station or lesson '
+               'in this bundle practises grounding and bonding, conductor '
+               'sizing, device wiring or lockout/tagout; the only electricians '
+               'sim (boom-lift) and lesson (electricians-clip-in-first) teach '
+               'aerial-lift basket work, which no module of this course covers, '
+               'and the bas-controls, fire-alarm and instrumentation halls bind '
+               'only the same systems crib',
+    'TCA-130': 'modules 2-5 are unwired: no hvacr simulator or class station '
+               'exists in this bundle (sims.json has no hvacr hall binding and '
+               'stations.json has no hvacr station), so charging, refrigerant '
+               'recovery, airflow and controls practice have no site; the one '
+               'hvacr lesson covers commissioning inspection, not these tasks',
+}
+
+CATALOG_HOLD = ('coming soon: held out of the main catalog until a sprint '
+                'commits to Beauty School; the course stays in this registry '
+                'and nothing is deleted')
 
 # The honesty scanner. The vocabulary is loop/honesty.json, shared with
 # loop/honesty.mjs (EV-05 and courses/test.mjs); the rules below mirror that
@@ -218,7 +277,10 @@ for s in stations_reg['stations']:
 sim_ids = set(sims_reg['sims'])
 station_ids = {s['station_id'] for s in stations_reg['stations']}
 lesson_ids = set(lessons_reg['lessons'])
-SITE_OWNERS = {'sim': sim_ids, 'station': station_ids, 'lesson': lesson_ids}
+cribs_reg = json.load(open(ROOT / 'tools/registry/toolcribs.json'))
+crib_ids = set(cribs_reg['cribs'])
+SITE_OWNERS = {'sim': sim_ids, 'station': station_ids, 'lesson': lesson_ids,
+               'crib': crib_ids}
 
 courses = []
 for c in draft['courses']:
@@ -242,7 +304,17 @@ for c in draft['courses']:
             for s in sites:
                 assert s['id'] in SITE_OWNERS[s['kind']], \
                     f"{code} m{i}: unknown {s['kind']} {s['id']}"
+                if s['kind'] == 'crib':
+                    assert any(cribs_reg['hall_bindings'].get(h, {}).get('district') == s['id']
+                               for h in m['halls']), f'{code} m{i}: crib not bound to a course hall'
+                    assert s['tool'] in {d['tool'] for d in cribs_reg['drills'][s['id']]}, \
+                        f"{code} m{i}: tool {s['tool']} not asked by the {s['id']} drill"
+                if s['kind'] == 'lesson':
+                    assert lessons_reg['lessons'][s['id']]['hall'] in m['halls'], \
+                        f"{code} m{i}: lesson outside the course halls"
             rec['sites'] = sites
+            rec['wiring_note'] = WIRING_NOTES.get((code, i), 'the S1 welding slice: '
+                                                  'the sites named run this module')
         modules.append(rec)
     rec = {
         'code': code, 'title': c['title'], 'trade': c['trade'],
@@ -251,11 +323,19 @@ for c in draft['courses']:
         'mentor_text': c['mentor'], 'mentors': names,
         'halls': m['halls'],
     }
-    for k in ('mapping_note', 'roster_note', 'cross_hall', 'cross_hall_reason'):
+    for k in ('mapping_note', 'mapping_review', 'mapping_review_note',
+              'roster_note', 'cross_hall', 'cross_hall_reason'):
         if k in m:
             rec[k] = m[k]
     rec['delivery_status'] = (DELIVERY_BEAUTY if 'roster_note' in m
                               else DELIVERY_FULL if (floor or stations) else DELIVERY_NO_FLOOR)
+    # Catalog section (product review on PR #107): where the course is listed.
+    rec['catalog_section'] = ('coming-soon' if 'roster_note' in m
+                              else 'available' if (floor or stations) else 'home-and-class')
+    if rec['catalog_section'] == 'coming-soon':
+        rec['catalog_note'] = CATALOG_HOLD
+    if code in WIRING_GAPS:
+        rec['wiring_gap'] = WIRING_GAPS[code]
     rec.update({
         'floor_sims': floor, 'class_stations': stations,
         'robotics_link': c['robotics_link'],
@@ -270,8 +350,15 @@ SPRINT_STATUSES = ('planned', 'in-progress', 'shipped', 'slipped', 'cancelled')
 SPRINT_OUTCOMES = {
     'S1': ('shipped', 'partial: the schema and honesty parts were met; the '
                       '200-session hint-ladder run was not executed'),
-    'S2': ('shipped', 'not met: the real mentor guards escalated 4 of 50 '
-                      'out-of-scope prompts (fabric/test_mentor_scope.mjs)'),
+    'S2': ('shipped', 'met on the fixture set only: after cycle-3 tuning the guards '
+                      'escalate 80 of 80 out-of-scope prompts with 0 of 48 false '
+                      'escalations, but a blind held-out batch caught 2 of 12, so '
+                      'the regex guards do not generalise to unseen phrasing '
+                      '(fabric/test_mentor_scope.mjs)'),
+    'S3': ('shipped', 'met on the scripted suite: 981 of 981 bypass attempts blocked '
+                      'and 78 of 78 legitimate entries allowed, overrides audited '
+                      '(safety_gate/test.mjs); electrical and HVAC wiring partial, '
+                      '2 of 10 modules wired, to tool cribs only'),
 }
 # A pilot with real learners is an ethical and legal precondition, not a note:
 # the sprint record names it and loop/evals.mjs EV-09 enforces it in the ledger.

@@ -233,6 +233,122 @@
         "duration_s": 120.067
       },
       "commit": null
+    },
+    {
+      "n": 3,
+      "started": "2026-10-12T10:16:00Z",
+      "ended": "2026-10-12T10:50:00Z",
+      "sprint": "S3 safety gate and mentor guards",
+      "shipped": [
+        "Mentor guards: 80/80 out-of-scope escalated by category, 0/48 false, 15/15 PII redacted on the fixture set",
+        "Held-out batch scored blind: 2 of 12 caught - the regex guards do not generalise; recorded, not hidden",
+        "Sam's safety gate: 981/981 scripted bypass attempts blocked, 78/78 legitimate entries allowed, overrides audited",
+        "Electrical and HVAC: 2 more modules wired, to tool cribs only; 8 of 10 still unwired with the gap named",
+        "Beauty courses moved to coming-soon; plumbing mapping carries a review date",
+        "Console rebuilt so it embeds the fixed guards; verify_all 1,737 checks, 0 failing"
+      ],
+      "agents": [
+        {
+          "name": "Orchestrator",
+          "task": "prioritise the merge blockers, wire suites, rebuild console",
+          "result": "verify_all 1,737 checks, 0 failing; 9 of 9 gates pass"
+        },
+        {
+          "name": "Eval Warden",
+          "task": "close mentor guard gaps against the real guards",
+          "result": "fixture set met; blind held-out 2/12 - not robust"
+        },
+        {
+          "name": "Robotics Integrator",
+          "task": "Sam safety gate console with bypass suite",
+          "result": "27 checks; 981/981 blocked, 78/78 allowed"
+        },
+        {
+          "name": "Curriculum Mapper",
+          "task": "wire TCA-110/130, catalog sections",
+          "result": "42 checks; 4 of 56 modules wired, beauty courses coming-soon"
+        },
+        {
+          "name": "Media Producer",
+          "task": "cycle 3 review video",
+          "result": "review_c3.mp4, 120 s"
+        }
+      ],
+      "notes": [
+        "S2 gate is met on the fixture set only. Unseen phrasing still slips past the regex guards (2 of 12 blind); a semantic classifier is needed before this protects real learners."
+      ],
+      "gates": [
+        {
+          "id": "EV-01",
+          "name": "Verification suite (verify_all.sh)",
+          "status": "pass",
+          "detail": "1737 checks, 0 failing suites",
+          "ms": 13177
+        },
+        {
+          "id": "EV-02",
+          "name": "Courses suite",
+          "status": "pass",
+          "detail": "42 checks",
+          "ms": 208
+        },
+        {
+          "id": "EV-03",
+          "name": "Brand lint",
+          "status": "pass",
+          "detail": "brand: 244 files clean — \"SmartCiti.X : Trade Craft Academy\", powered by AGI Corp",
+          "ms": 165
+        },
+        {
+          "id": "EV-04",
+          "name": "Figures lint",
+          "status": "pass",
+          "detail": "figures: 232 files agree with the pack — 111 halls, 11,000,000 modules, 10 campuses, 447 avatar options, 4 proposed districts, every registry at pack 3.2.0",
+          "ms": 730
+        },
+        {
+          "id": "EV-05",
+          "name": "Honesty lint on branch changes",
+          "status": "pass",
+          "detail": "26 changed text files, 0 overclaims",
+          "ms": 136
+        },
+        {
+          "id": "EV-06",
+          "name": "Review video 120 ± 0.5 s",
+          "status": "pass",
+          "detail": "cycle #3 review_c3.mp4 120.07 s",
+          "ms": 89
+        },
+        {
+          "id": "EV-07",
+          "name": "Cycle ledger schema",
+          "status": "pass",
+          "detail": "valid, 3 cycles",
+          "ms": 2
+        },
+        {
+          "id": "EV-08",
+          "name": "No secrets in diff",
+          "status": "pass",
+          "detail": "diff + 4 untracked files clean",
+          "ms": 61
+        },
+        {
+          "id": "EV-09",
+          "name": "Pilot precondition",
+          "status": "pass",
+          "detail": "no pilot recorded",
+          "ms": 1
+        }
+      ],
+      "checks_total": 1737,
+      "heartbeat_ok": true,
+      "video": {
+        "path": "review_c3.mp4",
+        "duration_s": 120.067
+      },
+      "commit": null
     }
   ]
 }
