@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-10-12",
- "source_stamp": "8a29140774f730e4",
+ "source_stamp": "6d7b9dd70517d8fa",
  "honesty": {
   "status": "every course in this pack is a PLANNED DRAFT: nothing is shipped or deployed, learning efficacy is unestablished, and only the modules marked wired are bound to sites that exist",
   "credit": "no licensing board, jurisdiction or employer has accepted any hour of these courses; simulator, station and lesson time never count toward a licence or certification",
@@ -1990,7 +1990,8 @@
    "start": "2026-10-12",
    "end": "2026-10-25",
    "weeks": "Oct 12 - Oct 25, 2026",
-   "status": "planned",
+   "status": "shipped",
+   "gate_result": "partial: the schema and honesty parts were met; the 200-session hint-ladder run was not executed",
    "ship": "Course schema and authoring pipeline; TCA-140 Welding modules 1-2 wired to existing interior sites; Prepare Pack and Mentor Chat for Joyce.",
    "eval_gate": "All 5 modules validate against schema; hint engine never reaches rung 5 before rungs 1-4 in 200 scripted test sessions; zero honesty-doctrine violations in output lint."
   },
@@ -1999,7 +2000,8 @@
    "start": "2026-10-26",
    "end": "2026-11-08",
    "weeks": "Oct 26 - Nov 8, 2026",
-   "status": "planned",
+   "status": "shipped",
+   "gate_result": "not met: the real mentor guards escalated 4 of 50 out-of-scope prompts (fabric/test_mentor_scope.mjs)",
    "ship": "TCA-210 Hair and TCA-230 Esthetics modules 1-3; Tessa and Iris mentors; Teacher Lesson Planner v1.",
    "eval_gate": "Mentor guardrail eval: 100% refusal on 50 out-of-scope medical/chemical-safety prompts; lesson plans render for all assigned modules."
   },
@@ -2009,6 +2011,7 @@
    "end": "2026-11-22",
    "weeks": "Nov 9 - Nov 22, 2026",
    "status": "planned",
+   "gate_result": null,
    "ship": "TCA-110 Electrical and TCA-130 HVAC modules 1-3; Sam Safety Gate Console; Safety Card Wallet.",
    "eval_gate": "Safety gates block hazardous stations in 100% of 300 scripted bypass attempts; overrides logged."
   },
@@ -2018,6 +2021,7 @@
    "end": "2026-12-06",
    "weeks": "Nov 23 - Dec 6, 2026",
    "status": "planned",
+   "gate_result": null,
    "ship": "TCA-120 Plumbing, TCA-150 Carpentry, TCA-220 Nail modules 1-3; Cohort Dashboard v1 and Skill Map.",
    "eval_gate": "Dashboard numbers reconcile with raw session logs within 1%; trade-accuracy review of all new content by a qualified human reviewer (planned; reviewer not yet engaged)."
   },
@@ -2027,6 +2031,7 @@
    "end": "2026-12-20",
    "weeks": "Dec 7 - Dec 20, 2026",
    "status": "planned",
+   "gate_result": null,
    "ship": "TCA-310 Robot Arm and TCA-320 Cobot sim cells; Practice Replay; Rubric Builder.",
    "eval_gate": "Cell-entry scenarios fail on any interlock bypass in 100% of test runs; rubric items all observable (lint check for vague criteria)."
   },
@@ -2036,6 +2041,7 @@
    "end": "2027-01-03",
    "weeks": "Dec 21, 2026 - Jan 3, 2027",
    "status": "planned",
+   "gate_result": null,
    "ship": "TCA-160 Heavy Equipment with drone and rover survey sims; holiday-light sprint, plus bug-fix and accessibility pass.",
    "eval_gate": "Drone mission planner enforces 400 ft AGL and VLOS in sim; WCAG 2.2 AA audit on student and teacher kits with zero critical failures."
   },
@@ -2045,6 +2051,7 @@
    "end": "2027-01-17",
    "weeks": "Jan 4 - Jan 17, 2027",
    "status": "planned",
+   "gate_result": null,
    "ship": "TCA-410 Leadership/EI with Dana and Chris; Parity Report; Portfolio Builder; Reflection Journal.",
    "eval_gate": "Parity safeguards run on synthetic cohorts and flag injected disparities with no false all-clears; portfolio labels every artifact as simulation work."
   },
@@ -2054,8 +2061,14 @@
    "end": "2027-01-31",
    "weeks": "Jan 18 - Jan 31, 2027",
    "status": "planned",
+   "gate_result": null,
    "ship": "Remaining modules for all 12 courses; Licensure Hours Ledger (planned, unverified labels); Board Exam Drill; internal pilot readiness review targeting early Feb 2027.",
-   "eval_gate": "End-to-end flipped loop completes for all 12 courses in automated walkthroughs; honesty lint passes on every page; pilot only if a partner and IRB/consent plan exist, otherwise remain internal."
+   "eval_gate": "End-to-end flipped loop completes for all 12 courses in automated walkthroughs; honesty lint passes on every page; pilot only if a partner and IRB/consent plan exist, otherwise remain internal.",
+   "preconditions": [
+    "a named partner",
+    "an IRB approval or consent-plan reference",
+    "EV-09 passing on the cycle that records the pilot"
+   ]
   }
  ]
 }

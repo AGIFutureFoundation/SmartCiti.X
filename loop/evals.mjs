@@ -144,7 +144,7 @@ function ev06() {
   // The ledger is committed; the media is not (each review is ~6 MB and lives
   // outside the repo). A ledger path must be a bare file name resolved against
   // LOOP_MEDIA_DIR or loop/media/, never a machine's absolute path.
-  if (isAbsolute(last.video.path) || last.video.path.includes('/'))
+  if (isAbsolute(last.video.path) || /[\/\\]/.test(last.video.path))
     return ['fail', `cycle #${last.n} video path must be a bare file name, got ${last.video.path}`];
   const dir = process.env.LOOP_MEDIA_DIR || join(ROOT, 'loop', 'media');
   const p = join(dir, last.video.path);

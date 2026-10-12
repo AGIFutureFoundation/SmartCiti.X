@@ -46,7 +46,7 @@ class Cutter:
     def _tf(self, text):
         self.n += 1
         p = os.path.join(self.work, f"t{self.n}.txt")
-        open(p, "w").write(text)
+        open(p, "w", encoding="utf-8").write(text)
         return p
 
     def _run(self, args, out, dur):
@@ -62,10 +62,10 @@ class Cutter:
         size = 20 if mono else 22
         tsize = max(30, min(50, int(1900 / max(1, len(title)))))
         vf = (f"drawbox=x=80:y=150:w=6:h=110:color={GREEN}:t=fill,"
-              f"drawtext=fontfile={BOLD}:textfile={self._tf(kicker)}:x=110:y=110:fontsize=22:fontcolor={GREEN},"
-              f"drawtext=fontfile={BOLD}:textfile={self._tf(title)}:x=110:y=150:fontsize={tsize}:fontcolor={INK},"
-              f"drawtext=fontfile={face}:textfile={self._tf(body or ' ')}:x=112:y=235:fontsize={size}:line_spacing=8:fontcolor={INK}@0.85,"
-              f"drawtext=fontfile={BOLD}:textfile={self._tf('SmartCiti.X  |  Trade Craft Academy  |  powered by AGI Corp  |  loop review')}:x=110:y=684:fontsize=16:fontcolor={INK}@0.55,"
+              f"drawtext=expansion=none:fontfile={BOLD}:textfile={self._tf(kicker)}:x=110:y=110:fontsize=22:fontcolor={GREEN},"
+              f"drawtext=expansion=none:fontfile={BOLD}:textfile={self._tf(title)}:x=110:y=150:fontsize={tsize}:fontcolor={INK},"
+              f"drawtext=expansion=none:fontfile={face}:textfile={self._tf(body or ' ')}:x=112:y=235:fontsize={size}:line_spacing=8:fontcolor={INK}@0.85,"
+              f"drawtext=expansion=none:fontfile={BOLD}:textfile={self._tf('SmartCiti.X  |  Trade Craft Academy  |  powered by AGI Corp  |  loop review')}:x=110:y=684:fontsize=16:fontcolor={INK}@0.55,"
               f"fade=t=in:st=0:d=0.4,fade=t=out:st={dur-0.4}:d=0.4")
         self._run(["-f", "lavfi", "-i", f"color=c={PAPER}:s=1280x720:d={dur}:r=30", "-vf", vf], out, dur)
 
@@ -74,15 +74,15 @@ class Cutter:
         src = os.path.join(self.clips, cid + ".mp4")
         vf = (f"scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,"
               f"drawbox=x=0:y=596:w=1280:h=124:color=black@0.6:t=fill,"
-              f"drawtext=fontfile={BOLD}:textfile={self._tf(label)}:x=48:y=614:fontsize=20:fontcolor=0x9fe0bf,"
-              f"drawtext=fontfile={REG}:textfile={self._tf(caption)}:x=48:y=648:fontsize=27:fontcolor=white,"
+              f"drawtext=expansion=none:fontfile={BOLD}:textfile={self._tf(label)}:x=48:y=614:fontsize=20:fontcolor=0x9fe0bf,"
+              f"drawtext=expansion=none:fontfile={REG}:textfile={self._tf(caption)}:x=48:y=648:fontsize=27:fontcolor=white,"
               f"fade=t=in:st=0:d=0.3,fade=t=out:st={dur-0.3}:d=0.3")
         # loop short sources so any duration can be filled
         self._run(["-stream_loop", "-1", "-i", src, "-t", f"{dur:.3f}", "-vf", vf], out, dur)
 
     def finish(self, out):
         lst = os.path.join(self.work, "list.txt")
-        open(lst, "w").write("".join(f"file '{p}'\n" for p in self.parts))
+        open(lst, "w", encoding="utf-8").write("".join(f"file '{p}'\n" for p in self.parts))
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", lst,
                         "-c", "copy", "-movflags", "+faststart", out], check=True)
         d = float(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration",
@@ -121,7 +121,7 @@ def main():
     ap.add_argument("--next", default="", help="one line naming the next checkpoint")
     a = ap.parse_args()
 
-    ledger = json.load(open(ROOT / "loop/registry/cycles.json"))
+    ledger = json.load(open(ROOT / "loop/registry/cycles.json", encoding="utf-8"))
     cyc = next((c for c in ledger["cycles"] if c["n"] == a.cycle), None)
     if cyc is None:
         sys.exit(f"cycle {a.cycle} is not in the ledger; add it first (node loop/cycle.mjs add)")
@@ -130,10 +130,15 @@ def main():
         sys.exit("loop/state/evals_latest.json is missing: run `node loop/evals.mjs` first")
     if not hb_path.is_file():
         sys.exit("loop/state/heartbeat.jsonl is missing: run `node loop/heartbeat.mjs` first")
-    ev = json.load(open(ev_path))
-    hb_lines = hb_path.read_text().strip().splitlines()
-    hb = json.loads(hb_lines[-1]) if hb_lines else {"ok": False, "checks": []}
-    courses = json.load(open(ROOT / "courses/registry/courses.json"))["courses"]
+    ev = json.load(open(ev_path, encoding="utf-8"))
+    hb_lines = hb_path.read_text(encoding="utf-8").strip().splitlines()
+    # Bind the review to the SELECTED cycle: the gates it recorded, and the last
+    # heartbeat taken before it ended (not whatever ran most recently).
+    beats = [json.loads(l) for l in hb_lines if l.strip()]
+    ended = str(cyc.get("ended") or "")
+    before = [b for b in beats if str(b.get("ts", "")) <= ended] if ended else beats
+    hb = (before or beats or [{"ok": cyc.get("heartbeat_ok", False), "checks": []}])[-1]
+    courses = json.load(open(ROOT / "courses/registry/courses.json", encoding="utf-8"))["courses"]
 
     work = tempfile.mkdtemp(prefix="review_")
     try:
@@ -144,7 +149,7 @@ def main():
 
 def render(a, ledger, cyc, ev, hb, courses, work):
     c = Cutter(work, a.clips)
-    gates = ev["gates"]
+    gates = cyc.get("gates") or ev["gates"]
     passed = sum(g["status"] == "pass" for g in gates)
     planned = ledger["loop"].get("cycles_planned", "?")
 

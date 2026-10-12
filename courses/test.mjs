@@ -159,9 +159,16 @@ ok('sprints S1..S8 are contiguous 14-day windows starting 2026-10-12',
   && reg.sprints[0].start === '2026-10-12'
   && reg.sprints.every((s, i) => (Date.parse(s.end) - Date.parse(s.start)) / day === 13
     && (i === 0 || (Date.parse(s.start) - Date.parse(reg.sprints[i - 1].end)) / day === 1)));
+ok('sprint status comes from a closed set; a shipped sprint states its gate result, a planned one does not',
+  reg.sprints.every((s) => ['planned', 'in-progress', 'shipped', 'slipped', 'cancelled'].includes(s.status))
+  && reg.sprints.every((s) => (s.status === 'shipped') === (typeof s.gate_result === 'string' && s.gate_result.length > 10))
+  && /^not met/.test(reg.sprints.find((s) => s.sprint === 'S2').gate_result));
+ok('the S8 pilot carries its preconditions as a field, naming a partner, a consent plan and EV-09',
+  (() => { const p = reg.sprints.find((s) => s.sprint === 'S8').preconditions || [];
+    return p.some((x) => /partner/.test(x)) && p.some((x) => /consent/.test(x)) && p.some((x) => /EV-09/.test(x)); })());
 ok('every sprint carries its authored ship line and eval gate',
   reg.sprints.every((s, i) => s.ship === draft.rapid_roadmap[i].ship
-    && s.eval_gate === draft.rapid_roadmap[i].eval_gate && s.status === 'planned'));
+    && s.eval_gate === draft.rapid_roadmap[i].eval_gate));
 
 /* -------------------------------------------------------------- rebuild --- */
 const here = fileURLToPath(new URL('.', import.meta.url));

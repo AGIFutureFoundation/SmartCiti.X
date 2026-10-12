@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-10-12",
- "source_stamp": "6fbfef042a24f30b",
+ "source_stamp": "74775e8ffa692fa5",
  "honesty": {
   "status": "every lesson plan is a PLANNED DRAFT derived only from the courses registry; none has been reviewed by a qualified instructor and none is an approved syllabus",
   "credit": "no licensing board, jurisdiction or employer has accepted any minute of these plans; simulator and station time never count toward a licence or certification",
@@ -12,7 +12,7 @@
  },
  "source": {
   "courses": "courses/registry/courses.json",
-  "courses_stamp": "8a29140774f730e4"
+  "courses_stamp": "6d7b9dd70517d8fa"
  },
  "stage_split_percent": {
   "home": 20,

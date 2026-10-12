@@ -63,14 +63,14 @@
           "id": "EV-03",
           "name": "Brand lint",
           "status": "pass",
-          "detail": "brand: 234 files clean \u2014 \"SmartCiti.X : Trade Craft Academy\", powered by AGI Corp",
+          "detail": "brand: 234 files clean — \"SmartCiti.X : Trade Craft Academy\", powered by AGI Corp",
           "ms": 221
         },
         {
           "id": "EV-04",
           "name": "Figures lint",
           "status": "pass",
-          "detail": "figures: 222 files agree with the pack \u2014 111 halls, 11,000,000 modules, 10 campuses, 447 avatar options, 4 proposed districts, every registry at pack 3.2.0",
+          "detail": "figures: 222 files agree with the pack — 111 halls, 11,000,000 modules, 10 campuses, 447 avatar options, 4 proposed districts, every registry at pack 3.2.0",
           "ms": 728
         },
         {
@@ -82,7 +82,7 @@
         },
         {
           "id": "EV-06",
-          "name": "Review video 120 \u00b1 0.5 s",
+          "name": "Review video 120 ± 0.5 s",
           "status": "pass",
           "detail": "cycle #1 /tmp/claude-0/-home-claude/717c43f1-7f00-5ef5-96d0-907cb265e63d/scratchpad/reviews/review_c1.mp4 120.07 s",
           "ms": 58
@@ -159,7 +159,7 @@
       ],
       "notes": [
         "Sprint gate S2 (100% refusal on out-of-scope mentor prompts) is NOT MET; the guards have no trigger for medical, dosing or chemical-safety bypass requests. Fixing them is cycle 3 work.",
-        "One verify run failed right after a ledger write (EV-01, loop/test.mjs) and did not reproduce on four reruns; not yet root-caused, carried to cycle 3."
+        "One verify run failed right after a ledger write (EV-01, loop/test.mjs). Root-caused after cycle 2: the ledger had been edited with Python json.dumps, whose escaping differs from the Node writer, and loop/test.mjs compares the file byte for byte. The next Node write normalised it. Ledger edits now go through Node only."
       ],
       "gates": [
         {
@@ -180,14 +180,14 @@
           "id": "EV-03",
           "name": "Brand lint",
           "status": "pass",
-          "detail": "brand: 240 files clean \u2014 \"SmartCiti.X : Trade Craft Academy\", powered by AGI Corp",
+          "detail": "brand: 240 files clean — \"SmartCiti.X : Trade Craft Academy\", powered by AGI Corp",
           "ms": 136
         },
         {
           "id": "EV-04",
           "name": "Figures lint",
           "status": "pass",
-          "detail": "figures: 228 files agree with the pack \u2014 111 halls, 11,000,000 modules, 10 campuses, 447 avatar options, 4 proposed districts, every registry at pack 3.2.0",
+          "detail": "figures: 228 files agree with the pack — 111 halls, 11,000,000 modules, 10 campuses, 447 avatar options, 4 proposed districts, every registry at pack 3.2.0",
           "ms": 696
         },
         {
@@ -199,7 +199,7 @@
         },
         {
           "id": "EV-06",
-          "name": "Review video 120 \u00b1 0.5 s",
+          "name": "Review video 120 ± 0.5 s",
           "status": "pass",
           "detail": "cycle #2 review_c2.mp4 120.07 s",
           "ms": 60

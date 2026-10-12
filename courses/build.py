@@ -264,12 +264,30 @@ for c in draft['courses']:
     })
     courses.append(rec)
 
+# A closed status set, so the registry can say what actually happened to a
+# sprint instead of reading "planned" forever (product review on PR #107).
+SPRINT_STATUSES = ('planned', 'in-progress', 'shipped', 'slipped', 'cancelled')
+SPRINT_OUTCOMES = {
+    'S1': ('shipped', 'partial: the schema and honesty parts were met; the '
+                      '200-session hint-ladder run was not executed'),
+    'S2': ('shipped', 'not met: the real mentor guards escalated 4 of 50 '
+                      'out-of-scope prompts (fabric/test_mentor_scope.mjs)'),
+}
+# A pilot with real learners is an ethical and legal precondition, not a note:
+# the sprint record names it and loop/evals.mjs EV-09 enforces it in the ledger.
+PRECONDITIONS = {'S8': ['a named partner', 'an IRB approval or consent-plan reference',
+                        'EV-09 passing on the cycle that records the pilot']}
+
 sprints = []
 for s in draft['rapid_roadmap']:
     start, end = parse_window(s['weeks'])
-    sprints.append({'sprint': s['sprint'], 'start': start, 'end': end,
-                    'weeks': s['weeks'], 'status': 'planned',
-                    'ship': s['ship'], 'eval_gate': s['eval_gate']})
+    status, result = SPRINT_OUTCOMES.get(s['sprint'], ('planned', None))
+    rec = {'sprint': s['sprint'], 'start': start, 'end': end,
+           'weeks': s['weeks'], 'status': status, 'gate_result': result,
+           'ship': s['ship'], 'eval_gate': s['eval_gate']}
+    if s['sprint'] in PRECONDITIONS:
+        rec['preconditions'] = PRECONDITIONS[s['sprint']]
+    sprints.append(rec)
 
 HONESTY = {
     'status': 'every course in this pack is a PLANNED DRAFT: nothing is '
