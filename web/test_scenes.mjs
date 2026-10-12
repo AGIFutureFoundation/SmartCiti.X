@@ -184,6 +184,214 @@ ok('placeRoomProps offers the district pieces after the strand furniture and rou
 ok('buildHall flushes the kit after the props and the frame loop culls it', /flushProps\(hallGroup\);\s*\/\* INTERIOR-KIT BEGIN \(wave 17\) \*\/ ikFlush\(hallGroup\);/.test(mod)
   && /advisorProximity\(dt\);\s*\/\* INTERIOR-KIT BEGIN \(wave 17\) \*\/ ikStep\(\);/.test(mod));
 
+/* ------------------------------------------------------------ exteriors -- */
+const EK = D.exteriorKit;
+ok('the payload carries the exterior kit (deck rules, glazing rows, an AUTHORED near rule)',
+  EK && EK.decks && EK.glaze && EK.nearM > 0 && EK.eyeMaxM > 0);
+// the glazing rows restate hallkit's campus-scale glazing: held to the page's own hallkit source
+const hk = mod.slice(mod.indexOf('function hkShell('));
+const gzSrc = { band: /a\.glaze === 'band'\) gz\(H \* ([.\d]+), Math\.max\(([.\d]+), H \* ([.\d]+)\)\)/,
+  ribbon: /a\.glaze === 'ribbon'\) \{ gz\(H \* ([.\d]+), Math\.max\(([.\d]+), H \* ([.\d]+)\)\)/,
+  clerestory: /a\.glaze === 'clerestory'\) gz\(H \* ([.\d]+), Math\.max\(([.\d]+), H \* ([.\d]+)\)\)/,
+  punched: /\} else gz\(H \* ([.\d]+), ([.\d]+)\);/ };
+const gzBad = Object.entries(gzSrc).filter(([k, re]) => {
+  const m = hk.match(re), g = EK.glaze[k];
+  if (!m || !g) return true;
+  return k === 'punched' ? (+m[1] !== g.y || +m[2] !== g.min || g.h !== 0) : (+m[1] !== g.y || +m[2] !== g.min || +m[3] !== g.h);
+}).map(([k]) => k);
+ok('the exterior kit\'s glazing rows are hallkit\'s own campus-scale glazing (y, height, floor) for all four types', gzBad.length === 0);
+
+const solidLogB = [];
+const envB = { THREE, mergeGeometries, D, eyePos: () => new THREE.Vector3(0, 300, 350), window: {},
+  mat: { metal: new THREE.MeshStandardMaterial(), block: new THREE.MeshStandardMaterial({ color: 0x9aa0a2 }),
+         wood: new THREE.MeshStandardMaterial({ color: 0x8a6a42 }), veg: new THREE.MeshStandardMaterial({ color: 0x4c6b3a }) },
+  ikMat: new THREE.MeshStandardMaterial({ vertexColors: true }), campusSolid: (x, z, r) => solidLogB.push({ u: x, v: z, r }) };
+const hasScene = mod.includes('/* SCENE-KIT BEGIN (wave 17) */\n');
+const factoryB = new Function(...Object.keys(envB), `"use strict"; let view = 'campus'; const solids = [];
+  ${block('EXTERIOR-KIT')}
+  ${hasScene ? block('SCENE-KIT') : ''}
+  return { ekDressCampus, ekRoofSpots, ekTrimOf, ekNear, ekCull, ekStep, trim: () => ekTrim, hook: window.__tc3dExterior, setView: (v) => { view = v; },
+           ${hasScene ? 'skDressCampus, skTreeSpots, skStreetOf, skStat: () => skStat,' : ''} };`);
+const B = factoryB(...Object.values(envB));
+const hallBy = new Map(D.halls.map((h) => [h.slug, h]));
+const camps = [];
+for (const [key, camp] of Object.entries(D.campuses)) {
+  const plan = camp.districts.length ? D.campusplan[key] : null;
+  const g = new THREE.Group(), cg = new THREE.Group(); g.add(cg);
+  const boards = [];
+  if (plan) for (const lot of plan.lots) {
+    const Bt = lot.b, bg = new THREE.Group();
+    bg.position.set(Bt.x, 0, Bt.z); bg.rotation.y = Bt.rot_y; cg.add(bg);
+    boards.push({ h: hallBy.get(lot.hall), bg, w: Bt.w_m, d: Bt.d_m, hgt: Bt.height_m + .35, B: Bt });
+  }
+  solidLogB.length = 0;
+  const st = B.ekDressCampus(g, boards);
+  camps.push({ key, g, boards, st, trim: B.trim(), solids: solidLogB.slice() });
+}
+const withHalls = camps.filter((c) => c.boards.length);
+ok(`every campus with halls (${withHalls.length}) dresses; each family is ONE InstancedMesh on the shared metal, at most 3 per campus`,
+  withHalls.length > 0 && withHalls.every((c) => {
+    const ims = c.g.children.filter((o) => o.isInstancedMesh);
+    return ims.length === c.st.calls && c.st.calls <= 3 && ims.every((o) => o.material === envB.mat.metal)
+      && new Set(ims.map((o) => o.name)).size === ims.length;
+  }));
+const decked = (h) => h.arch.roof in EK.decks;
+ok('roof plant stands on exactly the halls whose archetype has a deck (parapet, monitor, high bay), one unit and one vent each',
+  withHalls.every((c) => c.st.roofPlant === c.boards.filter((b) => decked(b.h)).length && c.st.vents === c.st.roofPlant
+    && c.st.noDeck === c.boards.length - c.st.roofPlant));
+// every rooftop unit on its own deck, inside its own roof, clear of the archetype's monitor or high bay
+const spotBad = [];
+for (const c of withHalls) for (const b of c.boards) {
+  const sp = B.ekRoofSpots(b.h.arch, b.w, b.d, b.hgt);
+  if (!sp) continue;
+  const W = b.w, Dp = b.d, a = b.h.arch;
+  for (const [nm, [x, y, z], hw, hd] of [['hvac', sp.hvac, EK.hvac.w / 2, EK.hvac.d / 2], ['vent', sp.vent, EK.vent.capW / 2, EK.vent.capW / 2]]) {
+    if (Math.abs(x) + hw > W / 2 || Math.abs(z) + hd > Dp / 2) spotBad.push(b.h.slug + ' ' + nm + ' off the roof');
+    if (y < b.hgt || y > b.hgt + .3) spotBad.push(b.h.slug + ' ' + nm + ' off the deck');
+    if (a.roof === 'monitor' && Math.abs(x) - hw < W * .15 + .4) spotBad.push(b.h.slug + ' ' + nm + ' in the monitor');
+    if (a.roof === 'highbay' && x - hw < -W * .18 + W * .25 + .3 && x + hw > -W * .18 - W * .25) spotBad.push(b.h.slug + ' ' + nm + ' in the high bay');
+    // hallkit's own plant stands at x = W*.3 (W*.28 on a high bay), z = D*.15 / D*.2 / 0 / -D*.2
+    if (Math.abs(x - (a.roof === 'highbay' ? W * .28 : W * .3)) < hw + 2 && [.15, .2, 0].some((f) => Math.abs(z - Dp * f) < hd + 1.3))
+      spotBad.push(b.h.slug + ' ' + nm + ' in the archetype\'s own plant');
+    if (a.plant === 'solar' && x - hw < W * .05 && x + hw > -W * .35 && [-.3, .3].some((f) => Math.abs(z - Dp * f) < hd + 1.1))
+      spotBad.push(b.h.slug + ' ' + nm + ' in the solar rows');
+  }
+}
+ok('every rooftop unit and vent sits on its own deck, inside its roof, clear of the monitor, the high bay and the archetype\'s own plant',
+  spotBad.length === 0);
+// the hood over the roll-up door and the mullions across the back glazing, in the building's frame
+const trimBad = [];
+for (const c of withHalls) for (const b of c.boards) {
+  const a = b.h.arch, W = b.w, Dp = b.d, H = b.hgt, s = W / 36;
+  const t = B.ekTrimOf(a, W, Dp, H);
+  const dw = Math.min(a.door.w * s, W * .3), dh = Math.min(a.door.h * s, H * .8);
+  const hood = t[0];
+  if (Math.abs(hood[3] - W * .28) > 1e-9 || hood[0] < dw || hood[4] <= dh || hood[5] >= -Dp / 2 - .42) trimBad.push(b.h.slug + ' hood');
+  const g2 = EK.glaze[a.glaze], gy = H * g2.y, gh = Math.max(g2.min, H * g2.h), gw = W * .8;
+  for (const m of t.slice(3, -2)) if (Math.abs(m[3]) >= gw / 2 || Math.abs(m[4] - gy) > 1e-9 || Math.abs(m[1] - gh) > 1e-9 || m[5] <= Dp / 2 + .132) trimBad.push(b.h.slug + ' mullion');
+}
+ok('each hall\'s door hood is wider than and above its roll-up door, in front of the wall; its mullions span its own glazing, outside the glass',
+  trimBad.length === 0);
+ok('the triangles each campus reports are its instances times the shapes\' own triangles (roof and trim)',
+  withHalls.every((c) => {
+    const ims = c.g.children.filter((o) => o.isInstancedMesh);
+    const roof = ims.filter((o) => o.name !== 'ek-trim').reduce((a, o) => a + o.geometry.index.count / 3 * o.count, 0);
+    const tr = ims.find((o) => o.name === 'ek-trim');
+    return roof === c.st.roofTris && tr && tr.geometry.index.count / 3 * c.st.trimInstances === c.st.trimTris;
+  }));
+// the near cull on the flagship
+const F = withHalls.reduce((a, c) => (c.boards.length > a.boards.length ? c : a));
+B.ekCull(F.trim, new THREE.Vector3(0, 300, 350));
+ok(`from a campus orbit camera no street detail is drawn on ${F.key} (${F.st.trimInstances} trim instances, 0 drawn)`,
+  !F.trim.visible && F.trim.count === 0);
+const b0 = F.boards[0];
+b0.bg.updateWorldMatrix(true, false);
+const door = new THREE.Vector3(0, 1.7, -b0.d / 2 - 4).applyMatrix4(b0.bg.matrixWorld);
+B.ekCull(F.trim, door);
+{
+  const u = F.trim.userData.exteriorKit;
+  const near = u.spots.map((p) => Math.hypot(p.x - door.x, p.z - door.z) <= EK.nearM);
+  let expect = 0; u.ranges.forEach(([s0, c0], i) => { if (near[i]) expect += c0; });
+  ok(`standing at a hall's door draws the trim of exactly the buildings within ${EK.nearM} m (${expect} of ${u.full.length / 16} instances)`,
+    F.trim.visible && F.trim.count === expect && expect > 0 && expect < u.full.length / 16);
+  let same = true, at = 0;
+  u.ranges.forEach(([s0, c0], i) => { if (near[i]) { for (let j = 0; j < c0 * 16; j++) if (F.trim.instanceMatrix.array[at * 16 + j] !== u.full[s0 * 16 + j]) same = false; at += c0; } });
+  ok('the drawn instances are those buildings\' own matrices, in order', same);
+  ok('a second frame at the same place rewrites nothing', B.ekCull(F.trim, door) === false);
+  B.ekCull(F.trim, door.clone().setY(EK.eyeMaxM + 1));
+  ok(`an eye above ${EK.eyeMaxM} m draws no street detail`, !F.trim.visible && F.trim.count === 0);
+}
+ok('buildCampus dresses the outside after the campus dressing, and the frame loop culls it',
+  /bdDressCampus\(campusGroup, rr\);[^\n]*\n\s*\/\* EXTERIOR-KIT BEGIN \(wave 17\) \*\/ ekDressCampus\(campusGroup, bdCamp\.boards\);/.test(mod)
+  && /ikStep\(\);[^\n]*\n\s*\/\* EXTERIOR-KIT BEGIN \(wave 17\) \*\/ ekStep\(\);/.test(mod));
+console.log('  exterior kit: ' + withHalls.map((c) => `${c.key} ${c.st.roofPlant}u/${c.st.vents}v ${c.st.roofTris}tri ${c.st.roofCalls}dc + trim ${c.st.trimInstances}i`).join('; '));
+
+/* --------------------------------------------------------- campus scene -- */
+const SK = D.sceneKit;
+ok('the payload carries the scene kit (plaza ring, tree, rack and pole dimensions)', SK && SK.ringR > 0 && SK.tree && SK.rack && SK.pole);
+const scene = [];
+for (const [key, camp] of Object.entries(D.campuses)) {
+  const plan = camp.districts.length ? D.campusplan[key] : null;
+  const roads = [], rects = [], g = new THREE.Group(); let lit = [];
+  if (plan) {
+    for (const lot of plan.lots) rects.push({ u: lot.b.aabb.x, v: lot.b.aabb.z, hw: lot.b.aabb.w / 2 + .2, hd: lot.b.aabb.d / 2 + .2 });
+    for (const r of [...plan.streets, ...plan.walkways, ...plan.parking]) roads.push({ u: r.x, v: r.z, w: r.w, h: r.d });
+    lit = roads.slice(0, plan.streets.length + plan.walkways.length);
+  }
+  solidLogB.length = 0;
+  const st = B.skDressCampus(g, roads, rects, lit);
+  scene.push({ key, g, st, roads, rects, solids: solidLogB.slice(), trees: g.children.find((o) => o.name === 'sk-trees') });
+}
+ok(`every campus (${scene.length}) stands its plaza trees as ONE InstancedMesh on the shared vertex-colour material`,
+  scene.every((c) => c.st.trees > 0 && c.trees && c.trees.isInstancedMesh && c.trees.count === c.st.trees
+    && c.trees.material === envB.ikMat && c.g.children.filter((o) => o.isMesh).length === 1));
+const treeBad = [];
+for (const c of scene) {
+  const M = new THREE.Matrix4(), P = new THREE.Vector3(); let street = 0;
+  for (let i = 0; i < c.trees.count; i++) {
+    c.trees.getMatrixAt(i, M); P.setFromMatrixPosition(M);
+    if (c.roads.some((r) => Math.abs(P.x - r.u) < r.w / 2 + SK.clearM - 1e-6 && Math.abs(P.z - r.v) < r.h / 2 + SK.clearM - 1e-6)) treeBad.push(c.key + ' road');
+    if (c.rects.some((b) => Math.abs(P.x - b.u) < b.hw + SK.clearM - 1e-6 && Math.abs(P.z - b.v) < b.hd + SK.clearM - 1e-6)) treeBad.push(c.key + ' lot');
+    if (Math.abs(Math.hypot(P.x, P.z) - SK.ringR) > 1e-6) street++;
+  }
+  c.street = street;
+}
+ok('no tree stands on a road, walk or parking lot, or on a hall lot', treeBad.length === 0);
+ok(`street rows stand at most ${SK.streetMax} trees a campus, and only where the plan lays lit streets or walks`,
+  scene.every((c) => c.street <= SK.streetMax && (c.roads.length ? true : c.street === 0)) && scene.some((c) => c.street > 0));
+ok('every tree is solid through the grounds\' campusSolid(), one disc per tree', scene.every((c) => c.solids.length === c.st.trees));
+{
+  // a lamp ON the first ring spot, a solid disc ON the seventh, a walk over the thirteenth and a hall lot over the
+  // nineteenth: those four spots must go, and only they
+  const n = Math.round(360 / SK.ringStepDeg), at = (i) => { const th = (i + .5) / n * Math.PI * 2; return [Math.cos(th) * SK.ringR, Math.sin(th) * SK.ringR]; };
+  const [lx, lz] = at(0), [dx, dz] = at(6);
+  const [rx2, rz2] = at(12), [ox, oz] = at(18);
+  const sp = B.skTreeSpots([{ u: rx2, v: rz2, w: 3, h: 3 }], [{ u: ox, v: oz, hw: 4, hd: 4 }], [[lx, lz]], [{ u: dx, v: dz, r: .6 }]);
+  ok(`a ring spot within ${SK.lampClearM} m of a lamp, on a solid disc, on a walk or on a hall lot is not taken - and only those`,
+    sp.every(([x, z]) => Math.hypot(x - lx, z - lz) >= SK.lampClearM && Math.hypot(x - dx, z - dz) >= .6 + SK.clearM + SK.tree.planterW / 2
+      && Math.hypot(x - rx2, z - rz2) > 1 && Math.hypot(x - ox, z - oz) > 1) && sp.length === n - 4);
+}
+ok('the tree triangles each campus reports are its trees times the tree\'s own triangles',
+  scene.every((c) => c.st.treeTris === c.trees.count * c.trees.geometry.attributes.position.count / 3));
+// street furniture rides in the building kit's trim, one run per building
+{
+  const a0 = withHalls[0].boards[0];
+  const ex = B.ekTrimOf(a0.h.arch, a0.w, a0.d, a0.hgt).length, sk = B.skStreetOf(a0.h.arch, a0.w, a0.d, a0.hgt);
+  ok(`each building's near-culled run carries its street furniture (${sk.length} rack and pole bars) and no new draw call`,
+    withHalls.every((c) => c.st.trimInstances === c.boards.length * (ex + sk.length) && c.st.calls <= 3));
+  const W = a0.w, Dp = a0.d, s = W / 36, dw = Math.min(a0.h.arch.door.w * s, W * .3);
+  ok('the bike rack stands off the roll-up door\'s side, in front of the wall; the pole stands clear of the door line',
+    sk.slice(0, -3).every((m) => m[5] < -Dp / 2 - .42 && Math.abs(m[3] - W * .28) > dw / 2 + 1)
+    && sk.slice(-3).every((m) => m[5] < -Dp / 2 - 1 && Math.abs(m[3]) > 1.2));
+  // and on the flagship, no pole stands on a street
+  const poleBad = [];
+  for (const b of F.boards) {
+    const p = B.skStreetOf(b.h.arch, b.w, b.d, b.hgt).at(-3);
+    const w = new THREE.Vector3(p[3], 0, p[5]).applyMatrix4(b.bg.matrixWorld);
+    if (D.campusplan[F.key].streets.some((r) => Math.abs(w.x - r.x) < r.w / 2 && Math.abs(w.z - r.z) < r.d / 2)) poleBad.push(b.h.slug);
+  }
+  ok(`no wayfinding pole stands on a street of ${F.key}`, poleBad.length === 0);
+  // the rack's hoops and the pole are SOLID: one campusSolid() disc each, where the lot puts them, at least their own half-width
+  const per = SK.rack.hoops + 1, solBad = [];
+  for (const c of withHalls) {
+    if (c.solids.length !== c.boards.length * per || c.st.streetSolids !== c.solids.length) { solBad.push(c.key + ' count'); continue; }
+    c.boards.forEach((b, i) => {
+      b.bg.updateWorldMatrix(true, false);
+      const bars = B.skStreetOf(b.h.arch, b.w, b.d, b.hgt), mine = c.solids.slice(i * per, (i + 1) * per);
+      for (let k = 0; k < SK.rack.hoops; k++) {
+        const top = bars[k * 3 + 2], w = new THREE.Vector3(top[3], 0, top[5]).applyMatrix4(b.bg.matrixWorld);
+        if (Math.hypot(w.x - mine[k].u, w.z - mine[k].v) > 1e-6 || mine[k].r < SK.rack.w / 2) solBad.push(b.h.slug + ' hoop');
+      }
+      const pole = bars.at(-3), pw = new THREE.Vector3(pole[3], 0, pole[5]).applyMatrix4(b.bg.matrixWorld), pd = mine[per - 1];
+      if (Math.hypot(pw.x - pd.u, pw.z - pd.v) > 1e-6 || pd.r < .05) solBad.push(b.h.slug + ' pole');
+    });
+  }
+  ok(`every bike-rack hoop and wayfinding pole is solid to the walker: one campusSolid() disc each at its place on the lot (${withHalls.reduce((n, c) => n + c.solids.length, 0)} discs)`,
+    solBad.length === 0);
+}
+ok('buildCampus stands the scene kit after the building kit', /ekDressCampus\(campusGroup, bdCamp\.boards\);[^\n]*\n\s*\/\* SCENE-KIT BEGIN \(wave 17\) \*\/ skDressCampus\(campusGroup, bdCamp\.roads, bdCamp\.rects, bdCamp\.lit\);/.test(mod));
+console.log('  scene kit: ' + scene.map((c) => `${c.key} ${c.st.trees} trees (${c.street} street) ${c.st.treeTris}tri`).join('; '));
+
 console.log(`  interior kit: ${IK.pieces.length} pieces, ${districts.size} districts; per district hall tris `
   + results.map((r) => `${r.d} ${r.want}`).join(', '));
-console.log(`web/test_scenes: ${n} checks passed - the wave-17 interior fit-out runs and culls as declared`);
+console.log(`web/test_scenes: ${n} checks passed - the wave-17 interior fit-out, building kit and campus scene run and cull as declared`);

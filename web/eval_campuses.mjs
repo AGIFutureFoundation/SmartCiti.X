@@ -151,6 +151,12 @@ async function main() {
       const step = (now) => { if (last) t.push(now - last); last = now; if (t.length < 3) requestAnimationFrame(step); else { t.sort((a, b) => a - b); res(Math.round(t[1])); } };
       requestAnimationFrame(step); }));
     /* BUILD END */
+    /* SCENES BEGIN (wave 17, ADDED - measured, never judged): the building kit's roof plant and near-culled street
+       detail, and the scene kit's trees, through the page's own __tc3dExterior() / __tc3dSceneKit() */
+    m.kits = await pg.evaluate(() => ({
+      ext: typeof window.__tc3dExterior === 'function' ? window.__tc3dExterior() : null,
+      scene: typeof window.__tc3dSceneKit === 'function' ? window.__tc3dSceneKit() : null }));
+    /* SCENES END */
     const fails = [];
     const halls = CAMPUSES[slug].halls.length;
     const flagship = CAMPUSES[slug].flagship === true;
@@ -190,6 +196,14 @@ async function main() {
       + r.dressing.furniture.map((f) => `${f.count} ${f.name.replace('bd-', '')}`).join(', ')
       + `, +${r.dressing.drawCalls} draw calls, +${r.dressing.tris.toLocaleString()} triangles` + (r.frameMs ? `, ${r.frameMs} ms/frame` : ''));
     /* BUILD END */
+    /* SCENES BEGIN (wave 17) */
+    for (const r of rows) if (r.kits && (r.kits.ext || r.kits.scene)) {
+      const e = r.kits.ext, k = r.kits.scene;
+      console.log(`  ${r.campus.padEnd(16)} kits: ` + (e ? `${e.roofPlant} roof units + ${e.vents} vents (${e.noDeck} roofs without a deck), `
+        + `${e.roofTris.toLocaleString()} roof tris in ${e.roofCalls} calls; street detail ${e.trimInstances} instances, drawn now ${e.trimDrawn}` : 'no building kit')
+        + (k ? `; ${k.trees} trees, ${k.treeTris.toLocaleString()} tris in ${k.calls} call` : ''));
+    }
+    /* SCENES END */
     console.log(`\n${SLUGS.length} campuses scored, ${bad} over a cap or, on the flagship, under a floor` + (errs.length ? `, ${errs.length} page error(s)` : ', no page errors'));
     for (const e of errs.slice(0, 5)) console.log('  page error: ' + e);
   }

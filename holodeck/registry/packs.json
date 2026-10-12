@@ -430,7 +430,7 @@
     },
     {
      "path": "layers/registry/layers.json",
-     "sha256": "a2e54016152b4c91"
+     "sha256": "b047fe0bc4da27fa"
     }
    ],
    "status": "SHIPPING",
@@ -453,7 +453,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "b40e3d5a25b6fc3f"
+     "sha256": "0390288843a7ea0e"
     }
    ],
    "status": "SHIPPING",
@@ -477,7 +477,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "b40e3d5a25b6fc3f"
+     "sha256": "0390288843a7ea0e"
     }
    ],
    "status": "SHIPPING",
@@ -501,7 +501,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "b40e3d5a25b6fc3f"
+     "sha256": "0390288843a7ea0e"
     }
    ],
    "status": "SHIPPING",
@@ -525,7 +525,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "b40e3d5a25b6fc3f"
+     "sha256": "0390288843a7ea0e"
     }
    ],
    "status": "PROPOSED",
@@ -549,7 +549,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "b40e3d5a25b6fc3f"
+     "sha256": "0390288843a7ea0e"
     }
    ],
    "status": "SHIPPING",
@@ -573,7 +573,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "b40e3d5a25b6fc3f"
+     "sha256": "0390288843a7ea0e"
     }
    ],
    "status": "SHIPPING",
@@ -597,7 +597,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "b40e3d5a25b6fc3f"
+     "sha256": "0390288843a7ea0e"
     }
    ],
    "status": "SHIPPING",
@@ -624,7 +624,7 @@
     },
     {
      "path": "layers/registry/layers.json",
-     "sha256": "a2e54016152b4c91"
+     "sha256": "b047fe0bc4da27fa"
     }
    ],
    "status": "SHIPPING",
@@ -863,7 +863,7 @@
    "sources": [
     {
      "path": "hive/registry/hive.json",
-     "sha256": "59b724a9f5b244fc"
+     "sha256": "7920eb25d78a84cc"
     }
    ],
    "status": "SHIPPING",

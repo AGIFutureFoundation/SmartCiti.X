@@ -123,6 +123,327 @@ assert all(q['merges'] == 'pooled' for q in INTERIOR_KIT['pieces']), 'interior k
 _ik_bad = sorted({i for v in INTERIOR_KIT['byDistrict'].values() for ids in v.values() for i in ids} - _ik_ids)
 assert not _ik_bad, f'interior kit: district rows name undeclared pieces: {_ik_bad}'
 assert set(INTERIOR_KIT['byDistrict']) == set(districts_reg), 'interior kit: the district rows are not the districts of unions/registry'
+# SCENES BEGIN (wave 17 B): the building kit outside - roof plant on every hall with a deck, and near-culled street
+# detail (door hood, glazing mullions). Page-side blocks are marked EXTERIOR-KIT (neutral). Every figure here is
+# this kit's own AUTHORED SCHEMATIC dimension or culling rule; no ceiling, target or cap is read or moved by them.
+# The glazing rows restate hallkit's campus-scale glazing (web/hallkit.py) and web/test_scenes.mjs holds them to it.
+EXTERIOR_KIT = {
+    'nearM': 70, 'eyeMaxM': 30, 'mullionEveryM': 2.4,
+    'decks': {'parapet': .15, 'monitor': .27, 'highbay': .27},
+    'hvac': {'w': 2.2, 'h': 1.1, 'd': 1.6, 'fanR': .45, 'fanSeg': 8},
+    'vent': {'w': .28, 'h': .7, 'capW': .55},
+    'hood': {'depth': 1.1, 't': .12, 'over': .4, 'lift': .3, 'tilt': .08},
+    'glaze': {'band': {'y': .58, 'h': .12, 'min': .6}, 'ribbon': {'y': .42, 'h': .07, 'min': .4},
+              'clerestory': {'y': .86, 'h': .1, 'min': .5}, 'punched': {'y': .55, 'h': 0, 'min': .5}},
+}
+from hallkit import ROOFS as _EK_ROOFS, GLAZES as _EK_GLAZES  # noqa: E402
+assert set(EXTERIOR_KIT['decks']) < set(_EK_ROOFS), 'exterior kit: a deck names a roof hallkit does not build'
+assert set(EXTERIOR_KIT['glaze']) == set(_EK_GLAZES), 'exterior kit: the glazing rows are not hallkit\'s glazing types'
+EXTERIOR_KIT_JS = r"""/* ------------------------------------------------- the building kit, outside ----
+   Three things a hall's outside was missing, each ONE InstancedMesh per
+   campus on the page's own shared metal (no new material, no new program):
+
+   ROOF PLANT (drawn from every view). A packaged rooftop unit and a cowl
+   vent on every hall whose AUTHORED archetype (web/hallkit.py) has a deck
+   to stand them on - parapet, monitor and high-bay roofs - placed clear of
+   the archetype's own plant and of its monitor or high bay. Pitched,
+   sawtooth and barrel roofs carry none: there is no deck. SCHEMATIC.
+
+   STREET DETAIL (drawn near the eye only). A hood on brackets over the
+   front roll-up door, sized from the hall's own door class exactly as
+   hallkit sizes the door, and mullions, a sill and a head across the
+   glazing hallkit draws on the back wall, at its own height for its own
+   glazing type. These read from the ground and not from an orbit, so they
+   are DISTANCE-CULLED per building: a building's instances are in the
+   mesh only while the eye is within nearM of it and no higher than
+   eyeMaxM. The campus views the campus ceilings are scored on, a camera
+   hundreds of metres out, draw none of it; the matrices are rewritten only
+   when the set of near buildings changes. */
+const EK = D.exteriorKit;
+let ekTrim = null, ekStat = null;
+const _ekEye = new THREE.Vector3(), _ekM = new THREE.Matrix4(), _ekL = new THREE.Matrix4();
+const _ekQ = new THREE.Quaternion(), _ekS = new THREE.Vector3(), _ekP = new THREE.Vector3();
+const _ekE = new THREE.Euler();
+let ekGeo = null;
+// the three shapes, built once for the page: unit box (trim), rooftop unit, cowl vent
+function ekShapes() {
+  if (ekGeo) return ekGeo;
+  const unit = new THREE.BoxGeometry(1, 1, 1);
+  const body = new THREE.BoxGeometry(EK.hvac.w, EK.hvac.h, EK.hvac.d);
+  body.translate(0, EK.hvac.h / 2, 0);
+  const fan = new THREE.CylinderGeometry(EK.hvac.fanR, EK.hvac.fanR, .14, EK.hvac.fanSeg, 1, true);
+  fan.translate(EK.hvac.w * .2, EK.hvac.h + .07, 0);
+  const stem = new THREE.BoxGeometry(EK.vent.w, EK.vent.h, EK.vent.w);
+  stem.translate(0, EK.vent.h / 2, 0);
+  const cap = new THREE.BoxGeometry(EK.vent.capW, .1, EK.vent.capW);
+  cap.translate(0, EK.vent.h + .05, 0);
+  const strip = (g) => { g.deleteAttribute('uv'); return g; };
+  ekGeo = { unit: strip(unit), hvac: mergeGeometries([body, fan].map(strip)), vent: mergeGeometries([stem, cap].map(strip)) };
+  [body, fan, stem, cap].forEach((g) => g.dispose());
+  for (const g of Object.values(ekGeo)) g.userData.shared = true;   // page-wide, like the shared materials
+  return ekGeo;
+}
+const ekTris = (g) => g.index.count / 3;
+// where a hall's deck plant stands, in the building's own frame (door toward -z); null = no deck
+function ekRoofSpots(a, W, Dp, H) {
+  const deck = EK.decks[a.roof];
+  if (deck === undefined) return null;
+  const y = H + deck;
+  // clear of the archetype's own plant (x = W*.3, z between -D*.2 and D*.2), its solar rows (x below W*.05,
+  // z near +-D*.3), its monitor (|x| under W*.15) and its high bay (x below W*.07)
+  return { hvac: a.roof === 'highbay' ? [W * .3, y, -Dp * .38] : [-W * .3, y, 0], vent: [W * .3, y, Dp * .4] };
+}
+// the street detail of one hall, as unit-box instances in the building's frame
+function ekTrimOf(a, W, Dp, H) {
+  const s = W / 36, out = [];
+  const bar = (w, h, d, x, y, z, rx = 0) => out.push([w, h, d, x, y, z, rx]);
+  // the hood over the front roll-up door - hallkit's own door rule at campus scale
+  const dw = Math.min(a.door.w * s, W * .3), dh = Math.min(a.door.h * s, H * .8);
+  const zf = -Dp / 2 - .42, hd = EK.hood.depth;
+  bar(dw + EK.hood.over * 2, EK.hood.t, hd, W * .28, dh + EK.hood.lift, zf - hd / 2, -EK.hood.tilt);
+  for (const sx of [-1, 1])
+    bar(.08, .08, hd * 1.05, W * .28 + sx * (dw / 2 + EK.hood.over - .1), dh + EK.hood.lift - .25, zf - hd / 2, .5);
+  // the back wall's glazing, at hallkit's own height for its own glazing type
+  const gl = EK.glaze[a.glaze];
+  if (!gl) throw new Error('the exterior kit reads no glazing rule for ' + a.glaze);
+  const gy = H * gl.y, gh = Math.max(gl.min, H * gl.h), gw = W * .8, zb = Dp / 2 + .132 + .03;
+  const n = Math.max(2, Math.round(gw / EK.mullionEveryM));
+  for (let i = 1; i < n; i++) bar(.07, gh, .06, -gw / 2 + i * gw / n, gy, zb);
+  bar(gw + .2, .09, .1, 0, gy - gh / 2 - .045, zb + .02);   // sill
+  bar(gw + .2, .07, .08, 0, gy + gh / 2 + .035, zb + .01);  // head
+  return out;
+}
+// one campus: the roof families drawn always, the trim near-culled. `boards` is the campus
+// dressing's own list of the halls built on this campus (bdCamp.boards), each with its group.
+function ekDressCampus(g, boards) {
+  const G = ekShapes();
+  g.updateWorldMatrix(true, false);
+  const inv = new THREE.Matrix4().copy(g.matrixWorld).invert();
+  const hv = [], vt = [], trim = [], ranges = [], spots = [];
+  let skipped = 0, solidN = 0;
+  for (const b of boards) {
+    const a = b.h.arch;
+    b.bg.updateWorldMatrix(true, false);
+    const B = new THREE.Matrix4().multiplyMatrices(inv, b.bg.matrixWorld);   // building -> campus
+    const sp = ekRoofSpots(a, b.w, b.d, b.hgt);
+    if (sp) {
+      hv.push(B.clone().multiply(_ekL.makeTranslation(...sp.hvac)));
+      vt.push(B.clone().multiply(_ekL.makeTranslation(...sp.vent)));
+    } else skipped++;
+    const t0 = trim.length;
+    // the building's street detail, then the campus kit's street furniture at its door (one run per building)
+    for (const [w, h, d, x, y, z, rx] of [...ekTrimOf(a, b.w, b.d, b.hgt), ...skStreetOf(a, b.w, b.d, b.hgt)]) {
+      _ekQ.setFromEuler(_ekE.set(rx, 0, 0));
+      trim.push(B.clone().multiply(_ekM.compose(_ekP.set(x, y, z), _ekQ, _ekS.set(w, h, d))));
+    }
+    ranges.push([t0, trim.length - t0]);
+    solidN += skStreetSolids(a, b.w, b.d, B);    // the rack's hoops and the pole stop the walker
+    spots.push(new THREE.Vector3(0, 0, 0).applyMatrix4(B));
+  }
+  const fam = (geo, list, name) => {
+    if (!list.length) return null;
+    const im = new THREE.InstancedMesh(geo, mat.metal, list.length);
+    list.forEach((m, i) => im.setMatrixAt(i, m));
+    im.instanceMatrix.needsUpdate = true;
+    im.castShadow = false; im.receiveShadow = true; im.name = name;
+    im.computeBoundingSphere();
+    g.add(im);
+    return im;
+  };
+  const roof = [fam(G.hvac, hv, 'ek-hvac'), fam(G.vent, vt, 'ek-vent')].filter(Boolean);
+  ekTrim = null;
+  if (trim.length) {
+    const im = new THREE.InstancedMesh(G.unit, mat.metal, trim.length);
+    im.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    const full = new Float32Array(trim.length * 16);
+    trim.forEach((m, i) => m.toArray(full, i * 16));
+    im.instanceMatrix.array.set(full);
+    im.castShadow = false; im.receiveShadow = true; im.name = 'ek-trim';
+    im.userData.exteriorKit = { full, ranges, spots, mask: null };
+    g.add(im);
+    ekTrim = im;
+  }
+  ekStat = { halls: boards.length, roofPlant: hv.length, vents: vt.length, noDeck: skipped,
+             trimInstances: trim.length, streetSolids: solidN, calls: roof.length + (ekTrim ? 1 : 0), roofCalls: roof.length,
+             roofTris: hv.length * ekTris(G.hvac) + vt.length * ekTris(G.vent),
+             trimTris: trim.length * ekTris(G.unit), nearM: EK.nearM, eyeMaxM: EK.eyeMaxM };
+  return ekStat;
+}
+// which buildings are near the eye (the eye in the campus group's frame)
+function ekNear(u, e) {
+  let mask = '';
+  for (const p of u.spots) mask += e.y <= EK.eyeMaxM && Math.hypot(p.x - e.x, p.z - e.z) <= EK.nearM ? '1' : '0';
+  return mask;
+}
+function ekCull(im, e) {
+  const u = im.userData.exteriorKit, mask = ekNear(u, e);
+  if (mask === u.mask) return false;
+  u.mask = mask;
+  const arr = im.instanceMatrix.array;
+  let n = 0;
+  u.ranges.forEach(([s, c], i) => {
+    if (mask[i] === '1') { arr.set(u.full.subarray(s * 16, (s + c) * 16), n * 16); n += c; }
+  });
+  im.count = n;
+  im.instanceMatrix.needsUpdate = true;
+  im.boundingSphere = null;                  // recomputed over the instances now drawn
+  im.visible = n > 0;
+  return true;
+}
+function ekStep() {
+  if (!ekTrim || !ekTrim.parent || view !== 'campus') return;
+  ekTrim.parent.updateWorldMatrix(true, false);
+  ekCull(ekTrim, ekTrim.parent.worldToLocal(_ekEye.copy(eyePos())));
+}
+window.__tc3dExterior = () => {
+  if (!ekStat) return null;
+  const u = ekTrim && ekTrim.userData.exteriorKit;
+  return { ...ekStat, nearBuildings: u && u.mask ? [...u.mask].filter((c) => c === '1').length : 0,
+           trimDrawn: ekTrim && ekTrim.visible ? ekTrim.count : 0 };
+};
+"""
+# SCENES END
+# SCENES BEGIN (wave 17 C): the campus scene kit - plaza trees in planters (drawn always) and street furniture at
+# every hall's door (bike rack, wayfinding pole) riding in the building kit's near-culled trim. Page-side blocks are
+# marked SCENE-KIT (neutral). AUTHORED SCHEMATIC dimensions and placement rules only; no ceiling is read or moved.
+SCENE_KIT = {
+    'ringR': 38, 'ringStepDeg': 15, 'clearM': 1.5, 'lampClearM': 4, 'streetEveryM': 18, 'streetMax': 24,
+    'tree': {'planterW': 1.4, 'planterH': .5, 'trunkR': .16, 'trunkH': 1.6, 'trunkSeg': 5, 'crownR': 1.7, 'crownSquash': 1.15},
+    'rack': {'hoops': 3, 'pitchM': .8, 'h': .8, 'w': .7, 'offM': 1.6},
+    'pole': {'h': 2.8, 'bladeW': .9, 'bladeH': .3, 'offM': 6},
+}
+SCENE_KIT_JS = r"""/* ------------------------------------------------- the campus, dressed ------
+   PLAZA AND STREET TREES (drawn from every view). A ring of trees in square
+   planters round each campus plaza, between the bench circle and the halls
+   - every AUTHORED ringStepDeg on a circle of ringR metres - and a row along
+   the side of each lit street and walk the lamps do not stand on, every
+   streetEveryM, at most streetMax a campus. A spot is taken only if
+   it keeps clear of every road and walk the plan lays, every lot, every
+   street lamp and every solid disc the grounds already hold. ONE InstancedMesh per campus:
+   planter, trunk and crown are one geometry coloured per vertex on the
+   page's shared vertex-colour material. Each tree is SOLID through the
+   grounds' own campusSolid(), as the lamps and benches are. SCHEMATIC.
+
+   STREET FURNITURE (drawn near the eye only). Beside every hall's door a
+   three-hoop bike rack, and at the walk end a wayfinding pole carrying two
+   blades. They are unit-box instances appended to each building's run in
+   the building kit's near-culled trim mesh, so they cost no draw call of
+   their own and appear and go exactly as that building's other street
+   detail does. They are SOLID, as the lamps and benches are: one
+   campusSolid() disc per hoop (its own half-width) and one for the pole,
+   recorded in the campus frame where the building's lot puts them, so the
+   walker goes round them whether or not they are drawn at that moment. */
+const SK = D.sceneKit;
+let skStat = null, skGeo = null;
+function skTreeGeo() {
+  if (skGeo) return skGeo;
+  const T = SK.tree, col = (g, hex) => {
+    const c = new THREE.Color(hex), n = g.attributes.position.count, a = new Float32Array(n * 3);
+    for (let i = 0; i < n; i++) { a[i * 3] = c.r; a[i * 3 + 1] = c.g; a[i * 3 + 2] = c.b; }
+    g.setAttribute('color', new THREE.BufferAttribute(a, 3));
+    g.deleteAttribute('uv');
+    return g;
+  };
+  const box = new THREE.BoxGeometry(T.planterW, T.planterH, T.planterW);
+  box.translate(0, T.planterH / 2, 0);
+  const trunk = new THREE.CylinderGeometry(T.trunkR * .8, T.trunkR, T.trunkH, T.trunkSeg, 1, true);
+  trunk.translate(0, T.planterH + T.trunkH / 2, 0);
+  const crown = new THREE.IcosahedronGeometry(T.crownR, 0);
+  crown.scale(1, T.crownSquash, 1);
+  crown.translate(0, T.planterH + T.trunkH + T.crownR * T.crownSquash * .6, 0);
+  const parts = [col(box, mat.block.color), col(trunk, mat.wood.color), col(crown, mat.veg.color)];
+  // IcosahedronGeometry is non-indexed and the others indexed: one form before merging
+  const flat = parts.map((g) => (g.index ? g.toNonIndexed() : g));
+  skGeo = mergeGeometries(flat);
+  new Set([...parts, ...flat]).forEach((g) => g.dispose());
+  skGeo.userData.shared = true;
+  return skGeo;
+}
+// the plaza ring: spots clear of roads, lots, lamps and the plaza's beacons
+function skTreeSpots(roads, rects, lamps, discs, lit = []) {
+  const out = [], m = SK.clearM;
+  const onRoad = (x, z) => roads.some((r) => Math.abs(x - r.u) < r.w / 2 + m && Math.abs(z - r.v) < r.h / 2 + m);
+  const onLot = (x, z) => rects.some((b) => Math.abs(x - b.u) < b.hw + m && Math.abs(z - b.v) < b.hd + m);
+  const nearLamp = (x, z) => lamps.some(([a, b]) => Math.hypot(x - a, z - b) < SK.lampClearM);
+  const n = Math.round(360 / SK.ringStepDeg);
+  for (let i = 0; i < n; i++) {
+    const th = (i + .5) / n * Math.PI * 2, x = Math.cos(th) * SK.ringR, z = Math.sin(th) * SK.ringR;
+    if (onRoad(x, z) || onLot(x, z) || nearLamp(x, z)) continue;
+    if (discs.some((d) => d.r !== undefined && Math.hypot(x - d.u, z - d.v) < d.r + m + SK.tree.planterW / 2)) continue;
+    out.push([x, z, th]);
+  }
+  // the street rows: the side opposite the lamps (which stand at +w/2 + 1.1), just outside the kerb margin
+  let k = 0;
+  for (const r of lit.filter((q) => q.w >= 5 || q.h >= 5)) {
+    const alongZ = r.h >= r.w, len = alongZ ? r.h : r.w, n = Math.floor((len - 8) / SK.streetEveryM) + 1;
+    for (let i = 0; i < n && k < SK.streetMax; i++) {
+      const t = -len / 2 + 4 + (n === 1 ? (len - 8) / 2 : i * (len - 8) / (n - 1));
+      const off = (alongZ ? r.w : r.h) / 2 + m + .1;                 // just clear of its own kerb margin
+      const x = alongZ ? r.u - off : r.u + t, z = alongZ ? r.v + t : r.v - off;
+      if (Math.hypot(x, z) < SK.ringR + 4) continue;                 // the plaza ring has its own
+      if (onRoad(x, z) || onLot(x, z) || nearLamp(x, z)) continue;
+      if (discs.some((d) => d.r !== undefined && Math.hypot(x - d.u, z - d.v) < d.r + m + SK.tree.planterW / 2)) continue;
+      if (out.some(([a, b]) => Math.hypot(x - a, z - b) < SK.streetEveryM * .6)) continue;
+      out.push([x, z, alongZ ? 0 : Math.PI / 2]); k++;
+    }
+  }
+  return out;
+}
+function skDressCampus(g, roads, rects, lit) {
+  const lampsMesh = g.children.find((o) => o.name === 'bd-lamps');
+  const lamps = [], M = new THREE.Matrix4(), P = new THREE.Vector3();
+  for (let i = 0; lampsMesh && i < lampsMesh.count; i++) { lampsMesh.getMatrixAt(i, M); P.setFromMatrixPosition(M); lamps.push([P.x, P.z]); }
+  // and every disc the grounds already hold solid (the yard's mast, stand posts, the lamps and benches)
+  const discs = solids.length && solids[0].props ? solids[0].rects.slice() : [];
+  const spots = skTreeSpots(roads, rects, lamps, discs, lit);
+  let trees = null;
+  if (spots.length) {
+    const geo = skTreeGeo();
+    trees = new THREE.InstancedMesh(geo, ikMat, spots.length);
+    const Q = new THREE.Quaternion(), Y = new THREE.Vector3(0, 1, 0), S = new THREE.Vector3(1, 1, 1);
+    spots.forEach(([x, z, th], i) => {
+      const k = .85 + .3 * ((i * 7919) % 13) / 12;               // AUTHORED spread of sizes, no randomness
+      Q.setFromAxisAngle(Y, th); S.set(k, k, k); M.compose(P.set(x, 0, z), Q, S); trees.setMatrixAt(i, M);
+      campusSolid(x, z, SK.tree.planterW * .72);
+    });
+    trees.instanceMatrix.needsUpdate = true; trees.computeBoundingSphere();
+    trees.castShadow = false; trees.receiveShadow = true; trees.name = 'sk-trees';
+    g.add(trees);
+  }
+  skStat = { trees: spots.length, treeTris: spots.length * (trees ? trees.geometry.attributes.position.count / 3 : 0),
+             calls: trees ? 1 : 0 };
+  return skStat;
+}
+// a hall's street furniture, as unit-box instances in its own frame (door toward -z), appended to its trim
+function skStreetOf(a, W, Dp, H) {
+  const out = [], R = SK.rack, P2 = SK.pole;
+  const bar = (w, h, d, x, y, z) => out.push([w, h, d, x, y, z, 0]);
+  // the rack, on the far side of the entrance from the roll-up door, along the wall
+  const rx = -W * .28, rz = -Dp / 2 - R.offM;
+  for (let i = 0; i < R.hoops; i++) {
+    const x = rx + (i - (R.hoops - 1) / 2) * R.pitchM;
+    for (const s of [-1, 1]) bar(.05, R.h, .05, x, R.h / 2, rz + s * R.w / 2);
+    bar(.05, .05, R.w + .05, x, R.h, rz);
+  }
+  // the wayfinding pole, at the walk end in front of the main entrance, off the door line
+  const px = W * .12, pz = -Dp / 2 - P2.offM;
+  bar(.1, P2.h, .1, px, P2.h / 2, pz);
+  bar(P2.bladeW, P2.bladeH, .05, px + P2.bladeW / 2, P2.h - .35, pz);
+  bar(.05, P2.bladeH, P2.bladeW, px, P2.h - .35 - P2.bladeH - .12, pz - P2.bladeW / 2);
+  return out;
+}
+// the street furniture's footprint as discs in the campus frame (B: building -> campus), each recorded solid
+function skStreetSolids(a, W, Dp, B) {
+  const R = SK.rack, out = [], v = new THREE.Vector3();
+  const rx = -W * .28, rz = -Dp / 2 - R.offM;
+  for (let i = 0; i < R.hoops; i++) out.push([rx + (i - (R.hoops - 1) / 2) * R.pitchM, rz, R.w / 2 + .05]);
+  out.push([W * .12, -Dp / 2 - SK.pole.offM, .12]);
+  for (const [x, z, r] of out) { v.set(x, 0, z).applyMatrix4(B); campusSolid(v.x, v.z, r); }
+  return out.length;
+}
+window.__tc3dSceneKit = () => (skStat ? { ...skStat } : null);
+"""
+# SCENES END
 INTERIOR_KIT_JS = r"""/* ------------------------------------------------ the district fit-out ----
    props/registry/props.json carries a second catalogue the halls never
    stood: crib_furniture, one piece for the work each district tool is done
@@ -1277,6 +1598,8 @@ DATA = json.dumps({
     },
     # SCENES BEGIN (wave 17 A): the district fit-out pieces and their per-district rows
     'interiorKit': INTERIOR_KIT,
+    'exteriorKit': EXTERIOR_KIT,
+    'sceneKit': SCENE_KIT,
     # SCENES END
     'i18n': I18N,
 }, ensure_ascii=False, separators=(',', ':'))
@@ -11222,6 +11545,12 @@ function flushProps(g) {
 /* INTERIOR-KIT BEGIN (wave 17) */
 __INTERIOR_KIT_JS__
 /* INTERIOR-KIT END */
+/* EXTERIOR-KIT BEGIN (wave 17) */
+__EXTERIOR_KIT_JS__
+/* EXTERIOR-KIT END */
+/* SCENE-KIT BEGIN (wave 17) */
+__SCENE_KIT_JS__
+/* SCENE-KIT END */
 // the hall's own price, and the ceiling it was held to - both read, neither
 // typed: the ceiling comes out of web/eval_scene.mjs at build time
 window.__tc3dHall = () => hallCost && { ...hallCost, by: { ...hallCost.by } };
@@ -13993,6 +14322,8 @@ function buildCampus(key) {
   flushBeacons(beaconAt.filter(Boolean), campusGroup);
   flushKit(campusGroup);
   /* DRESSING BEGIN (wave 16 B2) */ bdCampStat = bdDressCampus(campusGroup, rr); /* DRESSING END */
+  /* EXTERIOR-KIT BEGIN (wave 17) */ ekDressCampus(campusGroup, bdCamp.boards); /* EXTERIOR-KIT END */
+  /* SCENE-KIT BEGIN (wave 17) */ skDressCampus(campusGroup, bdCamp.roads, bdCamp.rects, bdCamp.lit); /* SCENE-KIT END */
   const plaza = new THREE.Mesh(new THREE.CylinderGeometry(24, 24, .3, 48),
     new THREE.MeshStandardMaterial({ map: concreteTex, color: 0xb8bdbd, roughness: .95 }));
   plaza.position.y = .15; plaza.receiveShadow = true; campusGroup.add(plaza);
@@ -16993,6 +17324,7 @@ renderer.setAnimationLoop(() => {
     controls.update();
   advisorProximity(dt);
   /* INTERIOR-KIT BEGIN (wave 17) */ ikStep(); /* INTERIOR-KIT END */
+  /* EXTERIOR-KIT BEGIN (wave 17) */ ekStep(); /* EXTERIOR-KIT END */
   faunaStep(clock.elapsedTime, dt);
   labelStep(dt);
   questStep(dt);
@@ -17502,6 +17834,8 @@ page = page.replace('__RESPOND_JS__', RESPOND_JS)
 page = page.replace('__AVATAR_JS__', AVATAR_JS)
 # SCENES BEGIN (wave 17 A)
 page = page.replace('__INTERIOR_KIT_JS__', INTERIOR_KIT_JS, 1)
+page = page.replace('__EXTERIOR_KIT_JS__', EXTERIOR_KIT_JS, 1)
+page = page.replace('__SCENE_KIT_JS__', SCENE_KIT_JS, 1)
 # SCENES END
 page = page.replace('__ADVISOR_JS__', ADVISOR_JS)
 page = page.replace('__GROUND_TRUTH_JS__', GROUND_TRUTH_JS)
