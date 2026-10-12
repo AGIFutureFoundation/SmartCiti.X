@@ -9,7 +9,8 @@
 import { AuditLog } from '../bus/audit.mjs';
 import { Bus } from '../bus/bus.mjs';
 import { loadIndex, canEnter, enter, grantOverride, SafetyLedger, PERMIT_CLASSES, PREFIX } from './gate.mjs';
-import { buildFixtures, fullLearner, fullContext, people, T0, TENANT, LEARNER } from './bypass_fixtures.mjs';
+import { buildFixtures, fullLearner, fullContext, people, ISSUER, PROVENANCE_ATTACKS, T0, TENANT, LEARNER } from './bypass_fixtures.mjs';
+import { createIssuer } from './gate.mjs';
 
 let n = 0; let failed = 0;
 const ok = (cond, msg, detail = '') => {
@@ -22,7 +23,7 @@ const index = loadIndex();
 const world = () => {
   let now = T0;
   const audit = new AuditLog({ clock: () => now, limit: Number.MAX_SAFE_INTEGER });
-  const ledger = new SafetyLedger({ audit, clock: () => now });
+  const ledger = new SafetyLedger({ audit, clock: () => now, issuer: ISSUER });
   return { index, ledger, audit, set: (t) => { now = t; } };
 };
 
@@ -106,12 +107,49 @@ ok(viaOverride.length > 0 && auditMiss.length === 0,
 ok(results.filter((r) => r.d.allow && r.d.via === 'override').every((r) => r.w.ledger.rows(`${PREFIX}allow`).some((e) => e.after.override_id === r.d.override_id)),
   'every override-admission is also recorded as a gate allow row naming the override');
 const refusedOverrides = results.filter((r) => ['learner-self-override', 'peer-learner-override', 'mentor-agent-override', 'agent-with-instructor-role', 'hall-admin-override',
-  'support-override', 'forged-principal-override', 'unassigned-instructor-override', 'cross-tenant-instructor-override',
+  'support-override', ...PROVENANCE_ATTACKS.map(([f]) => `${f}-override`), 'unassigned-instructor-override', 'cross-tenant-instructor-override',
   'override-no-reason', 'override-whitespace-reason', 'override-too-long'].includes(r.f.family));
 ok(refusedOverrides.every((r) => r.w.ledger.rows(`${PREFIX}override.refused`).length > 0 && r.w.ledger.rows(`${PREFIX}override.granted`).length === 0),
   `refused override requests are logged as refused and never as granted (${refusedOverrides.length} attempts)`);
 ok(results.filter((r) => !r.err && r.w.ledger.rows(`${PREFIX}override.granted`).length).every((r) => r.f.family === 'override-tampered-ledger' || r.w.ledger.verify().ok),
   'the chained log verifies after every fixture that was not deliberately tampered');
+
+/* ---------------------------------------------------- provenance --- */
+{
+  const prov = results.filter((r) => PROVENANCE_ATTACKS.some(([f]) => r.f.family === `${f}-override` || r.f.family === `${f}-permit`));
+  const fam = new Set(prov.map((r) => r.f.family.replace(/-(override|permit)$/, '')));
+  ok(fam.size === PROVENANCE_ATTACKS.length && prov.every((r) => !r.d.allow),
+    `provenance attacks refused at override AND permit issuance (${prov.length} attempts, ${fam.size} families: forged full-caps, authz.principal() direct, spread/cloned/structuredClone copies, thawed copy, second issuer)`);
+  const rowsOf = (r, a) => r.w.ledger.rows(`${PREFIX}${a}`);
+  ok(prov.every((r) => {
+    const kind = r.f.family.endsWith('-override') ? 'override' : 'permit';
+    const refused = rowsOf(r, `${kind}.refused`).filter((e) => /provenance/.test(e.why));
+    const granted = kind === 'override' ? rowsOf(r, 'override.granted').length
+      : rowsOf(r, 'permit.issued').filter((e) => e.actor !== people.instructor.id || e.after.actor !== people.instructor.id).length;
+    return refused.length > 0 && granted === 0 && r.w.ledger.verify().ok;
+  }), 'every provenance refusal is audited on the chained log (naming provenance) and nothing is granted to the impostor');
+
+  const w = world(); const t = haz.find((x) => x.kind === 'station');
+  const req = (actor) => grantOverride(w.ledger, index, { actor, learner: LEARNER, learnerTenant: TENANT,
+    target: t.id, reason: 'supervised first entry, instructor at elbow', minutes: 10 });
+  ok(people.forgedInstructor.caps.length === people.instructor.caps.length && !req(people.forgedInstructor).ok,
+    'a hand-built principal with the complete ROLES.instructor capability set is refused');
+  ok(!req(people.authzInstructor).ok && /provenance/.test(req(people.authzInstructor).why),
+    'a principal from security/authz.mjs principal() with roles [instructor], not minted by the issuer, is refused');
+  ok(!req(people.rogueIssuerInstructor).ok && createIssuer().vouches(people.instructor) === false,
+    'a principal minted by a different issuer is refused, and a fresh issuer does not vouch for ours');
+  ok(Object.isFrozen(people.instructor) && ISSUER.vouches(people.instructor) && req(people.instructor).ok,
+    'the issuer-minted instructor is frozen, vouched for, and still grants a legitimate override');
+  const bare = new SafetyLedger({ audit: new AuditLog({ clock: () => T0, limit: Number.MAX_SAFE_INTEGER }), clock: () => T0 });
+  ok(!grantOverride(bare, index, { actor: people.instructor, learner: LEARNER, learnerTenant: TENANT, target: t.id,
+    reason: 'supervised first entry, instructor at elbow', minutes: 10 }).ok && bare.rows(`${PREFIX}override.refused`).length === 1,
+    'a ledger built without an issuer refuses every override (fail closed) and audits the refusal');
+  let threw = false; try { new SafetyLedger({ issuer: { mint() {}, vouches: () => true } }); } catch { threw = true; }
+  ok(threw, 'a ledger cannot be constructed with a look-alike issuer object');
+  const hostile = new Proxy({}, { get() { throw new Error('boom'); } });
+  let r2; try { r2 = req(hostile); } catch (e) { r2 = { ok: true, why: e.message }; }
+  ok(!r2.ok, 'a hostile principal (throwing getters) is refused and audited, not crashed on');
+}
 
 /* ------------------------------------------------- chain tampering --- */
 {
@@ -160,7 +198,7 @@ ok(results.filter((r) => !r.err && r.w.ledger.rows(`${PREFIX}override.granted`).
 
   const audit = new AuditLog(); const bus = new Bus({ audit });
   const seen = []; bus.subscribe('override.applied', 'console', (m) => seen.push(m));
-  const ledger = new SafetyLedger({ audit, bus, clock: () => T0 });
+  const ledger = new SafetyLedger({ audit, bus, clock: () => T0, issuer: ISSUER });
   grantOverride(ledger, index, { actor: people.instructor, learner: LEARNER, learnerTenant: TENANT,
     target: t.id, reason: 'supervised first entry at this bay', minutes: 10 });
   ok(seen.length === 1 && seen[0].role === 'instructor_ui' && seen[0].payload.kind === 'safety_gate.override',

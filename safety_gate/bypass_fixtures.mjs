@@ -10,8 +10,8 @@
  * where run() returns the gate decision. `world` is a fresh ledger + clock +
  * index per fixture (see test.mjs), so fixtures cannot leak state into each other.
  */
-import { principal } from '../security/authz.mjs';
-import { grantOverride, issuePermit, enter, GATE, TIERS } from './gate.mjs';
+import { principal, ROLES } from '../security/authz.mjs';
+import { grantOverride, issuePermit, enter, createIssuer, GATE, TIERS } from './gate.mjs';
 
 export const T0 = Date.UTC(2026, 9, 12, 9, 0, 0);
 const MIN = 60000;
@@ -21,18 +21,42 @@ export const TENANT = 'hall-tenant-a';
 export const LEARNER = 'lrn-ada';
 export const OTHER = 'lrn-bo';
 
+/**
+ * The gate's issuer: the stand-in for the console's authenticated login. Every
+ * world's ledger is built with it (see test.mjs). ROGUE is a second, unrelated
+ * issuer - a principal it mints carries no authority at this gate.
+ */
+export const ISSUER = createIssuer({ name: 'console-login' });
+export const ROGUE = createIssuer({ name: 'rogue' });
+const principalOf = (spec) => ISSUER.mint(spec);
+
+const realInstructor = principalOf({ id: 'ins-kim', tenant: TENANT, roles: ['instructor'], assigned: [LEARNER, OTHER] });
+const deepCopy = (p) => ({ ...p, roles: [...p.roles], caps: [...p.caps], assigned: [...p.assigned] });
+const deepFreezeCopy = (p) => Object.freeze({ ...p, roles: Object.freeze([...p.roles]),
+  caps: Object.freeze([...p.caps]), assigned: Object.freeze([...p.assigned]) });
+
 export const people = Object.freeze({
-  instructor: principal({ id: 'ins-kim', tenant: TENANT, roles: ['instructor'], assigned: [LEARNER, OTHER] }),
-  instructorUnassigned: principal({ id: 'ins-rae', tenant: TENANT, roles: ['instructor'], assigned: [OTHER] }),
-  instructorOtherTenant: principal({ id: 'ins-lou', tenant: 'hall-tenant-b', roles: ['instructor'], assigned: [LEARNER] }),
-  learnerSelf: principal({ id: LEARNER, tenant: TENANT, roles: ['learner'], assigned: [LEARNER] }),
-  learnerPeer: principal({ id: OTHER, tenant: TENANT, roles: ['learner'], assigned: [LEARNER] }),
-  mentorAgent: principal({ id: 'agent-mentor', tenant: TENANT, roles: ['mentor_agent'], assigned: [LEARNER] }),
-  agentAsInstructor: principal({ id: 'agent-x', tenant: TENANT, roles: ['instructor', 'mentor_agent'], assigned: [LEARNER] }),
-  hallAdmin: principal({ id: 'adm-joy', tenant: TENANT, roles: ['hall_admin'], assigned: [LEARNER] }),
-  support: principal({ id: 'sup-max', tenant: TENANT, roles: ['support'], assigned: [LEARNER] }),
-  // a hand-built object that claims the role but was not built by authz.principal
-  forgedInstructor: Object.freeze({ id: 'ins-fake', tenant: TENANT, roles: ['instructor'], caps: [], assigned: [LEARNER] }),
+  instructor: realInstructor,
+  instructorUnassigned: principalOf({ id: 'ins-rae', tenant: TENANT, roles: ['instructor'], assigned: [OTHER] }),
+  instructorOtherTenant: principalOf({ id: 'ins-lou', tenant: 'hall-tenant-b', roles: ['instructor'], assigned: [LEARNER] }),
+  learnerSelf: principalOf({ id: LEARNER, tenant: TENANT, roles: ['learner'], assigned: [LEARNER] }),
+  learnerPeer: principalOf({ id: OTHER, tenant: TENANT, roles: ['learner'], assigned: [LEARNER] }),
+  mentorAgent: principalOf({ id: 'agent-mentor', tenant: TENANT, roles: ['mentor_agent'], assigned: [LEARNER] }),
+  agentAsInstructor: principalOf({ id: 'agent-x', tenant: TENANT, roles: ['instructor', 'mentor_agent'], assigned: [LEARNER] }),
+  hallAdmin: principalOf({ id: 'adm-joy', tenant: TENANT, roles: ['hall_admin'], assigned: [LEARNER] }),
+  support: principalOf({ id: 'sup-max', tenant: TENANT, roles: ['support'], assigned: [LEARNER] }),
+  // a hand-built object carrying the FULL instructor capability set - shape is not provenance
+  forgedInstructor: Object.freeze({ id: 'ins-fake', tenant: TENANT, roles: Object.freeze(['instructor']),
+    caps: Object.freeze([...ROLES.instructor]), assigned: Object.freeze([LEARNER]) }),
+  // built by authz.principal() directly, bypassing the issuer
+  authzInstructor: principal({ id: 'ins-raw', tenant: TENANT, roles: ['instructor'], assigned: [LEARNER] }),
+  // copies of the real instructor: same id, tenant, roles, caps, assignment - not the same object
+  spreadInstructor: Object.freeze({ ...realInstructor }),
+  clonedInstructor: deepFreezeCopy(realInstructor),
+  structuredCloneInstructor: Object.freeze(structuredClone(realInstructor)),
+  thawedInstructor: deepCopy(realInstructor),
+  // minted by an issuer that is not this gate's
+  rogueIssuerInstructor: ROGUE.mint({ id: 'ins-kim', tenant: TENANT, roles: ['instructor'], assigned: [LEARNER, OTHER] }),
 });
 
 /** A learner who has everything a target asks for. */
@@ -61,6 +85,17 @@ export function fullContext(w, t, { learner = LEARNER, now = T0 } = {}) {
 function override(w, t, { actor = people.instructor, learner = LEARNER, reason = 'supervised first entry, instructor at elbow', minutes = 20 } = {}) {
   return grantOverride(w.ledger, w.index, { actor, learner, learnerTenant: TENANT, target: t.id, reason, minutes });
 }
+
+/** Principals that look like (or are copies of) an instructor but lack this gate's provenance. */
+export const PROVENANCE_ATTACKS = Object.freeze([
+  ['forged-principal', 'forgedInstructor'],
+  ['authz-principal-direct', 'authzInstructor'],
+  ['spread-copy-instructor', 'spreadInstructor'],
+  ['cloned-instructor', 'clonedInstructor'],
+  ['structured-clone-instructor', 'structuredCloneInstructor'],
+  ['thawed-copy-instructor', 'thawedInstructor'],
+  ['second-issuer-instructor', 'rogueIssuerInstructor'],
+]);
 
 const without = (o, k) => { const c = { ...o }; delete c[k]; return c; };
 
@@ -159,6 +194,11 @@ export function buildFixtures(index) {
       c.permits = t.permits.map((cls) => issuePermit(w.ledger, w.index, { actor: people.learnerSelf, learner: LEARNER,
         learnerTenant: TENANT, target: t.id, cls }).permit).filter(Boolean);
       return enter(fullLearner(t), t.id, c); }, 'permit');
+    for (const [fam, who] of PROVENANCE_ATTACKS) add(`${fam}-permit`, 'block', t, (w) => {
+      const c = fullContext(w, t);
+      c.permits = t.permits.map((cls) => issuePermit(w.ledger, w.index, { actor: people[who], learner: LEARNER,
+        learnerTenant: TENANT, target: t.id, cls }).permit).filter(Boolean);
+      return enter(fullLearner(t), t.id, c); }, 'permit');
     add('permit-agent-issued', 'block', t, (w) => {
       const c = fullContext(w, t);
       c.permits = t.permits.map((cls) => issuePermit(w.ledger, w.index, { actor: people.mentorAgent, learner: LEARNER,
@@ -186,7 +226,9 @@ export function buildFixtures(index) {
     add('agent-with-instructor-role', 'block', t, (w) => needsOverride(w, t, refusedTok(override(w, t, { actor: people.agentAsInstructor }))), 'override');
     add('hall-admin-override', 'block', t, (w) => needsOverride(w, t, refusedTok(override(w, t, { actor: people.hallAdmin }))), 'override');
     add('support-override', 'block', t, (w) => needsOverride(w, t, refusedTok(override(w, t, { actor: people.support }))), 'override');
-    add('forged-principal-override', 'block', t, (w) => needsOverride(w, t, refusedTok(override(w, t, { actor: people.forgedInstructor }))), 'override');
+    for (const [fam, who] of PROVENANCE_ATTACKS) {
+      add(`${fam}-override`, 'block', t, (w) => needsOverride(w, t, refusedTok(override(w, t, { actor: people[who] }))), 'override');
+    }
     add('unassigned-instructor-override', 'block', t, (w) => needsOverride(w, t, refusedTok(override(w, t, { actor: people.instructorUnassigned }))), 'override');
     add('cross-tenant-instructor-override', 'block', t, (w) => needsOverride(w, t, refusedTok(override(w, t, { actor: people.instructorOtherTenant }))), 'override');
     add('override-no-reason', 'block', t, (w) => needsOverride(w, t, refusedTok(override(w, t, { reason: '' }))), 'override');

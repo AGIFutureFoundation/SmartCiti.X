@@ -184,6 +184,14 @@ export function detectEscalation(text) {
 }
 
 /** The human-handoff line served on a crisis turn. Never a silent refusal. */
+const HANDOFF_TO = {
+  human_medical_referral: 'a medical professional through your instructor',
+  human_instructor: 'your instructor',
+  human_registrar: 'the registrar',
+  human_qualified_professional: 'a qualified professional through your instructor',
+  human_crisis: 'a person who can help right now',
+};
+
 export const CRISIS_HANDOFF =
   "I'm really glad you told me. I'm getting a person from the academy to you right now. " +
   'If you might act on this, call or text 988 (Suicide & Crisis Lifeline) or call 911 — you deserve support tonight.';
@@ -270,9 +278,15 @@ export class Mentor {
         ? "That's not something I can do — I'll flag it for your instructor."
         : outRedact.text,
     };
-    // A crisis is routed to a human AND the learner is told so, in words —
-    // whatever the mentor said, the handoff line leads the reply.
-    if (escalation?.category === 'crisis') record.text = `${CRISIS_HANDOFF} ${record.text}`;
+    // An escalated turn is answered by the route, never by the mentor: the
+    // model's own reply is not served (it is the thing we do not trust here).
+    // A crisis gets the crisis handoff; every other category gets a handoff
+    // naming who it is going to.
+    if (escalated) {
+      record.text = escalation?.category === 'crisis'
+        ? CRISIS_HANDOFF
+        : `This one needs a qualified person, not a training mentor. I'm passing it to ${HANDOFF_TO[escalation?.route] ?? 'your instructor'} now.`;
+    }
     this.telemetry.push(record);
     return record;
   }

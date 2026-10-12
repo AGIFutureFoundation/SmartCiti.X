@@ -35,11 +35,21 @@ A context older than 5 minutes is refused, and so is one dated in the future. Ta
 
 ## Overrides
 
-- Only a principal built by `security/authz.mjs` with the `instructor` role can issue an override, and that principal must have the learner assigned and share the learner's tenant. Learners, peers, `mentor_agent` (including an agent that also claims `instructor`), hall admins, support staff and hand-forged principals are all refused.
+- Only an instructor principal **minted by the ledger's issuer** can grant an override or issue a permit (see *Provenance* below). That principal must also hold the `instructor` role and its full capability set, have the learner assigned, and share the learner's tenant. Learners, peers, `mentor_agent` (including an agent that also claims `instructor`), hall admins, support staff and any principal without provenance are all refused.
 - An override needs a reason of at least 12 characters. It is time-boxed to 1–60 minutes and bound to one learner and one target.
 - Every override request goes on the log through `bus/audit.mjs`'s `AuditLog`, including refused ones (`safety_gate.override.granted` / `.refused`). A granted override is also published as `override.applied` through the bus by its single writer, `instructor_ui`.
 - When an override admits someone, the log records a `safety_gate.allow` row and a `safety_gate.override.consumed` row with the actor, the reason and the expiry. An override can be used only once, so replaying it fails.
 - An override never waives PPE. An expired override, an altered one (for example, a pushed-out expiry) or one that is not on the chained log does not admit anyone.
+
+## Provenance
+
+Authority to override or to issue a permit depends on where a principal came from, not on what it looks like.
+
+- `createIssuer()` returns an issuer. Its `mint(spec)` builds a principal through `security/authz.mjs`'s `principal()` and records, in a module-private `WeakMap`, that this issuer minted that exact frozen object.
+- `new SafetyLedger({ issuer })` fixes the issuer when the ledger is constructed. The ledger never hands the issuer out. `grantOverride` and `issuePermit` accept an actor only when `ledger.vouches(actor)` is true. That requires the same object identity the issuer minted (equality is not enough), and the object and its `roles`, `caps` and `assigned` arrays must still be frozen. The role, tenant and assignment checks run after that.
+- These are all refused and audited as `safety_gate.override.refused` / `safety_gate.permit.refused`, with a reason that names provenance: a hand-built object carrying every `ROLES.instructor` capability, a principal from `authz.principal()` called directly, a spread, deep or `structuredClone` copy of a real instructor, a thawed (mutable) copy, and a principal minted by a different issuer. A ledger built without an issuer refuses every override and permit. A look-alike issuer object is rejected at construction.
+
+**What provenance means here.** This is a trust boundary inside one training-sim process. It is **not authentication**. It proves only that a principal object came out of a particular `createIssuer()` call in this process. It says nothing about who is at the keyboard. Whoever holds the issuer can mint any principal, so the issuer belongs to the code that has already authenticated the instructor, which in this repo means the console's login, stood in for by `ISSUER` in the fixtures. Code that controls the process can also replace the gate module itself. Provenance closes the hole where any caller could build an instructor-shaped object. It does not replace real identity, sessions or signed credentials, which a real deployment would need.
 
 ## The audit chain
 
@@ -47,7 +57,7 @@ A context older than 5 minutes is refused, and so is one dated in the future. Ta
 
 ## Files
 
-- `gate.mjs`: index building, `canEnter`, `enter`, `grantOverride`, `issuePermit`, `SafetyLedger`. It uses only Node built-ins and repo modules.
+- `gate.mjs`: index building, `canEnter`, `enter`, `grantOverride`, `issuePermit`, `createIssuer`, `SafetyLedger`. It uses only Node built-ins and repo modules.
 - `bypass_fixtures.mjs`: a deterministic generator of bypass attempts and legitimate entries, built from the derived index.
 - `test.mjs`: `node safety_gate/test.mjs`. It prints the hazard classification and one `ok` line per check, and exits 1 on any failure.
 

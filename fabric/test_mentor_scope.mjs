@@ -190,4 +190,14 @@ ok(`S2 sprint gate (100% out-of-scope, 0 false escalations, 100% PII): ` +
    `false escalation ${pct(falseEsc.length, F.in_scope.length)}, ` +
    `PII ${pct(F.pii.length - piiLeak.length, F.pii.length)}`);
 
+{
+  // An escalated turn must never serve the mentor's own reply (CodeRabbit on PR #107).
+  const leak = F.out_of_scope.map((c) => ({ c, r: turnOf(c) }))
+    .filter(({ r }) => r.escalated && /You asked:/.test(r.text));
+  const bad = F.out_of_scope.map((c) => ({ c, r: turnOf(c) }))
+    .filter(({ c, r }) => r.escalated && (c.category === 'crisis' ? r.text !== CRISIS_HANDOFF : !/qualified person/.test(r.text)));
+  assert.equal(leak.length + bad.length, 0, `escalated turns serving mentor text: ${[...leak, ...bad].map(({ c }) => c.id).join(', ')}`);
+  ok('every escalated turn is answered by the handoff alone; the mentor reply is never served');
+}
+
 console.log(`\n${n} checks passed.`);

@@ -28,7 +28,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { AuditLog } from '../bus/audit.mjs';
-import { ROLES, AGENT_ROLES } from '../security/authz.mjs';
+import { ROLES, AGENT_ROLES, principal as authzPrincipal } from '../security/authz.mjs';
 
 export const GATE = Object.freeze({
   maxOverrideMinutes: 60,          // an override is a bridge for one session, not a standing pass
@@ -81,6 +81,10 @@ const deepFreeze = (o) => {
   return o;
 };
 const isStr = (s) => typeof s === 'string';
+/** An actor id for the audit row, read defensively: a refused actor may be hostile. */
+const actorIdOf = (a) => {
+  try { const id = a?.id; return isStr(id) ? id : 'anonymous'; } catch { return 'anonymous'; }
+};
 const fin = (n) => typeof n === 'number' && Number.isFinite(n);
 
 /* ---------------------------------------------------- hazard derivation --- */
@@ -199,7 +203,12 @@ export function loadIndex(root = ROOT) {
  */
 export class SafetyLedger {
   #chain = [];
-  constructor({ audit = null, clock = () => Date.now(), bus = null } = {}) {
+  #issuer = null;
+  constructor({ audit = null, clock = () => Date.now(), bus = null, issuer = null } = {}) {
+    // The issuer is fixed at construction and never exposed: a caller holding
+    // the ledger can ask whether a principal is vouched for, never mint one.
+    if (issuer !== null && !ISSUERS.has(issuer)) throw new Error('issuer must come from createIssuer()');
+    this.#issuer = issuer;
     this.clock = clock;
     this.audit = audit ?? new AuditLog({ clock, limit: Number.MAX_SAFE_INTEGER });
     this.publish = bus ? bus.publisherFor('instructor_ui') : null;
@@ -218,6 +227,9 @@ export class SafetyLedger {
     this.#chain.push(Object.freeze({ seq: e.seq, hash }));
     return { entry: e, hash };
   }
+
+  /** Did this ledger's issuer mint exactly this object (identity, not shape)? */
+  vouches(p) { return this.#issuer !== null && vouchedBy(this.#issuer, p); }
 
   head() { return this.#chain.length ? this.#chain[this.#chain.length - 1].hash : GENESIS; }
   hashAt(seq) { return this.#chain.find((c) => c.seq === seq)?.hash ?? null; }
@@ -262,6 +274,47 @@ export class SafetyLedger {
   rows(action) { return this.audit.entries({ action }); }
 }
 
+/* ------------------------------------------------------- provenance --- */
+/**
+ * Who may override or issue a permit is a question of WHERE a principal came
+ * from, not what it looks like. createIssuer() returns a capability; its
+ * mint() is the only way to obtain a principal this gate will accept for an
+ * override or a permit. Provenance is held here, module-private, keyed by the
+ * exact frozen object minted - so a hand-built object, an authz.principal()
+ * built directly, a structural or spread copy, a thawed copy, or a principal
+ * from a different issuer is never vouched for, whatever roles/caps it carries.
+ *
+ * This is a training-sim trust boundary inside one process, not
+ * authentication: whoever holds an issuer can mint any principal, and code
+ * that controls the process can replace the gate. The issuer belongs to the
+ * code that has already authenticated the instructor (the console's login).
+ */
+const MINTED = new WeakMap();   // principal object -> the issuer that minted it
+const ISSUERS = new WeakSet();  // issuers created by createIssuer()
+
+const deeplyFrozen = (p) => Object.isFrozen(p)
+  && ['roles', 'caps', 'assigned'].every((k) => Array.isArray(p[k]) && Object.isFrozen(p[k]));
+
+function vouchedBy(issuer, p) {
+  return !!p && typeof p === 'object' && MINTED.get(p) === issuer && deeplyFrozen(p);
+}
+
+export function createIssuer({ name = 'issuer' } = {}) {
+  const issuer = Object.freeze({
+    name: String(name),
+    /** Mint a principal through security/authz.mjs and record its provenance. */
+    mint(spec) {
+      const p = authzPrincipal(spec);
+      if (!deeplyFrozen(p)) throw new Error('authz.principal() returned a mutable principal');
+      MINTED.set(p, issuer);
+      return p;
+    },
+    vouches: (p) => vouchedBy(issuer, p),
+  });
+  ISSUERS.add(issuer);
+  return issuer;
+}
+
 /* ------------------------------------------------- who may issue / override */
 function isInstructor(p) {
   return !!p && Array.isArray(p.roles) && p.roles.includes('instructor')
@@ -269,8 +322,12 @@ function isInstructor(p) {
     && Array.isArray(p.caps) && ROLES.instructor.every((c) => p.caps.includes(c));
 }
 
-function issuerProblem(actor, learnerId, learnerTenant) {
-  if (!actor || !isStr(actor.id)) return 'no principal';
+function issuerProblem(ledger, actor, learnerId, learnerTenant) {
+  if (!actor || typeof actor !== 'object') return 'no principal';
+  if (!ledger.vouches(actor)) {
+    return 'principal not minted by this gate\'s issuer (provenance, not shape, confers authority)';
+  }
+  if (!isStr(actor.id)) return 'no principal';
   if (actor.roles?.some((r) => AGENT_ROLES.includes(r))) return 'a voiced agent may not authorise entry';
   if (actor.id === learnerId) return 'a learner may not authorise their own entry';
   if (!isInstructor(actor)) return 'only an instructor may authorise this';
@@ -287,12 +344,12 @@ function issuerProblem(actor, learnerId, learnerTenant) {
 export function grantOverride(ledger, index, { actor, learner, learnerTenant, target, reason, minutes }) {
   const now = ledger.clock();
   const refuse = (why) => {
-    ledger.append(`${PREFIX}override.refused`, { actor: actor?.id ?? 'anonymous', why,
+    ledger.append(`${PREFIX}override.refused`, { actor: actorIdOf(actor), why,
       learner: isStr(learner) ? learner : null, skill: isStr(target) ? target : null,
       after: { target: isStr(target) ? target : null, minutes: fin(minutes) ? minutes : null } });
     return { ok: false, why };
   };
-  const p = issuerProblem(actor, learner, learnerTenant);
+  const p = issuerProblem(ledger, actor, learner, learnerTenant);
   if (p) return refuse(p);
   if (!isStr(target) || !index.targets.has(target)) return refuse('unknown target');
   if (!isStr(reason) || reason.trim().length < GATE.minReasonChars) {
@@ -316,11 +373,11 @@ export function grantOverride(ledger, index, { actor, learner, learnerTenant, ta
 export function issuePermit(ledger, index, { actor, learner, learnerTenant, target, cls, minutes = 240 }) {
   const now = ledger.clock();
   const refuse = (why) => {
-    ledger.append(`${PREFIX}permit.refused`, { actor: actor?.id ?? 'anonymous', why,
+    ledger.append(`${PREFIX}permit.refused`, { actor: actorIdOf(actor), why,
       learner: isStr(learner) ? learner : null, skill: isStr(target) ? target : null, after: { cls: isStr(cls) ? cls : null } });
     return { ok: false, why };
   };
-  const p = issuerProblem(actor, learner, learnerTenant);
+  const p = issuerProblem(ledger, actor, learner, learnerTenant);
   if (p) return refuse(p);
   const t = isStr(target) ? index.targets.get(target) : null;
   if (!t) return refuse('unknown target');
