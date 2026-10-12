@@ -75,6 +75,7 @@ const BUILDERS = {
   'web/trade_craft_landing.html': 'build_landing.py',
   'web/trade_craft_languages.html': 'build_languages.py',
   'web/trade_craft_lessons.html': 'build_lessons.py',
+  'web/trade_craft_courses.html': 'build_courses.py',
   'web/trade_craft_map.html': 'build_map.py',
   'web/smartcitix_trade_craft_academy.html': 'build_page.py',
   'web/trade_craft_progress.html': 'build_progress.py',
@@ -92,6 +93,7 @@ const BUILDERS = {
   'web/trade_craft_packs.html': 'build_packs.py',
   'web/trade_craft_robotics.html': 'build_robotics.py',
   'web/trade_craft_smiles.html': 'build_smiles.py',
+  /* HIVE BEGIN (wave 16) */ 'web/trade_craft_hive.html': 'build_hive.py', /* HIVE END */
 };
 
 const en = JSON.parse(readFileSync(join(ROOT, 'i18n/locales/en.json'), 'utf8')).strings;

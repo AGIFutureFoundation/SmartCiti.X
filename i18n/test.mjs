@@ -267,5 +267,41 @@ ok('strict lookup throws on a missing key instead of falling back silently',
   }
 }
 /* END WORLD w16 */
+/* BEGIN WORLD w16c (WORLD·Worlds & Locales): Drive / Boat with no parked vehicle of that medium anywhere names the
+ * reason (parishes.novehicle_map); the wilds ground-flora honesty line (wilds.flora_honesty) is the registry line in en
+ * and translated, keeping the AUTHORED provenance word, in every other locale. setMode runs as written in each page. */
+{
+  const ROOT_C = new URL('../', import.meta.url);
+  for (const page of ['web/trade_craft_parishes.html', 'web/trade_craft_bay.html']) {
+    const h = readFileSync(new URL(page, ROOT_C), 'utf8');
+    const s0 = h.indexOf('function setMode(m) {'), s1 = s0 < 0 ? -1 : h.indexOf('\n}\n', s0);
+    const run = (m, parked) => {
+      const toasts = [], ctx = { riding: null, mode: 'walk', eye: { x: 0, z: 0 }, toasts, toast: (t) => toasts.push(t), tr: (k) => k,
+        applyMode: (q) => { ctx.mode = q; }, nearest: () => null, FLEETREG: { fleet: [] }, envBoardings: 0, entered: 0, parked };
+      ctx.enterExit = () => { ctx.entered++; return true; };
+      const f = new Function('ctx', 'with (ctx) { ' + h.slice(s0, s1 + 2) + ' return setMode; }')(ctx);
+      return { ret: f(m), toasts, entered: ctx.entered };
+    };
+    let d = null;
+    try {
+      const land = [{ medium: 'land', st: { x: 30, z: 40 } }], water = [{ medium: 'water', st: { x: -300, z: 10 } }];
+      d = s0 > 0 && s1 > s0 ? { boatNone: run('boat', land), driveNone: run('drive', water), boatOk: run('boat', water), driveOk: run('drive', land) } : null;
+    } catch (e) { d = { err: String(e.message) }; }
+    ok(`${page}: Drive / Boat with no parked vehicle of that medium on the map toasts parishes.novehicle_map and boards nothing; with one, it boards silently`,
+      !!d && !d.err && d.boatNone.ret === false && d.boatNone.entered === 0 && d.boatNone.toasts.join() === 'parishes.novehicle_map'
+        && d.driveNone.ret === false && d.driveNone.entered === 0 && d.driveNone.toasts.join() === 'parishes.novehicle_map'
+        && d.boatOk.entered === 1 && d.boatOk.toasts.length === 0 && d.driveOk.entered === 1 && d.driveOk.toasts.length === 0);
+  }
+  for (const k of ['parishes.novehicle_map', 'wilds.flora_honesty']) {
+    const src = en.strings[k];
+    ok(`${k} is in all ${LOCALES.length} locales and translated in every non-source locale (no locale copies the English text)`,
+      typeof src === 'string' && LOCALES.every((l) => typeof load(l).strings[k] === 'string' && load(l).strings[k].trim())
+      && new Set(LOCALES.map((l) => load(l).strings[k])).size === LOCALES.length);
+  }
+  const fl = JSON.parse(readFileSync(new URL('flora/registry/flora.json', ROOT_C), 'utf8'));
+  ok('wilds.flora_honesty: en is the flora registry wilds.page_line verbatim; every locale keeps the AUTHORED provenance word',
+    en.strings['wilds.flora_honesty'] === fl.wilds.page_line && LOCALES.every((l) => load(l).strings['wilds.flora_honesty'].includes('AUTHORED')));
+}
+/* END WORLD w16c */
 
 console.log(`i18n/test: ${n} checks passed — ${LOCALES.length} locales`);

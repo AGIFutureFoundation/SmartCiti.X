@@ -3255,4 +3255,120 @@ ok('phone HUD: under 640 px the bar is ONE row that scrolls sideways (no wrap, n
     && (code.match(/skyBoot = null/g) ?? []).length === 1);
 }
 
+/* BUILD BEGIN (wave 16 B1): surface textures by device tier, the luminaire body and the room header signs.
+   Each check below was watched failing on its own mutation in a sandbox copy before it was kept. */
+{
+  const texSrc = (() => { const i = src.indexOf('DRESSING BEGIN (wave 16 B1): SURFACE TEXTURES BY DEVICE TIER');
+    const j = src.indexOf('/* DRESSING END */', i); return i < 0 || j < 0 ? '' : strip(src.slice(i, j)); })();
+  ok('texture tiers: base 384 / high 1024 / ultra 2048 px, the base tier IS the ladder\'s high rung (a mismatch throws at boot), and a software rasteriser, a device under 4 GB or a GPU under 4096 px stays on base',
+    /const TEX_TIER_PX = \{ base: 384, high: 1024, ultra: 2048 \};/.test(texSrc)
+    && /if \(TEX_TIER_PX\.base !== SURF_PX\.high\)\s*throw new Error/.test(texSrc)
+    && /const SURF_PX = \{ low: 128, high: 384 \};/.test(code)
+    && /soft = \/swiftshader\|llvmpipe\|softpipe\|software\/i\.test\(who\);/.test(texSrc)
+    && /if \(soft \|\| mem < 4 \|\| maxTex < 4096\) return 'base';/.test(texSrc)
+    && /if \(!isTouch && mem >= 8 && cores >= 8 && maxTex >= 8192\) return 'ultra';/.test(texSrc));
+  ok('texture tiers: nothing is repainted before the first frame or while the ladder stands on its low rung, one surface per idle slot, and only surfaces painted at the high rung are candidates',
+    /if \(!\('frame1' in BOOT\) \|\| qLevel === 'low'\) \{ texKick\(1000\); return; \}/.test(fnCode('texStep'))
+    && /const rec = texQ\.splice\(i, 1\)\[0\]/.test(fnCode('texStep'))
+    && /requestIdleCallback\(go, \{ timeout: 400 \}\)/.test(fnCode('texKick'))
+    && /if \(rec\.px < SURF_PX\.high \|\| rec\.px >= TEX_TIER_PX\[texTier\]/.test(fnCode('texEnqueue')));
+  ok('texture tiers: only surfaces the scene is wearing NOW are repainted (a tour of 111 halls leaves every one of them in the cache), and the budget counts only REPAINTED surfaces the scene wears - not labels, sky or atlases (the first browser run counted those and repainted nothing) - so a torn-down hall stops counting',
+    /const live = texLive\(\);\s*const i = texQ\.findIndex\(\(r\) => live\.has\(r\.map\.source\)\);\s*if \(i < 0\) \{ texKick\(1500\); return; \}/.test(fnCode('texStep'))
+    && /for \(const r of texRecs\) if \(r\.px > TEX_TIER_PX\.base\)\s*for \(const t of \[r\.map, r\.normalMap\]\) if \(t && live\.has\(t\.source\)\) liveMB \+= texMiB\(r\.px\);\s*texMB = liveMB;/.test(fnCode('texStep'))
+    && /scene\.traverse\(/.test(fnCode('texLive'))
+    && /if \(!texQ\.some\(\(r\) => live\.has\(r\.map\.source\)\)\) break;/.test(fnCode('texDrain')));
+  ok('texture tiers: every surface map and normal map is mipmapped (LinearMipmapLinear) and anisotropic at what the rung affords, and surfaceMaps() records each one for the tier',
+    /t\.generateMipmaps = true;\s*t\.minFilter = THREE\.LinearMipmapLinearFilter;\s*t\.magFilter = THREE\.LinearFilter;\s*t\.anisotropy = anisoNow\(\);/.test(fnCode('texMip'))
+    && /texMip\(map\); texMip\(normalMap\);\s*Object\.assign\(out, \{ color, pattern, px: S2 \}\);\s*texTrack\(out\);/.test(fnCode('surfaceMaps')));
+  ok('texture tiers: a repaint draws the SAME pattern in the base tier\'s design space scaled up (a brick course is one size in the world at every tier), adds one octave of grain at the device texel, and reads its relief from the same declaration',
+    /const D0 = TEX_TIER_PX\.base, k = px \/ D0;/.test(fnCode('texPaint'))
+    && /g\.scale\(k, k\); hg\.scale\(k, k\);/.test(fnCode('texPaint'))
+    && /paintPattern\(g, hg, pattern, D0\);/.test(fnCode('texPaint'))
+    && /normalFromHeight\(hf, px, PATTERN_RELIEF\[pattern\] \?\? 0\)/.test(fnCode('texPaint')));
+  ok('texture tiers: a tier holds to its memory budget (colour + normal with mips; ultra steps down to 1024 before it gives up), and a repaint swaps into every material wearing the old pair, keeping its repeat and disposing the old clone',
+    /const TEX_TIER_MB = \{ base: 0, high: 320, ultra: 768 \};/.test(texSrc)
+    && /while \(px > TEX_TIER_PX\.high && texMB \+ cost\(px\) > TEX_TIER_MB\[texTier\]\) px \/= 2;\s*if \(texMB \+ cost\(px\) > TEX_TIER_MB\[texTier\]\) \{ texSkipped\+\+; texKick\(\); return; \}/.test(fnCode('texStep'))
+    && /nt\.repeat\.copy\(t\.repeat\); nt\.offset\.copy\(t\.offset\);/.test(fnCode('texSwap'))
+    && /m\[slot\] = nt; t\.dispose\(\);/.test(fnCode('texSwap'))
+    && /scene\.traverse\(/.test(fnCode('texSwap')) && /Object\.values\(mat\)/.test(fnCode('texSwap')));
+  ok('texture tiers: every texel is generated in this browser - the tier code makes canvases and nothing else (no image, no loader, no fetch)',
+    texSrc.length > 2000 && !/new Image\(|TextureLoader|ImageLoader|fetch\(|https?:/.test(texSrc));
+  ok('texture tiers: a harness sets the tier through the page\'s own hook (__tc3dDo(\'tex\', tier), an unknown tier throws; the hook repaints the queue at once under the same first-frame and low-rung rules) and reads it back through __tc3dTex() - tier, px, upgraded, pending, MB, mipmaps, anisotropy',
+    /else if \(fn === 'tex'\) \{ texSet\(arg\); texDrain\(\); \}/.test(code)
+    && /if \(!\('frame1' in BOOT\) \|\| qLevel === 'low'\) return;/.test(fnCode('texDrain'))
+    && /if \(!Object\.hasOwn\(TEX_TIER_PX, tier\)\) throw new Error/.test(fnCode('texSet'))
+    && /window\.__tc3dTex = \(\) => \{/.test(texSrc)
+    && ['tier', 'px', 'upgraded', 'pending', 'mb', 'mipmaps', 'aniso'].every((k) => new RegExp(`\\b${k}:`).test(texSrc)));
+  ok('room luminaires: every fitting has a housing over its diffuser and a hanger to the roof steel, pooled with the benches (no draw call of its own)',
+    /box\(lw \+ \.1, \.05, \.44, mat\.metal, rx, EAVE - \.625, rz, benchTop, false\);\s*box\(\.04, \.3, \.04, mat\.metal, rx, EAVE - \.45, rz, benchTop, false\);/.test(fnCode('buildHall')));
+  ok('room header signs: every room of the hall is queued once, and all of them are built BEFORE the bench pool flushes, so their backs and lintels pool with it',
+    /bdRooms\.push\(\{ r, n: h\.rooms\.indexOf\(r\) \+ 1, rx, rz, rw, rd \}\);/.test(fnCode('buildHall'))
+    && /bdStat = bdHeaderSigns\(h, bdRooms, doors, benchTop\);\s*flushParts\(benchPool, hallGroup\);/.test(fnCode('buildHall')));
+  ok('room header signs: ONE mesh for the whole hall - every board face a cell of one canvas atlas, both faces drawn, merged into one geometry - with the backs and lintels in mat.metal handed to the bench pool',
+    (fnCode('bdHeaderSigns').match(/new THREE\.Mesh\(/g) ?? []).length === 1
+    && /new THREE\.Mesh\(mergeGeometries\(geos\)/.test(fnCode('bdHeaderSigns'))
+    && (fnCode('bdHeaderSigns').match(/new THREE\.CanvasTexture\(/g) ?? []).length === 1
+    && /for \(const side of \[-1, 1\]\)/.test(fnCode('bdHeaderSigns'))
+    && /box\(PW \+ \.06, PH \+ \.06, \.04, mat\.metal, x, y, zF, collector, false\);/.test(fnCode('bdHeaderSigns'))
+    && /box\(cut\[1\] - cut\[0\] \+ \.12, \.08, \.12, mat\.metal, x, BD_PART_TOP - \.04, zF, collector, false\);/.test(fnCode('bdHeaderSigns')));
+  ok('room header signs: a board reads the room\'s own registry label and its strand in this locale under the room\'s number, stands over the opening planDoors() cut in its front edge (nearest its middle), and the partition top it stands on is the partition buildHall() draws',
+    /const room = String\(s\.r\.label\), sub = String\(D\.i18n\[loc\]\.strands\[s\.r\.strand\] \?\? ''\);/.test(fnCode('bdHeaderSigns'))
+    && /doors\.get\('z@' \+ zF\.toFixed\(2\)\)/.test(fnCode('bdHeaderSigns'))
+    && /const BD_PART_TOP = \.9 \+ 1\.1 \/ 2;/.test(code)
+    && /push\(pmat, slab\(len, 1\.1, \.12, c, \.9, zz\)\);/.test(fnCode('buildHall')));
+}
+/* BUILD END */
+
+/* BUILD BEGIN (wave 16 B2): the campus from the street - hall name boards and per-campus street furniture.
+   Each check below was watched failing on its own mutation in a sandbox copy before it was kept. */
+{
+  const b2 = (() => { const i = src.indexOf('DRESSING BEGIN (wave 16 B2): THE CAMPUS FROM THE STREET');
+    const j = src.indexOf('/* DRESSING END */', i); return i < 0 || j < 0 ? '' : strip(src.slice(i, j)); })();
+  const builtB2 = readFileSync(new URL('./trade_craft_3d.html', import.meta.url), 'utf8');
+  ok('campus name boards: the colours are the facades pack\'s AUTHORED sign palettes, read fail-closed at build time (a registry without them stops the build) and carried as colour pairs only - no lot or business name crosses into the page',
+    /facades_reg = json\.load\(open\(ROOT \/ 'facades\/registry\/facades\.json'\)\)\nFACADE_SIGN_PALETTES = facades_reg\['sign_rules'\]\['palettes'\]/.test(src)
+    && /'facadeSigns': \{'contract': facades_reg\['contract'\], 'palettes': FACADE_SIGN_PALETTES\},/.test(src)
+    && /"facadeSigns":\{"contract":"FACADE v1","palettes":\[\["#/.test(builtB2)
+    && !/"facadeSigns":\{[^}]*"signs"/.test(builtB2));
+  ok('campus name boards: ONE mesh and ONE atlas texture per campus - every hall a cell and a quad of one merged geometry - read off the hall\'s registry name and its district in this locale, coloured by a hash of its slug',
+    (fnCode('bdNameBoards').match(/new THREE\.Mesh\(/g) ?? []).length === 1
+    && (fnCode('bdNameBoards').match(/new THREE\.CanvasTexture\(/g) ?? []).length === 1
+    && /new THREE\.Mesh\(mergeGeometries\(geos\)/.test(fnCode('bdNameBoards'))
+    && /const \[ground, ink\] = pals\[bdHash\(bd\.h\.slug\) % pals\.length\];/.test(fnCode('bdNameBoards'))
+    && /const pals = D\.facadeSigns\.palettes;/.test(fnCode('bdNameBoards'))
+    && /const name = String\(bd\.h\.name\), sub = String\(D\.i18n\[loc\]\.districts\[bd\.h\.district\] \?\? ''\);/.test(fnCode('bdNameBoards')));
+  ok('campus name boards: each stands on its archetype\'s own front header (headY as hallkit reported it, a missing one throws), proud of the cladding face, no wider than 9 m so it clears the campus-scale roll-up door, and turned with its lot',
+    /g\.userData\.headY = hk\.headY;/.test(fnCode('building'))
+    && /if \(typeof bd\.headY !== 'number'\) throw new Error/.test(fnCode('bdNameBoards'))
+    && /const BH = Math\.min\(9 \/ 8, room \* \.8\), BW = BH \* 8;/.test(fnCode('bdNameBoards'))
+    && /q\.translate\(0, y, -bd\.d \/ 2 - \.38\);/.test(fnCode('bdNameBoards'))
+    && /q\.applyMatrix4\(bd\.bg\.matrixWorld\);/.test(fnCode('bdNameBoards')));
+  ok('campus street furniture: lamps and benches are ONE InstancedMesh per family per campus (in the city\'s trim and the shared timber), so the whole dressing adds at most three draw calls to a campus',
+    (fnCode('bdFurniture').match(/new THREE\.InstancedMesh\(/g) ?? []).length === 1
+    && /\[\[lamps, bdLampGeo\(\), fab\.trim, 'bd-lamps'\], \[benches, bdBenchGeo\(\), mat\.wood, 'bd-benches'\]\]/.test(fnCode('bdFurniture'))
+    && !/new THREE\.Mesh\(/.test(fnCode('bdFurniture'))
+    && /drawCalls: \(boards\.boards \? 1 : 0\) \+ furniture\.length,/.test(fnCode('bdDressCampus')));
+  ok('campus street furniture: a lamp never stands on a road or a lot, inside the plaza, or within a spacing of another lamp; the ring is lit on its inner edge and every street and walk down one side (parking is not)',
+    /const free = \(x, z\) => !onRoad\(x, z, \.4\) && !onLot\(x, z, 1\) && Math\.hypot\(x, z\) > 30\s*&& !lamps\.some\(\(\[a, b\]\) => Math\.hypot\(x - a, z - b\) < BD_LAMP_EVERY_M \* \.6\);/.test(fnCode('bdFurniture'))
+    && /const ringR = rr - 2\.4 - 1\.1/.test(fnCode('bdFurniture'))
+    && /for \(const r of bdCamp\.lit\.filter\(/.test(fnCode('bdFurniture'))
+    && /bdCamp\.lit = roads\.slice\(0, plan\.streets\.length \+ plan\.walkways\.length\);/.test(fnCode('buildCampus'))
+    && /const BD_LAMP_EVERY_M = 48, BD_BENCHES = 8;/.test(code));
+  ok('campus dressing: reset with the kit for every campus, each lot\'s building recorded as it is laid, the roads and lots handed over from the site plan, and the whole of it built into the campus group (freed with it) right after the kit flushes',
+    /kitReset\(\);\s*bdCamp = \{ key, boards: \[\], roads: \[\], rects: \[\], lit: \[\] \};/.test(fnCode('buildCampus'))
+    && /bdCamp\.boards\.push\(\{ h, bg, w: b\.w, d: b\.d, hgt: bg\.userData\.real\.h, headY: bg\.userData\.headY \}\);/.test(fnCode('buildCampus'))
+    && /bdCamp\.roads = roads; bdCamp\.rects = allRects;/.test(fnCode('buildCampus'))
+    && /flushKit\(campusGroup\);\s*bdCampStat = bdDressCampus\(campusGroup, rr\);/.test(fnCode('buildCampus')));
+  ok('campus dressing: none of it is a label sprite - boards are geometry on a wall - so the declutter and __tc3dLabelRects() are untouched and no legibility row moves',
+    b2.length > 3000 && !/\blabel\(/.test(b2) && !/new THREE\.Sprite\(/.test(b2));
+}
+/* BUILD END */
+
+/* BUILD BEGIN (wave 16 B3): the street furniture is solid, through the grounds' own push-out record.
+   Watched failing on its mutation in a sandbox copy before it was kept. */
+ok('campus street furniture is SOLID: every lamp standard and bench is recorded where it is built through campusSolid() - the same disc record the yard mast and the stand posts use - so the walker goes round it',
+  /for \(const \[x, z\] of list\) campusSolid\(x, z, name === 'bd-lamps' \? \.12 : \.6\);/.test(fnCode('bdFurniture'))
+  && /e\.rects\.push\(\{ u: x, v: z, r \}\);/.test(fnCode('campusSolid')));
+/* BUILD END */
+
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);

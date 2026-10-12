@@ -25,6 +25,12 @@ const MEASURE_ONLY = process.argv.includes('--measure');
 const shotArg = process.argv.find((a) => a.startsWith('--shots='));
 const SHOTS = shotArg ? shotArg.slice(8) : null;
 if (SHOTS) mkdirSync(SHOTS, { recursive: true });
+/* GROUND w16: --part=<k> runs one part of the rows (each fits one <= 90 s browser run); no --part = the full run */
+const partArg = process.argv.find((a) => a.startsWith('--part='));
+const PART = partArg ? partArg.slice(7) : null;
+const PARTS = ['1', '2'];   // part 1 (the 9 views) took 17 s at load 3.2 (10:01 UTC)
+if (PART !== null && !PARTS.includes(PART)) { console.log(`FAIL --part=${PART}: want one of ${PARTS.join(', ')}`); process.exit(2); }
+const RUN_PART = Object.fromEntries(PARTS.map((k) => [k, PART === null || PART === k]));
 const PROBE = ['06075', '06001', '06081'];
 const CALL_HEADROOM = 1.25, TRI_HEADROOM = 1.5, MS_HEADROOM = 2, FABRIC_FLOOR = 0.9;
 /* BASE: the FIRST clean measured run (--measure), 2026-09-29 02:47:56 UTC, BEFORE any optimisation: main-tree page
@@ -80,6 +86,11 @@ const readyMs = Date.now() - t0;
 const rows = [];
 let bad = 0;
 const fail = (row, msg) => { row.fails.push(msg); };
+/* EVAL_PARTS:BEGIN part 1 (GROUND w16). --part=1 runs only this block's rows (the views), --part=2 only the next block's
+   (cross, fleet, offshore, plots, vegetation, relief); with no --part both run, in this order (the full run, the default).
+   The rows' code inside each block is verbatim; each block returns the rows the report prints (the views push to rows).
+   web/test_evalparts.mjs holds the split. The page-errors row below judges whatever ran. */
+const PART1 = RUN_PART[1] ? await (async () => {
 for (const pid of PROBE) {
   for (const v of ['origin', 'border', 'overview']) {
     await page.evaluate(([name, id]) => window.__parishes.view(name, id), [v, pid]);
@@ -110,6 +121,10 @@ for (const pid of PROBE) {
     rows.push(row);
   }
 }
+return {};
+})() : {};
+/* EVAL_PARTS part 2 */
+const PART2 = RUN_PART[2] ? await (async () => {
 const pairs = await page.evaluate(() => window.__parishes.pairs());
 const cross = [];
 for (const [a, b] of pairs.filter(([a, b]) => PROBE.includes(a) || PROBE.includes(b))) {
@@ -210,19 +225,23 @@ const elevRow = await reliefRow(browser, URL_BASE, { shots: SHOTS, name: 'bay' }
 if (elevRow.fails.length) bad++;
 if (!JSON_OUT) console.log(`${elevRow.fails.length ? 'FAIL' : '  ok'} relief ${JSON.stringify(Object.fromEntries(Object.entries(elevRow).filter(([k]) => k !== 'fails' && k !== 'probe')))}${elevRow.fails.length ? ' :: ' + elevRow.fails.join('; ') : ''}`);
 /* END ELEV w14 */
+return { cross, fleetRow, offRow, plotRow, vegRow };
+})() : {};
+const { cross = [], fleetRow = null, offRow = null, plotRow = null, vegRow = null } = PART2;
+/* EVAL_PARTS:END */
 const errRow = { probe: 'errors', count: errors.length, first: errors.slice(0, 3), readyMs, fails: [] };
 if (errors.length) { fail(errRow, `${errors.length} page errors`); bad++; }
 await browser.close();
-const out = { page: URL_BASE, measure: MEASURE_ONLY, plots: plotRow, rows, cross, fleet: fleetRow, offshore: offRow, errors: errRow, bad };
+const out = { page: URL_BASE, part: PART, measure: MEASURE_ONLY, plots: plotRow, rows, cross, fleet: fleetRow, offshore: offRow, errors: errRow, bad };
 if (JSON_OUT) console.log(JSON.stringify(out, null, 1));
 else {
   for (const r of rows) console.log(`${r.fails.length ? 'FAIL' : '  ok'}  ${r.county} ${r.view.padEnd(8)} calls ${r.calls} tris ${r.tris} ${r.ms} ms chunks ${r.chunks} fabric ${r.fabric} loaded ${r.loaded}${r.fails.length ? ' | ' + r.fails.join('; ') : ''}`);
-  for (const r of cross) console.log(`${r.known ? 'KNOWN' : r.fails.length ? 'FAIL' : '  ok'}  cross ${r.pair} (${r.steps} steps)${r.known ? ' | ' + r.known + ', ended in ' + r.after : ''}${r.fails.length ? ' | ' + r.fails.join('; ') : ''}`);
-  console.log(`${fleetRow.fails.length ? 'FAIL' : '  ok'}  fleet parked ${fleetRow.parked} (land ${fleetRow.land}, water ${fleetRow.water})`);
-  console.log(`${offRow.fails.length ? 'FAIL' : '  ok'}  offshore ${JSON.stringify(offRow.pins)}${offRow.fails.length ? ' | ' + offRow.fails.join('; ') : ''}`);
+  if (RUN_PART[2]) for (const r of cross) console.log(`${r.known ? 'KNOWN' : r.fails.length ? 'FAIL' : '  ok'}  cross ${r.pair} (${r.steps} steps)${r.known ? ' | ' + r.known + ', ended in ' + r.after : ''}${r.fails.length ? ' | ' + r.fails.join('; ') : ''}`);
+  if (RUN_PART[2]) console.log(`${fleetRow.fails.length ? 'FAIL' : '  ok'}  fleet parked ${fleetRow.parked} (land ${fleetRow.land}, water ${fleetRow.water})`);
+  if (RUN_PART[2]) console.log(`${offRow.fails.length ? 'FAIL' : '  ok'}  offshore ${JSON.stringify(offRow.pins)}${offRow.fails.length ? ' | ' + offRow.fails.join('; ') : ''}`);
   console.log(`${errRow.fails.length ? 'FAIL' : '  ok'}  page errors ${errRow.count}, ready in ${readyMs} ms ${errRow.first.join(' || ')}`);
-  console.log(`${plotRow.fails.length ? 'FAIL' : '  ok'}  plots ${JSON.stringify(Object.fromEntries(Object.entries(plotRow).filter(([k]) => k !== 'fails' && k !== 'probe')))}${plotRow.fails.length ? ' | ' + plotRow.fails.join('; ') : ''}`);
-  /* BEGIN VEG w14 */ console.log(`${vegRow.fails.length ? 'FAIL' : '  ok'} ${vegRow.probe} ${JSON.stringify(Object.fromEntries(Object.entries(vegRow).filter(([k]) => k !== 'fails' && k !== 'probe')))}${vegRow.fails.length ? ' :: ' + vegRow.fails.join('; ') : ''}`); /* END VEG w14 */
-  console.log(`\n${bad ? bad + ' rows FAIL' : 'all rows hold'}${MEASURE_ONLY ? ' (measure mode: no targets applied)' : ''}`);
+  if (RUN_PART[2]) console.log(`${plotRow.fails.length ? 'FAIL' : '  ok'}  plots ${JSON.stringify(Object.fromEntries(Object.entries(plotRow).filter(([k]) => k !== 'fails' && k !== 'probe')))}${plotRow.fails.length ? ' | ' + plotRow.fails.join('; ') : ''}`);
+  if (RUN_PART[2]) /* BEGIN VEG w14 */ console.log(`${vegRow.fails.length ? 'FAIL' : '  ok'} ${vegRow.probe} ${JSON.stringify(Object.fromEntries(Object.entries(vegRow).filter(([k]) => k !== 'fails' && k !== 'probe')))}${vegRow.fails.length ? ' :: ' + vegRow.fails.join('; ') : ''}`); /* END VEG w14 */
+  console.log(`\n${bad ? bad + ' rows FAIL' : 'all rows hold'}${MEASURE_ONLY ? ' (measure mode: no targets applied)' : ''}${PART ? ` (part ${PART} of 2)` : ''}`);
 }
 process.exit(bad ? 1 : 0);

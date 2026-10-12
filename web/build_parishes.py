@@ -2349,6 +2349,35 @@ if JS.count(_WT) != 1:
     raise BuildError('build_parishes: WORLD w16 talk anchor (function talk() ... stub_vehicle) must occur exactly once')
 JS = JS.replace(_WT, _WT.replace("tr('parishes.stub_vehicle')", "tr('parishes.npc_off')"), 1)
 # END WORLD w16
+# BEGIN WORLD w16c (WORLD·Worlds & Locales): Drive / Boat (setMode, ENV w15 boarding path) when NO parked vehicle of
+# that medium stands anywhere on this map returned false silently. It now says so (parishes.novehicle_map, 8 locales);
+# the ENV w15 block itself is not edited - its one anchor is rewritten here, exactly once, or the build stops by name.
+T('parishes.novehicle_map')   # en must carry it (fail closed, named)
+JS_KEYS.append('parishes.novehicle_map'); _USED.add('parishes.novehicle_map')
+_WM = "    if (!v) return false;\n    applyMode('walk'); eye.x = v.st.x; eye.z = v.st.z; envBoardings++;\n"
+if JS.count(_WM) != 1:
+    raise BuildError('build_parishes: WORLD w16c setMode anchor (ENV w15 if (!v) return false; applyMode(walk) ...) must occur exactly once')
+JS = JS.replace(_WM, _WM.replace('if (!v) return false;', "if (!v) { toast(tr('parishes.novehicle_map')); return false; }"), 1)
+# END WORLD w16c
+# BEGIN HIVE w16 (HIVE·Omega Hive Agents): the world guides walking this map speak - on a click only - with the voice
+# the Omega Hive (hive/registry/hive.json) gives them: a Speak and a Mute button join the NPC dialogue, and Speak says the
+# registry line the dialogue is showing, on an on-device voice, at the guide's AUTHORED pitch and rate (web/hivekit.py).
+# Classroom mode starts muted and speaks only play-safe guides' unheld lines. The Speak / Mute words travel in the hive
+# block (hive.* keys, 8 locales), so this map's run-time catalogue is unchanged. Every NPC placed on this map must have a
+# hive voice, or the build stops by name. Off (no block, no bytes) where the NPC kit is off, as on the Bay page.
+HIVE_TAIL = ''
+if NPC_DATA is not None and (ROOT / 'hive/registry/hive.json').exists():
+    from hivekit import voice_data as _hive_voices, HIVE_PARISH_JS, world_embed  # noqa: E402
+    _hive_ids = {'npc:' + n['id'] for n in NPC_DATA['npcs']}
+    _hive = _hive_voices(_hive_ids)
+    if {a['id'] for a in _hive['agents']} != _hive_ids:
+        raise BuildError('build_parishes: HIVE w16 - NPCs on this map with no hive voice: '
+                         f'{sorted(_hive_ids - {a["id"] for a in _hive["agents"]})[:3]}')
+    if JS.count('window.__parishes = {') != 1:
+        raise BuildError('build_parishes: HIVE w16 mount anchor `window.__parishes = {` must occur exactly once')
+    JS = JS.replace('window.__parishes = {', HIVE_PARISH_JS + 'window.__hiveWorld = hiveWorld;\nwindow.__parishes = {', 1)
+    HIVE_TAIL = world_embed(_hive)
+# END HIVE w16
 # BEGIN FACADE w11 (FACADE·Exteriors & Signs): AUTHORED facade details on the kit buildings nearest the eye and PLAY
 # signs on the economy/ commercial lots (web/facadekit.py, facades/registry/facades.json) - ONE InstancedMesh, one draw
 # call, hidden in the overview; the glue reads the streamed chunks and never changes them (details are not solid).
@@ -2864,6 +2893,13 @@ if FIELDS_SECTION:
             raise BuildError(f'build_parishes: FIELDS anchor {_fa!r} must occur exactly once')
         page = page.replace(_fa, _fb)
 # END FIELDS w12
+# BEGIN HIVE w16 (HIVE·Omega Hive Agents): the hive voice block and kit before </body> (classic scripts, so they run
+# before the page's module script mounts the voice on the NPC dialogue)
+if HIVE_TAIL:
+    if page.count('</div></body>') != 1:
+        raise BuildError("build_parishes: HIVE w16 anchor '</div></body>' must occur exactly once")
+    page = page.replace('</div></body>', HIVE_TAIL + '</div></body>')
+# END HIVE w16
 flow_anchors_present(HUD_PANELS, page)
 page = page.replace('__PARISHES_I18N__', json.dumps(I18N_CAT, ensure_ascii=False, sort_keys=True).replace('</', '<\\/'))
 

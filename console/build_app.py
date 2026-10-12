@@ -57,7 +57,7 @@ CSS = """
 :root{
   --steel:#EEF1F2; --panel:#F7F9F9; --sunk:#E3E8E9; --ink:#1B252A; --ink2:#5A6B71;
   --line:#CCD6D8; --accent:#007A88; --accent-ink:#046B78; --band:#8F560A;
-  --good:#256B42; --warn:#8F5E12; --crit:#9A3A2A; --violet:#5A5FA8;
+  --good:#256B42; --warn:#8F5E12; --crit:#9A3A2A; --violet:#515597;
   --grid:#DCE3E4; --shadow:0 1px 2px rgba(20,40,45,.06),0 6px 18px rgba(20,40,45,.05);
   color-scheme:light dark;
 }

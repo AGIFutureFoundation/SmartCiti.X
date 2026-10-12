@@ -40,6 +40,9 @@ FRONT_DOOR = 'index.html'
 GROUPS = [
     ('nav.group.learn', [
         ('web/trade_craft_lessons.html', 'nav.page.lessons'),
+        # COURSE BEGIN (wave 16): the course catalogue and the lesson supplements
+        ('web/trade_craft_courses.html', 'nav.page.courses'),
+        # COURSE END
         ('web/trade_craft_ladder.html', 'nav.page.ladder'),
         ('web/trade_craft_3d.html', 'nav.page.campus'),
         ('web/trade_craft_schools.html', 'nav.page.schools'),
@@ -53,6 +56,9 @@ GROUPS = [
         ('web/trade_craft_smiles.html', 'nav.page.smiles'),
         ('web/trade_craft_fleet.html', 'nav.page.fleet'),
         ('web/trade_craft_packs.html', 'nav.page.packs'),
+        # HIVE BEGIN (wave 16) - the Omega Hive: every scripted agent's roster, voice and council
+        ('web/trade_craft_hive.html', 'nav.page.hive'),
+        # HIVE END
     ]),
     # Robotics (wave 11): the robot training lab and the page where a learner saves, analyses and (opt-in)
     # shares their own episode data - the contribute page, named for what it now does

@@ -1503,6 +1503,17 @@ if (ROOT / 'flora/registry/flora.json').exists() and (HERE / 'florakit.py').exis
             raise SystemExit(f'build_wilds: WORLD w16 anchor found {page.count(_a)}x: {_a[:60]!r}')
         page = page.replace(_a, _b)
 # END WORLD w16
+# BEGIN WORLD w16c (WORLD·Worlds & Locales): the ground-flora honesty line (flora/registry/flora.json#wilds.page_line)
+# on the page, in the reader's locale (wilds.flora_honesty, 8 locales), just before the legend. Fail closed: the en text
+# must be the registry line verbatim, and the anchor must occur exactly once.
+if (ROOT / 'flora/registry/flora.json').exists() and (HERE / 'florakit.py').exists():
+    if TRAW("wilds.flora_honesty") != _wfd['wilds']['page_line']:
+        raise SystemExit('build_wilds: WORLD w16c i18n wilds.flora_honesty (en) is not flora/registry/flora.json#wilds.page_line verbatim')
+    _WFH = '<p class="help" data-flora-honesty>' + TS("wilds.flora_honesty") + '</p>\n'
+    if page.count('<p class="help" data-legend>') != 1:
+        raise SystemExit('build_wilds: WORLD w16c legend anchor must occur exactly once')
+    page = page.replace('<p class="help" data-legend>', _WFH + '<p class="help" data-legend>', 1)
+# END WORLD w16c
 # exactly the chrome keys this page used, for every locale in i18n/locales;
 # a key missing (or empty) in any locale stops the build by name
 I18N_CAT = {}

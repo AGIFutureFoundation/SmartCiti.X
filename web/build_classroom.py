@@ -68,6 +68,31 @@ stats = ''.join(f'<div class="st"><dt>{T(k)}</dt><dd data-cl-stat="{s}">0</dd></
 heads = ''.join(f'<div class="st"><dt>{T("class.stat." + k)}</dt><dd data-cl-count="{k}">{len(D[k])}</dd></div>'
                 for k in ('modules', 'moments', 'places'))
 honest = ''.join(f'<li>{T(k)}</li>' for k in ('class.h.server', 'class.h.plan', 'class.h.play', 'class.h.data', 'class.h.lessons'))
+# COURSE BEGIN (wave 16 C3): every module's lessons, each linked to its supplement on the course page (glossary, safety
+# notes, self-check, worksheet). Titles are READ from lessons/registry/lessons.json; the chrome words are course.* keys,
+# added to this page's catalogue strictly in all 8 locales. A link grants, locks and records nothing.
+_COURSE_KEYS = ('course.h.sup', 'course.c.supp', 'course.hon.cert')
+for _f in sorted((ROOT / 'i18n/locales').glob('*.json')):
+    _c = json.loads(_f.read_text(encoding='utf-8'))
+    for _k in _COURSE_KEYS:
+        if not isinstance(_c['strings'].get(_k), str) or not _c['strings'][_k].strip():
+            raise ClassroomPageError(f'classroom: i18n key {_k!r} is missing from {_c["locale"]}')
+        I18N[_c['locale']]['strings'][_k] = _c['strings'][_k]
+EN = I18N['en']['strings']
+_LES = json.loads((ROOT / 'lessons/registry/lessons.json').read_text(encoding='utf-8'))['lessons']
+_sup_rows = ''
+for _m in D['modules']:
+    if not _m['lessons']:
+        continue
+    for _lid in _m['lessons']:
+        if _lid not in _LES:
+            raise ClassroomPageError(f'classroom: module {_m["id"]} names lesson {_lid}, which is not in the lessons registry')
+    _sup_rows += (f'<li data-sup-module="{E(_m["id"])}"><b>{E(_m["name"])}</b>: ' + ', '.join(
+        f'<a href="trade_craft_courses.html?lesson={E(_lid)}#course-sup" data-sup-lesson="{E(_lid)}">{E(_LES[_lid]["title"])}</a>'
+        for _lid in _m['lessons']) + '</li>')
+COURSE_SUP_HTML = (f'<section class="box" id="cl-sup" aria-labelledby="cl-h-sup"><h2 id="cl-h-sup" data-i18n="course.h.sup">{E(L("course.h.sup"))}</h2>'
+                   f'<p class="msg">{T("course.hon.cert")}</p><ul class="sup-list">{_sup_rows}</ul></section>')
+# COURSE END
 
 PAGE_JS = r'''(function () {
   'use strict';
@@ -290,6 +315,12 @@ th,td{{border-block-end:1px solid var(--tc-line);padding:6px 8px;text-align:star
 </body>
 </html>
 '''
+# COURSE BEGIN (wave 16 C3): the supplement list goes in just before the class scoreboard
+_at = '<section class="box" id="cl-class"'
+if page.count(_at) != 1:
+    raise ClassroomPageError('classroom: the scoreboard section the supplement list is placed before is not unique')
+page = page.replace(_at, COURSE_SUP_HTML + '\n' + _at)
+# COURSE END
 TITLE = 'SmartCiti.X : Trade Craft Academy — ' + L('class.nav')
 page = apply_seo(page, PAGE, TITLE, L('class.seo.desc'), 'page')
 emit(HERE / 'trade_craft_classroom.html', page,

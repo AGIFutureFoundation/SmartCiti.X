@@ -163,7 +163,9 @@ const PATHROLE = { responders: 'responder', relief: 'relief-coordinator', teache
   const files = [];
   for (const d of dirs) {
     const r = join(ROOT, d.name, 'registry');
-    if (existsSync(r)) for (const f of readdirSync(r)) if (f.endsWith('.json') && d.name !== 'npcs') files.push(join(r, f));
+    // the Omega Hive registry (hive/) re-quotes every guide's name from this pack verbatim, held to its source by hive/test.mjs,
+    // so it is a copy of these names, not another registry they could collide with
+    if (existsSync(r)) for (const f of readdirSync(r)) if (f.endsWith('.json') && d.name !== 'npcs' && d.name !== 'hive') files.push(join(r, f));
   }
   if (existsSync(join(ROOT, 'parishes/authored/landmarks.json'))) files.push(join(ROOT, 'parishes/authored/landmarks.json'));
   for (const f of files) {

@@ -337,5 +337,15 @@ ok('[eval] web/eval_wilds.mjs declares a target for every world and all four vie
     /height: T\.height, slope: T\.slope, blocked: \(x, z, r\) => nearTrail\(x, z, r\), waterLevel: W\.biome\.water_level_m, snowLine: W\.biome\.snow_line_m/.test(main));
 }
 /* END WORLD w16 */
+/* BEGIN WORLD w16c (WORLD·Worlds & Locales): the ground-flora honesty line on the page, translated at run time */
+{
+  let fl = null; try { fl = JSON.parse(read('flora/registry/flora.json')); } catch { fl = null; }
+  const enC = JSON.parse(read('i18n/locales/en.json')).strings['wilds.flora_honesty'];
+  const escH = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;');
+  const line = fl && enC ? `<p class="help" data-flora-honesty><span data-i18n="wilds.flora_honesty">${escH(enC)}</span></p>\n<p class="help" data-legend>` : null;
+  ok('[flora] the ground-flora honesty line (registry wilds.page_line, AUTHORED, not a survey) stands before the legend as wilds.flora_honesty, re-rendered per locale',
+    !!line && enC === fl.wilds.page_line && html.split(line).length === 2 && /AUTHORED/.test(enC));
+}
+/* END WORLD w16c */
 console.log(bad ? `wilds page: ${bad} FAILED, ${n} ok` : `wilds page: all ${n} checks ok`);
 process.exit(bad ? 1 : 0);

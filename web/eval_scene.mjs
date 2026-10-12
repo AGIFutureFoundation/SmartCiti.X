@@ -226,9 +226,43 @@ const VIEWS = [
   { id: 'restoration', go: (p) => p.evaluate(() => window.__tc3dDo('view', 'restoration')),
     ...ceil('restoration'),
     why: 'the first walkable restoration site\'s ground scene, entered through the page\'s own walk' },
+  /* BUILD BEGIN (wave 16 B1, ADDED - no row above moved): the hall-eye view again, after the page's
+     device-tier surface textures are forced to the `high` tier through its own hook and every queued
+     surface has been repainted. A software rasteriser is the page's `base` tier, so no other row in this
+     file ever sees a high-resolution surface; this one is held to the SAME hall-eye ceilings and
+     legibility floor (nothing new is declared), and prints what the textures cost beside its frame time. */
+  { id: 'hall-eye-tex', texTier: 'high', go: async (p) => {
+      await p.evaluate(() => window.__tc3dDo('view', 'hall'));
+      await p.waitForTimeout(1400);
+      await p.evaluate(() => window.__tc3dDo('cam', '0,1.7,14|0,1.7,0'));
+      await p.evaluate(() => window.__tc3dDo('tex', 'high'));
+      await p.waitForFunction(() => window.__tc3dTex().pending === 0, null, { timeout: 30_000 });
+    },
+    ...ceil('hall-eye'),
+    why: 'standing in the hall aisle with the surface textures at the `high` device tier' },
+  /* BUILD END */
 ];
 
 const pct = (v, lim) => `${((v / lim) * 100).toFixed(0)}%`;
+
+/* BUILD BEGIN (wave 16 B1): `--rows=a,b` scores only the named rows, so a single browser run can stay
+   inside the time a shared box allows (the 111-hall sweep alone takes most of it). Unnamed, every row
+   runs exactly as before; a name that matches no row stops the run rather than scoring nothing. */
+const ONLY = (process.argv.find((a) => a.startsWith('--rows=')) ?? '').slice(7).split(',').filter(Boolean);
+for (const id of ONLY) if (!VIEWS.some((v) => v.id === id)) throw new Error(`--rows names "${id}", which is no row in this file`);
+const RUN = ONLY.length ? VIEWS.filter((v) => ONLY.includes(v.id)) : VIEWS;
+/* FRAME TIME, per row, MEASURED and printed - not judged. Wall-clock time on a shared SwiftShader box
+   moves with load (see the boot note below), so each row's median frame interval is printed with the load
+   average beside it: a reading to compare within one run, never a target. The median of three intervals
+   after the frame the counters are read from (three, not more: at seconds a frame under load, a fourth
+   interval per row pushed a run past the time a shared box allows). */
+const frameMs = (p) => p.evaluate(() => new Promise((res) => {
+  const t = []; let last = 0;
+  const step = (now) => { if (last) t.push(now - last); last = now;
+    if (t.length < 3) requestAnimationFrame(step); else { t.sort((a, b) => a - b); res(Math.round(t[1])); } };
+  requestAnimationFrame(step);
+}));
+/* BUILD END */
 
 /* TIME TO READY (wave 13 row, ADDED - no target above moved). The page's own boot marks
    (window.__tc3dBoot(), ms since navigation start) are read once the first frame has been drawn.
@@ -259,7 +293,7 @@ async function main() {
   const loadAvg = readFileSync('/proc/loadavg', 'utf8').split(' ').slice(0, 3).join(' ');
 
   const rows = [];
-  for (const v of VIEWS) {
+  for (const v of RUN) {
     if (v.worst) {
       // Measure every hall, then leave the view standing on the dearest one
       // so the block below scores it exactly like any other row.
@@ -324,6 +358,11 @@ async function main() {
                signs: rects.length, pairs,
                worstCover: Math.round(worstCover * 100), worstPair };
     });
+    /* BUILD BEGIN (wave 16 B1) */
+    m.frameMs = await frameMs(pg);
+    m.texInfo = await pg.evaluate(() => (typeof window.__tc3dTex === 'function' ? window.__tc3dTex() : null));
+    process.stderr.write(`  measured ${v.id}: ${m.calls} calls, ${m.tris} tris, ${m.frameMs} ms/frame\n`);  // so a run cut short still says how far it got
+    /* BUILD END */
     rows.push({ ...v, ...m });
   }
   await b.close();
@@ -342,6 +381,12 @@ async function main() {
       + (r.worstPair ? ` (worst ${r.worstCover}%: ${r.worstPair})` : ''));
     if (r.signs < r.minSigns) fails.push(`only ${r.signs} signs on screen, floor is ${r.minSigns}`
       + ' - legibility bought by taking signage away is not legibility');
+    /* BUILD BEGIN (wave 16 B1): a texture row whose tier never took, or whose repaint never finished, has
+       measured the base tier under the high tier's name */
+    if (r.texTier && !r.texInfo) fails.push('the page exposes no __tc3dTex(), so its texture tier was never measured');
+    else if (r.texTier && (r.texInfo.tier !== r.texTier || r.texInfo.pending !== 0 || !(r.texInfo.upgraded > 0)))
+      fails.push(`texture tier ${r.texInfo.tier} with ${r.texInfo.upgraded} upgraded and ${r.texInfo.pending} pending, not the ${r.texTier} tier fully painted`);
+    /* BUILD END */
     if (fails.length) bad++;
     line.push({ ...r, fails });
   }
@@ -354,7 +399,7 @@ async function main() {
       + `${'triangles'.padStart(11)} ${'of'.padStart(5)} ${'meshes'.padStart(7)} `
       + `${'floor'.padStart(6)} ${'signs'.padStart(6)} ${'floor'.padStart(6)} `
       + `${'pairs'.padStart(6)} ${'of'.padStart(4)} `
-      + `${'mats'.padStart(5)} ${'tex'.padStart(5)}  rung`);
+      + `${'mats'.padStart(5)} ${'tex'.padStart(5)}  rung  frame (load ${loadAvg})`);
     for (const r of line) {
       console.log(`${r.id.padEnd(11)} ${String(r.calls).padStart(6)} ${pct(r.calls, r.maxCalls).padStart(5)} `
         + `${r.tris.toLocaleString().padStart(11)} ${pct(r.tris, r.maxTris).padStart(5)} `
@@ -362,6 +407,7 @@ async function main() {
         + `${String(r.signs).padStart(6)} ${String(r.minSigns).padStart(6)} `
         + `${String(r.pairs).padStart(6)} ${String(r.maxPairs).padStart(4)} `
         + `${String(r.materials).padStart(5)} ${String(r.tex).padStart(5)}  ${r.quality}`
+        + `  ${String(r.frameMs).padStart(5)} ms`
         + (r.fails.length ? '   <<< ' + r.fails.join('; ') : ''));
     }
     // the worst pair per view, named, so a number crossing a line comes
@@ -371,6 +417,12 @@ async function main() {
         console.log(`  ${r.id}: worst overlap ${r.worstCover}% of the smaller `
           + `plate - ${r.worstPair}`);
     for (const r of line) console.log(`  ${r.id}: ${r.why}`);
+    /* BUILD BEGIN (wave 16 B1) */
+    for (const r of line) if (r.texInfo) console.log(`  ${r.id}: surface textures tier ${r.texInfo.tier} at ${r.texInfo.px} px`
+      + ` (asked ${r.texInfo.asked}), ${r.texInfo.surfaces} surfaces, ${r.texInfo.upgraded} upgraded, ${r.texInfo.pending} pending on screen (${r.texInfo.queued} queued), ${r.texInfo.skipped} over budget,`
+      + ` ~${r.texInfo.mb} MB with mipmaps, mipmaps ${r.texInfo.mipmaps}, anisotropy ${r.texInfo.aniso}`);
+    console.log(`  frame times are the median of three rAF intervals per row, load average ${readFileSync('/proc/loadavg', 'utf8').split(' ').slice(0, 3).join(' ')} at the end of the run`);
+    /* BUILD END */
     if (errs.length) {
       console.log('\npage errors:');
       for (const e of errs.slice(0, 6)) console.log('  ' + e);

@@ -56,6 +56,13 @@ const ROOT = path.resolve(HERE, '..');
 const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 const URL_BASE = process.env.TC_URL ?? 'http://127.0.0.1:8811/web/trade_craft_3d.html';
 const JSON_OUT = process.argv.includes('--json');
+/* BUILD BEGIN (wave 16 B3, ADDED - no cap or floor above moved): `--frames` also measures each campus's
+   frame time (median of three rAF intervals), printed beside the load average and never judged - wall
+   time on a shared software rasteriser moves with load, and at seconds a frame ten campuses of it is most
+   of the time one run may take, so it is opt-in. */
+const FRAMES = process.argv.includes('--frames');
+const loadAvg = () => readFileSync('/proc/loadavg', 'utf8').split(' ').slice(0, 3).join(' ');
+/* BUILD END */
 
 /* the budget, read from eval_scene.mjs by structure - a number typed here
    would be a second budget */
@@ -137,6 +144,13 @@ async function main() {
         otherSigns: rects.length - hallSigns - anchorTagSigns, byKind,
         pairs, worstCover: Math.round(worstCover * 100), worstPair };
     });
+    /* BUILD BEGIN (wave 16 B3): what the campus is dressed with (web/build_3d.py bdDressCampus) - the hall
+       name boards, lamps and benches - and, opt-in, its frame time */
+    m.dressing = await pg.evaluate(() => (typeof window.__tc3dCampusDressing === 'function' ? window.__tc3dCampusDressing() : undefined));
+    if (FRAMES) m.frameMs = await pg.evaluate(() => new Promise((res) => { const t = []; let last = 0;
+      const step = (now) => { if (last) t.push(now - last); last = now; if (t.length < 3) requestAnimationFrame(step); else { t.sort((a, b) => a - b); res(Math.round(t[1])); } };
+      requestAnimationFrame(step); }));
+    /* BUILD END */
     const fails = [];
     const halls = CAMPUSES[slug].halls.length;
     const flagship = CAMPUSES[slug].flagship === true;
@@ -147,6 +161,16 @@ async function main() {
     // the floors were calibrated on the flagship and are applied to it alone
     if (flagship && m.meshes < CEIL.minMeshes) fails.push(`only ${m.meshes} visible meshes, floor is ${CEIL.minMeshes}`);
     if (flagship && m.signs < CEIL.minSigns) fails.push(`only ${m.signs} signs on screen, floor is ${CEIL.minSigns}`);
+    /* BUILD BEGIN (wave 16 B3, ADDED): every hall a campus hosts is NAMED on its own front - one board per
+       hall in the registry, none on a hub - and the dressing stays inside its three draw calls. A board
+       is geometry, not a sign sprite, so this is a count of buildings named, not of rectangles on screen. */
+    if (m.dressing === undefined) fails.push('the page exposes no __tc3dCampusDressing(), so the halls named on this campus cannot be counted');
+    else if (!m.dressing) fails.push('the page reports no dressing for this campus');
+    else {
+      if (m.dressing.boards.boards !== halls) fails.push(`${m.dressing.boards.boards} hall name boards for the ${halls} halls the registry gives this campus`);
+      if (m.dressing.drawCalls > 3) fails.push(`the dressing costs ${m.dressing.drawCalls} draw calls, more than its three`);
+    }
+    /* BUILD END */
     rows.push({ campus: slug, halls, flagship, floors_judged: flagship, ...m, fails });
   }
   await b.close();
@@ -156,8 +180,16 @@ async function main() {
   } else {
     console.log(`\ncampus eval - every campus in unions/registry/campuses.json, measured in Chromium against eval_scene.mjs's campus ceiling\n`);
     console.log('signs are counted by kind off __tc3dLabelRects(): hall = a building\'s own name, anch+tag = the city\'s recorded anchors and site tags, other = the plaza marquee and district banners\n');
+    /* BUILD BEGIN (wave 16 B3) */
+    console.log(`load average ${loadAvg()}${FRAMES ? '; frame times are the median of three rAF intervals, measured not judged' : ''}\n`);
+    /* BUILD END */
     console.log(`${'campus'.padEnd(16)} ${'halls'.padStart(5)} ${'calls'.padStart(6)} ${'of'.padStart(5)} ${'triangles'.padStart(10)} ${'of'.padStart(5)} ${'meshes'.padStart(7)} ${'signs'.padStart(6)} ${'hall'.padStart(5)} ${'anch+tag'.padStart(8)} ${'other'.padStart(5)} ${'pairs'.padStart(6)} ${'of'.padStart(4)}  floors`);
     for (const r of rows) console.log(`${r.campus.padEnd(16)} ${String(r.halls).padStart(5)} ${String(r.calls).padStart(6)} ${((r.calls / CEIL.maxCalls) * 100).toFixed(0).padStart(4)}% ${String(r.tris).padStart(10)} ${((r.tris / CEIL.maxTris) * 100).toFixed(0).padStart(4)}% ${String(r.meshes).padStart(7)} ${String(r.signs).padStart(6)} ${String(r.hallSigns).padStart(5)} ${String(r.anchorTagSigns).padStart(8)} ${String(r.otherSigns).padStart(5)} ${String(r.pairs).padStart(6)} ${String(CEIL.maxPairs).padStart(4)}  ${r.floors_judged ? `judged (meshes >= ${CEIL.minMeshes}, signs >= ${CEIL.minSigns})` : 'measured, not judged: floors were calibrated on the flagship'}` + (r.fails.length ? '   <<< ' + r.fails.join('; ') : ''));
+    /* BUILD BEGIN (wave 16 B3) */
+    for (const r of rows) if (r.dressing) console.log(`  ${r.campus.padEnd(16)} named ${r.dressing.boards.boards}/${r.halls} halls, `
+      + r.dressing.furniture.map((f) => `${f.count} ${f.name.replace('bd-', '')}`).join(', ')
+      + `, +${r.dressing.drawCalls} draw calls, +${r.dressing.tris.toLocaleString()} triangles` + (r.frameMs ? `, ${r.frameMs} ms/frame` : ''));
+    /* BUILD END */
     console.log(`\n${SLUGS.length} campuses scored, ${bad} over a cap or, on the flagship, under a floor` + (errs.length ? `, ${errs.length} page error(s)` : ', no page errors'));
     for (const e of errs.slice(0, 5)) console.log('  page error: ' + e);
   }

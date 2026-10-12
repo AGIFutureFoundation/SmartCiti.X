@@ -93,6 +93,13 @@ kit_reg = json.load(open(ROOT / 'kit/registry/kit.json'))
 props_reg = json.load(open(ROOT / 'props/registry/props.json'))
 respond_reg = json.load(open(ROOT / 'respond/registry/respond.json'))
 ei_reg = json.load(open(ROOT / 'ei/registry/ei.json'))
+# BUILD BEGIN (wave 16 B2): the facades pack's AUTHORED sign palettes, for the campus hall name boards.
+# Read whole and fail closed: a registry without them stops the build by name, never a typed default.
+facades_reg = json.load(open(ROOT / 'facades/registry/facades.json'))
+FACADE_SIGN_PALETTES = facades_reg['sign_rules']['palettes']
+assert FACADE_SIGN_PALETTES and all(len(p) == 2 and all(c.startswith('#') and len(c) == 7 for c in p)
+                                    for p in FACADE_SIGN_PALETTES), 'facades sign_rules.palettes: [[ground, ink], ...] of #rrggbb'
+# BUILD END
 
 def trim(rows, *drop):
     """Ship what is drawn, not what is explained.
@@ -301,6 +308,9 @@ for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
         'language': c['language'], 'dir': c['dir'],
         'strings': {k: s[k] for k in (
             'nav.campus', 'nav.page.campus', 'language.select', 'hall.rooms', 'hall.stations',
+            # COURSE BEGIN (wave 16 C3): the label of each lesson chip's supplement link
+            'course.c.supp',
+            # COURSE END
             'station.checklist', 'station.quiz', 'ui.close',
             'map.layer.modules', 'figures.modules', 'figures.lessons', 'room.finish',
             'figures.halls', 'figures.districts', 'figures.campuses',
@@ -931,6 +941,9 @@ DATA = json.dumps({
                                     for k in ('calls_per_hall', 'tris_per_hall')},
                    'per_hall': props_reg['budget']['per_hall']},
     },
+    # BUILD BEGIN (wave 16 B2): colour pairs only - no lot, no business name crosses into this page
+    'facadeSigns': {'contract': facades_reg['contract'], 'palettes': FACADE_SIGN_PALETTES},
+    # BUILD END
     # the helper guide: ten places, six fixed questions each, the control
     # schemes (the seat rows read from sims/, never copied), the voice
     # policy with its two off-by-default switches, and the declared hand
@@ -7202,6 +7215,12 @@ select{background:var(--panel);color:var(--ink);border:1px solid var(--rule);
 #hud .lchip.on{border-color:var(--mark);color:var(--mark)}
 #hud .lchip.on::before{content:"\25b8 "}
 #hud .lroom{color:var(--muted);font-size:10.5px;white-space:nowrap}
+/* SUPPLEMENT-LINK BEGIN (wave 16): each lesson chip is followed by a link to its supplement on the course page - a plain
+   link, it grants, locks and records nothing */
+#hud .lsup{display:inline-flex;align-items:center;min-height:24px;padding:2px 8px;font-size:11px;color:var(--mark);
+  border:1px dashed var(--rule);border-radius:999px;text-decoration:none}
+#hud .lsup:hover{border-color:var(--mark)}
+/* SUPPLEMENT-LINK END */
 #honesty{position:fixed;right:16px;bottom:14px;z-index:5;max-width:300px;
   color:var(--muted);font-size:10.5px;text-align:end;opacity:.85}
 #dash{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:6;
@@ -10131,10 +10150,207 @@ function surfaceMaps(color, pattern) {
   if (normalMap) normalMap.anisotropy = anisoNow();
 
   const out = { map, normalMap };
+  /* DRESSING BEGIN (wave 16 B1): mipmapped and anisotropic, stated rather than left to the library's
+     defaults; recorded, so the device tier below can repaint it at its own size after the first frame */
+  texMip(map); texMip(normalMap);
+  Object.assign(out, { color, pattern, px: S2 });
+  texTrack(out);
+  /* DRESSING END */
   surfCache.set(key, out);
   return out;
 }
 
+
+/* DRESSING BEGIN (wave 16 B1): SURFACE TEXTURES BY DEVICE TIER.
+
+   Every floor, wall and facade above is painted at the ladder's size - 384 px on the high rung - and
+   that number was chosen for a software rasteriser, where nine times the texels cost a tenth of the
+   frame rate. A desktop GPU is not that machine. So the page now asks what the device is:
+
+     base   384 px  a software rasteriser (SwiftShader, llvmpipe), under 4 GB, or a GPU whose largest
+                    texture is under 4096 - exactly what every surface had before this block
+     high  1024 px  any other device
+     ultra 2048 px  a desktop (no touch) with 8 GB, 8 cores and an 8192 px texture limit
+
+   ?tex=base|high|ultra overrides it, and __tc3dDo('tex', tier) sets it from a harness.
+
+   Boot is not slowed by any of it: a surface is painted at the ladder's size exactly as before, and
+   only once the first frame has been drawn is it repainted at the tier's size, ONE surface per idle
+   slot, and swapped into every material already wearing it. It is painted in the base tier's own
+   design space, scaled up - so a brick course is the same size in the world at every tier and what the
+   extra texels buy is a sharper joint and a finer grain, never a different pattern. A tier has a memory
+   budget (colour + normal, with mipmaps); past it a surface keeps the size it has. The ladder's low
+   rung stops the repaint, and nothing is repainted while it stands there. No image is fetched: every
+   texel is generated in this browser. */
+const TEX_TIER_PX = { base: 384, high: 1024, ultra: 2048 };
+const TEX_TIER_MB = { base: 0, high: 320, ultra: 768 };
+if (TEX_TIER_PX.base !== SURF_PX.high)
+  throw new Error('the base texture tier is the high rung of the ladder (' + SURF_PX.high + ' px), not ' + TEX_TIER_PX.base);
+function texTierAuto() {
+  let soft = false;
+  try {
+    const gl = renderer.getContext();
+    const ext = gl.getExtension('WEBGL_debug_renderer_info');
+    const who = ext ? String(gl.getParameter(ext.UNMASKED_RENDERER_WEBGL)) : '';
+    soft = /swiftshader|llvmpipe|softpipe|software/i.test(who);
+  } catch (e) { soft = false; }
+  const maxTex = renderer.capabilities.maxTextureSize;
+  const mem = navigator.deviceMemory ?? 4, cores = navigator.hardwareConcurrency ?? 4;
+  if (soft || mem < 4 || maxTex < 4096) return 'base';
+  if (!isTouch && mem >= 8 && cores >= 8 && maxTex >= 8192) return 'ultra';
+  return 'high';
+}
+const texAsked = new URLSearchParams(location.search).get('tex');
+let texTier = Object.hasOwn(TEX_TIER_PX, texAsked ?? '') ? texAsked : texTierAuto();
+const texRecs = new Set(), texQ = [];
+let texSched = false, texUpgraded = 0, texSkipped = 0, texMB = 0;
+const texMiB = (px) => px * px * 4 * (4 / 3) / 1048576;      // RGBA8 with its mip chain
+function texMip(t) {
+  if (!t) return;
+  t.generateMipmaps = true;
+  t.minFilter = THREE.LinearMipmapLinearFilter;
+  t.magFilter = THREE.LinearFilter;
+  t.anisotropy = anisoNow();
+}
+function texTrack(rec) { texRecs.add(rec); texEnqueue(rec); }
+function texEnqueue(rec) {
+  // only a surface painted at the high rung's size is a candidate: the low rung's 128 px surfaces
+  // belong to a device the ladder has already said cannot afford more
+  if (rec.px < SURF_PX.high || rec.px >= TEX_TIER_PX[texTier] || texQ.includes(rec)) return;
+  texQ.push(rec); texKick();
+}
+function texKick(ms) {
+  if (texSched || !texQ.length) return;
+  texSched = true;
+  const go = () => { texSched = false; texStep(); };
+  if (ms) setTimeout(go, ms);
+  else if (window.requestIdleCallback) requestIdleCallback(go, { timeout: 400 });
+  else setTimeout(go, 120);
+}
+function texStep() {
+  if (!texQ.length) return;
+  // nothing is repainted before the first frame, and nothing while the ladder stands on its low rung
+  if (!('frame1' in BOOT) || qLevel === 'low') { texKick(1000); return; }
+  /* Only what the scene is wearing NOW is repainted, and the budget counts only texels the scene is
+     wearing now. The cache keeps every surface ever painted (111 halls' worth after a tour), and a queue
+     that repainted all of them would spend minutes and the whole budget on rooms nobody is standing in;
+     a torn-down hall's clones are disposed, its texels leave the GPU, and they stop counting here. */
+  const live = texLive();
+  const i = texQ.findIndex((r) => live.has(r.map.source));
+  if (i < 0) { texKick(1500); return; }               // nothing on screen wants it yet: look again later
+  const rec = texQ.splice(i, 1)[0];
+  let px = TEX_TIER_PX[texTier];
+  if (rec.px >= px) { texKick(); return; }
+  /* The budget is what REPAINTED surfaces the scene wears now hold - not every live texture wider than
+     the base size: label sprites, the sky and the sign atlases are all wider than 384 px and are not this
+     tier's to spend (the first browser run of the high tier counted them and repainted nothing). A
+     surface that would cross the budget at the tier's size takes the next size down while that is still
+     above the base tier (ultra 2048 -> 1024), and only then keeps the size it has. */
+  const n = rec.normalMap ? 2 : 1;
+  let liveMB = 0;
+  for (const r of texRecs) if (r.px > TEX_TIER_PX.base)
+    for (const t of [r.map, r.normalMap]) if (t && live.has(t.source)) liveMB += texMiB(r.px);
+  texMB = liveMB;
+  const cost = (p) => n * (texMiB(p) - texMiB(rec.px));
+  while (px > TEX_TIER_PX.high && texMB + cost(px) > TEX_TIER_MB[texTier]) px /= 2;
+  if (texMB + cost(px) > TEX_TIER_MB[texTier]) { texSkipped++; texKick(); return; }
+  const fresh = texPaint(rec.color, rec.pattern, px);
+  texSwap(rec, fresh);
+  texMB += cost(px); rec.px = px; texUpgraded++;
+  texKick();
+}
+// every texture source a material in the scene is wearing right now
+function texLive() {
+  const live = new Set();
+  scene.traverse((o) => { for (const m of [].concat(o.material ?? []))
+    if (m && m.isMaterial) { if (m.map) live.add(m.map.source); if (m.normalMap) live.add(m.normalMap.source); } });
+  return live;
+}
+// the same recipe surfaceMaps() paints, in the base tier's design space scaled up by k, plus one octave
+// of grain at the device's own texel size - the detail the extra resolution is for
+function texPaint(color, pattern, px) {
+  const D0 = TEX_TIER_PX.base, k = px / D0;
+  const c = document.createElement('canvas'); c.width = c.height = px;
+  const g = c.getContext('2d');
+  const hc = document.createElement('canvas'); hc.width = hc.height = px;
+  const hg = hc.getContext('2d');
+  g.fillStyle = color; g.fillRect(0, 0, px, px);
+  hg.fillStyle = '#808080'; hg.fillRect(0, 0, px, px);
+  g.save(); hg.save(); g.scale(k, k); hg.scale(k, k);
+  const grains = Math.round(260 * (D0 / 128) * (D0 / 128));
+  const gp = Math.max(1.6, D0 / 80);
+  for (let i = 0; i < grains; i++) { g.fillStyle = `rgba(255,255,255,${Math.random() * .05})`;
+    g.fillRect(Math.random() * D0, Math.random() * D0, gp, gp); }
+  for (let i = 0; i < grains; i++) { g.fillStyle = `rgba(0,0,0,${Math.random() * .07})`;
+    g.fillRect(Math.random() * D0, Math.random() * D0, gp, gp); }
+  paintPattern(g, hg, pattern, D0);
+  g.restore(); hg.restore();
+  const fine = Math.round(grains * k * k * .5);
+  for (let i = 0; i < fine; i++) {
+    const x = Math.random() * px, y = Math.random() * px, up = Math.random() > .5;
+    g.fillStyle = `rgba(${up ? '255,255,255' : '0,0,0'},${(Math.random() * .045).toFixed(3)})`;
+    g.fillRect(x, y, 1.6, 1.6);
+    hg.fillStyle = up ? '#868686' : '#7a7a7a'; hg.fillRect(x, y, 1.6, 1.6);
+  }
+  const map = new THREE.CanvasTexture(c);
+  map.wrapS = map.wrapT = THREE.RepeatWrapping; map.colorSpace = THREE.SRGBColorSpace;
+  texMip(map);
+  const hd = hg.getImageData(0, 0, px, px).data;
+  const hf = new Float32Array(px * px);
+  for (let i = 0; i < hf.length; i++) hf[i] = hd[i * 4] / 255;
+  const normalMap = normalFromHeight(hf, px, PATTERN_RELIEF[pattern] ?? 0);
+  texMip(normalMap);
+  return { map, normalMap };
+}
+// every material wearing the old pair - the scene, the shared table and the campus fabric - gets a clone
+// of the new one carrying the old clone's repeat; the old clone is disposed, and with the last of them
+// the old texels leave the GPU
+function texSwap(rec, fresh) {
+  const pairs = [['map', rec.map, fresh.map], ['normalMap', rec.normalMap, fresh.normalMap]];
+  const fix = (m) => {
+    if (!m || !m.isMaterial) return;
+    for (const [slot, was, now] of pairs) {
+      const t = m[slot];
+      if (!t || !was || !now || t.source !== was.source) continue;
+      const nt = now.clone(); nt.repeat.copy(t.repeat); nt.offset.copy(t.offset);
+      nt.needsUpdate = true; m[slot] = nt; t.dispose();
+    }
+  };
+  scene.traverse((o) => { for (const m of [].concat(o.material ?? [])) fix(m); });
+  for (const m of Object.values(mat)) fix(m);
+  if (typeof fabMats !== 'undefined' && fabMats) for (const m of Object.values(fabMats)) fix(m);
+  rec.map.dispose(); rec.normalMap?.dispose();
+  rec.map = fresh.map; rec.normalMap = fresh.normalMap;
+}
+// a harness asks for a tier and then measures it, so the hook repaints the whole queue at once rather
+// than one surface per idle slot - which on a software rasteriser, at seconds a frame, is minutes. The
+// rules are the slot's own: not before the first frame, not on the low rung, never past the budget.
+function texDrain() {
+  if (!('frame1' in BOOT) || qLevel === 'low') return;
+  let guard = texQ.length;
+  while (texQ.length && guard-- > 0) {
+    const live = texLive();
+    if (!texQ.some((r) => live.has(r.map.source))) break;   // the rest is not on screen
+    texSched = true; texStep();
+  }
+  texSched = false;
+}
+function texSet(tier) {
+  if (!Object.hasOwn(TEX_TIER_PX, tier)) throw new Error('no texture tier called ' + tier + '; the tiers are ' + Object.keys(TEX_TIER_PX).join(', '));
+  texTier = tier;
+  for (const rec of texRecs) texEnqueue(rec);
+}
+window.__tc3dTex = () => {
+  const all = [...texRecs].flatMap((r) => [r.map, r.normalMap]).filter(Boolean);
+  // `pending` is what the scene on screen still waits for; `queued` also counts surfaces no view wears
+  const live = texLive();
+  return { tier: texTier, asked: texAsked ?? 'auto', px: TEX_TIER_PX[texTier], surfaces: texRecs.size,
+           upgraded: texUpgraded, pending: texQ.filter((r) => live.has(r.map.source)).length,
+           queued: texQ.length, skipped: texSkipped, mb: Math.round(texMB),
+           budgetMb: TEX_TIER_MB[texTier], aniso: anisoNow(),
+           mipmaps: all.length > 0 && all.every((t) => t.generateMipmaps && t.minFilter === THREE.LinearMipmapLinearFilter) };
+};
+/* DRESSING END */
 /* A room's floor material, at the repeat its own tile size asks for. The
    canvas underneath is shared through surfaceMaps; only the repeat differs
    per room, so the texture pair is cloned and the clone carries the
@@ -10510,6 +10726,103 @@ function buildCrib(h, rx, rz, rw, rd) {
    wallRect() so the walker cannot pass through them; wall-mounted ones
    hang above nothing a walker occupies. Nothing here is raycast and
    nothing here moves, so nothing earns a mesh of its own. */
+/* DRESSING BEGIN (wave 16 B1): ROOM HEADER SIGNS - every room of a hall named over its way in, for ONE draw
+   call per hall.
+
+   A room was named by a floating plate at 2.2 m over its middle, which is a label in a diagram. A room in
+   a building is named over its door. Each room now carries a header board standing on its front
+   partition, over the doorway planDoors() cut in that edge (the one nearest the room's middle) with a
+   lintel across the opening, or centred on the partition where that edge has none. The board reads the
+   room's own registry label and its strand in this locale, under the room's number in the hall's
+   programme - the same number the stencilled door tags use - on a tab in the district's hue.
+
+   Eleven boards would be eleven materials. They are one: every board's face is a cell of one canvas
+   atlas painted at the device tier's width, every face is a quad in ONE merged geometry with its own
+   cell's UVs, and both faces of a board are drawn so it reads from either side. The board backs and the
+   lintels are mat.metal and pool with the benches. These are boards, not label sprites: they take no
+   part in the declutter and are not counted by __tc3dLabelRects(), so no legibility row moves for them. */
+let bdStat = null;
+const BD_PART_TOP = .9 + 1.1 / 2;          // the partition slab: centre .9, height 1.1 (buildHall)
+function bdHeaderSigns(h, rooms, doors, collector) {
+  if (!rooms.length) return { boards: 0, lintels: 0, atlas: 0, tris: 0 };
+  const AW = TEX_TIER_PX[texTier] >= TEX_TIER_PX.high ? 1024 : 512, CH = AW / 8;
+  const rowsPow2 = 1 << Math.ceil(Math.log2(rooms.length));
+  const cv = document.createElement('canvas'); cv.width = AW; cv.height = rowsPow2 * CH;
+  const g = cv.getContext('2d');
+  const hue = D.districts[h.district].hue;
+  const geos = [];
+  let lintels = 0;
+  rooms.forEach((s, i) => {
+    const y0 = i * CH;
+    g.fillStyle = `hsl(${hue} 30% 14%)`; g.fillRect(0, y0, AW, CH);
+    g.fillStyle = `hsl(${hue} 58% 46%)`; g.fillRect(0, y0, CH, CH);
+    g.fillStyle = '#ffffff'; g.textBaseline = 'middle'; g.textAlign = 'center';
+    g.font = `700 ${Math.round(CH * .52)}px ${lblFace('mono')}`;
+    g.fillText(String(s.n).padStart(2, '0'), CH / 2, y0 + CH / 2);
+    g.textAlign = 'left';
+    const room = String(s.r.label), sub = String(D.i18n[loc].strands[s.r.strand] ?? '');
+    let fs = Math.round(CH * .44);
+    g.font = `700 ${fs}px ${lblFace('display')}`;
+    while (fs > 10 && g.measureText(room).width > AW - CH * 1.25) { fs--; g.font = `700 ${fs}px ${lblFace('display')}`; }
+    g.fillText(room, CH * 1.2, y0 + CH * .38);
+    let ss = Math.round(CH * .24);
+    g.fillStyle = '#c3ccd0'; g.font = `${ss}px ${lblFace('body')}`;
+    while (ss > 8 && g.measureText(sub).width > AW - CH * 1.25) { ss--; g.font = `${ss}px ${lblFace('body')}`; }
+    g.fillText(sub, CH * 1.2, y0 + CH * .78);
+    // where the board stands: over the opening in the room's front edge nearest its middle
+    const zF = s.rz - s.rd / 2;
+    const cuts = (doors.get('z@' + zF.toFixed(2)) || [])
+      .filter(([a, b]) => a >= s.rx - s.rw / 2 - .01 && b <= s.rx + s.rw / 2 + .01)
+      .sort((p, q) => Math.abs((p[0] + p[1]) / 2 - s.rx) - Math.abs((q[0] + q[1]) / 2 - s.rx));
+    const cut = cuts[0];
+    const x = cut ? (cut[0] + cut[1]) / 2 : s.rx;
+    const PW = Math.min(s.rw - .4, 1.9), PH = PW / 8;
+    const y = BD_PART_TOP + .06 + PH / 2;
+    if (cut) {
+      box(cut[1] - cut[0] + .12, .08, .12, mat.metal, x, BD_PART_TOP - .04, zF, collector, false);
+      lintels++;
+    }
+    box(PW + .06, PH + .06, .04, mat.metal, x, y, zF, collector, false);
+    const v1 = 1 - y0 / cv.height, v0 = 1 - (y0 + CH) / cv.height;
+    for (const side of [-1, 1]) {
+      const q = new THREE.PlaneGeometry(PW, PH);
+      const uv = q.attributes.uv;
+      for (let k = 0; k < uv.count; k++) uv.setY(k, uv.getY(k) > .5 ? v1 : v0);
+      if (side < 0) q.rotateY(Math.PI);          // the face toward the hall front reads from the front
+      q.translate(x, y, zF + side * .022);
+      geos.push(q);
+    }
+  });
+  const tex = new THREE.CanvasTexture(cv);
+  tex.colorSpace = THREE.SRGBColorSpace; texMip(tex);
+  const m = new THREE.Mesh(mergeGeometries(geos), new THREE.MeshStandardMaterial({
+    map: tex, emissiveMap: tex, emissive: 0xffffff, emissiveIntensity: .22, roughness: .55 }));
+  geos.forEach((q) => q.dispose());
+  m.name = 'bd-room-signs'; m.receiveShadow = false; m.castShadow = false;
+  m.userData.boards = rooms.length;
+  hallGroup.add(m);
+  return { boards: rooms.length, lintels, atlas: AW + 'x' + cv.height,
+           tris: m.geometry.index.count / 3 + 12 * (rooms.length + lintels) };
+}
+// what the hall now stands, priced the way the triangle ceiling counts: every visible drawable's
+// triangles, instances multiplied out, read off the scene graph without a frame - so a sweep of all 111
+// halls can find the dearest by triangles as priceHall() finds it by draw calls
+function bdSceneTris() {
+  let t = 0;
+  const walk = (o) => {
+    if (!o.visible) return;
+    if ((o.isMesh || o.isSprite) && o.geometry) {
+      const gi = o.geometry.index, gp = o.geometry.attributes.position;
+      const n = gi ? gi.count / 3 : (gp ? gp.count / 3 : 0);
+      t += o.isInstancedMesh ? n * o.count : n;
+    }
+    for (const c of o.children) walk(c);
+  };
+  walk(scene);
+  return Math.round(t);
+}
+window.__tc3dDressing = () => (hallGroup && bdStat ? { ...bdStat, sceneTris: bdSceneTris() } : null);
+/* DRESSING END */
 const PROP_BY_ID = new Map(D.props.props.map((p) => [p.id, p]));
 let propPool = null, propInst = null, propStat = null;
 const propGeoCache = new Map();
@@ -11042,6 +11355,7 @@ function buildHall(sg) {
   propPool = new Map(); propInst = new Map();
   propStat = { slug: sg, rooms: h.rooms.length, wanted: 0, drawn: 0, tris: 0,
                byProp: {}, skipped: [], pooledCalls: 0, instancedCalls: 0 };
+  /* DRESSING BEGIN (wave 16 B1) */ const bdRooms = []; /* DRESSING END */
   // the trade's fixture benches, pooled across all eleven rooms
   const benchPool = new Map(), benchTop = partCollector(benchPool);
   // the room luminaires, one material per distinct illuminance in the record
@@ -11245,6 +11559,16 @@ function buildHall(sg) {
       new THREE.MeshStandardMaterial({ color: 0x0b0f11, emissive: 0xffe6c0,
         emissiveIntensity: .30 + luxN * .85, roughness: .4 })).get(rc.lux);
     box(Math.min(rw * .5, 2.2), .08, .34, lmat, rx, EAVE - .69, rz, lumTop, false);
+    /* DRESSING BEGIN (wave 16 B1): the fitting is a fitting - a housing over the diffuser and a hanger up
+       to the roof steel - pooled with the benches, so it costs triangles and no draw call; and the room
+       is queued for its header sign, drawn for the whole hall below */
+    {
+      const lw = Math.min(rw * .5, 2.2);
+      box(lw + .1, .05, .44, mat.metal, rx, EAVE - .625, rz, benchTop, false);
+      box(.04, .3, .04, mat.metal, rx, EAVE - .45, rz, benchTop, false);
+      bdRooms.push({ r, n: h.rooms.indexOf(r) + 1, rx, rz, rw, rd });
+    }
+    /* DRESSING END */
     // An emissive box is a bright OBJECT, not a light - it would have made
     // the luminaire look brighter over a room that was lit exactly the same
     // as its neighbour, which is a picture of the fix rather than the fix.
@@ -11439,6 +11763,7 @@ function buildHall(sg) {
     });
 
   });
+  /* DRESSING BEGIN (wave 16 B1) */ bdStat = bdHeaderSigns(h, bdRooms, doors, benchTop); /* DRESSING END */
   flushParts(benchPool, hallGroup);
   flushParts(lumPool, hallGroup, false);      // a lamp does not shadow itself
   flushProps(hallGroup);
@@ -11605,6 +11930,17 @@ function renderHallLessons() {
     `<a class="lchip" data-lesson="${esc(L.id)}" data-strand="${esc(L.strand)}"`
     + ` href="trade_craft_lessons.html#lesson-${esc(L.id)}">${esc(L.title)}`
     + `<span class="lroom">${esc(lessonRoomLabel(L))}</span></a>`).join('');
+  /* SUPPLEMENT-LINK BEGIN (wave 16): a supplement link after each chip - glossary, safety notes, self-check, worksheet on
+     trade_craft_courses.html. The label is the course.c.supp catalogue key; nothing is stored or recorded. */
+  for (const a of el.querySelectorAll('.lchip')) {
+    const s = document.createElement('a');
+    s.className = 'lsup';
+    s.dataset.supFor = a.dataset.lesson;
+    s.href = 'trade_craft_courses.html?lesson=' + encodeURIComponent(a.dataset.lesson) + '#course-sup';
+    s.textContent = t('course.c.supp');
+    a.after(s);
+  }
+  /* SUPPLEMENT-LINK END */
   markActiveLesson(curRoom ? curRoom.strand : null);
 }
 
@@ -11880,6 +12216,7 @@ function building(h, style, g, pool, ox = 0, oz = 0) {   // built at the local o
     hkList.push(hkBoxGeo(c, w, hh, d2, x + ox, y, z + oz, rx, rz));
   });
   if (hk.top > top) top = hk.top;
+  /* DRESSING BEGIN (wave 16 B2) */ g.userData.headY = hk.headY; /* DRESSING END */
   bld.userData.arch = h.arch.roof; bld.userData.sig = h.arch.sig;
   // the pilasters at the corners wear the city's trim, not one shared steel
   for (const px of [-wid/2 + .3, wid/2 - .3])
@@ -12244,6 +12581,146 @@ function flushDashes(g) {
   g.add(mesh);
 }
 
+/* DRESSING BEGIN (wave 16 B2): THE CAMPUS FROM THE STREET - every hall named on its own front, and the
+   site furnished the way a campus is: lights along its roads, seats around its plaza.
+
+   HALL NAME BOARDS. eval_campuses found that no campus view names a single hall - a hall was named only
+   from inside it - and that hanging one label SPRITE per hall could not survive the declutter (13 of 51
+   names stood on the flagship, and the overlapping pairs went past their cap). These are not sprites. A
+   name board is part of the building: fixed to its front wall over the window band, facing its own walk,
+   readable as you approach and simply small from 461 m up, as a real one is. Being geometry, they take no
+   part in the declutter and are not in __tc3dLabelRects(), so no legibility row moves. Every board of a
+   campus is a cell of ONE canvas atlas and a quad of ONE merged geometry: one draw call for 51 boards. The
+   board colours are the facades pack's AUTHORED sign palettes, picked per hall by a hash of its slug, so a
+   campus reads as many buildings rather than one stamp; the words are the hall's own registry name and
+   its district in this locale.
+
+   STREET LIGHTS AND SEATS. Lamp standards along the inner edge of the ring road and down one side of
+   every street the site plan lays, never on a road or a lot and never within a spacing of each other; and
+   benches on the outer edge of the plaza walkway, facing in. Each family is ONE InstancedMesh per campus,
+   in the city's own trim (lamps) and the shared timber (benches). AUTHORED placement rules on the
+   AUTHORED site plan; schematic street furniture, not any manufacturer's product. Both are solid to the
+   walker (campusSolid discs, B3). */
+let bdCamp = null, bdCampStat = null;
+const BD_LAMP_EVERY_M = 48, BD_BENCHES = 8;
+function bdHash(str) { let x = 2166136261; for (const ch of str) { x ^= ch.charCodeAt(0); x = Math.imul(x, 16777619); } return x >>> 0; }
+function bdBoxGeo(w, h, d, x, y, z) { const ge = new THREE.BoxGeometry(w, h, d); ge.translate(x, y, z); return ge; }
+function bdNameBoards(g) {
+  const list = bdCamp.boards;
+  if (!list.length) return { boards: 0, tris: 0, atlas: null };
+  const CW = TEX_TIER_PX[texTier] >= TEX_TIER_PX.high ? 1024 : 512, CH = CW / 8, COLS = 2;
+  const rows = 1 << Math.ceil(Math.log2(Math.ceil(list.length / COLS)));
+  const cv = document.createElement('canvas'); cv.width = CW * COLS; cv.height = rows * CH;
+  const cx2 = cv.getContext('2d');
+  const pals = D.facadeSigns.palettes;
+  const geos = [];
+  list.forEach((bd, i) => {
+    const col = i % COLS, row = Math.floor(i / COLS), x0 = col * CW, y0 = row * CH;
+    const [ground, ink] = pals[bdHash(bd.h.slug) % pals.length];
+    cx2.fillStyle = ground; cx2.fillRect(x0, y0, CW, CH);
+    cx2.fillStyle = `hsl(${D.districts[bd.h.district].hue} 58% 50%)`; cx2.fillRect(x0, y0 + CH - CH * .1, CW, CH * .1);
+    cx2.fillStyle = ink; cx2.textAlign = 'center'; cx2.textBaseline = 'middle';
+    const name = String(bd.h.name), sub = String(D.i18n[loc].districts[bd.h.district] ?? '');
+    let fs = Math.round(CH * .46);
+    cx2.font = `700 ${fs}px ${lblFace('display')}`;
+    while (fs > 10 && cx2.measureText(name).width > CW * .92) { fs--; cx2.font = `700 ${fs}px ${lblFace('display')}`; }
+    cx2.fillText(name, x0 + CW / 2, y0 + CH * .38);
+    let ss = Math.round(CH * .2);
+    cx2.font = `${ss}px ${lblFace('body')}`;
+    while (ss > 8 && cx2.measureText(sub).width > CW * .9) { ss--; cx2.font = `${ss}px ${lblFace('body')}`; }
+    cx2.fillText(sub, x0 + CW / 2, y0 + CH * .74);
+    /* the board on the archetype's own front header (web/hallkit.py: the cladding from headY to the eaves,
+       outer face 0.33 m proud of the wall), centred between headY and the cornice's underside, and no
+       wider than 9 m - the front roll-up door at campus scale starts 4.68 m off the centre line at its
+       widest - nor than eight times the height the header leaves it */
+    if (typeof bd.headY !== 'number') throw new Error('hall ' + bd.h.slug + ': its archetype reported no header height');
+    const room = bd.hgt - .7 - bd.headY;
+    const BH = Math.min(9 / 8, room * .8), BW = BH * 8;
+    const y = (bd.headY + bd.hgt - .7) / 2;
+    const q = new THREE.PlaneGeometry(BW, BH);
+    const uv = q.attributes.uv;
+    const u0 = x0 / cv.width, u1 = (x0 + CW) / cv.width, v1 = 1 - y0 / cv.height, v0 = 1 - (y0 + CH) / cv.height;
+    for (let k = 0; k < uv.count; k++) { uv.setX(k, uv.getX(k) > .5 ? u1 : u0); uv.setY(k, uv.getY(k) > .5 ? v1 : v0); }
+    q.rotateY(Math.PI);                               // the front faces -z, and reads from there
+    q.translate(0, y, -bd.d / 2 - .38);
+    bd.bg.updateWorldMatrix(true, false);
+    q.applyMatrix4(bd.bg.matrixWorld);
+    geos.push(q);
+  });
+  const tex = new THREE.CanvasTexture(cv);
+  tex.colorSpace = THREE.SRGBColorSpace; texMip(tex);
+  const m = new THREE.Mesh(mergeGeometries(geos), new THREE.MeshStandardMaterial({
+    map: tex, emissiveMap: tex, emissive: 0xffffff, emissiveIntensity: .18, roughness: .6 }));
+  geos.forEach((q) => q.dispose());
+  m.name = 'bd-hall-boards'; m.castShadow = false; m.receiveShadow = false;
+  g.add(m);
+  return { boards: list.length, tris: m.geometry.index.count / 3, atlas: cv.width + 'x' + cv.height };
+}
+function bdLampGeo() {
+  // a standard and an arm carrying its head, 24 triangles: +x is toward the road
+  const parts = [bdBoxGeo(.16, 6, .16, 0, 3, 0), bdBoxGeo(1.3, .14, .24, .6, 5.9, 0)];
+  const ge = mergeGeometries(parts); parts.forEach((p) => p.dispose()); return ge;
+}
+function bdBenchGeo() {
+  // a seat, a back and two end frames: the sitter faces +z
+  const parts = [bdBoxGeo(1.7, .06, .44, 0, .46, 0), bdBoxGeo(1.7, .38, .05, 0, .72, -.2),
+                 bdBoxGeo(.07, .46, .42, -.78, .23, 0), bdBoxGeo(.07, .46, .42, .78, .23, 0)];
+  const ge = mergeGeometries(parts); parts.forEach((p) => p.dispose()); return ge;
+}
+function bdFurniture(g, rr) {
+  const lamps = [];                                    // [x, z, ry]
+  const roads = bdCamp.roads, rects = bdCamp.rects;
+  const onRoad = (x, z, m) => roads.some((r) => Math.abs(x - r.u) < r.w / 2 + m && Math.abs(z - r.v) < r.h / 2 + m);
+  const onLot = (x, z, m) => rects.some((b) => Math.abs(x - b.u) < b.hw + m && Math.abs(z - b.v) < b.hd + m);
+  const free = (x, z) => !onRoad(x, z, .4) && !onLot(x, z, 1) && Math.hypot(x, z) > 30
+    && !lamps.some(([a, b]) => Math.hypot(x - a, z - b) < BD_LAMP_EVERY_M * .6);
+  // the ring road, on its inner edge, the arm reaching out over the carriageway
+  const ringR = rr - 2.4 - 1.1, nRing = Math.max(8, Math.round(2 * Math.PI * ringR / BD_LAMP_EVERY_M));
+  for (let i = 0; i < nRing; i++) {
+    const th = (i + .5) / nRing * Math.PI * 2, x = Math.cos(th) * ringR, z = Math.sin(th) * ringR;
+    if (free(x, z)) lamps.push([x, z, -th]);
+  }
+  // one side of every street and walk the plan lays, the arm over it
+  for (const r of bdCamp.lit.filter((q) => q.w >= 5 || q.h >= 5)) {
+    const alongZ = r.h >= r.w, len = alongZ ? r.h : r.w;
+    const n = Math.floor((len - 8) / BD_LAMP_EVERY_M) + 1;
+    for (let i = 0; i < n; i++) {
+      const t = -len / 2 + 4 + (n === 1 ? (len - 8) / 2 : i * (len - 8) / (n - 1));
+      const x = alongZ ? r.u + r.w / 2 + 1.1 : r.u + t, z = alongZ ? r.v + t : r.v + r.h / 2 + 1.1;
+      if (free(x, z)) lamps.push([x, z, alongZ ? Math.PI : Math.PI / 2]);
+    }
+  }
+  const benches = [];
+  for (let i = 0; i < BD_BENCHES; i++) {
+    const th = (i + .5) / BD_BENCHES * Math.PI * 2, rad = 26.4;
+    benches.push([Math.cos(th) * rad, Math.sin(th) * rad, Math.PI / 2 - th + Math.PI]);
+  }
+  const fab = fabricOf(campusKey);
+  const out = [];
+  const M = new THREE.Matrix4(), Q = new THREE.Quaternion(), Y = new THREE.Vector3(0, 1, 0), S = new THREE.Vector3(1, 1, 1), P = new THREE.Vector3();
+  for (const [list, geo, m2, name] of [[lamps, bdLampGeo(), fab.trim, 'bd-lamps'], [benches, bdBenchGeo(), mat.wood, 'bd-benches']]) {
+    if (!list.length) { geo.dispose(); continue; }
+    const im = new THREE.InstancedMesh(geo, m2, list.length);
+    list.forEach(([x, z, ry], i) => { Q.setFromAxisAngle(Y, ry); P.set(x, 0, z); M.compose(P, Q, S); im.setMatrixAt(i, M); });
+    /* (B3) and they are SOLID, recorded where they are built through the grounds' own campusSolid(): a lamp
+       standard is a disc its own width, a bench a disc that covers its seat, so the walker goes round them
+       as it goes round the yard's mast */
+    for (const [x, z] of list) campusSolid(x, z, name === 'bd-lamps' ? .12 : .6);
+    im.instanceMatrix.needsUpdate = true; im.computeBoundingSphere();
+    im.castShadow = true; im.receiveShadow = true; im.name = name;
+    g.add(im);
+    out.push({ name, count: list.length, tris: geo.index.count / 3 * list.length });
+  }
+  return out;
+}
+function bdDressCampus(g, rr) {
+  const boards = bdNameBoards(g), furniture = bdFurniture(g, rr);
+  return { key: bdCamp.key, boards, furniture,
+           drawCalls: (boards.boards ? 1 : 0) + furniture.length,
+           tris: boards.tris + furniture.reduce((a, f) => a + f.tris, 0) };
+}
+window.__tc3dCampusDressing = () => (campusGroup && bdCampStat ? JSON.parse(JSON.stringify(bdCampStat)) : null);
+/* DRESSING END */
 /* ------------------------------ campus dressing, keyed by campus slug --- */
 function dressCampus(key, g, R) {
   if (key === 'treasure-island') {
@@ -13160,6 +13637,7 @@ function buildCampus(key) {
   campusGroup = new THREE.Group(); buildings = []; beaconAt = []; solids = [];
   campusGroup.userData.key = key; campusGroup.userData.loc = loc;
   kitReset();
+  /* DRESSING BEGIN (wave 16 B2) */ bdCamp = { key, boards: [], roads: [], rects: [], lit: [] }; /* DRESSING END */
   roadFaults = 0; roadCount = 0; cityPois = 0; cityHits = []; restorationHits = [];
   const camp = D.campuses[key];
   const dk = camp.districts;
@@ -13238,6 +13716,7 @@ function buildCampus(key) {
       b.mesh.userData.rot = B.rot_y;
       buildings.push(b.mesh);
       rects.push({ u: B.aabb.x, v: B.aabb.z, hw: B.aabb.w / 2 + .2, hd: B.aabb.d / 2 + .2 });
+      /* DRESSING BEGIN (wave 16 B2) */ bdCamp.boards.push({ h, bg, w: b.w, d: b.d, hgt: bg.userData.real.h, headY: bg.userData.headY }); /* DRESSING END */
     });
     allRects.push(...rects);
     // the walker is kept out of every building: one reach per district
@@ -13260,6 +13739,9 @@ function buildCampus(key) {
     for (const r of plan.walkways) roads.push(roadRect(r.x, r.z, r.w, r.d, mat.walkway, campusGroup, .045));
     for (const r of plan.parking) roads.push(roadRect(r.x, r.z, r.w, r.d, mat.drive, campusGroup, .045));
     roadCount += roads.length;
+    /* DRESSING BEGIN (wave 16 B2) */ bdCamp.roads = roads; bdCamp.rects = allRects;
+    bdCamp.lit = roads.slice(0, plan.streets.length + plan.walkways.length);   // streets and walks; parking is not lit here
+    /* DRESSING END */
     /* SITE-PLAN WAYFINDING (wave 10). The plan's parking lots and outdoor
        training yards are real places on this AUTHORED site that nothing
        named: a sign on each, tagged AUTHORED, in the reader's language -
@@ -13290,6 +13772,7 @@ function buildCampus(key) {
   flushRoads(campusGroup);
   flushBeacons(beaconAt.filter(Boolean), campusGroup);
   flushKit(campusGroup);
+  /* DRESSING BEGIN (wave 16 B2) */ bdCampStat = bdDressCampus(campusGroup, rr); /* DRESSING END */
   const plaza = new THREE.Mesh(new THREE.CylinderGeometry(24, 24, .3, 48),
     new THREE.MeshStandardMaterial({ map: concreteTex, color: 0xb8bdbd, roughness: .95 }));
   plaza.position.y = .15; plaza.receiveShadow = true; campusGroup.add(plaza);
@@ -15991,6 +16474,9 @@ window.__tc3dDo = (fn, arg) => {
       walkAvatar.position.set(v.x + off, walkAvatar.position.y, v.z + off);
     }
   }
+  /* DRESSING BEGIN (wave 16 B1): the surface textures' device tier, set from a harness */
+  else if (fn === 'tex') { texSet(arg); texDrain(); }
+  /* DRESSING END */
 };
 // the scripted reference operator's driver surface: what a test harness or
 // a robotics pipeline sharing this page context can drive. In-page and
@@ -17052,6 +17538,28 @@ for _v in props_reg['props']:
         assert _any == ['*any*'] or set(_any) & _ppe_words, (
             f'prop {_v["id"]} is triggered by PPE no room record names: {_any}')
 
+# BEGIN HIVE w16 (HIVE·Omega Hive Agents): the hall advisors and crew roles standing in the rooms and yards speak - on a
+# click only - with the voice the Omega Hive (hive/registry/hive.json) gives them. openAdvisor() ends by adding a Speak
+# and a Mute button under the figure's name; Speak says the `say` line of the topic being shown, or the figure's
+# greeting, both quoted from agents/ (web/hivekit.py HIVE_CAMPUS_JS). Nothing speaks on its own; classroom mode starts
+# muted and speaks only play-safe figures' unheld lines. Every advisor and crew role must have a hive voice, or the build
+# stops by name. The Speak / Mute words travel in the hive block (hive.* keys, 8 locales); this page's catalogue is unchanged.
+if (ROOT / 'hive/registry/hive.json').exists():
+    sys.path.insert(0, str(HERE))
+    from hivekit import hive_data as _hive_data, HIVE_CAMPUS_JS, world_embed, world_labels  # noqa: E402
+    _hive = _hive_data(kinds=['advisor', 'crew-role'], with_cfg=False)
+    _hive_want = {'advisor:' + k for k in agents_reg['advisors']} | {
+        'crew:' + r['key'] for c in json.load(open(ROOT / 'agents/registry/crews.json'))['crews'].values() for r in c['roles'].values()}
+    assert {a['id'] for a in _hive['agents']} == _hive_want, (
+        f'HIVE w16: advisors / crew roles with no hive voice: {sorted(_hive_want ^ {a["id"] for a in _hive["agents"]})[:3]}')
+    _hive['labels'] = world_labels()
+    _HA = '  questAdvisorEgg(aid, topicId);\n}\n'
+    assert page.count(_HA) == 1, 'HIVE w16: the openAdvisor() tail `questAdvisorEgg(aid, topicId);` must occur exactly once'
+    page = page.replace(_HA, '  questAdvisorEgg(aid, topicId);\n  if (hiveCampus) hiveCampus.decorate(aid, topicId);\n}\n'
+                        + HIVE_CAMPUS_JS + 'window.__hiveCampus = hiveCampus;\n', 1)
+    assert page.count('</body>') == 1, 'HIVE w16: the page must have exactly one </body>'
+    page = page.replace('</body>', world_embed(_hive) + '\n</body>', 1)
+# END HIVE w16
 page = apply_seo(page, 'web/trade_craft_3d.html', 'SmartCiti.X : Trade Craft Academy \u2014 3D hall environment',
     'A walkable 3D campus of the academy\'s union training halls, their rooms and sim seats, with optional play quests that certify nothing.', 'page')
 out = HERE / 'trade_craft_3d.html'

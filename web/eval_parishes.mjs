@@ -52,6 +52,12 @@ const MEASURE_ONLY = process.argv.includes('--measure');
 const shotArg = process.argv.find((a) => a.startsWith('--shots='));
 const SHOTS = shotArg ? shotArg.slice(8) : null;
 if (SHOTS) mkdirSync(SHOTS, { recursive: true });
+/* GROUND w16: --part=<k> runs one part of the rows (each fits one <= 90 s browser run); no --part = the full run */
+const partArg = process.argv.find((a) => a.startsWith('--part='));
+const PART = partArg ? partArg.slice(7) : null;
+const PARTS = ['1', '2', '3'];   // relief row = part 3: part 2 with it inside ran > 90 s at load 3.4-6.3 (10:00 UTC)
+if (PART !== null && !PARTS.includes(PART)) { console.log(`FAIL --part=${PART}: want one of ${PARTS.join(', ')}`); process.exit(2); }
+const RUN_PART = Object.fromEntries(PARTS.map((k) => [k, PART === null || PART === k]));
 
 /* Parishes probed: Orleans (the start), Jefferson and St. Tammany (the largest water crossings). */
 const PROBE = ['22071', '22051', '22103'];
@@ -97,6 +103,10 @@ const rows = [];
 const perfRows = [];   // PERF w13
 let bad = 0;
 const fail = (row, msg) => { row.fails.push(msg); };
+/* EVAL_PARTS:BEGIN part 1 (GROUND w16). --part=k runs only block k's rows (1 views..ridemode, 2 world..drivecam, 3 the
+   relief row, which opens two more pages); with no --part all run, in this order (the full run, the default). The rows' code inside each block is verbatim; each block
+   returns the rows the report prints. web/test_evalparts.mjs holds the split: the two blocks' returns cover every row. */
+const PART1 = RUN_PART[1] ? await (async () => {
 for (const pid of PROBE) {
   for (const v of ['origin', 'border', 'overview']) {
     await page.evaluate(([name, id]) => window.__parishes.view(name, id), [v, pid]);
@@ -328,6 +338,11 @@ if (rm.mode !== 'walk' || rm.pr !== 1 || !(rm.block > 0) || rm.ovPressed !== 'fa
 if (rm.afterChordMode !== 'walk') fail(rmRow, `E with repeat/Ctrl changed the mode to ${rm.afterChordMode}`);
 if (rmRow.fails.length) bad++;
 
+return { diag, ovSplit, groundRow, atlasRow, atmRow, cross, rideRows, npcRow, satRow, raceRow, rmRow };
+})() : {};
+const { diag = {}, ovSplit = {}, groundRow = null, atlasRow = null, atmRow = null, cross = [], rideRows = [], npcRow = null, satRow = null, raceRow = null, rmRow = null } = PART1;
+/* EVAL_PARTS part 2 */
+const PART2 = RUN_PART[2] ? await (async () => {
 /* wave 7 world layer (NEW rows; every BASE target above is unchanged and is applied here too, AFTER the parish's
    PARISH v1.4 streets and water have arrived): meshed streets replace the painted grid, AUTHORED water is cut out of
    the land, buildings are solid (physkit), the avatar wades/swims, and the Living world (ambientkit) is measured ON */
@@ -535,6 +550,11 @@ if (SHOTS) {
     await page.screenshot({ path: `${SHOTS}/WILDS-w6-style-${s}.png` });
   }
 }
+return { worldRows, ambRow, detRow, deepRow, lakeDiag, plotRow, streetRow, vegRow, crossDiag, drivecam };
+})() : {};
+const { worldRows = [], ambRow = null, detRow = null, deepRow = null, lakeDiag = null, plotRow = null, streetRow = null, vegRow = null, crossDiag = null, drivecam = null } = PART2;
+/* EVAL_PARTS part 3 */
+const PART3 = RUN_PART[3] ? await (async () => {
 /* BEGIN ELEV w14 relief row (web/eval_relief.mjs, NEW): ?relief=on - RECORDED USGS 3DEP in use with its legend, relief present,
    max slope <= the page's declared max_slope, N buildings/lots/trees/lamps/parked vehicles on the ground within 0.1 m, draw calls
    equal to relief off at the start view, water level unchanged. Relief is default OFF, so every row above judges the flat page. */
@@ -543,34 +563,37 @@ const elevRow = await reliefRow(browser, URL_BASE, { shots: SHOTS, name: 'parish
 if (elevRow.fails.length) bad++;
 if (!JSON_OUT) console.log(`${elevRow.fails.length ? 'FAIL' : '  ok'} relief ${JSON.stringify(Object.fromEntries(Object.entries(elevRow).filter(([k]) => k !== 'fails' && k !== 'probe')))}${elevRow.fails.length ? ' :: ' + elevRow.fails.join('; ') : ''}`);
 /* END ELEV w14 */
+return {};
+})() : {};
+/* EVAL_PARTS:END */
 await browser.close();
 
-const out = { plots: plotRow, streets: streetRow, crossDiag, rows, perf: perfRows, drivecam, cross, ride: rideRows, npcs: npcRow, satellite: satRow, ground: groundRow, atmosphere: atmRow, satrace: raceRow, ridemode: rmRow, world: worldRows, ambient: ambRow, detail: detRow, underwater: deepRow, errors, bad: bad + errors.length };
+const out = { part: PART, plots: plotRow, streets: streetRow, crossDiag, rows, perf: perfRows, drivecam, cross, ride: rideRows, npcs: npcRow, satellite: satRow, ground: groundRow, atmosphere: atmRow, satrace: raceRow, ridemode: rmRow, world: worldRows, ambient: ambRow, detail: detRow, underwater: deepRow, errors, bad: bad + errors.length };
 if (JSON_OUT) console.log(JSON.stringify(out, null, 1));
 else {
   for (const r of rows) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.parish} ${r.view.padEnd(8)} calls ${r.calls} tris ${r.tris} ms ${r.ms} chunks ${r.chunks} fabric ${r.fabric} lamps ${r.lamps} loaded ${r.loaded}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
   for (const r of rows.filter((x) => x.onDemandMs !== null)) console.log(`  -- INFO ${r.parish} overview on demand (WORLDS w11): ${r.onDemandMs} ms median while the view is still; the row above judges the forced every-frame render (${r.ms} ms) - info, not a target`);
-  for (const r of cross) console.log(`${r.fails.length ? 'FAIL' : '  ok'} cross ${r.pair} steps ${r.steps}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
-  for (const r of rideRows) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.probe} ${JSON.stringify(Object.fromEntries(Object.entries(r).filter(([k]) => k !== 'fails' && k !== 'probe')))}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
-  console.log(`${npcRow.fails.length ? 'FAIL' : '  ok'} npcs ${npcRow.count} ${npcRow.id} ${npcRow.source}${npcRow.fails.length ? ' :: ' + npcRow.fails.join('; ') : ''}`);
-  console.log(`${satRow.fails.length ? 'FAIL' : '  ok'} satellite ${satRow.src} :: ${satRow.msg}${satRow.fails.length ? ' :: ' + satRow.fails.join('; ') : ''}`);
+  if (RUN_PART[1]) for (const r of cross) console.log(`${r.fails.length ? 'FAIL' : '  ok'} cross ${r.pair} steps ${r.steps}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
+  if (RUN_PART[1]) for (const r of rideRows) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.probe} ${JSON.stringify(Object.fromEntries(Object.entries(r).filter(([k]) => k !== 'fails' && k !== 'probe')))}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
+  if (RUN_PART[1]) console.log(`${npcRow.fails.length ? 'FAIL' : '  ok'} npcs ${npcRow.count} ${npcRow.id} ${npcRow.source}${npcRow.fails.length ? ' :: ' + npcRow.fails.join('; ') : ''}`);
+  if (RUN_PART[1]) console.log(`${satRow.fails.length ? 'FAIL' : '  ok'} satellite ${satRow.src} :: ${satRow.msg}${satRow.fails.length ? ' :: ' + satRow.fails.join('; ') : ''}`);
   for (const r of rows.filter((x) => x.kit)) console.log(`${r.fails.length ? 'FAIL' : '  ok'} kit ${r.parish} ${r.view.padEnd(8)} buildings ${JSON.stringify(r.kit)} calls/family ${JSON.stringify(r.familyCalls)}`);
-  for (const r of [groundRow, atlasRow, atmRow, raceRow, rmRow]) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.probe} ${JSON.stringify(Object.fromEntries(Object.entries(r).filter(([k]) => k !== 'fails' && k !== 'probe')))}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
-  for (const r of [...worldRows, ambRow, detRow, deepRow]) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.probe} ${JSON.stringify(Object.fromEntries(Object.entries(r).filter(([k]) => k !== 'fails' && k !== 'probe')))}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
+  if (RUN_PART[1]) for (const r of [groundRow, atlasRow, atmRow, raceRow, rmRow]) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.probe} ${JSON.stringify(Object.fromEntries(Object.entries(r).filter(([k]) => k !== 'fails' && k !== 'probe')))}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
+  if (RUN_PART[2]) for (const r of [...worldRows, ambRow, detRow, deepRow]) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.probe} ${JSON.stringify(Object.fromEntries(Object.entries(r).filter(([k]) => k !== 'fails' && k !== 'probe')))}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
   for (const r of perfRows) console.log(`${r.fails.length ? 'FAIL' : '  ok'} perfcull ${r.parish} ${r.view.padEnd(8)} calls ${r.offCalls} -> ${r.onCalls} tris ${r.offTris} -> ${r.onTris} fabric ${r.offFabric} -> ${r.onFabric} fleet drawn ${r.fleetDrawn.join(' -> ')} npc drawn ${r.npcVisible.join(' -> ')} (culls off -> on)${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
-  console.log(`${drivecam.fails.length ? 'FAIL' : '  ok'} drivecam ${drivecam.now.id} flat ${drivecam.now.flat} px ${drivecam.now.px.join(' | ')} cam->car ${drivecam.now.camToCar} m (chase ${drivecam.now.chase}) pulls ${drivecam.now.pulls}${drivecam.fails.length ? ' :: ' + drivecam.fails.join('; ') : ''}`);
-  console.log(`  -- DIAG drivecam (PERF w13): the OLD camera path (fixed 1/60 s easing, no pull-in) on the same first ride: flat ${drivecam.old.flat} px ${drivecam.old.px.join(' | ')} cam->car ${drivecam.old.camToCar} m - diagnosis, not a target`);
+  if (RUN_PART[2]) console.log(`${drivecam.fails.length ? 'FAIL' : '  ok'} drivecam ${drivecam.now.id} flat ${drivecam.now.flat} px ${drivecam.now.px.join(' | ')} cam->car ${drivecam.now.camToCar} m (chase ${drivecam.now.chase}) pulls ${drivecam.now.pulls}${drivecam.fails.length ? ' :: ' + drivecam.fails.join('; ') : ''}`);
+  if (RUN_PART[2]) console.log(`  -- DIAG drivecam (PERF w13): the OLD camera path (fixed 1/60 s easing, no pull-in) on the same first ride: flat ${drivecam.old.flat} px ${drivecam.old.px.join(' | ')} cam->car ${drivecam.old.camToCar} m - diagnosis, not a target`);
   for (const r of rows.filter((x) => x.kitCost)) console.log(`  -- DIAG ${r.parish} border walk frame by kit (PERF w13): all ${r.kitCost.all.calls} calls ${r.kitCost.all.tris} tris ${r.kitCost.all.ms} ms render, js ${r.kitCost.jsMs} ms; ` + Object.entries(r.kitCost.groups).filter(([, g]) => g.calls).sort((a, b) => b[1].tris - a[1].tris).map(([k, g]) => `${k} ${g.calls}c/${g.tris}t/${g.ms}ms`).join(', ') + ' - diagnosis, not a target');
-  console.log(`  -- DIAG 22103 border: ${lakeDiag.skippedWater} lots not built in AUTHORED water while building this view (fabric ${lakeDiag.fabric}, pending ${lakeDiag.pending}) - diagnosis, not a target`);
-  console.log(`  -- DIAG 22103 border (WORLDS w11): ${lakeDiag.reseated} of those lots re-seated onto the nearest empty dry cell of their chunk (diagnosis, not a target)`);
-  console.log(`  -- DIAG 22071 overview split at 0.6: all ${ovSplit.all} ms, render skipped ${ovSplit.noRender} ms, labels+minimap skipped ${ovSplit.noLabelsMini} ms (diagnosis, not a target)`);
-  console.log(`  -- DIAG 22071 overview land share at 0.6 (WORLDS w11): own parish land only ${ovSplit.ownLand} ms, land only (all else hidden) ${ovSplit.onlyLand} ms, no land ${ovSplit.noLand} ms (diagnosis, not a target)`);
-  console.log(`  -- DIAG 22071 overview (WORLDS w11): rendered EVERY frame ${ovSplit.ovAlways} ms vs on demand ${ovSplit.all} ms - the overview rows judge the every-frame render (diagnosis, not a target)`);
-  console.log(`  -- DIAG 22071 overview median frame: scale 1 ${diag[1]} ms, scale 0.6 ${diag[0.6]} ms (diagnosis, not a target)`);
-  for (const r of [plotRow, streetRow]) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.probe} ${JSON.stringify(Object.fromEntries(Object.entries(r).filter(([k]) => k !== 'fails' && k !== 'probe')))}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
-  console.log(`  -- DIAG 22103 border (WORLDS w13): ${crossDiag.cross} lots seated from wholly-wet neighbour chunks (w11 same-chunk re-seats ${crossDiag.reseated}); fabric = ${crossDiag.blocks} blocks + ${crossDiag.trees} trees, of which ${crossDiag.streetTrees} are w13 residential street trees (pending ${crossDiag.pending}) - diagnosis, not a target`);
-  /* BEGIN VEG w14 */ console.log(`${vegRow.fails.length ? 'FAIL' : '  ok'} ${vegRow.probe} ${JSON.stringify(Object.fromEntries(Object.entries(vegRow).filter(([k]) => k !== 'fails' && k !== 'probe')))}${vegRow.fails.length ? ' :: ' + vegRow.fails.join('; ') : ''}`); /* END VEG w14 */
+  if (RUN_PART[2]) console.log(`  -- DIAG 22103 border: ${lakeDiag.skippedWater} lots not built in AUTHORED water while building this view (fabric ${lakeDiag.fabric}, pending ${lakeDiag.pending}) - diagnosis, not a target`);
+  if (RUN_PART[2]) console.log(`  -- DIAG 22103 border (WORLDS w11): ${lakeDiag.reseated} of those lots re-seated onto the nearest empty dry cell of their chunk (diagnosis, not a target)`);
+  if (RUN_PART[1]) console.log(`  -- DIAG 22071 overview split at 0.6: all ${ovSplit.all} ms, render skipped ${ovSplit.noRender} ms, labels+minimap skipped ${ovSplit.noLabelsMini} ms (diagnosis, not a target)`);
+  if (RUN_PART[1]) console.log(`  -- DIAG 22071 overview land share at 0.6 (WORLDS w11): own parish land only ${ovSplit.ownLand} ms, land only (all else hidden) ${ovSplit.onlyLand} ms, no land ${ovSplit.noLand} ms (diagnosis, not a target)`);
+  if (RUN_PART[1]) console.log(`  -- DIAG 22071 overview (WORLDS w11): rendered EVERY frame ${ovSplit.ovAlways} ms vs on demand ${ovSplit.all} ms - the overview rows judge the every-frame render (diagnosis, not a target)`);
+  if (RUN_PART[1]) console.log(`  -- DIAG 22071 overview median frame: scale 1 ${diag[1]} ms, scale 0.6 ${diag[0.6]} ms (diagnosis, not a target)`);
+  if (RUN_PART[2]) for (const r of [plotRow, streetRow]) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.probe} ${JSON.stringify(Object.fromEntries(Object.entries(r).filter(([k]) => k !== 'fails' && k !== 'probe')))}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
+  if (RUN_PART[2]) console.log(`  -- DIAG 22103 border (WORLDS w13): ${crossDiag.cross} lots seated from wholly-wet neighbour chunks (w11 same-chunk re-seats ${crossDiag.reseated}); fabric = ${crossDiag.blocks} blocks + ${crossDiag.trees} trees, of which ${crossDiag.streetTrees} are w13 residential street trees (pending ${crossDiag.pending}) - diagnosis, not a target`);
+  if (RUN_PART[2]) /* BEGIN VEG w14 */ console.log(`${vegRow.fails.length ? 'FAIL' : '  ok'} ${vegRow.probe} ${JSON.stringify(Object.fromEntries(Object.entries(vegRow).filter(([k]) => k !== 'fails' && k !== 'probe')))}${vegRow.fails.length ? ' :: ' + vegRow.fails.join('; ') : ''}`); /* END VEG w14 */
   for (const e of errors) console.log('FAIL page error: ' + e);
-  console.log(bad + errors.length ? `eval_parishes: ${bad + errors.length} FAIL` : 'eval_parishes: all rows within target');
+  console.log(bad + errors.length ? `eval_parishes: ${bad + errors.length} FAIL${PART ? ` (part ${PART} of 3)` : ''}` : 'eval_parishes: all rows within target' + (PART ? ` (part ${PART} of 3)` : ''));
 }
 process.exit(bad + errors.length ? 1 : 0);
