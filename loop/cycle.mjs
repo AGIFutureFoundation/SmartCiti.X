@@ -71,6 +71,8 @@ export function validateCycle(c, expectN) {
   if (c.video !== null) {
     if (!isObj(c.video) || !isStr(c.video.path) || !Number.isFinite(c.video.duration_s) || c.video.duration_s <= 0)
       e.push('video must be null or {path, duration_s>0}');
+    else if (c.video.path.includes('/') || c.video.path.includes('\\'))
+      e.push('video.path must be a bare file name (media lives outside the repo, see LOOP_MEDIA_DIR)');
   }
   if (c.commit !== null && !/^[0-9a-f]{7,40}$/.test(c.commit ?? '')) e.push('commit must be null or a hex sha');
   if (Array.isArray(c.gates) && c.gates.some((g) => g && g.status === 'fail') && c.commit !== null)

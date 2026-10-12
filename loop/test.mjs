@@ -130,13 +130,23 @@ ok('verify_all.sh summary parser reads the total and the failing suites',
     && heartbeatLine([{ name: 'a', ok: false, detail: '', hard: true }]).ok === false);
   ok('every registry declaring pack_version declares the manifest version',
     registryVersions().length > 20 && registryVersions().every((r) => r.version === mv));
+  // loop/state/ is gitignored, so on a clean checkout there is no history yet;
+  // the check still runs (and counts) on every machine so README's count holds.
   const hb = join(HERE, 'state/heartbeat.jsonl');
-  if (existsSync(hb)) {
-    const last = JSON.parse(readFileSync(hb, 'utf8').trim().split('\n').pop());
-    ok('the last line on disk in loop/state/heartbeat.jsonl has the same shape',
-      typeof last.ts === 'string' && typeof last.ok === 'boolean' && Array.isArray(last.checks)
-      && last.checks.every((c) => 'name' in c && 'ok' in c && 'detail' in c));
-  }
+  const hbLast = existsSync(hb) ? JSON.parse(readFileSync(hb, 'utf8').trim().split('\n').pop()) : null;
+  ok('loop/state/heartbeat.jsonl is absent on a clean checkout, or its last line has the heartbeat shape',
+    hbLast === null || (typeof hbLast.ts === 'string' && typeof hbLast.ok === 'boolean' && Array.isArray(hbLast.checks)
+      && hbLast.checks.every((c) => 'name' in c && 'ok' in c && 'detail' in c)));
+}
+
+ok('a cycle may not record its review video by a machine path (media lives outside the repo)',
+  validateCycle({ ...goodCycle, video: { path: '/tmp/x/review_c1.mp4', duration_s: 120 } }, 1).length > 0
+  && validateCycle({ ...goodCycle, video: { path: 'review_c1.mp4', duration_s: 120 } }, 1).length === 0);
+{
+  const draft = JSON.parse(readFileSync(join(HERE, 'registry/tech_draft.json'), 'utf8'));
+  ok('the planning draft carries no gate id the executed gates use (DRAFT-EV only, and says so)',
+    draft.evals.every((e) => e.id.startsWith('DRAFT-EV-') && !GATE_IDS.includes(e.id))
+    && /loop\/evals\.mjs/.test(draft.status_note));
 }
 
 console.log(`${n} checks passed`);

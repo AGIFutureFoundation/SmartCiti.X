@@ -63,14 +63,14 @@
           "id": "EV-03",
           "name": "Brand lint",
           "status": "pass",
-          "detail": "brand: 234 files clean — \"SmartCiti.X : Trade Craft Academy\", powered by AGI Corp",
+          "detail": "brand: 234 files clean \u2014 \"SmartCiti.X : Trade Craft Academy\", powered by AGI Corp",
           "ms": 221
         },
         {
           "id": "EV-04",
           "name": "Figures lint",
           "status": "pass",
-          "detail": "figures: 222 files agree with the pack — 111 halls, 11,000,000 modules, 10 campuses, 447 avatar options, 4 proposed districts, every registry at pack 3.2.0",
+          "detail": "figures: 222 files agree with the pack \u2014 111 halls, 11,000,000 modules, 10 campuses, 447 avatar options, 4 proposed districts, every registry at pack 3.2.0",
           "ms": 728
         },
         {
@@ -82,7 +82,7 @@
         },
         {
           "id": "EV-06",
-          "name": "Review video 120 ± 0.5 s",
+          "name": "Review video 120 \u00b1 0.5 s",
           "status": "pass",
           "detail": "cycle #1 /tmp/claude-0/-home-claude/717c43f1-7f00-5ef5-96d0-907cb265e63d/scratchpad/reviews/review_c1.mp4 120.07 s",
           "ms": 58
@@ -105,7 +105,7 @@
       "checks_total": 1646,
       "heartbeat_ok": true,
       "video": {
-        "path": "/tmp/claude-0/-home-claude/717c43f1-7f00-5ef5-96d0-907cb265e63d/scratchpad/reviews/review_c1.mp4",
+        "path": "review_c1.mp4",
         "duration_s": 120.067
       },
       "commit": null

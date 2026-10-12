@@ -1,600 +1,601 @@
 {
- "stack": [
-  {
-   "layer": "Client 3D / XR",
-   "tech": [
-    "three.js r150",
-    "esbuild bundles",
-    "InstancedMesh spatial chunking",
-    "PBR surfaces",
-    "meshopt + WebP + zstd asset packing",
-    "device tiers (low/mid/high)",
-    "WebXR-ready session entry"
-   ],
-   "status": "built",
-   "why": "Browser-native 3D cities load on Chromebooks and headsets alike with no install; device tiers keep frame rate stable on school hardware. Headset certification (Quest store) is planned."
+  "status_note": "PLANNING DRAFT, superseded for gates: the eval gates the loop actually executes are defined in loop/evals.mjs (EV-01..EV-08). The DRAFT-EV ids below are proposals from the 2026-10-11 roadmap brief and share no contract with them.",
+  "stack": [
+    {
+      "layer": "Client 3D / XR",
+      "tech": [
+        "three.js r150",
+        "esbuild bundles",
+        "InstancedMesh spatial chunking",
+        "PBR surfaces",
+        "meshopt + WebP + zstd asset packing",
+        "device tiers (low/mid/high)",
+        "WebXR-ready session entry"
+      ],
+      "status": "built",
+      "why": "Browser-native 3D cities load on Chromebooks and headsets alike with no install; device tiers keep frame rate stable on school hardware. Headset certification (Quest store) is planned."
+    },
+    {
+      "layer": "Maps & geospatial",
+      "tech": [
+        "MapLibre GL",
+        "Mapbox-compatible GeoJSON exports",
+        "city-asset layers (SF/Oakland, New Orleans)",
+        "elevation / hill pass"
+      ],
+      "status": "built",
+      "why": "Real street grids anchor training scenarios in places learners recognise and let the same data drive both 2D campus maps and 3D scenes."
+    },
+    {
+      "layer": "Media generation",
+      "tech": [
+        "Higgsfield pipeline",
+        "Kling",
+        "Seedance",
+        "Minimax",
+        "brand lint on outputs"
+      ],
+      "status": "built",
+      "why": "Generated films and photos produce orientation, safety and marketing media at a fraction of studio cost; every asset passes brand lint before use."
+    },
+    {
+      "layer": "Adaptive engine (ACP)",
+      "tech": [
+        "ACP-01 telemetry envelope",
+        "ACP-04 five-rung hint engine",
+        "ACP-08 parity safeguards & stop conditions",
+        "ACP-15 skill graph + sequencer"
+      ],
+      "status": "built",
+      "why": "Adapts hints and task order to each learner while ACP-08 parity checks stop any adaptation that would treat learner groups unequally."
+    },
+    {
+      "layer": "Agents & orchestration",
+      "tech": [
+        "Hermes agents",
+        "NANDA protocol registration",
+        "orchestrator meta-prompt",
+        "LangGraph reference implementation",
+        "A2A agent card (/.well-known/agent-card.json)",
+        "JSON-RPC skills: license-path, coverage, catalog, quote, enroll"
+      ],
+      "status": "built",
+      "why": "A small team of scoped agents handles research, build and QA loops; each writes to exactly one bus topic so responsibility is traceable. Production multi-tenant hosting is planned."
+    },
+    {
+      "layer": "Data & LRS",
+      "tech": [
+        "xAPI 1.0.3 statement emitter",
+        "LRS push",
+        "ACP-09 single-writer message bus",
+        "append-only audit log"
+      ],
+      "status": "built",
+      "why": "Standard xAPI statements make learner records portable to any conformant LRS; the append-only log gives an auditable history of every agent and system decision."
+    },
+    {
+      "layer": "Commerce",
+      "tech": [
+        "Node 20 zero-dependency server",
+        "Chargebee hosted checkout (test mode)",
+        "idempotent webhook -> entitlements",
+        "AP2-style human-present mandates",
+        "daily licensing watcher"
+      ],
+      "status": "built",
+      "why": "Agents can prepare quotes and enrolments but a human always completes payment. Runs in test mode only; live billing is planned."
+    },
+    {
+      "layer": "Security & privacy",
+      "tech": [
+        "deny-by-default authorization",
+        "tenant isolation",
+        "token-bucket rate limiting",
+        "data classification",
+        "affect data never exported"
+      ],
+      "status": "built",
+      "why": "Learner data, especially affect signals, stays inside its tenant and classification. Third-party audit (e.g. SOC 2) is planned, not obtained."
+    },
+    {
+      "layer": "Ops & verification",
+      "tech": [
+        "ACP-13 registries",
+        "rollout lanes 1% / 5% / 33%",
+        "seven-job automation loop",
+        "cost governor",
+        "heartbeat every 5 min",
+        "228 verification checks",
+        "soak + fuzz tests (16 defects found & fixed)"
+      ],
+      "status": "built",
+      "why": "Staged rollout lanes and a cost governor limit the blast radius of any change; soak and fuzz testing surfaced and closed 16 defects before any deployment."
+    }
+  ],
+  "agents": [
+    {
+      "name": "Orchestrator",
+      "console": "Agent roster with heartbeat age, open review items, eval gate board, cost-governor budget remaining",
+      "loop": "Reads bus state, assigns the next task to the agent owning that topic, blocks any release with a failing eval gate, escalates review items to a human",
+      "writes": "orchestration.plan"
+    },
+    {
+      "name": "Curriculum Mapper",
+      "console": "Skill graph coverage per trade, unmapped competencies, sequencer order preview",
+      "loop": "Maps trade competencies to ACP-15 skill-graph nodes and module objectives; flags gaps and proposes sequence changes for review",
+      "writes": "curriculum.map"
+    },
+    {
+      "name": "Environment Architect",
+      "console": "City chunk budgets, draw calls and frame time by device tier, asset pack sizes",
+      "loop": "Builds and repacks 3D scenes and map layers, runs the per-tier performance budget, records results",
+      "writes": "environment.build"
+    },
+    {
+      "name": "Robotics Integrator",
+      "console": "Simulated robot cell definitions, interface contract status, hardware bridge status (planned)",
+      "loop": "Maintains simulated robotics stations and their task scripts; validates interface contracts against the skill graph. Physical hardware bridges are planned",
+      "writes": "robotics.integration"
+    },
+    {
+      "name": "Licensing Researcher",
+      "console": "Per-state licensing paths, last-checked dates, source diffs, open review items",
+      "loop": "Daily watcher compares official state sources to the licensing guide; opens a review item on any change and never auto-applies it",
+      "writes": "licensing.review"
+    },
+    {
+      "name": "Billing Engineer",
+      "console": "Checkout sessions (test mode), webhook idempotency log, entitlement grants, mandate status",
+      "loop": "Reconciles Chargebee test events with entitlements, replays webhooks to prove idempotency, confirms every payment carries a human-present mandate",
+      "writes": "commerce.entitlements"
+    },
+    {
+      "name": "Eval Warden",
+      "console": "12 eval gates with last result and trend, verification check count, soak/fuzz defect ledger",
+      "loop": "Runs the eval gates and verification suite against each candidate change, posts pass/warn/fail, holds the release gate",
+      "writes": "evals.results"
+    },
+    {
+      "name": "Media Producer",
+      "console": "Generation queue, model used (Kling / Seedance / Minimax), brand-lint result, spend vs budget",
+      "loop": "Generates and versions films and photos from approved briefs, runs brand lint, files assets with provenance",
+      "writes": "media.assets"
+    }
+  ],
+  "evals": [
+    {
+      "id": "DRAFT-EV-01",
+      "name": "Verification suite",
+      "checks": "All 228 verification checks across protocol, commerce and security packs",
+      "threshold": "228/228 pass"
+    },
+    {
+      "id": "DRAFT-EV-02",
+      "name": "Parity safeguards (ACP-08)",
+      "checks": "Hint and sequencing outcomes compared across learner groups; stop conditions trigger correctly",
+      "threshold": "Max group gap <= 5 pts; 100% of stop conditions fire in tests"
+    },
+    {
+      "id": "DRAFT-EV-03",
+      "name": "Hint ladder integrity (ACP-04)",
+      "checks": "Five rungs escalate in order; no rung reveals the full answer before rung 5",
+      "threshold": "0 order violations; 0 early reveals"
+    },
+    {
+      "id": "DRAFT-EV-04",
+      "name": "Single-writer bus (ACP-09)",
+      "checks": "Each topic has exactly one writer; audit log is append-only and hash-chained",
+      "threshold": "0 foreign writes; 0 log mutations"
+    },
+    {
+      "id": "DRAFT-EV-05",
+      "name": "xAPI conformance",
+      "checks": "Emitted statements validate against xAPI 1.0.3; LRS push accepted",
+      "threshold": "100% schema-valid; LRS accept rate >= 99%"
+    },
+    {
+      "id": "DRAFT-EV-06",
+      "name": "Webhook idempotency",
+      "checks": "Replayed and out-of-order Chargebee test events yield one entitlement each",
+      "threshold": "0 duplicate entitlements"
+    },
+    {
+      "id": "DRAFT-EV-07",
+      "name": "Human-present mandate",
+      "checks": "No payment completes without a human-present mandate; agents can only prepare",
+      "threshold": "0 agent-completed payments"
+    },
+    {
+      "id": "DRAFT-EV-08",
+      "name": "Tenant isolation & authz",
+      "checks": "Cross-tenant reads, unlisted routes and missing roles all denied",
+      "threshold": "100% denied"
+    },
+    {
+      "id": "DRAFT-EV-09",
+      "name": "Affect data export ban",
+      "checks": "Exports, xAPI statements and logs scanned for affect fields",
+      "threshold": "0 affect fields leave the tenant"
+    },
+    {
+      "id": "DRAFT-EV-10",
+      "name": "Client performance budget",
+      "checks": "Frame time and load size per device tier on reference scenes",
+      "threshold": "Low tier >= 30 fps, high tier >= 72 fps; initial pack <= tier budget"
+    },
+    {
+      "id": "DRAFT-EV-11",
+      "name": "Brand lint",
+      "checks": "Name spelling (SmartCiti.X), palette, lockup and claims language on all published copy and media",
+      "threshold": "0 errors"
+    },
+    {
+      "id": "DRAFT-EV-12",
+      "name": "Honesty claims check",
+      "checks": "Copy scanned for unbacked claims of deployments, partners or accreditation; future items labelled planned",
+      "threshold": "0 unlabelled future claims"
+    }
+  ],
+  "heartbeats": [
+    {
+      "name": "Agent liveness",
+      "every": "5 min",
+      "checks": "Each agent posts a heartbeat with topic, last action and queue depth",
+      "on_fail": "Orchestrator marks the agent stale, pauses its topic writes, opens an incident after 3 misses"
+    },
+    {
+      "name": "Commerce kit health",
+      "every": "5 min",
+      "checks": "Checkout endpoint, webhook receiver, agent card and JSON-RPC skills respond",
+      "on_fail": "Disable enroll/quote skills, show maintenance notice, page on-call human"
+    },
+    {
+      "name": "Bus & audit log integrity",
+      "every": "15 min",
+      "checks": "Hash chain continuity, single-writer map unchanged",
+      "on_fail": "Freeze all writes, snapshot log, require human sign-off to resume"
+    },
+    {
+      "name": "Cost governor",
+      "every": "15 min",
+      "checks": "Spend on generation and compute vs daily and monthly caps",
+      "on_fail": "Throttle Media Producer queue; hard stop at 100% of cap"
+    },
+    {
+      "name": "Licensing watcher",
+      "every": "24 h",
+      "checks": "Official state sources diffed against the licensing guide",
+      "on_fail": "Open a review item for a human; never auto-apply changes"
+    },
+    {
+      "name": "Rollout lane guard",
+      "every": "1 h",
+      "checks": "Error rate and eval results for the 1% / 5% / 33% lanes",
+      "on_fail": "Halt promotion and roll the lane back to the previous version"
+    }
+  ],
+  "metaprompt": "You are the Orchestrator for SmartCiti.X : Trade Craft Academy, powered by AGI Corp. You coordinate eight agents: Curriculum Mapper, Environment Architect, Robotics Integrator, Licensing Researcher, Billing Engineer, Eval Warden, Media Producer, and yourself. Each cycle, read the message bus, then assign the single most valuable next task to the agent that owns that topic. Every topic has exactly one writer; never write to another agent's topic and never let two agents share one. Treat the 12 eval gates as hard gates: if any gate fails, block the release and route the failure to its owner. Agents may research, draft, build, quote and prepare enrolments, but only a human may approve payments, apply licensing changes or publish claims. Never export affect data. Respect the cost governor and rollout lanes 1, 5 and 33 percent; promote only when the current lane is green. State facts plainly: there are no deployments, partners or accreditations yet, and anything future must be labelled planned. When uncertain, open a review item for a human instead of guessing. End each cycle with a one-line status: done, blocked, next.",
+  "loop_45min": {
+    "label": "Illustrative loop script — not a log of a production run",
+    "events": [
+      {
+        "t": "00:00",
+        "agent": "Orchestrator",
+        "event": "Cycle start: read bus state, 8 agents registered",
+        "result": "pass"
+      },
+      {
+        "t": "01:06",
+        "agent": "Orchestrator",
+        "event": "Heartbeat sweep: all agents fresh (< 5 min)",
+        "result": "pass"
+      },
+      {
+        "t": "02:12",
+        "agent": "Eval Warden",
+        "event": "DRAFT-EV-01 verification suite on candidate build",
+        "result": "pass"
+      },
+      {
+        "t": "03:18",
+        "agent": "Curriculum Mapper",
+        "event": "Map electrical trade competencies to skill graph",
+        "result": "pass"
+      },
+      {
+        "t": "04:24",
+        "agent": "Environment Architect",
+        "event": "Repack New Orleans district chunks (meshopt + WebP)",
+        "result": "pass"
+      },
+      {
+        "t": "05:30",
+        "agent": "Eval Warden",
+        "event": "DRAFT-EV-10 performance budget, low tier",
+        "result": "warn"
+      },
+      {
+        "t": "06:36",
+        "agent": "Environment Architect",
+        "event": "Reduce instanced prop density in district chunk 14",
+        "result": "pass"
+      },
+      {
+        "t": "07:42",
+        "agent": "Eval Warden",
+        "event": "DRAFT-EV-10 re-run, low tier",
+        "result": "pass"
+      },
+      {
+        "t": "08:48",
+        "agent": "Licensing Researcher",
+        "event": "Daily watcher: diff state sources",
+        "result": "warn"
+      },
+      {
+        "t": "09:54",
+        "agent": "Licensing Researcher",
+        "event": "Open review item for changed apprenticeship hours (not applied)",
+        "result": "pass"
+      },
+      {
+        "t": "11:00",
+        "agent": "Orchestrator",
+        "event": "Route licensing review item to human queue",
+        "result": "pass"
+      },
+      {
+        "t": "12:06",
+        "agent": "Billing Engineer",
+        "event": "Replay Chargebee test webhooks out of order",
+        "result": "pass"
+      },
+      {
+        "t": "13:12",
+        "agent": "Eval Warden",
+        "event": "DRAFT-EV-06 webhook idempotency",
+        "result": "pass"
+      },
+      {
+        "t": "14:18",
+        "agent": "Eval Warden",
+        "event": "DRAFT-EV-07 human-present mandate check",
+        "result": "pass"
+      },
+      {
+        "t": "15:24",
+        "agent": "Media Producer",
+        "event": "Generate safety orientation clip (Kling) from approved brief",
+        "result": "pass"
+      },
+      {
+        "t": "16:30",
+        "agent": "Eval Warden",
+        "event": "DRAFT-EV-11 brand lint on new clip",
+        "result": "fail"
+      },
+      {
+        "t": "17:36",
+        "agent": "Media Producer",
+        "event": "Fix caption spelling to SmartCiti.X, regenerate end card",
+        "result": "pass"
+      },
+      {
+        "t": "18:42",
+        "agent": "Eval Warden",
+        "event": "DRAFT-EV-11 brand lint re-run",
+        "result": "pass"
+      },
+      {
+        "t": "19:48",
+        "agent": "Orchestrator",
+        "event": "Cost governor check: 41% of daily cap used",
+        "result": "pass"
+      },
+      {
+        "t": "20:54",
+        "agent": "Robotics Integrator",
+        "event": "Validate simulated welding cell interface contract",
+        "result": "pass"
+      },
+      {
+        "t": "22:00",
+        "agent": "Curriculum Mapper",
+        "event": "Link welding cell tasks to skill-graph nodes",
+        "result": "pass"
+      },
+      {
+        "t": "23:06",
+        "agent": "Eval Warden",
+        "event": "DRAFT-EV-03 hint ladder integrity",
+        "result": "pass"
+      },
+      {
+        "t": "24:12",
+        "agent": "Eval Warden",
+        "event": "DRAFT-EV-02 parity safeguards across learner groups",
+        "result": "pass"
+      },
+      {
+        "t": "25:18",
+        "agent": "Orchestrator",
+        "event": "Heartbeat sweep: Robotics Integrator 6 min late",
+        "result": "warn"
+      },
+      {
+        "t": "26:24",
+        "agent": "Robotics Integrator",
+        "event": "Heartbeat resumes after queue drain",
+        "result": "pass"
+      },
+      {
+        "t": "27:30",
+        "agent": "Eval Warden",
+        "event": "DRAFT-EV-04 single-writer bus audit",
+        "result": "pass"
+      },
+      {
+        "t": "28:36",
+        "agent": "Eval Warden",
+        "event": "DRAFT-EV-05 xAPI 1.0.3 conformance + LRS push",
+        "result": "pass"
+      },
+      {
+        "t": "29:42",
+        "agent": "Eval Warden",
+        "event": "DRAFT-EV-08 tenant isolation and authz probes",
+        "result": "pass"
+      },
+      {
+        "t": "30:48",
+        "agent": "Eval Warden",
+        "event": "DRAFT-EV-09 affect data export scan",
+        "result": "pass"
+      },
+      {
+        "t": "31:54",
+        "agent": "Media Producer",
+        "event": "Draft deck photo set (Seedance) for pitch",
+        "result": "pass"
+      },
+      {
+        "t": "33:00",
+        "agent": "Eval Warden",
+        "event": "DRAFT-EV-12 honesty claims scan on deck copy",
+        "result": "warn"
+      },
+      {
+        "t": "34:06",
+        "agent": "Orchestrator",
+        "event": "Relabel 'state partnerships' line as planned",
+        "result": "pass"
+      },
+      {
+        "t": "35:12",
+        "agent": "Eval Warden",
+        "event": "DRAFT-EV-12 re-run",
+        "result": "pass"
+      },
+      {
+        "t": "36:18",
+        "agent": "Orchestrator",
+        "event": "All 12 gates green: promote build to 1% lane",
+        "result": "pass"
+      },
+      {
+        "t": "37:24",
+        "agent": "Orchestrator",
+        "event": "Rollout lane guard: 1% lane error rate nominal",
+        "result": "pass"
+      },
+      {
+        "t": "38:30",
+        "agent": "Billing Engineer",
+        "event": "Agent card + JSON-RPC skills health probe",
+        "result": "pass"
+      },
+      {
+        "t": "39:36",
+        "agent": "Curriculum Mapper",
+        "event": "Sequencer preview for HVAC module order",
+        "result": "pass"
+      },
+      {
+        "t": "40:42",
+        "agent": "Environment Architect",
+        "event": "Export updated campus GeoJSON layer",
+        "result": "pass"
+      },
+      {
+        "t": "41:48",
+        "agent": "Orchestrator",
+        "event": "Promote to 5% lane held until next cycle (dwell time)",
+        "result": "warn"
+      },
+      {
+        "t": "42:54",
+        "agent": "Eval Warden",
+        "event": "Append cycle results to audit log; hash chain verified",
+        "result": "pass"
+      },
+      {
+        "t": "44:00",
+        "agent": "Orchestrator",
+        "event": "Cycle end status: done 37, blocked 0, next = 5% lane review",
+        "result": "pass"
+      }
+    ]
   },
-  {
-   "layer": "Maps & geospatial",
-   "tech": [
-    "MapLibre GL",
-    "Mapbox-compatible GeoJSON exports",
-    "city-asset layers (SF/Oakland, New Orleans)",
-    "elevation / hill pass"
-   ],
-   "status": "built",
-   "why": "Real street grids anchor training scenarios in places learners recognise and let the same data drive both 2D campus maps and 3D scenes."
-  },
-  {
-   "layer": "Media generation",
-   "tech": [
-    "Higgsfield pipeline",
-    "Kling",
-    "Seedance",
-    "Minimax",
-    "brand lint on outputs"
-   ],
-   "status": "built",
-   "why": "Generated films and photos produce orientation, safety and marketing media at a fraction of studio cost; every asset passes brand lint before use."
-  },
-  {
-   "layer": "Adaptive engine (ACP)",
-   "tech": [
-    "ACP-01 telemetry envelope",
-    "ACP-04 five-rung hint engine",
-    "ACP-08 parity safeguards & stop conditions",
-    "ACP-15 skill graph + sequencer"
-   ],
-   "status": "built",
-   "why": "Adapts hints and task order to each learner while ACP-08 parity checks stop any adaptation that would treat learner groups unequally."
-  },
-  {
-   "layer": "Agents & orchestration",
-   "tech": [
-    "Hermes agents",
-    "NANDA protocol registration",
-    "orchestrator meta-prompt",
-    "LangGraph reference implementation",
-    "A2A agent card (/.well-known/agent-card.json)",
-    "JSON-RPC skills: license-path, coverage, catalog, quote, enroll"
-   ],
-   "status": "built",
-   "why": "A small team of scoped agents handles research, build and QA loops; each writes to exactly one bus topic so responsibility is traceable. Production multi-tenant hosting is planned."
-  },
-  {
-   "layer": "Data & LRS",
-   "tech": [
-    "xAPI 1.0.3 statement emitter",
-    "LRS push",
-    "ACP-09 single-writer message bus",
-    "append-only audit log"
-   ],
-   "status": "built",
-   "why": "Standard xAPI statements make learner records portable to any conformant LRS; the append-only log gives an auditable history of every agent and system decision."
-  },
-  {
-   "layer": "Commerce",
-   "tech": [
-    "Node 20 zero-dependency server",
-    "Chargebee hosted checkout (test mode)",
-    "idempotent webhook -> entitlements",
-    "AP2-style human-present mandates",
-    "daily licensing watcher"
-   ],
-   "status": "built",
-   "why": "Agents can prepare quotes and enrolments but a human always completes payment. Runs in test mode only; live billing is planned."
-  },
-  {
-   "layer": "Security & privacy",
-   "tech": [
-    "deny-by-default authorization",
-    "tenant isolation",
-    "token-bucket rate limiting",
-    "data classification",
-    "affect data never exported"
-   ],
-   "status": "built",
-   "why": "Learner data, especially affect signals, stays inside its tenant and classification. Third-party audit (e.g. SOC 2) is planned, not obtained."
-  },
-  {
-   "layer": "Ops & verification",
-   "tech": [
-    "ACP-13 registries",
-    "rollout lanes 1% / 5% / 33%",
-    "seven-job automation loop",
-    "cost governor",
-    "heartbeat every 5 min",
-    "228 verification checks",
-    "soak + fuzz tests (16 defects found & fixed)"
-   ],
-   "status": "built",
-   "why": "Staged rollout lanes and a cost governor limit the blast radius of any change; soak and fuzz testing surfaced and closed 16 defects before any deployment."
-  }
- ],
- "agents": [
-  {
-   "name": "Orchestrator",
-   "console": "Agent roster with heartbeat age, open review items, eval gate board, cost-governor budget remaining",
-   "loop": "Reads bus state, assigns the next task to the agent owning that topic, blocks any release with a failing eval gate, escalates review items to a human",
-   "writes": "orchestration.plan"
-  },
-  {
-   "name": "Curriculum Mapper",
-   "console": "Skill graph coverage per trade, unmapped competencies, sequencer order preview",
-   "loop": "Maps trade competencies to ACP-15 skill-graph nodes and module objectives; flags gaps and proposes sequence changes for review",
-   "writes": "curriculum.map"
-  },
-  {
-   "name": "Environment Architect",
-   "console": "City chunk budgets, draw calls and frame time by device tier, asset pack sizes",
-   "loop": "Builds and repacks 3D scenes and map layers, runs the per-tier performance budget, records results",
-   "writes": "environment.build"
-  },
-  {
-   "name": "Robotics Integrator",
-   "console": "Simulated robot cell definitions, interface contract status, hardware bridge status (planned)",
-   "loop": "Maintains simulated robotics stations and their task scripts; validates interface contracts against the skill graph. Physical hardware bridges are planned",
-   "writes": "robotics.integration"
-  },
-  {
-   "name": "Licensing Researcher",
-   "console": "Per-state licensing paths, last-checked dates, source diffs, open review items",
-   "loop": "Daily watcher compares official state sources to the licensing guide; opens a review item on any change and never auto-applies it",
-   "writes": "licensing.review"
-  },
-  {
-   "name": "Billing Engineer",
-   "console": "Checkout sessions (test mode), webhook idempotency log, entitlement grants, mandate status",
-   "loop": "Reconciles Chargebee test events with entitlements, replays webhooks to prove idempotency, confirms every payment carries a human-present mandate",
-   "writes": "commerce.entitlements"
-  },
-  {
-   "name": "Eval Warden",
-   "console": "12 eval gates with last result and trend, verification check count, soak/fuzz defect ledger",
-   "loop": "Runs the eval gates and verification suite against each candidate change, posts pass/warn/fail, holds the release gate",
-   "writes": "evals.results"
-  },
-  {
-   "name": "Media Producer",
-   "console": "Generation queue, model used (Kling / Seedance / Minimax), brand-lint result, spend vs budget",
-   "loop": "Generates and versions films and photos from approved briefs, runs brand lint, files assets with provenance",
-   "writes": "media.assets"
-  }
- ],
- "evals": [
-  {
-   "id": "EV-01",
-   "name": "Verification suite",
-   "checks": "All 228 verification checks across protocol, commerce and security packs",
-   "threshold": "228/228 pass"
-  },
-  {
-   "id": "EV-02",
-   "name": "Parity safeguards (ACP-08)",
-   "checks": "Hint and sequencing outcomes compared across learner groups; stop conditions trigger correctly",
-   "threshold": "Max group gap <= 5 pts; 100% of stop conditions fire in tests"
-  },
-  {
-   "id": "EV-03",
-   "name": "Hint ladder integrity (ACP-04)",
-   "checks": "Five rungs escalate in order; no rung reveals the full answer before rung 5",
-   "threshold": "0 order violations; 0 early reveals"
-  },
-  {
-   "id": "EV-04",
-   "name": "Single-writer bus (ACP-09)",
-   "checks": "Each topic has exactly one writer; audit log is append-only and hash-chained",
-   "threshold": "0 foreign writes; 0 log mutations"
-  },
-  {
-   "id": "EV-05",
-   "name": "xAPI conformance",
-   "checks": "Emitted statements validate against xAPI 1.0.3; LRS push accepted",
-   "threshold": "100% schema-valid; LRS accept rate >= 99%"
-  },
-  {
-   "id": "EV-06",
-   "name": "Webhook idempotency",
-   "checks": "Replayed and out-of-order Chargebee test events yield one entitlement each",
-   "threshold": "0 duplicate entitlements"
-  },
-  {
-   "id": "EV-07",
-   "name": "Human-present mandate",
-   "checks": "No payment completes without a human-present mandate; agents can only prepare",
-   "threshold": "0 agent-completed payments"
-  },
-  {
-   "id": "EV-08",
-   "name": "Tenant isolation & authz",
-   "checks": "Cross-tenant reads, unlisted routes and missing roles all denied",
-   "threshold": "100% denied"
-  },
-  {
-   "id": "EV-09",
-   "name": "Affect data export ban",
-   "checks": "Exports, xAPI statements and logs scanned for affect fields",
-   "threshold": "0 affect fields leave the tenant"
-  },
-  {
-   "id": "EV-10",
-   "name": "Client performance budget",
-   "checks": "Frame time and load size per device tier on reference scenes",
-   "threshold": "Low tier >= 30 fps, high tier >= 72 fps; initial pack <= tier budget"
-  },
-  {
-   "id": "EV-11",
-   "name": "Brand lint",
-   "checks": "Name spelling (SmartCiti.X), palette, lockup and claims language on all published copy and media",
-   "threshold": "0 errors"
-  },
-  {
-   "id": "EV-12",
-   "name": "Honesty claims check",
-   "checks": "Copy scanned for unbacked claims of deployments, partners or accreditation; future items labelled planned",
-   "threshold": "0 unlabelled future claims"
-  }
- ],
- "heartbeats": [
-  {
-   "name": "Agent liveness",
-   "every": "5 min",
-   "checks": "Each agent posts a heartbeat with topic, last action and queue depth",
-   "on_fail": "Orchestrator marks the agent stale, pauses its topic writes, opens an incident after 3 misses"
-  },
-  {
-   "name": "Commerce kit health",
-   "every": "5 min",
-   "checks": "Checkout endpoint, webhook receiver, agent card and JSON-RPC skills respond",
-   "on_fail": "Disable enroll/quote skills, show maintenance notice, page on-call human"
-  },
-  {
-   "name": "Bus & audit log integrity",
-   "every": "15 min",
-   "checks": "Hash chain continuity, single-writer map unchanged",
-   "on_fail": "Freeze all writes, snapshot log, require human sign-off to resume"
-  },
-  {
-   "name": "Cost governor",
-   "every": "15 min",
-   "checks": "Spend on generation and compute vs daily and monthly caps",
-   "on_fail": "Throttle Media Producer queue; hard stop at 100% of cap"
-  },
-  {
-   "name": "Licensing watcher",
-   "every": "24 h",
-   "checks": "Official state sources diffed against the licensing guide",
-   "on_fail": "Open a review item for a human; never auto-apply changes"
-  },
-  {
-   "name": "Rollout lane guard",
-   "every": "1 h",
-   "checks": "Error rate and eval results for the 1% / 5% / 33% lanes",
-   "on_fail": "Halt promotion and roll the lane back to the previous version"
-  }
- ],
- "metaprompt": "You are the Orchestrator for SmartCiti.X : Trade Craft Academy, powered by AGI Corp. You coordinate eight agents: Curriculum Mapper, Environment Architect, Robotics Integrator, Licensing Researcher, Billing Engineer, Eval Warden, Media Producer, and yourself. Each cycle, read the message bus, then assign the single most valuable next task to the agent that owns that topic. Every topic has exactly one writer; never write to another agent's topic and never let two agents share one. Treat the 12 eval gates as hard gates: if any gate fails, block the release and route the failure to its owner. Agents may research, draft, build, quote and prepare enrolments, but only a human may approve payments, apply licensing changes or publish claims. Never export affect data. Respect the cost governor and rollout lanes 1, 5 and 33 percent; promote only when the current lane is green. State facts plainly: there are no deployments, partners or accreditations yet, and anything future must be labelled planned. When uncertain, open a review item for a human instead of guessing. End each cycle with a one-line status: done, blocked, next.",
- "loop_45min": {
-  "label": "Illustrative loop script — not a log of a production run",
-  "events": [
-   {
-    "t": "00:00",
-    "agent": "Orchestrator",
-    "event": "Cycle start: read bus state, 8 agents registered",
-    "result": "pass"
-   },
-   {
-    "t": "01:06",
-    "agent": "Orchestrator",
-    "event": "Heartbeat sweep: all agents fresh (< 5 min)",
-    "result": "pass"
-   },
-   {
-    "t": "02:12",
-    "agent": "Eval Warden",
-    "event": "EV-01 verification suite on candidate build",
-    "result": "pass"
-   },
-   {
-    "t": "03:18",
-    "agent": "Curriculum Mapper",
-    "event": "Map electrical trade competencies to skill graph",
-    "result": "pass"
-   },
-   {
-    "t": "04:24",
-    "agent": "Environment Architect",
-    "event": "Repack New Orleans district chunks (meshopt + WebP)",
-    "result": "pass"
-   },
-   {
-    "t": "05:30",
-    "agent": "Eval Warden",
-    "event": "EV-10 performance budget, low tier",
-    "result": "warn"
-   },
-   {
-    "t": "06:36",
-    "agent": "Environment Architect",
-    "event": "Reduce instanced prop density in district chunk 14",
-    "result": "pass"
-   },
-   {
-    "t": "07:42",
-    "agent": "Eval Warden",
-    "event": "EV-10 re-run, low tier",
-    "result": "pass"
-   },
-   {
-    "t": "08:48",
-    "agent": "Licensing Researcher",
-    "event": "Daily watcher: diff state sources",
-    "result": "warn"
-   },
-   {
-    "t": "09:54",
-    "agent": "Licensing Researcher",
-    "event": "Open review item for changed apprenticeship hours (not applied)",
-    "result": "pass"
-   },
-   {
-    "t": "11:00",
-    "agent": "Orchestrator",
-    "event": "Route licensing review item to human queue",
-    "result": "pass"
-   },
-   {
-    "t": "12:06",
-    "agent": "Billing Engineer",
-    "event": "Replay Chargebee test webhooks out of order",
-    "result": "pass"
-   },
-   {
-    "t": "13:12",
-    "agent": "Eval Warden",
-    "event": "EV-06 webhook idempotency",
-    "result": "pass"
-   },
-   {
-    "t": "14:18",
-    "agent": "Eval Warden",
-    "event": "EV-07 human-present mandate check",
-    "result": "pass"
-   },
-   {
-    "t": "15:24",
-    "agent": "Media Producer",
-    "event": "Generate safety orientation clip (Kling) from approved brief",
-    "result": "pass"
-   },
-   {
-    "t": "16:30",
-    "agent": "Eval Warden",
-    "event": "EV-11 brand lint on new clip",
-    "result": "fail"
-   },
-   {
-    "t": "17:36",
-    "agent": "Media Producer",
-    "event": "Fix caption spelling to SmartCiti.X, regenerate end card",
-    "result": "pass"
-   },
-   {
-    "t": "18:42",
-    "agent": "Eval Warden",
-    "event": "EV-11 brand lint re-run",
-    "result": "pass"
-   },
-   {
-    "t": "19:48",
-    "agent": "Orchestrator",
-    "event": "Cost governor check: 41% of daily cap used",
-    "result": "pass"
-   },
-   {
-    "t": "20:54",
-    "agent": "Robotics Integrator",
-    "event": "Validate simulated welding cell interface contract",
-    "result": "pass"
-   },
-   {
-    "t": "22:00",
-    "agent": "Curriculum Mapper",
-    "event": "Link welding cell tasks to skill-graph nodes",
-    "result": "pass"
-   },
-   {
-    "t": "23:06",
-    "agent": "Eval Warden",
-    "event": "EV-03 hint ladder integrity",
-    "result": "pass"
-   },
-   {
-    "t": "24:12",
-    "agent": "Eval Warden",
-    "event": "EV-02 parity safeguards across learner groups",
-    "result": "pass"
-   },
-   {
-    "t": "25:18",
-    "agent": "Orchestrator",
-    "event": "Heartbeat sweep: Robotics Integrator 6 min late",
-    "result": "warn"
-   },
-   {
-    "t": "26:24",
-    "agent": "Robotics Integrator",
-    "event": "Heartbeat resumes after queue drain",
-    "result": "pass"
-   },
-   {
-    "t": "27:30",
-    "agent": "Eval Warden",
-    "event": "EV-04 single-writer bus audit",
-    "result": "pass"
-   },
-   {
-    "t": "28:36",
-    "agent": "Eval Warden",
-    "event": "EV-05 xAPI 1.0.3 conformance + LRS push",
-    "result": "pass"
-   },
-   {
-    "t": "29:42",
-    "agent": "Eval Warden",
-    "event": "EV-08 tenant isolation and authz probes",
-    "result": "pass"
-   },
-   {
-    "t": "30:48",
-    "agent": "Eval Warden",
-    "event": "EV-09 affect data export scan",
-    "result": "pass"
-   },
-   {
-    "t": "31:54",
-    "agent": "Media Producer",
-    "event": "Draft deck photo set (Seedance) for pitch",
-    "result": "pass"
-   },
-   {
-    "t": "33:00",
-    "agent": "Eval Warden",
-    "event": "EV-12 honesty claims scan on deck copy",
-    "result": "warn"
-   },
-   {
-    "t": "34:06",
-    "agent": "Orchestrator",
-    "event": "Relabel 'state partnerships' line as planned",
-    "result": "pass"
-   },
-   {
-    "t": "35:12",
-    "agent": "Eval Warden",
-    "event": "EV-12 re-run",
-    "result": "pass"
-   },
-   {
-    "t": "36:18",
-    "agent": "Orchestrator",
-    "event": "All 12 gates green: promote build to 1% lane",
-    "result": "pass"
-   },
-   {
-    "t": "37:24",
-    "agent": "Orchestrator",
-    "event": "Rollout lane guard: 1% lane error rate nominal",
-    "result": "pass"
-   },
-   {
-    "t": "38:30",
-    "agent": "Billing Engineer",
-    "event": "Agent card + JSON-RPC skills health probe",
-    "result": "pass"
-   },
-   {
-    "t": "39:36",
-    "agent": "Curriculum Mapper",
-    "event": "Sequencer preview for HVAC module order",
-    "result": "pass"
-   },
-   {
-    "t": "40:42",
-    "agent": "Environment Architect",
-    "event": "Export updated campus GeoJSON layer",
-    "result": "pass"
-   },
-   {
-    "t": "41:48",
-    "agent": "Orchestrator",
-    "event": "Promote to 5% lane held until next cycle (dwell time)",
-    "result": "warn"
-   },
-   {
-    "t": "42:54",
-    "agent": "Eval Warden",
-    "event": "Append cycle results to audit log; hash chain verified",
-    "result": "pass"
-   },
-   {
-    "t": "44:00",
-    "agent": "Orchestrator",
-    "event": "Cycle end status: done 37, blocked 0, next = 5% lane review",
-    "result": "pass"
-   }
+  "risks": [
+    {
+      "risk": "Agent drift or overreach (an agent acting outside its scope)",
+      "mitigation": "Single-writer topics, deny-by-default authz, human-present mandates for payments and human approval for licensing changes"
+    },
+    {
+      "risk": "Licensing rules change faster than content",
+      "mitigation": "Daily licensing watcher opens review items; guide shows last-checked date; nothing auto-applied"
+    },
+    {
+      "risk": "Low-end school hardware cannot run 3D scenes",
+      "mitigation": "Device tiers, InstancedMesh chunking, compressed asset packs, EV-10 budget gate per tier"
+    },
+    {
+      "risk": "Learner privacy, especially affect signals",
+      "mitigation": "Data classification, tenant isolation, EV-09 export ban; third-party audit planned"
+    },
+    {
+      "risk": "Generated media off-brand or inaccurate for safety content",
+      "mitigation": "Approved briefs only, brand lint gate, human review before any safety media is used"
+    },
+    {
+      "risk": "Overstating traction to funders",
+      "mitigation": "Honesty doctrine and EV-12 claims scan: zero deployments, partners or accreditation stated plainly; future items marked planned"
+    }
+  ],
+  "milestones": [
+    {
+      "quarter": "Q4 2026",
+      "items": [
+        "Freeze v1 of ACP spec and 228-check verification suite",
+        "Commerce kit hardened in Chargebee test mode",
+        "Publish eval gate board and heartbeat dashboard internally",
+        "Planned: first pilot conversations (no pilots signed)"
+      ]
+    },
+    {
+      "quarter": "Q1 2027",
+      "items": [
+        "Planned: first pilot cohort in a single trade (target, not committed)",
+        "Planned: live billing behind human-present mandates",
+        "Planned: hosted LRS integration with one external LRS",
+        "Planned: WebXR headset testing on standalone devices"
+      ]
+    },
+    {
+      "quarter": "Q2 2027",
+      "items": [
+        "Planned: multiplayer relay rooms load-tested toward 2,000 users",
+        "Planned: robotics simulation stations expanded to 3 trades",
+        "Planned: external security review begins",
+        "Planned: licensing guide extended to additional states"
+      ]
+    },
+    {
+      "quarter": "Q3 2027",
+      "items": [
+        "Planned: 33% rollout lane in pilot tenant(s)",
+        "Planned: SOC 2 Type I readiness work",
+        "Planned: accreditation pathway exploration with outside bodies (none obtained)",
+        "Planned: hardware bridge prototype for one robot cell"
+      ]
+    },
+    {
+      "quarter": "Q4 2027",
+      "items": [
+        "Planned: general availability decision gated on eval and pilot results",
+        "Planned: multi-tenant production hosting",
+        "Planned: published outcome report from pilot data, independently reviewed"
+      ]
+    }
   ]
- },
- "risks": [
-  {
-   "risk": "Agent drift or overreach (an agent acting outside its scope)",
-   "mitigation": "Single-writer topics, deny-by-default authz, human-present mandates for payments and human approval for licensing changes"
-  },
-  {
-   "risk": "Licensing rules change faster than content",
-   "mitigation": "Daily licensing watcher opens review items; guide shows last-checked date; nothing auto-applied"
-  },
-  {
-   "risk": "Low-end school hardware cannot run 3D scenes",
-   "mitigation": "Device tiers, InstancedMesh chunking, compressed asset packs, EV-10 budget gate per tier"
-  },
-  {
-   "risk": "Learner privacy, especially affect signals",
-   "mitigation": "Data classification, tenant isolation, EV-09 export ban; third-party audit planned"
-  },
-  {
-   "risk": "Generated media off-brand or inaccurate for safety content",
-   "mitigation": "Approved briefs only, brand lint gate, human review before any safety media is used"
-  },
-  {
-   "risk": "Overstating traction to funders",
-   "mitigation": "Honesty doctrine and EV-12 claims scan: zero deployments, partners or accreditation stated plainly; future items marked planned"
-  }
- ],
- "milestones": [
-  {
-   "quarter": "Q4 2026",
-   "items": [
-    "Freeze v1 of ACP spec and 228-check verification suite",
-    "Commerce kit hardened in Chargebee test mode",
-    "Publish eval gate board and heartbeat dashboard internally",
-    "Planned: first pilot conversations (no pilots signed)"
-   ]
-  },
-  {
-   "quarter": "Q1 2027",
-   "items": [
-    "Planned: first pilot cohort in a single trade (target, not committed)",
-    "Planned: live billing behind human-present mandates",
-    "Planned: hosted LRS integration with one external LRS",
-    "Planned: WebXR headset testing on standalone devices"
-   ]
-  },
-  {
-   "quarter": "Q2 2027",
-   "items": [
-    "Planned: multiplayer relay rooms load-tested toward 2,000 users",
-    "Planned: robotics simulation stations expanded to 3 trades",
-    "Planned: external security review begins",
-    "Planned: licensing guide extended to additional states"
-   ]
-  },
-  {
-   "quarter": "Q3 2027",
-   "items": [
-    "Planned: 33% rollout lane in pilot tenant(s)",
-    "Planned: SOC 2 Type I readiness work",
-    "Planned: accreditation pathway exploration with outside bodies (none obtained)",
-    "Planned: hardware bridge prototype for one robot cell"
-   ]
-  },
-  {
-   "quarter": "Q4 2027",
-   "items": [
-    "Planned: general availability decision gated on eval and pilot results",
-    "Planned: multi-tenant production hosting",
-    "Planned: published outcome report from pilot data, independently reviewed"
-   ]
-  }
- ]
 }

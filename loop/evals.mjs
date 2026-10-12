@@ -133,8 +133,18 @@ function ev06() {
   const last = L.cycles[L.cycles.length - 1];
   if (!last) return ['absent', 'no cycles logged yet'];
   if (!last.video) return ['absent', `cycle #${last.n} has no review video recorded`];
-  const p = isAbsolute(last.video.path) ? last.video.path : join(ROOT, last.video.path);
-  if (!existsSync(p)) return ['fail', `cycle #${last.n} video missing on disk: ${last.video.path}`];
+  // The ledger is committed; the media is not (each review is ~6 MB and lives
+  // outside the repo). A ledger path must be a bare file name resolved against
+  // LOOP_MEDIA_DIR or loop/media/, never a machine's absolute path.
+  if (isAbsolute(last.video.path) || last.video.path.includes('/'))
+    return ['fail', `cycle #${last.n} video path must be a bare file name, got ${last.video.path}`];
+  const dir = process.env.LOOP_MEDIA_DIR || join(ROOT, 'loop', 'media');
+  const p = join(dir, last.video.path);
+  const rec = last.video.duration_s;
+  if (!existsSync(p)) {
+    return [Math.abs(rec - 120) <= 0.5 ? 'warn' : 'fail',
+      `cycle #${last.n} recorded ${rec} s; ${last.video.path} is not on this machine, so the duration was not re-measured`];
+  }
   const r = spawnSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', p], { encoding: 'utf8' });
   const d = Number.parseFloat(r.stdout);
   if (!Number.isFinite(d)) return ['fail', `ffprobe could not read ${last.video.path}`];

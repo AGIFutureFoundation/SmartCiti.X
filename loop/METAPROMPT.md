@@ -1,7 +1,7 @@
 # Agent loop meta-prompt
 
 SmartCiti.X : Trade Craft Academy, powered by AGI Corp: adapted from the
-orchestrator meta-prompt and agent roster in `loop/registry/tech_draft.json`,
+orchestrator meta-prompt and agent roster in `loop/registry/tech_draft.json` (its DRAFT-EV gate ids are proposals only; the gates actually executed are the EV-01..EV-08 defined in `loop/evals.mjs`),
 re-scoped to the directories this repository actually has.
 
 ## Orchestrator meta-prompt
