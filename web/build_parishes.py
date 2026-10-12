@@ -2485,6 +2485,215 @@ if NPC_DATA is not None and (ROOT / 'hive/registry/hive.json').exists():
     _i = JS.index('\n', JS.index(_AV_UP)) + 1
     JS = JS[:_i] + '  if (agentGuides && !over) agentGuides.frame(dt, eye.x, eye.z);   // AGENT-AVATAR\n' + JS[_i:]
 # AVATAR END
+# STREETS BEGIN street-kit (wave 17, STREETS·World Exteriors): STREET-LEVEL SCENE DETAIL in the walkable worlds.
+# Near the eye the page now dresses the streamed lots and the meshed streets with generic, AUTHORED-by-rule forms:
+#   house fronts  - a porch deck under the existing porch canopy and two steps down to the front yard (stoop);
+#   residential lots - a picket fence, a low brick wall or a hedge on the back and both sides (the front stays open
+#                   for the walk and the driveway strip, which no box ever enters);
+#   kerb side     - a post mailbox right of the front walk, just behind the sidewalk;
+#   junctions     - on the four sidewalk corners of every meshed crossing: a street-name signpost, a hydrant on the
+#                   diagonal, a collection mailbox (residential) or a bin, and a bus-stop shelter where a non-local
+#                   street meets (else a bench).
+# Rule inputs: the streamed lots (house family, yaw to the street), the AUTHORED land use, the meshed street segments
+# (carriageway / sidewalk widths, class) and the AUTHORED water. Every box footprint (corners, centre, and every 2.5 m
+# along a long box) must be on dry in-parish land; lot boxes stay behind the sidewalk, corner boxes stay off the
+# carriageway, and no box enters another lot's house footprint or any driveway strip. ONE InstancedMesh of boxes
+# (+1 draw call), pooled nearest-first: at most SK_CAP boxes (12 triangles each) within SK_R m of the eye; hidden in the
+# overview. The boxes the walker meets are physkit 'prop' boxes (solid). Not a survey of real street furniture.
+# The Bay page inherits it (web/build_bayworld.py execs this builder). Page markers are neutral: STREET-KIT.
+_SK_JS = r"""/* STREET-KIT BEGIN: AUTHORED street-level detail near the eye - stoops and steps, lot fences / low walls / hedges,
+   kerb-side mailboxes, and junction-corner furniture (signposts, hydrants, collection mailboxes or bins, benches or
+   bus-stop shelters), placed by rule from the streamed lots, the AUTHORED land use and the meshed streets; never on a
+   carriageway, a sidewalk run, a driveway strip or AUTHORED water. ONE InstancedMesh of boxes, pooled nearest-first
+   within SK_R m (SK_CAP boxes), hidden in the overview; the boxes are solid to the walker. Generic forms. */
+/* STREET-KIT CORE BEGIN */
+const SK_R = 90, SK_CAP = 300, SK_DRIVE_W = 2.8, SK_FENCE_M = 1.6;
+const SK_COL = { deck: 0x8b6f52, step: 0xbdb8ad, picket: 0xe9e4d8, wall: 0x9a5a44, hedge: 0x3f6b35, post: 0x4a3b2a, box: 0x2d2f33,
+  pole: 0x6e7378, blade: 0x2f6b45, hydrant: 0xb8322a, bin: 0x2f4a3a, drop: 0x2c4a7a, bench: 0x8a6a48, roof: 0x5b6166, glass: 0x9fb7c4 };
+const SK_FAMS = ['stoop', 'fence', 'mailbox', 'signpost', 'hydrant', 'bin', 'bench', 'shelter'];
+/* a box: [cx, cz, yaw, y0, sx, sy, sz, colour, solid]; yaw is three.js rotation about +y (local x -> (cos, -sin)) */
+function skPts(b) {
+  const c = Math.cos(b[2]), s = Math.sin(b[2]), hx = b[4] / 2, hz = b[6] / 2, P = (a, e) => [b[0] + c * a + s * e, b[1] - s * a + c * e];
+  const out = [P(-hx, -hz), P(hx, -hz), P(hx, hz), P(-hx, hz), [b[0], b[1]]];
+  if (hx > 1.25) for (let a = -hx + 2.5; a < hx; a += 2.5) out.push(P(a, 0));
+  if (hz > 1.25) for (let e = -hz + 2.5; e < hz; e += 2.5) out.push(P(0, e));
+  return out;
+}
+/* [carriageway clearance, sidewalk-outer-edge clearance] of a point against the meshed street segments (m; < 0 = on it) */
+function skClear(x, z, segs) {
+  let car = Infinity, walk = Infinity;
+  for (const s of segs) {
+    const t = Math.max(0, Math.min(s.L, (x - s.ax) * s.dx + (z - s.az) * s.dz)), d = Math.hypot(x - s.ax - s.dx * t, z - s.az - s.dz * t);
+    car = Math.min(car, d - s.cw); walk = Math.min(walk, d - s.cw - s.sw);
+  }
+  return [car, walk];
+}
+function skIn(f, x, z) { const dx = x - f.x, dz = z - f.z; return Math.abs(f.c * dx - f.s * dz) < f.hx && Math.abs(f.s * dx + f.c * dz) < f.hz; }
+/* the AUTHORED placement rule for one box: dry in-parish land; a lot box behind the sidewalk (walk >= 0.25 m), a corner
+   box off the carriageway (car >= 0.3 m); never inside an avoided footprint (other houses, driveway strips) */
+function skOk(b, segs, env, corner, avoid) {
+  for (const [x, z] of skPts(b)) {
+    if (!env.dry(x, z)) return false;
+    const [car, walk] = skClear(x, z, segs);
+    if (corner ? car < 0.3 : walk < 0.25) return false;
+    for (const f of avoid) if (skIn(f, x, z)) return false;
+  }
+  return true;
+}
+function skFrame(L) { const y = L[6]; return { x: L[0], z: L[1], c: Math.cos(y), s: Math.sin(y) }; }
+function skAt(o, lx, lz) { return [o.x + o.c * lx + o.s * lz, o.z - o.s * lx + o.c * lz]; }
+/* a house's footprint with its porch (local z -d/2 .. 0.74 d), and its driveway strip: local x -w/2 .. -w/2 + SK_DRIVE_W,
+   from the porch line toward the street until it meets the carriageway (at most 30 m) */
+function skFoot(L) {
+  const o = skFrame(L), w = L[2], d = L[4], porch = L[5] === 'house' ? 0.74 : 0.5, [x, z] = skAt(o, 0, (porch - 0.5) * d / 2);
+  return { x, z, c: o.c, s: o.s, hx: w / 2 + 0.2, hz: (0.5 + porch) * d / 2 + 0.2 };
+}
+function skDrive(L, segs) {
+  const o = skFrame(L), w = L[2], d = L[4], lx = -w / 2 + SK_DRIVE_W / 2; let len = 30;
+  for (let t = 0; t < 30; t += 0.5) { const p = skAt(o, lx, 0.74 * d + t); if (skClear(p[0], p[1], segs)[0] < 0) { len = t; break; } }
+  const [x, z] = skAt(o, lx, 0.74 * d + len / 2); return { x, z, c: o.c, s: o.s, hx: SK_DRIVE_W / 2, hz: len / 2, drive: true };
+}
+function skLot(L, segs, env, avoid) {
+  const [x, z, w, , d, fam, yaw] = L; if (fam !== 'house') return [];
+  const o = skFrame(L), out = [], k = Math.round(x) + ',' + Math.round(z);
+  const box = (lx, lz, y0, sx, sy, sz, col, solid, yw) => { const [bx, bz] = skAt(o, lx, lz); return [bx, bz, yw === undefined ? yaw : yw, y0, sx, sy, sz, col, solid]; };
+  const push = (f, boxes, i) => { if (boxes.every((b) => skOk(b, segs, env, false, avoid))) out.push({ fam: f, k: 'l' + k + ':' + f + i, x: boxes[0][0], z: boxes[0][1], boxes }); };
+  /* stoop: a deck under the porch canopy (local z 0.5 d .. 0.74 d) and two steps down toward the street */
+  push('stoop', [box(0, 0.62 * d, 0, 0.6 * w, 0.36, 0.24 * d, SK_COL.deck, 1), box(0, 0.74 * d + 0.18, 0, 1.8, 0.24, 0.36, SK_COL.step, 1), box(0, 0.74 * d + 0.54, 0, 1.8, 0.12, 0.36, SK_COL.step, 1)], 0);
+  /* fence on the back and both sides (front open): picket, low wall or hedge by the lot's hash; residential only */
+  if (env.use(x, z) === 'residential') {
+    const h = env.hash(Math.round(x), Math.round(z), 41), m = SK_FENCE_M;
+    const [H, T, col] = h < 0.5 ? [0.95, 0.06, SK_COL.picket] : h < 0.8 ? [0.6, 0.28, SK_COL.wall] : [1.1, 0.6, SK_COL.hedge];
+    push('fence', [box(0, -(d / 2 + m), 0, w + 2 * m, H, T, col, 1)], 0);
+    push('fence', [box(-(w / 2 + m), -m / 2, 0, T, H, d + m, col, 1)], 1);
+    push('fence', [box(w / 2 + m, -m / 2, 0, T, H, d + m, col, 1)], 2);
+  }
+  /* mailbox: right of the front walk (never the driveway side), on the last yard point >= 0.8 m behind the sidewalk */
+  if (env.hash(Math.round(x), Math.round(z), 42) < 0.7) {
+    const xm = w / 4 + 0.6; let at = null;
+    for (let t = 0.74 * d + 1.2; t < 0.74 * d + 30; t += 0.5) { const p = skAt(o, xm, t); if (skClear(p[0], p[1], segs)[1] < 0.8) { at = t - 0.5; break; } }
+    if (at !== null && at >= 0.74 * d + 1.2) push('mailbox', [box(xm, at, 0, 0.09, 1.05, 0.09, SK_COL.post, 1), box(xm, at, 1.0, 0.22, 0.24, 0.48, SK_COL.box, 0)], 0);
+  }
+  return out;
+}
+/* meshed street crossings near the eye: two segments that cross (not near-parallel), counted once per 8 m; a polyline
+   bend (two segment ends meeting, nothing else) is not a junction */
+function skKey(s) { return [s.ax, s.az, s.bx, s.bz].map((v) => v.toFixed(2)).join(); }
+function skJunctions(segs, eye, R) {
+  const out = [];
+  for (let i = 0; i < segs.length; i++) for (let j = i + 1; j < segs.length; j++) {
+    const [s, t] = skKey(segs[i]) < skKey(segs[j]) ? [segs[i], segs[j]] : [segs[j], segs[i]], den = s.dx * t.dz - s.dz * t.dx;   // pair order is canonical
+    if (Math.abs(den) < 0.26) continue;
+    const rx = t.ax - s.ax, rz = t.az - s.az, u = (rx * t.dz - rz * t.dx) / den, v = (rx * s.dz - rz * s.dx) / den;
+    if (u < -0.5 || u > s.L + 0.5 || v < -0.5 || v > t.L + 0.5) continue;   // street polylines meet at shared vertices: 0.5 m tolerance
+    const jx = s.ax + s.dx * u, jz = s.az + s.dz * u;
+    if (Math.hypot(jx - eye.x, jz - eye.z) > R + 10 || out.some((q) => Math.hypot(q.x - jx, q.z - jz) < 8)) continue;
+    const inner = (u > 2 && u < s.L - 2) || (v > 2 && v < t.L - 2);
+    let arms = 0; for (const g of segs) { const tt = Math.max(0, Math.min(g.L, (jx - g.ax) * g.dx + (jz - g.az) * g.dz)); if (Math.hypot(jx - g.ax - g.dx * tt, jz - g.az - g.dz * tt) < 1) arms++; }
+    if (!inner && arms < 3) continue;
+    out.push({ x: jx, z: jz, s, t, den });
+  }
+  return out;
+}
+/* the four sidewalk corners of a junction (0: -s -t, 1: +s -t, 2: +s +t, 3: -s +t); the junction's hash picks corner k0:
+   k0 signpost, k0 + 2 (the diagonal) hydrant, k0 + 1 collection mailbox (residential) or bin, k0 + 3 bus-stop shelter
+   where a non-local street meets (bench if it does not fit), else a bench on half the junctions */
+function skCorner(J, segs, env, avoid) {
+  const { s, t } = J, ad = Math.abs(J.den), out = [], k0 = Math.floor(env.hash(Math.round(J.x), Math.round(J.z), 31) * 4) % 4;
+  const a = (t.cw + 0.55 * t.sw) / ad, b = (s.cw + 0.55 * s.sw) / ad, ys = Math.atan2(-s.dz, s.dx), yt = Math.atan2(-t.dz, t.dx);
+  const kt = env.roadY + Math.max(s.kh, t.kh), SG = [[-1, -1], [1, -1], [1, 1], [-1, 1]], key = Math.round(J.x) + ',' + Math.round(J.z);
+  const bus = s.cls !== 'local' ? s : t.cls !== 'local' ? t : null;
+  for (let r = 0; r < 4; r++) {
+    const ci = (k0 + r) % 4, [g1, g2] = SG[ci], px = J.x + g1 * a * s.dx + g2 * b * t.dx, pz = J.z + g1 * a * s.dz + g2 * b * t.dz;
+    const B = (dx, dz, y0, sx, sy, sz, col, solid, yw) => [px + dx, pz + dz, yw, kt + y0, sx, sy, sz, col, solid];
+    const tries = [];
+    if (r === 0) tries.push(['signpost', [B(0, 0, 0, 0.1, 2.9, 0.1, SK_COL.pole, 1, ys), B(0, 0, 2.55, 0.95, 0.2, 0.03, SK_COL.blade, 0, ys), B(0, 0, 2.78, 0.95, 0.2, 0.03, SK_COL.blade, 0, yt)]]);
+    if (r === 2) tries.push(['hydrant', [B(0, 0, 0, 0.32, 0.62, 0.32, SK_COL.hydrant, 1, ys), B(0, 0, 0.62, 0.22, 0.14, 0.22, SK_COL.hydrant, 0, ys), B(0, 0, 0.36, 0.5, 0.12, 0.12, SK_COL.hydrant, 0, ys)]]);
+    if (r === 1) tries.push(env.use(px, pz) === 'residential' ? ['mailbox', [B(0, 0, 0, 0.5, 1.1, 0.5, SK_COL.drop, 1, ys)]] : ['bin', [B(0, 0, 0, 0.55, 0.95, 0.55, SK_COL.bin, 1, ys)]]);
+    if (r === 3) {
+      /* along the bus street, away from the crossing (g: the corner's side of the junction), its back to the lots */
+      const q = bus || s, nx = -q.dz, nz = q.dx, sd = (px - J.x) * nx + (pz - J.z) * nz >= 0 ? 1 : -1, ox = nx * sd, oz = nz * sd, yq = Math.atan2(-q.dz, q.dx);
+      const g = (px - J.x) * q.dx + (pz - J.z) * q.dz >= 0 ? 1 : -1, sx = q.dx * g, sz = q.dz * g;
+      if (bus) tries.push(['shelter', [B(sx * 1.6 + ox * 0.2, sz * 1.6 + oz * 0.2, 2.4, 3.0, 0.12, 1.4, SK_COL.roof, 0, yq), B(sx * 1.6 + ox * 0.8, sz * 1.6 + oz * 0.8, 0, 3.0, 2.4, 0.06, SK_COL.glass, 1, yq),
+        B(sx * 3.07 + ox * 0.15, sz * 3.07 + oz * 0.15, 0, 0.06, 2.4, 1.2, SK_COL.glass, 1, yq), B(sx * 1.6 + ox * 0.45, sz * 1.6 + oz * 0.45, 0, 2.0, 0.45, 0.45, SK_COL.bench, 1, yq)]]);
+      if (bus || env.hash(Math.round(J.x), Math.round(J.z), 32) < 0.5) tries.push(['bench', [B(sx * 1.0, sz * 1.0, 0, 1.8, 0.45, 0.5, SK_COL.bench, 1, yq), B(sx * 1.0 + ox * 0.22, sz * 1.0 + oz * 0.22, 0.45, 1.8, 0.5, 0.07, SK_COL.bench, 0, yq)]]);
+    }
+    for (const [f, boxes] of tries) if (boxes.every((bx) => skOk(bx, segs, env, true, avoid))) { out.push({ fam: f, k: 'j' + key + ':' + ci, x: px, z: pz, boxes }); break; }
+  }
+  return out;
+}
+/* the pool: every candidate within SK_R of the eye, nearest first (ties by key), whole items only, <= SK_CAP boxes */
+function skPlan(eye, lots, segs, env) {
+  const R = env.R, cand = [], fam = Object.fromEntries(SK_FAMS.map((f) => [f, 0]));
+  const near = lots.filter((L) => Math.hypot(L[0] - eye.x, L[1] - eye.z) < R + 30).map((L) => ({ L, f: skFoot(L), dr: L[5] === 'house' ? skDrive(L, segs) : null }));
+  for (const q of near) {
+    if (q.L[5] !== 'house' || Math.hypot(q.L[0] - eye.x, q.L[1] - eye.z) > R + 15) continue;
+    const avoid = [q.dr]; for (const o of near) if (o !== q && Math.hypot(o.L[0] - q.L[0], o.L[1] - q.L[1]) < 45) { avoid.push(o.f); if (o.dr) avoid.push(o.dr); }
+    cand.push(...skLot(q.L, segs, env, avoid));
+  }
+  const junctions = skJunctions(segs, eye, R), every = [];   // corner furniture avoids every house and driveway strip too
+  for (const o of near) { every.push(o.f); if (o.dr) every.push(o.dr); }
+  for (const J of junctions) cand.push(...skCorner(J, segs, env, every));
+  for (const it of cand) it.d = Math.hypot(it.x - eye.x, it.z - eye.z);
+  const keep = cand.filter((it) => it.d <= R).sort((p, q) => p.d - q.d || (p.k < q.k ? -1 : p.k > q.k ? 1 : 0));
+  const items = []; let boxes = 0, dropped = 0;
+  for (const it of keep) { if (boxes + it.boxes.length > env.cap) { dropped++; continue; } items.push(it); boxes += it.boxes.length; fam[it.fam]++; }
+  return { items, boxes, fam, cand: cand.length, dropped, junctions: junctions.length };
+}
+/* STREET-KIT CORE END */
+const skGeo = new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0);   // a unit box standing on y = 0
+const skMesh = new THREE.InstancedMesh(skGeo, new THREE.MeshLambertMaterial({ color: 0xffffff }), SK_CAP);
+skMesh.count = 0; skMesh.frustumCulled = false; skMesh.name = 'street-kit'; skMesh.userData.streetKit = true;
+skMesh.setColorAt(0, new THREE.Color(0xffffff)); scene.add(skMesh);
+const SK = { on: true, key: '', t: 0, plan: null, solids: [], refreshes: 0, ms: 0 };
+const skM4 = new THREE.Matrix4(), skQ = new THREE.Quaternion(), skV = new THREE.Vector3(), skS = new THREE.Vector3(), skC = new THREE.Color(), skUP = new THREE.Vector3(0, 1, 0);
+function skEnv() { return { R: SK_R, cap: SK_CAP, roadY: ROAD_Y, hash: (x, z, k) => wildsHash(x, z, SEED, k), use: landUse, dry: (x, z) => !!parishAt(x, z) && !inWaterAt(x, z) }; }
+function streetKitRefresh() {
+  const t0 = performance.now(), lots = [];
+  for (const c of chunkData.values()) for (const L of c.block) if (Math.abs(L[0] - eye.x) < SK_R + 40 && Math.abs(L[1] - eye.z) < SK_R + 40 && roadStreamed(L[0], L[1])) lots.push(L);
+  const P = skPlan({ x: eye.x, z: eye.z }, lots, [...segsNear(eye.x, eye.z, SK_R + 40)], skEnv());
+  let n = 0; const solids = [];
+  for (const it of P.items) for (const b of it.boxes) {
+    skM4.compose(skV.set(b[0], b[3] + elevY(b[0], b[1]), b[1]), skQ.setFromAxisAngle(skUP, b[2]), skS.set(b[4], b[5], b[6]));
+    skMesh.setMatrixAt(n, skM4); skMesh.setColorAt(n++, skC.set(b[7]));
+    if (b[8]) solids.push({ id: 'k' + solids.length, cx: b[0], cz: b[1], hx: Math.max(b[4] / 2, 0.12), hz: Math.max(b[6] / 2, 0.12), yaw: b[2], y0: b[3], y1: b[3] + b[5], kind: 'prop' });
+  }
+  skMesh.count = n; skMesh.instanceMatrix.needsUpdate = true; if (skMesh.instanceColor) skMesh.instanceColor.needsUpdate = true;
+  SK.plan = P; SK.solids = solids; SK.refreshes++; SK.ms = +(performance.now() - t0).toFixed(1); markPhys();
+}
+function streetKitSolids() { return SK.on ? SK.solids : []; }
+/* called from frame() after perfCull: hidden in the overview; re-planned per 8 m of travel or when chunks / streets change */
+function streetKitFrame(over) {
+  skMesh.visible = SK.on && !over;
+  if (over || !SK.on) return;
+  const now = performance.now(); if (now - SK.t < 250) return;
+  const key = Math.round(eye.x / 8) + ',' + Math.round(eye.z / 8) + ',' + chunkData.size + ',' + queue.length + ',' + roadSegs + ',' + loaded.size;
+  if (key === SK.key) return;
+  SK.t = now; SK.key = key; streetKitRefresh();
+}
+window.__streetKit = {
+  stats: () => ({ on: SK.on, visible: skMesh.visible, count: skMesh.count, tris: skMesh.count * 12, cap: SK_CAP, radius: SK_R, solids: SK.solids.length,
+    refreshes: SK.refreshes, ms: SK.ms, fam: SK.plan ? { ...SK.plan.fam } : null, cand: SK.plan ? SK.plan.cand : 0, dropped: SK.plan ? SK.plan.dropped : 0,
+    junctions: SK.plan ? SK.plan.junctions : 0, far: SK.plan ? SK.plan.items.filter((it) => it.d > SK_R).length : 0 }),
+  set: (on) => { SK.on = !!on; SK.key = ''; markPhys(); return SK.on; },
+  items: () => (SK.plan ? SK.plan.items.map((it) => ({ fam: it.fam, x: +it.x.toFixed(2), z: +it.z.toFixed(2), d: +it.d.toFixed(1), boxes: it.boxes.map((b) => b.slice(0, 7).map((v) => +v.toFixed(3))) })) : []),
+  segsNear: (r) => [...segsNear(eye.x, eye.z, r || SK_R + 40)].map((s) => ({ ax: s.ax, az: s.az, dx: s.dx, dz: s.dz, L: s.L, cw: s.cw, sw: s.sw })),
+  dry: (x, z) => !!parishAt(x, z) && !inWaterAt(x, z),
+};
+/* STREET-KIT END */
+"""
+_SK_ANCHORS = [
+    ('window.__parishes = {', _SK_JS + 'window.__parishes = {'),
+    ('  perfCull(over);   // PERF w13 (after placeCamera: fog.far is the view\'s)\n',
+     '  perfCull(over);   // PERF w13 (after placeCamera: fog.far is the view\'s)\n  streetKitFrame(over);   // STREET-KIT\n'),
+    ('  for (const b of curbBoxes) list.push(b);\n',
+     '  for (const b of curbBoxes) list.push(b);\n  for (const b of streetKitSolids()) list.push(b);   // STREET-KIT: the street-level boxes near the eye are solid\n'),
+]
+for _a, _b in _SK_ANCHORS:
+    if JS.count(_a) != 1:
+        raise BuildError(f'build_parishes: STREET-KIT anchor must occur exactly once, found {JS.count(_a)}: {_a.strip()[:60]!r}')
+    JS = JS.replace(_a, _b, 1)
+# STREETS END street-kit
 # BEGIN FACADE w11 (FACADE·Exteriors & Signs): AUTHORED facade details on the kit buildings nearest the eye and PLAY
 # signs on the economy/ commercial lots (web/facadekit.py, facades/registry/facades.json) - ONE InstancedMesh, one draw
 # call, hidden in the overview; the glue reads the streamed chunks and never changes them (details are not solid).

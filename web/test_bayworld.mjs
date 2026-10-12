@@ -131,5 +131,24 @@ ok(!/(?:fetch\(\s*|src\s*=\s*|\bfrom\s+|import\(\s*|new URL\(\s*)['"`]https?:\/\
     && /\| Oakland \(city, RECORDED\): /.test(oak[0].note) && html.includes('.lbl.lm b{white-space:pre-line}'),
     `[labels] no two landmarks of a county share a point (${dup.length} duplicates); the Oakland campus label carries the RECORDED city name as its second line`);
 }
+// STREETS BEGIN (wave 17): the Bay inherits STREET-KIT (street-level detail near the eye) from web/build_parishes.py
+{
+  const mods = [...html.matchAll(/<script type="module"[^>]*>([\s\S]*?)<\/script>/g)].map((x) => x[1]).join('\n');
+  const sk = (mods.match(/\/\* STREET-KIT BEGIN[\s\S]*?\/\* STREET-KIT END \*\//g) || []);
+  ok(sk.length === 1 && (mods.match(/  streetKitFrame\(over\);   \/\/ STREET-KIT\n/g) || []).length === 1
+    && (mods.match(/  for \(const b of streetKitSolids\(\)\) list\.push\(b\);/g) || []).length === 1 && !/STREETS/.test(html)
+    && sk[0].includes('skMesh.visible = SK.on && !over;'),
+    '[street-kit] the Bay page carries the street kit once, hooked in its frame (hidden in the overview) and its physics (solid), neutral marker only');
+  const core = ((sk[0] || '').match(/\/\* STREET-KIT CORE BEGIN \*\/([\s\S]*?)\/\* STREET-KIT CORE END \*\//) || [, ''])[1];
+  let K = null; try { K = new Function(core + '\nreturn { skPlan, skPts, skClear };')(); } catch (e) { K = null; }
+  const seg = (ax, az, bx, bz, cw, sw, cls) => { const L = Math.hypot(bx - ax, bz - az); return { ax, az, bx, bz, L, dx: (bx - ax) / L, dz: (bz - az) / L, cw, sw, kh: 0.15, cls }; };
+  const segs = [seg(-200, 0, 200, 0, 5.7, 2.4, 'collector'), seg(0, -200, 0, 200, 4.1, 1.8, 'local')];
+  const lots = [[30, 20, 9, 6, 12, 'house', Math.PI, '#ccc', 0], [-30, -20, 9, 6, 12, 'house', 0, '#ccc', 0]];
+  const P = K ? K.skPlan({ x: 0, z: 0 }, lots, segs, { R: 90, cap: 300, roadY: 0.05, hash: () => 0.25, use: () => 'residential', dry: () => true }) : null;
+  ok(!!P && P.fam.stoop === 2 && P.fam.signpost === 1 && P.fam.shelter === 1 && P.boxes <= 300
+    && P.items.every((it) => it.boxes.every((b) => K.skPts(b).every(([x, z]) => K.skClear(x, z, segs)[0] >= 0.3))),
+    `[street-kit] the Bay's copy of the rule dresses a synthetic crossing (2 stoops, a signpost, a bus shelter on the collector) and keeps every box off the carriageway (${P ? JSON.stringify(P.fam) : 'core not found'})`);
+}
+// STREETS END
 console.log(`\n${pass} ok, ${fail} FAIL`);
 process.exit(fail ? 1 : 0);

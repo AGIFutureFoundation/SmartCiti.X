@@ -403,6 +403,70 @@ check('[perf] fleet families beyond the fog and overview NPC meshes are culled o
     bwt.length > 0 && bwt === wt && ['ground', 'road', 'kit'].every((k) => (bay.match(new RegExp(`worldTexHook\\((?:m|matRoad), '${k}'\\);`, 'g')) || []).length === 1) && !/WORLDHD/.test(bay));
 }
 // WORLDHD END
+// STREETS BEGIN (wave 17): STREET-KIT - street-level scene detail near the eye (stoops, fences, mailboxes, junction furniture)
+{
+  const sk = (main.match(/\/\* STREET-KIT BEGIN[\s\S]*?\/\* STREET-KIT END \*\//) || [''])[0];
+  const core = (sk.match(/\/\* STREET-KIT CORE BEGIN \*\/([\s\S]*?)\/\* STREET-KIT CORE END \*\//) || [, ''])[1];
+  check('[street-kit] one block, mounted before the page API, hooked once in the frame (after perfCull) and once in rebuildPhysics; neutral marker only',
+    (main.match(/\/\* STREET-KIT BEGIN/g) || []).length === 1 && main.indexOf('/* STREET-KIT END */') < main.indexOf('window.__parishes = {')
+    && (main.match(/\n  perfCull\(over\);[^\n]*\n  streetKitFrame\(over\);   \/\/ STREET-KIT\n/g) || []).length === 1
+    && (main.match(/\n  for \(const b of curbBoxes\) list\.push\(b\);\n  for \(const b of streetKitSolids\(\)\) list\.push\(b\);/g) || []).length === 1
+    && !/STREETS/.test(html) && !/\?\?/.test(sk));
+  check('[street-kit] ONE InstancedMesh of a unit box (12 triangles), pooled: at most 300 boxes within 90 m of the eye; hidden and not re-planned in the overview',
+    /const SK_R = 90, SK_CAP = 300,/.test(sk) && (sk.match(/new THREE\.InstancedMesh\(/g) || []).length === 1 && sk.includes('new THREE.InstancedMesh(skGeo, ')
+    && sk.includes('const skGeo = new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0);') && sk.includes('skMesh.visible = SK.on && !over;\n  if (over || !SK.on) return;')
+    && sk.includes('tris: skMesh.count * 12') && sk.includes("for (const L of c.block) if (Math.abs(L[0] - eye.x) < SK_R + 40 && Math.abs(L[1] - eye.z) < SK_R + 40 && roadStreamed(L[0], L[1])) lots.push(L);"));
+  check('[street-kit] solid where the world is solid: every box flagged solid becomes a physkit prop box (min half-size 0.12 m), only while the kit is on; a re-plan marks physics dirty',
+    sk.includes("if (b[8]) solids.push({ id: 'k' + solids.length, cx: b[0], cz: b[1], hx: Math.max(b[4] / 2, 0.12), hz: Math.max(b[6] / 2, 0.12), yaw: b[2], y0: b[3], y1: b[3] + b[5], kind: 'prop' });")
+    && sk.includes('function streetKitSolids() { return SK.on ? SK.solids : []; }') && /SK\.refreshes\+\+;[^\n]*markPhys\(\);/.test(sk));
+  let K = null;
+  try { K = new Function(core + '\nreturn { skPlan, skJunctions, skOk, skDrive, skFoot, skPts, skClear, SK_R, SK_CAP, SK_FAMS };')(); } catch (e) { K = null; }
+  /* a synthetic block: a local street along x (z = 0) crossed by a collector along z (x = 0); houses face the local street
+     from both sides every 25 m; a pond behind the 55 m house (x 45..70, z > 24) and one house beyond the radius */
+  const seg = (ax, az, bx, bz, cw, sw, cls) => { const L = Math.hypot(bx - ax, bz - az); return { ax, az, bx, bz, L, dx: (bx - ax) / L, dz: (bz - az) / L, cw, sw, swl: sw, swr: sw, kh: 0.15, cls }; };
+  const segs = [seg(-300, 0, 300, 0, 4.1, 1.8, 'local'), seg(0, -300, 0, 300, 5.7, 2.4, 'collector')];
+  const house = (x, z, yaw) => [x, z, 9, 6, 12, 'house', yaw, '#ccc', 0];
+  const lots = [];
+  for (const x of [-80, -55, -30, 14, 30, 55, 80, 110]) { lots.push(house(x, 18, Math.PI)); lots.push(house(x, -18, 0)); }
+  lots.push(house(105, -40, 0), [40, 45, 20, 12, 20, 'midrise', 0, '#999', 1]);
+  const hash = (x, z, k) => { const v = Math.sin(x * 12.9898 + z * 78.233 + k * 37.719) * 43758.5453; return v - Math.floor(v); };
+  const env = (o) => Object.assign({ R: 90, cap: 300, roadY: 0.05, hash, use: (x) => (x < -50 ? 'commercial' : 'residential'), dry: (x, z) => !(x > 45 && x < 70 && z > 24) }, o || {});
+  const eye = { x: 0, z: 0 };
+  const P = K ? K.skPlan(eye, lots, segs, env()) : null;
+  const fams = P ? Object.entries(P.fam).filter(([, n]) => n > 0).map(([f]) => f) : [];
+  check('[street-kit] the AUTHORED rule dresses the block: stoops, fences, kerb mailboxes on the houses; a signpost, a hydrant, a mailbox or bin and a bench or shelter on the junction corners',
+    !!P && ['stoop', 'fence', 'mailbox', 'signpost', 'hydrant'].every((f) => P.fam[f] > 0) && (P.fam.bench + P.fam.shelter) === 1 && P.junctions === 1
+    && P.items.filter((it) => it.k.startsWith('j')).length === 4, P ? JSON.stringify(P.fam) : 'core not found');
+  const pts = P ? P.items.flatMap((it) => it.boxes.flatMap((b) => K.skPts(b).map((p) => [it, p]))) : [];
+  check('[street-kit] never on a street: every point of every box footprint is off the carriageway (>= 0.3 m) and every lot box is behind the sidewalk (>= 0.25 m)',
+    pts.length > 100 && pts.every(([it, [x, z]]) => { const [car, walk] = K.skClear(x, z, segs); return car >= 0.3 && (it.k.startsWith('j') || walk >= 0.25); }), `${pts.length} points`);
+  check('[street-kit] never in AUTHORED water: no box point in the pond behind the 55 m house, which keeps its stoop but loses every fence run that reaches the pond',
+    pts.length > 0 && pts.every(([, [x, z]]) => !(x > 45 && x < 70 && z > 24)) && P.items.some((it) => it.k === 'l55,18:stoop0')
+    && !P.items.some((it) => it.k.startsWith('l55,18:fence')));
+  const drives = lots.filter((L) => L[5] === 'house').map((L) => K.skDrive(L, segs)), foots = lots.map((L) => [L, K.skFoot(L)]);
+  const inside = (f, x, z) => { const dx = x - f.x, dz = z - f.z; return Math.abs(f.c * dx - f.s * dz) < f.hx && Math.abs(f.s * dx + f.c * dz) < f.hz; };
+  check('[street-kit] never on a driveway strip or in another house: no box point inside any house\'s driveway strip, nor inside the footprint of a lot it does not belong to',
+    pts.length > 0 && pts.every(([, [x, z]]) => !drives.some((d) => inside(d, x, z)))
+    && pts.every(([it, [x, z]]) => foots.every(([L, f]) => it.k.startsWith('l' + Math.round(L[0]) + ',' + Math.round(L[1]) + ':') || !inside(f, x, z)))
+    && sk.includes('const avoid = [q.dr];'));
+  const near14 = P ? P.items.filter((it) => it.k.startsWith('l14,18:fence')).map((it) => it.k) : [];
+  check('[street-kit] fence runs that would reach the crossing street\'s sidewalk are dropped run by run (the near side and the back go, the far side stays)',
+    near14.length === 1 && near14[0] === 'l14,18:fence1' && P.items.filter((it) => it.k.startsWith('l30,18:fence')).length === 3, near14.join());
+  const P20 = K ? K.skPlan(eye, lots, segs, env({ cap: 20 })) : null, P50 = K ? K.skPlan(eye, lots, segs, env({ R: 50 })) : null;
+  const ds = P20 ? P20.items.map((it) => it.d) : [];
+  check('[street-kit] pooled nearest first: within the radius only (90 m; the 107 m house stays bare), whole items under the box cap (20: dropped > 0, kept in distance order)',
+    !!P20 && P20.boxes <= 20 && P20.dropped > 0 && ds.every((d, i) => !i || d >= ds[i - 1]) && P20.items.every((it) => P.items.some((q) => q.k === it.k))
+    && P.items.every((it) => it.d <= 90) && !P.items.some((it) => it.k.startsWith('l105,-40:')) && P50.items.every((it) => it.d <= 50) && P50.items.length < P.items.length);
+  const shuf = lots.slice().reverse(), Pr = K ? K.skPlan(eye, shuf, segs.slice().reverse(), env()) : null;
+  check('[street-kit] deterministic: the same lots and streets in any order give the same items and boxes (pure function of AUTHORED inputs and cell hashes)',
+    !!Pr && JSON.stringify(Pr.items.map((it) => [it.k, it.boxes])) === JSON.stringify(P.items.map((it) => [it.k, it.boxes])));
+  const bay = existsSync(ROOT + 'web/trade_craft_bay.html') ? read('web/trade_craft_bay.html') : '';
+  const bsk = (bay.match(/\/\* STREET-KIT BEGIN[\s\S]*?\/\* STREET-KIT END \*\//) || [''])[0];
+  check('[street-kit] the Bay page inherits the same block byte for byte, hooked once in its frame and its physics, with no codename',
+    bsk.length > 0 && bsk === sk && (bay.match(/  streetKitFrame\(over\);   \/\/ STREET-KIT\n/g) || []).length === 1
+    && (bay.match(/  for \(const b of streetKitSolids\(\)\) list\.push\(b\);/g) || []).length === 1 && !/STREETS/.test(bay));
+}
+// STREETS END
 // [build] the page is what the builder writes today
 const sha = createHash('sha256').update(html).digest('hex').slice(0, 16);
 check('[build] page carries the builder banner and one importmap', (html.match(/<script type="importmap">/g) || []).length === 1);
