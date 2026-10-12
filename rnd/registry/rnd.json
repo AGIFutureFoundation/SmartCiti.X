@@ -25,7 +25,7 @@
   "app_renderers_scanned": 35,
   "doc_renderers_scanned": 3,
   "builders_scanned": 72,
-  "suites_scanned": 132,
+  "suites_scanned": 133,
   "declared_unbuilt": 7,
   "declared_unbuilt_by_their_own_words": 2,
   "declared_unbuilt_not_drawn": 6,
@@ -38,13 +38,13 @@
   "budget_views": 6,
   "budget_currencies": 2,
   "budget_agreements": 7,
-  "suites_run": 132,
-  "suite_checks_declared": 6535,
+  "suites_run": 133,
+  "suite_checks_declared": 6597,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 403
+  "files_read": 404
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -3397,6 +3397,7 @@
     "facades/test.mjs",
     "holodeck/test.mjs",
     "web/test_design.mjs",
+    "web/test_parishes.mjs",
     "web/test_patternkit.mjs"
    ],
    "own_pack": [
@@ -4138,6 +4139,7 @@
    "web/test_restokit.mjs",
    "web/test_robotics.mjs",
    "web/test_rtl.mjs",
+   "web/test_scenes.mjs",
    "web/test_schools.mjs",
    "web/test_seo.mjs",
    "web/test_smiles.mjs",
@@ -5050,7 +5052,7 @@
    {
     "suite": "web/test_wilds.mjs",
     "pack": "web",
-    "readme_checks": 60,
+    "readme_checks": 64,
     "declared": true,
     "in_readme_table": true
    },
@@ -5176,7 +5178,7 @@
    {
     "suite": "web/test_geomap.mjs",
     "pack": "web",
-    "readme_checks": 101,
+    "readme_checks": 103,
     "declared": true,
     "in_readme_table": true
    },
@@ -5351,7 +5353,7 @@
    {
     "suite": "web/test_parishes.mjs",
     "pack": "web",
-    "readme_checks": 117,
+    "readme_checks": 124,
     "declared": true,
     "in_readme_table": true
    },
@@ -5624,7 +5626,7 @@
    {
     "suite": "web/test_hive.mjs",
     "pack": "web",
-    "readme_checks": 51,
+    "readme_checks": 77,
     "declared": true,
     "in_readme_table": true
    },
@@ -5641,21 +5643,28 @@
     "readme_checks": 14,
     "declared": true,
     "in_readme_table": true
+   },
+   {
+    "suite": "web/test_scenes.mjs",
+    "pack": "web",
+    "readme_checks": 23,
+    "declared": true,
+    "in_readme_table": true
    }
   ],
-  "suites_run": 132,
-  "suites_declaring_a_count": 130,
+  "suites_run": 133,
+  "suites_declaring_a_count": 131,
   "suites_without_a_count": [
    "control/soak.mjs",
    "restoration/test_scenarios.mjs"
   ],
-  "declared_total": 6535,
-  "readme_headline": 6570,
+  "declared_total": 6597,
+  "readme_headline": 6632,
   "unaccounted_for": 35,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
   "max": 398,
-  "median": 43.5,
+  "median": 43,
   "thinnest": [
    {
     "suite": "ops/fuzz.mjs",
@@ -5696,12 +5705,12 @@
     "checks": 146
    },
    {
-    "suite": "respond/test.mjs",
-    "checks": 118
+    "suite": "web/test_parishes.mjs",
+    "checks": 124
    },
    {
-    "suite": "web/test_parishes.mjs",
-    "checks": 117
+    "suite": "respond/test.mjs",
+    "checks": 118
    },
    {
     "suite": "worksites/test.mjs",
@@ -6276,6 +6285,7 @@
   "web/test_restokit.mjs",
   "web/test_robotics.mjs",
   "web/test_rtl.mjs",
+  "web/test_scenes.mjs",
   "web/test_schools.mjs",
   "web/test_seo.mjs",
   "web/test_smiles.mjs",

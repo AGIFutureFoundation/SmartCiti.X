@@ -2379,6 +2379,54 @@ function elevOverview(over) {
 """, 1)
 JS = JS.replace(_RO_CALL, '  elevOverview(over);   // RELIEF-OVERVIEW: park / restore the relief patch before it follows the eye\n' + _RO_CALL, 1)
 # GROUND2 END relief-overview
+# WORLDHD BEGIN world-tex (wave 17, WORLDHD·High-res Worlds): SURFACE DETAIL BY DEVICE TIER on the walkable worlds.
+# The ground, the streets and the kit buildings are flat colours (the ground: one 2048 px atlas over a whole parish, a few
+# metres per texel at your feet). On a GPU that can afford it the page now multiplies world-space detail textures over
+# them - grass or grain on the ground (picked by the land cover the atlas shows), asphalt on the streets, siding / brick /
+# corrugated walls by AUTHORED land use, shingle roofs - generated in the browser by web/worldtexkit.py (patternkit
+# recipes + painters), never fetched. Tiers mirror the 3D page: base (software rasteriser, < 4 GB, texture limit < 4096:
+# NOTHING changes), high 1024 px, ultra 2048 px; ?tex= overrides; painted after the first frame, mipmapped + anisotropic;
+# budget high 48 MB / ultra 144 MB (2048 -> 1024, then skip). Every texture covers fixed metres (tile_m x 4), the same at
+# every tier. 0 draw calls and 0 triangles added. The Bay page inherits it. Page JS carries only the neutral WORLD-TEX.
+from worldtexkit import worldtex_js, recipe_surfaces, WorldTexError  # noqa: E402
+_WT_ANCHORS = {'def': 'const GROUND_PX = 2048;\n',
+               'ground': "  m.customProgramCacheKey = () => 'parish-ground';\n",
+               'road': "matRoad.customProgramCacheKey = () => 'parish-road';\n",
+               'kit': "  m.customProgramCacheKey = () => 'parish-kit';\n",
+               'kit_glsl': '  win = mix(win, winM, mid);\n'}
+for _k, _a in _WT_ANCHORS.items():
+    if JS.count(_a) != 1:
+        raise BuildError(f'build_parishes: WORLD-TEX anchor {_k} ({_a.strip()!r}) must occur exactly once, found {JS.count(_a)}')
+try:
+    _wt_surf = ([{'id': 'ground.grass', 'paint': 'grass', 'world_m': 4.0}]
+                + recipe_surfaces([('ground.grain', 'render.stucco')])
+                + [{'id': 'road.asphalt', 'paint': 'asphalt', 'world_m': 6.0}]
+                + recipe_surfaces([('roof.shingle', 'roof.asphalt_shingle'), ('wall.residential', 'siding.clapboard'),
+                                   ('wall.commercial', 'brick.running'), ('wall.industrial', 'metal.corrugated')]))
+    _WT_DEF = worldtex_js(_wt_surf, {'high': 48, 'ultra': 144}, {
+        # the ground: grain on built land, grass where the atlas is green; the ground's grain is fainter than a wall's courses
+        'ground': {'anchor': '#include <alphamap_fragment>', 'normal': 'vec3(0.0, 1.0, 0.0)', 'glsl': """{ float wtF = (1.0 - smoothstep(60.0, 260.0, vWtD)) * uWtAmt * 1.5; vec3 wtC = diffuseColor.rgb;
+  float wtG = clamp((wtC.g - max(wtC.r, wtC.b)) * 8.0, 0.0, 1.0);
+  diffuseColor.rgb *= mix(1.0, mix(TEX(ground.grain, vWtP.xz), TEX(ground.grass, vWtP.xz), wtG), wtF); }
+"""},
+        # streets: the carriageway faces only (the facade kit's parts share this buffer and stand upright)
+        'road': {'anchor': '#include <alphamap_fragment>', 'normal': 'objectNormal', 'glsl': """{ float wtF = (1.0 - smoothstep(80.0, 300.0, vWtD)) * step(0.85, abs(normalize(vWtN).y)) * uWtAmt;
+  diffuseColor.rgb *= mix(1.0, TEX(road.asphalt, vWtP.xz), wtF); }
+"""},
+        # the building kit: walls by AUTHORED land use, roofs; in front of the windows, so glazing is never bricked over
+        'kit': {'anchor': _WT_ANCHORS['kit_glsl'], 'normal': 'objectNormal', 'glsl': """  { float wtF = (1.0 - smoothstep(60.0, 240.0, vWtD)) * uWtAmt, wtRoof = step(0.4, n.y), wtRes = 1.0 - com - ind;
+    vec2 wq = vec2(u, vKitW.y);
+    float wtW = TEX(wall.residential, wq) * wtRes + TEX(wall.commercial, wq) * com + TEX(wall.industrial, wq) * ind;
+    float wtR = TEX(roof.shingle, vKitW.xz);
+    diffuseColor.rgb *= mix(1.0, mix(wtW, wtR, wtRoof), max(wall, wtRoof) * wtF); }
+"""}})
+except (WorldTexError, SystemExit) as _e:
+    raise BuildError(f'build_parishes: {_e}')
+JS = JS.replace(_WT_ANCHORS['def'], _WT_DEF + _WT_ANCHORS['def'], 1)
+JS = JS.replace(_WT_ANCHORS['ground'], _WT_ANCHORS['ground'] + "  worldTexHook(m, 'ground');   // WORLD-TEX\n", 1)
+JS = JS.replace(_WT_ANCHORS['road'], _WT_ANCHORS['road'] + "worldTexHook(matRoad, 'road');   // WORLD-TEX\n", 1)
+JS = JS.replace(_WT_ANCHORS['kit'], _WT_ANCHORS['kit'] + "  worldTexHook(m, 'kit');   // WORLD-TEX\n", 1)
+# WORLDHD END world-tex
 # BEGIN HIVE w16 (HIVE·Omega Hive Agents): the world guides walking this map speak - on a click only - with the voice
 # the Omega Hive (hive/registry/hive.json) gives them: a Speak and a Mute button join the NPC dialogue, and Speak says the
 # registry line the dialogue is showing, on an on-device voice, at the guide's AUTHORED pitch and rate (web/hivekit.py).
@@ -2398,6 +2446,45 @@ if NPC_DATA is not None and (ROOT / 'hive/registry/hive.json').exists():
     JS = JS.replace('window.__parishes = {', HIVE_PARISH_JS + 'window.__hiveWorld = hiveWorld;\nwindow.__parishes = {', 1)
     HIVE_TAIL = world_embed(_hive)
 # END HIVE w16
+# AVATAR BEGIN (wave 17 B1, AVATAR·Agents Embodied): the world guides wear the rest of their Omega Hive outfit (hair,
+# sleeves in their top colour, a tool belt - three InstancedMeshes, one draw call each, hidden in the overview with the
+# NPC kit's own parts), open their dialogue on the line the AUTHORED-trait rule picks (an index into their own npcs.json
+# knowledge lines; web/hivekit.py behaviour()), and make one idle gesture (wave / nod / point) as an instance transform.
+# The kit's body colours are its npcs.json proxy hexes; the build holds them equal to the roster's. SCRIPTED: no line is
+# written here; page markers are neutral (AGENT-AVATAR). Off (no block, no bytes) where the NPC kit is off.
+AV_GUIDES = None
+if NPC_DATA is not None and (ROOT / 'hive/registry/hive.json').exists():
+    from hivekit import guide_rows as _av_guides, hive_registry as _av_reg, AVATAR_PARISH_OPEN_JS, AVATAR_PARISH_JS  # noqa: E402
+    _av_ids = {'npc:' + n['id'] for n in NPC_DATA['npcs']}
+    AV_GUIDES = _av_guides(_av_ids)
+    if {r['k'] for r in AV_GUIDES['rows']} != {n['id'] for n in NPC_DATA['npcs']}:
+        raise BuildError('build_parishes: AGENT-AVATAR - guides on this map with no roster outfit: '
+                         f'{sorted({n["id"] for n in NPC_DATA["npcs"]} - {r["k"] for r in AV_GUIDES["rows"]})[:3]}')
+    _av_hive = {a['id']: a for a in _av_reg()['agents']}
+    for _n in NPC_DATA['npcs']:
+        _hx = _av_hive['npc:' + _n['id']]['avatar']['proxy']
+        for _k, _v in _n['appearance']['proxy'].items():
+            if (_v['hex'] if _v else None) != (_hx[_k]['hex'] if _hx.get(_k) else None):
+                raise BuildError(f'build_parishes: AGENT-AVATAR - guide {_n["id"]} {_k} colour is not its roster outfit\'s')
+        _o = next(r for r in AV_GUIDES['rows'] if r['k'] == _n['id'])
+        if not (0 <= _o['o'] < len(_n['knowledge']) and 0 <= _o['o12'] < len(_n['knowledge'])):
+            raise BuildError(f'build_parishes: AGENT-AVATAR - guide {_n["id"]} opens past its knowledge lines')
+    _AV_P = [
+        ('    talking = a; lineIdx = 0; a.follow = null;\n',
+         '    talking = a; lineIdx = opt.openAt ? opt.openAt(a.npc) : 0; a.follow = null;   // AGENT-AVATAR: the opener\n'),
+        ('    labels: labelsFrom(tr),\n', '    labels: labelsFrom(tr),\n    openAt: agentGuideOpen,   // AGENT-AVATAR\n'),
+        ('function talk() {', AVATAR_PARISH_OPEN_JS.lstrip('\n') + AVATAR_PARISH_JS.lstrip('\n') + 'function talk() {'),
+    ]
+    for _o, _n2 in _AV_P:
+        if JS.count(_o) != 1:
+            raise BuildError(f'build_parishes: AGENT-AVATAR anchor must occur exactly once: {_o.strip()[:60]!r}')
+        JS = JS.replace(_o, _n2, 1)
+    _AV_UP = '  if (npcKit && !over) npcKit.update(dt, { x: eye.x, z: eye.z }, npcClock.tick(dt));'
+    if JS.count(_AV_UP) != 1:
+        raise BuildError('build_parishes: AGENT-AVATAR anchor (the NPC kit update in the frame) must occur exactly once')
+    _i = JS.index('\n', JS.index(_AV_UP)) + 1
+    JS = JS[:_i] + '  if (agentGuides && !over) agentGuides.frame(dt, eye.x, eye.z);   // AGENT-AVATAR\n' + JS[_i:]
+# AVATAR END
 # BEGIN FACADE w11 (FACADE·Exteriors & Signs): AUTHORED facade details on the kit buildings nearest the eye and PLAY
 # signs on the economy/ commercial lots (web/facadekit.py, facades/registry/facades.json) - ONE InstancedMesh, one draw
 # call, hidden in the overview; the glue reads the streamed chunks and never changes them (details are not solid).
@@ -2920,6 +3007,13 @@ if HIVE_TAIL:
         raise BuildError("build_parishes: HIVE w16 anchor '</div></body>' must occur exactly once")
     page = page.replace('</div></body>', HIVE_TAIL + '</div></body>')
 # END HIVE w16
+# AVATAR BEGIN (wave 17 B2, AVATAR·Agents Embodied): the guides' outfit / behaviour rows (JSON) before </body>
+if AV_GUIDES is not None:
+    if page.count('</div></body>') != 1:
+        raise BuildError("build_parishes: AGENT-AVATAR anchor '</div></body>' must occur exactly once")
+    from hivekit import js_json as _av_json  # noqa: E402
+    page = page.replace('</div></body>', f'<script type="application/json" id="agent-avatar-guides">{_av_json(AV_GUIDES)}</script></div></body>')
+# AVATAR END
 flow_anchors_present(HUD_PANELS, page)
 page = page.replace('__PARISHES_I18N__', json.dumps(I18N_CAT, ensure_ascii=False, sort_keys=True).replace('</', '<\\/'))
 

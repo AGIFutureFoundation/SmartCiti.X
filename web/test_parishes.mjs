@@ -361,6 +361,48 @@ check('[perf] fleet families beyond the fog and overview NPC meshes are culled o
   && html.includes('const R2 = scene.fog.far * scene.fog.far') && html.includes("fl.group.getObjectByName('fleet:' + v.h.family)")
   && html.includes('fleetChaseCamera(camera, riding.st, riding.spec, DIAG.noChase ? 1 / 60 : camDt,') && html.includes('if (!DIAG.noChase) chaseClear(riding.st, riding.spec);')
   && html.includes('camDt = dt;'));
+// WORLDHD BEGIN (wave 17): WORLD-TEX - device-tier surface detail (ground, streets, walls, roofs); browser row: web/eval_worldtex.mjs
+{
+  const wt = (main.match(/\/\* WORLD-TEX BEGIN[\s\S]*?\/\* WORLD-TEX END \*\//) || [''])[0];
+  const EXT = JSON.parse(read('surfaces/registry/exterior.json'));
+  const surf = JSON.parse((wt.match(/const WT_SURF = (\[.*?\]);\n/) || [, '[]'])[1]);
+  check('[world-tex] tiers mirror the 3D page: base 0 (nothing painted), high 1024, ultra 2048; budgets 0 / 48 / 144 MB; a software rasteriser, < 4 GB or a texture limit < 4096 gets base; ?tex= overrides',
+    wt.includes('const WT_PX = { base: 0, high: 1024, ultra: 2048 };') && wt.includes('const WT_MB = { base: 0, high: 48, ultra: 144 };')
+    && /soft = \/swiftshader\|llvmpipe\|softpipe\|software\/i\.test/.test(wt) && wt.includes("if (soft || mem < 4 || maxTex < 4096) return 'base';")
+    && wt.includes("if (!touch && mem >= 8 && cores >= 8 && maxTex >= 8192) return 'ultra';") && wt.includes("new URLSearchParams(location.search).get('tex')")
+    && wt.includes("wtAsked !== null && Object.hasOwn(WT_PX, wtAsked) ? wtAsked : wtTierAuto()"));
+  check('[world-tex] ground, streets and the building kit are each hooked exactly once; the shader patch is compiled in only while the textures are on (base keeps the old programs)',
+    (main.match(/worldTexHook\(m, 'ground'\);/g) || []).length === 1 && (main.match(/worldTexHook\(matRoad, 'road'\);/g) || []).length === 1
+    && (main.match(/worldTexHook\(m, 'kit'\);/g) || []).length === 1 && wt.includes("m.customProgramCacheKey = () => (pk ? pk.call(m) : '') + (WT.on ? '|world-tex' : '');")
+    && wt.includes('if (WT.on) wtPatch(sh, kind);') && (main.match(/  win = mix\(win, winM, mid\);\n/g) || []).length === 1 && main.indexOf('/* WORLD-TEX BEGIN') < main.indexOf('const GROUND_PX = 2048;'));
+  // every detail sample in the page's shader kinds divides world metres by its OWN surface's metres (a tier never rescales it)
+  const texPairs = [...wt.matchAll(/texture2D\(uWt_(\w+), \([\w.]+\) \/ uWtM_(\w+)\)/g)];
+  const recOk = surf.length === 7 && surf.filter((s) => s.paint === 'recipe').every((s) => s.id && EXT.recipes[s.recipe] && s.reps === 4 && Math.abs(s.world_m - EXT.recipes[s.recipe].tile_m * 4) < 1e-6)
+    && surf.filter((s) => s.paint !== 'recipe').every((s) => ['grass', 'asphalt'].includes(s.paint) && s.world_m > 0);
+  check('[world-tex] every pattern covers a fixed number of metres at every tier (registry tile_m x 4 repeats; painters in one 512 px design space scaled to the tier)',
+    recOk && wt.includes('const t = px / s.reps') && wt.includes('const WT_D0 = 512;') && wt.includes('R = WtPK.rng(s.id), k = px / WT_D0') && wt.includes('g.save(); g.scale(k, k);')
+    && texPairs.length === 7 && texPairs.every(([, a, b]) => a === b && surf.some((s) => s.id.replace('.', '_') === a)), JSON.stringify(surf.map((s) => [s.id, s.world_m])));
+  let plan = null;
+  try { const src = (wt.match(/const WT_PX[\s\S]*?\n\}\nfunction wtTierAuto/) || [''])[0].replace(/function wtTierAuto$/, '');
+    plan = new Function(src + '\nreturn { P: WT_PX, M: WT_MB, plan: wtPlan, mib: wtMiB };')(); } catch (e) { plan = null; }
+  const used = (t) => plan.plan(plan.P[t], plan.M[t], 7).reduce((a, px) => a + (px ? plan.mib(px) : 0), 0);
+  check('[world-tex] the memory budget steps down: high paints all 7 at 1024 px (37.3 MB <= 48), ultra paints 6 at 2048 and steps the 7th to 1024 (133.3 MB <= 144), base plans nothing; a tight budget skips',
+    !!plan && plan.plan(1024, 48, 7).join() === '1024,1024,1024,1024,1024,1024,1024' && plan.plan(2048, 144, 7).join() === '2048,2048,2048,2048,2048,2048,1024'
+    && plan.plan(0, 0, 7).every((px) => px === 0) && used('high') <= 48 && used('ultra') <= 144 && plan.plan(2048, 30, 3).join() === '2048,1024,0',
+    plan ? plan.plan(2048, 144, 7).join() : 'wtPlan not found');
+  check('[world-tex] painted only after the first frame, one texture per idle slot, mipmapped (LinearMipmapLinear) and anisotropic; the shaders switch once, when the set is complete',
+    wt.includes('if (!(renderer.info.render.frame > 0)) { wtKick(500); return; }') && wt.includes('requestIdleCallback(wtStep, { timeout: 400 })')
+    && wt.includes('t.generateMipmaps = true; t.minFilter = THREE.LinearMipmapLinearFilter;') && wt.includes('t.anisotropy = wtAniso();')
+    && wt.includes('if (WT.next >= WT_SURF.length) wtSwitch(WT.painted > 0);') && wt.includes('window.__worldTexDo = (tier) =>') && wt.includes('window.__worldTex = () =>'));
+  check('[world-tex] generated in the browser from patternkit recipes (a private copy, so the facade kit\'s PatternKit stays the only one), no image fetched, no codename on the page',
+    wt.includes('const WtPatternKit =') && (html.match(/const PatternKit\b/g) || []).length === 1 && !/fetch\(|new Image\(/.test(wt) && !/WORLDHD/.test(html)
+    && ['render.stucco', 'roof.asphalt_shingle', 'siding.clapboard', 'brick.running', 'metal.corrugated'].every((r) => surf.some((s) => s.recipe === r)));
+  const bay = existsSync(ROOT + 'web/trade_craft_bay.html') ? read('web/trade_craft_bay.html') : '';
+  const bwt = (bay.match(/\/\* WORLD-TEX BEGIN[\s\S]*?\/\* WORLD-TEX END \*\//) || [''])[0];
+  check('[world-tex] the Bay page inherits the same block byte for byte, hooked on the same three materials, with no codename',
+    bwt.length > 0 && bwt === wt && ['ground', 'road', 'kit'].every((k) => (bay.match(new RegExp(`worldTexHook\\((?:m|matRoad), '${k}'\\);`, 'g')) || []).length === 1) && !/WORLDHD/.test(bay));
+}
+// WORLDHD END
 // [build] the page is what the builder writes today
 const sha = createHash('sha256').update(html).digest('hex').slice(0, 16);
 check('[build] page carries the builder banner and one importmap', (html.match(/<script type="importmap">/g) || []).length === 1);

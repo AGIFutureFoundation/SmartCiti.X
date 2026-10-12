@@ -347,5 +347,34 @@ ok('[eval] web/eval_wilds.mjs declares a target for every world and all four vie
     !!line && enC === fl.wilds.page_line && html.split(line).length === 2 && /AUTHORED/.test(enC));
 }
 /* END WORLD w16c */
+/* WORLDHD BEGIN (wave 17): WORLD-TEX on the wilds terrain (web/worldtexkit.py; browser row: web/eval_worldtex.mjs via web/eval_wilds.mjs) */
+{
+  const wt = (main.match(/\/\* WORLD-TEX BEGIN[\s\S]*?\/\* WORLD-TEX END \*\//) || [''])[0];
+  const surf = JSON.parse((wt.match(/const WT_SURF = (\[.*?\]);\n/) || [, '[]'])[1]);
+  const kinds = JSON.parse((wt.match(/const WT_KINDS = (\{.*?\});\n/) || [, '{}'])[1]);
+  ok('[world-tex] the terrain material (also the overview\'s) is hooked exactly once, right after it is made; tiers base 0 / high 1024 / ultra 2048 with a software rasteriser on base; ?tex= overrides',
+    wt.length > 0 && (main.match(/worldTexHook\(matTerrain, 'terrain'\);/g) || []).length === 1 && (main.match(/worldTexHook\(/g) || []).length === 2
+    && main.indexOf('const matTerrain = new THREE.MeshLambertMaterial({ vertexColors: true });') < main.indexOf('/* WORLD-TEX BEGIN')
+    && wt.includes('const WT_PX = { base: 0, high: 1024, ultra: 2048 };') && wt.includes("if (soft || mem < 4 || maxTex < 4096) return 'base';")
+    && wt.includes("new URLSearchParams(location.search).get('tex')") && wt.includes("m.customProgramCacheKey = () => (pk ? pk.call(m) : '') + (WT.on ? '|world-tex' : '');"));
+  let plan = null;
+  try { const src = (wt.match(/const WT_PX[\s\S]*?\n\}\nfunction wtTierAuto/) || [''])[0].replace(/function wtTierAuto$/, '');
+    plan = new Function(src + '\nreturn { P: WT_PX, M: WT_MB, plan: wtPlan, mib: wtMiB };')(); } catch (e) { plan = null; }
+  ok('[world-tex] budget high 24 / ultra 56 MB: high paints 3 at 1024 (16 MB), ultra paints 2 at 2048 and steps the third to 1024 (48 MB)',
+    !!plan && plan.M.high === 24 && plan.M.ultra === 56 && plan.plan(1024, 24, 3).join() === '1024,1024,1024' && plan.plan(2048, 56, 3).join() === '2048,2048,1024'
+    && plan.plan(2048, 56, 3).reduce((a, px) => a + plan.mib(px), 0) <= 56, [plan ? plan.plan(2048, 56, 3).join() : 'no wtPlan']);
+  const pairs = [...wt.matchAll(/texture2D\(uWt_(\w+), \(([\w.]+)\) \/ uWtM_(\w+)\)/g)];
+  ok('[world-tex] grass where the biome colour is green, soil grain elsewhere, rock on slopes of 32-41 degrees sampled on the slope\'s own face; every sample over its own surface\'s fixed metres (grass 4, grain 4, rock 8)',
+    JSON.stringify(surf.map((s) => [s.id, s.world_m])) === '[["ground.grass",4],["ground.grain",4],["rock",8]]' && Object.keys(kinds).join() === 'terrain'
+    && kinds.terrain.anchor === '#include <alphamap_fragment>' && kinds.terrain.glsl.includes('float wtSteep = smoothstep(0.15, 0.25, 1.0 - wtN.y);')
+    && kinds.terrain.glsl.includes('vec2 wtS = abs(wtN.x) > abs(wtN.z) ? vWtP.zy : vWtP.xy;')
+    && pairs.length === 3 && pairs.every(([, a, , b]) => a === b) && pairs.find((p) => p[1] === 'rock')[2] === 'wtS', [JSON.stringify(surf)]);
+  const par = existsSync(join(ROOT, 'web/trade_craft_parishes.html')) ? read('web/trade_craft_parishes.html') : '';
+  const core = (t) => (t.match(/const WT_D0 = 512;[\s\S]*?\/\* WORLD-TEX END \*\//) || [null])[0];
+  ok('[world-tex] the same kit as the parish and Bay pages (the shared core is byte-identical), painted after the first frame, mipmapped; one PatternKit copy, private; no codename',
+    !!core(wt) && core(wt) === core(par) && wt.includes('if (!(renderer.info.render.frame > 0)) { wtKick(500); return; }')
+    && wt.includes('t.minFilter = THREE.LinearMipmapLinearFilter;') && (html.match(/const WtPatternKit =/g) || []).length === 1 && !/WORLDHD/.test(html));
+}
+/* WORLDHD END */
 console.log(bad ? `wilds page: ${bad} FAILED, ${n} ok` : `wilds page: all ${n} checks ok`);
 process.exit(bad ? 1 : 0);

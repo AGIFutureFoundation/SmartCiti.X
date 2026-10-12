@@ -100,6 +100,210 @@ FACADE_SIGN_PALETTES = facades_reg['sign_rules']['palettes']
 assert FACADE_SIGN_PALETTES and all(len(p) == 2 and all(c.startswith('#') and len(c) == 7 for c in p)
                                     for p in FACADE_SIGN_PALETTES), 'facades sign_rules.palettes: [[ground, ink], ...] of #rrggbb'
 # BUILD END
+# SCENES BEGIN (wave 17 A): the props registry's DISTRICT fit-out (crib_furniture), offered to each hall's rooms
+# by its district and strand. The page-side blocks of this work are marked INTERIOR-KIT (neutral). Read whole
+# and fail closed: a piece without a recipe or a layout field, an id the strand props already use, or a district
+# row naming an undeclared piece stops the build by name. nearM / eyeMaxM are this kit's own AUTHORED culling
+# rule (no ceiling, target or cap is read or moved by them).
+_ik_crib = props_reg['crib_furniture']
+_ik_props = {p['id'] for p in props_reg['props']}
+INTERIOR_KIT = {
+    'pieces': [{'id': q['id'], 'material': q['material'], 'merges': q['merges'], 'size_m': q['size_m'],
+                'tris': q['recipe']['tris'],
+                'parts': [{k: v for k, v in x.items() if k != 'part'} for x in q['recipe']['parts']],
+                'layout': {k: q['layout'][k] for k in ('anchor', 'walls', 'base_y_m', 'gap_m',
+                                                      'front_clear_m', 'back_reserve_m', 'max_per_room')}}
+               for q in _ik_crib['pieces']],
+    'byDistrict': {d: v['by_strand'] for d, v in _ik_crib['districts'].items()},
+    'nearM': 12, 'eyeMaxM': 6, 'aisleM': 1.5, 'doorM': 1.8, 'midM': 1.2, 'stepM': .25,
+}
+_ik_ids = {q['id'] for q in INTERIOR_KIT['pieces']}
+assert not (_ik_ids & _ik_props), f'interior kit: piece ids collide with strand props: {sorted(_ik_ids & _ik_props)}'
+assert all(q['merges'] == 'pooled' for q in INTERIOR_KIT['pieces']), 'interior kit: a district piece asks for a merge mode other than pooled'
+_ik_bad = sorted({i for v in INTERIOR_KIT['byDistrict'].values() for ids in v.values() for i in ids} - _ik_ids)
+assert not _ik_bad, f'interior kit: district rows name undeclared pieces: {_ik_bad}'
+assert set(INTERIOR_KIT['byDistrict']) == set(districts_reg), 'interior kit: the district rows are not the districts of unions/registry'
+INTERIOR_KIT_JS = r"""/* ------------------------------------------------ the district fit-out ----
+   props/registry/props.json carries a second catalogue the halls never
+   stood: crib_furniture, one piece for the work each district tool is done
+   at and one for where that tool lives, 192 pieces over eight districts,
+   each priced, each with a layout. It waited on one thing - a hall
+   dimension on the furniture lookup - and this is that lookup.
+
+   THE RULE (AUTHORED). After a room's own conditions fixtures and its
+   strand furniture have taken their wall, the hall's DISTRICT pieces for
+   that room's strand (D.interiorKit.byDistrict[h.district][r.strand], in
+   registry order) take what wall run is left, through the very same
+   placement loop, clearances and solids - so a piece never stands across a
+   doorway, in a bench band or through another piece. A strand the district
+   carries no piece for stays as it was. Placement is the loop's; the rule
+   that offers the pieces is the only thing written here.
+
+   WHAT IT COSTS. Every district piece of the hall is merged into ONE mesh
+   with ONE material (each piece keeps its registry material's colour as a
+   vertex colour), so the hall pays one drawable for all of it - priceHall()
+   counts it at build. It is DISTANCE-CULLED per room: a room's pieces are
+   in the index only while the eye is within nearM of that room's floor and
+   no higher than eyeMaxM, so a learner standing or walking in the hall sees
+   the fit-out of the rooms around them, and the orbit views the hall
+   ceilings are scored on (a camera tens of metres out and up) draw none of
+   it. The index is rewritten only when the set of near rooms changes.
+
+   AND WHERE THE WALLS ARE FULL (AUTHORED). The strand furniture fills most
+   partitions, so a floor-standing district piece the wall loop could not
+   stand is tried once more as an ISLAND on the room's open floor, facing
+   the doorway end. A spot is taken only if: an aisle of IK.aisleM stands
+   between the piece and every solid already in the hall (partitions,
+   benches, props, earlier islands); it keeps out of the room's middle row,
+   where the stations, the advisor and the room's own signs stand; and it
+   keeps IK.doorM clear in front of every doorway in the room's walls. It
+   then registers as solid like any other piece. Spots are tried from the
+   back of the room forward and from the middle row outward. */
+const IK = D.interiorKit;
+const ikMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: .8 });
+ikMat.userData.shared = true;                 // one for every hall - disposeOf() leaves it
+let ikInto = null, ikRooms = [], ikMesh = null, ikStat = null;
+const _ikEye = new THREE.Vector3();
+function ikReset(sg) {
+  ikInto = null; ikRooms = []; ikMesh = null;
+  ikStat = { slug: sg, wanted: 0, drawn: 0, tris: 0, byPiece: {}, skipped: [], islands: 0, islandMiss: 0 };
+}
+// the pieces a room is offered: its hall's district, its own strand - fail closed on either
+function ikPieces(h, r, rx, rz, rw, rd) {
+  const byS = IK.byDistrict[h.district];
+  if (!byS) throw new Error('the interior kit covers no district named ' + h.district);
+  const ids = byS[r.strand];
+  if (!ids) throw new Error('the interior kit: district ' + h.district + ' has no row for strand ' + r.strand);
+  ikRooms.push({ strand: r.strand, x0: rx - rw / 2, x1: rx + rw / 2, z0: rz - rd / 2, z1: rz + rd / 2,
+                 parts: [], tris: 0, n: 0, ids: new Set() });
+  return ids;
+}
+// stand one piece: its recipe geometry at the loop's pose, its material's colour per vertex
+function ikStand(p, pose) {
+  const room = ikRooms[ikRooms.length - 1];
+  const g = propGeo(p).clone().applyMatrix4(pose);
+  const c = propMat(p.material).color, n = g.attributes.position.count, col = new Float32Array(n * 3);
+  for (let i = 0; i < n; i++) { col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b; }
+  g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  room.parts.push(g); room.tris += p.tris; room.n++; room.ids.add(p.id);
+  ikStat.drawn++; ikStat.tris += p.tris;
+  ikStat.byPiece[p.id] = (ikStat.byPiece[p.id] ?? 0) + 1;
+}
+// the floor pieces the wall loop could not stand, as islands on what floor is open
+function ikIslands(h, rx, rz, rw, rd, doors, inset, offered) {
+  const room = ikRooms[ikRooms.length - 1];
+  const rects = hallSolids.length ? hallSolids[0].rects : [];
+  const x0 = rx - rw / 2, x1 = rx + rw / 2, zF = rz - rd / 2, zB = rz + rd / 2;
+  const A = IK.aisleM, DOOR = IK.doorM, MID = IK.midM;
+  // the doorway approaches, as rectangles reaching DOOR into the room
+  const keep = [];
+  for (const [c, d] of doors.get('x@' + x0.toFixed(2)) || []) keep.push([x0, x0 + DOOR, c, d]);
+  for (const [c, d] of doors.get('x@' + x1.toFixed(2)) || []) keep.push([x1 - DOOR, x1, c, d]);
+  for (const [c, d] of doors.get('z@' + zF.toFixed(2)) || []) keep.push([c, d, zF, zF + DOOR]);
+  for (const [c, d] of doors.get('z@' + zB.toFixed(2)) || []) keep.push([c, d, zB - DOOR, zB]);
+  const pose = new THREE.Matrix4();
+  let stood = 0;
+  for (const pid of offered) {
+    const p = PROP_BY_ID.get(pid);
+    if (p.layout.anchor === 'wall-mounted' || room.ids.has(pid)) continue;
+    const hw = p.size_m[0] / 2, hd = p.size_m[2] / 2;
+    const free = (x, z) => {
+      if (x - hw < x0 + inset || x + hw > x1 - inset || z - hd < zF + inset || z + hd > zB - inset) return false;
+      if (Math.abs(z - rz) < hd + MID) return false;
+      for (const [a, b, c, d] of keep) if (x - hw < b && x + hw > a && z - hd < d && z + hd > c) return false;
+      for (const b of rects)
+        if (Math.abs(x - b.u) < hw + b.hw + A && Math.abs(z - b.v) < hd + b.hd + A) return false;
+      return true;
+    };
+    let spot = null;
+    for (let z = zB - inset - hd; !spot && z >= zF + inset + hd; z -= IK.stepM)
+      for (let k = 0; !spot && k * IK.stepM <= rw / 2; k++)
+        for (const x of k ? [rx - k * IK.stepM, rx + k * IK.stepM] : [rx])
+          if (!spot && free(x, z)) spot = [x, z];
+    if (!spot) { ikStat.islandMiss++; continue; }
+    pose.makeRotationY(Math.PI).setPosition(spot[0], 0, spot[1]);
+    ikStand(p, pose);
+    wallRect(spot[0], spot[1], hw, hd);
+    ikStat.islands++; stood++;
+  }
+  return stood;
+}
+// the loop's own wanted/skipped tallies for district pieces move to this kit's stat, so the
+// props pack's figures stay what they were
+function ikEnd(had, w0, s0) {
+  if (had) {
+    ikStat.wanted += propStat.wanted - w0; propStat.wanted = w0;
+    const room = ikRooms[ikRooms.length - 1];        // a piece later stood as an island was not skipped
+    ikStat.skipped.push(...propStat.skipped.splice(s0).filter((x) => !(room && room.ids.has(x.prop))));
+  }
+  ikInto = null;
+}
+// ONE mesh for the hall: room by room, each room's index a contiguous range of it
+function ikFlush(g) {
+  const geos = [], ranges = [];
+  let at = 0;
+  for (const rm of ikRooms) {
+    if (!rm.parts.length) { ranges.push(null); continue; }
+    const m = mergeGeometries(rm.parts);
+    rm.parts.forEach((x) => x.dispose()); rm.parts = [];
+    ranges.push([at, m.index.count]); at += m.index.count; geos.push(m);
+  }
+  ikStat.rooms = ikRooms.length;
+  ikStat.roomsDressed = geos.length;
+  if (!geos.length) return null;
+  const all = geos.length === 1 ? geos[0] : mergeGeometries(geos);
+  if (geos.length > 1) geos.forEach((x) => x.dispose());
+  if (all.index.count / 3 !== ikStat.tris)
+    throw new Error('the interior kit built ' + all.index.count / 3 + ' triangles; its pieces count ' + ikStat.tris);
+  all.index.setUsage(THREE.DynamicDrawUsage);
+  ikMesh = new THREE.Mesh(all, ikMat);
+  ikMesh.receiveShadow = true; ikMesh.castShadow = false;
+  ikMesh.userData.interiorKit = {
+    full: all.index.array.slice(), ranges, mask: null,
+    rooms: ikRooms.map(({ strand, x0, x1, z0, z1, tris, n }) => ({ strand, x0, x1, z0, z1, tris, n })) };
+  g.add(ikMesh);
+  return ikMesh;
+}
+// which rooms are near the eye - the eye in the mesh's own frame
+function ikNear(u, e) {
+  let mask = '';
+  for (const rm of u.rooms) {
+    const dx = Math.max(rm.x0 - e.x, 0, e.x - rm.x1), dz = Math.max(rm.z0 - e.z, 0, e.z - rm.z1);
+    mask += rm.n && e.y <= IK.eyeMaxM && Math.hypot(dx, dz) <= IK.nearM ? '1' : '0';
+  }
+  return mask;
+}
+// rewrite the index to the near rooms' ranges, only when that set changes
+function ikCull(mesh, e) {
+  const u = mesh.userData.interiorKit, mask = ikNear(u, e);
+  if (mask === u.mask) return false;
+  u.mask = mask;
+  const idx = mesh.geometry.index;
+  let n = 0;
+  u.ranges.forEach((rg, i) => {
+    if (rg && mask[i] === '1') { idx.array.set(u.full.subarray(rg[0], rg[0] + rg[1]), n); n += rg[1]; }
+  });
+  idx.needsUpdate = true;
+  mesh.geometry.setDrawRange(0, n);
+  mesh.visible = n > 0;
+  return true;
+}
+function ikStep() {
+  if (!ikMesh || !ikMesh.parent || view !== 'hall') return;
+  ikCull(ikMesh, ikMesh.worldToLocal(_ikEye.copy(eyePos())));
+}
+window.__tc3dInterior = () => {
+  if (!ikStat) return null;
+  const u = ikMesh && ikMesh.userData.interiorKit;
+  let nearTris = 0, nearRooms = 0;
+  if (u && u.mask) u.rooms.forEach((rm, i) => { if (u.mask[i] === '1') { nearTris += rm.tris; nearRooms++; } });
+  return { slug: ikStat.slug, rooms: ikStat.rooms, roomsDressed: ikStat.roomsDressed, wanted: ikStat.wanted,
+           drawn: ikStat.drawn, islands: ikStat.islands, islandMiss: ikStat.islandMiss, tris: ikStat.tris, byPiece: { ...ikStat.byPiece }, skipped: ikStat.skipped.slice(),
+           drawables: ikMesh ? 1 : 0, visible: !!(ikMesh && ikMesh.visible), nearRooms, nearTris,
+           nearM: IK.nearM, eyeMaxM: IK.eyeMaxM };
+};
+"""
+# SCENES END
 
 def trim(rows, *drop):
     """Ship what is drawn, not what is explained.
@@ -1071,6 +1275,9 @@ DATA = json.dumps({
         'gaps': ei_reg['gaps'],
         'honesty': ei_reg['honesty'],
     },
+    # SCENES BEGIN (wave 17 A): the district fit-out pieces and their per-district rows
+    'interiorKit': INTERIOR_KIT,
+    # SCENES END
     'i18n': I18N,
 }, ensure_ascii=False, separators=(',', ':'))
 
@@ -10824,6 +11031,7 @@ function bdSceneTris() {
 window.__tc3dDressing = () => (hallGroup && bdStat ? { ...bdStat, sceneTris: bdSceneTris() } : null);
 /* DRESSING END */
 const PROP_BY_ID = new Map(D.props.props.map((p) => [p.id, p]));
+/* INTERIOR-KIT BEGIN (wave 17): the district pieces resolve through the same lookup */ for (const p of D.interiorKit.pieces) PROP_BY_ID.set(p.id, p); /* INTERIOR-KIT END */
 let propPool = null, propInst = null, propStat = null;
 const propGeoCache = new Map();
 function propMat(name) {
@@ -10893,6 +11101,10 @@ function placeRoomProps(h, r, rx, rz, rw, rd, doors, benches, ppe, inset, reserv
     if (any[0] === '*any*' ? ppe.length > 0 : any.some((x) => ppe.includes(x))) want.push(p.id);
   }
   want.push(...ids);
+  /* INTERIOR-KIT BEGIN (wave 17): then the hall's district pieces for this strand, on what wall is left */
+  const ikFrom = want.length; want.push(...ikPieces(h, r, rx, rz, rw, rd));
+  let ikI = 0, ikW0 = 0, ikS0 = 0;
+  /* INTERIOR-KIT END */
   const x0 = rx - rw / 2, x1 = rx + rw / 2, zF = rz - rd / 2, zB = rz + rd / 2;
   const partHalf = .06;      // the partition slabs above are .12 thick
   const seg = { left: runSegments(doors, 'x@' + x0.toFixed(2), zF, zB),
@@ -10906,6 +11118,7 @@ function placeRoomProps(h, r, rx, rz, rw, rd, doors, benches, ppe, inset, reserv
   const pose = new THREE.Matrix4();
   const stand = (p, x, y, z, ry) => {
     pose.makeRotationY(ry).setPosition(x, y, z);
+    /* INTERIOR-KIT BEGIN (wave 17) */ if (ikInto) { ikInto(p, pose); return; } /* INTERIOR-KIT END */
     if (p.merges === 'pooled') {
       const m2 = propMat(p.material);
       (propPool.get(m2) ?? propPool.set(m2, []).get(m2)).push(propGeo(p).clone().applyMatrix4(pose));
@@ -10916,6 +11129,7 @@ function placeRoomProps(h, r, rx, rz, rw, rd, doors, benches, ppe, inset, reserv
     propStat.byProp[p.id] = (propStat.byProp[p.id] ?? 0) + 1;
   };
   for (const pid of want) {
+    /* INTERIOR-KIT BEGIN (wave 17) */ if (ikI++ === ikFrom) { ikInto = ikStand; ikW0 = propStat.wanted; ikS0 = propStat.skipped.length; } /* INTERIOR-KIT END */
     const p = PROP_BY_ID.get(pid);
     if (!p) throw new Error('props registry places ' + pid + ' and declares no such prop');
     const lay = p.layout, [sw, sh, sd] = p.size_m, gap = lay.gap_m;
@@ -10985,6 +11199,7 @@ function placeRoomProps(h, r, rx, rz, rw, rd, doors, benches, ppe, inset, reserv
     if (placed < n && lay.anchor !== 'back-corner')
       propStat.skipped.push({ prop: pid, room: r.strand, why: (n - placed) + ' of ' + n + ' found no solid wall run' });
   }
+  /* INTERIOR-KIT BEGIN (wave 17) */ ikIslands(h, rx, rz, rw, rd, doors, inset, want.slice(ikFrom)); ikEnd(ikFrom < want.length, ikW0, ikS0); /* INTERIOR-KIT END */
 }
 // the whole hall's props: one merged mesh per material, one InstancedMesh
 // per safety fixture, all owned by the hall group and freed with it
@@ -11004,6 +11219,9 @@ function flushProps(g) {
   for (const ge of propGeoCache.values()) ge.dispose();  // clones went to the pool and the instances
   propGeoCache.clear();
 }
+/* INTERIOR-KIT BEGIN (wave 17) */
+__INTERIOR_KIT_JS__
+/* INTERIOR-KIT END */
 // the hall's own price, and the ceiling it was held to - both read, neither
 // typed: the ceiling comes out of web/eval_scene.mjs at build time
 window.__tc3dHall = () => hallCost && { ...hallCost, by: { ...hallCost.by } };
@@ -11356,6 +11574,7 @@ function buildHall(sg) {
   propStat = { slug: sg, rooms: h.rooms.length, wanted: 0, drawn: 0, tris: 0,
                byProp: {}, skipped: [], pooledCalls: 0, instancedCalls: 0 };
   /* DRESSING BEGIN (wave 16 B1) */ const bdRooms = []; /* DRESSING END */
+  /* INTERIOR-KIT BEGIN (wave 17) */ ikReset(sg); /* INTERIOR-KIT END */
   // the trade's fixture benches, pooled across all eleven rooms
   const benchPool = new Map(), benchTop = partCollector(benchPool);
   // the room luminaires, one material per distinct illuminance in the record
@@ -11767,6 +11986,7 @@ function buildHall(sg) {
   flushParts(benchPool, hallGroup);
   flushParts(lumPool, hallGroup, false);      // a lamp does not shadow itself
   flushProps(hallGroup);
+  /* INTERIOR-KIT BEGIN (wave 17) */ ikFlush(hallGroup); /* INTERIOR-KIT END */
 
   /* THE WAY OUT, AND WHERE YOU GO WHEN YOU TAKE IT.
 
@@ -16772,6 +16992,7 @@ renderer.setAnimationLoop(() => {
   else if ((!sim || controls.enabled) && !renderer.xr.isPresenting)
     controls.update();
   advisorProximity(dt);
+  /* INTERIOR-KIT BEGIN (wave 17) */ ikStep(); /* INTERIOR-KIT END */
   faunaStep(clock.elapsedTime, dt);
   labelStep(dt);
   questStep(dt);
@@ -17279,6 +17500,9 @@ page = page.replace('__TASKS_LABEL__', I18N['en']['strings']['campus3d.tasks'])
 assert f'const QCAP = {QCAP3D};' in QUEST3D_JS, 'task layer: the pool capacity in QUEST3D_JS is not the one the build checked'
 page = page.replace('__RESPOND_JS__', RESPOND_JS)
 page = page.replace('__AVATAR_JS__', AVATAR_JS)
+# SCENES BEGIN (wave 17 A)
+page = page.replace('__INTERIOR_KIT_JS__', INTERIOR_KIT_JS, 1)
+# SCENES END
 page = page.replace('__ADVISOR_JS__', ADVISOR_JS)
 page = page.replace('__GROUND_TRUTH_JS__', GROUND_TRUTH_JS)
 page = page.replace('__QUEST_CSS__', QUEST_CSS)
@@ -17582,6 +17806,66 @@ assert not set(agents_reg['advisors']) & _hook_crews, (
     f'HOOK-CREW: an advisor id is also a crew id, so "<id>:<x>" would be ambiguous: {sorted(set(agents_reg["advisors"]) & _hook_crews)}')
 page = page.replace(_HOOK_OLD, _HOOK_NEW, 1).replace(_HOOK_AT, _HOOK_AT + _HOOK_FN, 1)
 # POLISH w16 END
+# AVATAR BEGIN (wave 17, AVATAR·Agents Embodied): the hall advisors and crew roles wear their own Omega Hive outfit (the
+# locker cfg in hive/registry/hive.json - character, colours, accessories - the same proxy hexes the Hive page portraits
+# are drawn from), open their dialogue with the quoted line the AUTHORED-trait rule picks (web/hivekit.py behaviour()),
+# and make one idle gesture (wave / nod / point) on the rig's bones. The walkTo / walkAway test hooks take crew-role and
+# roster keys. A Hive council point on the flagship campus plaza opens the Hive page's deterministic council (voice on a
+# click only, Mute; classroom mode play-safe and muted). SCRIPTED: no line is written here; the page markers are neutral (AGENT-AVATAR). Fails closed by name.
+if (ROOT / 'hive/registry/hive.json').exists():
+    sys.path.insert(0, str(HERE))
+    from hivekit import avatar_rows as _av_rows, AVATAR_3D_JS, js_json as _av_json, council_data as _av_council, AVATAR_COUNCIL_JS  # noqa: E402
+    _av = _av_rows(['advisor', 'crew-role'])
+    _av_crews = json.load(open(ROOT / 'agents/registry/crews.json'))['crews']
+    _av_want = set(agents_reg['advisors']) | {c + ':' + r for c, cr in _av_crews.items() for r in cr['roles']}
+    assert {r['key'] for r in _av['agents']} == _av_want, (
+        f'AGENT-AVATAR: advisors / crew roles with no roster outfit: {sorted(_av_want ^ {r["key"] for r in _av["agents"]})[:3]}')
+    for _r in _av['agents']:
+        _fig = (agents_reg['advisors'][_r['key']] if ':' not in _r['key']
+                else _av_crews[_r['key'].split(':')[0]]['roles'][_r['key'].split(':')[1]])
+        for _oid in (_r['oid'], _r['oid12']):
+            assert _oid == 'greeting' or any(t['id'] == _oid and t['kind'] == 'say' for t in _fig['topics']), (
+                f'AGENT-AVATAR: {_r["id"]} opens with {_oid}, which is not its greeting or one of its say topics')
+        for _sec in ('build', 'skin', 'haircolor', 'topcolor', 'pantscolor', 'headcolor', 'crew'):
+            assert _r['cfg'].get(_sec), f'AGENT-AVATAR: {_r["id"]} outfit has no {_sec}'
+    _AV_SUBS = [
+        ("  return { ...D.avatars.defaults, ...(figureOf(aid)?.crew ?? {}),\n",
+         "  /* AGENT-AVATAR: the roster outfit when the figure has one; it keeps the crew mark of the hall it stands in */\n"
+         "  const own = agentOutfit(aid);\n"
+         "  if (own) return { ...own.cfg, crew: crewSlug || own.cfg.crew };\n"
+         "  return { ...D.avatars.defaults, ...(figureOf(aid)?.crew ?? {}),\n"),
+        ("  const body = buildAvatarMesh(advisorCfg(aid, crewSlug));\n  const proxy = proxyFigure();\n",
+         "  const body = agentBody(advisorCfg(aid, crewSlug));\n  const proxy = agentProxy(aid) ?? proxyFigure();\n"),
+        ("    if (near) idleBreath(m.userData.body, t + m.position.x, dt);\n",
+         "    if (near) idleBreath(m.userData.body, t + m.position.x, dt);\n    if (near) agentGesture(m, t);\n"),
+        ("  const answer = !t ? '<p class=\"focus\">' + esc(a.greeting) + '</p>'\n",
+         "  const answer = !t ? agentOpener(aid, a, esc)\n"),
+        ("    const m = advisorMeshes.find((x) => x.userData.advisor === arg);\n",
+         "    const m = advisorMeshes.find((x) => x.userData.advisor === agentHookKey(arg));\n"),
+    ]
+    for _o, _n in _AV_SUBS:
+        assert page.count(_o) == 1, f'AGENT-AVATAR: anchor must occur exactly once: {_o.strip()[:70]!r}'
+        page = page.replace(_o, _n, 1)
+    _av_cd = _av_council()
+    assert ": 'treasure-island');" in page and _av_cd['flagship'] == 'treasure-island', (
+        'AGENT-AVATAR: the council point stands on the flagship campus, which must be the page\'s default campus')
+    _AV_SUBS2 = [
+        ("  spawnCampusAdvisors();\n  spawnFauna(key, RS);\n",
+         "  spawnCampusAdvisors();\n  agentCouncilPoint(key);   // AGENT-AVATAR: the council point (flagship plaza only)\n  spawnFauna(key, RS);\n"),
+        ("  if (view === 'campus') {\n    const phit = ray.intersectObjects(chapterHit, false)[0];\n",
+         "  if (view === 'campus' && agentCouncilPick(ray)) return;   // AGENT-AVATAR: the council point\n"
+         "  if (view === 'campus') {\n    const phit = ray.intersectObjects(chapterHit, false)[0];\n"),
+    ]
+    for _o, _n in _AV_SUBS2:
+        assert page.count(_o) == 1, f'AGENT-AVATAR: anchor must occur exactly once: {_o.strip()[:70]!r}'
+        page = page.replace(_o, _n, 1)
+    _AV_AT = "function clearAdvisors() {\n"
+    assert page.count(_AV_AT) == 1, 'AGENT-AVATAR: `function clearAdvisors() {` must occur exactly once'
+    page = page.replace(_AV_AT, AVATAR_3D_JS.lstrip('\n') + AVATAR_COUNCIL_JS.lstrip('\n') + _AV_AT, 1)
+    assert page.count('</body>') == 1, 'AGENT-AVATAR: the page must have exactly one </body>'
+    page = page.replace('</body>', f'<script type="application/json" id="agent-avatar">{_av_json(_av)}</script>\n'
+                        f'<script type="application/json" id="agent-council">{_av_json(_av_cd)}</script>\n</body>', 1)
+# AVATAR END
 page = apply_seo(page, 'web/trade_craft_3d.html', 'SmartCiti.X : Trade Craft Academy \u2014 3D hall environment',
     'A walkable 3D campus of the academy\'s union training halls, their rooms and sim seats, with optional play quests that certify nothing.', 'page')
 out = HERE / 'trade_craft_3d.html'

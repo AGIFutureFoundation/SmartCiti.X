@@ -38,7 +38,16 @@ REG_OUT = HERE / 'registry' / 'hillshade.json'
 DERIVED = HERE / 'derived'
 R_M = 6371008.8
 SUN = {'azimuth_deg': 315.0, 'altitude_deg': 45.0}     # the cartographic convention: light from the north-west
-ALPHA = {'shadow_max': 170, 'light_max': 110}          # alpha at full shadow / full light (0-255)
+# WORLDHD BEGIN alpha rule (wave 17): light_max was 110, which left the relief faint on the dark map styles. Over a
+# plate of value v (0 black .. 1 white) at layer opacity o, a full lit slope composites to v + o*a_l*(1 - v) and a full
+# shadow to v*(1 - o*a_s); the span between them is o*(a_l*(1 - v) + a_s*v). With a_l = 110/255 and a_s = 170/255 that is
+# 0.41 on the default dark plate (#12181B) and 0.59 on the light one (#F6F8FB): the dark styles lost a third of the
+# relief, because a black shadow cannot darken a near-black plate and the white side carried too little alpha. RULE:
+# light_max = shadow_max, so the span is o*a on EVERY plate whatever its value (0.6 at o = 0.9) - measured on the page.
+ALPHA = {'shadow_max': 170, 'light_max': 170}          # alpha at full shadow / full light (0-255): equal, by the rule above
+ALPHA_RULE = ('light_max = shadow_max: the composite span between a full lit and a full shadowed slope, '
+              'o*(a_l*(1 - v) + a_s*v) over a plate of value v at layer opacity o, is then o*a on every map style')
+# WORLDHD END alpha rule
 # AUTHORED styling: how many times the RECORDED heights are stretched before shading, per region, and why
 EXAGGERATION = {
     'parishes': (10.0, 'the parish grid spans -8.7 to 115.9 m over about 230 km; at x1 its levees, ridges and the '
@@ -184,7 +193,7 @@ def build():
                    f'azimuth {SUN["azimuth_deg"]:g} deg, altitude {SUN["altitude_deg"]:g} deg; facing the sun -> white, '
                    'facing away -> black, flat -> transparent; a cell with no RECORDED height in its 3 x 3 window is '
                    'transparent'),
-        'sun': SUN, 'alpha': ALPHA,
+        'sun': SUN, 'alpha': ALPHA, 'alpha_rule': ALPHA_RULE,   # WORLDHD (wave 17)
         'credit': need(att, 'text', 'attribution') + ' (' + need(att, 'author', 'attribution') + ', U.S. public domain)',
         'licence_file': need(att, 'license_file', 'attribution'), 'source_url': need(att, 'source_url', 'attribution'),
         'honesty': ('The shading is computed from ~150-185 m cell means: it shows ridges, valleys, terraces and levee '

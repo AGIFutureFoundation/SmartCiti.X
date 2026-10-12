@@ -618,6 +618,23 @@ ok('[generator] build_geomap.py fails closed by name (need()) and takes no `.get
     && beh.atSF[1] === 'lyr hillshade-bayarea raster grat' && beh.off === 'none' && beh.back === 'visible' && beh.requested.length === 1);
 }
 // END GROUND w16 hillshade
+// WORLDHD BEGIN (wave 17): the relief shading reads equally on every map style (elevation/hillshade.py alpha rule).
+// Over a plate of value v at layer opacity o, a full lit slope and a full shadowed one differ by o*(a_l*(1 - v) + a_s*v);
+// with a_l = a_s that is o*a on every plate. Measured in a browser screenshot too (the WORLDHD hillshade probe).
+{
+  const HR = JSON.parse(readFileSync(join(ROOT, 'elevation/registry/hillshade.json'), 'utf8'));
+  const A = HR.alpha || {}, o = (D.hillshade || {}).opacity;
+  const val = (hex) => [1, 3, 5].reduce((t, i) => t + parseInt(hex.slice(i, i + 2), 16), 0) / 765;
+  const span = (v) => o * ((A.light_max / 255) * (1 - v) + (A.shadow_max / 255) * v);
+  const plates = Object.entries((D.stylePaint || {}).styles || {}).map(([id, st]) => [id, st.tokens.plate, +span(val(st.tokens.plate)).toFixed(3)]);
+  const sp = plates.map((p) => p[2]);
+  ok(`[hillshade] the alpha rule holds: light_max = shadow_max, declared in the registry, so a full slope spans the same o*a on all ${plates.length} map styles (>= 0.55, spread <= 2%) - ${JSON.stringify(plates)}`,
+    A.light_max === A.shadow_max && A.shadow_max >= 160 && typeof HR.alpha_rule === 'string' && /light_max = shadow_max/.test(HR.alpha_rule)
+    && plates.length >= 6 && Math.min(...sp) >= 0.55 && Math.max(...sp) / Math.min(...sp) <= 1.02);
+  ok('[hillshade] the darkest map style is no fainter than the lightest: its span is at least the lightest plate\'s (it was 0.68x with light_max 110)',
+    plates.length >= 6 && (() => { const byV = [...plates].sort((a, b) => val(a[1]) - val(b[1])); return byV[0][2] >= byV[byV.length - 1][2] - 1e-9; })());
+}
+// WORLDHD END
 
 if (failed) {
   console.error(`FAIL  web/test_geomap: ${failed} of ${n + failed} checks failed`);

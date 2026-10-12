@@ -1,8 +1,9 @@
 {
  "alpha": {
-  "light_max": 110,
+  "light_max": 170,
   "shadow_max": 170
  },
+ "alpha_rule": "light_max = shadow_max: the composite span between a full lit and a full shadowed slope, o*(a_l*(1 - v) + a_s*v) over a plate of value v at layer opacity o, is then o*a on every map style",
  "credit": "Elevation: USGS 3D Elevation Program (3DEP), 1 arc-second DEM; resampled by this bundle (U.S. Geological Survey, U.S. public domain)",
  "exaggeration_provenance": "AUTHORED",
  "heights_provenance": "RECORDED",
@@ -15,7 +16,7 @@
  "provenance": "DERIVED",
  "regions": {
   "bayarea": {
-   "bytes": 1075069,
+   "bytes": 1137248,
    "cell_arcsec": 6,
    "coordinates": [
     [
@@ -41,7 +42,7 @@
    "grid_sha256": "ecd3673bff2e555c2f1905c047f0912f795be965da0f68025e889a1024a8935d",
    "height": 1181,
    "rows_resampled": "nearest source row at equal Web Mercator steps between the north and south edges (1177 distinct source rows of 1181)",
-   "sha256": "e03344a0159621a422c17a2ebdacd194499c927613c3218dffc488f7f0ec6916",
+   "sha256": "8972c10f09116ea616a943e0aa06393d9c11ff797e2c79f7226fe3be1cacec03",
    "shaded_cells": 1628390,
    "transparent_cells": 20286,
    "vertical_exaggeration": 1.5,
@@ -49,7 +50,7 @@
    "width": 1396
   },
   "parishes": {
-   "bytes": 1088129,
+   "bytes": 1163045,
    "cell_arcsec": 6,
    "coordinates": [
     [
@@ -75,7 +76,7 @@
    "grid_sha256": "1e256dd888337f7a0b714e244348d825a6ffa41a8e7ebeb1dc643b75e6db0b8c",
    "height": 1243,
    "rows_resampled": "nearest source row at equal Web Mercator steps between the north and south edges (1240 distinct source rows of 1243)",
-   "sha256": "4b836dcdfdc85e250afa446a9bde8cf13e481788989796951217caaf2c07ab3e",
+   "sha256": "119e90b4a33b894d5ec3c33a3e2bc4bf27df73c306f899fbb607e713dff4c126",
    "shaded_cells": 1772042,
    "transparent_cells": 108617,
    "vertical_exaggeration": 10.0,
@@ -84,7 +85,7 @@
   }
  },
  "source": "elevation/registry/elevation.json (USGS 3DEP 1 arc-second, vendored and sha256-pinned)",
- "source_stamp": "750f54a5c53317b4",
+ "source_stamp": "a2b5e00782f2a4c7",
  "source_url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/",
  "sun": {
   "altitude_deg": 45.0,

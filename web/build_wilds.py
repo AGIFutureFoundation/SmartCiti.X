@@ -1514,6 +1514,36 @@ if (ROOT / 'flora/registry/flora.json').exists() and (HERE / 'florakit.py').exis
         raise SystemExit('build_wilds: WORLD w16c legend anchor must occur exactly once')
     page = page.replace('<p class="help" data-legend>', _WFH + '<p class="help" data-legend>', 1)
 # END WORLD w16c
+# WORLDHD BEGIN world-tex (wave 17, WORLDHD·High-res Worlds): SURFACE DETAIL BY DEVICE TIER on the wilds terrain
+# (web/worldtexkit.py, the same kit and tiers as the parish and Bay pages). The terrain is vertex-coloured by biome; on a
+# GPU that can afford it the page multiplies world-space detail over it - grass where the biome colour is green, soil grain
+# elsewhere, weathered rock on slopes steeper than ~35 degrees (sampled on the slope's own face, not stretched from above).
+# base (software rasteriser, < 4 GB, texture limit < 4096): NOTHING changes; high 1024 px; ultra 2048 px; ?tex= overrides;
+# budget high 24 MB / ultra 56 MB (ultra: 2 x 2048 + 1 stepped to 1024 = 48 MB). Fixed metres per texture at every tier.
+# One material is hooked (matTerrain, also the overview's): 0 draw calls and 0 triangles added; the detail fades out by
+# 220 m, so the overview looks as before. Page JS carries only the neutral WORLD-TEX.
+from worldtexkit import worldtex_js, recipe_surfaces, WorldTexError  # noqa: E402
+_WT_A = 'const matTerrain = new THREE.MeshLambertMaterial({ vertexColors: true });\n'
+if page.count(_WT_A) != 1:
+    raise SystemExit(f'build_wilds: WORLD-TEX anchor (matTerrain) must occur exactly once, found {page.count(_WT_A)}')
+try:
+    _WT_JS = worldtex_js(
+        [{'id': 'ground.grass', 'paint': 'grass', 'world_m': 4.0}] + recipe_surfaces([('ground.grain', 'render.stucco')])
+        + [{'id': 'rock', 'paint': 'rock', 'world_m': 8.0}],
+        {'high': 24, 'ultra': 56},
+        {'terrain': {'anchor': '#include <alphamap_fragment>', 'normal': 'objectNormal', 'glsl': """{ float wtF = (1.0 - smoothstep(50.0, 220.0, vWtD)) * uWtAmt * 1.5;
+  vec3 wtN = normalize(vWtN), wtC = diffuseColor.rgb;
+  float wtSteep = smoothstep(0.15, 0.25, 1.0 - wtN.y);   // 32 to 41 degrees
+  float wtG = clamp((wtC.g - max(wtC.r, wtC.b)) * 8.0, 0.0, 1.0);
+  vec2 wtS = abs(wtN.x) > abs(wtN.z) ? vWtP.zy : vWtP.xy;
+  float wtFlat = mix(TEX(ground.grain, vWtP.xz), TEX(ground.grass, vWtP.xz), wtG);
+  float wtRock = TEX(rock, wtS);
+  diffuseColor.rgb *= mix(1.0, mix(wtFlat, wtRock, wtSteep), wtF); }
+"""}})
+except (WorldTexError, SystemExit) as _e:
+    raise SystemExit(f'build_wilds: {_e}')
+page = page.replace(_WT_A, _WT_A + _WT_JS + "worldTexHook(matTerrain, 'terrain');   // WORLD-TEX\n", 1)
+# WORLDHD END world-tex
 # exactly the chrome keys this page used, for every locale in i18n/locales;
 # a key missing (or empty) in any locale stops the build by name
 I18N_CAT = {}

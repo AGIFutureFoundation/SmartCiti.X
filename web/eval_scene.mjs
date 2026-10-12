@@ -306,6 +306,11 @@ async function main() {
           requestAnimationFrame(() => requestAnimationFrame(r))));
         const c = await pg.evaluate(() => window.__tc3d().perf.calls);
         if (!worst || c > worst.calls) worst = { slug: s, calls: c };
+        /* SCENES BEGIN (wave 17, ADDED - the row still picks and scores the dearest hall by CALLS, unchanged):
+           the dearest hall by TRIANGLES is recorded on the same sweep and printed, never judged here */
+        const tq = await pg.evaluate(() => window.__tc3d().perf.tris);
+        if (!v.worstTris || tq > v.worstTris.tris) v.worstTris = { slug: s, tris: tq, calls: c };
+        /* SCENES END */
       }
       v.why = `the dearest of ${slugs.length} halls: ${worst.slug}`;
       await pg.evaluate((x) => window.__tc3dDo('view', 'hall:' + x), worst.slug);
@@ -363,6 +368,16 @@ async function main() {
     m.texInfo = await pg.evaluate(() => (typeof window.__tc3dTex === 'function' ? window.__tc3dTex() : null));
     process.stderr.write(`  measured ${v.id}: ${m.calls} calls, ${m.tris} tris, ${m.frameMs} ms/frame\n`);  // so a run cut short still says how far it got
     /* BUILD END */
+    /* SCENES BEGIN (wave 17, ADDED - measured, never judged): what the hall's district fit-out draws in this
+       frame, through the page's own __tc3dInterior(); and on the sweep row, the dearest hall by triangles */
+    m.interior = await pg.evaluate(() => (typeof window.__tc3dInterior === 'function' ? window.__tc3dInterior() : null));
+    if (m.interior && ['hall', 'hall-eye', 'hall-worst', 'hall-eye-tex'].includes(v.id))
+      process.stderr.write(`  interior ${v.id}: ${m.interior.slug} ${m.interior.drawn} district pieces, ${m.interior.tris} tris in `
+        + `${m.interior.drawables} drawable; drawn this frame: ${m.interior.visible ? m.interior.nearRooms + ' rooms, '
+        + m.interior.nearTris + ' tris' : 'none'}\n`);
+    if (v.worstTris) process.stderr.write(`  dearest hall by triangles: ${v.worstTris.slug} ${v.worstTris.tris} tris, `
+      + `${v.worstTris.calls} calls\n`);
+    /* SCENES END */
     rows.push({ ...v, ...m });
   }
   await b.close();

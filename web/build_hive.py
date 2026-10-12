@@ -29,6 +29,7 @@ from sitenav import nav_html, labels as nav_labels, NAV_CSS, STYLE_JS  # noqa: E
 from pagehero import theme  # noqa: E402
 from design_kit import STYLE_HEAD_JS  # noqa: E402
 from hivekit import hive_registry, hive_data, portrait_svg, HIVE_CSS, HIVE_JS, hive_i18n_keys, js_json  # noqa: E402
+from hivekit import behaviour  # noqa: E402  (AVATAR w17)
 import sitenav  # noqa: E402
 
 PAGE = 'web/trade_craft_hive.html'
@@ -98,10 +99,14 @@ def where(a):
 
 def card(a):
     v, p = a['voice'], a['personality']
-    first = next((i for i, ln in enumerate(a['lines']) if ln['kind'] == 'greeting'), 0)
+    # AVATAR BEGIN (wave 17): the card's Speak says the line the agent's dialogue opens with - the AUTHORED-trait rule
+    # (web/hivekit.py behaviour()); a registry quote like every other line. Its gesture rides as data-gesture.
+    _bh = behaviour(a)
+    first = _bh['open']
+    # AVATAR END
     hay = ' '.join([a['name'], a['role'], a.get('crew_name', ''), a.get('parish', '')]).lower()
     return (f'<article class="hv-card" data-agent="{E(a["id"])}" data-kind="{E(a["kind"])}" data-k12="{1 if a["k12"] else 0}" '
-            f'data-hay="{E(hay)}" data-character="{E(a["avatar"]["character"])}">'
+            f'data-hay="{E(hay)}" data-character="{E(a["avatar"]["character"])}" data-gesture="{E(_bh["gesture"])}">'
             f'<div class="hv-head">{portrait_svg(a)}<div class="hv-who"><h3>{E(a["glyph"])} {E(a["name"])}</h3>'
             f'<p class="muted">{E(a["role"])}</p>'
             f'<p><span class="tag" data-i18n="hive.kind.{a["kind"]}">{E(EN["hive.kind." + a["kind"]])}</span> '
@@ -357,6 +362,16 @@ a{{color:var(--tc-link)}}
 </body>
 </html>
 '''
+# AVATAR BEGIN (wave 17 C): the roster portraits repainted on a device-tier canvas (web/hivekit.py PORTRAIT_JS) - 2x
+# backing store on a capable device, the base size on a low-tier one; the SVG stays as the no-script picture. A council
+# row copies the canvas's pixels (cloneNode would copy a blank canvas).
+from hivekit import PORTRAIT_JS  # noqa: E402
+_av_clone = "      if (face) li.appendChild(face.cloneNode(true));\n"
+if page.count(_av_clone) != 1 or page.count('<script id="hive-page">') != 1:
+    raise HivePageError('build_hive: AVATAR - the council face clone and the page script must each occur exactly once')
+page = page.replace(_av_clone, "      if (face) li.appendChild(window.HivePortrait ? HivePortrait.clone(face) : face.cloneNode(true));\n", 1)
+page = page.replace('<script id="hive-page">', f'<script id="hive-portraits">{PORTRAIT_JS}</script>\n<script id="hive-page">', 1)
+# AVATAR END
 TITLE = 'SmartCiti.X : Trade Craft Academy — ' + EN['hive.nav']
 page = apply_seo(page, PAGE, TITLE, EN['hive.seo.desc'], 'page')
 emit(HERE / 'trade_craft_hive.html', page,
