@@ -2694,6 +2694,112 @@ for _a, _b in _SK_ANCHORS:
         raise BuildError(f'build_parishes: STREET-KIT anchor must occur exactly once, found {JS.count(_a)}: {_a.strip()[:60]!r}')
     JS = JS.replace(_a, _b, 1)
 # STREETS END street-kit
+# ROBOWORLD BEGIN robot-yard (wave 18, ROBOWORLD·Robots in the Worlds): ONE small robot yard in the walkable world.
+# An AUTHORED rover runs on a loop near the walker's spawn point: it replays the arena's SCRIPTED reference steps for
+# world.litter-pickup (robotics/registry/robotics.json reference_policy, read fail closed): turn toward the nearest open
+# target (proportional on bearing), drive at a speed that falls with the heading error. The yard has no obstacles, so
+# the veer step never fires. Targets come from mulberry32(seed) with a fixed seed; the episode restarts identically,
+# so the loop is deterministic. ONE InstancedMesh (+1 draw call, 13 boxes x 12 triangles), walk view only, hidden in
+# the overview; nothing is stored, sent or controlled (play only, classroom included). A DOM label (no draw call) links
+# to the Robotics lab arena. Page marker: ROVER-YARD. The Bay page inherits it through web/build_bayworld.py.
+_RY_REG = json.loads((ROOT / 'robotics/registry/robotics.json').read_text())
+try:
+    _RY_POL = _RY_REG['envs']['world.litter-pickup']['reference_policy']
+    _RY_POL_ID, _RY_POL_PROV = _RY_POL['id'], _RY_POL['provenance']
+except KeyError as _e:
+    raise BuildError(f'build_parishes: ROVER-YARD needs robotics.json envs.world.litter-pickup.reference_policy, missing {_e}')
+if _RY_POL_PROV != 'SCRIPTED':
+    raise BuildError(f'build_parishes: ROVER-YARD reference policy must be SCRIPTED, found {_RY_POL_PROV!r}')
+_RY_JS = r"""/* ROVER-YARD BEGIN: one AUTHORED rover near the walker's spawn point, replaying the SCRIPTED reference steps of the
+   arena's litter-pickup task on a seeded loop. ONE InstancedMesh, walk view only, hidden in the overview; play only. */
+/* ROVER-YARD CORE BEGIN */
+const RY_POLICY = '__RY_POL_ID__', RY_SEED = 1, RY_N = 6, RY_HALF = 6, RY_DT = 0.1, RY_MAX = 600;
+function ryRng(a) { return function () { a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+function ryEpisode(seed) {
+  const r = ryRng(seed), tg = [];
+  for (let i = 0; i < RY_N; i++) tg.push([(r() * 2 - 1) * (RY_HALF - 1), (r() * 2 - 1) * (RY_HALF - 1)]);
+  return { x: 0, z: 0, h: 0, tg, open: tg.map(() => true), k: 0, laps: 0, seed };
+}
+/* one fixed step of the SCRIPTED reference: nearest open target, proportional turn, speed falls with heading error;
+   when every target is collected (or RY_MAX steps pass) the same seeded episode starts again */
+function ryStep(S) {
+  let best = -1, bd = 1e9;
+  for (let i = 0; i < S.tg.length; i++) if (S.open[i]) { const d = Math.hypot(S.tg[i][0] - S.x, S.tg[i][1] - S.z); if (d < bd) { bd = d; best = i; } }
+  if (best < 0 || S.k >= RY_MAX) { const N = ryEpisode(S.seed); N.laps = S.laps + 1; Object.assign(S, N); return S; }
+  const want = Math.atan2(S.tg[best][0] - S.x, S.tg[best][1] - S.z);
+  let err = want - S.h; while (err > Math.PI) err -= 2 * Math.PI; while (err < -Math.PI) err += 2 * Math.PI;
+  S.h += Math.max(-1.8 * RY_DT, Math.min(1.8 * RY_DT, 2.5 * err * RY_DT));
+  const v = 1.2 * Math.max(0, Math.cos(err));
+  S.x += Math.sin(S.h) * v * RY_DT; S.z += Math.cos(S.h) * v * RY_DT;
+  if (bd < 0.4) S.open[best] = false;
+  S.k++; return S;
+}
+function ryTrace(seed, steps) { const S = ryEpisode(seed), out = []; for (let i = 0; i < steps; i++) { ryStep(S); out.push([+S.x.toFixed(3), +S.z.toFixed(3), +S.h.toFixed(3), S.open.filter(Boolean).length, S.laps]); } return out; }
+/* ROVER-YARD CORE END */
+const RY_VIEW = 120, RY_SPOTS = [[14, 0], [0, 14], [-14, 0], [0, -14], [12, 12], [-12, 12], [-12, -12], [12, -12], [24, 0], [0, 24], [-24, 0], [0, -24]];
+const RY_LABEL = 'AUTHORED rover · SCRIPTED reference policy · no AI model';
+const ryGeo = new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0);
+const ryMesh = new THREE.InstancedMesh(ryGeo, new THREE.MeshLambertMaterial({ color: 0xffffff }), 13);
+ryMesh.frustumCulled = false; ryMesh.visible = false; ryMesh.name = 'robot-yard';
+for (let i = 0; i < 13; i++) ryMesh.setColorAt(i, new THREE.Color(i < 3 ? [0xe0a030, 0x404850, 0x30c0e0][i] : i < 9 ? 0x58b858 : 0xcfcfcf));
+scene.add(ryMesh);
+const ryLab = document.createElement('a');
+ryLab.className = 'robot-yard-label'; ryLab.href = 'trade_craft_robotics.html#model-arena'; ryLab.textContent = RY_LABEL; ryLab.hidden = true;
+ryLab.setAttribute('data-robot-yard', '');
+ryLab.style.cssText = 'position:absolute;left:0;top:0;transform:translate(-50%,-100%);z-index:5;font:12px/1.3 system-ui,sans-serif;padding:3px 7px;border-radius:6px;background:rgba(20,24,30,.82);color:#fff;text-decoration:underline;white-space:nowrap;pointer-events:auto';
+stage.appendChild(ryLab);
+const RY = { S: ryEpisode(RY_SEED), anchor: null, acc: 0, t: 0, frames: 0 };
+const ryM = new THREE.Matrix4(), ryQ = new THREE.Quaternion(), ryP = new THREE.Vector3(), ryS = new THREE.Vector3(), ryE = new THREE.Euler(), ryV = new THREE.Vector3();
+function ryDry(x, z) { return !!parishAt(x, z) && !inWaterAt(x, z); }
+function ryPick() {   /* the first AUTHORED spot near the walker whose yard (corners and centre) is dry, in-parish land */
+  for (const [dx, dz] of RY_SPOTS) {
+    const cx = eye.x + dx, cz = eye.z + dz;
+    if ([[0, 0], [-RY_HALF, -RY_HALF], [RY_HALF, -RY_HALF], [RY_HALF, RY_HALF], [-RY_HALF, RY_HALF]].every(([a, b]) => ryDry(cx + a, cz + b))) return { x: cx, z: cz };
+  }
+  return null;
+}
+function ryPut(i, x, z, sx, sy, sz, yaw, y0) {
+  ryE.set(0, yaw, 0); ryQ.setFromEuler(ryE); ryP.set(x, y0, z); ryS.set(sx, sy, sz); ryM.compose(ryP, ryQ, ryS); ryMesh.setMatrixAt(i, ryM);
+}
+/* called from frame() after perfCull: walk view only; the overview hides the yard and its label */
+function robotYardFrame(over) {
+  const now = performance.now(), dt = RY.t ? Math.min(0.25, (now - RY.t) / 1000) : 0; RY.t = now;
+  if (over) { ryMesh.visible = false; ryLab.hidden = true; return; }
+  if (!RY.anchor || Math.hypot(RY.anchor.x - eye.x, RY.anchor.z - eye.z) > 400) { RY.anchor = ryPick(); if (!RY.anchor) { ryMesh.visible = false; ryLab.hidden = true; return; } }
+  const A = RY.anchor, near = Math.hypot(A.x - eye.x, A.z - eye.z) < RY_VIEW;
+  ryMesh.visible = near; if (!near) { ryLab.hidden = true; return; }
+  RY.acc += dt; while (RY.acc >= RY_DT) { ryStep(RY.S); RY.acc -= RY_DT; }
+  const S = RY.S, gy = (x, z) => (typeof elevY === 'function' ? elevY(x, z) : 0);
+  const rx = A.x + S.x, rz = A.z + S.z, y = gy(rx, rz);
+  ryPut(0, rx, rz, 0.9, 0.35, 0.6, S.h, y + 0.12);
+  ryPut(1, rx - Math.sin(S.h) * 0.25, rz - Math.cos(S.h) * 0.25, 0.08, 0.7, 0.08, S.h, y + 0.47);
+  ryPut(2, rx - Math.sin(S.h) * 0.25, rz - Math.cos(S.h) * 0.25, 0.3, 0.12, 0.2, S.h, y + 1.17);
+  for (let i = 0; i < RY_N; i++) { const [tx, tz] = S.tg[i], s = S.open[i] ? 0.25 : 0.0001; ryPut(3 + i, A.x + tx, A.z + tz, s, s, s, 0, gy(A.x + tx, A.z + tz)); }
+  [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(([a, b], j) => ryPut(9 + j, A.x + a * RY_HALF, A.z + b * RY_HALF, 0.15, 0.6, 0.15, 0, gy(A.x + a * RY_HALF, A.z + b * RY_HALF)));
+  ryMesh.instanceMatrix.needsUpdate = true;
+  ryV.set(rx, y + 1.6, rz).project(camera);
+  const el = renderer.domElement;
+  if (ryV.z > 1 || Math.abs(ryV.x) > 1.1 || Math.abs(ryV.y) > 1.1) { ryLab.hidden = true; return; }
+  ryLab.hidden = false; ryLab.style.left = ((ryV.x + 1) / 2 * el.clientWidth).toFixed(0) + 'px'; ryLab.style.top = ((1 - ryV.y) / 2 * el.clientHeight).toFixed(0) + 'px';
+  RY.frames++;
+}
+window.__robotYard = {
+  stats: () => ({ visible: ryMesh.visible, label: !ryLab.hidden, anchor: RY.anchor, step: RY.S.k, laps: RY.S.laps, open: RY.S.open.filter(Boolean).length,
+    calls: ryMesh.visible ? 1 : 0, tris: ryMesh.visible ? 13 * 12 : 0, policy: RY_POLICY, seed: RY_SEED, frames: RY.frames }),
+  trace: (n) => ryTrace(RY_SEED, n || 100),
+};
+/* ROVER-YARD END */
+""".replace('__RY_POL_ID__', _RY_POL_ID)
+_RY_ANCHORS = [
+    ('window.__parishes = {', _RY_JS + 'window.__parishes = {'),
+    ('  streetKitFrame(over);   // STREET-KIT\n',   # after perfCull and the street kit (STREETS block above)
+     '  streetKitFrame(over);   // STREET-KIT\n  robotYardFrame(over);   // ROVER-YARD\n'),
+]
+for _a, _b in _RY_ANCHORS:
+    if JS.count(_a) != 1:
+        raise BuildError(f'build_parishes: ROVER-YARD anchor must occur exactly once, found {JS.count(_a)}: {_a.strip()[:60]!r}')
+    JS = JS.replace(_a, _b, 1)
+# ROBOWORLD END robot-yard
 # BEGIN FACADE w11 (FACADE·Exteriors & Signs): AUTHORED facade details on the kit buildings nearest the eye and PLAY
 # signs on the economy/ commercial lots (web/facadekit.py, facades/registry/facades.json) - ONE InstancedMesh, one draw
 # call, hidden in the overview; the glue reads the streamed chunks and never changes them (details are not solid).

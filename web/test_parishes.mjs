@@ -467,6 +467,40 @@ check('[perf] fleet families beyond the fog and overview NPC meshes are culled o
     && (bay.match(/  for \(const b of streetKitSolids\(\)\) list\.push\(b\);/g) || []).length === 1 && !/STREETS/.test(bay));
 }
 // STREETS END
+// ROBOWORLD BEGIN (wave 18): ROVER-YARD - one AUTHORED rover replaying the SCRIPTED reference steps near the spawn point
+{
+  const ry = (main.match(/\/\* ROVER-YARD BEGIN[\s\S]*?\/\* ROVER-YARD END \*\//) || [''])[0];
+  const core = (ry.match(/\/\* ROVER-YARD CORE BEGIN \*\/([\s\S]*?)\/\* ROVER-YARD CORE END \*\//) || [, ''])[1];
+  const reg = JSON.parse(read('robotics/registry/robotics.json'));
+  check('[rover-yard] the yard is present: one block before the page API, hooked once in the frame after perfCull, ONE InstancedMesh of 13 boxes, the SCRIPTED litter-pickup reference id from the registry; neutral marker only',
+    (main.match(/\/\* ROVER-YARD BEGIN/g) || []).length === 1 && main.indexOf('/* ROVER-YARD END */') < main.indexOf('window.__parishes = {')
+    && (main.match(/\n  perfCull\(over\);[^\n]*\n(?:  [a-zA-Z]+Frame\(over\);[^\n]*\n)*  robotYardFrame\(over\);   \/\/ ROVER-YARD\n/g) || []).length === 1
+    && (ry.match(/new THREE\.InstancedMesh\(/g) || []).length === 1 && ry.includes('new THREE.InstancedMesh(ryGeo, ') && ry.includes('), 13);')
+    && ry.includes(`const RY_POLICY = '${reg.envs['world.litter-pickup'].reference_policy.id}'`) && reg.envs['world.litter-pickup'].reference_policy.provenance === 'SCRIPTED'
+    && !/ROBOWORLD/.test(html));
+  check('[rover-yard] hidden in the overview and beyond walk-view distance: mesh and label hidden before any step or placement',
+    ry.includes('if (over) { ryMesh.visible = false; ryLab.hidden = true; return; }') && ry.includes('const RY_VIEW = 120,')
+    && ry.includes('ryMesh.visible = near; if (!near) { ryLab.hidden = true; return; }') && ry.includes('ryMesh.visible = false; ryMesh.name')
+    && ry.indexOf('if (over) {') < ry.indexOf('RY.anchor = ryPick()') && ry.indexOf('if (over) {') < ry.indexOf('ryStep(RY.S)'));
+  const labelText = (ry.match(/const RY_LABEL = '([^']*)';/) || [, ''])[1];
+  check('[rover-yard] the label makes no AI-model claim: exactly "AUTHORED rover · SCRIPTED reference policy · no AI model", linked to the Robotics lab arena; no other model wording in the block',
+    labelText === 'AUTHORED rover · SCRIPTED reference policy · no AI model' && ry.includes("ryLab.href = 'trade_craft_robotics.html#model-arena'") && ry.includes('ryLab.textContent = RY_LABEL;')
+    && !/\bAI\b|\btrained\b|\bneural\b|\blearn|\bLLM\b|\bGPT\b|machine learning|intelligen/i.test(ry.replace(`const RY_LABEL = '${labelText}';`, '')));
+  let R = null;
+  try { R = new Function(core + '\nreturn { ryTrace, ryEpisode, ryStep, RY_SEED, RY_N, RY_MAX };')(); } catch (e) { R = null; }
+  let det = false;
+  if (R) {
+    const a = R.ryTrace(R.RY_SEED, 1400), b = R.ryTrace(R.RY_SEED, 1400), c = R.ryTrace(R.RY_SEED + 1, 1400);
+    const lapAt = a.findIndex((s) => s[4] === 1);
+    det = JSON.stringify(a) === JSON.stringify(b) && JSON.stringify(a) !== JSON.stringify(c)
+      && a.some((s) => s[3] < R.RY_N) && lapAt > 0 && lapAt <= R.RY_MAX + 1
+      && JSON.stringify(a.slice(lapAt + 1, lapAt + 200).map((s) => s.slice(0, 4))) === JSON.stringify(a.slice(0, 199).map((s) => s.slice(0, 4)));
+  }
+  check('[rover-yard] deterministic: the pure core replays the same seeded trace twice, a different seed differs, targets get collected, and each lap repeats the first one exactly', det);
+  check('[rover-yard] play only (classroom included): the block stores, sends and listens for nothing',
+    ry.length > 0 && !/localStorage|sessionStorage|indexedDB|fetch\(|XMLHttpRequest|sendBeacon|addEventListener|WebSocket/.test(ry));
+}
+// ROBOWORLD END
 // [build] the page is what the builder writes today
 const sha = createHash('sha256').update(html).digest('hex').slice(0, 16);
 check('[build] page carries the builder banner and one importmap', (html.match(/<script type="importmap">/g) || []).length === 1);
