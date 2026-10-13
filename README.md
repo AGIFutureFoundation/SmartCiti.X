@@ -345,6 +345,20 @@ All checks pass against the regenerated data.
   orphaned 33-hall-era map data moved to `archive/` with its provenance
   recorded in `wiki/Provenance.md`.
 
+## RP1 Holodeck scenes and the WorldForge world builder
+
+- **RP1 Holodeck installers**: RP1 / Metaversal spatial-fabric installers for this Holodeck, in
+  [WorldForge-Browser/rp1](https://github.com/AGIFutureFoundation/WorldForge-Browser/tree/main/rp1). Choose either
+  the whole scene (`smartciti-holodeck`, 227 objects) or its two parts (`holodeck-simulator-yard`,
+  `holodeck-robotics-wing`), never both. They live there rather than here because this bundle keeps no
+  `.glb`/`.gltf`/`.fbx` in its tree (`venue/test.mjs`). They are built output and have not yet been installed on a
+  live map service.
+- **WorldForge (world builder)**: the 41 AGI Corp worlds as walkable 3-D scenes, with GLEWME Master Cards, agent
+  avatars, landmarks, draft lessons and Sneeze mount plans. It is a static site in
+  [AGIFutureFoundation/WorldForge-Browser](https://github.com/AGIFutureFoundation/WorldForge-Browser).
+- **Onchain agent layer**: ERC-8004 identities, x402 micropayments and steward-minted Trade Craft credentials
+  on Monad, in [AGIFutureFoundation/Metropolis-SmartCiti](https://github.com/AGIFutureFoundation/Metropolis-SmartCiti).
+
 ## Running it as an app
 
 The bundle is a static site: `index.html` at the root is the hub, and every
