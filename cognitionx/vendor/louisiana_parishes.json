@@ -1,0 +1,454 @@
+{
+ "source": "apps/louisiana/index.html embedded \"parishes\" array; fields name, region, seat, world, districts verbatim",
+ "commit": "1f45df64c0355804d4811bc0f7491c5501475346",
+ "parishes": [
+  {
+   "name": "Acadia",
+   "region": 4,
+   "seat": "Crowley",
+   "world": "Rice-mill automation line",
+   "districts": ""
+  },
+  {
+   "name": "Allen",
+   "region": 5,
+   "seat": "Oberlin",
+   "world": "Timber sort & kiln control",
+   "districts": ""
+  },
+  {
+   "name": "Ascension",
+   "region": 2,
+   "seat": "Donaldsonville",
+   "world": "Ascension hydrogen plant control room",
+   "districts": ""
+  },
+  {
+   "name": "Assumption",
+   "region": 3,
+   "seat": "Napoleonville",
+   "world": "Sugar-mill conveyor & boiler house",
+   "districts": ""
+  },
+  {
+   "name": "Avoyelles",
+   "region": 6,
+   "seat": "Marksville",
+   "world": "Cold-chain packing line",
+   "districts": ""
+  },
+  {
+   "name": "Beauregard",
+   "region": 5,
+   "seat": "DeRidder",
+   "world": "Paper-mill instrumentation",
+   "districts": ""
+  },
+  {
+   "name": "Bienville",
+   "region": 7,
+   "seat": "Arcadia",
+   "world": "Poultry-plant robotics",
+   "districts": ""
+  },
+  {
+   "name": "Bossier",
+   "region": 7,
+   "seat": "Benton",
+   "world": "Cyber-physical security ops center",
+   "districts": ""
+  },
+  {
+   "name": "Caddo",
+   "region": 7,
+   "seat": "Shreveport",
+   "world": "Shreveport aerospace assembly cell",
+   "districts": ""
+  },
+  {
+   "name": "Calcasieu",
+   "region": 5,
+   "seat": "Lake Charles",
+   "world": "Calcasieu Smart Logistics Terminal (reference)",
+   "districts": ""
+  },
+  {
+   "name": "Caldwell",
+   "region": 8,
+   "seat": "Columbia",
+   "world": "Sawmill scanner & optimizer",
+   "districts": ""
+  },
+  {
+   "name": "Cameron",
+   "region": 5,
+   "seat": "Cameron",
+   "world": "LNG cryogenic loading arm",
+   "districts": ""
+  },
+  {
+   "name": "Catahoula",
+   "region": 6,
+   "seat": "Harrisonburg",
+   "world": "Catfish-farm aeration & sensor grid",
+   "districts": ""
+  },
+  {
+   "name": "Claiborne",
+   "region": 7,
+   "seat": "Homer",
+   "world": "Well-site telemetry",
+   "districts": ""
+  },
+  {
+   "name": "Concordia",
+   "region": 6,
+   "seat": "Vidalia",
+   "world": "Hydro turbine governor twin",
+   "districts": ""
+  },
+  {
+   "name": "DeSoto",
+   "region": 7,
+   "seat": "Mansfield",
+   "world": "Gas-compressor station diagnostics",
+   "districts": ""
+  },
+  {
+   "name": "East Baton Rouge",
+   "region": 2,
+   "seat": "Baton Rouge",
+   "world": "River Chemical Corridor control room",
+   "districts": "Baker City · Central Community · Zachary Community"
+  },
+  {
+   "name": "East Carroll",
+   "region": 8,
+   "seat": "Lake Providence",
+   "world": "Grain-elevator automation",
+   "districts": ""
+  },
+  {
+   "name": "East Feliciana",
+   "region": 2,
+   "seat": "Clinton",
+   "world": "Hospital device calibration lab",
+   "districts": ""
+  },
+  {
+   "name": "Evangeline",
+   "region": 4,
+   "seat": "Ville Platte",
+   "world": "Pump-station SCADA",
+   "districts": ""
+  },
+  {
+   "name": "Franklin",
+   "region": 8,
+   "seat": "Winnsboro",
+   "world": "Sweet-potato packing robotics",
+   "districts": ""
+  },
+  {
+   "name": "Grant",
+   "region": 6,
+   "seat": "Colfax",
+   "world": "Forestry drone survey",
+   "districts": ""
+  },
+  {
+   "name": "Iberia",
+   "region": 4,
+   "seat": "New Iberia",
+   "world": "Port of Iberia fabrication yard",
+   "districts": ""
+  },
+  {
+   "name": "Iberville",
+   "region": 2,
+   "seat": "Plaquemine",
+   "world": "Chlor-alkali process control",
+   "districts": ""
+  },
+  {
+   "name": "Jackson",
+   "region": 8,
+   "seat": "Jonesboro",
+   "world": "Paper-machine drive alignment",
+   "districts": ""
+  },
+  {
+   "name": "Jefferson",
+   "region": 1,
+   "seat": "Gretna",
+   "world": "Port crane & container sorter (6–8 world)",
+   "districts": ""
+  },
+  {
+   "name": "Jefferson Davis",
+   "region": 5,
+   "seat": "Jennings",
+   "world": "Rice-dryer thermal control",
+   "districts": ""
+  },
+  {
+   "name": "Lafayette",
+   "region": 4,
+   "seat": "Lafayette",
+   "world": "Ag-robotics & pump-station world",
+   "districts": ""
+  },
+  {
+   "name": "Lafourche",
+   "region": 3,
+   "seat": "Thibodaux",
+   "world": "Port Fourchon offshore actuator yard",
+   "districts": ""
+  },
+  {
+   "name": "LaSalle",
+   "region": 6,
+   "seat": "Jena",
+   "world": "Well-pad automation",
+   "districts": ""
+  },
+  {
+   "name": "Lincoln",
+   "region": 8,
+   "seat": "Ruston",
+   "world": "Ruston cyber-manufacturing lab",
+   "districts": ""
+  },
+  {
+   "name": "Livingston",
+   "region": 2,
+   "seat": "Livingston",
+   "world": "LIGO vacuum & precision systems",
+   "districts": ""
+  },
+  {
+   "name": "Madison",
+   "region": 8,
+   "seat": "Tallulah",
+   "world": "Cotton-gin sensor network",
+   "districts": ""
+  },
+  {
+   "name": "Morehouse",
+   "region": 8,
+   "seat": "Bastrop",
+   "world": "Data-center cooling plant",
+   "districts": ""
+  },
+  {
+   "name": "Natchitoches",
+   "region": 7,
+   "seat": "Natchitoches",
+   "world": "Meat-plant robotics & cold chain",
+   "districts": ""
+  },
+  {
+   "name": "Orleans",
+   "region": 1,
+   "seat": "New Orleans",
+   "world": "Michoud assembly & port operations",
+   "districts": "NOLA Public Schools (charter portfolio)"
+  },
+  {
+   "name": "Ouachita",
+   "region": 8,
+   "seat": "Monroe",
+   "world": "Monroe telecom & data operations",
+   "districts": "Monroe City"
+  },
+  {
+   "name": "Plaquemines",
+   "region": 1,
+   "seat": "Pointe à la Hache",
+   "world": "Plaquemines LNG train control",
+   "districts": ""
+  },
+  {
+   "name": "Pointe Coupee",
+   "region": 2,
+   "seat": "New Roads",
+   "world": "Power-plant turbine diagnostics",
+   "districts": ""
+  },
+  {
+   "name": "Rapides",
+   "region": 6,
+   "seat": "Alexandria",
+   "world": "Central Louisiana medical-device lab",
+   "districts": ""
+  },
+  {
+   "name": "Red River",
+   "region": 7,
+   "seat": "Coushatta",
+   "world": "Gas-well telemetry",
+   "districts": ""
+  },
+  {
+   "name": "Richland",
+   "region": 8,
+   "seat": "Rayville",
+   "world": "Hyperscale data-center electrical & HVAC",
+   "districts": ""
+  },
+  {
+   "name": "Sabine",
+   "region": 7,
+   "seat": "Many",
+   "world": "Sawmill optimizer",
+   "districts": ""
+  },
+  {
+   "name": "St. Bernard",
+   "region": 1,
+   "seat": "Chalmette",
+   "world": "Refinery instrumentation",
+   "districts": ""
+  },
+  {
+   "name": "St. Charles",
+   "region": 1,
+   "seat": "Hahnville",
+   "world": "Nuclear-plant simulator & safety culture",
+   "districts": ""
+  },
+  {
+   "name": "St. Helena",
+   "region": 2,
+   "seat": "Greensburg",
+   "world": "Timber harvest telematics",
+   "districts": ""
+  },
+  {
+   "name": "St. James",
+   "region": 1,
+   "seat": "Convent",
+   "world": "Ammonia plant process control",
+   "districts": ""
+  },
+  {
+   "name": "St. John the Baptist",
+   "region": 1,
+   "seat": "Edgard",
+   "world": "Grain-export terminal automation",
+   "districts": ""
+  },
+  {
+   "name": "St. Landry",
+   "region": 4,
+   "seat": "Opelousas",
+   "world": "Feed-mill automation",
+   "districts": ""
+  },
+  {
+   "name": "St. Martin",
+   "region": 4,
+   "seat": "St. Martinville",
+   "world": "Fabrication-shop weld cell",
+   "districts": ""
+  },
+  {
+   "name": "St. Mary",
+   "region": 3,
+   "seat": "Franklin",
+   "world": "Morgan City shipyard robotics",
+   "districts": ""
+  },
+  {
+   "name": "St. Tammany",
+   "region": 1,
+   "seat": "Covington",
+   "world": "Northshore healthcare-device & logistics lab",
+   "districts": ""
+  },
+  {
+   "name": "Tangipahoa",
+   "region": 2,
+   "seat": "Amite",
+   "world": "Hammond distribution-center robotics",
+   "districts": ""
+  },
+  {
+   "name": "Tensas",
+   "region": 8,
+   "seat": "St. Joseph",
+   "world": "Precision-ag drone & irrigation",
+   "districts": ""
+  },
+  {
+   "name": "Terrebonne",
+   "region": 3,
+   "seat": "Houma",
+   "world": "Houma floodgate & offshore actuator yard",
+   "districts": ""
+  },
+  {
+   "name": "Union",
+   "region": 8,
+   "seat": "Farmerville",
+   "world": "Poultry-plant automation",
+   "districts": ""
+  },
+  {
+   "name": "Vermilion",
+   "region": 4,
+   "seat": "Abbeville",
+   "world": "Marsh-restoration dredge telemetry",
+   "districts": ""
+  },
+  {
+   "name": "Vernon",
+   "region": 6,
+   "seat": "Leesville",
+   "world": "Military vehicle maintenance twin",
+   "districts": ""
+  },
+  {
+   "name": "Washington",
+   "region": 2,
+   "seat": "Franklinton",
+   "world": "Paper-mill automation",
+   "districts": "Bogalusa City"
+  },
+  {
+   "name": "Webster",
+   "region": 7,
+   "seat": "Minden",
+   "world": "Precision-manufacturing cell",
+   "districts": ""
+  },
+  {
+   "name": "West Baton Rouge",
+   "region": 2,
+   "seat": "Port Allen",
+   "world": "Port bulk-terminal automation",
+   "districts": ""
+  },
+  {
+   "name": "West Carroll",
+   "region": 8,
+   "seat": "Oak Grove",
+   "world": "Irrigation pivot control",
+   "districts": ""
+  },
+  {
+   "name": "West Feliciana",
+   "region": 2,
+   "seat": "St. Francisville",
+   "world": "Nuclear-plant safety systems",
+   "districts": ""
+  },
+  {
+   "name": "Winn",
+   "region": 6,
+   "seat": "Winnfield",
+   "world": "Salt-mine conveyor & ventilation",
+   "districts": ""
+  }
+ ]
+}

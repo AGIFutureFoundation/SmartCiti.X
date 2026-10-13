@@ -221,6 +221,37 @@ ok('the records panel offers the sweep, off until clicked, and says when the rec
   page.includes('id="trSweepBtn"') && page.includes('id="trSweepLvl"')
   && /recorder is off/.test(page));
 
+/* ---------------------------------------- ROBOLAB (wave 11): world kinds --- */
+/* The world teleop kind extends this recorder (same key, toggle, cap, export) and
+   is a roster of its own: the 3D page's four kinds above are untouched. */
+const wk = reg.world_episode_kinds, wt = reg.world_teleop;
+ok('the world episode kinds are the declared roster (world-teleop) and never reuse a 3D-page kind id',
+  Object.keys(wk).join(',') === 'world-teleop'
+  && Object.keys(wk).every((k) => !(k in reg.episode_kinds)));
+ok('world-teleop carries exactly the contract v1 field list, with its own kind version',
+  wk['world-teleop'].fields.join(',') === 't,kind,v,env,embodiment,world,actor,seed,hz,dt_s,steps,samples,outcome'
+  && wk['world-teleop'].v === 1);
+ok('a world sample is pose, velocity, nearby AUTHORED ids and the control inputs - env-local, never lat/lon',
+  Object.keys(wk['world-teleop'].sample_shape).join(',') === 'i,pose,vel,near,a'
+  && /never lat\/lon/.test(wk['world-teleop'].sample_shape.pose));
+ok('no world-teleop field names personal data (name, email, text, audio, camera, lat/lon, device)',
+  wk['world-teleop'].fields.every((f) => !/name|email|text|audio|camera|lat|lon|device/.test(f)));
+ok('world teleop samples at a fixed low rate with a hard cap of 60 s of samples',
+  wt.sample_hz === 5 && wt.dt_s === 0.1 && wt.max_samples === 300 && /hard cap/.test(wt.max_samples_policy));
+ok('world teleop is opt-in per episode, honours the base toggle, and is not offered in classroom mode',
+  /pressed Record/.test(wt.opt_in) && /base recorder toggle/.test(wt.opt_in) && /not offered/.test(wt.classroom));
+const robo = readFileSync(new URL('../web/robokit.py', import.meta.url), 'utf8');
+ok('robokit records world-teleop into the SAME storage key, toggle and rolling cap this registry declares',
+  robo.includes('TR_KEY_W = D_TRAIN.storage.key') && robo.includes('D_TRAIN.storage.toggle_key')
+  && robo.includes('D_TRAIN.storage.cap') && robo.includes("kind: 'world-teleop'")
+  && robo.includes("localStorage.getItem(TR_ON) !== '0'"));
+ok('robokit reads the sample rate and cap from this registry (one truth) and is deterministic',
+  robo.includes('D_TRAIN.world_teleop.sample_hz') && robo.includes('D_TRAIN.world_teleop.max_samples')
+  && !robo.includes('Math.random'));
+ok('robokit keeps nothing in classroom mode and nothing unless Record was pressed',
+  /if \(classroom \|\| !baseOn\(\)\) return false;/.test(robo)
+  && (robo.match(/if \(rec\) \{ const ok = keep\(ep\)/g) || []).length === 2 && (robo.match(/const ok = keep\(ep\)/g) || []).length === 2);
+
 const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('the registry was built from the current builder source (stamp check)',
   reg.source_stamp === createHash('sha256').update(src).digest('hex').slice(0, 16));

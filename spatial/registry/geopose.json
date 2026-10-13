@@ -2,25 +2,102 @@
  "pack": "smartcitix-trade-craft-academy-spatial-fabric",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
- "built": "2026-09-16",
- "source_stamp": "ecd6e7790e71d798",
+ "built": "2026-09-26",
+ "source_stamp": "44791c03a34daad7",
  "encoding": "OGC GeoPose 1.0 Basic-YPR, OGC 21-056r11, application/geopose+json",
  "media_type": "application/geopose+json",
  "crs": "WGS84 (EPSG:4326)",
  "counts": {
   "campuses": 10,
-  "anchors": 47,
+  "anchors": 69,
   "restoration_sites": 10,
-  "total": 67,
+  "total": 89,
   "unposed": 1
+ },
+ "coverage": {
+  "poses": 89,
+  "poses_with_horizontal_position": 89,
+  "poses_with_height": 0,
+  "poses_with_heading": 0,
+  "how": "counted from the poses in this file: a pose has a height when its h_provenance is not the UNKNOWN placeholder, a heading when its orientation_provenance is not; a zero in the encoding is never read as a value",
+  "why": {
+   "terrain": {
+    "registry": "terrain/registry/terrain.json",
+    "holds": "a land/water mask and shoreline outlines, in local metres - no elevation",
+    "source": "Natural Earth (naturalearthdata.com), 10m physical vectors",
+    "cell_m": 125.0,
+    "no_elevation": "There is no height in this pack. Natural Earth is an outline set. The ground is still flat; what changed is where it stops being ground."
+   },
+   "usgs": {
+    "registry": "parcels/registry/parcels.json#elevation",
+    "id": "usgs-epqs",
+    "name": "USGS Elevation Point Query Service (3DEP)",
+    "runs_in": "the learner's own browser, on request, one coordinate per opened card",
+    "scope": "one coordinate per request - a RECORDED anchor or a campus siting point, fetched when its card is opened, cached for the session, never pre-fetched and never bulk",
+    "verified_from_build": false,
+    "stored_by_this_bundle": false
+   },
+   "so": "no registry in this bundle holds a height or a heading for any subject, and this build invents none: h and yaw/pitch/roll stay 0 with the UNKNOWN sidecar until a registry that owns a measurement exists"
+  },
+  "provenance": "DERIVED - recounted from the emitted poses on every build"
  },
  "honesty": {
   "geopose_claimed": "OGC GeoPose 1.0 (OGC 21-056r11) is a published standard with a confirmed Basic-YPR JSON encoding, and it is claimed outright: every pose in geopose.json is exactly {position: {lat, lon, h}, orientation: {yaw, pitch, roll}}, lat/lon in degrees, h in metres, angles in degrees, LTP-ENU inner frame. The horizontal position is copied at build time from the registry that owns it and carries that registry's own provenance word (RECORDED / DERIVED / AUTHORED) and source string.",
   "no_heights_or_headings": "this bundle holds no height and no heading for any campus, anchor or site - elevation exists only as an on-request live USGS 3DEP lookup in the learner's own browser, never stored - so every pose emits h = 0.0 and yaw = pitch = roll = 0 with an explicit UNKNOWN sidecar beside it. A zero here is a placeholder, never a measurement, and no height or heading is invented to fill the slot.",
   "ombi_not_claimed": "the OMBI spatial-fabric manifest, the Scene Object Model (SOM) and RMAP are marked \"OMBI - New\" in the public deck and their normative texts were not reachable from this build, so fabric.json and som.json are SHAPED after the deck's vocabulary, not validated against a specification. They are registered in meta/registry/metaverse.json under not_claimed, with the reason, and never under standards.",
-  "static_files_only_no_rmap": "this fabric is static files a plain web server serves next to the site - the deck's own \"publish 3D content like a website\" point. No RMAP endpoint, no server, no WebSocket, no fetch at build time, no DID minted: the identity field is honestly null. Every service listed runs in-page with no network, and every anchored .glb is produced on demand by the learner's browser, not a file sitting on disk.",
+  "static_files_only_no_rmap": "this fabric is static files a plain web server serves next to the site - the deck's own \"publish 3D content like a website\" point. No RMAP endpoint, no server, no WebSocket, no fetch at build time, no DID minted: the identity field is honestly null. Every service listed runs in-page with no network, and every anchored .glb is produced on demand by the learner's browser, not a file sitting on disk. Anchoring the bundle-wide services (advisors, Schools panel, restoration panel, training recorder) at the flagship campus is a DESIGN decision unions/registry/campuses.json owns (flagship: true on exactly one campus), not a fact about where anything physically is.",
   "external_origins": "every other operator this fabric points at - a restoration site's own organization, the US Navy, EPA Region 9 and California DTSC at Hunters Point, the US Navy, California DTSC and CDPH at Former Naval Station Treasure Island, a port authority, a university, a museum, a neighbouring city - is a separate origin: named, located by its own pose, and never content this fabric serves for them (served_by_this_fabric is false on every one). That is the SOM's per-branch ownership idea, and it is the same \"not affiliated\" line restoration/ and geo/ already hold. The 111 union halls' real organizations are deliberately NOT listed as origins: the halls here are SCHEMATIC training buildings named after a craft, not a union's premises.",
-  "not_loaded_in_any_browser": "nothing here has been opened in Sneeze, Artemis or any other metaverse browser. The only consumers this pack can defend are a reader of application/geopose+json and this bundle's own suite (spatial/test.mjs), which holds every pose against its source registry on every run."
+  "not_loaded_in_any_browser": "nothing here has been opened in Sneeze, Artemis or any other metaverse browser. The only consumers this pack can defend are a reader of application/geopose+json and this bundle's own suite (spatial/test.mjs), which holds every pose against its source registry on every run.",
+  "reachability_probe": {
+   "date": "2026-09-26",
+   "dates": [
+    "2026-09-25",
+    "2026-09-26"
+   ],
+   "same_codes_on_every_date": true,
+   "how": "curl -sS -o /dev/null -w '%{http_code}' --max-time 20 <url>, once per URL per date, from the build container through its egress proxy with TLS verification on and HTTPS_PROXY as configured; no retry loop, no proxy bypass, no TLS switched off",
+   "tried": [
+    {
+     "url": "https://github.com/rp1-com",
+     "sought": "the RP1 organization - OMBI lead architect and maintainer",
+     "http_code": "403",
+     "curl_exit": 0,
+     "meaning": "HTTP 403 from the egress proxy: the CONNECT was refused (organization policy denial), nothing from the host itself"
+    },
+    {
+     "url": "https://github.com/open-metaverse-browser",
+     "sought": "the Open Metaverse Browser Initiative organization",
+     "http_code": "403",
+     "curl_exit": 0,
+     "meaning": "HTTP 403 from the egress proxy: the CONNECT was refused (organization policy denial), nothing from the host itself"
+    },
+    {
+     "url": "https://api.github.com/search/repositories?q=ombi+spatial+fabric",
+     "sought": "a repository search for the fabric-manifest / SOM / RMAP texts",
+     "http_code": "403",
+     "curl_exit": 0,
+     "meaning": "HTTP 403 from the egress proxy: the CONNECT was refused (organization policy denial), nothing from the host itself"
+    },
+    {
+     "url": "https://metaverse-standards.org/",
+     "sought": "the Metaverse Standards Forum's own site, OMBI's home",
+     "http_code": "000",
+     "curl_exit": 56,
+     "meaning": "no HTTP response at all: curl exited 56, \"CONNECT tunnel failed, response 403\", so %{http_code} printed 000; the proxy status log records \"gateway answered 403 to CONNECT\" for this host"
+    },
+    {
+     "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+     "sought": "OGC GeoPose 1.0 (21-056r11), the one CLAIMED standard - its text was not readable from here either; the Basic-YPR encoding used is the one confirmed in the brief and in the OSCP GeoPose Protocol",
+     "http_code": "000",
+     "curl_exit": 56,
+     "meaning": "no HTTP response at all: curl exited 56, \"CONNECT tunnel failed, response 403\", so %{http_code} printed 000; the proxy status log records \"gateway answered 403 to CONNECT\" for this host"
+    }
+   ],
+   "answered_2xx": 0,
+   "so": "this is why OMBI is not claimed: none of the hosts that would hold the fabric-manifest, SOM or RMAP normative text answered from this build, so fabric.json and som.json remain SHAPED after the deck and are registered in meta/ under not_claimed",
+   "revisit_rule": "if any URL above ever answers 2xx the pack must be REVISITED: spatial/build.py refuses to build and spatial/test.mjs fails by URL, rather than quietly keep saying unreachable",
+   "provenance": "RECORDED - each code is what curl returned on the date given; nothing here is assumed, and the build itself fetched nothing"
+  }
  },
  "poses": [
   {
@@ -328,6 +405,166 @@
   {
    "subject": {
     "kind": "anchor",
+    "id": "treasure-island/emeryville",
+    "name": "Emeryville",
+    "campus": "treasure-island",
+    "ref": "anchor:treasure-island/emeryville"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.8313,
+     "lon": -122.2852,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 7.5,
+    "bearing_from_campus_deg": 83.4,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "treasure-island/oakland",
+    "name": "Oakland",
+    "campus": "treasure-island",
+    "ref": "anchor:treasure-island/oakland"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.8044,
+     "lon": -122.2712,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 9.0,
+    "bearing_from_campus_deg": 103.7,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "treasure-island/tiburon",
+    "name": "Tiburon",
+    "campus": "treasure-island",
+    "ref": "anchor:treasure-island/tiburon"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.8735,
+     "lon": -122.4566,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 9.4,
+    "bearing_from_campus_deg": 306.4,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "treasure-island/albany",
+    "name": "Albany",
+    "campus": "treasure-island",
+    "ref": "anchor:treasure-island/albany"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.8869,
+     "lon": -122.2978,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 9.5,
+    "bearing_from_campus_deg": 42.1,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "treasure-island/berkeley",
+    "name": "Berkeley",
+    "campus": "treasure-island",
+    "ref": "anchor:treasure-island/berkeley"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.8716,
+     "lon": -122.2727,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 10.1,
+    "bearing_from_campus_deg": 58.1,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
     "id": "treasure-island/sausalito",
     "name": "Sausalito",
     "campus": "treasure-island",
@@ -354,6 +591,102 @@
    "anchor": {
     "km_from_campus": 10.8,
     "bearing_from_campus_deg": 291.4,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "treasure-island/el-cerrito",
+    "name": "El Cerrito",
+    "campus": "treasure-island",
+    "ref": "anchor:treasure-island/el-cerrito"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.9158,
+     "lon": -122.3108,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 11.5,
+    "bearing_from_campus_deg": 27.0,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "treasure-island/piedmont",
+    "name": "Piedmont",
+    "campus": "treasure-island",
+    "ref": "anchor:treasure-island/piedmont"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.8244,
+     "lon": -122.2316,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 12.2,
+    "bearing_from_campus_deg": 89.5,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "treasure-island/richmond",
+    "name": "Richmond",
+    "campus": "treasure-island",
+    "ref": "anchor:treasure-island/richmond"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.9358,
+     "lon": -122.3477,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 12.6,
+    "bearing_from_campus_deg": 9.1,
     "kind": "city"
    }
   },
@@ -424,15 +757,15 @@
   {
    "subject": {
     "kind": "anchor",
-    "id": "treasure-island/richmond",
-    "name": "Richmond",
+    "id": "treasure-island/orinda",
+    "name": "Orinda",
     "campus": "treasure-island",
-    "ref": "anchor:treasure-island/richmond"
+    "ref": "anchor:treasure-island/orinda"
    },
    "geopose": {
     "position": {
-     "lat": 37.9358,
-     "lon": -122.3477,
+     "lat": 37.8771,
+     "lon": -122.1797,
      "h": 0.0
     },
     "orientation": {
@@ -448,23 +781,23 @@
     "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
    },
    "anchor": {
-    "km_from_campus": 12.6,
-    "bearing_from_campus_deg": 9.1,
+    "km_from_campus": 17.8,
+    "bearing_from_campus_deg": 70.4,
     "kind": "city"
    }
   },
   {
    "subject": {
     "kind": "anchor",
-    "id": "treasure-island/san-rafael",
-    "name": "San Rafael",
+    "id": "treasure-island/mill-valley",
+    "name": "Mill Valley",
     "campus": "treasure-island",
-    "ref": "anchor:treasure-island/san-rafael"
+    "ref": "anchor:treasure-island/mill-valley"
    },
    "geopose": {
     "position": {
-     "lat": 37.9735,
-     "lon": -122.5311,
+     "lat": 37.906,
+     "lon": -122.545,
      "h": 0.0
     },
     "orientation": {
@@ -480,8 +813,8 @@
     "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
    },
    "anchor": {
-    "km_from_campus": 21.8,
-    "bearing_from_campus_deg": 319.9,
+    "km_from_campus": 17.9,
+    "bearing_from_campus_deg": 301.0,
     "kind": "city"
    }
   },
@@ -520,15 +853,15 @@
   {
    "subject": {
     "kind": "anchor",
-    "id": "treasure-island/san-mateo",
-    "name": "San Mateo",
+    "id": "treasure-island/san-leandro",
+    "name": "San Leandro",
     "campus": "treasure-island",
-    "ref": "anchor:treasure-island/san-mateo"
+    "ref": "anchor:treasure-island/san-leandro"
    },
    "geopose": {
     "position": {
-     "lat": 37.563,
-     "lon": -122.3255,
+     "lat": 37.7249,
+     "lon": -122.1561,
      "h": 0.0
     },
     "orientation": {
@@ -544,23 +877,23 @@
     "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
    },
    "anchor": {
-    "km_from_campus": 29.2,
-    "bearing_from_campus_deg": 172.2,
+    "km_from_campus": 21.8,
+    "bearing_from_campus_deg": 120.1,
     "kind": "city"
    }
   },
   {
    "subject": {
     "kind": "anchor",
-    "id": "oakland/berkeley",
-    "name": "Berkeley",
-    "campus": "oakland",
-    "ref": "anchor:oakland/berkeley"
+    "id": "treasure-island/san-rafael",
+    "name": "San Rafael",
+    "campus": "treasure-island",
+    "ref": "anchor:treasure-island/san-rafael"
    },
    "geopose": {
     "position": {
-     "lat": 37.8716,
-     "lon": -122.2727,
+     "lat": 37.9735,
+     "lon": -122.5311,
      "h": 0.0
     },
     "orientation": {
@@ -576,8 +909,8 @@
     "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
    },
    "anchor": {
-    "km_from_campus": 7.5,
-    "bearing_from_campus_deg": 359.0,
+    "km_from_campus": 21.8,
+    "bearing_from_campus_deg": 319.9,
     "kind": "city"
    }
   },
@@ -616,6 +949,38 @@
   {
    "subject": {
     "kind": "anchor",
+    "id": "oakland/piedmont",
+    "name": "Piedmont",
+    "campus": "oakland",
+    "ref": "anchor:oakland/piedmont"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.8244,
+     "lon": -122.2316,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 4.1,
+    "bearing_from_campus_deg": 57.4,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
     "id": "oakland/alameda",
     "name": "Alameda",
     "campus": "oakland",
@@ -648,6 +1013,166 @@
   {
    "subject": {
     "kind": "anchor",
+    "id": "oakland/berkeley",
+    "name": "Berkeley",
+    "campus": "oakland",
+    "ref": "anchor:oakland/berkeley"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.8716,
+     "lon": -122.2727,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 7.5,
+    "bearing_from_campus_deg": 359.0,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "oakland/albany",
+    "name": "Albany",
+    "campus": "oakland",
+    "ref": "anchor:oakland/albany"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.8869,
+     "lon": -122.2978,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 9.5,
+    "bearing_from_campus_deg": 345.7,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "oakland/orinda",
+    "name": "Orinda",
+    "campus": "oakland",
+    "ref": "anchor:oakland/orinda"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.8771,
+     "lon": -122.1797,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 11.4,
+    "bearing_from_campus_deg": 44.8,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "oakland/el-cerrito",
+    "name": "El Cerrito",
+    "campus": "oakland",
+    "ref": "anchor:oakland/el-cerrito"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.9158,
+     "lon": -122.3108,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 12.9,
+    "bearing_from_campus_deg": 344.3,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "oakland/san-francisco",
+    "name": "San Francisco",
+    "campus": "oakland",
+    "ref": "anchor:oakland/san-francisco"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.7749,
+     "lon": -122.4194,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 13.4,
+    "bearing_from_campus_deg": 255.9,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
     "id": "oakland/san-leandro",
     "name": "San Leandro",
     "campus": "oakland",
@@ -674,6 +1199,262 @@
    "anchor": {
     "km_from_campus": 13.4,
     "bearing_from_campus_deg": 131.1,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "oakland/richmond",
+    "name": "Richmond",
+    "campus": "oakland",
+    "ref": "anchor:oakland/richmond"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.9358,
+     "lon": -122.3477,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 16.1,
+    "bearing_from_campus_deg": 335.3,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "oakland/lafayette",
+    "name": "Lafayette",
+    "campus": "oakland",
+    "ref": "anchor:oakland/lafayette"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.8858,
+     "lon": -122.118,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 16.2,
+    "bearing_from_campus_deg": 56.0,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "oakland/tiburon",
+    "name": "Tiburon",
+    "campus": "oakland",
+    "ref": "anchor:oakland/tiburon"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.8735,
+     "lon": -122.4566,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 18.0,
+    "bearing_from_campus_deg": 295.3,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "oakland/sausalito",
+    "name": "Sausalito",
+    "campus": "oakland",
+    "ref": "anchor:oakland/sausalito"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.859,
+     "lon": -122.4853,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 19.8,
+    "bearing_from_campus_deg": 288.0,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "oakland/castro-valley",
+    "name": "Castro Valley",
+    "campus": "oakland",
+    "ref": "anchor:oakland/castro-valley"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.6941,
+     "lon": -122.0864,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 20.4,
+    "bearing_from_campus_deg": 127.0,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "oakland/south-san-francisco",
+    "name": "South San Francisco",
+    "campus": "oakland",
+    "ref": "anchor:oakland/south-san-francisco"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.6547,
+     "lon": -122.4077,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 20.5,
+    "bearing_from_campus_deg": 215.8,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "oakland/walnut-creek",
+    "name": "Walnut Creek",
+    "campus": "oakland",
+    "ref": "anchor:oakland/walnut-creek"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.9101,
+     "lon": -122.0652,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 21.6,
+    "bearing_from_campus_deg": 56.9,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "oakland/daly-city",
+    "name": "Daly City",
+    "campus": "oakland",
+    "ref": "anchor:oakland/daly-city"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.6879,
+     "lon": -122.4702,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 21.8,
+    "bearing_from_campus_deg": 233.5,
     "kind": "city"
    }
   },

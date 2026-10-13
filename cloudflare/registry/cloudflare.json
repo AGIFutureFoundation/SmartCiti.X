@@ -1,0 +1,62 @@
+{
+ "pack": "cloudflare",
+ "provenance": "AUTHORED",
+ "deployed": false,
+ "status": "configuration only - nothing is deployed; no Cloudflare account or token exists here",
+ "headers_from": "security/headers.json",
+ "site_headers": [
+  {
+   "key": "X-Content-Type-Options",
+   "value": "nosniff"
+  },
+  {
+   "key": "Referrer-Policy",
+   "value": "strict-origin-when-cross-origin"
+  },
+  {
+   "key": "Content-Security-Policy",
+   "value": "frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'"
+  }
+ ],
+ "api_headers": [
+  {
+   "key": "Content-Security-Policy",
+   "value": "default-src 'none'; frame-ancestors 'none'"
+  },
+  {
+   "key": "Cache-Control",
+   "value": "no-store"
+  }
+ ],
+ "api_routes": [
+  "/api/checkout",
+  "/api/stripe-webhook"
+ ],
+ "secrets": [
+  "STRIPE_SECRET_KEY",
+  "STRIPE_WEBHOOK_SECRET"
+ ],
+ "vars": [
+  "SITE_ORIGIN",
+  "STRIPE_PRICE_INDIVIDUAL_LEARNER",
+  "STRIPE_MODE_INDIVIDUAL_LEARNER",
+  "STRIPE_PRICE_UNION_HALL",
+  "STRIPE_MODE_UNION_HALL",
+  "STRIPE_PRICE_SCHOOL_DISTRICT",
+  "STRIPE_MODE_SCHOOL_DISTRICT",
+  "RATE_LIMIT_CHECKOUT_MAX",
+  "RATE_LIMIT_CHECKOUT_WINDOW_S",
+  "RATE_LIMIT_SALT"
+ ],
+ "kv_binding": "PAYMENTS_KV",
+ "service_binding": "PAYMENTS",
+ "files": {
+  "_headers": "sha256:b179e51d636be9923c4b376ab5f315879982277a646ab5f5bae36d01ef362269",
+  "_redirects": "sha256:28be39fd1803d2abb307f590f649d505eab14d981c57a23e4af7eea6af083132",
+  "_routes.json": "sha256:f4d62b6d399d59d34d963c154c3b3271b6857bb9492a49f3fed68a60e1711b3b",
+  "functions/api/[[path]].js": "sha256:5eb727a578f0dc6a25a5cff99ae73820239f67f7692b0a7ce0a3a48b71d38cd9",
+  "worker/wrangler.toml": "sha256:5458be7e72028394258f9dde79b7ebbeffcd5007643c513f80f568bba9c6055e",
+  "wrangler.toml": "sha256:b281f69cf21294af379847262049620528f3ac22dbd492f8e1a48686868ace4b"
+ },
+ "source_stamp": "sha256:0785e495cac179d6cffa558e4728d4d17880840d44a14958b3f83e72d064377a"
+}

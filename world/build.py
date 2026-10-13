@@ -953,10 +953,15 @@ if not BOOTSTRAP:
     for fn in ('function groundTex(', 'function skyCanvas(',
                'function spawnFauna(', 'function faunaStep('):
         assert fn in page, f'the page does not build the world: {fn} missing'
-    # the texture claim is only worth making if nothing loads an image
+    # the texture claim is only worth making if nothing loads an image. The
+    # two link-preview tags web/seo.py writes (og:image, twitter:image) name a
+    # screenshot another site shows beside a shared link; the page itself
+    # never loads them, so exactly those two tags are set aside - nothing else
+    import re as _re
+    scene = _re.sub(r'<meta (?:property="og:image"|name="twitter:image") content="[^"]*">', '', page)
     for banned in ('TextureLoader', '.jpg', '.png', '.hdr', '.exr',
                    'CubeTextureLoader', 'RGBELoader'):
-        assert banned not in page, \
+        assert banned not in scene, \
             f'the page claims every texture is generated but references {banned}'
 
 stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest()[:16]

@@ -1,0 +1,38 @@
+{
+ "id": "ti-tower-steel-pick",
+ "title": "Tower steel pick, crane simulator bay",
+ "job": "Pick one steel member off the supply pad and set it in the ring with the plan read out loud first, one signaller, and nobody under the load.",
+ "place": {"kind": "space", "id": "crane-sim-bay"},
+ "crew": "crane-lift-crew",
+ "roles": {
+  "lift-director": {"union": "ironworkers"},
+  "crane-operator": {"union": "crane-ops"},
+  "signalperson": {"union": "riggers"},
+  "rigger": {"union": "riggers"}
+ },
+ "handoffs": [
+  {"by": "lift-director", "to": "rigger",
+   "from_evidence": {"kind": "crew", "crew": "crane-lift-crew", "role": "lift-director", "topic": "plan"},
+   "to_evidence": {"kind": "sim", "sim": "load-chart", "scenario": "bay-pick-list"}},
+  {"by": "rigger", "to": "signalperson",
+   "from_evidence": {"kind": "sim", "sim": "load-chart", "scenario": "bay-pick-list"},
+   "to_evidence": {"kind": "walkaround", "sim": "rigging-signals", "point": "sightline"}},
+  {"by": "signalperson", "to": "crane-operator",
+   "from_evidence": {"kind": "sim", "sim": "rigging-signals", "scenario": "bay-first-card"},
+   "to_evidence": {"kind": "sim", "sim": "crane-lift", "scenario": "bay-steel"}},
+  {"by": "crane-operator", "to": "signalperson",
+   "from_evidence": {"kind": "sim", "sim": "crane-lift", "scenario": "bay-steel"},
+   "to_evidence": {"kind": "walkaround", "sim": "rigging-signals", "point": "path"}},
+  {"by": "signalperson", "to": "rigger",
+   "from_evidence": {"kind": "walkaround", "sim": "rigging-signals", "point": "path"},
+   "to_evidence": {"kind": "crew", "crew": "crane-lift-crew", "role": "rigger", "topic": "weight"}},
+  {"by": "rigger", "to": "lift-director",
+   "from_evidence": {"kind": "crew", "crew": "crane-lift-crew", "role": "rigger", "topic": "weight"},
+   "to_evidence": {"kind": "crew", "crew": "crane-lift-crew", "role": "lift-director", "topic": "change"}}
+ ],
+ "stop_work": "Every one of the four can stop this lift, and the crane holds on a stop signal from anyone at all - that is the one signal nobody needs standing to give.",
+ "gates": {
+  "walkaround_before_first_move": [{"sim": "crane-lift", "point": "rope"}, {"sim": "load-chart", "point": "chart"}],
+  "ppe": "derived"
+ }
+}

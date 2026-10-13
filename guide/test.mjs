@@ -250,13 +250,24 @@ ok('every gesture says what it measures and what it does, and applies only where
     && g.where.every((w) => w in reg.places && reg.places[w].walkable)));
 ok('exactly one gesture opens the guide, so there is one way in and not two',
   gestures.filter(([, g]) => g.does.includes('open this guide')).length === 1);
-ok('the hand table admits it is unverified on hardware and mocked-session only',
+ok('the hand table admits it is unverified on hardware: synthetic joint positions only, held at the source by regex, no session (mocked or real) driven, harness not claimed',
   /^UNVERIFIED-ON-HARDWARE:/.test(reg.hands.honesty.status)
   && /no headset has been available/.test(reg.hands.honesty.status)
-  && /MOCKED WebXR session only/.test(reg.hands.honesty.status)
+  && /proven against synthetic joint positions only/.test(reg.hands.honesty.status)
+  && /held at the source by regex/.test(reg.hands.honesty.status)
+  && /no session, mocked or real, has been driven in this tree/.test(reg.hands.honesty.status)
+  && /mocked-session harness is not claimed/.test(reg.hands.honesty.status)
+  && [reg.hands.honesty.status, reg.hands.honesty.mocked_only, reg.honesty.hands]
+    .every((s) => !/verified against a mocked/i.test(s)
+      && !/MOCKED WebXR session only/i.test(s)
+      && !/tested against a mocked/i.test(s))
+  && /no session, mocked or real, has been driven/.test(reg.honesty.hands)
+  && /not claimed/.test(reg.honesty.hands)
   && /AUTHORED/.test(reg.hands.honesty.thresholds_are_authored));
 ok('and that claim is grounded in the page\'s own admission, not in this pack\'s good intentions',
-  page.includes('mocked WebXR session')
+  page.includes('No session - mocked or real - has been driven in this tree')
+  && page.includes('is the next step and is NOT claimed')
+  && !/proven against a mocked|verified against a mocked/.test(page)
   && /do not exist in it yet/.test(reg.hands.honesty.declared_not_built));
 
 /* -------------------------------------------------- what the guide admits --- */

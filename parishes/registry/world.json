@@ -1,0 +1,347 @@
+{
+ "pack": "parishes",
+ "layer": "world",
+ "version": "1.4",
+ "source_stamp": "56b5daf32f0439ad50dad9fc560737fe088b4e32057a1845a87e027fea1d8966",
+ "source_stamp_sha256": "sha256 over parishes/registry/parishes.json + every parishes/maps/streets/<fips>.json (sorted by fips) + parishes/build_world.py",
+ "water_source": "npm registry searched 2026-09-29 01:20 UTC for a PUBLIC-DOMAIN Natural Earth 10m lakes / rivers_lake_centerlines package: none verified (earth-shapefiles 2.0.0 MIT, countries only; @fireflysemantics/geojson 1.0.1 Public Domain, countries only; sane-topojson MIT, 50m/110m only; world-atlas land/countries only; @geo-maps/* excluded, ODbL decision still open). Nothing is vendored and NO water feature is RECORDED: every feature below is AUTHORED.",
+ "water_note": "AUTHORED water - procedural, NOT the real lakes, rivers or bayous",
+ "provenance_rule": "water AUTHORED (procedural, seeded by FIPS); lake stand-ins sit on the APPROXIMATE label points of registry water.labels (general public record) but their shape and size are AUTHORED; road profiles AUTHORED; building rule = the page's AUTHORED kit; open water on the Gulf side stays DERIVED = outside every land outline (no geometry here)",
+ "water_levels": {
+  "surface_y_m": -0.4,
+  "wade_max_depth_m": 1.0,
+  "depth_m": {
+   "lake": 3.0,
+   "bayou": 1.6,
+   "canal": 2.4,
+   "stream": 0.6,
+   "pond": 1.2
+  },
+  "provenance": "AUTHORED"
+ },
+ "roads": {
+  "profile_version": 1,
+  "note": "AUTHORED cross-sections for the AUTHORED street polylines - generic, NOT a real street survey or standard",
+  "classes": {
+   "arterial": {
+    "lanes": 4,
+    "lane_width_m": 3.5,
+    "parking_lanes": 0,
+    "parking_width_m": 0.0,
+    "curb_height_m": 0.15,
+    "sidewalk_m": [
+     3.0,
+     3.0
+    ],
+    "carriageway_m": 14.0,
+    "corridor_m": 20.0,
+    "provenance": "AUTHORED"
+   },
+   "collector": {
+    "lanes": 2,
+    "lane_width_m": 3.3,
+    "parking_lanes": 2,
+    "parking_width_m": 2.4,
+    "curb_height_m": 0.15,
+    "sidewalk_m": [
+     2.4,
+     2.4
+    ],
+    "carriageway_m": 11.4,
+    "corridor_m": 16.2,
+    "provenance": "AUTHORED"
+   },
+   "local": {
+    "lanes": 2,
+    "lane_width_m": 3.0,
+    "parking_lanes": 1,
+    "parking_width_m": 2.2,
+    "curb_height_m": 0.15,
+    "sidewalk_m": [
+     1.8,
+     1.8
+    ],
+    "carriageway_m": 8.2,
+    "corridor_m": 11.8,
+    "provenance": "AUTHORED"
+   }
+  }
+ },
+ "buildings": {
+  "mode": "page-rule",
+  "why": "buildings are generated in the page (web/build_parishes.py buildChunk + kitLot, owner WILDS), not stored by PARISH; this is the rule so physkit computes the SAME boxes",
+  "source": {
+   "page_builder": "web/build_parishes.py",
+   "functions": [
+    "buildChunk",
+    "kitLot",
+    "landUse",
+    "parishAt"
+   ],
+   "hash": "wilds/core.mjs wildsHash(ix, iz, seed, k)"
+  },
+  "constants": {
+   "CELL": 25,
+   "CHUNK_M": 250,
+   "DISTRICT_M": 400,
+   "SEED": 20260928
+  },
+  "box": "[x, z, w, h, d, family, yaw, colour]: SCENE WORLD metres (x east, z = -north), base at y=0, footprint w along x by d along z rotated by yaw radians about +y, height h; family house|midrise",
+  "rule": "for each cell (ix, iz) of CELL m: x=(ix+0.2+0.6*jx)*CELL, z=(iz+0.2+0.6*jz)*CELL with jx=H(ix,iz,SEED,2), jz=H(ix,iz,SEED,3), h=H(ix,iz,SEED,1); skip if outside every parish ring or within 45 m of a loaded landmark; skip street cells ((ix mod 4)==0 or (iz mod 4)==0, positive modulo); land use = landUse(x,z) from H(floor(x/DISTRICT_M), floor(z/DISTRICT_M), SEED, 7): <0.5 residential, <0.76 commercial, <0.88 industrial, else park; park -> no building; a building when h < 0.55: kitLot(use, ix, iz, x, z, jx, jz, H(ix,iz,SEED,4))",
+  "land_use": "AUTHORED (page hash districts), NOT the real land use",
+  "provenance": "AUTHORED",
+  "hash_vectors": [
+   {
+    "args": [
+     0,
+     0,
+     20260928,
+     1
+    ],
+    "value": 0.4987560303416103
+   },
+   {
+    "args": [
+     3,
+     -7,
+     20260928,
+     2
+    ],
+    "value": 0.6654500276781619
+   },
+   {
+    "args": [
+     -12,
+     40,
+     20260928,
+     3
+    ],
+    "value": 0.82820960204117
+   },
+   {
+    "args": [
+     123,
+     456,
+     20260928,
+     4
+    ],
+    "value": 0.017014533514156938
+   },
+   {
+    "args": [
+     -1,
+     -1,
+     20260928,
+     7
+    ],
+    "value": 0.2231201771646738
+   },
+   {
+    "args": [
+     5000,
+     -9000,
+     1,
+     5
+    ],
+    "value": 0.9506528286729008
+   }
+  ]
+ },
+ "parishes": {
+  "22005": {
+   "path": "parishes/maps/world/22005.json",
+   "bytes": 113715,
+   "max_bytes": 600000,
+   "sha256": "6d0917aa045cc59774e66989b0e9dcb8b9ad5cbdca44364657c9228b08ff76b9",
+   "counts": {
+    "lakes": 0,
+    "bayou": 3,
+    "canal": 2,
+    "stream": 5,
+    "ponds": 8,
+    "crossings": 454,
+    "channel_vertices": 2693
+   }
+  },
+  "22051": {
+   "path": "parishes/maps/world/22051.json",
+   "bytes": 106026,
+   "max_bytes": 600000,
+   "sha256": "e7f55a22b7288596f7f451d8f9459e93ef45f0231d585d9e10021dfa7b598798",
+   "counts": {
+    "lakes": 0,
+    "bayou": 3,
+    "canal": 2,
+    "stream": 9,
+    "ponds": 8,
+    "crossings": 188,
+    "channel_vertices": 2288
+   }
+  },
+  "22057": {
+   "path": "parishes/maps/world/22057.json",
+   "bytes": 358727,
+   "max_bytes": 600000,
+   "sha256": "be1526e24c54dd8860e1c32960b26580f962523dbaf71065c74d3ea1efb99a04",
+   "counts": {
+    "lakes": 0,
+    "bayou": 3,
+    "canal": 2,
+    "stream": 5,
+    "ponds": 8,
+    "crossings": 884,
+    "channel_vertices": 8615
+   }
+  },
+  "22063": {
+   "path": "parishes/maps/world/22063.json",
+   "bytes": 178658,
+   "max_bytes": 600000,
+   "sha256": "09980835f0c1dedbef341d20a2f2aec5f8d7b6d6f70409e335df5cff1a91fb58",
+   "counts": {
+    "lakes": 1,
+    "bayou": 3,
+    "canal": 2,
+    "stream": 5,
+    "ponds": 8,
+    "crossings": 659,
+    "channel_vertices": 4160
+   }
+  },
+  "22071": {
+   "path": "parishes/maps/world/22071.json",
+   "bytes": 133471,
+   "max_bytes": 600000,
+   "sha256": "d3bd29fd1d8d5ee75b8c5ccf2a026444dc2fae294b6ef3cdfde1738452a0e96a",
+   "counts": {
+    "lakes": 0,
+    "bayou": 3,
+    "canal": 2,
+    "stream": 6,
+    "ponds": 8,
+    "crossings": 469,
+    "channel_vertices": 3077
+   }
+  },
+  "22075": {
+   "path": "parishes/maps/world/22075.json",
+   "bytes": 332630,
+   "max_bytes": 600000,
+   "sha256": "a5ce7f6b040c008540b0fe09f266569a91371c547c73b2aedf7fa2b21826b8c6",
+   "counts": {
+    "lakes": 0,
+    "bayou": 4,
+    "canal": 2,
+    "stream": 5,
+    "ponds": 8,
+    "crossings": 663,
+    "channel_vertices": 7396
+   }
+  },
+  "22087": {
+   "path": "parishes/maps/world/22087.json",
+   "bytes": 192320,
+   "max_bytes": 600000,
+   "sha256": "a8e39e134058063930b7558e7be5c6e7ccf5a3874e89d72f950df6747cdaa379",
+   "counts": {
+    "lakes": 0,
+    "bayou": 4,
+    "canal": 3,
+    "stream": 5,
+    "ponds": 8,
+    "crossings": 371,
+    "channel_vertices": 4488
+   }
+  },
+  "22089": {
+   "path": "parishes/maps/world/22089.json",
+   "bytes": 123641,
+   "max_bytes": 600000,
+   "sha256": "b0e3e4745a36d43d667960a71a1ea4e8531ec673e1745b962bfdb0e0c2346243",
+   "counts": {
+    "lakes": 0,
+    "bayou": 3,
+    "canal": 2,
+    "stream": 5,
+    "ponds": 8,
+    "crossings": 436,
+    "channel_vertices": 2882
+   }
+  },
+  "22093": {
+   "path": "parishes/maps/world/22093.json",
+   "bytes": 113394,
+   "max_bytes": 600000,
+   "sha256": "9b787bed6e12e6442fc3955b2145b52deec8bc28d9d8b4d58ee6c51a302ee43d",
+   "counts": {
+    "lakes": 0,
+    "bayou": 5,
+    "canal": 3,
+    "stream": 5,
+    "ponds": 8,
+    "crossings": 472,
+    "channel_vertices": 2669
+   }
+  },
+  "22095": {
+   "path": "parishes/maps/world/22095.json",
+   "bytes": 134786,
+   "max_bytes": 600000,
+   "sha256": "7ccf6206d3c13a23e236a0d28f601af94319539f753aa8399a26f4b809fcd6fd",
+   "counts": {
+    "lakes": 0,
+    "bayou": 3,
+    "canal": 2,
+    "stream": 6,
+    "ponds": 8,
+    "crossings": 517,
+    "channel_vertices": 3222
+   }
+  },
+  "22103": {
+   "path": "parishes/maps/world/22103.json",
+   "bytes": 239620,
+   "max_bytes": 600000,
+   "sha256": "151464637945972404c8f873eef873f6dd2770c338a67811ec5842d8aa849629",
+   "counts": {
+    "lakes": 1,
+    "bayou": 3,
+    "canal": 2,
+    "stream": 5,
+    "ponds": 8,
+    "crossings": 710,
+    "channel_vertices": 5485
+   }
+  },
+  "22105": {
+   "path": "parishes/maps/world/22105.json",
+   "bytes": 151465,
+   "max_bytes": 600000,
+   "sha256": "073b755862ce1b770a3b43a5e98919e0fa3f7e5a6fe8147884d39d8af915137c",
+   "counts": {
+    "lakes": 0,
+    "bayou": 3,
+    "canal": 2,
+    "stream": 5,
+    "ponds": 8,
+    "crossings": 407,
+    "channel_vertices": 3413
+   }
+  },
+  "22109": {
+   "path": "parishes/maps/world/22109.json",
+   "bytes": 267474,
+   "max_bytes": 600000,
+   "sha256": "b76cf1cab94a256b28e90940beeff8ae6bf36f3ab9dbcddb5a2f557784841a9a",
+   "counts": {
+    "lakes": 0,
+    "bayou": 3,
+    "canal": 2,
+    "stream": 5,
+    "ponds": 8,
+    "crossings": 568,
+    "channel_vertices": 6300
+   }
+  }
+ }
+}

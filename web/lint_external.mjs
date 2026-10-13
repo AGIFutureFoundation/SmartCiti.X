@@ -80,6 +80,13 @@ const SELF = new Set([
   // failed on it immediately, which is the lint doing its job: a namespace
   // that looks like a URL still has to be classified once, on purpose.
   'www.w3.org',
+  // The JSON-LD @context every page's structured data names (web/seo.py):
+  // a vocabulary identifier like the two above, which no browser requests.
+  'schema.org',
+  // The site's own published origin (web/seo.py BASE), written into og:url
+  // and the JSON-LD url so a link preview names this site; the page never
+  // contacts it - the canonical link itself stays relative.
+  'agifuturefoundation.github.io',
 ]);
 
 /* Origins a PAGE offers as an outbound link of its own, rather than quoting

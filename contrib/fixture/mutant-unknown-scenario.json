@@ -1,0 +1,287 @@
+{
+ "record": "tc-contribution/1",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "exported_at": "2026-09-26T00:00:00Z",
+ "contributor": {
+  "claimed": "fixture - not a learner",
+  "attested_by": "this device only",
+  "signature": null
+ },
+ "consent": {
+  "statement": "I share the training episodes in this package, recorded by this device, for the scopes named in consent.scope under the licence named in consent.license. I can withdraw by not sharing the file again; copies already given away are governed by that licence. Nothing in this package names me: it carries scenario ids, control schemes and measured outcomes, and the label or wallet address I chose to attach.",
+  "granted_at": "2026-09-26T00:00:00Z",
+  "scope": [
+   "agent-training",
+   "robot-training"
+  ],
+  "revocable": true,
+  "license": "CC-BY-4.0"
+ },
+ "dataset": {
+  "episodes": [
+   {
+    "t": "2026-09-26T03:00:00.000Z",
+    "kind": "walkaround",
+    "campus": "treasure-island",
+    "hall": "painters",
+    "sim": "airless-sprayer",
+    "point": "Respirator and ventilation"
+   },
+   {
+    "t": "2026-09-26T03:00:01.000Z",
+    "kind": "sim",
+    "campus": "treasure-island",
+    "hall": "painters",
+    "sim": "airless-sprayer",
+    "scenario": "no-such-scenario",
+    "controls": [
+     "sweep the gun left / right across the panel",
+     "sweep the gun up / down across the panel",
+     "stand off farther / move closer to the surface",
+     "pull / release the spray trigger"
+    ],
+    "actor": "human",
+    "outcome": {
+     "passed": true,
+     "rows": [
+      {
+       "axis": "coverage",
+       "value": 1,
+       "ok": true
+      },
+      {
+       "axis": "runs",
+       "value": 1,
+       "ok": true
+      },
+      {
+       "axis": "holidays",
+       "value": 1,
+       "ok": true
+      },
+      {
+       "axis": "overspray",
+       "value": 1,
+       "ok": true
+      },
+      {
+       "axis": "time",
+       "value": 1,
+       "ok": true
+      }
+     ],
+     "trace": [
+      {
+       "t": 0,
+       "gauges": {
+        "load_pct": 30,
+        "hook_cm": 150,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 1000,
+       "gauges": {
+        "load_pct": 35,
+        "hook_cm": 175,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 2000,
+       "gauges": {
+        "load_pct": 40,
+        "hook_cm": 200,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 3000,
+       "gauges": {
+        "load_pct": 45,
+        "hook_cm": 225,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      }
+     ]
+    }
+   },
+   {
+    "t": "2026-09-26T03:00:02.000Z",
+    "kind": "sim",
+    "campus": "treasure-island",
+    "hall": "electricians",
+    "sim": "boom-lift",
+    "scenario": null,
+    "controls": [
+     "swing the turret",
+     "extend / retract the boom",
+     "raise / lower the boom",
+     "clip the harness (on the ground) / do the task at the work point",
+     "set the stabilizers on the pad"
+    ],
+    "actor": "human",
+    "outcome": {
+     "passed": false,
+     "rows": []
+    }
+   },
+   {
+    "t": "2026-09-26T03:00:03.000Z",
+    "kind": "sim",
+    "campus": "treasure-island",
+    "hall": "painters",
+    "sim": "airless-sprayer",
+    "scenario": "bay-terminal-finish",
+    "controls": [
+     "sweep the gun left / right across the panel",
+     "sweep the gun up / down across the panel",
+     "stand off farther / move closer to the surface",
+     "pull / release the spray trigger"
+    ],
+    "actor": "scripted-reference",
+    "operator": {
+     "level": "fixture-level",
+     "seed": 7,
+     "scenario": "bay-terminal-finish",
+     "steps": 120,
+     "dt": 0.05
+    },
+    "outcome": {
+     "passed": true,
+     "rows": [
+      {
+       "axis": "coverage",
+       "value": 1,
+       "ok": true
+      },
+      {
+       "axis": "runs",
+       "value": 1,
+       "ok": true
+      },
+      {
+       "axis": "holidays",
+       "value": 1,
+       "ok": true
+      },
+      {
+       "axis": "overspray",
+       "value": 1,
+       "ok": true
+      },
+      {
+       "axis": "time",
+       "value": 1,
+       "ok": true
+      }
+     ]
+    }
+   },
+   {
+    "t": "2026-09-26T03:00:04.000Z",
+    "kind": "advisor",
+    "campus": "treasure-island",
+    "hall": "painters",
+    "advisor": "fixture-advisor",
+    "topic": "fixture-topic",
+    "answer_kind": "record"
+   },
+   {
+    "t": "2026-09-26T03:00:05.000Z",
+    "kind": "crew",
+    "campus": "treasure-island",
+    "hall": "painters",
+    "crew": "fixture-crew",
+    "role": "fixture-role",
+    "topic": "fixture-topic",
+    "answer_kind": "registry"
+   }
+  ],
+  "traces_attached": 1,
+  "episode_counts_by_kind": {
+   "advisor": 1,
+   "crew": 1,
+   "sim": 3,
+   "walkaround": 1
+  },
+  "sims_covered": [
+   "airless-sprayer",
+   "boom-lift"
+  ],
+  "fields_by_kind": {
+   "sim": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "sim",
+    "scenario",
+    "controls",
+    "actor",
+    "operator",
+    "outcome"
+   ],
+   "advisor": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "advisor",
+    "topic",
+    "answer_kind"
+   ],
+   "crew": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "crew",
+    "role",
+    "topic",
+    "answer_kind"
+   ],
+   "walkaround": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "sim",
+    "point"
+   ]
+  }
+ },
+ "honesty": {
+  "proves": [
+   "the package has not changed since it was exported: its SHA-256 digest recomputes over the canonical form",
+   "every episode is of a kind training/ declares and carries exactly that kind's fields - no field more, none fewer",
+   "every sim, scenario, hall and campus an episode names exists in this bundle at the stated pack version",
+   "a trace, where attached, has no more samples than training/ caps and each sample has the declared keys",
+   "the consent scope is a non-empty subset of the scopes this registry declares, the statement is this registry's and the licence is this registry's one licence",
+   "the counts the package states about itself (episodes by kind, traces attached, sims covered) recompute from its episodes"
+  ],
+  "does_not_prove": [
+   "who the contributor is: contributor.claimed is a label this device stored, attested by this device only, and nothing checks it - unless a wallet signed, in which case it is the identity of a key, not of a person; a stolen key signs just as well",
+   "that any agent or robot learned from this package: exporting this file trains nothing by itself: no agent exists in this bundle and none is claimed to, until one is actually trained against this data outside it",
+   "that the package reached anyone: nothing in this bundle sends it anywhere; the learner keeps the file and hands it over, or does not",
+   "anything on any blockchain: a wallet signature is computed in the browser and carried in the file; nothing is written to any chain, nothing is anchored, and no one can look it up",
+   "that the device was honest: a package can be written by hand and will verify if it is internally consistent",
+   "that the gauges inside a trace sample mean anything: training/ describes them as display-shaped scalars and short labels and enumerates none, so the verifier holds a trace to its count and sample keys only",
+   "that an advisor, crew role, topic or walkaround point an episode names exists: only seats, scenarios, halls and campuses are resolved",
+   "that the episodes came from real equipment: every episode comes from SCHEMATIC physics and deterministic rubrics, not a real robot or a real machine: useful for exercising a training pipeline's plumbing and export format, not for training a controller that will run on real equipment."
+  ],
+  "nothing_sent": "nothing is sent anywhere by this bundle: no platform is integrated, no destination is validated, no upload exists. The contribute page writes a file to the learner's own downloads and stops.",
+  "no_agent_trained": "exporting this file trains nothing by itself: no agent exists in this bundle and none is claimed to, until one is actually trained against this data outside it",
+  "fixture": "this package is SCRIPTED by contrib/build.py from synthetic episodes shaped by training/registry/training.json; it is not a learner and its gauges are not a machine"
+ },
+ "digest": {
+  "alg": "SHA-256",
+  "over": "canonical JSON of every top-level field except digest, with contributor.signature forced to null: keys sorted recursively, no whitespace, UTF-8",
+  "hex": "24043ed75f7d3b7ab447b97d06fb22f1882dbee0a9841db59b8366b457390931"
+ }
+}

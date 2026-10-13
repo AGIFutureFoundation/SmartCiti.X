@@ -1,0 +1,4946 @@
+{
+ "pack": "smartcitix-trade-craft-academy-bay-restoration-scenarios",
+ "built": "2026-09-17",
+ "source_stamp": "7b1b73cb80801b63",
+ "sources": {
+  "restoration/registry/restoration.json": "55f41bf50df7d918",
+  "unions/registry/unions.json": "619bc8ea7328f5ea",
+  "bayarea/registry/bayarea.json": "d5b232e8b393aaaf"
+ },
+ "honesty": {
+  "label": "training scenario, not the project's actual work plan",
+  "lessons": "unverified general practice",
+  "authored": "Every scenario, step, tool, PPE line, hazard, gate and crew role is AUTHORED general practice, not any site operator's plan and not a standard or a jurisdiction's rule.",
+  "no_remediation": "No hands-on hazardous remediation is taught: at the two environmental-monitoring sites the only type is cleanup-support AWARENESS (orientation, boundaries, observation, reporting); entering an exclusion zone or touching material fails the run.",
+  "play": "A run is practice. It certifies nothing and never enters a completion record; the completion contract in completion/ is unchanged.",
+  "links": "A type sits at a site only where the site's own registry text contains the quoted evidence; crew roles come only from that site's own trade_needs.",
+  "paths": "No relief/trades path step links these yet: layers/registry/paths.json holds Louisiana parish stations only, and no Bay station id exists to attach to."
+ },
+ "funding_context": {
+  "headline": "EPA awards $82 million for San Francisco Bay restoration and pollution control",
+  "url": "https://smartwatermagazine.com/news/newsroom/epa-awards-82-million-for-san-francisco-bay-restoration-and-pollution-control",
+  "source": "URL slug only - article not fetched (egress blocked)",
+  "funded_projects": [],
+  "status": "PENDING",
+  "note": "Only the headline is known here. Which projects, recipients, sites and amounts the article lists is unknown; no scenario in this registry is one of them. The user may paste the article text to fill funded_projects."
+ },
+ "rubric": [
+  {
+   "axis": "gates",
+   "measure": "every safety gate acknowledged before the step it guards",
+   "pass": "required"
+  },
+  {
+   "axis": "forbidden",
+   "measure": "no forbidden action taken",
+   "pass": "required"
+  },
+  {
+   "axis": "ppe",
+   "measure": "share of the listed PPE selected (%)",
+   "pass": "== 100"
+  },
+  {
+   "axis": "order",
+   "measure": "share of steps done in the listed order (longest in-order run, %)",
+   "pass": ">= 80"
+  },
+  {
+   "axis": "crew",
+   "measure": "share of crew roles given the listed trade (%)",
+   "pass": "== 100"
+  },
+  {
+   "axis": "score",
+   "measure": "floor((order*5 + crew*2 + ppe*3) / 10)",
+   "pass": "informational"
+  }
+ ],
+ "types": [
+  "cleanup-support",
+  "ecotone-levee",
+  "habitat-monitoring",
+  "native-planting",
+  "planning-survey",
+  "shoreline-resilience",
+  "spartina-removal",
+  "tidal-marsh",
+  "transition-zone",
+  "trash-cleanup",
+  "wq-sampling",
+  "wq-sediment-core",
+  "wq-stormwater",
+  "wq-trash-capture"
+ ],
+ "counts": {
+  "scenarios": 16,
+  "generic": 2,
+  "by_site": {
+   "herons-head": 2,
+   "candlestick-point": 4,
+   "east-oakland-youth": 1,
+   "alviso-shoreline": 1,
+   "south-bay-salt-ponds": 2,
+   "montezuma-wetlands": 1,
+   "american-canyon": 1,
+   "straw-north-bay": 1,
+   "spartina-removal": 1,
+   "hunters-point-shipyard": 1,
+   "treasure-island-nsti": 1
+  },
+  "sites_covered": 11,
+  "staged_tasks": 15
+ },
+ "scenarios": [
+  {
+   "id": "rs-herons-head-shoreline-resilience",
+   "site": "herons-head",
+   "site_name": "Heron's Head Park Shoreline Resilience Project (Phases 1 and 2)",
+   "type": "shoreline-resilience",
+   "family": "restoration",
+   "title": "Shoreline resilience - living shoreline and green infrastructure placement",
+   "label": "training scenario, not the project's actual work plan",
+   "provenance": "AUTHORED",
+   "lessons": "unverified general practice",
+   "evidence": {
+    "field": "name",
+    "quote": "Shoreline Resilience"
+   },
+   "category": "habitat-restoration",
+   "campus": "treasure-island",
+   "crew": [
+    {
+     "role": "equipment operator",
+     "trade": "operating-eng"
+    },
+    {
+     "role": "field laborer",
+     "trade": "laborers"
+    }
+   ],
+   "steps": [
+    {
+     "id": "brief",
+     "text": "crew brief: tide window, lift plan and exclusion area around the machine"
+    },
+    {
+     "id": "layout",
+     "text": "mark the footprint the design drawings show"
+    },
+    {
+     "id": "place",
+     "text": "place material (rock, logs or planted media) as drawn"
+    },
+    {
+     "id": "secure",
+     "text": "secure placed material per the drawings"
+    },
+    {
+     "id": "plant",
+     "text": "plant the upper edge where the plan calls for it"
+    },
+    {
+     "id": "inspect",
+     "text": "walk the finished reach and record photo-points"
+    }
+   ],
+   "tools": [
+    "layout paint / flags",
+    "hand tools",
+    "camera"
+   ],
+   "ppe": [
+    "hi-vis vest",
+    "hard hat",
+    "safety-toe boots",
+    "gloves",
+    "PFD near open water"
+   ],
+   "hazards": [
+    {
+     "id": "struck-by",
+     "text": "placed material and operating equipment"
+    },
+    {
+     "id": "slip",
+     "text": "wet rock and algae at the shoreline"
+    },
+    {
+     "id": "tide",
+     "text": "rising tide and wave run-up"
+    }
+   ],
+   "safety_gates": [
+    {
+     "id": "g-exclusion",
+     "before_step": "place",
+     "text": "exclusion area around the machine set before any placement"
+    },
+    {
+     "id": "g-tide",
+     "before_step": "place",
+     "text": "tide window confirmed before work below the high-tide line"
+    }
+   ],
+   "forbidden": [
+    {
+     "id": "under-load",
+     "text": "standing under or beside a suspended or swinging load"
+    }
+   ],
+   "fixtures": [
+    {
+     "name": "perfect",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "hard hat",
+       "safety-toe boots",
+       "gloves",
+       "PFD near open water"
+      ],
+      "crew": {
+       "equipment operator": "operating-eng",
+       "field laborer": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "step:layout",
+       "gate:g-exclusion",
+       "gate:g-tide",
+       "step:place",
+       "step:secure",
+       "step:plant",
+       "step:inspect"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": true
+     }
+    },
+    {
+     "name": "gate-skipped",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "hard hat",
+       "safety-toe boots",
+       "gloves",
+       "PFD near open water"
+      ],
+      "crew": {
+       "equipment operator": "operating-eng",
+       "field laborer": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "step:layout",
+       "gate:g-tide",
+       "step:place",
+       "step:secure",
+       "step:plant",
+       "step:inspect"
+      ]
+     },
+     "expect": {
+      "gates": false,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-steps",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "hard hat",
+       "safety-toe boots",
+       "gloves",
+       "PFD near open water"
+      ],
+      "crew": {
+       "equipment operator": "operating-eng",
+       "field laborer": "laborers"
+      },
+      "sequence": [
+       "gate:g-exclusion",
+       "gate:g-tide",
+       "step:inspect",
+       "step:plant",
+       "step:secure",
+       "step:place",
+       "step:layout",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 16,
+      "crew": 100,
+      "score": 58,
+      "pass": false
+     }
+    },
+    {
+     "name": "forbidden-action",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "hard hat",
+       "safety-toe boots",
+       "gloves",
+       "PFD near open water"
+      ],
+      "crew": {
+       "equipment operator": "operating-eng",
+       "field laborer": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "step:layout",
+       "gate:g-exclusion",
+       "gate:g-tide",
+       "step:place",
+       "step:secure",
+       "step:plant",
+       "step:inspect",
+       "forbidden:under-load"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": false,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-missing-ppe",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "hard hat",
+       "safety-toe boots",
+       "gloves"
+      ],
+      "crew": {
+       "equipment operator": "operating-eng",
+       "field laborer": "laborers"
+      },
+      "sequence": [
+       "gate:g-exclusion",
+       "gate:g-tide",
+       "step:inspect",
+       "step:plant",
+       "step:secure",
+       "step:place",
+       "step:layout",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 80,
+      "order": 16,
+      "crew": 100,
+      "score": 52,
+      "pass": false
+     }
+    }
+   ]
+  },
+  {
+   "id": "rs-herons-head-wq-stormwater",
+   "site": "herons-head",
+   "site_name": "Heron's Head Park Shoreline Resilience Project (Phases 1 and 2)",
+   "type": "wq-stormwater",
+   "family": "water-quality",
+   "title": "Stormwater capture - inspecting a green-infrastructure cell",
+   "label": "training scenario, not the project's actual work plan",
+   "provenance": "AUTHORED",
+   "lessons": "unverified general practice",
+   "evidence": {
+    "field": "habitat",
+    "quote": "green infrastructure"
+   },
+   "category": "habitat-restoration",
+   "campus": "treasure-island",
+   "crew": [
+    {
+     "role": "inspection lead",
+     "trade": "laborers"
+    },
+    {
+     "role": "equipment operator",
+     "trade": "operating-eng"
+    }
+   ],
+   "steps": [
+    {
+     "id": "brief",
+     "text": "crew brief: traffic control, inlet locations and the inspection form"
+    },
+    {
+     "id": "traffic",
+     "text": "set traffic or pedestrian control around the cell"
+    },
+    {
+     "id": "inlet",
+     "text": "inspect inlets and curb cuts for blockage"
+    },
+    {
+     "id": "surface",
+     "text": "record sediment, trash and standing water in the cell"
+    },
+    {
+     "id": "outlet",
+     "text": "check the overflow and outlet structure"
+    },
+    {
+     "id": "record",
+     "text": "record findings and photos on the form"
+    }
+   ],
+   "tools": [
+    "inspection form",
+    "camera",
+    "measuring tape",
+    "cones"
+   ],
+   "ppe": [
+    "hi-vis vest",
+    "gloves",
+    "safety-toe boots"
+   ],
+   "hazards": [
+    {
+     "id": "traffic",
+     "text": "passing traffic"
+    },
+    {
+     "id": "sharps",
+     "text": "sharps in captured trash"
+    },
+    {
+     "id": "confined",
+     "text": "vaults and structures that are confined spaces"
+    }
+   ],
+   "safety_gates": [
+    {
+     "id": "g-traffic",
+     "before_step": "inlet",
+     "text": "traffic control set before anyone works at the curb"
+    }
+   ],
+   "forbidden": [
+    {
+     "id": "enter-vault",
+     "text": "entering a vault or structure (confined space - not trained here)"
+    }
+   ],
+   "fixtures": [
+    {
+     "name": "perfect",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "gloves",
+       "safety-toe boots"
+      ],
+      "crew": {
+       "inspection lead": "laborers",
+       "equipment operator": "operating-eng"
+      },
+      "sequence": [
+       "step:brief",
+       "step:traffic",
+       "gate:g-traffic",
+       "step:inlet",
+       "step:surface",
+       "step:outlet",
+       "step:record"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": true
+     }
+    },
+    {
+     "name": "gate-skipped",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "gloves",
+       "safety-toe boots"
+      ],
+      "crew": {
+       "inspection lead": "laborers",
+       "equipment operator": "operating-eng"
+      },
+      "sequence": [
+       "step:brief",
+       "step:traffic",
+       "step:inlet",
+       "step:surface",
+       "step:outlet",
+       "step:record"
+      ]
+     },
+     "expect": {
+      "gates": false,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-steps",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "gloves",
+       "safety-toe boots"
+      ],
+      "crew": {
+       "inspection lead": "laborers",
+       "equipment operator": "operating-eng"
+      },
+      "sequence": [
+       "gate:g-traffic",
+       "step:record",
+       "step:outlet",
+       "step:surface",
+       "step:inlet",
+       "step:traffic",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 16,
+      "crew": 100,
+      "score": 58,
+      "pass": false
+     }
+    },
+    {
+     "name": "forbidden-action",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "gloves",
+       "safety-toe boots"
+      ],
+      "crew": {
+       "inspection lead": "laborers",
+       "equipment operator": "operating-eng"
+      },
+      "sequence": [
+       "step:brief",
+       "step:traffic",
+       "gate:g-traffic",
+       "step:inlet",
+       "step:surface",
+       "step:outlet",
+       "step:record",
+       "forbidden:enter-vault"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": false,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-missing-ppe",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "gloves"
+      ],
+      "crew": {
+       "inspection lead": "laborers",
+       "equipment operator": "operating-eng"
+      },
+      "sequence": [
+       "gate:g-traffic",
+       "step:record",
+       "step:outlet",
+       "step:surface",
+       "step:inlet",
+       "step:traffic",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 66,
+      "order": 16,
+      "crew": 100,
+      "score": 47,
+      "pass": false
+     }
+    }
+   ]
+  },
+  {
+   "id": "rs-candlestick-point-trash-cleanup",
+   "site": "candlestick-point",
+   "site_name": "Candlestick Point Stewardship Project (Phases 1 and 2)",
+   "type": "trash-cleanup",
+   "family": "restoration",
+   "title": "Shoreline trash clean-up",
+   "label": "training scenario, not the project's actual work plan",
+   "provenance": "AUTHORED",
+   "lessons": "unverified general practice",
+   "evidence": {
+    "field": "scale",
+    "quote": "trash clean-up"
+   },
+   "category": "habitat-restoration",
+   "campus": "treasure-island",
+   "crew": [
+    {
+     "role": "clean-up crew",
+     "trade": "laborers"
+    }
+   ],
+   "steps": [
+    {
+     "id": "brief",
+     "text": "crew brief: area, tide, what not to touch and how to report it"
+    },
+    {
+     "id": "sweep",
+     "text": "sweep the area in lines, picking up with grabbers"
+    },
+    {
+     "id": "sort",
+     "text": "sort recyclables and trash into separate bags"
+    },
+    {
+     "id": "report",
+     "text": "report and flag anything hazardous without touching it"
+    },
+    {
+     "id": "weigh",
+     "text": "weigh or count bags and record the tally"
+    }
+   ],
+   "tools": [
+    "grabbers",
+    "bags",
+    "sharps container",
+    "data sheet",
+    "scale"
+   ],
+   "ppe": [
+    "puncture-resistant gloves",
+    "safety-toe boots",
+    "hi-vis vest"
+   ],
+   "hazards": [
+    {
+     "id": "sharps",
+     "text": "needles, glass and sharp metal"
+    },
+    {
+     "id": "unknown",
+     "text": "drums, containers or unknown substances"
+    },
+    {
+     "id": "slip",
+     "text": "slippery rocks at the waterline"
+    }
+   ],
+   "safety_gates": [
+    {
+     "id": "g-sharps",
+     "before_step": "sweep",
+     "text": "sharps rule stated (grabber and sharps container only) before the sweep"
+    }
+   ],
+   "forbidden": [
+    {
+     "id": "touch-unknown",
+     "text": "opening or moving a drum or unknown container"
+    }
+   ],
+   "fixtures": [
+    {
+     "name": "perfect",
+     "run": {
+      "ppe": [
+       "puncture-resistant gloves",
+       "safety-toe boots",
+       "hi-vis vest"
+      ],
+      "crew": {
+       "clean-up crew": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "gate:g-sharps",
+       "step:sweep",
+       "step:sort",
+       "step:report",
+       "step:weigh"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": true
+     }
+    },
+    {
+     "name": "gate-skipped",
+     "run": {
+      "ppe": [
+       "puncture-resistant gloves",
+       "safety-toe boots",
+       "hi-vis vest"
+      ],
+      "crew": {
+       "clean-up crew": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "step:sweep",
+       "step:sort",
+       "step:report",
+       "step:weigh"
+      ]
+     },
+     "expect": {
+      "gates": false,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-steps",
+     "run": {
+      "ppe": [
+       "puncture-resistant gloves",
+       "safety-toe boots",
+       "hi-vis vest"
+      ],
+      "crew": {
+       "clean-up crew": "laborers"
+      },
+      "sequence": [
+       "gate:g-sharps",
+       "step:weigh",
+       "step:report",
+       "step:sort",
+       "step:sweep",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 20,
+      "crew": 100,
+      "score": 60,
+      "pass": false
+     }
+    },
+    {
+     "name": "forbidden-action",
+     "run": {
+      "ppe": [
+       "puncture-resistant gloves",
+       "safety-toe boots",
+       "hi-vis vest"
+      ],
+      "crew": {
+       "clean-up crew": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "gate:g-sharps",
+       "step:sweep",
+       "step:sort",
+       "step:report",
+       "step:weigh",
+       "forbidden:touch-unknown"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": false,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-missing-ppe",
+     "run": {
+      "ppe": [
+       "puncture-resistant gloves",
+       "safety-toe boots"
+      ],
+      "crew": {
+       "clean-up crew": "laborers"
+      },
+      "sequence": [
+       "gate:g-sharps",
+       "step:weigh",
+       "step:report",
+       "step:sort",
+       "step:sweep",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 66,
+      "order": 20,
+      "crew": 100,
+      "score": 49,
+      "pass": false
+     }
+    }
+   ]
+  },
+  {
+   "id": "rs-candlestick-point-native-planting",
+   "site": "candlestick-point",
+   "site_name": "Candlestick Point Stewardship Project (Phases 1 and 2)",
+   "type": "native-planting",
+   "family": "restoration",
+   "title": "Native planting and plant propagation",
+   "label": "training scenario, not the project's actual work plan",
+   "provenance": "AUTHORED",
+   "lessons": "unverified general practice",
+   "evidence": {
+    "field": "scale",
+    "quote": "native plant propagation"
+   },
+   "category": "habitat-restoration",
+   "campus": "treasure-island",
+   "crew": [
+    {
+     "role": "planting crew",
+     "trade": "laborers"
+    }
+   ],
+   "steps": [
+    {
+     "id": "brief",
+     "text": "crew brief: planting plan, species list and where not to step"
+    },
+    {
+     "id": "stage",
+     "text": "stage plant stock in shade and keep the roots moist"
+    },
+    {
+     "id": "layout",
+     "text": "lay out planting spots from the plan with flags"
+    },
+    {
+     "id": "plant",
+     "text": "plant each plug to the root collar and firm the soil"
+    },
+    {
+     "id": "water",
+     "text": "water in and mulch where the plan says"
+    },
+    {
+     "id": "record",
+     "text": "record counts and photo-points for monitoring"
+    }
+   ],
+   "tools": [
+    "planting flags",
+    "hand trowels / dibbles",
+    "watering cans",
+    "data sheet"
+   ],
+   "ppe": [
+    "gloves",
+    "safety-toe boots",
+    "sun protection",
+    "eye protection when clearing"
+   ],
+   "hazards": [
+    {
+     "id": "heat",
+     "text": "heat and sun exposure"
+    },
+    {
+     "id": "ergonomic",
+     "text": "repetitive bending and lifting"
+    },
+    {
+     "id": "sharps",
+     "text": "buried debris and sharps in the soil"
+    }
+   ],
+   "safety_gates": [
+    {
+     "id": "g-sharps",
+     "before_step": "plant",
+     "text": "area walked and sharps flagged before hands go into the soil"
+    }
+   ],
+   "forbidden": [
+    {
+     "id": "bare-hand",
+     "text": "digging bare-handed in unscreened soil"
+    }
+   ],
+   "fixtures": [
+    {
+     "name": "perfect",
+     "run": {
+      "ppe": [
+       "gloves",
+       "safety-toe boots",
+       "sun protection",
+       "eye protection when clearing"
+      ],
+      "crew": {
+       "planting crew": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "step:stage",
+       "step:layout",
+       "gate:g-sharps",
+       "step:plant",
+       "step:water",
+       "step:record"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": true
+     }
+    },
+    {
+     "name": "gate-skipped",
+     "run": {
+      "ppe": [
+       "gloves",
+       "safety-toe boots",
+       "sun protection",
+       "eye protection when clearing"
+      ],
+      "crew": {
+       "planting crew": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "step:stage",
+       "step:layout",
+       "step:plant",
+       "step:water",
+       "step:record"
+      ]
+     },
+     "expect": {
+      "gates": false,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-steps",
+     "run": {
+      "ppe": [
+       "gloves",
+       "safety-toe boots",
+       "sun protection",
+       "eye protection when clearing"
+      ],
+      "crew": {
+       "planting crew": "laborers"
+      },
+      "sequence": [
+       "gate:g-sharps",
+       "step:record",
+       "step:water",
+       "step:plant",
+       "step:layout",
+       "step:stage",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 16,
+      "crew": 100,
+      "score": 58,
+      "pass": false
+     }
+    },
+    {
+     "name": "forbidden-action",
+     "run": {
+      "ppe": [
+       "gloves",
+       "safety-toe boots",
+       "sun protection",
+       "eye protection when clearing"
+      ],
+      "crew": {
+       "planting crew": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "step:stage",
+       "step:layout",
+       "gate:g-sharps",
+       "step:plant",
+       "step:water",
+       "step:record",
+       "forbidden:bare-hand"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": false,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-missing-ppe",
+     "run": {
+      "ppe": [
+       "gloves",
+       "safety-toe boots",
+       "sun protection"
+      ],
+      "crew": {
+       "planting crew": "laborers"
+      },
+      "sequence": [
+       "gate:g-sharps",
+       "step:record",
+       "step:water",
+       "step:plant",
+       "step:layout",
+       "step:stage",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 75,
+      "order": 16,
+      "crew": 100,
+      "score": 50,
+      "pass": false
+     }
+    }
+   ]
+  },
+  {
+   "id": "rs-candlestick-point-habitat-monitoring",
+   "site": "candlestick-point",
+   "site_name": "Candlestick Point Stewardship Project (Phases 1 and 2)",
+   "type": "habitat-monitoring",
+   "family": "restoration",
+   "title": "Habitat monitoring - photo-points, plots and records",
+   "label": "training scenario, not the project's actual work plan",
+   "provenance": "AUTHORED",
+   "lessons": "unverified general practice",
+   "evidence": {
+    "field": "scale",
+    "quote": "monitoring"
+   },
+   "category": "habitat-restoration",
+   "campus": "treasure-island",
+   "crew": [
+    {
+     "role": "monitoring lead",
+     "trade": "surveyors"
+    },
+    {
+     "role": "field assistant",
+     "trade": "laborers"
+    }
+   ],
+   "steps": [
+    {
+     "id": "brief",
+     "text": "crew brief: plot list, route and check-in times"
+    },
+    {
+     "id": "locate",
+     "text": "relocate each permanent plot or photo-point from the record"
+    },
+    {
+     "id": "record",
+     "text": "record cover, counts or photos exactly as the protocol asks"
+    },
+    {
+     "id": "qa",
+     "text": "check the data sheet is complete before leaving the plot"
+    },
+    {
+     "id": "upload",
+     "text": "file the records with date, time and observer"
+    }
+   ],
+   "tools": [
+    "GPS",
+    "camera",
+    "quadrat",
+    "data sheets"
+   ],
+   "ppe": [
+    "safety-toe boots",
+    "sun protection",
+    "hi-vis vest"
+   ],
+   "hazards": [
+    {
+     "id": "mud",
+     "text": "soft ground at plots"
+    },
+    {
+     "id": "lone",
+     "text": "working alone out of sight"
+    }
+   ],
+   "safety_gates": [
+    {
+     "id": "g-checkin",
+     "before_step": "locate",
+     "text": "check-in times agreed with someone off-site before heading out"
+    }
+   ],
+   "forbidden": [
+    {
+     "id": "move-marker",
+     "text": "moving a permanent plot marker"
+    }
+   ],
+   "fixtures": [
+    {
+     "name": "perfect",
+     "run": {
+      "ppe": [
+       "safety-toe boots",
+       "sun protection",
+       "hi-vis vest"
+      ],
+      "crew": {
+       "monitoring lead": "surveyors",
+       "field assistant": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "gate:g-checkin",
+       "step:locate",
+       "step:record",
+       "step:qa",
+       "step:upload"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": true
+     }
+    },
+    {
+     "name": "gate-skipped",
+     "run": {
+      "ppe": [
+       "safety-toe boots",
+       "sun protection",
+       "hi-vis vest"
+      ],
+      "crew": {
+       "monitoring lead": "surveyors",
+       "field assistant": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "step:locate",
+       "step:record",
+       "step:qa",
+       "step:upload"
+      ]
+     },
+     "expect": {
+      "gates": false,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-steps",
+     "run": {
+      "ppe": [
+       "safety-toe boots",
+       "sun protection",
+       "hi-vis vest"
+      ],
+      "crew": {
+       "monitoring lead": "surveyors",
+       "field assistant": "laborers"
+      },
+      "sequence": [
+       "gate:g-checkin",
+       "step:upload",
+       "step:qa",
+       "step:record",
+       "step:locate",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 20,
+      "crew": 100,
+      "score": 60,
+      "pass": false
+     }
+    },
+    {
+     "name": "forbidden-action",
+     "run": {
+      "ppe": [
+       "safety-toe boots",
+       "sun protection",
+       "hi-vis vest"
+      ],
+      "crew": {
+       "monitoring lead": "surveyors",
+       "field assistant": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "gate:g-checkin",
+       "step:locate",
+       "step:record",
+       "step:qa",
+       "step:upload",
+       "forbidden:move-marker"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": false,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-missing-ppe",
+     "run": {
+      "ppe": [
+       "safety-toe boots",
+       "sun protection"
+      ],
+      "crew": {
+       "monitoring lead": "surveyors",
+       "field assistant": "laborers"
+      },
+      "sequence": [
+       "gate:g-checkin",
+       "step:upload",
+       "step:qa",
+       "step:record",
+       "step:locate",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 66,
+      "order": 20,
+      "crew": 100,
+      "score": 49,
+      "pass": false
+     }
+    }
+   ]
+  },
+  {
+   "id": "rs-candlestick-point-wq-trash-capture",
+   "site": "candlestick-point",
+   "site_name": "Candlestick Point Stewardship Project (Phases 1 and 2)",
+   "type": "wq-trash-capture",
+   "family": "water-quality",
+   "title": "Trash capture device inspection",
+   "label": "training scenario, not the project's actual work plan",
+   "provenance": "AUTHORED",
+   "lessons": "unverified general practice",
+   "evidence": {
+    "field": "scale",
+    "quote": "trash clean-up"
+   },
+   "category": "habitat-restoration",
+   "campus": "treasure-island",
+   "crew": [
+    {
+     "role": "inspection lead",
+     "trade": "laborers"
+    }
+   ],
+   "steps": [
+    {
+     "id": "brief",
+     "text": "crew brief: device list, traffic control and the inspection form"
+    },
+    {
+     "id": "traffic",
+     "text": "set traffic control around the inlet"
+    },
+    {
+     "id": "look",
+     "text": "inspect the screen or insert from above for fullness and damage"
+    },
+    {
+     "id": "record",
+     "text": "record fullness and condition on the form"
+    },
+    {
+     "id": "flag",
+     "text": "flag a full or damaged device for the maintenance crew"
+    }
+   ],
+   "tools": [
+    "inspection form",
+    "flashlight",
+    "camera",
+    "cones"
+   ],
+   "ppe": [
+    "hi-vis vest",
+    "gloves",
+    "safety-toe boots"
+   ],
+   "hazards": [
+    {
+     "id": "traffic",
+     "text": "passing traffic"
+    },
+    {
+     "id": "lift",
+     "text": "heavy grate lifting"
+    },
+    {
+     "id": "sharps",
+     "text": "sharps in captured trash"
+    }
+   ],
+   "safety_gates": [
+    {
+     "id": "g-traffic",
+     "before_step": "look",
+     "text": "traffic control set before the grate area is approached"
+    }
+   ],
+   "forbidden": [
+    {
+     "id": "enter-inlet",
+     "text": "entering the inlet or reaching into it by hand"
+    }
+   ],
+   "fixtures": [
+    {
+     "name": "perfect",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "gloves",
+       "safety-toe boots"
+      ],
+      "crew": {
+       "inspection lead": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "step:traffic",
+       "gate:g-traffic",
+       "step:look",
+       "step:record",
+       "step:flag"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": true
+     }
+    },
+    {
+     "name": "gate-skipped",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "gloves",
+       "safety-toe boots"
+      ],
+      "crew": {
+       "inspection lead": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "step:traffic",
+       "step:look",
+       "step:record",
+       "step:flag"
+      ]
+     },
+     "expect": {
+      "gates": false,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-steps",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "gloves",
+       "safety-toe boots"
+      ],
+      "crew": {
+       "inspection lead": "laborers"
+      },
+      "sequence": [
+       "gate:g-traffic",
+       "step:flag",
+       "step:record",
+       "step:look",
+       "step:traffic",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 20,
+      "crew": 100,
+      "score": 60,
+      "pass": false
+     }
+    },
+    {
+     "name": "forbidden-action",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "gloves",
+       "safety-toe boots"
+      ],
+      "crew": {
+       "inspection lead": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "step:traffic",
+       "gate:g-traffic",
+       "step:look",
+       "step:record",
+       "step:flag",
+       "forbidden:enter-inlet"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": false,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-missing-ppe",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "gloves"
+      ],
+      "crew": {
+       "inspection lead": "laborers"
+      },
+      "sequence": [
+       "gate:g-traffic",
+       "step:flag",
+       "step:record",
+       "step:look",
+       "step:traffic",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 66,
+      "order": 20,
+      "crew": 100,
+      "score": 49,
+      "pass": false
+     }
+    }
+   ]
+  },
+  {
+   "id": "rs-east-oakland-youth-native-planting",
+   "site": "east-oakland-youth",
+   "site_name": "Bay Restoration: Youth Engagement and Service Learning in East Oakland",
+   "type": "native-planting",
+   "family": "restoration",
+   "title": "Native planting and plant propagation",
+   "label": "training scenario, not the project's actual work plan",
+   "provenance": "AUTHORED",
+   "lessons": "unverified general practice",
+   "evidence": {
+    "field": "habitat",
+    "quote": "upland restoration"
+   },
+   "category": "habitat-restoration",
+   "campus": "oakland",
+   "crew": [
+    {
+     "role": "planting crew",
+     "trade": "laborers"
+    }
+   ],
+   "steps": [
+    {
+     "id": "brief",
+     "text": "crew brief: planting plan, species list and where not to step"
+    },
+    {
+     "id": "stage",
+     "text": "stage plant stock in shade and keep the roots moist"
+    },
+    {
+     "id": "layout",
+     "text": "lay out planting spots from the plan with flags"
+    },
+    {
+     "id": "plant",
+     "text": "plant each plug to the root collar and firm the soil"
+    },
+    {
+     "id": "water",
+     "text": "water in and mulch where the plan says"
+    },
+    {
+     "id": "record",
+     "text": "record counts and photo-points for monitoring"
+    }
+   ],
+   "tools": [
+    "planting flags",
+    "hand trowels / dibbles",
+    "watering cans",
+    "data sheet"
+   ],
+   "ppe": [
+    "gloves",
+    "safety-toe boots",
+    "sun protection",
+    "eye protection when clearing"
+   ],
+   "hazards": [
+    {
+     "id": "heat",
+     "text": "heat and sun exposure"
+    },
+    {
+     "id": "ergonomic",
+     "text": "repetitive bending and lifting"
+    },
+    {
+     "id": "sharps",
+     "text": "buried debris and sharps in the soil"
+    }
+   ],
+   "safety_gates": [
+    {
+     "id": "g-sharps",
+     "before_step": "plant",
+     "text": "area walked and sharps flagged before hands go into the soil"
+    }
+   ],
+   "forbidden": [
+    {
+     "id": "bare-hand",
+     "text": "digging bare-handed in unscreened soil"
+    }
+   ],
+   "fixtures": [
+    {
+     "name": "perfect",
+     "run": {
+      "ppe": [
+       "gloves",
+       "safety-toe boots",
+       "sun protection",
+       "eye protection when clearing"
+      ],
+      "crew": {
+       "planting crew": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "step:stage",
+       "step:layout",
+       "gate:g-sharps",
+       "step:plant",
+       "step:water",
+       "step:record"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": true
+     }
+    },
+    {
+     "name": "gate-skipped",
+     "run": {
+      "ppe": [
+       "gloves",
+       "safety-toe boots",
+       "sun protection",
+       "eye protection when clearing"
+      ],
+      "crew": {
+       "planting crew": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "step:stage",
+       "step:layout",
+       "step:plant",
+       "step:water",
+       "step:record"
+      ]
+     },
+     "expect": {
+      "gates": false,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-steps",
+     "run": {
+      "ppe": [
+       "gloves",
+       "safety-toe boots",
+       "sun protection",
+       "eye protection when clearing"
+      ],
+      "crew": {
+       "planting crew": "laborers"
+      },
+      "sequence": [
+       "gate:g-sharps",
+       "step:record",
+       "step:water",
+       "step:plant",
+       "step:layout",
+       "step:stage",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 16,
+      "crew": 100,
+      "score": 58,
+      "pass": false
+     }
+    },
+    {
+     "name": "forbidden-action",
+     "run": {
+      "ppe": [
+       "gloves",
+       "safety-toe boots",
+       "sun protection",
+       "eye protection when clearing"
+      ],
+      "crew": {
+       "planting crew": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "step:stage",
+       "step:layout",
+       "gate:g-sharps",
+       "step:plant",
+       "step:water",
+       "step:record",
+       "forbidden:bare-hand"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": false,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-missing-ppe",
+     "run": {
+      "ppe": [
+       "gloves",
+       "safety-toe boots",
+       "sun protection"
+      ],
+      "crew": {
+       "planting crew": "laborers"
+      },
+      "sequence": [
+       "gate:g-sharps",
+       "step:record",
+       "step:water",
+       "step:plant",
+       "step:layout",
+       "step:stage",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 75,
+      "order": 16,
+      "crew": 100,
+      "score": 50,
+      "pass": false
+     }
+    }
+   ]
+  },
+  {
+   "id": "rs-alviso-shoreline-native-planting",
+   "site": "alviso-shoreline",
+   "site_name": "Alviso Shoreline Habitat Restoration",
+   "type": "native-planting",
+   "family": "restoration",
+   "title": "Native planting and plant propagation",
+   "label": "training scenario, not the project's actual work plan",
+   "provenance": "AUTHORED",
+   "lessons": "unverified general practice",
+   "evidence": {
+    "field": "habitat",
+    "quote": "marsh-adjacent upland"
+   },
+   "category": "habitat-restoration",
+   "campus": "oakland",
+   "crew": [
+    {
+     "role": "planting crew",
+     "trade": "laborers"
+    }
+   ],
+   "steps": [
+    {
+     "id": "brief",
+     "text": "crew brief: planting plan, species list and where not to step"
+    },
+    {
+     "id": "stage",
+     "text": "stage plant stock in shade and keep the roots moist"
+    },
+    {
+     "id": "layout",
+     "text": "lay out planting spots from the plan with flags"
+    },
+    {
+     "id": "plant",
+     "text": "plant each plug to the root collar and firm the soil"
+    },
+    {
+     "id": "water",
+     "text": "water in and mulch where the plan says"
+    },
+    {
+     "id": "record",
+     "text": "record counts and photo-points for monitoring"
+    }
+   ],
+   "tools": [
+    "planting flags",
+    "hand trowels / dibbles",
+    "watering cans",
+    "data sheet"
+   ],
+   "ppe": [
+    "gloves",
+    "safety-toe boots",
+    "sun protection",
+    "eye protection when clearing"
+   ],
+   "hazards": [
+    {
+     "id": "heat",
+     "text": "heat and sun exposure"
+    },
+    {
+     "id": "ergonomic",
+     "text": "repetitive bending and lifting"
+    },
+    {
+     "id": "sharps",
+     "text": "buried debris and sharps in the soil"
+    }
+   ],
+   "safety_gates": [
+    {
+     "id": "g-sharps",
+     "before_step": "plant",
+     "text": "area walked and sharps flagged before hands go into the soil"
+    }
+   ],
+   "forbidden": [
+    {
+     "id": "bare-hand",
+     "text": "digging bare-handed in unscreened soil"
+    }
+   ],
+   "fixtures": [
+    {
+     "name": "perfect",
+     "run": {
+      "ppe": [
+       "gloves",
+       "safety-toe boots",
+       "sun protection",
+       "eye protection when clearing"
+      ],
+      "crew": {
+       "planting crew": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "step:stage",
+       "step:layout",
+       "gate:g-sharps",
+       "step:plant",
+       "step:water",
+       "step:record"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": true
+     }
+    },
+    {
+     "name": "gate-skipped",
+     "run": {
+      "ppe": [
+       "gloves",
+       "safety-toe boots",
+       "sun protection",
+       "eye protection when clearing"
+      ],
+      "crew": {
+       "planting crew": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "step:stage",
+       "step:layout",
+       "step:plant",
+       "step:water",
+       "step:record"
+      ]
+     },
+     "expect": {
+      "gates": false,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-steps",
+     "run": {
+      "ppe": [
+       "gloves",
+       "safety-toe boots",
+       "sun protection",
+       "eye protection when clearing"
+      ],
+      "crew": {
+       "planting crew": "laborers"
+      },
+      "sequence": [
+       "gate:g-sharps",
+       "step:record",
+       "step:water",
+       "step:plant",
+       "step:layout",
+       "step:stage",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 16,
+      "crew": 100,
+      "score": 58,
+      "pass": false
+     }
+    },
+    {
+     "name": "forbidden-action",
+     "run": {
+      "ppe": [
+       "gloves",
+       "safety-toe boots",
+       "sun protection",
+       "eye protection when clearing"
+      ],
+      "crew": {
+       "planting crew": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "step:stage",
+       "step:layout",
+       "gate:g-sharps",
+       "step:plant",
+       "step:water",
+       "step:record",
+       "forbidden:bare-hand"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": false,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-missing-ppe",
+     "run": {
+      "ppe": [
+       "gloves",
+       "safety-toe boots",
+       "sun protection"
+      ],
+      "crew": {
+       "planting crew": "laborers"
+      },
+      "sequence": [
+       "gate:g-sharps",
+       "step:record",
+       "step:water",
+       "step:plant",
+       "step:layout",
+       "step:stage",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 75,
+      "order": 16,
+      "crew": 100,
+      "score": 50,
+      "pass": false
+     }
+    }
+   ]
+  },
+  {
+   "id": "rs-south-bay-salt-ponds-ecotone-levee",
+   "site": "south-bay-salt-ponds",
+   "site_name": "South Bay Salt Pond Restoration — ecotone levee (Phase 1)",
+   "type": "ecotone-levee",
+   "family": "restoration",
+   "title": "Ecotone levee - grading a gentle marsh-to-upland slope",
+   "label": "training scenario, not the project's actual work plan",
+   "provenance": "AUTHORED",
+   "lessons": "unverified general practice",
+   "evidence": {
+    "field": "name",
+    "quote": "ecotone levee"
+   },
+   "category": "habitat-restoration",
+   "campus": "oakland",
+   "crew": [
+    {
+     "role": "equipment operator",
+     "trade": "operating-eng"
+    },
+    {
+     "role": "grade checker / laborer",
+     "trade": "laborers"
+    },
+    {
+     "role": "survey lead",
+     "trade": "surveyors"
+    }
+   ],
+   "steps": [
+    {
+     "id": "brief",
+     "text": "crew brief: work area, tide window, haul routes and who signals the machine"
+    },
+    {
+     "id": "stake",
+     "text": "set grade stakes and slope limits from the survey layout"
+    },
+    {
+     "id": "place",
+     "text": "place fill in lifts along the levee face, working from the crown"
+    },
+    {
+     "id": "grade",
+     "text": "shape the gentle transition slope to the staked grade"
+    },
+    {
+     "id": "check",
+     "text": "check grade against stakes and record the as-built shots"
+    },
+    {
+     "id": "erosion",
+     "text": "install temporary erosion control on the bare slope"
+    }
+   ],
+   "tools": [
+    "grade stakes",
+    "level / GNSS rover",
+    "erosion-control blanket",
+    "hand tools"
+   ],
+   "ppe": [
+    "hi-vis vest",
+    "hard hat",
+    "safety-toe boots",
+    "hearing protection"
+   ],
+   "hazards": [
+    {
+     "id": "struck-by",
+     "text": "struck-by and caught-between near operating equipment"
+    },
+    {
+     "id": "soft-edge",
+     "text": "soft or undercut levee edge giving way under load"
+    },
+    {
+     "id": "tide",
+     "text": "incoming tide cutting off the work area"
+    }
+   ],
+   "safety_gates": [
+    {
+     "id": "g-spotter",
+     "before_step": "place",
+     "text": "spotter and hand signals agreed before any machine moves near people"
+    },
+    {
+     "id": "g-tide",
+     "before_step": "place",
+     "text": "tide window confirmed and posted before work on the levee face"
+    }
+   ],
+   "forbidden": [
+    {
+     "id": "ride-bucket",
+     "text": "riding or standing in a bucket or on a moving machine"
+    },
+    {
+     "id": "blind-back",
+     "text": "backing equipment without a spotter"
+    }
+   ],
+   "fixtures": [
+    {
+     "name": "perfect",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "hard hat",
+       "safety-toe boots",
+       "hearing protection"
+      ],
+      "crew": {
+       "equipment operator": "operating-eng",
+       "grade checker / laborer": "laborers",
+       "survey lead": "surveyors"
+      },
+      "sequence": [
+       "step:brief",
+       "step:stake",
+       "gate:g-spotter",
+       "gate:g-tide",
+       "step:place",
+       "step:grade",
+       "step:check",
+       "step:erosion"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": true
+     }
+    },
+    {
+     "name": "gate-skipped",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "hard hat",
+       "safety-toe boots",
+       "hearing protection"
+      ],
+      "crew": {
+       "equipment operator": "operating-eng",
+       "grade checker / laborer": "laborers",
+       "survey lead": "surveyors"
+      },
+      "sequence": [
+       "step:brief",
+       "step:stake",
+       "gate:g-tide",
+       "step:place",
+       "step:grade",
+       "step:check",
+       "step:erosion"
+      ]
+     },
+     "expect": {
+      "gates": false,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-steps",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "hard hat",
+       "safety-toe boots",
+       "hearing protection"
+      ],
+      "crew": {
+       "equipment operator": "operating-eng",
+       "grade checker / laborer": "laborers",
+       "survey lead": "surveyors"
+      },
+      "sequence": [
+       "gate:g-spotter",
+       "gate:g-tide",
+       "step:erosion",
+       "step:check",
+       "step:grade",
+       "step:place",
+       "step:stake",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 16,
+      "crew": 100,
+      "score": 58,
+      "pass": false
+     }
+    },
+    {
+     "name": "forbidden-action",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "hard hat",
+       "safety-toe boots",
+       "hearing protection"
+      ],
+      "crew": {
+       "equipment operator": "operating-eng",
+       "grade checker / laborer": "laborers",
+       "survey lead": "surveyors"
+      },
+      "sequence": [
+       "step:brief",
+       "step:stake",
+       "gate:g-spotter",
+       "gate:g-tide",
+       "step:place",
+       "step:grade",
+       "step:check",
+       "step:erosion",
+       "forbidden:ride-bucket"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": false,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-missing-ppe",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "hard hat",
+       "safety-toe boots"
+      ],
+      "crew": {
+       "equipment operator": "operating-eng",
+       "grade checker / laborer": "laborers",
+       "survey lead": "surveyors"
+      },
+      "sequence": [
+       "gate:g-spotter",
+       "gate:g-tide",
+       "step:erosion",
+       "step:check",
+       "step:grade",
+       "step:place",
+       "step:stake",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 75,
+      "order": 16,
+      "crew": 100,
+      "score": 50,
+      "pass": false
+     }
+    }
+   ]
+  },
+  {
+   "id": "rs-south-bay-salt-ponds-tidal-marsh",
+   "site": "south-bay-salt-ponds",
+   "site_name": "South Bay Salt Pond Restoration — ecotone levee (Phase 1)",
+   "type": "tidal-marsh",
+   "family": "restoration",
+   "title": "Tidal marsh restoration - preparing a diked or managed site for tidal return",
+   "label": "training scenario, not the project's actual work plan",
+   "provenance": "AUTHORED",
+   "lessons": "unverified general practice",
+   "evidence": {
+    "field": "habitat",
+    "quote": "managed pond to tidal marsh"
+   },
+   "category": "habitat-restoration",
+   "campus": "oakland",
+   "crew": [
+    {
+     "role": "equipment operator",
+     "trade": "operating-eng"
+    },
+    {
+     "role": "field laborer",
+     "trade": "laborers"
+    },
+    {
+     "role": "survey lead",
+     "trade": "surveyors"
+    }
+   ],
+   "steps": [
+    {
+     "id": "brief",
+     "text": "crew brief: tide tables, access route on levee crowns, buddy pairs"
+    },
+    {
+     "id": "survey",
+     "text": "walk and mark the channel alignment from the design layout"
+    },
+    {
+     "id": "excavate",
+     "text": "cut starter channels to the marked alignment"
+    },
+    {
+     "id": "spoil",
+     "text": "place spoil where the plan marks it, never into open water"
+    },
+    {
+     "id": "monitor",
+     "text": "photo-point and record water levels after the first tides"
+    }
+   ],
+   "tools": [
+    "survey flags",
+    "GNSS rover",
+    "staff gauge",
+    "camera"
+   ],
+   "ppe": [
+    "hi-vis vest",
+    "safety-toe boots",
+    "PFD near open water",
+    "sun protection"
+   ],
+   "hazards": [
+    {
+     "id": "mud",
+     "text": "soft mud entrapment off the levee crown"
+    },
+    {
+     "id": "drowning",
+     "text": "open water and fast-moving tidal channels"
+    },
+    {
+     "id": "struck-by",
+     "text": "operating equipment on a narrow levee crown"
+    }
+   ],
+   "safety_gates": [
+    {
+     "id": "g-tide",
+     "before_step": "excavate",
+     "text": "tide window confirmed before any work below the levee crown"
+    },
+    {
+     "id": "g-buddy",
+     "before_step": "survey",
+     "text": "buddy pairs set and PFDs checked before anyone leaves the crown"
+    }
+   ],
+   "forbidden": [
+    {
+     "id": "solo-mud",
+     "text": "entering the mudflat alone"
+    },
+    {
+     "id": "open-water",
+     "text": "placing spoil into open water"
+    }
+   ],
+   "fixtures": [
+    {
+     "name": "perfect",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "safety-toe boots",
+       "PFD near open water",
+       "sun protection"
+      ],
+      "crew": {
+       "equipment operator": "operating-eng",
+       "field laborer": "laborers",
+       "survey lead": "surveyors"
+      },
+      "sequence": [
+       "step:brief",
+       "gate:g-buddy",
+       "step:survey",
+       "gate:g-tide",
+       "step:excavate",
+       "step:spoil",
+       "step:monitor"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": true
+     }
+    },
+    {
+     "name": "gate-skipped",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "safety-toe boots",
+       "PFD near open water",
+       "sun protection"
+      ],
+      "crew": {
+       "equipment operator": "operating-eng",
+       "field laborer": "laborers",
+       "survey lead": "surveyors"
+      },
+      "sequence": [
+       "step:brief",
+       "gate:g-buddy",
+       "step:survey",
+       "step:excavate",
+       "step:spoil",
+       "step:monitor"
+      ]
+     },
+     "expect": {
+      "gates": false,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-steps",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "safety-toe boots",
+       "PFD near open water",
+       "sun protection"
+      ],
+      "crew": {
+       "equipment operator": "operating-eng",
+       "field laborer": "laborers",
+       "survey lead": "surveyors"
+      },
+      "sequence": [
+       "gate:g-buddy",
+       "gate:g-tide",
+       "step:monitor",
+       "step:spoil",
+       "step:excavate",
+       "step:survey",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 20,
+      "crew": 100,
+      "score": 60,
+      "pass": false
+     }
+    },
+    {
+     "name": "forbidden-action",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "safety-toe boots",
+       "PFD near open water",
+       "sun protection"
+      ],
+      "crew": {
+       "equipment operator": "operating-eng",
+       "field laborer": "laborers",
+       "survey lead": "surveyors"
+      },
+      "sequence": [
+       "step:brief",
+       "gate:g-buddy",
+       "step:survey",
+       "gate:g-tide",
+       "step:excavate",
+       "step:spoil",
+       "step:monitor",
+       "forbidden:solo-mud"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": false,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-missing-ppe",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "safety-toe boots",
+       "PFD near open water"
+      ],
+      "crew": {
+       "equipment operator": "operating-eng",
+       "field laborer": "laborers",
+       "survey lead": "surveyors"
+      },
+      "sequence": [
+       "gate:g-buddy",
+       "gate:g-tide",
+       "step:monitor",
+       "step:spoil",
+       "step:excavate",
+       "step:survey",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 75,
+      "order": 20,
+      "crew": 100,
+      "score": 52,
+      "pass": false
+     }
+    }
+   ]
+  },
+  {
+   "id": "rs-montezuma-wetlands-tidal-marsh",
+   "site": "montezuma-wetlands",
+   "site_name": "Montezuma Tidal and Seasonal Wetlands Restoration Project",
+   "type": "tidal-marsh",
+   "family": "restoration",
+   "title": "Tidal marsh restoration - preparing a diked or managed site for tidal return",
+   "label": "training scenario, not the project's actual work plan",
+   "provenance": "AUTHORED",
+   "lessons": "unverified general practice",
+   "evidence": {
+    "field": "habitat",
+    "quote": "tidal & seasonal wetland"
+   },
+   "category": "habitat-restoration",
+   "campus": "oakland",
+   "crew": [
+    {
+     "role": "equipment operator",
+     "trade": "operating-eng"
+    },
+    {
+     "role": "field laborer",
+     "trade": "laborers"
+    }
+   ],
+   "steps": [
+    {
+     "id": "brief",
+     "text": "crew brief: tide tables, access route on levee crowns, buddy pairs"
+    },
+    {
+     "id": "survey",
+     "text": "walk and mark the channel alignment from the design layout"
+    },
+    {
+     "id": "excavate",
+     "text": "cut starter channels to the marked alignment"
+    },
+    {
+     "id": "spoil",
+     "text": "place spoil where the plan marks it, never into open water"
+    },
+    {
+     "id": "monitor",
+     "text": "photo-point and record water levels after the first tides"
+    }
+   ],
+   "tools": [
+    "survey flags",
+    "GNSS rover",
+    "staff gauge",
+    "camera"
+   ],
+   "ppe": [
+    "hi-vis vest",
+    "safety-toe boots",
+    "PFD near open water",
+    "sun protection"
+   ],
+   "hazards": [
+    {
+     "id": "mud",
+     "text": "soft mud entrapment off the levee crown"
+    },
+    {
+     "id": "drowning",
+     "text": "open water and fast-moving tidal channels"
+    },
+    {
+     "id": "struck-by",
+     "text": "operating equipment on a narrow levee crown"
+    }
+   ],
+   "safety_gates": [
+    {
+     "id": "g-tide",
+     "before_step": "excavate",
+     "text": "tide window confirmed before any work below the levee crown"
+    },
+    {
+     "id": "g-buddy",
+     "before_step": "survey",
+     "text": "buddy pairs set and PFDs checked before anyone leaves the crown"
+    }
+   ],
+   "forbidden": [
+    {
+     "id": "solo-mud",
+     "text": "entering the mudflat alone"
+    },
+    {
+     "id": "open-water",
+     "text": "placing spoil into open water"
+    }
+   ],
+   "fixtures": [
+    {
+     "name": "perfect",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "safety-toe boots",
+       "PFD near open water",
+       "sun protection"
+      ],
+      "crew": {
+       "equipment operator": "operating-eng",
+       "field laborer": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "gate:g-buddy",
+       "step:survey",
+       "gate:g-tide",
+       "step:excavate",
+       "step:spoil",
+       "step:monitor"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": true
+     }
+    },
+    {
+     "name": "gate-skipped",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "safety-toe boots",
+       "PFD near open water",
+       "sun protection"
+      ],
+      "crew": {
+       "equipment operator": "operating-eng",
+       "field laborer": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "gate:g-buddy",
+       "step:survey",
+       "step:excavate",
+       "step:spoil",
+       "step:monitor"
+      ]
+     },
+     "expect": {
+      "gates": false,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-steps",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "safety-toe boots",
+       "PFD near open water",
+       "sun protection"
+      ],
+      "crew": {
+       "equipment operator": "operating-eng",
+       "field laborer": "laborers"
+      },
+      "sequence": [
+       "gate:g-buddy",
+       "gate:g-tide",
+       "step:monitor",
+       "step:spoil",
+       "step:excavate",
+       "step:survey",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 20,
+      "crew": 100,
+      "score": 60,
+      "pass": false
+     }
+    },
+    {
+     "name": "forbidden-action",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "safety-toe boots",
+       "PFD near open water",
+       "sun protection"
+      ],
+      "crew": {
+       "equipment operator": "operating-eng",
+       "field laborer": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "gate:g-buddy",
+       "step:survey",
+       "gate:g-tide",
+       "step:excavate",
+       "step:spoil",
+       "step:monitor",
+       "forbidden:solo-mud"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": false,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-missing-ppe",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "safety-toe boots",
+       "PFD near open water"
+      ],
+      "crew": {
+       "equipment operator": "operating-eng",
+       "field laborer": "laborers"
+      },
+      "sequence": [
+       "gate:g-buddy",
+       "gate:g-tide",
+       "step:monitor",
+       "step:spoil",
+       "step:excavate",
+       "step:survey",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 75,
+      "order": 20,
+      "crew": 100,
+      "score": 52,
+      "pass": false
+     }
+    }
+   ]
+  },
+  {
+   "id": "rs-american-canyon-planning-survey",
+   "site": "american-canyon",
+   "site_name": "American Canyon Wetlands Restoration Plan",
+   "type": "planning-survey",
+   "family": "restoration",
+   "title": "Baseline condition survey for a restoration plan",
+   "label": "training scenario, not the project's actual work plan",
+   "provenance": "AUTHORED",
+   "lessons": "unverified general practice",
+   "evidence": {
+    "field": "scale",
+    "quote": "a plan summarizing restoration opportunities"
+   },
+   "category": "habitat-restoration",
+   "campus": "oakland",
+   "crew": [
+    {
+     "role": "field assistant",
+     "trade": "laborers"
+    }
+   ],
+   "steps": [
+    {
+     "id": "brief",
+     "text": "crew brief: access permissions, route and check-in times"
+    },
+    {
+     "id": "control",
+     "text": "set or recover survey control"
+    },
+    {
+     "id": "transect",
+     "text": "walk transects and record existing conditions"
+    },
+    {
+     "id": "photo",
+     "text": "take photo-points at the marked stations"
+    },
+    {
+     "id": "file",
+     "text": "file the baseline record with its method notes"
+    }
+   ],
+   "tools": [
+    "GNSS rover",
+    "camera",
+    "data sheets",
+    "flags"
+   ],
+   "ppe": [
+    "hi-vis vest",
+    "safety-toe boots",
+    "sun protection"
+   ],
+   "hazards": [
+    {
+     "id": "access",
+     "text": "private or restricted land along the shoreline"
+    },
+    {
+     "id": "mud",
+     "text": "soft ground"
+    }
+   ],
+   "safety_gates": [
+    {
+     "id": "g-access",
+     "before_step": "control",
+     "text": "access permission confirmed before entering any parcel"
+    }
+   ],
+   "forbidden": [
+    {
+     "id": "trespass",
+     "text": "entering a parcel without permission"
+    }
+   ],
+   "fixtures": [
+    {
+     "name": "perfect",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "safety-toe boots",
+       "sun protection"
+      ],
+      "crew": {
+       "field assistant": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "gate:g-access",
+       "step:control",
+       "step:transect",
+       "step:photo",
+       "step:file"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": true
+     }
+    },
+    {
+     "name": "gate-skipped",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "safety-toe boots",
+       "sun protection"
+      ],
+      "crew": {
+       "field assistant": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "step:control",
+       "step:transect",
+       "step:photo",
+       "step:file"
+      ]
+     },
+     "expect": {
+      "gates": false,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-steps",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "safety-toe boots",
+       "sun protection"
+      ],
+      "crew": {
+       "field assistant": "laborers"
+      },
+      "sequence": [
+       "gate:g-access",
+       "step:file",
+       "step:photo",
+       "step:transect",
+       "step:control",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 20,
+      "crew": 100,
+      "score": 60,
+      "pass": false
+     }
+    },
+    {
+     "name": "forbidden-action",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "safety-toe boots",
+       "sun protection"
+      ],
+      "crew": {
+       "field assistant": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "gate:g-access",
+       "step:control",
+       "step:transect",
+       "step:photo",
+       "step:file",
+       "forbidden:trespass"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": false,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-missing-ppe",
+     "run": {
+      "ppe": [
+       "hi-vis vest",
+       "safety-toe boots"
+      ],
+      "crew": {
+       "field assistant": "laborers"
+      },
+      "sequence": [
+       "gate:g-access",
+       "step:file",
+       "step:photo",
+       "step:transect",
+       "step:control",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 66,
+      "order": 20,
+      "crew": 100,
+      "score": 49,
+      "pass": false
+     }
+    }
+   ]
+  },
+  {
+   "id": "rs-straw-north-bay-transition-zone",
+   "site": "straw-north-bay",
+   "site_name": "Restoring Wetland-Upland Transition Zone Habitat in the North Bay with STRAW",
+   "type": "transition-zone",
+   "family": "restoration",
+   "title": "Wetland-upland transition zone planting",
+   "label": "training scenario, not the project's actual work plan",
+   "provenance": "AUTHORED",
+   "lessons": "unverified general practice",
+   "evidence": {
+    "field": "habitat",
+    "quote": "wetland-upland transition zone"
+   },
+   "category": "habitat-restoration",
+   "campus": "oakland",
+   "crew": [
+    {
+     "role": "planting crew",
+     "trade": "laborers"
+    }
+   ],
+   "steps": [
+    {
+     "id": "brief",
+     "text": "crew brief: zone boundaries, sensitive areas and the tide line"
+    },
+    {
+     "id": "clear",
+     "text": "hand-clear weeds from the planting band the plan marks"
+    },
+    {
+     "id": "plant",
+     "text": "plant the band from wet edge to upland, species by elevation"
+    },
+    {
+     "id": "protect",
+     "text": "install plant protection where the plan calls for it"
+    },
+    {
+     "id": "record",
+     "text": "record survival plots and photo-points"
+    }
+   ],
+   "tools": [
+    "hand tools",
+    "planting flags",
+    "plant protection",
+    "data sheet"
+   ],
+   "ppe": [
+    "gloves",
+    "safety-toe boots",
+    "sun protection"
+   ],
+   "hazards": [
+    {
+     "id": "mud",
+     "text": "soft ground at the wet edge"
+    },
+    {
+     "id": "heat",
+     "text": "heat and sun exposure"
+    },
+    {
+     "id": "wildlife",
+     "text": "nesting or protected wildlife in the zone"
+    }
+   ],
+   "safety_gates": [
+    {
+     "id": "g-wildlife",
+     "before_step": "clear",
+     "text": "sensitive-area and nesting boundaries walked before clearing"
+    }
+   ],
+   "forbidden": [
+    {
+     "id": "cross-fence",
+     "text": "crossing a sensitive-area fence or marker"
+    }
+   ],
+   "fixtures": [
+    {
+     "name": "perfect",
+     "run": {
+      "ppe": [
+       "gloves",
+       "safety-toe boots",
+       "sun protection"
+      ],
+      "crew": {
+       "planting crew": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "gate:g-wildlife",
+       "step:clear",
+       "step:plant",
+       "step:protect",
+       "step:record"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": true
+     }
+    },
+    {
+     "name": "gate-skipped",
+     "run": {
+      "ppe": [
+       "gloves",
+       "safety-toe boots",
+       "sun protection"
+      ],
+      "crew": {
+       "planting crew": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "step:clear",
+       "step:plant",
+       "step:protect",
+       "step:record"
+      ]
+     },
+     "expect": {
+      "gates": false,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-steps",
+     "run": {
+      "ppe": [
+       "gloves",
+       "safety-toe boots",
+       "sun protection"
+      ],
+      "crew": {
+       "planting crew": "laborers"
+      },
+      "sequence": [
+       "gate:g-wildlife",
+       "step:record",
+       "step:protect",
+       "step:plant",
+       "step:clear",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 20,
+      "crew": 100,
+      "score": 60,
+      "pass": false
+     }
+    },
+    {
+     "name": "forbidden-action",
+     "run": {
+      "ppe": [
+       "gloves",
+       "safety-toe boots",
+       "sun protection"
+      ],
+      "crew": {
+       "planting crew": "laborers"
+      },
+      "sequence": [
+       "step:brief",
+       "gate:g-wildlife",
+       "step:clear",
+       "step:plant",
+       "step:protect",
+       "step:record",
+       "forbidden:cross-fence"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": false,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-missing-ppe",
+     "run": {
+      "ppe": [
+       "gloves",
+       "safety-toe boots"
+      ],
+      "crew": {
+       "planting crew": "laborers"
+      },
+      "sequence": [
+       "gate:g-wildlife",
+       "step:record",
+       "step:protect",
+       "step:plant",
+       "step:clear",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 66,
+      "order": 20,
+      "crew": 100,
+      "score": 49,
+      "pass": false
+     }
+    }
+   ]
+  },
+  {
+   "id": "rs-spartina-removal-spartina-removal",
+   "site": "spartina-removal",
+   "site_name": "San Francisco Estuary Invasive Spartina Removal",
+   "type": "spartina-removal",
+   "family": "restoration",
+   "title": "Invasive Spartina removal and revegetation (manual and survey work only)",
+   "label": "training scenario, not the project's actual work plan",
+   "provenance": "AUTHORED",
+   "lessons": "unverified general practice",
+   "evidence": {
+    "field": "name",
+    "quote": "Invasive Spartina Removal"
+   },
+   "category": "habitat-restoration",
+   "campus": null,
+   "crew": [
+    {
+     "role": "field crew",
+     "trade": "laborers"
+    },
+    {
+     "role": "mapping lead",
+     "trade": "surveyors"
+    }
+   ],
+   "steps": [
+    {
+     "id": "brief",
+     "text": "crew brief: tide window, mapped patches and the buddy plan"
+    },
+    {
+     "id": "locate",
+     "text": "navigate to the mapped patch and confirm it against the map"
+    },
+    {
+     "id": "flag",
+     "text": "flag and record the patch location and size"
+    },
+    {
+     "id": "remove",
+     "text": "hand-remove seedlings the crew lead identifies, bagging all plant material"
+    },
+    {
+     "id": "pack",
+     "text": "pack out every bag - nothing left on the marsh"
+    },
+    {
+     "id": "reveg",
+     "text": "plant native plugs where the plan marks revegetation"
+    }
+   ],
+   "tools": [
+    "GPS / map",
+    "flags",
+    "heavy bags",
+    "hand tools",
+    "native plugs"
+   ],
+   "ppe": [
+    "gloves",
+    "mud boots",
+    "PFD near channels",
+    "sun protection"
+   ],
+   "hazards": [
+    {
+     "id": "mud",
+     "text": "soft mud entrapment"
+    },
+    {
+     "id": "tide",
+     "text": "incoming tide and flooding sloughs"
+    },
+    {
+     "id": "misid",
+     "text": "mistaking native cordgrass for the invasive"
+    }
+   ],
+   "safety_gates": [
+    {
+     "id": "g-tide",
+     "before_step": "locate",
+     "text": "tide window confirmed before anyone enters the marsh"
+    },
+    {
+     "id": "g-id",
+     "before_step": "remove",
+     "text": "crew lead confirms identification before any plant is removed"
+    }
+   ],
+   "forbidden": [
+    {
+     "id": "herbicide",
+     "text": "mixing or applying herbicide (licensed applicators only; not trained here)"
+    },
+    {
+     "id": "leave-material",
+     "text": "leaving removed plant material on the marsh"
+    }
+   ],
+   "fixtures": [
+    {
+     "name": "perfect",
+     "run": {
+      "ppe": [
+       "gloves",
+       "mud boots",
+       "PFD near channels",
+       "sun protection"
+      ],
+      "crew": {
+       "field crew": "laborers",
+       "mapping lead": "surveyors"
+      },
+      "sequence": [
+       "step:brief",
+       "gate:g-tide",
+       "step:locate",
+       "step:flag",
+       "gate:g-id",
+       "step:remove",
+       "step:pack",
+       "step:reveg"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": true
+     }
+    },
+    {
+     "name": "gate-skipped",
+     "run": {
+      "ppe": [
+       "gloves",
+       "mud boots",
+       "PFD near channels",
+       "sun protection"
+      ],
+      "crew": {
+       "field crew": "laborers",
+       "mapping lead": "surveyors"
+      },
+      "sequence": [
+       "step:brief",
+       "step:locate",
+       "step:flag",
+       "gate:g-id",
+       "step:remove",
+       "step:pack",
+       "step:reveg"
+      ]
+     },
+     "expect": {
+      "gates": false,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-steps",
+     "run": {
+      "ppe": [
+       "gloves",
+       "mud boots",
+       "PFD near channels",
+       "sun protection"
+      ],
+      "crew": {
+       "field crew": "laborers",
+       "mapping lead": "surveyors"
+      },
+      "sequence": [
+       "gate:g-tide",
+       "gate:g-id",
+       "step:reveg",
+       "step:pack",
+       "step:remove",
+       "step:flag",
+       "step:locate",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 16,
+      "crew": 100,
+      "score": 58,
+      "pass": false
+     }
+    },
+    {
+     "name": "forbidden-action",
+     "run": {
+      "ppe": [
+       "gloves",
+       "mud boots",
+       "PFD near channels",
+       "sun protection"
+      ],
+      "crew": {
+       "field crew": "laborers",
+       "mapping lead": "surveyors"
+      },
+      "sequence": [
+       "step:brief",
+       "gate:g-tide",
+       "step:locate",
+       "step:flag",
+       "gate:g-id",
+       "step:remove",
+       "step:pack",
+       "step:reveg",
+       "forbidden:herbicide"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": false,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-missing-ppe",
+     "run": {
+      "ppe": [
+       "gloves",
+       "mud boots",
+       "PFD near channels"
+      ],
+      "crew": {
+       "field crew": "laborers",
+       "mapping lead": "surveyors"
+      },
+      "sequence": [
+       "gate:g-tide",
+       "gate:g-id",
+       "step:reveg",
+       "step:pack",
+       "step:remove",
+       "step:flag",
+       "step:locate",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 75,
+      "order": 16,
+      "crew": 100,
+      "score": 50,
+      "pass": false
+     }
+    }
+   ]
+  },
+  {
+   "id": "rs-hunters-point-shipyard-cleanup-support",
+   "site": "hunters-point-shipyard",
+   "site_name": "Hunters Point Naval Shipyard — EPA Superfund Site (Bayview-Hunters Point)",
+   "type": "cleanup-support",
+   "family": "cleanup-awareness",
+   "title": "Cleanup-site safety AWARENESS - orientation, boundaries, observation and reporting only",
+   "label": "training scenario, not the project's actual work plan",
+   "provenance": "AUTHORED",
+   "lessons": "unverified general practice",
+   "evidence": {
+    "field": "habitat",
+    "quote": "federal Superfund cleanup site"
+   },
+   "category": "environmental-monitoring",
+   "campus": "treasure-island",
+   "crew": [
+    {
+     "role": "awareness trainee (support zone only)",
+     "trade": "laborers"
+    },
+    {
+     "role": "monitoring observer",
+     "trade": "hazmat"
+    }
+   ],
+   "steps": [
+    {
+     "id": "orient",
+     "text": "attend the site's own health-and-safety orientation, run by the site's own staff"
+    },
+    {
+     "id": "boundaries",
+     "text": "identify posted boundaries, signage and the support zone on the site map"
+    },
+    {
+     "id": "observe",
+     "text": "observe from the support zone only; note where posted monitoring stations are"
+    },
+    {
+     "id": "report",
+     "text": "report anything out of place to the supervisor; do not touch it"
+    },
+    {
+     "id": "log",
+     "text": "log the observation with time and place"
+    }
+   ],
+   "tools": [
+    "site map",
+    "notebook",
+    "radio or phone to the supervisor"
+   ],
+   "ppe": [
+    "only the PPE the site's own health-and-safety plan issues for the support zone",
+    "hi-vis vest"
+   ],
+   "hazards": [
+    {
+     "id": "exposure",
+     "text": "contaminated soil, dust or debris beyond the posted boundary"
+    },
+    {
+     "id": "equipment",
+     "text": "operating equipment and trucks on haul routes"
+    },
+    {
+     "id": "unknown",
+     "text": "unknown materials or containers"
+    }
+   ],
+   "safety_gates": [
+    {
+     "id": "g-orient",
+     "before_step": "boundaries",
+     "text": "site orientation completed before anything else on site"
+    },
+    {
+     "id": "g-stopwork",
+     "before_step": "observe",
+     "text": "stop-work and reporting chain stated before observing"
+    }
+   ],
+   "forbidden": [
+    {
+     "id": "enter-exclusion",
+     "text": "entering an exclusion zone or crossing a posted boundary"
+    },
+    {
+     "id": "handle-material",
+     "text": "touching, moving or sampling soil, debris or any material"
+    },
+    {
+     "id": "eat-drink",
+     "text": "eating, drinking or smoking in a controlled area"
+    }
+   ],
+   "fixtures": [
+    {
+     "name": "perfect",
+     "run": {
+      "ppe": [
+       "only the PPE the site's own health-and-safety plan issues for the support zone",
+       "hi-vis vest"
+      ],
+      "crew": {
+       "awareness trainee (support zone only)": "laborers",
+       "monitoring observer": "hazmat"
+      },
+      "sequence": [
+       "step:orient",
+       "gate:g-orient",
+       "step:boundaries",
+       "gate:g-stopwork",
+       "step:observe",
+       "step:report",
+       "step:log"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": true
+     }
+    },
+    {
+     "name": "gate-skipped",
+     "run": {
+      "ppe": [
+       "only the PPE the site's own health-and-safety plan issues for the support zone",
+       "hi-vis vest"
+      ],
+      "crew": {
+       "awareness trainee (support zone only)": "laborers",
+       "monitoring observer": "hazmat"
+      },
+      "sequence": [
+       "step:orient",
+       "step:boundaries",
+       "gate:g-stopwork",
+       "step:observe",
+       "step:report",
+       "step:log"
+      ]
+     },
+     "expect": {
+      "gates": false,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-steps",
+     "run": {
+      "ppe": [
+       "only the PPE the site's own health-and-safety plan issues for the support zone",
+       "hi-vis vest"
+      ],
+      "crew": {
+       "awareness trainee (support zone only)": "laborers",
+       "monitoring observer": "hazmat"
+      },
+      "sequence": [
+       "gate:g-orient",
+       "gate:g-stopwork",
+       "step:log",
+       "step:report",
+       "step:observe",
+       "step:boundaries",
+       "step:orient"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 20,
+      "crew": 100,
+      "score": 60,
+      "pass": false
+     }
+    },
+    {
+     "name": "forbidden-action",
+     "run": {
+      "ppe": [
+       "only the PPE the site's own health-and-safety plan issues for the support zone",
+       "hi-vis vest"
+      ],
+      "crew": {
+       "awareness trainee (support zone only)": "laborers",
+       "monitoring observer": "hazmat"
+      },
+      "sequence": [
+       "step:orient",
+       "gate:g-orient",
+       "step:boundaries",
+       "gate:g-stopwork",
+       "step:observe",
+       "step:report",
+       "step:log",
+       "forbidden:enter-exclusion"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": false,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-missing-ppe",
+     "run": {
+      "ppe": [
+       "only the PPE the site's own health-and-safety plan issues for the support zone"
+      ],
+      "crew": {
+       "awareness trainee (support zone only)": "laborers",
+       "monitoring observer": "hazmat"
+      },
+      "sequence": [
+       "gate:g-orient",
+       "gate:g-stopwork",
+       "step:log",
+       "step:report",
+       "step:observe",
+       "step:boundaries",
+       "step:orient"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 50,
+      "order": 20,
+      "crew": 100,
+      "score": 45,
+      "pass": false
+     }
+    }
+   ]
+  },
+  {
+   "id": "rs-treasure-island-nsti-cleanup-support",
+   "site": "treasure-island-nsti",
+   "site_name": "Former Naval Station Treasure Island (NSTI) — Navy BRAC cleanup site (Treasure Island)",
+   "type": "cleanup-support",
+   "family": "cleanup-awareness",
+   "title": "Cleanup-site safety AWARENESS - orientation, boundaries, observation and reporting only",
+   "label": "training scenario, not the project's actual work plan",
+   "provenance": "AUTHORED",
+   "lessons": "unverified general practice",
+   "evidence": {
+    "field": "habitat",
+    "quote": "Navy-led BRAC/CERCLA cleanup"
+   },
+   "category": "environmental-monitoring",
+   "campus": "treasure-island",
+   "crew": [
+    {
+     "role": "awareness trainee (support zone only)",
+     "trade": "laborers"
+    },
+    {
+     "role": "monitoring observer",
+     "trade": "hazmat"
+    },
+    {
+     "role": "survey observer",
+     "trade": "surveyors"
+    }
+   ],
+   "steps": [
+    {
+     "id": "orient",
+     "text": "attend the site's own health-and-safety orientation, run by the site's own staff"
+    },
+    {
+     "id": "boundaries",
+     "text": "identify posted boundaries, signage and the support zone on the site map"
+    },
+    {
+     "id": "observe",
+     "text": "observe from the support zone only; note where posted monitoring stations are"
+    },
+    {
+     "id": "report",
+     "text": "report anything out of place to the supervisor; do not touch it"
+    },
+    {
+     "id": "log",
+     "text": "log the observation with time and place"
+    }
+   ],
+   "tools": [
+    "site map",
+    "notebook",
+    "radio or phone to the supervisor"
+   ],
+   "ppe": [
+    "only the PPE the site's own health-and-safety plan issues for the support zone",
+    "hi-vis vest"
+   ],
+   "hazards": [
+    {
+     "id": "exposure",
+     "text": "contaminated soil, dust or debris beyond the posted boundary"
+    },
+    {
+     "id": "equipment",
+     "text": "operating equipment and trucks on haul routes"
+    },
+    {
+     "id": "unknown",
+     "text": "unknown materials or containers"
+    }
+   ],
+   "safety_gates": [
+    {
+     "id": "g-orient",
+     "before_step": "boundaries",
+     "text": "site orientation completed before anything else on site"
+    },
+    {
+     "id": "g-stopwork",
+     "before_step": "observe",
+     "text": "stop-work and reporting chain stated before observing"
+    }
+   ],
+   "forbidden": [
+    {
+     "id": "enter-exclusion",
+     "text": "entering an exclusion zone or crossing a posted boundary"
+    },
+    {
+     "id": "handle-material",
+     "text": "touching, moving or sampling soil, debris or any material"
+    },
+    {
+     "id": "eat-drink",
+     "text": "eating, drinking or smoking in a controlled area"
+    }
+   ],
+   "fixtures": [
+    {
+     "name": "perfect",
+     "run": {
+      "ppe": [
+       "only the PPE the site's own health-and-safety plan issues for the support zone",
+       "hi-vis vest"
+      ],
+      "crew": {
+       "awareness trainee (support zone only)": "laborers",
+       "monitoring observer": "hazmat",
+       "survey observer": "surveyors"
+      },
+      "sequence": [
+       "step:orient",
+       "gate:g-orient",
+       "step:boundaries",
+       "gate:g-stopwork",
+       "step:observe",
+       "step:report",
+       "step:log"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": true
+     }
+    },
+    {
+     "name": "gate-skipped",
+     "run": {
+      "ppe": [
+       "only the PPE the site's own health-and-safety plan issues for the support zone",
+       "hi-vis vest"
+      ],
+      "crew": {
+       "awareness trainee (support zone only)": "laborers",
+       "monitoring observer": "hazmat",
+       "survey observer": "surveyors"
+      },
+      "sequence": [
+       "step:orient",
+       "step:boundaries",
+       "gate:g-stopwork",
+       "step:observe",
+       "step:report",
+       "step:log"
+      ]
+     },
+     "expect": {
+      "gates": false,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-steps",
+     "run": {
+      "ppe": [
+       "only the PPE the site's own health-and-safety plan issues for the support zone",
+       "hi-vis vest"
+      ],
+      "crew": {
+       "awareness trainee (support zone only)": "laborers",
+       "monitoring observer": "hazmat",
+       "survey observer": "surveyors"
+      },
+      "sequence": [
+       "gate:g-orient",
+       "gate:g-stopwork",
+       "step:log",
+       "step:report",
+       "step:observe",
+       "step:boundaries",
+       "step:orient"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 20,
+      "crew": 100,
+      "score": 60,
+      "pass": false
+     }
+    },
+    {
+     "name": "forbidden-action",
+     "run": {
+      "ppe": [
+       "only the PPE the site's own health-and-safety plan issues for the support zone",
+       "hi-vis vest"
+      ],
+      "crew": {
+       "awareness trainee (support zone only)": "laborers",
+       "monitoring observer": "hazmat",
+       "survey observer": "surveyors"
+      },
+      "sequence": [
+       "step:orient",
+       "gate:g-orient",
+       "step:boundaries",
+       "gate:g-stopwork",
+       "step:observe",
+       "step:report",
+       "step:log",
+       "forbidden:enter-exclusion"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": false,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-missing-ppe",
+     "run": {
+      "ppe": [
+       "only the PPE the site's own health-and-safety plan issues for the support zone"
+      ],
+      "crew": {
+       "awareness trainee (support zone only)": "laborers",
+       "monitoring observer": "hazmat",
+       "survey observer": "surveyors"
+      },
+      "sequence": [
+       "gate:g-orient",
+       "gate:g-stopwork",
+       "step:log",
+       "step:report",
+       "step:observe",
+       "step:boundaries",
+       "step:orient"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 50,
+      "order": 20,
+      "crew": 100,
+      "score": 45,
+      "pass": false
+     }
+    }
+   ]
+  }
+ ],
+ "generic": [
+  {
+   "id": "rs-generic-wq-sampling",
+   "site": null,
+   "site_name": null,
+   "type": "wq-sampling",
+   "family": "water-quality",
+   "title": "Water sampling technique - grab sample and chain of custody",
+   "label": "training scenario, not the project's actual work plan",
+   "provenance": "AUTHORED",
+   "lessons": "unverified general practice",
+   "evidence": null,
+   "category": null,
+   "campus": null,
+   "why_unlinked": "no site record in restoration.json names this work, so it stays generic",
+   "crew": [
+    {
+     "role": "sampler",
+     "trade": "laborers"
+    },
+    {
+     "role": "monitoring sampler",
+     "trade": "hazmat"
+    }
+   ],
+   "steps": [
+    {
+     "id": "brief",
+     "text": "crew brief: station list, bottle kit and hold times"
+    },
+    {
+     "id": "label",
+     "text": "label the bottle before sampling"
+    },
+    {
+     "id": "sample",
+     "text": "take the grab sample upstream of where you stand, without touching the inside of the cap"
+    },
+    {
+     "id": "preserve",
+     "text": "cap and ice the sample"
+    },
+    {
+     "id": "coc",
+     "text": "fill in the chain-of-custody form and sign it over"
+    }
+   ],
+   "tools": [
+    "labelled bottles",
+    "cooler and ice",
+    "chain-of-custody form",
+    "sampling pole"
+   ],
+   "ppe": [
+    "nitrile gloves",
+    "PFD near water",
+    "safety glasses"
+   ],
+   "hazards": [
+    {
+     "id": "drowning",
+     "text": "steep or slippery banks"
+    },
+    {
+     "id": "contact",
+     "text": "skin contact with the water"
+    }
+   ],
+   "safety_gates": [
+    {
+     "id": "g-bank",
+     "before_step": "sample",
+     "text": "footing and PFD checked before reaching over the water"
+    }
+   ],
+   "forbidden": [
+    {
+     "id": "touch-cap",
+     "text": "touching the inside of the bottle or cap"
+    }
+   ],
+   "fixtures": [
+    {
+     "name": "perfect",
+     "run": {
+      "ppe": [
+       "nitrile gloves",
+       "PFD near water",
+       "safety glasses"
+      ],
+      "crew": {
+       "sampler": "laborers",
+       "monitoring sampler": "hazmat"
+      },
+      "sequence": [
+       "step:brief",
+       "step:label",
+       "gate:g-bank",
+       "step:sample",
+       "step:preserve",
+       "step:coc"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": true
+     }
+    },
+    {
+     "name": "gate-skipped",
+     "run": {
+      "ppe": [
+       "nitrile gloves",
+       "PFD near water",
+       "safety glasses"
+      ],
+      "crew": {
+       "sampler": "laborers",
+       "monitoring sampler": "hazmat"
+      },
+      "sequence": [
+       "step:brief",
+       "step:label",
+       "step:sample",
+       "step:preserve",
+       "step:coc"
+      ]
+     },
+     "expect": {
+      "gates": false,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-steps",
+     "run": {
+      "ppe": [
+       "nitrile gloves",
+       "PFD near water",
+       "safety glasses"
+      ],
+      "crew": {
+       "sampler": "laborers",
+       "monitoring sampler": "hazmat"
+      },
+      "sequence": [
+       "gate:g-bank",
+       "step:coc",
+       "step:preserve",
+       "step:sample",
+       "step:label",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 20,
+      "crew": 100,
+      "score": 60,
+      "pass": false
+     }
+    },
+    {
+     "name": "forbidden-action",
+     "run": {
+      "ppe": [
+       "nitrile gloves",
+       "PFD near water",
+       "safety glasses"
+      ],
+      "crew": {
+       "sampler": "laborers",
+       "monitoring sampler": "hazmat"
+      },
+      "sequence": [
+       "step:brief",
+       "step:label",
+       "gate:g-bank",
+       "step:sample",
+       "step:preserve",
+       "step:coc",
+       "forbidden:touch-cap"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": false,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-missing-ppe",
+     "run": {
+      "ppe": [
+       "nitrile gloves",
+       "PFD near water"
+      ],
+      "crew": {
+       "sampler": "laborers",
+       "monitoring sampler": "hazmat"
+      },
+      "sequence": [
+       "gate:g-bank",
+       "step:coc",
+       "step:preserve",
+       "step:sample",
+       "step:label",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 66,
+      "order": 20,
+      "crew": 100,
+      "score": 49,
+      "pass": false
+     }
+    }
+   ]
+  },
+  {
+   "id": "rs-generic-wq-sediment-core",
+   "site": null,
+   "site_name": null,
+   "type": "wq-sediment-core",
+   "family": "water-quality",
+   "title": "Sediment core handling AWARENESS - labelling, custody and contact avoidance",
+   "label": "training scenario, not the project's actual work plan",
+   "provenance": "AUTHORED",
+   "lessons": "unverified general practice",
+   "evidence": null,
+   "category": null,
+   "campus": null,
+   "why_unlinked": "no site record in restoration.json names this work, so it stays generic",
+   "crew": [
+    {
+     "role": "awareness trainee",
+     "trade": "laborers"
+    },
+    {
+     "role": "monitoring observer",
+     "trade": "hazmat"
+    }
+   ],
+   "steps": [
+    {
+     "id": "brief",
+     "text": "crew brief: the sampling team's own plan and who handles cores (not the trainee)"
+    },
+    {
+     "id": "observe",
+     "text": "observe core retrieval from the designated area"
+    },
+    {
+     "id": "label",
+     "text": "check each core label matches the station log"
+    },
+    {
+     "id": "custody",
+     "text": "check the chain-of-custody entry is complete"
+    }
+   ],
+   "tools": [
+    "station log",
+    "chain-of-custody form"
+   ],
+   "ppe": [
+    "gloves",
+    "safety glasses",
+    "PFD on the vessel or near water"
+   ],
+   "hazards": [
+    {
+     "id": "contact",
+     "text": "skin contact with sediment of unknown quality"
+    },
+    {
+     "id": "vessel",
+     "text": "vessel motion and deck equipment"
+    }
+   ],
+   "safety_gates": [
+    {
+     "id": "g-plan",
+     "before_step": "observe",
+     "text": "sampling team's plan read before observing"
+    }
+   ],
+   "forbidden": [
+    {
+     "id": "handle-core",
+     "text": "handling, opening or subsampling a core (sampling team only)"
+    }
+   ],
+   "fixtures": [
+    {
+     "name": "perfect",
+     "run": {
+      "ppe": [
+       "gloves",
+       "safety glasses",
+       "PFD on the vessel or near water"
+      ],
+      "crew": {
+       "awareness trainee": "laborers",
+       "monitoring observer": "hazmat"
+      },
+      "sequence": [
+       "step:brief",
+       "gate:g-plan",
+       "step:observe",
+       "step:label",
+       "step:custody"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": true
+     }
+    },
+    {
+     "name": "gate-skipped",
+     "run": {
+      "ppe": [
+       "gloves",
+       "safety glasses",
+       "PFD on the vessel or near water"
+      ],
+      "crew": {
+       "awareness trainee": "laborers",
+       "monitoring observer": "hazmat"
+      },
+      "sequence": [
+       "step:brief",
+       "step:observe",
+       "step:label",
+       "step:custody"
+      ]
+     },
+     "expect": {
+      "gates": false,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-steps",
+     "run": {
+      "ppe": [
+       "gloves",
+       "safety glasses",
+       "PFD on the vessel or near water"
+      ],
+      "crew": {
+       "awareness trainee": "laborers",
+       "monitoring observer": "hazmat"
+      },
+      "sequence": [
+       "gate:g-plan",
+       "step:custody",
+       "step:label",
+       "step:observe",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 100,
+      "order": 25,
+      "crew": 100,
+      "score": 62,
+      "pass": false
+     }
+    },
+    {
+     "name": "forbidden-action",
+     "run": {
+      "ppe": [
+       "gloves",
+       "safety glasses",
+       "PFD on the vessel or near water"
+      ],
+      "crew": {
+       "awareness trainee": "laborers",
+       "monitoring observer": "hazmat"
+      },
+      "sequence": [
+       "step:brief",
+       "gate:g-plan",
+       "step:observe",
+       "step:label",
+       "step:custody",
+       "forbidden:handle-core"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": false,
+      "ppe": 100,
+      "order": 100,
+      "crew": 100,
+      "score": 100,
+      "pass": false
+     }
+    },
+    {
+     "name": "reversed-missing-ppe",
+     "run": {
+      "ppe": [
+       "gloves",
+       "safety glasses"
+      ],
+      "crew": {
+       "awareness trainee": "laborers",
+       "monitoring observer": "hazmat"
+      },
+      "sequence": [
+       "gate:g-plan",
+       "step:custody",
+       "step:label",
+       "step:observe",
+       "step:brief"
+      ]
+     },
+     "expect": {
+      "gates": true,
+      "forbidden": true,
+      "ppe": 66,
+      "order": 25,
+      "crew": 100,
+      "score": 52,
+      "pass": false
+     }
+    }
+   ]
+  }
+ ],
+ "staged_tasks": [
+  {
+   "id": "resto-sim-herons-head-shoreline-resilience",
+   "title": "Shoreline resilience - living shoreline and green infrastructure placement - Heron's Head Park Shoreline Resilience Project (Phases 1 and 2)",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "herons-head",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_bay.html#resto=herons-head",
+    "lands": "section",
+    "param": [
+     "#resto"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[0]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 6 steps, 2 safety gates"
+  },
+  {
+   "id": "resto-sim-herons-head-wq-stormwater",
+   "title": "Stormwater capture - inspecting a green-infrastructure cell - Heron's Head Park Shoreline Resilience Project (Phases 1 and 2)",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "herons-head",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_bay.html#resto=herons-head",
+    "lands": "section",
+    "param": [
+     "#resto"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[1]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 6 steps, 1 safety gates"
+  },
+  {
+   "id": "resto-sim-candlestick-point-trash-cleanup",
+   "title": "Shoreline trash clean-up - Candlestick Point Stewardship Project (Phases 1 and 2)",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "candlestick-point",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_bay.html#resto=candlestick-point",
+    "lands": "section",
+    "param": [
+     "#resto"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[2]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 5 steps, 1 safety gates"
+  },
+  {
+   "id": "resto-sim-candlestick-point-native-planting",
+   "title": "Native planting and plant propagation - Candlestick Point Stewardship Project (Phases 1 and 2)",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "candlestick-point",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_bay.html#resto=candlestick-point",
+    "lands": "section",
+    "param": [
+     "#resto"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[3]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 6 steps, 1 safety gates"
+  },
+  {
+   "id": "resto-sim-candlestick-point-habitat-monitoring",
+   "title": "Habitat monitoring - photo-points, plots and records - Candlestick Point Stewardship Project (Phases 1 and 2)",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "candlestick-point",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_bay.html#resto=candlestick-point",
+    "lands": "section",
+    "param": [
+     "#resto"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[4]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 5 steps, 1 safety gates"
+  },
+  {
+   "id": "resto-sim-candlestick-point-wq-trash-capture",
+   "title": "Trash capture device inspection - Candlestick Point Stewardship Project (Phases 1 and 2)",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "candlestick-point",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_bay.html#resto=candlestick-point",
+    "lands": "section",
+    "param": [
+     "#resto"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[5]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 5 steps, 1 safety gates"
+  },
+  {
+   "id": "resto-sim-east-oakland-youth-native-planting",
+   "title": "Native planting and plant propagation - Bay Restoration: Youth Engagement and Service Learning in East Oakland",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "east-oakland-youth",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_bay.html#resto=east-oakland-youth",
+    "lands": "section",
+    "param": [
+     "#resto"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[6]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 6 steps, 1 safety gates"
+  },
+  {
+   "id": "resto-sim-alviso-shoreline-native-planting",
+   "title": "Native planting and plant propagation - Alviso Shoreline Habitat Restoration",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "alviso-shoreline",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_bay.html#resto=alviso-shoreline",
+    "lands": "section",
+    "param": [
+     "#resto"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[7]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 6 steps, 1 safety gates"
+  },
+  {
+   "id": "resto-sim-south-bay-salt-ponds-ecotone-levee",
+   "title": "Ecotone levee - grading a gentle marsh-to-upland slope - South Bay Salt Pond Restoration — ecotone levee (Phase 1)",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "south-bay-salt-ponds",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_bay.html#resto=south-bay-salt-ponds",
+    "lands": "section",
+    "param": [
+     "#resto"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[8]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 6 steps, 2 safety gates"
+  },
+  {
+   "id": "resto-sim-south-bay-salt-ponds-tidal-marsh",
+   "title": "Tidal marsh restoration - preparing a diked or managed site for tidal return - South Bay Salt Pond Restoration — ecotone levee (Phase 1)",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "south-bay-salt-ponds",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_bay.html#resto=south-bay-salt-ponds",
+    "lands": "section",
+    "param": [
+     "#resto"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[9]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 5 steps, 2 safety gates"
+  },
+  {
+   "id": "resto-sim-montezuma-wetlands-tidal-marsh",
+   "title": "Tidal marsh restoration - preparing a diked or managed site for tidal return - Montezuma Tidal and Seasonal Wetlands Restoration Project",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "montezuma-wetlands",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_bay.html#resto=montezuma-wetlands",
+    "lands": "section",
+    "param": [
+     "#resto"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[10]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 5 steps, 2 safety gates"
+  },
+  {
+   "id": "resto-sim-american-canyon-planning-survey",
+   "title": "Baseline condition survey for a restoration plan - American Canyon Wetlands Restoration Plan",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "american-canyon",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_bay.html#resto=american-canyon",
+    "lands": "section",
+    "param": [
+     "#resto"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[11]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 5 steps, 1 safety gates"
+  },
+  {
+   "id": "resto-sim-straw-north-bay-transition-zone",
+   "title": "Wetland-upland transition zone planting - Restoring Wetland-Upland Transition Zone Habitat in the North Bay with STRAW",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "straw-north-bay",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_bay.html#resto=straw-north-bay",
+    "lands": "section",
+    "param": [
+     "#resto"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[12]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 5 steps, 1 safety gates"
+  },
+  {
+   "id": "resto-sim-hunters-point-shipyard-cleanup-support",
+   "title": "Cleanup-site safety AWARENESS - orientation, boundaries, observation and reporting only - Hunters Point Naval Shipyard — EPA Superfund Site (Bayview-Hunters Point)",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "hunters-point-shipyard",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_bay.html#resto=hunters-point-shipyard",
+    "lands": "section",
+    "param": [
+     "#resto"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[14]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 5 steps, 2 safety gates"
+  },
+  {
+   "id": "resto-sim-treasure-island-nsti-cleanup-support",
+   "title": "Cleanup-site safety AWARENESS - orientation, boundaries, observation and reporting only - Former Naval Station Treasure Island (NSTI) — Navy BRAC cleanup site (Treasure Island)",
+   "kind": "resto-scenario",
+   "place": {
+    "kind": "restoration-site",
+    "id": "treasure-island-nsti",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": null,
+    "why": "the Bay world page does not place this site (bayarea/registry/bayarea.json has no restoration_sites entry for it), so no page opens its runner"
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/scenarios.json#scenarios[15]",
+   "seat": null,
+   "brief": "training scenario, not the project's actual work plan; 5 steps, 2 safety gates"
+  }
+ ],
+ "unwired": [
+  {
+   "scenario": "rs-spartina-removal-spartina-removal",
+   "why": "the site has no campus grouping (bay-wide, unpinned); the task contract requires a campus on a restoration-site place"
+  }
+ ]
+}

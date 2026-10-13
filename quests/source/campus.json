@@ -1,0 +1,2293 @@
+{
+ "from": "CAMPUS",
+ "for": "quests/registry/quests.json",
+ "note": "no trigger fields: the 3D page binds these itself and calls TCQuests.find(id)",
+ "entries": [
+  {
+   "id": "treasure-placard-acoustic",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:acoustic",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-acoustic",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-airfield",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:airfield",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-airfield",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-asbestos",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:asbestos",
+   "place": "Equipment Bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-asbestos",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-automation-int",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:automation-int",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-automation-int",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-aviation-ground",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:aviation-ground",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-aviation-ground",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-bas-controls",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:bas-controls",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-bas-controls",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-battery-storage",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:battery-storage",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-battery-storage",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-blasters",
+   "kind": "treasure",
+   "title": "The placard in the Materials Store",
+   "world": "hall:blasters",
+   "place": "Materials Store",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-blasters",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-boilermakers",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:boilermakers",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-boilermakers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-bricklayers",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:bricklayers",
+   "place": "Equipment Bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-bricklayers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-bridge-inspect",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:bridge-inspect",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-bridge-inspect",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-cable-splicers",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:cable-splicers",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-cable-splicers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-carpenters",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:carpenters",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-carpenters",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-catenary",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:catenary",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-catenary",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-cement-masons",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:cement-masons",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-cement-masons",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-cladding",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:cladding",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-cladding",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-cleanroom",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:cleanroom",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-cleanroom",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-concrete-pump",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:concrete-pump",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-concrete-pump",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-confined-space",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:confined-space",
+   "place": "Equipment Bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-confined-space",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-crane-ops",
+   "kind": "treasure",
+   "title": "The placard in the Materials Store",
+   "world": "hall:crane-ops",
+   "place": "Materials Store",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-crane-ops",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-curtainwall",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:curtainwall",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-curtainwall",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-data-center",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:data-center",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-data-center",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-decking",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:decking",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-decking",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-demolition",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:demolition",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-demolition",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-district-energy",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:district-energy",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-district-energy",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-divers",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:divers",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-divers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-drywall",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:drywall",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-drywall",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-electricians",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:electricians",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-electricians",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-elevator",
+   "kind": "treasure",
+   "title": "The placard in the Materials Store",
+   "world": "hall:elevator",
+   "place": "Materials Store",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-elevator",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-ev-charging",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:ev-charging",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-ev-charging",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-fabricators",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:fabricators",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-fabricators",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-fiber-splicers",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:fiber-splicers",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-fiber-splicers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-fire-alarm",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:fire-alarm",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-fire-alarm",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-fire-sprinkler",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:fire-sprinkler",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-fire-sprinkler",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-firestop",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:firestop",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-firestop",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-fleet-diesel",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:fleet-diesel",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-fleet-diesel",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-flooring",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:flooring",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-flooring",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-foundry",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:foundry",
+   "place": "Equipment Bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-foundry",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-gas-distrib",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:gas-distrib",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-gas-distrib",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-geothermal",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:geothermal",
+   "place": "Equipment Bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-geothermal",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-glaziers",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:glaziers",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-glaziers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-grounds",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:grounds",
+   "place": "Equipment Bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-grounds",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-hazmat",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:hazmat",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-hazmat",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-heavy-equip",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:heavy-equip",
+   "place": "Equipment Bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-heavy-equip",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-high-angle",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:high-angle",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-high-angle",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-hvacr",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:hvacr",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-hvacr",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-hydro",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:hydro",
+   "place": "Equipment Bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-hydro",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-hydrogen",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:hydrogen",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-hydrogen",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-industrial-clean",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:industrial-clean",
+   "place": "Equipment Bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-industrial-clean",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-instrumentation",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:instrumentation",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-instrumentation",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-insulators",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:insulators",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-insulators",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-ironworkers",
+   "kind": "treasure",
+   "title": "The placard in the Materials Store",
+   "world": "hall:ironworkers",
+   "place": "Materials Store",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-ironworkers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-laborers",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:laborers",
+   "place": "Equipment Bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-laborers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-lathers",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:lathers",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-lathers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-lead-abatement",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:lead-abatement",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-lead-abatement",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-line-workers",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:line-workers",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-line-workers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-machinists",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:machinists",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-machinists",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-marine-pipe",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:marine-pipe",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-marine-pipe",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-marine-terminal",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:marine-terminal",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-marine-terminal",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-masonry-restore",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:masonry-restore",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-masonry-restore",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-medical-gas",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:medical-gas",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-medical-gas",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-meter-techs",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:meter-techs",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-meter-techs",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-millwrights",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:millwrights",
+   "place": "Equipment Bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-millwrights",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-miners",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:miners",
+   "place": "Equipment Bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-miners",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-mold-remediation",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:mold-remediation",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-mold-remediation",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-network-cabling",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:network-cabling",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-network-cabling",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-nuclear",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:nuclear",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-nuclear",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-operating-eng",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:operating-eng",
+   "place": "Equipment Bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-operating-eng",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-painters",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:painters",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-painters",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-piling",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:piling",
+   "place": "Equipment Bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-piling",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-pipefitters",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:pipefitters",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-pipefitters",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-pipeline",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:pipeline",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-pipeline",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-plasterers",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:plasterers",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-plasterers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-platers",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:platers",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-platers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-plc-techs",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:plc-techs",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-plc-techs",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-port-crane",
+   "kind": "treasure",
+   "title": "The placard in the Materials Store",
+   "world": "hall:port-crane",
+   "place": "Materials Store",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-port-crane",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-post-tension",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:post-tension",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-post-tension",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-precast",
+   "kind": "treasure",
+   "title": "The placard in the Materials Store",
+   "world": "hall:precast",
+   "place": "Materials Store",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-precast",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-rail-signals",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:rail-signals",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-rail-signals",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-rail-track",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:rail-track",
+   "place": "Equipment Bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-rail-track",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-refractory",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:refractory",
+   "place": "Equipment Bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-refractory",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-riggers",
+   "kind": "treasure",
+   "title": "The placard in the Materials Store",
+   "world": "hall:riggers",
+   "place": "Materials Store",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-riggers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-robotics",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:robotics",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-robotics",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-roofers",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:roofers",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-roofers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-scaffold",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:scaffold",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-scaffold",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-security-sys",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:security-sys",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-security-sys",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-sheetmetal",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:sheetmetal",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-sheetmetal",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-shipfitters",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:shipfitters",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-shipfitters",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-shoring",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:shoring",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-shoring",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-site-safety",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:site-safety",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-site-safety",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-smelter",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:smelter",
+   "place": "Equipment Bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-smelter",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-solar",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:solar",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-solar",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-spill-response",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:spill-response",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-spill-response",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-steel-erectors",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:steel-erectors",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-steel-erectors",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-stone-carvers",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:stone-carvers",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-stone-carvers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-substation",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:substation",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-substation",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-survey-drone",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:survey-drone",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-survey-drone",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-surveyors",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:surveyors",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-surveyors",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-tank-erectors",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:tank-erectors",
+   "place": "Equipment Bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-tank-erectors",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-teamsters",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:teamsters",
+   "place": "Equipment Bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-teamsters",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-terrazzo",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:terrazzo",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-terrazzo",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-tilesetters",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:tilesetters",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-tilesetters",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-toolmakers",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:toolmakers",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-toolmakers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-transit-vehicle",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:transit-vehicle",
+   "place": "Equipment Bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-transit-vehicle",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-transmission",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:transmission",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-transmission",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-wastewater",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:wastewater",
+   "place": "Equipment Bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-wastewater",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-water-distrib",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:water-distrib",
+   "place": "Equipment Bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-water-distrib",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-waterproofers",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:waterproofers",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-waterproofers",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-welders",
+   "kind": "treasure",
+   "title": "The placard in the Practice Bays",
+   "world": "hall:welders",
+   "place": "Practice Bays",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-welders",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-wind",
+   "kind": "treasure",
+   "title": "The placard in the Equipment Bay",
+   "world": "hall:wind",
+   "place": "Equipment Bay",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-wind",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-placard-window-glazing",
+   "kind": "treasure",
+   "title": "The placard in the Inspection Bench",
+   "world": "hall:window-glazing",
+   "place": "Inspection Bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something glints low in a room with a placard on the wall.",
+   "reward": {
+    "badge": "badge-treasure-placard-window-glazing",
+    "label": "Placard reader"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-green-chicago",
+   "kind": "treasure",
+   "title": "A stone on the Loop Rail Hub green",
+   "world": "campus",
+   "place": "green:chicago",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Out on the green, not far from where you start walking, something catches the light.",
+   "reward": {
+    "badge": "badge-treasure-green-chicago",
+    "label": "Green finder"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-green-denver",
+   "kind": "treasure",
+   "title": "A stone on the Front Range Mining Hub green",
+   "world": "campus",
+   "place": "green:denver",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Out on the green, not far from where you start walking, something catches the light.",
+   "reward": {
+    "badge": "badge-treasure-green-denver",
+    "label": "Green finder"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-green-detroit",
+   "kind": "treasure",
+   "title": "A stone on the Motor City Hub green",
+   "world": "campus",
+   "place": "green:detroit",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Out on the green, not far from where you start walking, something catches the light.",
+   "reward": {
+    "badge": "badge-treasure-green-detroit",
+    "label": "Green finder"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-green-houston",
+   "kind": "treasure",
+   "title": "A stone on the Bayou Energy Hub green",
+   "world": "campus",
+   "place": "green:houston",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Out on the green, not far from where you start walking, something catches the light.",
+   "reward": {
+    "badge": "badge-treasure-green-houston",
+    "label": "Green finder"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-green-miami",
+   "kind": "treasure",
+   "title": "A stone on the Biscayne Coastal Hub green",
+   "world": "campus",
+   "place": "green:miami",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Out on the green, not far from where you start walking, something catches the light.",
+   "reward": {
+    "badge": "badge-treasure-green-miami",
+    "label": "Green finder"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-green-new-orleans",
+   "kind": "treasure",
+   "title": "A stone on the Crescent Works Campus green",
+   "world": "campus",
+   "place": "green:new-orleans",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Out on the green, not far from where you start walking, something catches the light.",
+   "reward": {
+    "badge": "badge-treasure-green-new-orleans",
+    "label": "Green finder"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-green-oakland",
+   "kind": "treasure",
+   "title": "A stone on the Oakland Waterfront Campus green",
+   "world": "campus",
+   "place": "green:oakland",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Out on the green, not far from where you start walking, something catches the light.",
+   "reward": {
+    "badge": "badge-treasure-green-oakland",
+    "label": "Green finder"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-green-pittsburgh",
+   "kind": "treasure",
+   "title": "A stone on the Three Rivers Steel Hub green",
+   "world": "campus",
+   "place": "green:pittsburgh",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Out on the green, not far from where you start walking, something catches the light.",
+   "reward": {
+    "badge": "badge-treasure-green-pittsburgh",
+    "label": "Green finder"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-green-seattle",
+   "kind": "treasure",
+   "title": "A stone on the Sound Aerospace Hub green",
+   "world": "campus",
+   "place": "green:seattle",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Out on the green, not far from where you start walking, something catches the light.",
+   "reward": {
+    "badge": "badge-treasure-green-seattle",
+    "label": "Green finder"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "treasure-green-treasure-island",
+   "kind": "treasure",
+   "title": "A stone on the Treasure Island Campus green",
+   "world": "campus",
+   "place": "green:treasure-island",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Out on the green, not far from where you start walking, something catches the light.",
+   "reward": {
+    "badge": "badge-treasure-green-treasure-island",
+    "label": "Green finder"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "egg-konami-sky",
+   "kind": "egg",
+   "title": "Meteors over the campus",
+   "world": "campus",
+   "place": "sky",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Up, up, down, down... the sky remembers an old code.",
+   "reward": {
+    "badge": "badge-egg-konami-sky",
+    "label": "Meteors over the campus"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "egg-secret-partition",
+   "kind": "egg",
+   "title": "The room behind the partition",
+   "world": "campus",
+   "place": "hall:ironworkers",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "One hall keeps something behind its deepest wall.",
+   "reward": {
+    "badge": "badge-egg-secret-partition",
+    "label": "The room behind the partition"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "egg-advisor-hidden-line",
+   "kind": "egg",
+   "title": "The advisor who says one more thing",
+   "world": "campus",
+   "place": "advisor",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Ask for the same person three times running.",
+   "reward": {
+    "badge": "badge-egg-advisor-hidden-line",
+    "label": "The advisor who says one more thing"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "egg-brand-placard-clicks",
+   "kind": "egg",
+   "title": "The name plate",
+   "world": "campus",
+   "place": "bar:brand",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The academy name answers if you keep knocking - seven times.",
+   "reward": {
+    "badge": "badge-egg-brand-placard-clicks",
+    "label": "The name plate"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "egg-night-owl",
+   "kind": "egg",
+   "title": "Night owl",
+   "world": "campus",
+   "place": "hour:night",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stay in a hall until the sky goes fully dark.",
+   "reward": {
+    "badge": "badge-egg-night-owl",
+    "label": "Night owl"
+   },
+   "provenance": "AUTHORED"
+  },
+  {
+   "id": "egg-typed-solidarity",
+   "kind": "egg",
+   "title": "A word worth typing",
+   "world": "campus",
+   "place": "typed:solidarity",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type the word the whole movement stands on.",
+   "reward": {
+    "badge": "badge-egg-typed-solidarity",
+    "label": "A word worth typing"
+   },
+   "provenance": "AUTHORED"
+  }
+ ]
+}

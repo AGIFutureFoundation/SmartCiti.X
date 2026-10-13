@@ -6,6 +6,14 @@ import sys
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+from seo import apply_seo  # noqa: E402  head tags only
+from herovideo import hero_video_html, hero_video_control, HERO_VIDEO_CSS, HERO_VIDEO_JS  # noqa: E402
+from herovideo import band_open, band_caption, BAND_CLOSE, SECTION_VIDEO_CSS, SECTION_VIDEO_JS, MOTION_CSS, STYLE_BRIDGE_CSS  # noqa: E402
+from design_kit import icon, STYLE_HEAD_JS  # noqa: E402  vendored Lucide glyphs (ISC), decoration only
+from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
+from style_bridge import bridge_css  # noqa: E402  HOMEUX w4: page palette -> the 5 switcher styles
+from sitenav import STYLE_JS  # noqa: E402  MEDIA's style menu: remembers the reader's choice
+from sitesearch import SEARCH_TRIGGER_JS  # noqa: E402  Ctrl/Cmd+K follows the header's search link
 
 
 def _pack_root():
@@ -40,7 +48,47 @@ def S(key):
     return _EN[key]
 
 
+
+# Wave 6: the New Orleans parishes, fleet, Cognition.X K-12 path and plans.
+# Titles are the catalog's own nav labels; each note is the owning registry's
+# own sentence, quoted (no new prose, so nothing here needs a translation the
+# catalog does not already hold). Fail closed on every field.
+def _reg(rel):
+    return json.loads((ROOT / rel).read_text(encoding='utf-8'))
+
+
+def _need(node, key, where):
+    if not isinstance(node, dict) or key not in node:
+        raise KeyError(f'build_landing: {where} has no `{key}`')
+    return node[key]
+
+
+_PAR = _reg('parishes/registry/parishes.json')
+_ORL_MAP = _need(_need(_need(_PAR, 'parishes', 'parishes'), '22071', 'parishes.parishes'), 'map', 'parishes.22071')
+_LAY = _reg('layers/registry/layers.json')
+_K12 = _need(_need(_LAY, 'layers', 'layers'), 'k12-unit', 'layers.layers')
+assert _need(_K12, 'label', 'layers.k12-unit') == 'Cognition.X K-12', 'build_landing: the K-12 layer name changed'
+_PAY = _reg('payments/registry/catalog.json')
+assert _need(_PAY, 'live', 'payments') is False, 'build_landing: payments went live - rewrite the Plans card'
+_FLEET_H = _need(_reg('fleet/registry/fleet.json'), 'honesty', 'fleet')
+PW_FEATS = [
+    ('map', S('nav.page.parishes'), _need(_ORL_MAP, 'label', 'parishes.22071.map'), 'web/trade_craft_parishes.html'),
+    ('route', S('nav.page.fleet'), _FLEET_H.split('.')[0] + '.', 'web/trade_craft_fleet.html'),
+    ('graduation-cap', _K12['label'], _need(_need(_LAY, 'honesty', 'layers'), 'k12', 'layers.honesty'),
+     'web/trade_craft_parishes.html'),
+    ('shield-check', S('nav.page.plans'), _need(_PAY, 'status', 'payments') + '.', 'web/trade_craft_plans.html'),
+]
+PW_SECTION = (
+    '<section id="parishes"><h2>' + S('nav.page.parishes') + '</h2><div class="cols feats">'
+    + ''.join(f'<div class="feat" data-pw="{h.split("/")[-1][12:-5] if k != "graduation-cap" else "k12"}">'
+              f'<span class="feat-ico" aria-hidden="true">{icon(k, "fi")}</span><h3>{t}</h3>'
+              f'<p class="note">{d.replace("&", "&amp;").replace("<", "&lt;")}</p>'
+              f'<p><a class="pw-go" href="{h.split("/")[-1]}">{t}<span aria-hidden="true"> →</span></a></p></div>'
+              for k, t, d, h in PW_FEATS)
+    + '</div></section>')
+
 CSS = """
+.pw-go{display:inline-flex;align-items:center;min-block-size:44px}
 /* dark-first: the bare :root carries the dark plate, light is the counterpart */
 :root{
   --plate:#12181B; --panel:#182023; --sunk:#0C1113; --ink:#E8EDEC; --muted:#93A3A6;
@@ -50,13 +98,13 @@ CSS = """
 }
 @media (prefers-color-scheme:light){:root:not([data-theme="dark"]){
   --plate:#F1F4F3; --panel:#FFFFFF; --sunk:#E4EAE9; --ink:#141D20; --muted:#54646A;
-  --rule:#CBD6D6; --mark:#9F680B; --steel:#0A7E8C; --steel-ink:#065A66;
-  --good:#2C7A50; --warn:#9A6408; --crit:#A8432F;
+  --rule:#CBD6D6; --mark:#87570A; --steel:#0A7E8C; --steel-ink:#065A66;
+  --good:#2C7A50; --warn:#87570A; --crit:#A8432F;
 }}
 :root[data-theme="light"]{
   --plate:#F1F4F3; --panel:#FFFFFF; --sunk:#E4EAE9; --ink:#141D20; --muted:#54646A;
-  --rule:#CBD6D6; --mark:#9F680B; --steel:#0A7E8C; --steel-ink:#065A66;
-  --good:#2C7A50; --warn:#9A6408; --crit:#A8432F;
+  --rule:#CBD6D6; --mark:#87570A; --steel:#0A7E8C; --steel-ink:#065A66;
+  --good:#2C7A50; --warn:#87570A; --crit:#A8432F;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--plate);color:var(--ink);
@@ -75,7 +123,7 @@ a{color:var(--steel-ink)}
 nav.top{display:flex;align-items:center;gap:18px;flex-wrap:wrap;
   padding:18px 0;border-bottom:1px solid var(--rule)}
 .logo{font:700 19px/1 "Barlow Condensed",sans-serif;letter-spacing:.02em;text-transform:uppercase}
-.logo .x{color:var(--steel)} .logo .sep{color:var(--mark);padding:0 .18em}
+.logo .x{color:var(--steel-ink)} .logo .sep{color:var(--mark);padding:0 .18em}
 nav.top .links{margin-inline-start:auto;display:flex;gap:20px;flex-wrap:wrap}
 nav.top a{font:600 12.5px/1 "Barlow Condensed",sans-serif;letter-spacing:.12em;
   text-transform:uppercase;color:var(--muted);text-decoration:none;padding:6px 0}
@@ -137,7 +185,9 @@ ul.ticks.steel li::before{background:var(--steel)}
 dl.terms{display:grid;grid-template-columns:auto 1fr;gap:9px 20px;margin:0;font-size:14.5px}
 dl.terms dt{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--muted);
   letter-spacing:.02em;padding-top:2px}
-dl.terms dd{margin:0}
+dl.terms dd{margin:0;min-width:0;overflow-wrap:anywhere}
+@media(max-width:560px){dl.terms{grid-template-columns:1fr;gap:2px 0}
+  dl.terms dd{margin-block-end:10px}}
 
 /* ---------- status table ---------- */
 .tw{overflow-x:auto}
@@ -166,6 +216,7 @@ th:last-child,td:last-child{padding-inline-end:0}
 .note{font-size:13.5px;color:var(--muted);line-height:1.6;max-width:70ch}
 footer{padding:46px 0 64px;color:var(--muted);font-size:13.5px}
 footer .frow{display:flex;gap:26px;flex-wrap:wrap;align-items:baseline}
+footer a{display:inline-block;padding-block:3px}
 @media (prefers-reduced-motion:no-preference){
   html{scroll-behavior:smooth}
   .herorule{transform-origin:left;animation:draw .7s cubic-bezier(.2,.7,.3,1) both}
@@ -174,8 +225,46 @@ footer .frow{display:flex;gap:26px;flex-wrap:wrap;align-items:baseline}
 :focus-visible{outline:2px solid var(--steel);outline-offset:3px}
 """
 
+NAV = nav_html('web/trade_craft_landing.html', nav_labels('en'))
+
+# The landing hero sits inside the page's column, so its footage is a framed
+# panel rather than full-bleed; the padding keeps text off the panel's edge.
+# The enterprise layer (wave 3): the "how" section sits over a registered
+# clip as a band, its four points become icon feature cards (a layout borrowed,
+# re-expressed in this page's tokens, from the MIT Start Bootstrap "Landing
+# Page" kit's features-icons row), cards lift on hover, and the headline's
+# accent word carries a two-tone rule. No CSS is copied from the kit.
+POLISH_CSS = """
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid var(--rule);
+  border-radius:999px;background:var(--panel)}
+.eyebrow::before{content:"";inline-size:8px;block-size:8px;border-radius:50%;background:var(--steel)}
+h1 em{background:linear-gradient(90deg,var(--mark),var(--steel)) no-repeat 0 100%/100% .08em;padding-bottom:.05em}
+.how-band{margin-block:32px 0;border-radius:16px;border:1px solid var(--rule)}
+.how-band > .vb-inner{text-align:start;align-items:stretch;padding:0 clamp(16px,4vw,40px) 28px}
+.how-band section{border-bottom:0}
+.how-band .vb-bar{justify-content:flex-start}
+.feats{gap:16px}
+.feat{background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:20px;
+  transition:transform .18s,box-shadow .18s,border-color .18s}
+.feat:hover{transform:translateY(-4px);border-color:var(--steel);box-shadow:0 14px 30px -18px rgb(0 0 0 / .6)}
+.feat-ico{display:inline-grid;place-items:center;inline-size:44px;block-size:44px;border-radius:12px;
+  background:var(--sunk);color:var(--mark);border:1px solid var(--rule);margin-block-end:12px}
+.feat-ico .fi{inline-size:22px;block-size:22px}
+.panel{transition:border-color .18s,box-shadow .18s}
+.panel:hover{border-color:var(--steel);box-shadow:0 14px 30px -18px rgb(0 0 0 / .5)}
+@supports (animation-timeline: view()){@media (prefers-reduced-motion:no-preference){
+  .feat,.panel{animation:rv-in linear both;animation-timeline:view();animation-range:entry 0% entry 55%}
+}}
+@media (prefers-reduced-motion:reduce){.feat,.panel{transition:none}.feat:hover{transform:none}}
+"""
+
+HERO_LANDING_CSS = (
+    'header.hero[data-hero-host]{padding-inline:clamp(16px,4vw,40px);border-radius:16px;'
+    'margin-block-start:16px;border:1px solid var(--rule)}'
+    '.hv-btn{border-color:var(--rule)}.hv-btn:focus-visible{outline:2px solid var(--mark);outline-offset:2px}')
+
 BODY = f"""
-<div class="wrap">
+{NAV}<div class="wrap">
   <nav class="top">
     <div class="logo">SmartCiti<span class="x">.X</span><span class="sep">:</span>Trade Craft Academy</div>
     <div class="links">
@@ -188,12 +277,15 @@ BODY = f"""
     </div>
   </nav>
 
-  <header class="hero">
+<main id="main">
+  <header class="hero" data-hero-host>{hero_video_html('web/trade_craft_landing.html')}
     <p class="eyebrow">{S('landing.hero.eyebrow')}</p>
     <h1>{S('landing.hero.title')}</h1>
     <p class="lede">{S('landing.hero.lede')}</p>
     <p class="lede lede-2">{S('landing.hero.lede2')}</p>
     <div class="markrule herorule"></div>
+    {hero_video_control({'pause': S('landing.video.pause'), 'play': S('landing.video.play'),
+                         'caption': S('landing.video.caption')})}
   </header>
 
   <div class="facts">
@@ -224,29 +316,38 @@ BODY = f"""
     </div>
   </section>
 
+  {band_open('hall-orbit', 'web/trade_craft_landing.html', 'how-band')}
   <section id="how">
     <p class="kicker">{S('landing.how.kicker')}</p>
     <h2>{S('landing.how.h2')}</h2>
     <p>{S('landing.how.p')}</p>
-    <div class="cols" style="margin-top:30px">
-      <div>
+    <div class="cols feats" style="margin-top:30px">
+      <div class="feat">
+        <span class="feat-ico" aria-hidden="true">{icon('layers', 'fi')}</span>
         <h3>{S('landing.how.dial.h3')}</h3>
         <p class="note">{S('landing.how.dial.p')}</p>
       </div>
-      <div>
+      <div class="feat">
+        <span class="feat-ico" aria-hidden="true">{icon('route', 'fi')}</span>
         <h3>{S('landing.how.graph.h3')}</h3>
         <p class="note">{S('landing.how.graph.p')}</p>
       </div>
-      <div>
+      <div class="feat">
+        <span class="feat-ico" aria-hidden="true">{icon('shield-check', 'fi')}</span>
         <h3>{S('landing.how.gate.h3')}</h3>
         <p class="note">{S('landing.how.gate.p')}</p>
       </div>
-      <div>
+      <div class="feat">
+        <span class="feat-ico" aria-hidden="true">{icon('users', 'fi')}</span>
         <h3>{S('landing.how.coaches.h3')}</h3>
         <p class="note">{S('landing.how.coaches.p')}</p>
       </div>
     </div>
   </section>
+    {band_caption('hall-orbit', {'pause': S('landing.video.pause'), 'play': S('landing.video.play')})}
+  {BAND_CLOSE}
+
+  {PW_SECTION}
 
   <section id="investors">
     <p class="kicker">{S('landing.investors.kicker')}</p>
@@ -361,6 +462,7 @@ BODY = f"""
     </div>
     <p class="note" style="margin-top:24px">{S('landing.status.note')}</p>
   </section>
+</main>
 
   <footer>
     <div class="markrule" style="max-width:120px;margin-bottom:24px"></div>
@@ -378,12 +480,20 @@ BODY = f"""
 </div>
 """
 
-page = ('<title>Trade Craft Academy</title>\n'
+page = ('<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Trade Craft Academy</title>\n'
+        '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
+        f'<script id="style-head-js">{STYLE_HEAD_JS}</script>\n'
         '<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%230C1113%22/%3E%3Cpath d=%22M7 21 L16 7 L25 21 Z%22 fill=%22none%22 stroke=%22%23E8A33D%22 stroke-width=%222.6%22 stroke-linejoin=%22round%22/%3E%3Cpath d=%22M11 21 h10%22 stroke=%22%2341C4D4%22 stroke-width=%222.6%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">\n'
         '<!-- Self-hosted: nothing on this page is fetched from another '
         'origin at run time. See web/fetch_fonts.py. -->\n'
         '<link rel="stylesheet" href="vendor/fonts/fonts.css">\n'
-        f'<style>{CSS}</style>\n{BODY}')
+        f'<style>{CSS}</style>\n<style>{NAV_CSS}</style>\n'
+        f'<style>{HERO_VIDEO_CSS}{HERO_LANDING_CSS}</style>\n'
+        f'<style>{SECTION_VIDEO_CSS}{MOTION_CSS}{POLISH_CSS}{STYLE_BRIDGE_CSS}{bridge_css()}</style>\n'
+        f'{BODY}{HERO_VIDEO_JS}\n{SECTION_VIDEO_JS}\n{SEARCH_TRIGGER_JS}\n'
+        f'<script id="style-js">{STYLE_JS}</script>\n')
 # Written beside this script, not into the working directory: run from the
 # tree root it left a second, identical copy of the page there (defect 13's shape).
+page = apply_seo(page, 'web/trade_craft_landing.html', 'Why the trades \u2014 SmartCiti.X : Trade Craft Academy',
+    S('seo.desc.landing'), 'page')
 emit(HERE / 'trade_craft_landing.html', page)

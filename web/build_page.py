@@ -3,6 +3,11 @@ import markdown, re, pathlib, sys
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+from seo import apply_seo  # noqa: E402  head tags only
+from sitenav import nav_html, labels as nav_labels, NAV_CSS, with_style_memory  # noqa: E402
+from design_kit import STYLES as _STYLES  # noqa: E402
+STYLED = ('html:is([data-style],:has(input[name="tc-style"]:is('
+          + ','.join(f'[value="{x["id"]}"]' for x in _STYLES) + '):checked))')
 
 
 def _spec_path():
@@ -104,7 +109,11 @@ gauge = """<svg viewBox="0 0 220 130" class="gauge" role="img" aria-label="Dial 
 <text x="176" y="46" font-size="10" fill="var(--band)" font-weight="600">.70–.85</text>
 </svg>"""
 
-page = f"""<title>Adaptive Stack Protocol</title>
+NAV = nav_html('web/smartcitix_trade_craft_academy.html', nav_labels('en'))
+from questkit import QUEST_CSS, quest_js, page_hooks  # noqa: E402  quests: egg hooks only
+QUEST_TAIL = '<style>' + QUEST_CSS + '</style>\n' + page_hooks('web/smartcitix_trade_craft_academy.html') + quest_js('page:web/smartcitix_trade_craft_academy.html')
+
+page = f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Adaptive Stack Protocol</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C1113'/%3E%3Cpath d='M7 21 L16 7 L25 21 Z' fill='none' stroke='%23E8A33D' stroke-width='2.6' stroke-linejoin='round'/%3E%3Cpath d='M11 21 h10' stroke='%2341C4D4' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
 <!-- Self-hosted: nothing on this page is fetched from another origin at run time. See web/fetch_fonts.py. -->
 <link rel="stylesheet" href="vendor/fonts/fonts.css">
@@ -128,6 +137,11 @@ page = f"""<title>Adaptive Stack Protocol</title>
   --code-bg:#1A2327; --head:#EDF3F1;
   --c1:#00A2B5; --c2:#C08325; --c3:#8A82CE; --grid:#2A3739;
 }}
+/* 5-style switcher: map this page's own palette onto the tokens every style re-declares */
+{STYLED} {{
+  --paper:var(--plate); --code-bg:var(--raised); --head:var(--ink); --accent-ink:var(--link);
+  --band:var(--accent); --grid:var(--line); --c1:var(--link); --c2:var(--accent); --c3:var(--muted);
+}}
 * {{ box-sizing:border-box; }}
 body {{ background:var(--paper); color:var(--ink); margin:0;
   font:16px/1.65 "IBM Plex Sans", system-ui, sans-serif; }}
@@ -148,7 +162,10 @@ nav.mods {{ display:flex; flex-wrap:wrap; gap:8px; padding:20px 0 8px;
   border-bottom:1px solid var(--line); }}
 nav.mods a {{ font:500 12.5px/1 "IBM Plex Mono",monospace; color:var(--accent-ink);
   text-decoration:none; padding:7px 10px; border:1px solid var(--line); border-radius:3px; }}
-nav.mods a:hover, nav.mods a:focus-visible {{ border-color:var(--accent); color:var(--ink); outline:none; }}
+nav.mods a:hover, nav.mods a:focus-visible {{ border-color:var(--accent); color:var(--ink); }}
+nav.mods a:focus-visible {{ outline:2px solid var(--accent); outline-offset:2px; }}
+/* the shared nav marks links in --accent, 4.3:1 on this paper; the ink shade clears AA in both themes */
+nav.sitenav {{ --sn-mark:var(--accent-ink); }}
 h2 {{ font:700 24px/1.2 "Archivo",sans-serif; color:var(--head); margin:56px 0 16px;
   padding-top:20px; border-top:1px solid var(--line); text-wrap:balance; scroll-margin-top:16px; }}
 h3 {{ font:600 17px/1.3 "Archivo",sans-serif; color:var(--head); margin:32px 0 10px; }}
@@ -182,7 +199,8 @@ blockquote {{ margin:0 0 16px; padding:2px 0 2px 16px; border-left:3px solid var
 @media (prefers-reduced-motion: no-preference) {{ html {{ scroll-behavior:smooth; }} }}
 @media (max-width:560px) {{ header.hero {{ padding-top:36px; }} .gauge {{ width:160px; }} }}
 </style>
-<div class="wrap">
+<style>{NAV_CSS}</style>
+{NAV}<div class="wrap">
 <header class="hero">
   <div class="hero-text">
     <p class="eyebrow">Protocol Specification · ACP Suite · v{SPEC_VERSION}</p>
@@ -198,9 +216,13 @@ blockquote {{ margin:0 0 16px; padding:2px 0 2px 16px; border-left:3px solid var
 <nav class="mods" aria-label="Modules">{nav}</nav>
 {body}
 </div>
-"""
+{QUEST_TAIL}"""
 out = HERE / "smartcitix_trade_craft_academy.html"
 # The same staleness guard the wiki and the dashboard carry: the spec
 # page is a mirror, and a mirror that lags its source is a second truth.
+page = apply_seo(page, 'web/smartcitix_trade_craft_academy.html', 'Adaptive Stack Protocol \u2014 SmartCiti.X : Trade Craft Academy',
+    'The Adaptive Stack Protocol specification behind the academy, rendered from the repository\'s own spec document.', 'page')
+# AUDIT row 12: follow the reader's saved style (sitenav.with_style_memory, UX)
+page = with_style_memory(page)
 emit(out, page, f"spec v{SPEC_VERSION}")
 print("ok", len(page), "bytes;", "h2 ids:", list(slugs))

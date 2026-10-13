@@ -97,6 +97,78 @@ ok('every pattern a surface names is declared, and every declared pattern is use
 ok('§24.3 holds over the pattern vocabulary too',
   !/\b(ASTM|ANSI|ISO|EN|DIN|UL|NFPA)[\s-]?\d|®|™/i.test(JSON.stringify(pats)));
 
+/* ------------------------------------------- the page's own two closed sets --
+   A finish costs a TEXTURE, never a material: the page runs one surface
+   engine (surfaceMaps) that paints a pattern onto a canvas and reads a
+   normal map off the height field, and a room draws one floor mesh and one
+   merged partition per wall whatever the catalogue holds. That is only true
+   while every pattern this catalogue names is one the page already has a
+   recipe for, and the page closes two sets to keep it true:
+
+     PATTERN_RELIEF  - the relief depth per pattern. A pattern missing from
+                       it renders FLAT, and the page's build refuses it.
+     FLOOR_STEP      - the footfall family per FLOOR pattern. A floor
+                       pattern missing from it has no sound, and the page's
+                       build refuses that too.
+
+   Both live in web/build_3d.py, which this pack does not own. Finding out
+   from a failed page build that the vocabulary was closed is finding out
+   too late, so the two sets are read here, structurally, and the catalogue
+   is held to them in the pack that would have to change. `fabric` is the
+   worked example: the weave is declared for walls and has no floor step
+   family, so a broadloom carpet cannot be a floor in this engine today. */
+const pageSrc = readFileSync(new URL('../web/build_3d.py', import.meta.url), 'utf8');
+const declBlock = (re, keyRe, strip) => {
+  const m = pageSrc.match(re);
+  if (!m) return null;
+  return new Set([...m[1].replace(strip, '').matchAll(keyRe)].map((x) => x[1]));
+};
+const RELIEF = declBlock(/const PATTERN_RELIEF = \{([\s\S]*?)\n\};/,
+  /(\w[\w-]*)\s*:/g, /\/\/[^\n]*/g);
+const STEP = declBlock(/\nFLOOR_STEP = \{([\s\S]*?)\n\}/,
+  /'([\w-]+)':/g, /#[^\n]*/g);
+const floorPats = new Set(Object.values(cat).map((s) => s.pattern));
+
+ok('every pattern this catalogue names is one the page already declares a '
+  + 'relief for, so a finish added here costs a texture and never a material',
+  RELIEF !== null && RELIEF.size > 0
+  && [...patsUsed].every((p) => RELIEF.has(p)));
+ok('every FLOOR pattern is one the page has a footfall family for - the '
+  + 'wall-only patterns (the weave among them) stay off the floor',
+  STEP !== null && STEP.size > 0
+  && [...floorPats].every((p) => STEP.has(p))
+  && !STEP.has('fabric') && !floorPats.has('fabric'));
+
+/* ----------------------------------------------- what a surface is made of --
+   A catalogue this size is only worth having if the entries differ in the
+   properties the renderer actually READS. Two of those are decided by the
+   material and not by taste, so they are checked rather than trusted:
+   metalness, which a pattern that can only be pressed or cast out of metal
+   must carry and one that is fired, cast or ground out of mineral must not;
+   and roughness, which is how a floor of one pattern differs from the next
+   floor of the same pattern. A pattern whose every finish shares one
+   roughness is one material in several colours, which is the failure this
+   whole pass was meant to avoid. */
+const METAL_PATTERNS = ['checker', 'diamond', 'plate', 'grate', 'tslot'];
+const MINERAL_PATTERNS = ['brick', 'ashlar', 'terrazzo', 'sand', 'ballast'];
+const both = { ...cat, ...reg.wall_catalogue };
+ok('a pattern that can only be metal is metal, and one that is fired, cast '
+  + 'or ground out of mineral carries no metalness worth the name',
+  Object.values(both).filter((s) => METAL_PATTERNS.includes(s.pattern))
+    .every((s) => s.metalness >= .3)
+  && Object.values(both).filter((s) => MINERAL_PATTERNS.includes(s.pattern))
+    .every((s) => s.metalness < .1));
+
+const byPattern = {};
+for (const f of Object.values(cat)) (byPattern[f.pattern] ??= []).push(f.roughness);
+ok('no pattern is one material repainted: where more than one floor names a '
+  + 'pattern, they do not all share a roughness',
+  Object.values(byPattern).every((rs) => rs.length < 2
+    || new Set(rs).size > 1));
+ok('the catalogue spreads across its vocabulary: no single pattern carries '
+  + 'more than a quarter of the floors',
+  Object.values(byPattern).every((rs) => rs.length <= Object.keys(cat).length / 4));
+
 /* ------------------------------------------------------------- coverage --- */
 const halls = reg.halls;
 ok('every hall in the union roster is resolved, and no other',
@@ -429,6 +501,17 @@ ok('the registry declares §24.3 honesty: practice, not a code reference',
   /not a code reference/.test(reg.honesty.status)
   && /local standard/.test(reg.honesty.status));
 
+/* A colour chosen by eye is AUTHORED, and the pack that chose it has to say
+   so in its own words - the sky pack's `colours_are_authored` is the
+   precedent. The catalogue's colours, roughnesses and metalnesses are all of
+   that kind, and growing the catalogue does not make any of them measured.
+   The field is read by name; a missing one reads as undefined and fails. */
+ok('the palette says what it is: chosen by eye, never sampled, and AUTHORED '
+  + 'in the pack that chose it',
+  /chosen by\s+eye/.test(reg.honesty.colours_are_authored)
+  && /never sampled/.test(reg.honesty.colours_are_authored)
+  && reg.provenance.catalogue === 'AUTHORED');
+
 ok('provenance is tagged and honest: SCHEMATIC geometry, DERIVED finish '
   + 'and conditions, nothing RECORDED (nothing was surveyed)',
   reg.provenance.geometry === 'SCHEMATIC'
@@ -471,6 +554,255 @@ ok('every hazard named anywhere carries its condition demands',
   [...new Set([...Object.keys(R.hazard_rooms), ...Object.keys(R.hazard_walls),
     ...Object.values(halls).flatMap((h) => h.hazards)])]
     .every((k) => k in reg.hazard_conditions));
+
+/* ------------------------------------------------------------ legibility ---
+   The honesty block says every colour was chosen by eye; this is what
+   measures whether a sign can be read against them. The registry's numbers
+   are recomputed here from the catalogues and the labels palette with an
+   implementation written independently of the builder's (WCAG 2.x, sRGB
+   D65), and must agree to three decimals; every count is counted, never
+   read back; every failing pair is checked to really be under its
+   threshold; and the cross-read of the labels registry is stamped so a
+   palette that moved after this was built fails here. */
+const labels = JSON.parse(readFileSync(new URL('../labels/registry/labels.json', import.meta.url)));
+const LEG = reg.legibility;
+const parseC = (c) => {
+  if (/^#[0-9a-f]{6}$/i.test(c)) return [...rgb(c), 1];
+  const m = /^rgba\((\d+),(\d+),(\d+),(\d*\.?\d+)\)$/.exec(c.trim());
+  if (!m) throw new Error(`unreadable colour ${c}`);
+  return [+m[1], +m[2], +m[3], +m[4]];
+};
+const chan = (v) => { const x = v / 255; return x <= 0.04045 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4; };
+const Y = (c) => 0.2126 * chan(c[0]) + 0.7152 * chan(c[1]) + 0.0722 * chan(c[2]);
+const contrast = (a, b) => { const p = Y(a), q = Y(b); return (Math.max(p, q) + 0.05) / (Math.min(p, q) + 0.05); };
+const blend = (fg, bg) => [0, 1, 2].map((i) => fg[i] * fg[3] + bg[i] * (1 - fg[3])).concat([1]);
+const near3 = (a, b) => Math.abs(a - b) < 0.0006;
+const fam = {
+  floor: Object.fromEntries(Object.entries(cat).map(([id, f]) => [id, f.color])),
+  wall: Object.fromEntries(Object.entries(wcat).map(([id, w]) => [id, w.color])),
+  wainscot: Object.fromEntries(Object.entries(wcat).filter(([, w]) => w.wainscot_m > 0)
+    .map(([id, w]) => [id, w.wainscot])),
+};
+const roleOf = Object.fromEntries(Object.entries(labels.palette_roles)
+  .flatMap(([role, keys]) => keys.map((k) => [k, role])));
+ok('the legibility block reads the labels palette with its roles, and every palette key it read is the labels registry’s own',
+  Object.keys(LEG.palette_read).sort().join() === Object.keys(labels.palette).sort().join()
+  && Object.entries(LEG.palette_read).every(([k, v]) => v.color === labels.palette[k]
+    && v.role === roleOf[k])
+  && Object.keys(roleOf).sort().join() === Object.keys(labels.palette).sort().join());
+ok('every floor, wall and wainscot carries a WCAG relative luminance that recomputes to 3 decimals',
+  Object.entries(fam).every(([f, cols]) => Object.keys(LEG.luminance[f]).length === Object.keys(cols).length
+    && Object.entries(cols).every(([id, c]) => near3(LEG.luminance[f][id], Y(parseC(c)))))
+  && Object.entries(LEG.families).every(([f, k]) => k === Object.keys(fam[f]).length));
+/* the whole matrix, recomputed: a translucent plate composited over the
+   finish and compared with it, an opaque colour straight on the finish */
+const mine = {};
+const cnt = { at_or_above_4_5: 0, from_3_below_4_5: 0, below_3: 0, pairs: 0 };
+const fails = [];
+for (const [f, cols] of Object.entries(fam)) {
+  mine[f] = {};
+  for (const [id, c] of Object.entries(cols)) {
+    const bg = parseC(c); mine[f][id] = {};
+    for (const [k, lc] of Object.entries(labels.palette)) {
+      const fg = parseC(lc);
+      const r = fg[3] < 1 ? contrast(blend(fg, bg), bg) : contrast(fg, bg);
+      mine[f][id][k] = r; cnt.pairs++;
+      if (r >= 4.5) cnt.at_or_above_4_5++; else if (r >= 3) cnt.from_3_below_4_5++; else cnt.below_3++;
+      const thr = LEG.thresholds.fails_under[roleOf[k]];
+      if (r < thr) fails.push(`${f}|${id}|${k}`);
+    }
+  }
+}
+ok(`every finish x label colour pair recomputes to 3 decimals (${cnt.pairs} pairs)`,
+  Object.entries(mine).every(([f, rows]) => Object.entries(rows).every(([id, row]) =>
+    Object.entries(row).every(([k, r]) => near3(LEG.pairs[f][id][k], r)))));
+ok(`the three counts are counted, not typed: ${cnt.at_or_above_4_5} at 4.5+, ${cnt.from_3_below_4_5} from 3, ${cnt.below_3} under 3`,
+  ['at_or_above_4_5', 'from_3_below_4_5', 'below_3', 'pairs'].every((k) => LEG.counts[k] === cnt[k])
+  && cnt.at_or_above_4_5 + cnt.from_3_below_4_5 + cnt.below_3 === cnt.pairs);
+ok('text fails under 4.5, a plate or an accent under 3, and the thresholds say so',
+  LEG.thresholds.normal_text === 4.5 && LEG.thresholds.large_text === 3
+  && LEG.thresholds.fails_under.text === 4.5 && LEG.thresholds.fails_under.plate === 3
+  && LEG.thresholds.fails_under.accent === 3);
+ok(`every failing pair listed is really under its threshold, and no failing pair is missing (${fails.length})`,
+  LEG.failing.every((x) => mine[x.family][x.finish][x.role] < x.threshold
+    && x.threshold === LEG.thresholds.fails_under[roleOf[x.role]] && x.kind === roleOf[x.role]
+    && near3(x.ratio, mine[x.family][x.finish][x.role]))
+  && LEG.failing.map((x) => `${x.family}|${x.finish}|${x.role}`).sort().join('\n') === fails.sort().join('\n')
+  && Object.entries(LEG.failing_by_kind).every(([k, v]) => v === LEG.failing.filter((x) => x.kind === k).length));
+/* the rule with teeth: the text the page paints on a plate, over every
+   finish, recomputed from the labels registry's paint contract */
+const topPairs = new Set();
+for (const p of Object.values(labels.paint)) for (const line of ['title', 'sub'])
+  if (p[line] in labels.palette && p.plate in labels.palette) topPairs.add(`${p[line]} on ${p.plate}`);
+ok(`the text-on-plate pairs the page paints are exactly the ones measured (${topPairs.size}), and each clears 4.5:1 over every finish`,
+  [...topPairs].sort().join() === Object.keys(LEG.text_on_plate).sort().join()
+  && [...topPairs].every((key) => {
+    const [t, pl] = key.split(' on ');
+    const fg = parseC(labels.palette[t]), plate = parseC(labels.palette[pl]);
+    let worst = Infinity;
+    for (const [f, cols] of Object.entries(fam)) {
+      let fw = Infinity, fid = null;
+      for (const [id, c] of Object.entries(cols)) {
+        const r = contrast(fg, blend(plate, parseC(c)));
+        if (r < fw) { fw = r; fid = id; }
+      }
+      if (!near3(LEG.text_on_plate[key].per_family[f].ratio, fw)
+        || LEG.text_on_plate[key].per_family[f].finish !== fid) return false;
+      worst = Math.min(worst, fw);
+    }
+    return worst >= 4.5 && near3(LEG.text_on_plate[key].worst.ratio, worst);
+  }));
+ok('no finish was recoloured for a pair it cannot own, and the rule says why',
+  Array.isArray(LEG.finishes_changed) && LEG.finishes_changed.length === 0
+  && /a colour here is what the material is/.test(LEG.rule));
+/* ---------------------------------------------------------------- palette --- */
+const PAL = reg.palette;
+const hsl = (c) => {
+  const r = c[0] / 255, g = c[1] / 255, b = c[2] / 255;
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2;
+  if (mx === mn) return [0, 0, l * 100];
+  const d = mx - mn, s = l > .5 ? d / (2 - mx - mn) : d / (mx + mn);
+  let h = mx === r ? (g - b) / d + (g < b ? 6 : 0) : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+  return [h * 60, s * 100, l * 100];
+};
+const lab = (c) => {
+  const [r, g, b] = [chan(c[0]), chan(c[1]), chan(c[2])];
+  const x = (0.4124564 * r + 0.3575761 * g + 0.1804375 * b) / 0.95047;
+  const y = (0.2126729 * r + 0.7151522 * g + 0.0721750 * b);
+  const z = (0.0193339 * r + 0.1191920 * g + 0.9503041 * b) / 1.08883;
+  const f = (t) => (t > 216 / 24389 ? Math.cbrt(t) : (841 / 108) * t + 4 / 29);
+  return [116 * f(y) - 16, 500 * (f(x) - f(y)), 200 * (f(y) - f(z))];
+};
+const dE = (a, b) => Math.hypot(...lab(a).map((v, i) => v - lab(b)[i]));
+ok('the hue distribution is counted in 30-degree buckets per family, and the buckets sum to the family',
+  Object.entries(fam).every(([f, cols]) => {
+    const hb = {}; for (const c of Object.values(cols)) {
+      const [h, s] = hsl(parseC(c));
+      const key = s === 0 ? 'grey' : `${String(Math.floor(h / 30) * 30).padStart(3, '0')}-${String(Math.floor(h / 30) * 30 + 29).padStart(3, '0')}`;
+      hb[key] = (key in hb ? hb[key] : 0) + 1;
+    }
+    const got = PAL.hue_buckets_deg[f];
+    return Object.keys(got).length === 13 && Object.values(got).reduce((a, x) => a + x, 0) === Object.keys(cols).length
+      && Object.entries(got).every(([k, v]) => v === (k in hb ? hb[k] : 0));
+  }));
+ok('saturation and lightness ranges per family recompute to a tenth of a percent',
+  Object.entries(fam).every(([f, cols]) => {
+    const ss = Object.values(cols).map((c) => hsl(parseC(c))[1]);
+    const ls = Object.values(cols).map((c) => hsl(parseC(c))[2]);
+    const R = PAL.ranges[f];
+    return R.count === ss.length
+      && Math.abs(R.saturation_pct[0] - Math.min(...ss)) < .06 && Math.abs(R.saturation_pct[1] - Math.max(...ss)) < .06
+      && Math.abs(R.lightness_pct[0] - Math.min(...ls)) < .06 && Math.abs(R.lightness_pct[1] - Math.max(...ls)) < .06;
+  }));
+const ND = PAL.near_duplicates;
+const allC = Object.entries(fam).flatMap(([f, cols]) => Object.entries(cols).map(([id, c]) => [`${f}:${id}`, parseC(c)]));
+const myNear = [];
+for (let i = 0; i < allC.length; i++) for (let j = i + 1; j < allC.length; j++) {
+  const d = dE(allC[i][1], allC[j][1]); if (d < ND.delta_e_threshold) myNear.push([allC[i][0], allC[j][0], d]);
+}
+ok(`near-duplicate colours are counted under a declared CIE76 threshold with its reason (${myNear.length} under ${ND.delta_e_threshold})`,
+  ND.delta_e_threshold > 2.3 && ND.delta_e_threshold <= 10 && /just-noticeable/.test(ND.why)
+  && ND.count === myNear.length && ND.pairs.length === myNear.length
+  && ND.pairs.every((p) => myNear.some(([a, b, d]) => a === p.a && b === p.b && near3(d, p.delta_e)))
+  && Object.entries(ND.within_family).every(([f, v]) => v === myNear.filter(([a, b]) => a.startsWith(f + ':') && b.startsWith(f + ':')).length)
+  && ND.across_families === myNear.filter(([a, b]) => a.split(':')[0] !== b.split(':')[0]).length);
+/* staleness: the labels palette this was measured against is the one in
+   the labels registry now, by its source stamp and by the bytes read */
+const canon = (v) => Array.isArray(v) ? `[${v.map(canon).join(', ')}]`
+  : v && typeof v === 'object' ? `{${Object.keys(v).sort().map((k) => `${JSON.stringify(k)}: ${canon(v[k])}`).join(', ')}}`
+    : JSON.stringify(v);
+ok('the labels palette was read from the labels registry as it stands now (cross-read stamp)',
+  LEG.labels_stamp === labels.source_stamp
+  && LEG.palette_sha === createHash('sha256').update(canon([labels.palette, labels.palette_roles, labels.paint])).digest('hex').slice(0, 16));
+
+/* ---- exterior patterns + colour categories (wave 11, PATTERN). Every figure the
+   builder stored is re-measured here from the hex values, with this file's own
+   arithmetic, so a builder that stored a wrong ratio or skipped a pair fails. */
+const ext = JSON.parse(readFileSync(new URL('./registry/exterior.json', import.meta.url)));
+const extSrc = readFileSync(new URL('./exterior.py', import.meta.url));
+ok('[EXT-STAMP] exterior.json was built from exterior.py as it stands now',
+  ext.source_stamp === createHash('sha256').update(extSrc).digest('hex').slice(0, 16));
+const XK = new Set(ext.kinds);
+const XR = Object.entries(ext.recipes);
+ok(`[EXT-KIND] every recipe (${XR.length}) names a known kind, family and use, and every kind is used`,
+  XR.length >= 20 && XR.every(([id, r]) => XK.has(r.kind) && ext.families.includes(r.family) && id.startsWith(r.family + '.')
+    && r.uses.length && r.uses.every((u) => ['wall', 'roof', 'ground'].includes(u)) && r.tile_m > 0 && r.tile_m <= 4
+    && r.joint_shade <= 0 && r.joint_shade >= -0.6 && typeof r.why === 'string' && r.why.length > 10)
+  && ext.kinds.every((k) => XR.some(([, r]) => r.kind === k)));
+ok('[EXT-KIND] the pattern families the brief names are present (brick bonds, siding, stucco, terrazzo, board-formed, metal, paving, roofs)',
+  ['brick.running', 'brick.flemish', 'brick.herringbone', 'brick.basketweave', 'siding.clapboard', 'siding.shiplap',
+    'siding.board_batten', 'siding.shingle', 'render.stucco', 'render.terrazzo', 'concrete.board_formed', 'metal.corrugated',
+    'metal.standing_seam', 'paving.pavers', 'paving.cobble', 'roof.barrel_tile', 'roof.slate'].every((k) => k in ext.recipes));
+/* counts per tile must be whole numbers so a tile repeats exactly */
+const intKeys = ['courses', 'per_course', 'units', 'cells', 'per_cell', 'boards', 'rows', 'per_row', 'waves', 'bands', 'panels', 'cols', 'grain', 'tie_holes', 'dots'];
+ok('[EXT-TILE] every per-tile count is a positive integer; herringbone units are a multiple of 4; hex rows are even',
+  XR.every(([, r]) => intKeys.every((k) => !(k in r.params) || (Number.isInteger(r.params[k]) && r.params[k] > 0)))
+  && XR.filter(([, r]) => r.kind === 'herringbone').every(([, r]) => r.params.units % 4 === 0)
+  && XR.filter(([, r]) => ['hex', 'cobble', 'shingle', 'slate'].includes(r.kind)).every(([, r]) => (r.params.rows % 2) === 0)
+  && XR.filter(([, r]) => r.kind === 'bond' && r.params.header_every === 1).every(([, r]) => (r.params.per_course * 2) % 3 === 0));
+const Q = ext.quality_sizes;
+ok('[EXT-TILE] quality sizes are powers of two, low < medium < high',
+  ['low', 'medium', 'high'].every((q) => Number.isInteger(Q[q]) && (Q[q] & (Q[q] - 1)) === 0) && Q.low < Q.medium && Q.medium < Q.high);
+/* WCAG 2.x, re-implemented here (independent of design_kit.contrast which the builder used) */
+const xlin = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+const xlum = (c) => 0.2126 * xlin(c[0]) + 0.7152 * xlin(c[1]) + 0.0722 * xlin(c[2]);
+const xratio = (a, b) => { const A = xlum(rgb(a)), B = xlum(rgb(b)); return (Math.max(A, B) + 0.05) / (Math.min(A, B) + 0.05); };
+const XF = Object.entries(ext.colour_families);
+const xhexOf = Object.fromEntries(XF.flatMap(([, f]) => f.colours.map((c) => [c.id, c.hex])));
+ok(`[EXT-AA] every swatch label ink reaches 4.5:1 on its colour (${Object.keys(xhexOf).length} colours, re-measured)`,
+  XF.every(([, f]) => f.colours.every((c) => /^#[0-9A-F]{6}$/.test(c.hex) && ['#000000', '#FFFFFF'].includes(c.label_ink)
+    && xratio(c.label_ink, c.hex) >= 4.5 && Math.abs(xratio(c.label_ink, c.hex) - c.label_ratio) < 0.002)));
+ok('[EXT-AA] every lettering pair a family declares reaches 4.5:1 (re-measured) and every family declares at least one',
+  XF.every(([, f]) => f.lettering.length >= 1 && f.lettering.every((l) => l.fg in xhexOf && l.bg in xhexOf
+    && xratio(xhexOf[l.fg], xhexOf[l.bg]) >= 4.5 && Math.abs(xratio(xhexOf[l.fg], xhexOf[l.bg]) - l.ratio) < 0.002)));
+/* CVD: Machado 2009 matrices as published in the registry, on linear sRGB; CIE76 in CIELAB (D65) */
+const CV = ext.checks.cvd;
+const srgbLin = (v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+const enc = (v) => Math.round((v <= 0.0031308 ? v * 12.92 : 1.055 * v ** (1 / 2.4) - 0.055) * 255);
+const xsim = (c, M) => { const l = c.map(srgbLin); return M.map((row) => enc(Math.min(1, Math.max(0, row[0] * l[0] + row[1] * l[1] + row[2] * l[2])))); };
+const xlab = (c) => {
+  const [r, g, b] = c.map(srgbLin);
+  const x = (0.4124564 * r + 0.3575761 * g + 0.1804375 * b) / 0.95047, y = 0.2126729 * r + 0.7151522 * g + 0.0721750 * b,
+    z = (0.0193339 * r + 0.1191920 * g + 0.9503041 * b) / 1.08883;
+  const f = (t) => t > 216 / 24389 ? Math.cbrt(t) : (841 / 108) * t + 4 / 29;
+  return [116 * f(y) - 16, 500 * (f(x) - f(y)), 200 * (f(y) - f(z))];
+};
+const xde = (a, b) => { const A = xlab(a), B = xlab(b); return Math.hypot(A[0] - B[0], A[1] - B[1], A[2] - B[2]); };
+ok('[EXT-CVD] the stated method is Machado 2009 severity 1.0 for protanopia and deuteranopia with a declared floor >= 10',
+  /Machado/.test(CV.method) && CV.min_delta_e >= 10 && Object.keys(CV.matrices).sort().join() === 'deuteranopia,protanopia'
+  && Math.abs(CV.matrices.protanopia[0][0] - 0.152286) < 1e-9 && Math.abs(CV.matrices.deuteranopia[0][0] - 0.367322) < 1e-9);
+const cvdBad = [];
+let cvdMin = Infinity;
+for (const [fid, f] of XF) {
+  for (let i = 0; i < f.colours.length; i++) for (let j = i + 1; j < f.colours.length; j++) {
+    const a = rgb(f.colours[i].hex), b = rgb(f.colours[j].hex);
+    for (const [v, M] of [['normal', null], ...Object.entries(CV.matrices)]) {
+      const d = M ? xde(xsim(a, M), xsim(b, M)) : xde(a, b);
+      cvdMin = Math.min(cvdMin, d);
+      if (d < CV.min_delta_e) cvdBad.push(`${f.colours[i].id}~${f.colours[j].id}@${v}:${d.toFixed(1)}`);
+    }
+  }
+}
+ok(`[EXT-CVD] every pair inside each of ${XF.length} colour categories stays >= dE ${CV.min_delta_e} under normal, protanopia and deuteranopia (min ${cvdMin.toFixed(2)})`,
+  XF.length >= 8 && cvdBad.length === 0 || console.error(cvdBad.join(' ')));
+ok('[EXT-USE] every category covers body, trim or ground and an accent; every colour use is one of body/trim/accent/roof/ground',
+  XF.every(([, f]) => f.colours.every((c) => ext.colour_uses.includes(c.use)) && f.colours.some((c) => c.use === 'accent')
+    && f.colours.some((c) => ['body', 'trim'].includes(c.use))));
+/* no brand, standard-system or trademarked colour name: a PARTIAL denylist written here, matched as words */
+const DENY = ['pantone', 'ral', 'ncs', 'munsell', 'sherwin', 'benjamin', 'behr', 'farrow', 'dulux', 'valspar', 'tiffany',
+  'ferrari', 'coca', 'cola', 'ups', 'fedex', 'deere', 'caterpillar', 'cat', 'ikea', 'lego', 'barbie', 'ansi', 'osha', 'iso',
+  'federal', 'fs', 'bs', 'safety yellow', 'klein', 'hermes', 'starbucks', 'mcdonald', 'target', 'home depot', 'lowe'];
+const xwords = (s) => ` ${String(s).toLowerCase().replace(/[^a-z0-9]+/g, ' ')} `;
+const named = [...XF.flatMap(([fid, f]) => [f.name, ...f.colours.map((c) => c.name + ' ' + c.id)]), ...XR.map(([id, r]) => r.name + ' ' + id)];
+const hits = named.filter((nm) => DENY.some((d) => xwords(nm).includes(` ${d} `)));
+ok(`[EXT-NAMES] no colour or recipe name matches the partial brand/standard denylist (${DENY.length} terms, ${named.length} names)`,
+  hits.length === 0 || console.error(hits.join(' | ')));
+ok('[EXT-HINTS] every land-use hint names recipes usable for that part and known families; the four world classes are covered',
+  ['residential', 'commercial', 'industrial', 'park'].every((u) => u in ext.landuse_hints)
+  && Object.values(ext.landuse_hints).every((h) => ['wall', 'roof', 'ground'].every((p) => h[p].length && h[p].every((id) => id in ext.recipes && ext.recipes[id].uses.includes(p)))
+    && h.families.every((f) => f in ext.colour_families)));
+ok('[EXT-HONEST] the exterior registry is AUTHORED and says no image, brand or standard value is used',
+  ext.provenance === 'AUTHORED' && /no image file/.test(ext.honesty) && /brand/.test(ext.honesty) && /standard/.test(ext.honesty));
 
 console.log(`surfaces/test: ${n} checks passed — ${Object.keys(cat).length} finishes, `
   + `${Object.keys(wcat).length} walls, ${Object.keys(pats).length} patterns, `

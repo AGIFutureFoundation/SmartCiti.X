@@ -1,0 +1,308 @@
+{
+ "base_url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/",
+ "encoding": {
+  "cell_value": "mean of the valid 1-arc-second source pixels in the cell; nodata when fewer than half are valid",
+  "compression": "gzip (mtime 0)",
+  "dtype": "uint16 little-endian",
+  "height_m": "v * 0.1 - 100.0",
+  "nodata_value": 0,
+  "offset_m": 100.0,
+  "order": "row-major, rows north->south, cols west->east",
+  "scale_m": 0.1
+ },
+ "files": {
+  "USGS_3DEP_USE_CONSTRAINTS.txt": {
+   "bytes": 2155,
+   "region": null,
+   "sha256": "c1ed4dba6bc013e9ff9c6d594936d234279332467b7b22c2734e0c7af2ba9919"
+  },
+  "bayarea.u16.gz": {
+   "bytes": 1677335,
+   "region": "bayarea",
+   "sha256": "ecd3673bff2e555c2f1905c047f0912f795be965da0f68025e889a1024a8935d"
+  },
+  "parishes.u16.gz": {
+   "bytes": 1127177,
+   "region": "parishes",
+   "sha256": "1e256dd888337f7a0b714e244348d825a6ffa41a8e7ebeb1dc643b75e6db0b8c"
+  }
+ },
+ "licence": "U.S. public domain (work of the U.S. federal government, 17 U.S.C. 105); use constraints from the USGS tile metadata vendored verbatim in USGS_3DEP_USE_CONSTRAINTS.txt",
+ "provenance": "RECORDED",
+ "regions": {
+  "bayarea": {
+   "bounds_from": "bayarea/registry/bayarea.json#counties[*].bbox_wgs84 (union, snapped outward)",
+   "cell_arcsec": 6,
+   "cols": 1396,
+   "e_arcsec": -436350,
+   "file": "bayarea.u16.gz",
+   "members": 9,
+   "n_arcsec": 139914,
+   "rows": 1181,
+   "s_arcsec": 132828,
+   "tiles": [
+    {
+     "note": "HTTP 404 - the USGS publishes no 1 arc-second tile here (open water); cells stay nodata",
+     "published": false,
+     "tile": "n37w124"
+    },
+    {
+     "bytes": 778367,
+     "horizontal_datum": "North American Datum of 1983",
+     "metadata_sha256": "41bc36ea8e347e39748cbb36e7e39656c86a821474554f1c30ec3c7e98526223",
+     "metadata_url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n37w123/USGS_1_n37w123.xml",
+     "pubdate": "20211116",
+     "published": true,
+     "sha256": "0d63afb5ec2ac8e55189a774982617de59b3210d3ac8fc763f11d4d5f71a3827",
+     "tile": "n37w123",
+     "title": "USGS 1 Arc Second n37w123 20210617",
+     "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n37w123/USGS_1_n37w123.tif",
+     "vertical_datum": "North American Vertical Datum of 1988"
+    },
+    {
+     "bytes": 50767893,
+     "horizontal_datum": "North American Datum of 1983",
+     "metadata_sha256": "b8eec953e1151a6a10f263adb6cefb736c66af8ef5367c9eec50cd1dac5ec67f",
+     "metadata_url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n37w122/USGS_1_n37w122.xml",
+     "pubdate": "20250827",
+     "published": true,
+     "sha256": "583ced186f8883fc57f87a6dede58dbbcef777ec8d7df71160e9644459a0378f",
+     "tile": "n37w122",
+     "title": "USGS 1 Arc Second n37w122 20250826",
+     "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n37w122/USGS_1_n37w122.tif",
+     "vertical_datum": "North American Vertical Datum of 1988"
+    },
+    {
+     "bytes": 299634,
+     "horizontal_datum": "North American Datum of 1983",
+     "metadata_sha256": "83775a20d161586c3f4958807bb02b07c86dda6c946bda276994eff6aeb6eb31",
+     "metadata_url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n38w124/USGS_1_n38w124.xml",
+     "pubdate": "20200115",
+     "published": true,
+     "sha256": "07af816c696dc810e363bdb8cb1d44958f63cec2a17b69604e46c30b09d545a0",
+     "tile": "n38w124",
+     "title": "USGS 1 arc-second n38w124 1 x 1 degree",
+     "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n38w124/USGS_1_n38w124.tif",
+     "vertical_datum": "North American Vertical Datum of 1988"
+    },
+    {
+     "bytes": 28522813,
+     "horizontal_datum": "North American Datum of 1983",
+     "metadata_sha256": "8638081007f929aa4fe226f28f8b7c2d7bdedd2552acc37a7a341b2fefcbb0d7",
+     "metadata_url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n38w123/USGS_1_n38w123.xml",
+     "pubdate": "20250827",
+     "published": true,
+     "sha256": "9b00c16eeb5defde2296e103ec7efd126923fc9f3e976b14a79259e301584af8",
+     "tile": "n38w123",
+     "title": "USGS 1 Arc Second n38w123 20250826",
+     "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n38w123/USGS_1_n38w123.tif",
+     "vertical_datum": "North American Vertical Datum of 1988"
+    },
+    {
+     "bytes": 59929571,
+     "horizontal_datum": "North American Datum of 1983",
+     "metadata_sha256": "d7a15b881db4776c79b25891fe84da27dd9723be1bd8deca32905253e965f2fd",
+     "metadata_url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n38w122/USGS_1_n38w122.xml",
+     "pubdate": "20250827",
+     "published": true,
+     "sha256": "8455a55d308fa1acca748cdf8efa7ce1cb971f0cb66a98a54bcc1721b1b62377",
+     "tile": "n38w122",
+     "title": "USGS 1 Arc Second n38w122 20250826",
+     "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n38w122/USGS_1_n38w122.tif",
+     "vertical_datum": "North American Vertical Datum of 1988"
+    },
+    {
+     "bytes": 18691844,
+     "horizontal_datum": "North American Datum of 1983",
+     "metadata_sha256": "a3269e03fe4bae968ca0282bf761981dae0792aac9a691d32c43f277c72f745b",
+     "metadata_url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n39w124/USGS_1_n39w124.xml",
+     "pubdate": "20260601",
+     "published": true,
+     "sha256": "6ede35f2cc48ad8e69649a10402dce3fe44916cf6e46a371a186f2fbc5498208",
+     "tile": "n39w124",
+     "title": "USGS 1 Arc Second n39w124 20260601",
+     "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n39w124/USGS_1_n39w124.tif",
+     "vertical_datum": "North American Vertical Datum of 1988"
+    },
+    {
+     "bytes": 59894215,
+     "horizontal_datum": "North American Datum of 1983",
+     "metadata_sha256": "de68ab55f4b0adea7053a2fa8303918b8a914ceab2865ffe43e3f051386e5fd4",
+     "metadata_url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n39w123/USGS_1_n39w123.xml",
+     "pubdate": "20260601",
+     "published": true,
+     "sha256": "44cc22f96e9da81c5ee865df4dbe5aa46c1f1aee40be8413d9742c65ed28cee6",
+     "tile": "n39w123",
+     "title": "USGS 1 Arc Second n39w123 20260601",
+     "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n39w123/USGS_1_n39w123.tif",
+     "vertical_datum": "North American Vertical Datum of 1988"
+    },
+    {
+     "bytes": 58954880,
+     "horizontal_datum": "North American Datum of 1983",
+     "metadata_sha256": "4f3911795e87a6ad051d20dd3d3020910b24020b177b3de0440ae6ccf351fd6a",
+     "metadata_url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n39w122/USGS_1_n39w122.xml",
+     "pubdate": "20250708",
+     "published": true,
+     "sha256": "2593e47a34f401c9b66887980214e0697826e19c857f25601a4884649b76aaf9",
+     "tile": "n39w122",
+     "title": "USGS 1 Arc Second n39w122 20250520",
+     "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n39w122/USGS_1_n39w122.tif",
+     "vertical_datum": "North American Vertical Datum of 1988"
+    }
+   ],
+   "w_arcsec": -444726,
+   "what": "the 9 San Francisco Bay Area counties of the Bay world, California"
+  },
+  "parishes": {
+   "bounds_from": "parishes/registry/parishes.json#parishes[*].bbox_wgs84 (union, snapped outward)",
+   "cell_arcsec": 6,
+   "cols": 1513,
+   "e_arcsec": -319734,
+   "file": "parishes.u16.gz",
+   "members": 13,
+   "n_arcsec": 111600,
+   "rows": 1243,
+   "s_arcsec": 104142,
+   "tiles": [
+    {
+     "note": "HTTP 404 - the USGS publishes no 1 arc-second tile here (open water); cells stay nodata",
+     "published": false,
+     "tile": "n29w092"
+    },
+    {
+     "note": "HTTP 404 - the USGS publishes no 1 arc-second tile here (open water); cells stay nodata",
+     "published": false,
+     "tile": "n29w091"
+    },
+    {
+     "bytes": 825472,
+     "horizontal_datum": "North American Datum of 1983",
+     "metadata_sha256": "c024772f9911becf572e22d9239e40b2566a20b29cd227549d1a725775f33a1e",
+     "metadata_url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n29w090/USGS_1_n29w090.xml",
+     "pubdate": "20231213",
+     "published": true,
+     "sha256": "a40fff8c6f7949a4dbb553d49154d3c84242d9615d43d970b430346b192ecb51",
+     "tile": "n29w090",
+     "title": "USGS 1 Arc Second n29w090 20231213",
+     "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n29w090/USGS_1_n29w090.tif",
+     "vertical_datum": "North American Vertical Datum of 1988"
+    },
+    {
+     "note": "HTTP 404 - the USGS publishes no 1 arc-second tile here (open water); cells stay nodata",
+     "published": false,
+     "tile": "n29w089"
+    },
+    {
+     "bytes": 35244399,
+     "horizontal_datum": "North American Datum of 1983",
+     "metadata_sha256": "b09e8115af5364363bc02e4e8ba56d7fcdd40862e6f65276ed41f7eea34d4b23",
+     "metadata_url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n30w092/USGS_1_n30w092.xml",
+     "pubdate": "20260316",
+     "published": true,
+     "sha256": "a2450c86cf2909b3906bc49716e7e6f1d15b49a4df322d05d2f3d3e44c66097f",
+     "tile": "n30w092",
+     "title": "USGS 1 Arc Second n30w092 20260316",
+     "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n30w092/USGS_1_n30w092.tif",
+     "vertical_datum": "North American Vertical Datum of 1988"
+    },
+    {
+     "bytes": 49332056,
+     "horizontal_datum": "North American Datum of 1983",
+     "metadata_sha256": "007f72a75323e128a49c23683c11a4b01d289ac04d9ad7ca6061d2335e971a6a",
+     "metadata_url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n30w091/USGS_1_n30w091.xml",
+     "pubdate": "20260316",
+     "published": true,
+     "sha256": "9f5cf781c8978a17261b9c5ba3eb52f030425b9626bc7b865ae0eb9d41907f4d",
+     "tile": "n30w091",
+     "title": "USGS 1 Arc Second n30w091 20260316",
+     "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n30w091/USGS_1_n30w091.tif",
+     "vertical_datum": "North American Vertical Datum of 1988"
+    },
+    {
+     "bytes": 23744761,
+     "horizontal_datum": "North American Datum of 1983",
+     "metadata_sha256": "ea422d6150d030a7630039ca9bda8ed6c97b4ec2bd9dddfcbfdc204df3ef4aab",
+     "metadata_url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n30w090/USGS_1_n30w090.xml",
+     "pubdate": "20260312",
+     "published": true,
+     "sha256": "072efc1df2e1ba185fe8f12c32a28374e52cdaedb28bae3160dd441ad7542cba",
+     "tile": "n30w090",
+     "title": "USGS 1 Arc Second n30w090 20260312",
+     "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n30w090/USGS_1_n30w090.tif",
+     "vertical_datum": "North American Vertical Datum of 1988"
+    },
+    {
+     "bytes": 866799,
+     "horizontal_datum": "North American Datum of 1983",
+     "metadata_sha256": "b0e738d4ec1bcf5d2bf0354a54b0e165225c47e47d8539cafc46d85889db102e",
+     "metadata_url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n30w089/USGS_1_n30w089.xml",
+     "pubdate": "20191212",
+     "published": true,
+     "sha256": "b4b23186596206ef26ebb027c69757848c4e25a4e15880b5fbbe135dffb43cfe",
+     "tile": "n30w089",
+     "title": "USGS 1 arc-second n30w089 1 x 1 degree",
+     "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n30w089/USGS_1_n30w089.tif",
+     "vertical_datum": "North American Vertical Datum of 1988"
+    },
+    {
+     "bytes": 61528274,
+     "horizontal_datum": "North American Datum of 1983",
+     "metadata_sha256": "fe106e43c4c8612ece696fd5316f68910b39721cb73cea81373a698b64df7765",
+     "metadata_url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n31w092/USGS_1_n31w092.xml",
+     "pubdate": "20260316",
+     "published": true,
+     "sha256": "16cc131fd3c170696a784e7e217e4a5c36dbd24ce3f611a516534f0836e2e95d",
+     "tile": "n31w092",
+     "title": "USGS 1 Arc Second n31w092 20260316",
+     "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n31w092/USGS_1_n31w092.tif",
+     "vertical_datum": "North American Vertical Datum of 1988"
+    },
+    {
+     "bytes": 54392078,
+     "horizontal_datum": "North American Datum of 1983",
+     "metadata_sha256": "778a7199d4432cc021661edf46185bfdaca6bdd635420aea2572341eb55ae133",
+     "metadata_url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n31w091/USGS_1_n31w091.xml",
+     "pubdate": "20251209",
+     "published": true,
+     "sha256": "bf350557cb76e156e1d6b05d87cbd6651f77511ccd63d3f18ad031c0d2d6cee3",
+     "tile": "n31w091",
+     "title": "USGS 1 Arc Second n31w091 20251209",
+     "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n31w091/USGS_1_n31w091.tif",
+     "vertical_datum": "North American Vertical Datum of 1988"
+    },
+    {
+     "bytes": 50842888,
+     "horizontal_datum": "North American Datum of 1983",
+     "metadata_sha256": "49fe350f5875f23941b89ecd54c0718cbbda0cf47cb52ea8e975265a7adc9fc7",
+     "metadata_url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n31w090/USGS_1_n31w090.xml",
+     "pubdate": "20251209",
+     "published": true,
+     "sha256": "5961aefbb4734582a6d2a10d69f521b4ddfb756eab96b956e54cf08ddd054882",
+     "tile": "n31w090",
+     "title": "USGS 1 Arc Second n31w090 20251209",
+     "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n31w090/USGS_1_n31w090.tif",
+     "vertical_datum": "North American Vertical Datum of 1988"
+    },
+    {
+     "bytes": 40893431,
+     "horizontal_datum": "North American Datum of 1983",
+     "metadata_sha256": "b93079e780ad322adff82af9b03c1705bafbe00226f815a7ae666069cc29f0db",
+     "metadata_url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n31w089/USGS_1_n31w089.xml",
+     "pubdate": "20240502",
+     "published": true,
+     "sha256": "cacb1ae9f8ff71960556eb2803451ca53d7ef4413d9633825cae15d847e78e76",
+     "tile": "n31w089",
+     "title": "USGS 1 Arc Second n31w089 20240502",
+     "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n31w089/USGS_1_n31w089.tif",
+     "vertical_datum": "North American Vertical Datum of 1988"
+    }
+   ],
+   "w_arcsec": -328812,
+   "what": "the 13 parishes of the parish worlds, Louisiana"
+  }
+ },
+ "source": "USGS 3D Elevation Program (3DEP), 1 arc-second DEM, staged GeoTIFF tiles",
+ "src_arcsec": 1,
+ "src_nodata": -999999.0
+}

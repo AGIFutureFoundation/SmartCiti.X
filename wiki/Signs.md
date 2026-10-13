@@ -1,7 +1,7 @@
 # The signs
 
 Every word in the 3D world is on a sign, and a sign should be readable
-**before** it is read. 19 kinds over 15 shapes, all
+**before** it is read. 19 kinds over 16 shapes, all
 declared in `labels/registry/labels.json` and never in the page.
 
 ## Shape carries the category
@@ -23,6 +23,7 @@ declared in `labels/registry/labels.json` and never in the page.
 | `stencil` | a hard-cornered square with a punched hole at its head and a heavy accent border | the number a door answers to |
 | `tag` | a rectangle with its head corner cut away and an eyelet punched through it, like a tag wired to a machine | the identity of one piece of kit |
 | `notice` | a plate banded top and bottom with diagonal hatching in the accent colour | a condition in force in this space, not a name |
+| `board` | a portrait board with an accent band across its head, a caption under the band and its items stacked one to a line | a list of requirements posted at a door, read down rather than across |
 
 ## Colour carries provenance and district
 
@@ -54,7 +55,7 @@ display for names, body for the line under them, mono for anything a machine mea
 | **route** | `ribbon` | a route or a distance | derived | mono | a distance between two recorded points |
 | **readout** | `readout` | a number a machine measured | steel | mono | a measured number, from a seat or a chart |
 | **brand** | `marquee` | the name of the whole place | mark | display | the Academy itself |
-| **placard** | `plate` | a room, or a part of a place you are already in | crit | body | what a room requires of you, read at its door |
+| **placard** | `board` | a list of requirements posted at a door, read down rather than across | crit | body | what a room requires of you, read at its door |
 | **egress** | `chevron` | the way out, and which way it runs | good | display | the way out of a hall, read off the floor plan the bundle drew and pointing along it |
 | **muster** | `beacon` | a place to gather, marked so it can be found | good | display | where a hall gathers when it empties, off the same plan the route is read from |
 | **door** | `stencil` | the number a door answers to | muted | mono | the number a door answers to, derived from the hall and the room it opens into |

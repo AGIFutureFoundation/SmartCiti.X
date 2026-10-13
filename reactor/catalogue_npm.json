@@ -1,0 +1,294 @@
+{
+ "scope": "@reactor-models",
+ "fetched": "2026-09-29",
+ "source": "registry.npmjs.org search scope:reactor-models + each package /latest; tarballs sha512-verified",
+ "searched_for": {
+  "minimax": []
+ },
+ "packages": [
+  {
+   "npm_package": "@reactor-models/fast-h3",
+   "npm_version": "1.7.2",
+   "npm_license": "MIT",
+   "npm_integrity": "sha512-GVU24You3LbqN7aBFI9tGjyW+S1PQrkTCEaaHeln8KpVG9LwdcQLjjR2uiTFNKG3Mj9SHxp7iORX+OZ2eHwyKg==",
+   "tarball": "https://registry.npmjs.org/@reactor-models/fast-h3/-/fast-h3-1.7.2.tgz",
+   "description": "Strongly-typed SDK for the FastH3 model on Reactor",
+   "model_names": [
+    "reactor/fast-h3"
+   ],
+   "wire_commands": [
+    "enqueue",
+    "get_queue",
+    "get_state",
+    "move",
+    "play",
+    "pop",
+    "reset",
+    "set_autoplay",
+    "set_canvas",
+    "set_clip_seconds",
+    "set_flush_on_clip_end",
+    "set_seed",
+    "stop"
+   ]
+  },
+  {
+   "npm_package": "@reactor-models/h3-reference-to-video-turbo-realtime",
+   "npm_version": "0.5.5",
+   "npm_license": "MIT",
+   "npm_integrity": "sha512-erK1g3l04iqhwNBe3bpbyvZ/0brNugWv1dDtWOkypxdbRYICSZ/0TD6dZDk9xBYqismAjYSkFMHTUAWPVoYXMg==",
+   "tarball": "https://registry.npmjs.org/@reactor-models/h3-reference-to-video-turbo-realtime/-/h3-reference-to-video-turbo-realtime-0.5.5.tgz",
+   "description": "Strongly-typed SDK for the H3ReferenceToVideoTurboRealtime model on Reactor",
+   "model_names": [
+    "reactor/h3-reference-to-video-turbo-realtime"
+   ],
+   "wire_commands": [
+    "enqueue",
+    "get_queue",
+    "get_state",
+    "move",
+    "play",
+    "pop",
+    "reset",
+    "set_autoplay",
+    "set_canvas",
+    "set_clip_seconds",
+    "set_flush_on_clip_end",
+    "set_seed",
+    "stop"
+   ]
+  },
+  {
+   "npm_package": "@reactor-models/happy-oyster",
+   "npm_version": "1.0.1",
+   "npm_license": "MIT",
+   "npm_integrity": "sha512-8gy51CSsoXQQkw+ZL/TxOoD+BQ78ZmP2+vUnfaYcw+211aMbIMbwWhIrFW3K9gS4Q1oE8NKmUj6QAcBuFEGzAg==",
+   "tarball": "https://registry.npmjs.org/@reactor-models/happy-oyster/-/happy-oyster-1.0.1.tgz",
+   "description": "Strongly-typed SDK for the HappyOyster model on Reactor",
+   "model_names": [
+    "reactor/happy-oyster-adventure",
+    "reactor/happy-oyster-director"
+   ],
+   "wire_commands": [
+    "attach_world",
+    "create_world",
+    "end_travel",
+    "get_credentials",
+    "get_state"
+   ]
+  },
+  {
+   "npm_package": "@reactor-models/helios",
+   "npm_version": "1.0.1",
+   "npm_license": "MIT",
+   "npm_integrity": "sha512-Q+jpgj3334dPqLksdvClFUfgT0g6fR2jO1m+sw6TJIJQ5jS94veyXlCktLJ/K4xoI/RrD0ps0pZN5ljHOklP1w==",
+   "tarball": "https://registry.npmjs.org/@reactor-models/helios/-/helios-1.0.1.tgz",
+   "description": "Strongly-typed SDK for the Helios model on Reactor",
+   "model_names": [
+    "reactor/helios"
+   ],
+   "wire_commands": [
+    "list_snapshots",
+    "pause",
+    "reset",
+    "resume",
+    "rewind",
+    "save_snapshot",
+    "schedule_prompt",
+    "set_conditioning",
+    "set_image",
+    "set_image_strength",
+    "set_prompt",
+    "set_seed",
+    "set_sr_scale",
+    "start"
+   ]
+  },
+  {
+   "npm_package": "@reactor-models/lingbot",
+   "npm_version": "1.0.1",
+   "npm_license": "MIT",
+   "npm_integrity": "sha512-2YcONYBd7sournLHwmjaYMCDeGnQkhfRq5bxgOyveh8eooJ/rEO8Oy/I9+q76gRzwM8GCDfUz98asJtMQNxI4A==",
+   "tarball": "https://registry.npmjs.org/@reactor-models/lingbot/-/lingbot-1.0.1.tgz",
+   "description": "Strongly-typed SDK for the Lingbot model on Reactor",
+   "model_names": [
+    "reactor/lingbot"
+   ],
+   "wire_commands": [
+    "pause",
+    "reset",
+    "resume",
+    "set_image",
+    "set_look_horizontal",
+    "set_look_vertical",
+    "set_movement",
+    "set_prompt",
+    "set_rotation_speed_deg",
+    "set_seed",
+    "start"
+   ]
+  },
+  {
+   "npm_package": "@reactor-models/lingbot-world-2",
+   "npm_version": "1.0.1",
+   "npm_license": "MIT",
+   "npm_integrity": "sha512-cfd5RXqGfxUsHA9GiHzaWs1JoYKgMOs+ViRj0o1+YvDlIvxAdb+vUYzBuQB10pvvustNcePtShmnQ7TDqfTv0A==",
+   "tarball": "https://registry.npmjs.org/@reactor-models/lingbot-world-2/-/lingbot-world-2-1.0.1.tgz",
+   "description": "Strongly-typed SDK for the LingbotWorld2 model on Reactor",
+   "model_names": [
+    "reactor/lingbot-world-2"
+   ],
+   "wire_commands": [
+    "pause",
+    "reset",
+    "resume",
+    "set_attn_window",
+    "set_camera_pose",
+    "set_image",
+    "set_kv_cache_reset",
+    "set_look_horizontal",
+    "set_look_vertical",
+    "set_move_lateral",
+    "set_move_longitudinal",
+    "set_prompt",
+    "set_rotation_speed_deg",
+    "set_seed",
+    "start",
+    "trigger_kv_cache_reset"
+   ]
+  },
+  {
+   "npm_package": "@reactor-models/longlive-v2",
+   "npm_version": "4.0.1",
+   "npm_license": "MIT",
+   "npm_integrity": "sha512-/iFO04cJo+yjS71XwM2jK2BqXPkVK6sUdzzuB8AfzZAJl6z5V90DBWjhsTN4CxVOzi0/WAOwrszUeHgprJLMbw==",
+   "tarball": "https://registry.npmjs.org/@reactor-models/longlive-v2/-/longlive-v2-4.0.1.tgz",
+   "description": "Strongly-typed SDK for the LongliveV2 model on Reactor",
+   "model_names": [
+    "reactor/longlive-v2"
+   ],
+   "wire_commands": [
+    "pause",
+    "reset",
+    "resume",
+    "scene_cut",
+    "schedule_scene_cut",
+    "schedule_shot",
+    "set_seed",
+    "set_shot",
+    "start"
+   ]
+  },
+  {
+   "npm_package": "@reactor-models/ltx2",
+   "npm_version": "5.0.2",
+   "npm_license": "MIT",
+   "npm_integrity": "sha512-hJ9ji9NTIUtLecVoKxLQW2SiW+8FVmtvZShTZzy3PYy5PXzy1y2MQ7wODY4r8PUjO8McRJMZJrh+ULYmB45ftA==",
+   "tarball": "https://registry.npmjs.org/@reactor-models/ltx2/-/ltx2-5.0.2.tgz",
+   "description": "Strongly-typed SDK for the Ltx2 model on Reactor",
+   "model_names": [
+    "reactor/ltx2"
+   ],
+   "wire_commands": [
+    "pause",
+    "reset",
+    "resume",
+    "set_avatar_image",
+    "set_duration_seconds",
+    "set_prompt",
+    "set_script",
+    "set_seed",
+    "set_wpm",
+    "start",
+    "stop"
+   ]
+  },
+  {
+   "npm_package": "@reactor-models/sana-streaming",
+   "npm_version": "2.0.1",
+   "npm_license": "MIT",
+   "npm_integrity": "sha512-HxeKiQE6agtob6YWBBo6UsXleXCagnGDlPnngxdJ9c0QZ4invKtTqa7bcYm6P2uysOTC59p/fXBuvpdxYDty2A==",
+   "tarball": "https://registry.npmjs.org/@reactor-models/sana-streaming/-/sana-streaming-2.0.1.tgz",
+   "description": "Strongly-typed SDK for the SanaStreaming model on Reactor",
+   "model_names": [
+    "reactor/sana-streaming"
+   ],
+   "wire_commands": [
+    "pause",
+    "reset",
+    "resume",
+    "set_anchor_interval",
+    "set_prompt",
+    "set_seed",
+    "start"
+   ]
+  },
+  {
+   "npm_package": "@reactor-models/visko-orbis-dynamic",
+   "npm_version": "1.4.0",
+   "npm_license": "MIT",
+   "npm_integrity": "sha512-7FJFmzQL+QzxCwz/JmpL3yI21U3DhOqM04fZ8CIHuGSvI7TYHx/v4aB/ZimlQIMvaRXx8qCm8Dxoq/gU758xFA==",
+   "tarball": "https://registry.npmjs.org/@reactor-models/visko-orbis-dynamic/-/visko-orbis-dynamic-1.4.0.tgz",
+   "description": "Strongly-typed SDK for the ViskoOrbisDynamic model on Reactor",
+   "model_names": [
+    "reactor/visko-orbis-dynamic"
+   ],
+   "wire_commands": [
+    "pause",
+    "reset",
+    "resume",
+    "set_audio_enabled",
+    "set_audio_prompt",
+    "set_image",
+    "set_prompt",
+    "set_resolution",
+    "set_seed",
+    "start"
+   ]
+  },
+  {
+   "npm_package": "@reactor-models/visko-orbis-stable",
+   "npm_version": "2.3.0",
+   "npm_license": "MIT",
+   "npm_integrity": "sha512-W3rb29gyN/CUv0jCEmzZVqwAAmB+twmI6YdcWfzYtnchA0k7tmr2K20CNTGal2Le2vOJ2Ot1GquJK6jlD/YSPA==",
+   "tarball": "https://registry.npmjs.org/@reactor-models/visko-orbis-stable/-/visko-orbis-stable-2.3.0.tgz",
+   "description": "Strongly-typed SDK for the ViskoOrbisStable model on Reactor",
+   "model_names": [
+    "reactor/visko-orbis-stable"
+   ],
+   "wire_commands": [
+    "pause",
+    "reset",
+    "resume",
+    "set_audio_enabled",
+    "set_audio_prompt",
+    "set_image",
+    "set_prompt",
+    "set_resolution",
+    "set_seed",
+    "start"
+   ]
+  },
+  {
+   "npm_package": "@reactor-models/x2",
+   "npm_version": "1.0.0",
+   "npm_license": "MIT",
+   "npm_integrity": "sha512-4RHEvGYawnG5M7Zq/vFnAxF79HtkWP1dGrH5wY95P8cOBx2LeBLtOCBOxajaGy2+USyyd+7FdTexNQaYf3LTeA==",
+   "tarball": "https://registry.npmjs.org/@reactor-models/x2/-/x2-1.0.0.tgz",
+   "description": "Strongly-typed SDK for the X2 model on Reactor",
+   "model_names": [
+    "xmax/x2"
+   ],
+   "wire_commands": [
+    "reset",
+    "set_keep_backlog",
+    "set_pointer",
+    "set_pointer_active",
+    "set_pointer_x",
+    "set_pointer_y",
+    "set_prompt",
+    "set_reference_image"
+   ]
+  }
+ ]
+}

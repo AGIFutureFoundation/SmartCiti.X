@@ -307,7 +307,7 @@ KIT_TRI_CEILING = int(TRI_CEILING * TRI_SHARE)
 # repo does not contain and this build cannot open.
 REFERENCE = {
     'provenance': 'MEASURED-ELSEWHERE',
-    'how': ('a glTF 2.0 inspection of five downloaded reference models, run '
+    'how': ('a glTF 2.0 inspection of six downloaded reference models, run '
             'outside this repository on files it does not contain. This '
             'build cannot re-run it and does not try to: the figures below '
             'are quoted, not verified here.'),
@@ -1063,7 +1063,7 @@ HONESTY = {
     'provenance': (
         'SCHEMATIC for the shapes and sizes; AUTHORED for the placement '
         'rates, which are somebody\'s judgement about how often a thing '
-        'appears on a wall. MEASURED-ELSEWHERE for the four reference '
+        'appears on a wall. MEASURED-ELSEWHERE for the nine reference '
         'figures in `reference`, and for the scene costs read out of '
         'web/eval_scene.mjs. AI-SYNTHESIZED is orbis/\'s word for generated '
         'video and is not this pack\'s to borrow.'),
@@ -1090,11 +1090,17 @@ HONESTY = {
     'budget_limit': (
         'The whole-campus arithmetic is a PREDICTION, not a measurement. It '
         'counts what the placement rules would place and what those pieces '
-        'would cost if they merge as declared. Nothing here has been drawn '
-        'yet. Only running web/eval_scene.mjs against a page that actually '
-        'places them can say whether the prediction held - and the campus '
-        'baseline it is measured against is one campus, treasure-island, so '
-        'the other nine are unmeasured ground.'),
+        'would cost if they merge as declared. web/build_3d.py now DRAWS '
+        'them - kitDress() hangs every admitted piece on the envelope '
+        'building() just drew, through the district pool it fills, and '
+        'flushKit() instances the two instanced families per campus - and '
+        'window.__tc3dKit() reports the pieces, triangles and draw calls '
+        'actually built beside the figures predicted here, so the '
+        'prediction can be checked against the drawing from a browser. Only '
+        'running web/eval_scene.mjs against the page says whether the '
+        'campus stays under its ceilings - and the baseline it is measured '
+        'against is one campus, treasure-island, so the other nine are '
+        'unmeasured ground.'),
     'not_a_kit_of_parts': (
         'The word kit is the modelling sense: a small set of repeated pieces '
         'that assemble into variety. It is not a construction kit of parts, '

@@ -495,8 +495,31 @@ ok('the pack admits the page does not render any of this yet',
   // the moment somebody wired it up, which is exactly what happened here.
   /the page reads this registry/.test(reg.honesty.built_so_far)
   && /setSun\(\)/.test(reg.honesty.built_so_far)
-  && /the GRADIENT half is not wired/.test(reg.honesty.not_built_yet)
-  && /the hour is STEPPED, never interpolated/.test(reg.honesty.not_built_yet)
+  && /the gradient is wired too/.test(reg.honesty.gradient_built)
+  // and the claim is checked against the page rather than trusted: the
+  // three-step mix and the haze multiplier must actually be there
+  && /const gStops = a\.sky\.map\(\(h, i\) => \{/.test(page)
+  && /mixHex\(h, ph\.gradient\.stops\[i\], 1 - ph\.gradient\.campus_mix\)/.test(page)
+  && /mixHex\(lit, ws\.gradient_tint_hex, ws\.tint_mix\)/.test(page)
+  && /hazeMul: ws\.horizon_haze_mul/.test(page)
+  // Both of these used to sit in not_built_yet. They are decisions, not
+  // backlog, so they moved to `decided` - and the move only counts if each
+  // one carries the REASON it was decided, otherwise splitting the block
+  // would just be a quieter way of dropping two admissions.
+  && /sun_disc is declared here and deliberately unread/
+      .test(reg.honesty.decided.sun_disc_is_drawn_from_the_light)
+  && /shadows agree/
+      .test(reg.honesty.decided.sun_disc_is_drawn_from_the_light)
+  && /never slides between them/
+      .test(reg.honesty.decided.the_hour_is_stepped_not_interpolated)
+  && /rebuild it every frame/
+      .test(reg.honesty.decided.the_hour_is_stepped_not_interpolated)
+  && Object.values(reg.honesty.decided).every((v) => v.length > 120)
+  // and what is left in not_built_yet is the one thing actually undone:
+  // the page is handed compose_order and re-derives it anyway.
+  && /compose_order describe an order the page follows but does not read/
+      .test(reg.honesty.not_built_yet)
+  && !/sun_disc|STEPPED/.test(reg.honesty.not_built_yet)
   // and the claim is checked against the page rather than trusted
   && /function setSun\(elevDeg, azDeg\)/.test(page)
   && !/starAlpha[\s\S]{0,40}stars: !!w\.stars/.test(page));
@@ -544,4 +567,4 @@ console.log(`sky/test: ${n} checks passed — ${C.phases} phases `
   + `own order; ${world.sky.stars.count} stars in ${C.star_magnitude_bins} bins `
   + `from the page's seed, cutoff ${reg.stars.magnitude_cutoff} mag against `
   + `${reg.stars.equivalent_sky_magnitude} for a real sky; `
-  + `colours AUTHORED and sun angles DERIVED; the page now places the sun, the light and the stars by the hour, and still composes its gradient the old way`);
+  + `colours AUTHORED and sun angles DERIVED; the page places the sun, the light, the stars AND the gradient by the hour - measured at the flagship, night is 68% of noon and golden hour 136%`);

@@ -1004,16 +1004,45 @@ HONESTY = {
                     'hour is a control in the top bar and a ?hour= query '
                     'parameter. The six hex literals the page used to switch '
                     'the light with are gone.',
-    'not_built_yet': 'the GRADIENT half is not wired. The page still composes '
-                     'its sky from the campus\'s own stops darkened by the '
-                     'weather, so this pack\'s 56 per-phase gradient stops, '
-                     'its gradient_tint_hex, its horizon_haze_mul and its '
-                     'sun_disc are declared and unread. The layer list and '
-                     'compose_order describe the order the page already draws '
-                     'in rather than driving it. And the hour is STEPPED, '
-                     'never interpolated: setSky() rebuilds the environment '
-                     'map on every call, so a sun that slid continuously '
-                     'would rebuild it every frame.',
+    'gradient_built': 'the gradient is wired too, in the order compose_order '
+                      'declares: the campus\'s own four stops stay the base, '
+                      'this phase\'s 4 stops mix over them by 1 - campus_mix, '
+                      'the weather\'s tint mixes over that by tint_mix, and '
+                      'the weather\'s existing sky_mul goes through the '
+                      'page\'s own darkHex() last, so nothing here changed '
+                      'what the weather switch already did. horizon_haze_mul '
+                      'scales the horizon band. Measured on a horizon-facing '
+                      'camera at the flagship campus, against noon: golden '
+                      'hour 136%, sunset 117%, civil dusk 96%, night 68% - '
+                      'the low-sun hours are brighter than noon because a low '
+                      'sun lights the whole dome, which is the arc a sky '
+                      'actually has and not the one a linear dimmer gives.',
+    # Two of the three things this block used to list are not backlog at all:
+    # they are decisions, each taken for a stated reason, and filing them
+    # under the same word as real backlog made the backlog look bigger than
+    # it is AND hid that anyone had decided anything. A reader cannot tell
+    # "nobody got to it" from "we considered it and chose otherwise" if both
+    # are called not_built_yet. So they are split, and a decision only earns
+    # its place here by carrying the reason it was taken.
+    'decided': {
+        'sun_disc_is_drawn_from_the_light': 'sun_disc is declared here and '
+            'deliberately unread. The page draws its disc from the key '
+            'light\'s own position, which is what makes the disc and the '
+            'shadows agree; a disc driven from this block instead could sit '
+            'where the shadows say the sun is not. The block stays as a '
+            'record of the geometry, not as a thing waiting to be wired.',
+        'the_hour_is_stepped_not_interpolated': 'the hour moves in phases and '
+            'never slides between them. setSky() rebuilds the environment map '
+            'on every call, so a continuously moving sun would rebuild it '
+            'every frame. This is a chosen trade, not an unfinished one.',
+    },
+    'not_built_yet': 'the layer list and compose_order describe an order the '
+                     'page follows but does not read from here. The page is '
+                     'handed compose_order in its own blob and re-derives the '
+                     'same order in code, so the order has two owners and '
+                     'they agree today by inspection rather than by '
+                     'construction. That is the one thing in this pack still '
+                     'genuinely undone.',
 }
 assert HONESTY['status'].startswith('COMPUTED:'), \
     'this pack carries the COMPUTED provenance word'

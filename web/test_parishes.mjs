@@ -1,0 +1,508 @@
+/**
+ * Static checks for the parish world page (web/trade_craft_parishes.html,
+ * built by web/build_parishes.py). Prints `  ok ` per check and `FAIL` at
+ * column 0; exits non-zero on any failure. The browser behaviour (streaming,
+ * border crossing, vehicles on their medium, satellite toggle) is held by
+ * web/eval_parishes.mjs.
+ */
+import { readFileSync, existsSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+
+const ROOT = new URL('..', import.meta.url).pathname;
+const read = (p) => readFileSync(ROOT + p, 'utf8');
+let fails = 0, oks = 0;
+function check(name, cond, why = '') {
+  if (cond) { oks++; console.log(`  ok ${name}`); } else { fails++; console.log(`FAIL ${name}${why ? ' :: ' + why : ''}`); }
+}
+const PAGE = 'web/trade_craft_parishes.html';
+const html = read(PAGE);
+const json = (id) => { const m = html.match(new RegExp(`<script type="application/json" id="${id}">([\\s\\S]*?)</script>`)); return m ? JSON.parse(m[1]) : null; };
+const D = json('parishes-data');
+const CAT = json('parishes-i18n');
+const REG = JSON.parse(read('parishes/registry/parishes.json'));
+const main = (html.match(/<script type="module" id="parishes-main">([\s\S]*?)<\/script>/) || [, ''])[1];
+
+// wave 7: the label key list is pathkit's own PATH_LABEL_KEYS (18 in wave 6, 32 with the seven-path chooser)
+const PATH_KEYS = [...(read('web/pathkit.py').match(/PATH_LABEL_KEYS = \(([\s\S]*?)\)/) || [, ''])[1].matchAll(/'([^']+)'/g)].map((m) => m[1]);
+const locs = ['ar', 'de', 'en', 'es', 'fr', 'hi', 'pt', 'zh'];
+// [page] chrome the team rules require
+check('[page] exactly one <h1>', (html.match(/<h1[\s>]/g) || []).length === 1);
+check('[page] brand icon link', /<link rel="icon" href="data:image\/svg\+xml,/.test(html));
+check('[page] site nav present once, right after <body>', (html.match(/<nav[\s>]/g) || []).length >= 1 && /<body class="tc-theme-canvas">\s*<(nav|a|header)/.test(html));
+check('[page] skip target #tc-main', html.includes('id="tc-main"'));
+check('[page] meta description', /<meta name="description" content="[^"]{40,160}">/.test(html));
+check('[page] style switcher remembered (STYLE_HEAD_JS before first <style>, STYLE_JS after main)',
+  html.indexOf("localStorage.getItem('tc-style')") > -1 && html.indexOf("localStorage.getItem('tc-style')") < html.indexOf('<style') && html.lastIndexOf('tc-style') > html.indexOf('id="parishes-main"'));
+check('[page] generated file (no model identifiers)', !/claude|gpt-\d|opus|sonnet/i.test(html));
+
+// [theme] UI colours only from tokens
+const ownStyle = (html.match(/<style>([\s\S]*?)<\/style>/) || [, ''])[1];
+check('[theme] canvas theme layer', html.includes('<body class="tc-theme-canvas">') && html.includes('data-tc-theme="canvas"'));
+check('[theme] page style has no hex/rgb literal (tokens only)', !/#[0-9a-fA-F]{3,8}\b|rgba?\(/.test(ownStyle), (ownStyle.match(/#[0-9a-fA-F]{3,8}\b|rgba?\(/g) || []).join(' '));
+check('[theme] minimap colours read from --tc-* tokens', /tok\('--tc-/.test(main) && !/mctx\.(fill|stroke)Style = '#/.test(main));
+
+// [core] the wilds terrain core carried byte-for-byte
+const core = read('wilds/core.mjs');
+const CB = core.slice(core.indexOf('/* WILDS_CORE:BEGIN */'), core.indexOf('/* WILDS_CORE:END */') + '/* WILDS_CORE:END */'.length);
+check('[core] WILDS_CORE block identical to wilds/core.mjs', CB.length > 100 && main.includes(CB));
+check('[core] fabric scattered by wildsHash', /wildsHash\(ix, iz, SEED, 1\)/.test(main));
+
+// [data] the PARISH contract, read not retyped
+check('[data] embedded registry present', D !== null && Array.isArray(D.parishes));
+check('[data] parishes = registry selection.selected, in order', JSON.stringify(D.parishes.map((p) => p.id)) === JSON.stringify(REG.selection.selected));
+check('[data] source stamp matches the registry', D.source_stamp === REG.source_stamp && html.includes(`data-stamp>${REG.source_stamp}<`));
+const pairs = new Set(); for (const p of D.parishes) for (const n of p.neighbours) pairs.add([p.id, n.id].sort().join('|'));
+check('[data] shared borders = registry adjacency_pairs', pairs.size === REG.counts.adjacency_pairs, `${pairs.size} vs ${REG.counts.adjacency_pairs}`);
+check('[data] every border is symmetric', D.parishes.every((p) => p.neighbours.every((n) => D.parishes.find((q) => q.id === n.id).neighbours.some((m) => m.id === p.id))));
+const nLm = Object.values(REG.parishes).reduce((a, p) => a + p.landmarks.length + p.anchors.length, 0);
+check('[data] every landmark and anchor placed, none invented', D.parishes.reduce((a, p) => a + p.landmarks.length, 0) === nLm, `${nLm}`);
+check('[data] every landmark carries provenance + note and a generic family',
+  D.parishes.every((p) => p.landmarks.every((l) => l.provenance && l.note && ['tower', 'dome', 'hall', 'bridge', 'other'].includes(l.family))));
+check('[data] landmark world x/z = registry world_m (x = east, z = -north)',
+  Object.values(REG.parishes).every((rp) => rp.landmarks.every((l, j) => { const q = D.parishes.find((p) => p.id === rp.fips).landmarks[j]; return q.x === l.world_m[0] && q.z === -l.world_m[1]; })));
+check('[data] shared border points coincide in the world frame',
+  D.parishes.every((p) => p.neighbours.every((n) => n.segments.every((sg) => sg.every(([x, z], i) => { const w = REG.parishes[p.id].borders.find((b) => b.with === n.id); return w.segments.some((s) => s.world_m.some(([e, nn]) => e === x && -nn === z)); })))));
+check('[data] each parish carries its 4k map + preview path, label and fabric note',
+  D.parishes.every((p) => p.map_4k === REG.parishes[p.id].map.path && p.map_preview === REG.parishes[p.id].map.preview && existsSync(ROOT + p.map_preview) && p.map_label.includes('not satellite')));
+
+// [honesty] ground, satellite, play
+check('[honesty] panel says no real elevation', /data-no-elevation><span data-i18n="parishes.no_elevation">[^<]*no real elevation/.test(html));
+check('[honesty] registry water + outline + landmark statements shown', ['water', 'outline', 'landmarks', 'elevation', 'satellite'].every((k) => html.includes(`data-honesty-key="${k}"`)));
+check('[honesty] flat ground at 0 m forced in the page', /pa\[i\] = 0/.test(main) && /water\.position\.y = -0\.4/.test(main));
+check('[honesty] Mapbox refusal text verbatim from the registry', D.satellite.mapbox.refusal_text === 'Mapbox satellite: off - no token configured' && /SAT\.mapbox\.refusal_text/.test(main));
+check('[honesty] Mapbox token only from ./config/runtime.json, public pk. only, read on toggle', /fetch\('\.\/config\/runtime\.json'/.test(main) && /startsWith\('pk\.'\)/.test(main) && !/readToken\(\);\s*$/m.test(main.split('async function showSatellite')[0]));
+check('[honesty] no token and no baked imagery in the page', !/access_token=pk\.|"pk\.[A-Za-z0-9]/.test(html) && !/data:image\/(jpeg|png|webp)/.test(html));
+check('[honesty] satellite requested only in the browser (USGS tile template from the registry)', D.satellite.usgs.tiles === REG.satellite.usgs.tiles && REG.satellite.fetched_at_build === false && REG.satellite.stored === false);
+check('[honesty] quests are play, said once', (html.match(/data-i18n="parishes.play_note"/g) || []).length === 1);
+check('[honesty] fleet honesty shown', html.includes('data-fleet-honesty>') && !html.includes('data-fleet-honesty></li>'));
+
+// [perf] one InstancedMesh per asset family; chunk budgets declared once
+check('[perf] fabric families are InstancedMesh (blocks, trees)', /new THREE\.InstancedMesh\(blockGeo/.test(main) && /new THREE\.InstancedMesh\(treeGeo/.test(main));
+check('[perf] landmark families and border markers are InstancedMesh', /new THREE\.InstancedMesh\(f\(\), matLm, CAP\.lm\)/.test(main) && /new THREE\.InstancedMesh\(markerGeo/.test(main));
+check('[perf] chunk budget declared once', (main.match(/const CHUNK_M = 250, RADIUS = 3, CELL = 25, BUILD_PER_FRAME = 3;/g) || []).length === 1 && /const CAP = \{ block: 6000, tree: 4000, lamp: 2500, marker: 64, lm: 64 \}/.test(main));
+
+// [fleet] FLEET contract
+const FL = json('fleet-registry');
+if (existsSync(ROOT + 'fleet/registry/fleet.json')) {
+  const reg = JSON.parse(read('fleet/registry/fleet.json'));
+  check('[fleet] fleet.json embedded verbatim', JSON.stringify(FL) === JSON.stringify(reg));
+  check('[fleet] kit inlined between its markers', main.includes('/* FLEET_KIT:BEGIN') && main.includes('/* FLEET_KIT:END */'));
+  check('[fleet] water test for boats = outside every land outline', /fleetFlatGround\(0, 0, \(x, z\) => parishAt\(x, z\) === null\)/.test(main));
+  check('[fleet] enter/exit via fleetNearest(…, 2.5) and fleetExitPoint', /fleetNearest\(\{ x: eye\.x, z: eye\.z \}, parked, 2\.5\)/.test(main) && /fleetExitPoint\(riding\.st/.test(main));
+} else check('[fleet] stub named when fleet registry absent', html.includes('data-contract="fleet" data-state="stub"'));
+
+// [layers] LAYERS contract: stations from pathkit, kiosk family instanced, chooser mounted per parish
+if (existsSync(ROOT + 'layers/registry/layers.json')) {
+  const P = json('parish-paths');
+  check('[layers] path data embedded for every parish', P && D.parishes.every((p) => P[p.id] && Array.isArray(P[p.id].stations) && P[p.id].paths.length === 3));
+  check('[layers] stations are one InstancedMesh (kiosk family)', /new THREE\.InstancedMesh\(stationGeo, matMark, 256\)/.test(main));
+  check('[layers] stations placed at registry world_m (x = east, z = -north)', /const x = st\.world_m\[0\], z = -st\.world_m\[1\];/.test(main));
+  check('[layers] pathkit script after the quest script', html.indexOf("PSTORE = 'tc-path'") > html.indexOf('<script data-tc-quests>') && html.indexOf('<script data-tc-quests>') > html.indexOf('id="parishes-main"'));
+}
+
+// [npcs] NPC contract: every NPC of every parish, lines verbatim with sources, kit inlined
+const NR = existsSync(ROOT + 'npcs/registry/npcs.json') ? JSON.parse(read('npcs/registry/npcs.json')) : null;
+if (NR && NR.places_status === 'PARISH+LAYERS') {
+  const N = json('parish-npcs');
+  check('[npcs] every registry NPC embedded, none added', N && N.npcs.length === NR.npcs.length && N.npcs.every((n) => NR.npcs.some((m) => m.id === n.id)));
+  check('[npcs] every knowledge line verbatim from the registry with a source',
+    N && N.npcs.every((n) => { const m = NR.npcs.find((q) => q.id === n.id); return n.knowledge.length === m.knowledge.length && n.knowledge.every((k, i) => k.text === m.knowledge[i].text && k.source === m.knowledge[i].source && k.text && k.source); }));
+  check('[npcs] honesty passed as the registry object (the kit renders honesty.scripted)', N && typeof N.honesty === 'object' && N.honesty.scripted === NR.honesty.scripted);
+  check('[npcs] every NPC home resolves to a placed coordinate', N && N.npcs.every((n) => Object.hasOwn(N.places, n.home.place)));
+  check('[npcs] kit inlined; dialogue labels from the kit\'s npc.* keys via the page catalogue (strict tr)', main.includes('function createNPCKit') && /labels: labelsFrom\(tr\),/.test(main) && CAT && ['npc.talk', 'npc.quotelang', 'npc.role.pilot'].every((k) => locs.every((l) => CAT[l].strings[k])));
+}
+
+// [wave 5b] fail closed on an undeclared page; pathkit localised; quest finds; overview headroom; detail
+const bsrc = read('web/build_parishes.py');
+check('[nav] an undeclared page stops the build (no sibling-nav fallback)', /if PAGE not in sitenav\.PAGES:\n    raise BuildError/.test(bsrc) && (bsrc.match(/nav_html\(/g) || []).length === 1 && !bsrc.includes("nav_html('web/trade_craft_wilds.html'"));
+const PL = json('parish-path-labels');
+check('[layers] pathkit labels from pathkit.path_labels in all 8 locales, picked by the page locale', /labels: PATH_L/.test(main) && /const PATH_L = JSON\.parse\(document\.getElementById\('parish-path-labels'\)\.textContent\)\[LOC\];/.test(main) && PL && ['ar', 'de', 'en', 'es', 'fr', 'hi', 'pt', 'zh'].every((l) => PL[l] && Object.keys(PL[l]).length === PATH_KEYS.length && PATH_KEYS.every((k) => k in PL[l]) && Object.values(PL[l]).every((v) => typeof v === 'string' && v.trim())));
+check('[quests] no click-to-find button for finds the world fires by play', !/data-tc-egg="treasure-(parish-\d+-(arrive|lm-)|guide-|station-)/.test(html));
+const FI = json('parish-finds');
+if (FI) {
+  const QR = JSON.parse(read('quests/registry/quests.json')).quests.map((q) => q.id);
+  const all = [...Object.values(FI.arrive), ...Object.values(FI.border), ...Object.values(FI.landmark), ...Object.values(FI.ride)];
+  check('[quests] every wired find is a quest registry id', all.length > 0 && all.every((id) => QR.includes(id)));
+  check('[quests] every border and landmark treasure in the registry is wired', QR.filter((q) => /^treasure-border-|^treasure-parish-\d+-lm-/.test(q)).every((q) => all.includes(q)));
+  check('[quests] finds fire on border crossing, arrival, landmark reach and boarding', /qfind\(FINDS\.border\[/.test(main) && /qfind\(FINDS\.arrive\[/.test(main) && /qfind\(FINDS\.landmark\[l\.id\]\)/.test(main) && /qfind\(FINDS\.ride\[v\.medium\]\)/.test(main));
+  check('[quests] a teleport is not a border crossing', /jumping = true; checkParish\(\); jumping = false;/.test(main) && /if \(current && !jumping\)/.test(main));
+}
+check('[perf] overview hides fleet, skips NPC updates and chunk streaming', /if \(fl\) fl\.group\.visible = !over;/.test(main) && /if \(npcKit && !over\)/.test(main) && /if \(!over\) \{ if \(c !== cell\)/.test(main));
+check('[detail] street lamps are one InstancedMesh on AUTHORED street cells', /new THREE\.InstancedMesh\(lampGeo, matLamp, CAP\.lamp\)/.test(main) && /out\.lamp\.push/.test(main));
+check('[perf] overview replaces the water pass with a water-coloured clear', /water\.visible = !over; scene\.background = over \? WATER_BG : SKY_BG;/.test(main));
+check('[theme] quest toast text token defined from the theme (--paper)', /--paper:var\(--tc-plate\)/.test(ownStyle));
+check('[npcs] guides follow their routines on the kit clock, never in the overview', /npcClock\.tick\(dt\)/.test(main) && /const npcClock = NPCD \? makeClock\(8, 1 \/ 60\) : null;/.test(main));
+// WORLDS (wave 10): npckit's makeClock/TCNPC exist only when the NPC kit is wired; every use outside the kit must sit behind NPCD/npcKit
+check('[npcstub] NPC-off safe: the clock is built only with NPC data, the kit only inside if (NPCD), talkIn throws a named error without guides',
+  (main.match(/makeClock\(/g) || []).length === (/function makeClock\(/.test(main) ? 2 : 1) && /const npcClock = NPCD \? makeClock\(8, 1 \/ 60\) : null;/.test(main)
+  && /if \(NPCD\) \{\n  npcKit = TCNPC\.createNPCKit\(/.test(main) && (main.match(/TCNPC\./g) || []).length === 1
+  && /if \(!npcKit\) throw new Error\('parishes: NPC guides are off on this page'\);/.test(main));
+check('[perf] overview renders at the declared 0.6 pixel scale and skips the parish check', /const OVERVIEW_PR = 0\.6;/.test(main) && /applyPR\(m === 'overview' \? OVERVIEW_PR : 1\);/.test(main) && /if \(mode !== 'overview'\) checkParish\(\);/.test(main));
+check('[detail] water shimmer is a uniform, not a mesh', /matWater\.emissiveIntensity = /.test(main));
+
+// [kit] wave 6: the AUTHORED building kit, ground tiles, atmosphere (browser measures: web/eval_parishes.mjs kit/ground/atmosphere rows)
+check('[kit] two building families (house, midrise incl. industrial shells), each ONE InstancedMesh with per-instance colour',
+  /new THREE\.InstancedMesh\(houseGeo, kitMat\('house'\), CAP\.block\)/.test(main) && /new THREE\.InstancedMesh\(blockGeo, kitMat\('midrise'\), CAP\.block\)/.test(main)
+  && /const KIT = \{ house: houses, midrise: blocks \};/.test(main) && /m\.setColorAt\(0, KC\.set\(0xffffff\)\)/.test(main)
+  && /if \(nb >= CAP\.block\) break;/.test(main));
+check('[kit] style and height by an AUTHORED land-use district; park lots build no building',
+  /function landUse\(x, z\) \{ const h = wildsHash\(Math\.floor\(x \/ DISTRICT_M\), Math\.floor\(z \/ DISTRICT_M\), SEED, 7\);/.test(main)
+  && /if \(use === 'park'\) \{ if \(h < 0\.8\) out\.tree\.push/.test(main) && /out\.block\.push\(kitLot\(use, /.test(main));
+check('[kit] gable roofs and a porch/gallery hint are geometry; windows are a shader pattern, not triangles',
+  /const houseGeo = mergeGeometries\(\[walls\(\), gable\(0\.42, 0\.04, 0\.08\), porch\(\)\]\);/.test(main)
+  && /float win = step\(0\.3, f\.x\)/.test(main) && /smoothstep\(160\.0, 480\.0, vKitD\)/.test(main));
+check('[kit] trees are open-ended (14 triangles, pays for the roofs)', /CylinderGeometry\(0\.25, 0\.3, 2, 4, 1, true\)/.test(main) && /ConeGeometry\(2\.2, 6, 6, 1, true\)/.test(main) && /side: THREE\.DoubleSide/.test(main));
+{
+  const regP = Object.values(REG.parishes);
+  /* WORLDS w11: the page carries ONE atlas per parish (parishes/build_atlas.py) built from exactly the registry's tiles */
+  const AT = JSON.parse(read('parishes/registry/ground_atlas.json')).atlases;
+  const tilesOk = D && D.parishes.every((p) => { const r = REG.parishes[p.id]; const g = r && r.map.ground_tiles; if (!g || g.tiles.length !== g.grid * g.grid) return false;
+    const stem = g.tiles[0].path.replace(/-r\d+c\d+\.webp$/, ''), a = AT[stem], shas = [...g.tiles].sort((u, v) => u.row - v.row || u.col - v.col).map((t) => t.sha256);
+    return !!a && p.ground.stem === stem && p.ground.atlas === a.path && a.px === 2048 && JSON.stringify(a.tiles_sha256) === JSON.stringify(shas) && existsSync(ROOT + a.path)
+      && createHash('sha256').update(readFileSync(ROOT + a.path)).digest('hex') === a.sha256 && !('tiles' in p.ground); });
+  check('[ground] every parish carries ONE 2048 px ground atlas built from its PARISH v1.3 tiles (tile shas + atlas sha match), no per-tile paths', !!tilesOk && regP.length === D.parishes.length);
+  const lbl = regP[0].map.ground_tiles.label;
+  const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  check('[ground] the ground_tiles label is shown verbatim next to the 3D view', html.includes(`<p class="help" data-ground-label lang="en">${esc(lbl)}</p>`) && html.indexOf('data-ground-label') > html.indexOf('id="stage"'));
+}
+check('[ground] tiles drape as ONE composed texture per parish on the flat land (no extra mesh, still y = 0)',
+  /const GROUND_PX = 2048;/.test(main) && /cx\.drawImage\(im, 0, 0, GROUND_PX, GROUND_PX\)/.test(main) && /im\.src = '\.\.\/' \+ g\.atlas;/.test(main) && !/g\.tiles/.test(main) && /new THREE\.Mesh\(g, streetMat\(LAND\[p\.idx % LAND\.length\], p\)\)/.test(main) && /pa\[i\] = 0/.test(main));
+// WORLDS w11: a lot that falls in AUTHORED water re-seats onto the nearest EMPTY dry lot cell of its chunk (never on the water)
+check('[fabric] lake lots re-seat chunk-locally onto empty dry cells (h >= 0.8, nearest the water first, kerb rule kept), counted in skipped.reseated',
+  /if \(h < 0\.55\) \{ skipped\.water\+\+; wet\.push\(\[x, z\]\); \} continue;/.test(main) && /else open\.push\(\[ix, iz, x, z, jx, jz, use, null\]\);/.test(main)
+  && /else if \(h >= 0\.8\) open\.push\(\[ix, iz, x, z, jx, jz, use, rn\]\);/.test(main) && /ranked\.slice\(0, wet\.length\)/.test(main)
+  && /\.sort\(\(u, v\) => u\[0\] - v\[0\] \|\| u\[1\] - v\[1\]\)/.test(main) && /out\.block\.push\(lot\); skipped\.reseated\+\+;/.test(main)
+  && /const skipped = \{ water: 0, road: 0, reseated: 0 \};/.test(main));
+// WORLDS w11: the overview (a still picture) re-renders only when what it shows changes, plus a 1 s heartbeat; walk views render every frame
+check('[perf] overview renders on demand (parish, canvas size, loads, marker/landmark/station counts, visible set, DIAG; 1 s heartbeat) and every other mode renders every frame',
+  /if \(!DIAG\.noRender && ovNeedsRender\(now\)\) renderer\.render\(scene, camera\);/.test(main) && /if \(mode !== 'overview' \|\| DIAG\.ovAlways\) \{ ovKey = ''; return true; \}/.test(main)
+  && /groundReady\.size, waterCut\.size, loaded\.size, markers\.count, stations\.count, lm, vis, JSON\.stringify\(DIAG\)/.test(main) && /now - ovT > 1000/.test(main));
+check('[ground] the AUTHORED street grid is painted in the land shader, near field only', /float road = max\(step\(5\.0, q\.x\)/.test(main) && /float far = 1\.0 - smoothstep\(220\.0, 420\.0, vGroundDist\);/.test(main));
+check('[atmos] sky is a gradient on a transparent canvas (no sky mesh); fog = horizon colour; declared sun',
+  /alpha: true, powerPreference/.test(main) && /renderer\.setClearColor\(HORIZON, 0\);/.test(main) && /canvas\.style\.backgroundImage = 'linear-gradient\(180deg,'/.test(main)
+  && /scene\.fog = new THREE\.Fog\(HORIZON, /.test(main) && /sun\.position\.copy\(SUN\)/.test(main));
+check('[atmos] water: fresnel sky reflection + ripple on its one material', /matWater\.onBeforeCompile = /.test(main) && /float fr = pow\(1\.0 - clamp\(v\.y, 0\.0, 1\.0\), 4\.0\)/.test(main) && /waterU\.uTime\.value = now \/ 1000;/.test(main));
+check('[review] satellite toggle: one shared config read and superseded calls stop (REVIEW wave 6)',
+  /if \(tokenP\) return tokenP;/.test(main) && /const gen = \+\+satGen;/.test(main) && /if \(gen !== satGen\) return satState\(\);/.test(main));
+check('[review] E/T keys ignore key-repeat, modifier chords and typing (REVIEW wave 6)',
+  /const plainKey = \(e\) => !e\.repeat && !e\.ctrlKey && !e\.metaKey && !e\.altKey/.test(main) && /\(e\.key === 'e' \|\| e\.key === 'E'\) && plainKey\(e\)/.test(main) && /\(e\.key === 't' \|\| e\.key === 'T'\) && plainKey\(e\)/.test(main));
+check('[review] riding + overview: every mode change goes through applyMode; a mode button returns to the ride (REVIEW wave 6)',
+  /riding = null; applyMode\('walk'\);/.test(main) && /riding\.snap = true; applyMode\(/.test(main) && /if \(mode !== 'overview'\) return false;\s*applyMode\(riding\.medium === 'water' \? 'boat' : 'drive'\); return true;/.test(main)
+  && !/(?<!let |\.)\bmode = (?!m;)/.test(main));
+
+// wave 7: world layer, physics, ambience, city life, seven paths - each kit present, mounted, and honest
+const WREG = existsSync(ROOT + 'parishes/registry/world.json') ? JSON.parse(read('parishes/registry/world.json')) : null;
+const liOf = (k) => (html.match(new RegExp(`<li data-legend="${k}" lang="en">([^<]*)</li>`)) || [, null])[1];
+const unesc = (t) => t && t.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#x27;/g, "'");
+check('[world] PARISH v1.4 wired: every parish carries its world file and the streets path with arterial/collector/local cross-sections',
+  !!WREG && /<li data-contract="world" data-state="wired">/.test(html) && D.parishes.every((p) => p.world === WREG.parishes[p.id].path && p.roads
+    && p.roads.path === REG.parishes[p.id].map.streets.path && ['arterial', 'collector', 'local'].every((c) => { const q = p.roads.classes[c], w = WREG.roads.classes[c];
+      return q && q.carriageway_m === w.carriageway_m && q.curb_height_m === w.curb_height_m && JSON.stringify(q.sidewalk_m) === JSON.stringify(w.sidewalk_m); })));
+check('[roads] streets meshed as ONE merged mesh (carriageway, kerb faces, both sidewalks); the painted grid switches off where meshed',
+  /const roads = new THREE\.Mesh\(roadGeo, matRoad\);/.test(main) && /ROAD_COL\.asphalt/.test(main) && /ROAD_COL\.kerb/.test(main) && /ROAD_COL\.walk/.test(main)
+  && /far \*= uGrid;/.test(main) && /m\.material\.userData\.grid\.value = 0;/.test(main) && (main.match(/new THREE\.Mesh\(roadGeo/g) || []).length === 1);
+check('[roads] lots stand back from the meshed kerbs and face their street; lamps stand on the sidewalks',
+  /rn\.edge < Math\.hypot\(lot\[2\], lot\[4\]\) \/ 2 \+ 0\.5/.test(main) && /lot\[6\] = Math\.atan2\(-rn\.nx, -rn\.nz\);/.test(main) && /out\.lamp\.push\(\[px, pz,/.test(main));
+check('[water] AUTHORED water legend verbatim from world.json, never RECORDED; water is cut out of the land (no new mesh)',
+  !!WREG && unesc(liOf('water_world')) === WREG.water_note && /AUTHORED water - procedural, NOT the real lakes, rivers or bayous/.test(liOf('water_world') || '')
+  && !/RECORDED/.test(liOf('water_world') || '') && /shapes\[k\]\.holes\.push\(/.test(main) && D.world && D.world.surface_y === WREG.water_levels.surface_y_m);
+check('[phys] physkit mounted: registry embedded verbatim, page boxes (buildings + kerbs) handed to createPhysics, walk and drive stepped by it',
+  json('physics-registry') !== null && JSON.stringify(json('physics-registry')) === JSON.stringify(JSON.parse(read('physics/registry/physics.json')))
+  && /PHYS_KIT:BEGIN/.test(main) && /createPhysics\(\{ reg: PHYS_REG, cell: 16, ground: \(\) => 0, water: waterAt \}\)/.test(main)
+  && /y0: 0, y1: h, kind: 'building' \}\);/.test(main) && /y0: 0, y1: ROAD_Y \+ s\.kh, kind: 'curb' \}\);/.test(main) && /W\.addBoxes\(list\);/.test(main) && /W\.stepAvatar\(av, \{/.test(main) && /fleetPhysStep\(riding\.st, riding\.spec, input, fground, dt, \{/.test(main)
+  && /<li data-contract="physics" data-state="wired">/.test(html));
+check('[phys] honesty: arcade physics line verbatim; vehicles never strike people; help says no injury is depicted; no "realistic" crash claim',
+  unesc(liOf('physics')) === JSON.parse(read('physics/registry/physics.json')).honesty && /Vehicles never strike people, NPCs, pets or animals\./.test(liOf('physics') || '')
+  && /no injury is depicted/.test(JSON.parse(read('i18n/locales/en.json')).strings['parishes.world.help'] || '') && /no injury is depicted/.test((html.match(/<li data-legend="help"><span data-i18n="parishes\.world\.help">([^<]*)</) || [, ''])[1]) && /<li data-legend="help">/.test(html) && !/realistic crash|crash[- ]test(?!,)/i.test(html.replace(/not a crash test/g, ''))
+  && /people: people\(\)/.test(main) && /cls: 'npc'/.test(main) && /out\.push\(\.\.\.amb\.people\(\)\)/.test(main));
+check('[phys] splash visual and crash smoke are drawn only while they play (0 draw calls idle)',
+  /splash\.visible = false;/.test(main) && /if \(t > 0\.8\) splash\.visible = false;/.test(main) && /fleetSmoke\(THREE, 48\)/.test(main) && /smoke\.puff\(/.test(main));
+check('[ambient] ambientkit mounted OFF by default behind the Living world button; hidden in the overview; its page line verbatim',
+  /function createAmbient\(/.test(main) && /let amb = null;/.test(main) && /<button type="button" class="tc-btn tc-btn-ghost" id="amb" aria-pressed="false">/.test(html)
+  && /amb\.setOverview\(over\)/.test(main) && /amb\.onChunkLoad\(a, b, landUse\)/.test(main) && /amb\.onChunkUnload\(a, b\)/.test(main)
+  && existsSync(ROOT + 'ambient/registry/ambient.json') && unesc(liOf('ambient')) === JSON.parse(read('ambient/registry/ambient.json')).honesty.page_line
+  && /<li data-contract="ambient" data-state="wired">/.test(html));
+check('[econ] city-life panel mounted per parish: play coins - not money; local state only; no payments or Stripe in its script',
+  /<section class="tc-econ" id="tc-econ" data-tc-econ/.test(html) && /<script data-tc-econ-kit>/.test(html) && /TCEcon\.mountEcon\(null, \{ parish: current\.id \}\)/.test(main)
+  && /TCEcon\.onPlayerMove\(current\.id/.test(main) && /play coins - not money/i.test(html)
+  && !/stripe|payments\//i.test((html.match(/<script data-tc-econ-kit>([\s\S]*?)<\/script>/) || [, 'x stripe'])[1]) && /<li data-contract="economy" data-state="wired">/.test(html));
+{
+  const PD = json('parish-paths'), ids = ['trades', 'k12', 'responders', 'un', 'relief', 'teachers', 'roam'];
+  check('[paths] seven-path chooser data in every parish (fixed order), UN path PROPOSED with its disclaimer on the page',
+    !!PD && D.parishes.every((p) => PD[p.id] && PD[p.id].adventure && JSON.stringify(PD[p.id].adventure.paths.map((q) => q.id)) === JSON.stringify(ids)
+      && PD[p.id].adventure.paths.find((q) => q.id === 'un').status === 'PROPOSED' && PD[p.id].adventure.un_disclaimer === 'not affiliated with or endorsed by the United Nations')
+    && /not affiliated with or endorsed by the United Nations/.test(html));
+}
+
+check('[perf] the painted-grid shader block runs only nearer than its fade on unmeshed land; the overview skips splash, smoke and city-life work',
+  /if \(vGroundDist < 420\.0 && uGrid > 0\.5\) \{ vec2 q = mod\(vGroundXZ, 100\.0\);/.test(main) && /if \(!over\) \{ stepSplash\(dt\); if \(smoke && smoke\.mesh\.visible\) smoke\.update\(dt\); \}/.test(main)
+  && /if \(!over && !DIAG\.noEcon && window\.TCEcon && current\)/.test(main));
+
+// [env] wave 8 (ENV): environment detail within the declared budgets (browser: web/eval_parishes.mjs detail row)
+check('[env] flat land lit by ONE baked constant (hemisphere sky + sun * max(0, sun.y), over PI) in an unlit material, applied after the grid paint, drawn first',
+  /const FLAT_LIGHT = new THREE\.Color\(\)\.copy\(hemi\.color\)\.multiplyScalar\(hemi\.intensity\)\.add\(new THREE\.Color\(\)\.copy\(sun\.color\)\.multiplyScalar\(sun\.intensity \* Math\.max\(0, SUN\.y\)\)\)\.multiplyScalar\(1 \/ Math\.PI\);/.test(main)
+  && /const m = new THREE\.MeshBasicMaterial\(\{ color: c \}\);/.test(main) && /STREET_GLSL \+ '\\ndiffuseColor\.rgb \*= uFlat;'/.test(main) && /m\.renderOrder = -1;/.test(main)
+  && /const hemi = new THREE\.HemisphereLight\(0xdde9f7, 0x5a5040, 0\.95\); scene\.add\(hemi\);/.test(main));
+check('[env] house wall tops inside the gable are dropped (never seen; pays for the street detail)',
+  /dropHiddenTop\(houseGeo\);/.test(main) && /Math\.abs\(v - 1\) < 1e-6\) && g\.attributes\.normal\.array\[t \* 9 \+ 1\] > 0\.99/.test(main));
+check('[env] ONE shared kit material; family per vertex (kitKind), AUTHORED land use per instance (kitUse), written per lot, unknown use fails closed',
+  /if \(KIT_MAT\) return KIT_MAT;/.test(main) && /attribute float kitKind; attribute float kitUse;/.test(main)
+  && /m\.geometry\.attributes\.kitUse\.array\[kn\[fam\]\] = use;/.test(main) && /throw new Error\('parishes: no kit land use ' \+ use\)/.test(main)
+  && /lot\.push\(KIT_USE\[use\] \+/.test(main) && /m\.geometry\.attributes\.kitUse\.needsUpdate = true;/.test(main));
+check('[env] crossings: sidewalks (drawn AND collided) stop at the crossing street\'s kerb line; zebra painted by the street shader; all in the ONE street mesh',
+  /const XW_R = 300, XW_CAP = 80, XW_DY = 0\.04, XW_W = 3\.0, FURN_R = 240, FURN_M = 38, FURN_CAP = 120, SHORE_R = 450, SHORE_W = 1\.6, SHORE_CAP = 300, DETAIL_V = 36000;/.test(main)
+  && (main.match(/new THREE\.Mesh\(roadGeo/g) || []).length === 1 && /for \(const \[p0, p1\] of pcs\) \{/.test(main) && /const off = sd \* \(s\.cw \+ w \/ 2\), m = \(p0 \+ p1\) \/ 2 \* s\.L, L = \(p1 - p0\) \* s\.L;/.test(main)
+  && /if \(vZebra > -50\.0\) diffuseColor\.rgb = mix\(uAsph, diffuseColor\.rgb, step\(0\.5, fract\(vZebra \/ 1\.1\)\)\);/.test(main) && /roadZeb\[o \/ 3\] = -100; o \+= 3;/.test(main));
+check('[env] furniture never in a crossing, on a lamp spot or in water, and collides as props; shoreline only where the outer side is land',
+  /if \(!pcs\.some\(\(\[p0, p1\]\) => u > p0 \* s\.L \+ 4 && u < p1 \* s\.L - 4\)\) continue;/.test(main) && /if \(Math\.abs\(u - Math\.round\(u \/ LAMP_M\) \* LAMP_M\) < 6\) continue;/.test(main)
+  && /!parishAt\(px, pz\) \|\| inWaterAt\(px, pz\)\) continue;/.test(main) && /kind: 'prop' \}\);/.test(main)
+  && /if \(!parishAt\(mx \+ ux \* SHORE_W, mz \+ uz \* SHORE_W\) \|\| inWaterAt\(mx \+ ux \* SHORE_W, mz \+ uz \* SHORE_W\)\) continue;/.test(main));
+
+// [contracts] stubs are named
+for (const k of ['fleet', 'npcs', 'layers']) {
+  const m = html.match(new RegExp(`<li data-contract="${k}" data-state="(wired|stub)">([\\s\\S]*?)</li>`));
+  check(`[contracts] ${k} row states wired or names what is missing`, !!m && (m[1] === 'wired' || /data-why>[^<]{10,}/.test(m[2])));
+}
+
+// [i18n] the run-time catalogue: 8 locales, exactly the used keys, real translations
+check('[i18n] catalogue carries the 8 locales', CAT && JSON.stringify(Object.keys(CAT).sort()) === JSON.stringify(locs));
+const used = new Set([...html.matchAll(/data-i18n(?:-aria)?="(parishes\.[a-z0-9_.]+)"/g)].map((m) => m[1]));
+for (const m of main.matchAll(/tr\('(parishes\.[a-z0-9_.]+)'\)/g)) used.add(m[1]);
+if (/labels: labelsFrom\(tr\)/.test(main)) for (const m of main.matchAll(/'(npc\.[a-z0-9.]+)'/g)) used.add(m[1]);
+{ const pl = main.match(/const PATH_L = Object\.fromEntries\(\[([^\]]+)\]\.map\(\(k\) => \[k, tr\('parishes\.path\.' \+ k\.toLowerCase\(\)\)\]\)\);/);
+  if (pl) for (const m of pl[1].matchAll(/'([a-zA-Z]+)'/g)) used.add('parishes.path.' + m[1].toLowerCase()); }
+// DEEP (wave 9): the underwater kit's keys travel in the run-time catalogue when the kit is mounted (like npc.*)
+if (/const DEEP_ON = true/.test(main)) { for (const m of html.matchAll(/data-i18n="(deep\.[a-z0-9_.]+)"/g)) used.add(m[1]); for (const m of main.matchAll(/'(deep\.[a-z0-9.]+)'/g)) used.add(m[1]); }
+// UX (wave 10): the HUD layout manager's launcher/dock/region labels (web/hudkit.py) travel as hud.* data-i18n keys
+for (const m of html.matchAll(/data-i18n(?:-aria)?="(hud\.[a-z0-9_.]+)"/g)) used.add(m[1]);
+// DRIVE (wave 11): the drive mount's HUD labels (fleetkit FLEET_HUD_LABELS, exit hint = fleet.hud.exit_e) and touch labels travel as fleet.* keys
+if (/const DRIVE_CLS = FLEETREG/.test(main)) {
+  const hl = main.match(/const FLEET_HUD_LABELS = \[([^\]]+)\]/), tl = main.match(/\[([^\]]+)\]\.map\(\(k\) => \[k, tr\('fleet\.touch\.' \+ k\)\]\)/);
+  if (hl) for (const m of hl[1].matchAll(/'([a-zA-Z_]+)'/g)) used.add('fleet.hud.' + m[1]);
+  if (/tr\(k === 'exit' \? 'fleet\.hud\.exit_e'/.test(main)) used.add('fleet.hud.exit_e');
+  if (tl) for (const m of tl[1].matchAll(/'([a-z]+)'/g)) used.add('fleet.touch.' + m[1]);
+}
+check('[i18n] every key the page uses is in the catalogue, and only those', CAT && JSON.stringify([...used].sort()) === JSON.stringify(Object.keys(CAT.en.strings).sort()),
+  CAT ? [...used].filter((k) => !(k in CAT.en.strings)).concat(Object.keys(CAT.en.strings).filter((k) => !used.has(k))).join(',') : '');
+let same = [];
+for (const l of locs) {
+  const f = JSON.parse(read(`i18n/locales/${l}.json`));
+  for (const k of Object.keys(CAT.en.strings)) {
+    if (CAT[l].strings[k] !== f.strings[k]) same.push(`${l}:${k} differs from locale file`);
+    if (l !== 'en' && f.strings[k] === JSON.parse(read('i18n/locales/en.json')).strings[k]) same.push(`${l}:${k} is an English copy`);
+  }
+}
+check('[i18n] catalogue = locale files, no English copies', same.length === 0, same.slice(0, 4).join('; '));
+check('[i18n] tr() throws by name (no fallback)', /throw new Error\(`parishes i18n: locale \$\{LOC\} has no \$\{k\}`\)/.test(main));
+
+// [class] wave 8: the class session kit (web/classkit.py) at parish stations - play only, no network
+{
+  const cd = json('class-data'), ci = json('class-i18n');
+  const creg = JSON.parse(read('classroom/registry/classroom.json'));
+  const stIds = new Set(Object.values(JSON.parse(read('layers/registry/layers.json')).parishes).flatMap((p) => p.stations.map((s) => p.fips + '/' + s.id)));
+  check('[class] class data embedded for the parishes world only, stamp = classroom registry', !!cd && cd.stamp === creg.source_stamp
+    && cd.worlds.join() === 'parishes' && cd.places.length > 0 && cd.places.every((p) => p.world === 'parishes'));
+  check('[class] every station place in the class data is a real layers station of that parish', !!cd
+    && cd.places.filter((p) => p.kind === 'station').every((p) => stIds.has(p.id.slice('parish:'.length))));
+  check('[class] opening a station tells the class kit it was reached (parish:<fips>/<station id>)',
+    main.includes("if (window.TCClass) window.TCClass.reach('parish:' + id + '/' + st.id);"));
+  const kit = (html.match(/<script id="class-kit">([\s\S]*?)<\/script>/) || [, ''])[1];
+  check('[class] class kit mounted folded, 8 locales, no network, stores only tc-class-* keys', /TCClass\.mount\(\{ compact: true \}\);/.test(kit)
+    && !!ci && Object.keys(ci).length === 8 && !/\bfetch\s*\(|XMLHttpRequest|sendBeacon|WebSocket/.test(kit)
+    && /PROG_KEY = 'tc-class-progress', PLAN_KEY = 'tc-class-plan'/.test(kit));
+}
+// [deep] wave 9: underwater regions (web/deepkit.py) - lazy registry, 0 cost until Dive/ROV, AUTHORED legend
+{
+  const kitPy = read('web/deepkit.py'), inl = kitPy.slice(kitPy.indexOf('/* DEEP_KIT:BEGIN -'), kitPy.indexOf("/* DEEP_KIT:END */\n'''"));
+  const ureg = JSON.parse(read('underwater/registry/underwater.json'));
+  check('[deep] kit inlined byte-for-byte, world = parishes', inl.length > 1000 && main.includes(inl) && /const DEEP_ON = true, DEEP_WORLD = 'parishes';/.test(main));
+  check('[deep] registry fetched on the first Dive/ROV press, never embedded (page weight unchanged)', main.includes("fetch('../underwater/registry/underwater.json')")
+    && !html.includes('"ne_shorelines_used"') && /addEventListener\('click', \(\) => deepLoad\(k\)\)/.test(main) && ureg.bodies.some((b) => b.world === 'parishes'));
+  check('[deep] kit updated once per frame after the camera is placed, told about the overview', /placeCamera\(\);\n  if \(deep\) deep\.update\(dt, over\);/.test(main)
+    && (main.match(/deep\.update\(/g) || []).length === 1);
+  check('[deep] Dive / ROV / Up / Down controls + the AUTHORED / not-dive-training line on the page', ['deep-dive', 'deep-rov', 'deep-up', 'deep-down'].every((id) => html.includes(`id="${id}"`))
+    && html.includes('data-i18n="deep.honesty"') && /AUTHORED/.test(CAT.en.strings['deep.honesty']) && /not dive training/.test(CAT.en.strings['deep.honesty']));
+  check('[deep] dive is gated on physkit water states (walk mode only)', main.includes("waterState: () => (mode === 'walk' && av ? av.water : 'dry')"));
+}
+// WORLDS w13: FIELDS' AUTHORED plots stay free of generated fabric (browser proof: web/eval_parishes.mjs plots row)
+{
+  const SEA = JSON.parse(read('seasons/registry/seasons.json')).plots;
+  const want = Object.entries(SEA).filter(([, w]) => w.region === 'louisiana').flatMap(([f, w]) => w.plots.map((q) => [q.id, f, q.x, q.z, q.size_m[0], q.size_m[1]]));
+  check(`[plots] the page embeds exactly the ${want.length} louisiana plots of seasons/registry/seasons.json (id, parish, x, z, size) for the clearance`,
+    want.length > 0 && JSON.stringify(D.plots_clear) === JSON.stringify(want));
+  const bsrc = read('web/build_parishes.py');
+  check('[plots] the builder fails closed: missing seasons.json, a plot region the page lacks, a bad size and no plots are named errors',
+    /seasons\/registry\/seasons\.json is missing \(WORLDS keeps FIELDS plot cells free/.test(bsrc) && /names a region this page does not hold/.test(bsrc)
+    && /size_m must be two positive metres/.test(bsrc) && /holds no \{_sea_region\} plots for this page/.test(bsrc) && /throw new Error\('parishes: FIELDS plot ' \+ id/.test(main));
+  check('[plots] every chunk drops buildings (box radius + 2 m), trees (crown + 2 m) and lamps (3 m) that meet a plot bed, counted in skipped.plot',
+    /if \(PLOTS\.length && !plotClearOff\) \{/.test(main) && /out\.block = out\.block\.filter\(\(l\) => !hit\(l\[0\], l\[1\], Math\.hypot\(l\[2\], l\[4\]\) \/ 2 \+ 2\)\);/.test(main)
+    && /out\.tree = out\.tree\.filter\(\(t\) => !hit\(t\[0\], t\[1\], 2\.2 \* t\[2\] \+ 2\)\);/.test(main) && /out\.lamp = out\.lamp\.filter\(\(t\) => !hit\(t\[0\], t\[1\], 3\)\);/.test(main)
+    && main.indexOf('/* BEGIN WORLDS w13 plot clearance') > main.indexOf('/* END WORLDS w11 re-seat */') && /skipped\.plot \+= nb - out\.block\.length;/.test(main));
+}
+// WORLDS w13: a wholly-wet chunk hands its lake lots to ONE neighbour (most dry cells, fixed order), seated on that neighbour's empty dry cells
+check('[fabric] cross-chunk re-seat: donors are wholly AUTHORED water, one receiver each (strictly most dry cells), lots join the receiver\'s w11 re-seat',
+  /return w\.dry === 0 && w\.wet\.length > 0;/.test(main) && /if \(d > bd\) \{ bd = d; best = \[ci \+ a, cj \+ b\]; \}/.test(main)
+  && /if \(r && r\[0\] === ci && r\[1\] === cj\) for \(const w of chunkWet\(ci \+ a, cj \+ b\)\.wet\) if \(!lmNear\(w\[0\], w\[1\]\)\) wet\.push\(w\);/.test(main)
+  && main.indexOf('/* END WORLDS w13 cross-chunk re-seat */') < main.indexOf('/* BEGIN WORLDS w11 re-seat') && /skipped\.cross \+= Math\.max\(0, out\.block\.length - nb0 - ownWet\);/.test(main));
+// WORLDS w13: street furniture by AUTHORED district (browser: web/eval_parishes.mjs streets row)
+check('[streets] commercial streets add a mid-span lamp, residential keep every second lamp and gain a verge tree every 2 x FURN_M (never at a lamp), same meshes',
+  /if \(mid \? use !== 'commercial' : use === 'residential' && \(k \/ 2\) % 2 === 1\) continue;/.test(main) && /const STREET_STEP = 20, STREET_TREE_M = 2 \* FURN_M;/.test(main)
+  && /if \(landUse\(px, pz\) !== 'residential'\) continue;/.test(main) && /for \(const tr of c\.tree\) if \(tr\[4\] === 'street'\) t\[landUse\(tr\[0\], tr\[1\]\)\]\[1\]\+\+;/.test(main) && /out\.lamp\.some\(\(l\) => Math\.hypot\(l\[0\] - px, l\[1\] - pz\) < 3\)/.test(main)
+  && /streetDetail: streetDetail\(\), plots: \{ clear: PLOTS\.length \},/.test(main) && (main.match(/new THREE\.InstancedMesh\(treeGeo/g) || []).length === 1);
+// PERF w13 (REVIEW13): a refused Drive/Boat (E) press never shows the boat-only "no water" line; that line stays in setMode('boat')
+check('[drive] a refused Drive/Boat (E) press never shows the boat "no water within 60 m" line (REVIEW13)',
+  !/if \(!enterExit\(\)\) toast\(tr\('parishes\.boat\.nowater'\)\)/.test(html)
+  && (html.match(/tr\('parishes\.boat\.nowater'\)/g) || []).length === 1
+  && /nearest\(eye\.x, eye\.z, true\); if \(!w\) \{ toast\(tr\('parishes\.boat\.nowater'\)\)/.test(html)
+  && (!('parishes.novehicle' in CAT.en.strings) || html.includes("if (!v) { toast(tr('parishes.novehicle')); return false; }")));
+// PERF w13: the render-loop culls and the chase-camera fix are wired once, after the camera is placed
+check('[perf] fleet families beyond the fog and overview NPC meshes are culled once per frame; the chase camera eases by the real frame step and is pulled in front of occluders',
+  (html.match(/perfCull\(over\);/g) || []).length === 1 && /placeCamera\(\);\n(?:.*\n)?  perfCull\(over\);/.test(html)
+  && html.includes('const R2 = scene.fog.far * scene.fog.far') && html.includes("fl.group.getObjectByName('fleet:' + v.h.family)")
+  && html.includes('fleetChaseCamera(camera, riding.st, riding.spec, DIAG.noChase ? 1 / 60 : camDt,') && html.includes('if (!DIAG.noChase) chaseClear(riding.st, riding.spec);')
+  && html.includes('camDt = dt;'));
+// WORLDHD BEGIN (wave 17): WORLD-TEX - device-tier surface detail (ground, streets, walls, roofs); browser row: web/eval_worldtex.mjs
+{
+  const wt = (main.match(/\/\* WORLD-TEX BEGIN[\s\S]*?\/\* WORLD-TEX END \*\//) || [''])[0];
+  const EXT = JSON.parse(read('surfaces/registry/exterior.json'));
+  const surf = JSON.parse((wt.match(/const WT_SURF = (\[.*?\]);\n/) || [, '[]'])[1]);
+  check('[world-tex] tiers mirror the 3D page: base 0 (nothing painted), high 1024, ultra 2048; budgets 0 / 48 / 144 MB; a software rasteriser, < 4 GB or a texture limit < 4096 gets base; ?tex= overrides',
+    wt.includes('const WT_PX = { base: 0, high: 1024, ultra: 2048 };') && wt.includes('const WT_MB = { base: 0, high: 48, ultra: 144 };')
+    && /soft = \/swiftshader\|llvmpipe\|softpipe\|software\/i\.test/.test(wt) && wt.includes("if (soft || mem < 4 || maxTex < 4096) return 'base';")
+    && wt.includes("if (!touch && mem >= 8 && cores >= 8 && maxTex >= 8192) return 'ultra';") && wt.includes("new URLSearchParams(location.search).get('tex')")
+    && wt.includes("wtAsked !== null && Object.hasOwn(WT_PX, wtAsked) ? wtAsked : wtTierAuto()"));
+  check('[world-tex] ground, streets and the building kit are each hooked exactly once; the shader patch is compiled in only while the textures are on (base keeps the old programs)',
+    (main.match(/worldTexHook\(m, 'ground'\);/g) || []).length === 1 && (main.match(/worldTexHook\(matRoad, 'road'\);/g) || []).length === 1
+    && (main.match(/worldTexHook\(m, 'kit'\);/g) || []).length === 1 && wt.includes("m.customProgramCacheKey = () => (pk ? pk.call(m) : '') + (WT.on ? '|world-tex' : '');")
+    && wt.includes('if (WT.on) wtPatch(sh, kind);') && (main.match(/  win = mix\(win, winM, mid\);\n/g) || []).length === 1 && main.indexOf('/* WORLD-TEX BEGIN') < main.indexOf('const GROUND_PX = 2048;'));
+  // every detail sample in the page's shader kinds divides world metres by its OWN surface's metres (a tier never rescales it)
+  const texPairs = [...wt.matchAll(/texture2D\(uWt_(\w+), \([\w.]+\) \/ uWtM_(\w+)\)/g)];
+  const recOk = surf.length === 7 && surf.filter((s) => s.paint === 'recipe').every((s) => s.id && EXT.recipes[s.recipe] && s.reps === 4 && Math.abs(s.world_m - EXT.recipes[s.recipe].tile_m * 4) < 1e-6)
+    && surf.filter((s) => s.paint !== 'recipe').every((s) => ['grass', 'asphalt'].includes(s.paint) && s.world_m > 0);
+  check('[world-tex] every pattern covers a fixed number of metres at every tier (registry tile_m x 4 repeats; painters in one 512 px design space scaled to the tier)',
+    recOk && wt.includes('const t = px / s.reps') && wt.includes('const WT_D0 = 512;') && wt.includes('R = WtPK.rng(s.id), k = px / WT_D0') && wt.includes('g.save(); g.scale(k, k);')
+    && texPairs.length === 7 && texPairs.every(([, a, b]) => a === b && surf.some((s) => s.id.replace('.', '_') === a)), JSON.stringify(surf.map((s) => [s.id, s.world_m])));
+  let plan = null;
+  try { const src = (wt.match(/const WT_PX[\s\S]*?\n\}\nfunction wtTierAuto/) || [''])[0].replace(/function wtTierAuto$/, '');
+    plan = new Function(src + '\nreturn { P: WT_PX, M: WT_MB, plan: wtPlan, mib: wtMiB };')(); } catch (e) { plan = null; }
+  const used = (t) => plan.plan(plan.P[t], plan.M[t], 7).reduce((a, px) => a + (px ? plan.mib(px) : 0), 0);
+  check('[world-tex] the memory budget steps down: high paints all 7 at 1024 px (37.3 MB <= 48), ultra paints 6 at 2048 and steps the 7th to 1024 (133.3 MB <= 144), base plans nothing; a tight budget skips',
+    !!plan && plan.plan(1024, 48, 7).join() === '1024,1024,1024,1024,1024,1024,1024' && plan.plan(2048, 144, 7).join() === '2048,2048,2048,2048,2048,2048,1024'
+    && plan.plan(0, 0, 7).every((px) => px === 0) && used('high') <= 48 && used('ultra') <= 144 && plan.plan(2048, 30, 3).join() === '2048,1024,0',
+    plan ? plan.plan(2048, 144, 7).join() : 'wtPlan not found');
+  check('[world-tex] painted only after the first frame, one texture per idle slot, mipmapped (LinearMipmapLinear) and anisotropic; the shaders switch once, when the set is complete',
+    wt.includes('if (!(renderer.info.render.frame > 0)) { wtKick(500); return; }') && wt.includes('requestIdleCallback(wtStep, { timeout: 400 })')
+    && wt.includes('t.generateMipmaps = true; t.minFilter = THREE.LinearMipmapLinearFilter;') && wt.includes('t.anisotropy = wtAniso();')
+    && wt.includes('if (WT.next >= WT_SURF.length) wtSwitch(WT.painted > 0);') && wt.includes('window.__worldTexDo = (tier) =>') && wt.includes('window.__worldTex = () =>'));
+  check('[world-tex] generated in the browser from patternkit recipes (a private copy, so the facade kit\'s PatternKit stays the only one), no image fetched, no codename on the page',
+    wt.includes('const WtPatternKit =') && (html.match(/const PatternKit\b/g) || []).length === 1 && !/fetch\(|new Image\(/.test(wt) && !/WORLDHD/.test(html)
+    && ['render.stucco', 'roof.asphalt_shingle', 'siding.clapboard', 'brick.running', 'metal.corrugated'].every((r) => surf.some((s) => s.recipe === r)));
+  const bay = existsSync(ROOT + 'web/trade_craft_bay.html') ? read('web/trade_craft_bay.html') : '';
+  const bwt = (bay.match(/\/\* WORLD-TEX BEGIN[\s\S]*?\/\* WORLD-TEX END \*\//) || [''])[0];
+  check('[world-tex] the Bay page inherits the same block byte for byte, hooked on the same three materials, with no codename',
+    bwt.length > 0 && bwt === wt && ['ground', 'road', 'kit'].every((k) => (bay.match(new RegExp(`worldTexHook\\((?:m|matRoad), '${k}'\\);`, 'g')) || []).length === 1) && !/WORLDHD/.test(bay));
+}
+// WORLDHD END
+// STREETS BEGIN (wave 17): STREET-KIT - street-level scene detail near the eye (stoops, fences, mailboxes, junction furniture)
+{
+  const sk = (main.match(/\/\* STREET-KIT BEGIN[\s\S]*?\/\* STREET-KIT END \*\//) || [''])[0];
+  const core = (sk.match(/\/\* STREET-KIT CORE BEGIN \*\/([\s\S]*?)\/\* STREET-KIT CORE END \*\//) || [, ''])[1];
+  check('[street-kit] one block, mounted before the page API, hooked once in the frame (after perfCull) and once in rebuildPhysics; neutral marker only',
+    (main.match(/\/\* STREET-KIT BEGIN/g) || []).length === 1 && main.indexOf('/* STREET-KIT END */') < main.indexOf('window.__parishes = {')
+    && (main.match(/\n  perfCull\(over\);[^\n]*\n  streetKitFrame\(over\);   \/\/ STREET-KIT\n/g) || []).length === 1
+    && (main.match(/\n  for \(const b of curbBoxes\) list\.push\(b\);\n  for \(const b of streetKitSolids\(\)\) list\.push\(b\);/g) || []).length === 1
+    && !/STREETS/.test(html) && !/\?\?/.test(sk));
+  check('[street-kit] ONE InstancedMesh of a unit box (12 triangles), pooled: at most 300 boxes within 90 m of the eye; hidden and not re-planned in the overview',
+    /const SK_R = 90, SK_CAP = 300,/.test(sk) && (sk.match(/new THREE\.InstancedMesh\(/g) || []).length === 1 && sk.includes('new THREE.InstancedMesh(skGeo, ')
+    && sk.includes('const skGeo = new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0);') && sk.includes('skMesh.visible = SK.on && !over;\n  if (over || !SK.on) return;')
+    && sk.includes('tris: skMesh.count * 12') && sk.includes("for (const L of c.block) if (Math.abs(L[0] - eye.x) < SK_R + 40 && Math.abs(L[1] - eye.z) < SK_R + 40 && roadStreamed(L[0], L[1])) lots.push(L);"));
+  check('[street-kit] solid where the world is solid: every box flagged solid becomes a physkit prop box (min half-size 0.12 m), only while the kit is on; a re-plan marks physics dirty',
+    sk.includes("if (b[8]) solids.push({ id: 'k' + solids.length, cx: b[0], cz: b[1], hx: Math.max(b[4] / 2, 0.12), hz: Math.max(b[6] / 2, 0.12), yaw: b[2], y0: b[3], y1: b[3] + b[5], kind: 'prop' });")
+    && sk.includes('function streetKitSolids() { return SK.on ? SK.solids : []; }') && /SK\.refreshes\+\+;[^\n]*markPhys\(\);/.test(sk));
+  let K = null;
+  try { K = new Function(core + '\nreturn { skPlan, skJunctions, skOk, skDrive, skFoot, skPts, skClear, SK_R, SK_CAP, SK_FAMS };')(); } catch (e) { K = null; }
+  /* a synthetic block: a local street along x (z = 0) crossed by a collector along z (x = 0); houses face the local street
+     from both sides every 25 m; a pond behind the 55 m house (x 45..70, z > 24) and one house beyond the radius */
+  const seg = (ax, az, bx, bz, cw, sw, cls) => { const L = Math.hypot(bx - ax, bz - az); return { ax, az, bx, bz, L, dx: (bx - ax) / L, dz: (bz - az) / L, cw, sw, swl: sw, swr: sw, kh: 0.15, cls }; };
+  const segs = [seg(-300, 0, 300, 0, 4.1, 1.8, 'local'), seg(0, -300, 0, 300, 5.7, 2.4, 'collector')];
+  const house = (x, z, yaw) => [x, z, 9, 6, 12, 'house', yaw, '#ccc', 0];
+  const lots = [];
+  for (const x of [-80, -55, -30, 14, 30, 55, 80, 110]) { lots.push(house(x, 18, Math.PI)); lots.push(house(x, -18, 0)); }
+  lots.push(house(105, -40, 0), [40, 45, 20, 12, 20, 'midrise', 0, '#999', 1]);
+  const hash = (x, z, k) => { const v = Math.sin(x * 12.9898 + z * 78.233 + k * 37.719) * 43758.5453; return v - Math.floor(v); };
+  const env = (o) => Object.assign({ R: 90, cap: 300, roadY: 0.05, hash, use: (x) => (x < -50 ? 'commercial' : 'residential'), dry: (x, z) => !(x > 45 && x < 70 && z > 24) }, o || {});
+  const eye = { x: 0, z: 0 };
+  const P = K ? K.skPlan(eye, lots, segs, env()) : null;
+  const fams = P ? Object.entries(P.fam).filter(([, n]) => n > 0).map(([f]) => f) : [];
+  check('[street-kit] the AUTHORED rule dresses the block: stoops, fences, kerb mailboxes on the houses; a signpost, a hydrant, a mailbox or bin and a bench or shelter on the junction corners',
+    !!P && ['stoop', 'fence', 'mailbox', 'signpost', 'hydrant'].every((f) => P.fam[f] > 0) && (P.fam.bench + P.fam.shelter) === 1 && P.junctions === 1
+    && P.items.filter((it) => it.k.startsWith('j')).length === 4, P ? JSON.stringify(P.fam) : 'core not found');
+  const pts = P ? P.items.flatMap((it) => it.boxes.flatMap((b) => K.skPts(b).map((p) => [it, p]))) : [];
+  check('[street-kit] never on a street: every point of every box footprint is off the carriageway (>= 0.3 m) and every lot box is behind the sidewalk (>= 0.25 m)',
+    pts.length > 100 && pts.every(([it, [x, z]]) => { const [car, walk] = K.skClear(x, z, segs); return car >= 0.3 && (it.k.startsWith('j') || walk >= 0.25); }), `${pts.length} points`);
+  check('[street-kit] never in AUTHORED water: no box point in the pond behind the 55 m house, which keeps its stoop but loses every fence run that reaches the pond',
+    pts.length > 0 && pts.every(([, [x, z]]) => !(x > 45 && x < 70 && z > 24)) && P.items.some((it) => it.k === 'l55,18:stoop0')
+    && !P.items.some((it) => it.k.startsWith('l55,18:fence')));
+  const drives = lots.filter((L) => L[5] === 'house').map((L) => K.skDrive(L, segs)), foots = lots.map((L) => [L, K.skFoot(L)]);
+  const inside = (f, x, z) => { const dx = x - f.x, dz = z - f.z; return Math.abs(f.c * dx - f.s * dz) < f.hx && Math.abs(f.s * dx + f.c * dz) < f.hz; };
+  check('[street-kit] never on a driveway strip or in another house: no box point inside any house\'s driveway strip, nor inside the footprint of a lot it does not belong to',
+    pts.length > 0 && pts.every(([, [x, z]]) => !drives.some((d) => inside(d, x, z)))
+    && pts.every(([it, [x, z]]) => foots.every(([L, f]) => it.k.startsWith('l' + Math.round(L[0]) + ',' + Math.round(L[1]) + ':') || !inside(f, x, z)))
+    && sk.includes('const avoid = [q.dr];'));
+  const near14 = P ? P.items.filter((it) => it.k.startsWith('l14,18:fence')).map((it) => it.k) : [];
+  check('[street-kit] fence runs that would reach the crossing street\'s sidewalk are dropped run by run (the near side and the back go, the far side stays)',
+    near14.length === 1 && near14[0] === 'l14,18:fence1' && P.items.filter((it) => it.k.startsWith('l30,18:fence')).length === 3, near14.join());
+  const P20 = K ? K.skPlan(eye, lots, segs, env({ cap: 20 })) : null, P50 = K ? K.skPlan(eye, lots, segs, env({ R: 50 })) : null;
+  const ds = P20 ? P20.items.map((it) => it.d) : [];
+  check('[street-kit] pooled nearest first: within the radius only (90 m; the 107 m house stays bare), whole items under the box cap (20: dropped > 0, kept in distance order)',
+    !!P20 && P20.boxes <= 20 && P20.dropped > 0 && ds.every((d, i) => !i || d >= ds[i - 1]) && P20.items.every((it) => P.items.some((q) => q.k === it.k))
+    && P.items.every((it) => it.d <= 90) && !P.items.some((it) => it.k.startsWith('l105,-40:')) && P50.items.every((it) => it.d <= 50) && P50.items.length < P.items.length);
+  const shuf = lots.slice().reverse(), Pr = K ? K.skPlan(eye, shuf, segs.slice().reverse(), env()) : null;
+  check('[street-kit] deterministic: the same lots and streets in any order give the same items and boxes (pure function of AUTHORED inputs and cell hashes)',
+    !!Pr && JSON.stringify(Pr.items.map((it) => [it.k, it.boxes])) === JSON.stringify(P.items.map((it) => [it.k, it.boxes])));
+  const bay = existsSync(ROOT + 'web/trade_craft_bay.html') ? read('web/trade_craft_bay.html') : '';
+  const bsk = (bay.match(/\/\* STREET-KIT BEGIN[\s\S]*?\/\* STREET-KIT END \*\//) || [''])[0];
+  check('[street-kit] the Bay page inherits the same block byte for byte, hooked once in its frame and its physics, with no codename',
+    bsk.length > 0 && bsk === sk && (bay.match(/  streetKitFrame\(over\);   \/\/ STREET-KIT\n/g) || []).length === 1
+    && (bay.match(/  for \(const b of streetKitSolids\(\)\) list\.push\(b\);/g) || []).length === 1 && !/STREETS/.test(bay));
+}
+// STREETS END
+// ROBOWORLD BEGIN (wave 18): ROVER-YARD - one AUTHORED rover replaying the SCRIPTED reference steps near the spawn point
+{
+  const ry = (main.match(/\/\* ROVER-YARD BEGIN[\s\S]*?\/\* ROVER-YARD END \*\//) || [''])[0];
+  const core = (ry.match(/\/\* ROVER-YARD CORE BEGIN \*\/([\s\S]*?)\/\* ROVER-YARD CORE END \*\//) || [, ''])[1];
+  const reg = JSON.parse(read('robotics/registry/robotics.json'));
+  check('[rover-yard] the yard is present: one block before the page API, hooked once in the frame after perfCull, ONE InstancedMesh of 13 boxes, the SCRIPTED litter-pickup reference id from the registry; neutral marker only',
+    (main.match(/\/\* ROVER-YARD BEGIN/g) || []).length === 1 && main.indexOf('/* ROVER-YARD END */') < main.indexOf('window.__parishes = {')
+    && (main.match(/\n  perfCull\(over\);[^\n]*\n(?:  [a-zA-Z]+Frame\(over\);[^\n]*\n)*  robotYardFrame\(over\);   \/\/ ROVER-YARD\n/g) || []).length === 1
+    && (ry.match(/new THREE\.InstancedMesh\(/g) || []).length === 1 && ry.includes('new THREE.InstancedMesh(ryGeo, ') && ry.includes('), 13);')
+    && ry.includes(`const RY_POLICY = '${reg.envs['world.litter-pickup'].reference_policy.id}'`) && reg.envs['world.litter-pickup'].reference_policy.provenance === 'SCRIPTED'
+    && !/ROBOWORLD/.test(html));
+  check('[rover-yard] hidden in the overview and beyond walk-view distance: mesh and label hidden before any step or placement',
+    ry.includes('if (over) { ryMesh.visible = false; ryLab.hidden = true; return; }') && ry.includes('const RY_VIEW = 120,')
+    && ry.includes('ryMesh.visible = near; if (!near) { ryLab.hidden = true; return; }') && ry.includes('ryMesh.visible = false; ryMesh.name')
+    && ry.indexOf('if (over) {') < ry.indexOf('RY.anchor = ryPick()') && ry.indexOf('if (over) {') < ry.indexOf('ryStep(RY.S)'));
+  const labelText = (ry.match(/const RY_LABEL = '([^']*)';/) || [, ''])[1];
+  check('[rover-yard] the label makes no AI-model claim: exactly "AUTHORED rover · SCRIPTED reference policy · no AI model", linked to the Robotics lab arena; no other model wording in the block',
+    labelText === 'AUTHORED rover · SCRIPTED reference policy · no AI model' && ry.includes("ryLab.href = 'trade_craft_robotics.html#model-arena'") && ry.includes('ryLab.textContent = RY_LABEL;')
+    && !/\bAI\b|\btrained\b|\bneural\b|\blearn|\bLLM\b|\bGPT\b|machine learning|intelligen/i.test(ry.replace(`const RY_LABEL = '${labelText}';`, '')));
+  let R = null;
+  try { R = new Function(core + '\nreturn { ryTrace, ryEpisode, ryStep, RY_SEED, RY_N, RY_MAX };')(); } catch (e) { R = null; }
+  let det = false;
+  if (R) {
+    const a = R.ryTrace(R.RY_SEED, 1400), b = R.ryTrace(R.RY_SEED, 1400), c = R.ryTrace(R.RY_SEED + 1, 1400);
+    const lapAt = a.findIndex((s) => s[4] === 1);
+    det = JSON.stringify(a) === JSON.stringify(b) && JSON.stringify(a) !== JSON.stringify(c)
+      && a.some((s) => s[3] < R.RY_N) && lapAt > 0 && lapAt <= R.RY_MAX + 1
+      && JSON.stringify(a.slice(lapAt + 1, lapAt + 200).map((s) => s.slice(0, 4))) === JSON.stringify(a.slice(0, 199).map((s) => s.slice(0, 4)));
+  }
+  check('[rover-yard] deterministic: the pure core replays the same seeded trace twice, a different seed differs, targets get collected, and each lap repeats the first one exactly', det);
+  check('[rover-yard] play only (classroom included): the block stores, sends and listens for nothing',
+    ry.length > 0 && !/localStorage|sessionStorage|indexedDB|fetch\(|XMLHttpRequest|sendBeacon|addEventListener|WebSocket/.test(ry));
+}
+// ROBOWORLD END
+// [build] the page is what the builder writes today
+const sha = createHash('sha256').update(html).digest('hex').slice(0, 16);
+check('[build] page carries the builder banner and one importmap', (html.match(/<script type="importmap">/g) || []).length === 1);
+console.log(fails ? `test_parishes: ${fails} FAIL, ${oks} ok (page ${sha})` : `test_parishes: ${oks} ok (page ${sha})`);
+process.exit(fails ? 1 : 0);

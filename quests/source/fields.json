@@ -1,0 +1,420 @@
+{
+ "from": "FIELDS",
+ "note": "FIELDS·Seasons & Harvest (wave 12): one treasure per seasonal task in seasons/registry/seasons.json, found by PLAY when web/fieldkit.py finishes the task (TCQuests.find, GAMES_CONTRACT s.3), plus side quests that bundle them. Worlds parishes / bay (kit-fired, never click-to-find buttons). Play only: device-local, never a completion record, never money.",
+ "entries": [
+  {
+   "id": "treasure-fields-harvest-rice",
+   "kind": "treasure",
+   "title": "Rice field (harvest)",
+   "world": "parishes",
+   "place": "fields",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of rice field inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-harvest-rice",
+    "label": "Harvest: Rice field"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "Rice is grown in flooded, levee-edged fields in parts of Louisiana; after harvest many fields are re-flooded to raise crawfish (source kind: state agricultural extension service).",
+   "band": "6-8"
+  },
+  {
+   "id": "treasure-fields-harvest-sugarcane-harvest",
+   "kind": "treasure",
+   "title": "Sugarcane harvest (harvest)",
+   "world": "parishes",
+   "place": "fields",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of sugarcane harvest inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-harvest-sugarcane-harvest",
+    "label": "Harvest: Sugarcane harvest"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "Sugarcane is a major Louisiana crop harvested in the cooler months and milled soon after cutting (source kind: state agricultural extension service).",
+   "band": "6-8"
+  },
+  {
+   "id": "treasure-fields-harvest-strawberry-picking",
+   "kind": "treasure",
+   "title": "Strawberry picking (harvest)",
+   "world": "parishes",
+   "place": "fields",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of strawberry picking inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-harvest-strawberry-picking",
+    "label": "Harvest: Strawberry picking"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "Strawberries are grown in parts of south-east Louisiana and picked by hand when fully red (source kind: state agricultural extension service).",
+   "band": "K-5"
+  },
+  {
+   "id": "treasure-fields-harvest-citrus-harvest",
+   "kind": "treasure",
+   "title": "Satsuma-style citrus harvest (harvest)",
+   "world": "parishes",
+   "place": "fields",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of satsuma-style citrus harvest inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-harvest-citrus-harvest",
+    "label": "Harvest: Satsuma-style citrus harvest"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "Satsuma-type mandarins grow in south Louisiana and are clipped rather than pulled so the peel is not torn (source kind: state agricultural extension service).",
+   "band": "K-5"
+  },
+  {
+   "id": "treasure-fields-harvest-pecan-gathering",
+   "kind": "treasure",
+   "title": "Pecan gathering (harvest)",
+   "world": "parishes",
+   "place": "fields",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of pecan gathering inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-harvest-pecan-gathering",
+    "label": "Harvest: Pecan gathering"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "Pecan trees are native to the region; the nuts fall in autumn and are gathered from the ground (source kind: state agricultural extension service).",
+   "band": "K-5"
+  },
+  {
+   "id": "treasure-fields-harvest-garden-plot",
+   "kind": "treasure",
+   "title": "Garden plot (harvest)",
+   "world": "parishes",
+   "place": "fields",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of garden plot inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-harvest-garden-plot",
+    "label": "Harvest: Garden plot"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "The Gulf Coast has two main vegetable-garden seasons, spring and autumn, with hot summers in between (source kind: state agricultural extension service).",
+   "band": "K-5"
+  },
+  {
+   "id": "treasure-fields-harvest-orchard",
+   "kind": "treasure",
+   "title": "Orchard harvest (harvest)",
+   "world": "bay",
+   "place": "fields",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of orchard harvest inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-harvest-orchard",
+    "label": "Harvest: Orchard harvest"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "Orchards of stone fruit and apples are part of the farmland around the Bay Area; fruit is picked by hand as it ripens (source kind: state agricultural extension service).",
+   "band": "K-5"
+  },
+  {
+   "id": "treasure-fields-harvest-vineyard-harvest",
+   "kind": "treasure",
+   "title": "Vineyard-style harvest (harvest)",
+   "world": "bay",
+   "place": "fields",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of vineyard-style harvest inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-harvest-vineyard-harvest",
+    "label": "Harvest: Vineyard-style harvest"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "Grapes are grown in the valleys north of the Bay and picked in late summer and autumn (source kind: state agricultural extension service).",
+   "band": "9-10"
+  },
+  {
+   "id": "treasure-fields-harvest-community-garden",
+   "kind": "treasure",
+   "title": "Community garden (harvest)",
+   "world": "bay",
+   "place": "fields",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of community garden inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-harvest-community-garden",
+    "label": "Harvest: Community garden"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "The Bay Area has a mild climate, so community gardens can grow something in most months (source kind: state agricultural extension service).",
+   "band": "K-5"
+  },
+  {
+   "id": "treasure-fields-harvest-shoreline-cleanup",
+   "kind": "treasure",
+   "title": "Shoreline cleanup day (harvest)",
+   "world": "bay",
+   "place": "fields",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of shoreline cleanup day inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-harvest-shoreline-cleanup",
+    "label": "Harvest: Shoreline cleanup day"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "Volunteer shoreline cleanups keep litter out of the Bay and record what they find (source kind: state coastal agency).",
+   "band": "6-8"
+  },
+  {
+   "id": "treasure-fields-event-parade-season",
+   "kind": "treasure",
+   "title": "Parade season (seasonal event)",
+   "world": "parishes",
+   "place": "fields",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of parade season inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-event-parade-season",
+    "label": "Ready: Parade season"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "Winter parade season is a long community tradition in south Louisiana towns (source kind: local tourism office).",
+   "band": "K-5"
+  },
+  {
+   "id": "treasure-fields-event-festival-day",
+   "kind": "treasure",
+   "title": "Festival day (seasonal event)",
+   "world": "parishes",
+   "place": "fields",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of festival day inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-event-festival-day",
+    "label": "Ready: Festival day"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "Many Louisiana towns hold food and music festivals in the mild spring and autumn months (source kind: local tourism office).",
+   "band": "K-5"
+  },
+  {
+   "id": "treasure-fields-event-storm-drill",
+   "kind": "treasure",
+   "title": "Hurricane-preparedness drill (seasonal event)",
+   "world": "parishes",
+   "place": "fields",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of hurricane-preparedness drill inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-event-storm-drill",
+    "label": "Ready: Hurricane-preparedness drill"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "The Gulf Coast plans for hurricanes every summer and autumn; official seasons and alerts come from the national weather service and local emergency management (source kind: national weather service).",
+   "band": "6-8"
+  },
+  {
+   "id": "treasure-fields-event-back-to-school",
+   "kind": "treasure",
+   "title": "Back-to-school week (seasonal event)",
+   "world": "parishes",
+   "place": "fields",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of back-to-school week inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-event-back-to-school",
+    "label": "Ready: Back-to-school week"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "In the southern states school usually starts in late summer, in the heat (source kind: local school district calendar).",
+   "band": "K-5"
+  },
+  {
+   "id": "treasure-fields-event-festival-day-bay",
+   "kind": "treasure",
+   "title": "Festival day (seasonal event)",
+   "world": "bay",
+   "place": "fields",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of festival day inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-event-festival-day-bay",
+    "label": "Ready: Festival day"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "Bay Area towns hold street fairs and harvest festivals through the dry months (source kind: local tourism office).",
+   "band": "K-5"
+  },
+  {
+   "id": "treasure-fields-event-quake-drill",
+   "kind": "treasure",
+   "title": "Earthquake-preparedness drill (seasonal event)",
+   "world": "bay",
+   "place": "fields",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of earthquake-preparedness drill inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-event-quake-drill",
+    "label": "Ready: Earthquake-preparedness drill"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "The Bay Area lies near active faults, so schools and families practise drop, cover and hold on (source kind: state emergency services office).",
+   "band": "K-5"
+  },
+  {
+   "id": "treasure-fields-event-back-to-school-bay",
+   "kind": "treasure",
+   "title": "Back-to-school week (seasonal event)",
+   "world": "bay",
+   "place": "fields",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Seasons & harvest panel: finish every step of back-to-school week inside its windows (approximate, game calendar).",
+   "reward": {
+    "badge": "badge-treasure-fields-event-back-to-school-bay",
+    "label": "Ready: Back-to-school week"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "Many California schools start in August (source kind: local school district calendar).",
+   "band": "K-5"
+  },
+  {
+   "id": "side-fields-rice-season",
+   "kind": "side",
+   "title": "A rice season, flood to harvest",
+   "world": "parishes",
+   "place": "fields",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-fields-harvest-rice"
+    ]
+   },
+   "hint": "Take one rice field through all six stages: field prep, flooding, planting, growth, draining and harvest.",
+   "reward": {
+    "badge": "badge-side-fields-rice-season",
+    "label": "Rice season"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "After the rice harvest, many Louisiana fields are re-flooded for crawfish - the rice-crawfish rotation (source kind: state agricultural extension service).",
+   "band": "6-8"
+  },
+  {
+   "id": "side-fields-louisiana-year",
+   "kind": "side",
+   "title": "A Louisiana growing year",
+   "world": "parishes",
+   "place": "fields",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-fields-harvest-rice",
+     "treasure-fields-harvest-sugarcane-harvest",
+     "treasure-fields-harvest-strawberry-picking",
+     "treasure-fields-harvest-citrus-harvest",
+     "treasure-fields-harvest-pecan-gathering",
+     "treasure-fields-harvest-garden-plot"
+    ]
+   },
+   "hint": "Harvest every Louisiana crop in the game calendar at least once.",
+   "reward": {
+    "badge": "badge-side-fields-louisiana-year",
+    "label": "Parish grower"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "Louisiana crops follow warm-season and cool-season rhythms; extension services publish planting calendars for each region (source kind: state agricultural extension service).",
+   "band": "6-8"
+  },
+  {
+   "id": "side-fields-bay-year",
+   "kind": "side",
+   "title": "A Bay Area growing year",
+   "world": "bay",
+   "place": "fields",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-fields-harvest-orchard",
+     "treasure-fields-harvest-vineyard-harvest",
+     "treasure-fields-harvest-community-garden",
+     "treasure-fields-harvest-shoreline-cleanup"
+    ]
+   },
+   "hint": "Finish the orchard, vineyard, community garden and shoreline cleanup tasks in the Bay game calendar.",
+   "reward": {
+    "badge": "badge-side-fields-bay-year",
+    "label": "Bay grower"
+   },
+   "provenance": "AUTHORED",
+   "reveal": "The Bay Area mild, dry-summer climate shapes when fruit ripens and when gardens are watered (source kind: state agricultural extension service).",
+   "band": "K-5"
+  }
+ ]
+}

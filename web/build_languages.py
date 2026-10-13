@@ -15,6 +15,8 @@ import sys
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+from seo import apply_seo  # noqa: E402  head tags only
+from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 
 
 def _pack_root():
@@ -98,6 +100,10 @@ tabs = ''.join(
     for code in ORDER)
 sections = '\n'.join(section(code) for code in ORDER)
 
+NAV = nav_html('web/trade_craft_languages.html', nav_labels('en'))
+from questkit import QUEST_CSS, quest_js, page_hooks  # noqa: E402  quests: egg hooks only
+QUEST_TAIL = '<style>' + QUEST_CSS + '</style>\n' + page_hooks('web/trade_craft_languages.html') + quest_js('page:web/trade_craft_languages.html')
+
 page = f'''<!doctype html>
 <html lang="en">
 <head>
@@ -131,6 +137,8 @@ header p{{color:var(--muted);margin:6px 0 14px}}
 .districts{{border-collapse:collapse;width:100%;margin:14px 0}}
 .districts td{{border-top:1px solid var(--rule);padding:8px 10px;vertical-align:top}}
 .dn{{font-weight:600;white-space:nowrap}}
+.dt{{overflow-wrap:anywhere}}
+@media (max-width:560px){{.dn{{white-space:normal}}.districts td{{padding:8px 6px}}}}
 .dt{{color:var(--muted)}}
 .dc{{text-align:end;color:var(--steel);font-variant-numeric:tabular-nums}}
 .ladder{{color:var(--muted)}}
@@ -139,8 +147,10 @@ header p{{color:var(--muted);margin:6px 0 14px}}
 .status{{color:var(--muted);font-size:13px;font-style:italic}}
 [hidden]{{display:none!important}}
 </style>
+<style>{NAV_CSS}</style>
 </head>
-<body><div class="wrap">
+<body>
+{NAV}<div class="wrap">
 <header>
   <h1>SmartCiti<span class="x">.X</span> : Trade Craft Academy</h1>
   <p>powered by AGI Corp</p>
@@ -163,9 +173,15 @@ function show(loc) {{
 for (const t of tabs) t.addEventListener('click', () => show(t.dataset.loc));
 show((navigator.language || 'en').slice(0, 2).match(/^({"|".join(ORDER)})$/) ? (navigator.language || 'en').slice(0, 2) : 'en');
 </script>
-</div></body>
+</div>{QUEST_TAIL}</body>
 </html>
 '''
 
 out = HERE / 'trade_craft_languages.html'
+page = apply_seo(page, 'web/trade_craft_languages.html', 'SmartCiti.X : Trade Craft Academy \u2014 languages',
+    locales['en']['strings']['seo.desc.languages'], 'page')
+# wave 3 (HOMEUX): MEDIA's pagehero band + the theme layer, head/hero region only;
+# every word from the catalog (hero.languages.*), see web/herovideo.py doc_hero().
+from herovideo import adopt_doc_hero  # noqa: E402
+page = adopt_doc_hero('languages', page)
 emit(out, page, f"{len(ORDER)} locales | {L['halls']} halls")

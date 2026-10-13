@@ -1,0 +1,188 @@
+{
+ "dataset": "Cognition.X blocks",
+ "total_blocks": 15700,
+ "packs": [
+  {
+   "name": "K–12",
+   "slug": "K12",
+   "blocks": 64,
+   "tracks": [],
+   "credentials": 64,
+   "grade_bands": [
+    "K",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12"
+   ]
+  },
+  {
+   "name": "Neighbourhood, Safety & Civic Voice",
+   "slug": "NEIGH",
+   "blocks": 250,
+   "tracks": [
+    "The block: who is on it and what it holds",
+    "Safety: what is a call, what is a report, what is neither",
+    "Code enforcement: the complaint that actually moves",
+    "The city: departments, hearings, and where a decision is made",
+    "Voice: speaking at a meeting that decides something"
+   ],
+   "credentials": 5,
+   "grade_bands": [
+    "K–2",
+    "3–5",
+    "6–8",
+    "9–10",
+    "11–12"
+   ]
+  },
+  {
+   "name": "Civic Leadership Legacy : Louisiana",
+   "slug": "LEGACYLA",
+   "blocks": 250,
+   "tracks": [
+    "Public service as a craft: the Louisiana ladder",
+    "The parish: government closest to the door",
+    "Baton Rouge: the Legislature and the law",
+    "Elections, voice and the ballot in Louisiana",
+    "Water, storm and the civic machine"
+   ],
+   "credentials": 5,
+   "grade_bands": [
+    "K–2",
+    "3–5",
+    "6–8",
+    "9–10",
+    "11–12"
+   ]
+  },
+  {
+   "name": "Digital Life, Data & AI",
+   "slug": "DIGITAL",
+   "blocks": 250,
+   "tracks": [
+    "Devices, accounts and the keys you hold",
+    "Information: what to trust and how to check",
+    "Privacy and the trail you leave",
+    "Working with AI: help, judgement and limits",
+    "Being online together: conduct, harm and repair"
+   ],
+   "credentials": 5,
+   "grade_bands": [
+    "K–2",
+    "3–5",
+    "6–8",
+    "9–10",
+    "11–12"
+   ]
+  },
+  {
+   "name": "Emergency Preparedness & First Response",
+   "slug": "EMERGENCY",
+   "blocks": 250,
+   "tracks": [
+    "The household that is ready",
+    "First aid: the first ten minutes",
+    "Fire: prevention, escape, fighting small",
+    "When the ground, water or sky turns",
+    "Community response and recovery"
+   ],
+   "credentials": 5,
+   "grade_bands": [
+    "K–2",
+    "3–5",
+    "6–8",
+    "9–10",
+    "11–12"
+   ]
+  },
+  {
+   "name": "Energy, Grid & the Home",
+   "slug": "ENERGY",
+   "blocks": 250,
+   "tracks": [
+    "Electricity and the house that carries it",
+    "Heat, cold and the cost of comfort",
+    "The grid: where power comes from",
+    "Water, gas and the other pipes",
+    "Using less without living less"
+   ],
+   "credentials": 5,
+   "grade_bands": [
+    "K–2",
+    "3–5",
+    "6–8",
+    "9–10",
+    "11–12"
+   ]
+  },
+  {
+   "name": "SmartCiti.X : First Responder",
+   "slug": "RESPOND",
+   "blocks": 250,
+   "tracks": [
+    "The fire service: reading a building before it burns",
+    "Law enforcement: authority, limits and accountability",
+    "Emergency medical services: the first ten minutes",
+    "Emergency management: before, during and after",
+    "Social work and crisis response: the part nobody photographs"
+   ],
+   "credentials": 5,
+   "grade_bands": [
+    "K–2",
+    "3–5",
+    "6–8",
+    "9–10",
+    "11–12"
+   ]
+  },
+  {
+   "name": "SmartCiti.X : New Orleans Trades",
+   "slug": "NOLATRADES",
+   "blocks": 250,
+   "tracks": [
+    "The port and the crane: cargo across the levee",
+    "Safe ground: digging in a city below the sea",
+    "Water in, water out: pumps, canals and the storm",
+    "Power back on: the grid after the wind",
+    "The craft pathway: from first tool to journey card"
+   ],
+   "credentials": 5,
+   "grade_bands": [
+    "K–2",
+    "3–5",
+    "6–8",
+    "9–10",
+    "11–12"
+   ]
+  },
+  {
+   "name": "Transport & Mobility",
+   "slug": "TRANSPORT",
+   "blocks": 250,
+   "tracks": [
+    "Moving through the city without a car",
+    "The bicycle and its cousins",
+    "The car: owning, running, letting go",
+    "Roads shared: safety for every user",
+    "Journeys: planning, rights and the wider world"
+   ],
+   "credentials": 5,
+   "grade_bands": [
+    "K–2",
+    "3–5",
+    "6–8",
+    "9–10",
+    "11–12"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,740 @@
+{
+ "name": "Unspoken Smiles district",
+ "provenance": "AUTHORED",
+ "place_note": "AUTHORED game district - not a real place, not surveyed; Unspoken Smiles is named only as the programme the clinic stations belong to (no endorsement, partnership or clinical claim).",
+ "size_m": [
+  1200,
+  1200
+ ],
+ "map_px": 4096,
+ "streets": [
+  {
+   "id": "main-st",
+   "name": "Main Street",
+   "from": [
+    0,
+    400
+   ],
+   "to": [
+    1200,
+    400
+   ],
+   "width_m": 16
+  },
+  {
+   "id": "school-rd",
+   "name": "School Road",
+   "from": [
+    400,
+    0
+   ],
+   "to": [
+    400,
+    1200
+   ],
+   "width_m": 14
+  },
+  {
+   "id": "park-ln",
+   "name": "Park Lane",
+   "from": [
+    0,
+    640
+   ],
+   "to": [
+    880,
+    640
+   ],
+   "width_m": 10
+  },
+  {
+   "id": "market-row",
+   "name": "Market Row",
+   "from": [
+    600,
+    400
+   ],
+   "to": [
+    600,
+    1200
+   ],
+   "width_m": 10
+  },
+  {
+   "id": "orchard-st",
+   "name": "Orchard Street",
+   "from": [
+    880,
+    0
+   ],
+   "to": [
+    880,
+    1200
+   ],
+   "width_m": 12
+  },
+  {
+   "id": "library-ave",
+   "name": "Library Avenue",
+   "from": [
+    0,
+    860
+   ],
+   "to": [
+    1200,
+    860
+   ],
+   "width_m": 12
+  },
+  {
+   "id": "ring-rd-e",
+   "name": "Ring Road (east)",
+   "from": [
+    1180,
+    0
+   ],
+   "to": [
+    1180,
+    1200
+   ],
+   "width_m": 10
+  },
+  {
+   "id": "ring-rd-s",
+   "name": "Ring Road (south)",
+   "from": [
+    0,
+    1180
+   ],
+   "to": [
+    1200,
+    1180
+   ],
+   "width_m": 10
+  }
+ ],
+ "zones": [
+  {
+   "id": "clinic",
+   "name": "Unspoken Smiles clinic",
+   "kind": "clinic",
+   "rect": [
+    40,
+    30,
+    330,
+    340
+   ],
+   "colour": "#cfe8f5"
+  },
+  {
+   "id": "school",
+   "name": "Neighbourhood school",
+   "kind": "school",
+   "rect": [
+    440,
+    50,
+    320,
+    300
+   ],
+   "colour": "#f7e3b5"
+  },
+  {
+   "id": "park",
+   "name": "Riverside park",
+   "kind": "park",
+   "rect": [
+    30,
+    440,
+    340,
+    180
+   ],
+   "colour": "#9fd39a"
+  },
+  {
+   "id": "playground",
+   "name": "Playground",
+   "kind": "playground",
+   "rect": [
+    430,
+    440,
+    150,
+    180
+   ],
+   "colour": "#f4c7a8"
+  },
+  {
+   "id": "community",
+   "name": "Community centre",
+   "kind": "community",
+   "rect": [
+    620,
+    440,
+    150,
+    180
+   ],
+   "colour": "#e0d0f0"
+  },
+  {
+   "id": "shop",
+   "name": "Corner health shop",
+   "kind": "shop",
+   "rect": [
+    620,
+    670,
+    150,
+    110
+   ],
+   "colour": "#d8f0d8"
+  },
+  {
+   "id": "vanlot",
+   "name": "Mobile dental van lot",
+   "kind": "vanlot",
+   "rect": [
+    30,
+    670,
+    220,
+    110
+   ],
+   "colour": "#d6d6de"
+  },
+  {
+   "id": "garden",
+   "name": "Community garden",
+   "kind": "garden",
+   "rect": [
+    280,
+    670,
+    300,
+    110
+   ],
+   "colour": "#b7dca0"
+  },
+  {
+   "id": "library",
+   "name": "Neighbourhood library",
+   "kind": "library",
+   "rect": [
+    920,
+    50,
+    240,
+    300
+   ],
+   "colour": "#f0dcc8"
+  },
+  {
+   "id": "sports",
+   "name": "Sports field",
+   "kind": "sports",
+   "rect": [
+    920,
+    440,
+    240,
+    380
+   ],
+   "colour": "#8cc98a"
+  },
+  {
+   "id": "busstop",
+   "name": "Bus stop",
+   "kind": "busstop",
+   "rect": [
+    830,
+    412,
+    30,
+    12
+   ],
+   "colour": "#ffe082"
+  },
+  {
+   "id": "market",
+   "name": "Farmers-market plaza",
+   "kind": "market",
+   "rect": [
+    30,
+    900,
+    340,
+    240
+   ],
+   "colour": "#f6e7c1"
+  },
+  {
+   "id": "homes-a",
+   "name": "Maple Row homes",
+   "kind": "residential",
+   "rect": [
+    440,
+    900,
+    140,
+    240
+   ],
+   "colour": "#e8d6cf"
+  },
+  {
+   "id": "homes-b",
+   "name": "Birch Row homes",
+   "kind": "residential",
+   "rect": [
+    630,
+    900,
+    230,
+    240
+   ],
+   "colour": "#dcd3e6"
+  },
+  {
+   "id": "homes-c",
+   "name": "Cedar Row homes",
+   "kind": "residential",
+   "rect": [
+    920,
+    900,
+    240,
+    240
+   ],
+   "colour": "#d3e2e6"
+  }
+ ],
+ "rooms": [
+  {
+   "id": "reception",
+   "name": "Reception and intake",
+   "rect": [
+    50,
+    70,
+    100,
+    90
+   ],
+   "stations": [
+    "patient-intake-screening",
+    "dn-medical-history-and-medication-review",
+    "front-office-treatment-coordination",
+    "dn-dental-coding-billing-and-preauthorisation",
+    "teledentistry-and-triage"
+   ]
+  },
+  {
+   "id": "operatory",
+   "name": "Operatories",
+   "rect": [
+    160,
+    70,
+    100,
+    90
+   ],
+   "stations": [
+    "four-handed-dentistry",
+    "operatory-turnover",
+    "endodontic-assisting",
+    "orthodontic-assisting",
+    "denture-delivery-and-adjustment",
+    "special-needs-and-geriatric-dentistry",
+    "pediatric-visit"
+   ]
+  },
+  {
+   "id": "hygiene",
+   "name": "Hygiene bay",
+   "rect": [
+    270,
+    70,
+    90,
+    90
+   ],
+   "stations": [
+    "periodontal-charting",
+    "ultrasonic-scaling",
+    "fluoride-and-sealants",
+    "aerosol-management",
+    "oral-cancer-screening",
+    "dn-oral-hygiene-instruction-and-motivational-interviewing",
+    "nitrous-oxide-monitoring"
+   ]
+  },
+  {
+   "id": "imaging",
+   "name": "Imaging room",
+   "rect": [
+    50,
+    170,
+    100,
+    80
+   ],
+   "stations": [
+    "dental-radiography-fmx",
+    "radiograph-safety",
+    "dn-digital-intraoral-scanning-and-cad-cam"
+   ]
+  },
+  {
+   "id": "sterilisation",
+   "name": "Sterilisation centre",
+   "rect": [
+    160,
+    170,
+    100,
+    80
+   ],
+   "stations": [
+    "sterilisation-technician-cycle",
+    "instrument-reprocessing",
+    "infection-control-audit",
+    "sharps-exposure-response",
+    "amalgam-waste-handling"
+   ]
+  },
+  {
+   "id": "surgery",
+   "name": "Surgery suite",
+   "rect": [
+    270,
+    170,
+    90,
+    80
+   ],
+   "stations": [
+    "oral-surgery-assisting",
+    "implant-surgery-assisting",
+    "chairside-emergency",
+    "dn-dental-trauma-and-avulsed-tooth-response",
+    "phlebotomy"
+   ]
+  },
+  {
+   "id": "lab",
+   "name": "Dental lab",
+   "rect": [
+    50,
+    260,
+    150,
+    90
+   ],
+   "stations": [
+    "dental-lab-bench"
+   ]
+  },
+  {
+   "id": "careers",
+   "name": "Careers room",
+   "rect": [
+    210,
+    260,
+    70,
+    90
+   ],
+   "stations": [
+    "dental-careers-pathway"
+   ]
+  },
+  {
+   "id": "outreach",
+   "name": "Outreach desk",
+   "rect": [
+    290,
+    260,
+    70,
+    90
+   ],
+   "stations": [
+    "mobile-dental-outreach",
+    "school-screening-outreach",
+    "dn-public-health-dentistry-and-fluoridation-advocacy"
+   ]
+  }
+ ],
+ "rooms_note": "The grouping of stations into rooms is AUTHORED for this district; the stations themselves are the programme's, linked at their source.",
+ "van_route": {
+  "id": "van-route",
+  "name": "Mobile dental van route",
+  "stops": [
+   {
+    "id": "stop-lot",
+    "name": "Van lot",
+    "at": [
+     140,
+     640
+    ]
+   },
+   {
+    "id": "stop-park",
+    "name": "Park entrance",
+    "at": [
+     300,
+     640
+    ]
+   },
+   {
+    "id": "stop-community",
+    "name": "Community centre",
+    "at": [
+     695,
+     400
+    ]
+   },
+   {
+    "id": "stop-school",
+    "name": "School gate",
+    "at": [
+     400,
+     200
+    ]
+   },
+   {
+    "id": "stop-clinic",
+    "name": "Clinic door",
+    "at": [
+     205,
+     400
+    ]
+   },
+   {
+    "id": "stop-library",
+    "name": "Library",
+    "at": [
+     880,
+     200
+    ]
+   },
+   {
+    "id": "stop-market",
+    "name": "Market plaza",
+    "at": [
+     200,
+     860
+    ]
+   },
+   {
+    "id": "stop-bus",
+    "name": "Bus stop",
+    "at": [
+     845,
+     400
+    ]
+   }
+  ],
+  "note": "AUTHORED loop along the district's street centrelines; the van timetable is not modelled.",
+  "path": [
+   [
+    140,
+    640
+   ],
+   [
+    600,
+    640
+   ],
+   [
+    600,
+    400
+   ],
+   [
+    880,
+    400
+   ],
+   [
+    880,
+    200
+   ],
+   [
+    880,
+    400
+   ],
+   [
+    400,
+    400
+   ],
+   [
+    400,
+    200
+   ],
+   [
+    400,
+    400
+   ],
+   [
+    205,
+    400
+   ],
+   [
+    400,
+    400
+   ],
+   [
+    400,
+    860
+   ],
+   [
+    200,
+    860
+   ],
+   [
+    400,
+    860
+   ],
+   [
+    400,
+    640
+   ],
+   [
+    140,
+    640
+   ]
+  ]
+ },
+ "games": {
+  "brushing": {
+   "zone": "clinic",
+   "quadrants": [
+    "upper-right",
+    "upper-left",
+    "lower-left",
+    "lower-right"
+   ],
+   "total_s": 120,
+   "total_source": "public-health dental guidance: brush twice a day for two minutes with fluoride toothpaste"
+  },
+  "flossing": {
+   "zone": "school",
+   "arch_teeth": 10,
+   "note": "AUTHORED game arch (not an anatomical count)"
+  },
+  "snacks": {
+   "zone": "shop",
+   "items": [
+    {
+     "id": "water",
+     "name": "Water",
+     "sort": "tooth-friendly"
+    },
+    {
+     "id": "milk",
+     "name": "Plain milk",
+     "sort": "tooth-friendly"
+    },
+    {
+     "id": "cheese",
+     "name": "Cheese cubes",
+     "sort": "tooth-friendly"
+    },
+    {
+     "id": "carrot",
+     "name": "Carrot sticks",
+     "sort": "tooth-friendly"
+    },
+    {
+     "id": "apple",
+     "name": "Apple slices",
+     "sort": "tooth-friendly"
+    },
+    {
+     "id": "yogurt",
+     "name": "Plain yogurt",
+     "sort": "tooth-friendly"
+    },
+    {
+     "id": "candy",
+     "name": "Hard candy",
+     "sort": "sugary"
+    },
+    {
+     "id": "gummies",
+     "name": "Sticky gummies",
+     "sort": "sugary"
+    },
+    {
+     "id": "soda",
+     "name": "Soda",
+     "sort": "sugary"
+    },
+    {
+     "id": "cookies",
+     "name": "Cookies",
+     "sort": "sugary"
+    },
+    {
+     "id": "caramel",
+     "name": "Caramels",
+     "sort": "sugary"
+    },
+    {
+     "id": "frosted",
+     "name": "Frosted cereal",
+     "sort": "sugary"
+    }
+   ],
+   "source": "public-health dental guidance: limit sugary snacks and drinks"
+  },
+  "plaque": {
+   "zone": "community",
+   "grid": [
+    4,
+    6
+   ],
+   "spots": 9,
+   "note": "disclosing-tablet style colouring is a game effect"
+  },
+  "handwash": {
+   "zone": "park",
+   "scrub_s": 20,
+   "steps": [
+    "wet",
+    "soap",
+    "scrub",
+    "rinse",
+    "dry"
+   ],
+   "source": "public-health hand hygiene guidance: scrub with soap for at least 20 seconds"
+  },
+  "drinks": {
+   "zone": "playground",
+   "categories": [
+    {
+     "id": "plain",
+     "rank": 0,
+     "name": "No added sugar",
+     "examples": [
+      "Water",
+      "Sparkling water (plain)"
+     ]
+    },
+    {
+     "id": "natural",
+     "rank": 1,
+     "name": "Natural milk sugar, no added sugar",
+     "examples": [
+      "Plain milk"
+     ]
+    },
+    {
+     "id": "juice",
+     "rank": 2,
+     "name": "Fruit sugars - a sometimes drink",
+     "examples": [
+      "100% fruit juice"
+     ]
+    },
+    {
+     "id": "added",
+     "rank": 3,
+     "name": "Usually has added sugar",
+     "examples": [
+      "Soda",
+      "Sports drink",
+      "Sweet tea",
+      "Flavoured milk"
+     ]
+    }
+   ],
+   "note": "Compares categories only; no sugar amount is recorded in any registry, so none are shown."
+  }
+ },
+ "guidance": {
+  "brushing": "Brush twice a day for two minutes with fluoride toothpaste.",
+  "flossing": "Clean between your teeth every day.",
+  "snacks": "Limit sugary snacks and drinks; water is a great choice.",
+  "plaque": "Brushing and cleaning between teeth remove plaque; see a dentist for regular check-ups.",
+  "handwash": "Wash your hands with soap and water, scrubbing for at least 20 seconds.",
+  "drinks": "Choose water most often; save sugary drinks for sometimes."
+ },
+ "disclaimer": "General guidance, not medical or dental advice.",
+ "play_note": "Games, eggs and badges here are play: stored on this device only, never a completion record, never money."
+}

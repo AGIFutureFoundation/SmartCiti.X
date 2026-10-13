@@ -227,6 +227,111 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
+     -122.2852,
+     37.8313
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Emeryville",
+    "near": "treasure-island",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "blurb": "Compact industrial-turned-tech city at the foot of the Bay Bridge approach.",
+    "km": 7.5,
+    "bearing_deg": 83.4,
+    "blurb_provenance": "authored from public record"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.2712,
+     37.8044
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Oakland",
+    "near": "treasure-island",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "blurb": "The East Bay\u2019s largest city and the Port of Oakland\u2019s home - the campus across the estuary from Alameda.",
+    "km": 9.0,
+    "bearing_deg": 103.7,
+    "blurb_provenance": "authored from public record"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.4566,
+     37.8735
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Tiburon",
+    "near": "treasure-island",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "blurb": "Peninsula town on the Marin side of the bay, facing Angel Island and the campus across the water.",
+    "km": 9.4,
+    "bearing_deg": 306.4,
+    "blurb_provenance": "authored from public record"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.2978,
+     37.8869
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Albany",
+    "near": "treasure-island",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "blurb": "Compact East Bay city on the shoreline between Berkeley and El Cerrito.",
+    "km": 9.5,
+    "bearing_deg": 42.1,
+    "blurb_provenance": "authored from public record"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.2727,
+     37.8716
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Berkeley",
+    "near": "treasure-island",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "blurb": "East Bay city, home of the University of California\u2019s founding campus.",
+    "km": 10.1,
+    "bearing_deg": 58.1,
+    "blurb_provenance": "authored from public record"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
      -122.4853,
      37.859
     ]
@@ -240,6 +345,69 @@
     "blurb": "Waterfront town just inside the Golden Gate, on Richardson Bay under the Marin Headlands.",
     "km": 10.8,
     "bearing_deg": 291.4,
+    "blurb_provenance": "authored from public record"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.3108,
+     37.9158
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "El Cerrito",
+    "near": "treasure-island",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "blurb": "East Bay city along the hills north of Albany, on the Richmond side of the ridge.",
+    "km": 11.5,
+    "bearing_deg": 27.0,
+    "blurb_provenance": "authored from public record"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.2316,
+     37.8244
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Piedmont",
+    "near": "treasure-island",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "blurb": "A small city entirely surrounded by Oakland, in the hills above the estuary.",
+    "km": 12.2,
+    "bearing_deg": 89.5,
+    "blurb_provenance": "authored from public record"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.3477,
+     37.9358
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Richmond",
+    "near": "treasure-island",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "blurb": "East Bay port city on San Pablo Bay, home of the wartime Kaiser shipyards.",
+    "km": 12.6,
+    "bearing_deg": 9.1,
     "blurb_provenance": "authored from public record"
    }
   },
@@ -290,19 +458,19 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     -122.3477,
-     37.9358
+     -122.1797,
+     37.8771
     ]
    },
    "properties": {
     "kind": "anchor",
-    "name": "Richmond",
+    "name": "Orinda",
     "near": "treasure-island",
     "provenance": "RECORDED",
     "source": "Locator.X src/app.js CITIES, Apache-2.0",
-    "blurb": "East Bay port city on San Pablo Bay, home of the wartime Kaiser shipyards.",
-    "km": 12.6,
-    "bearing_deg": 9.1,
+    "blurb": "Residential city east of the Berkeley hills, through the Caldecott Tunnel from Oakland.",
+    "km": 17.8,
+    "bearing_deg": 70.4,
     "blurb_provenance": "authored from public record"
    }
   },
@@ -311,19 +479,19 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     -122.5311,
-     37.9735
+     -122.545,
+     37.906
     ]
    },
    "properties": {
     "kind": "anchor",
-    "name": "San Rafael",
+    "name": "Mill Valley",
     "near": "treasure-island",
     "provenance": "RECORDED",
     "source": "Locator.X src/app.js CITIES, Apache-2.0",
-    "blurb": "Marin County\u2019s seat, north of the bay along the 101 corridor.",
-    "km": 21.8,
-    "bearing_deg": 319.9,
+    "blurb": "Southern Marin town at the foot of Mount Tamalpais, north of the Golden Gate.",
+    "km": 17.9,
+    "bearing_deg": 301.0,
     "blurb_provenance": "authored from public record"
    }
   },
@@ -353,19 +521,19 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     -122.3255,
-     37.563
+     -122.1561,
+     37.7249
     ]
    },
    "properties": {
     "kind": "anchor",
-    "name": "San Mateo",
+    "name": "San Leandro",
     "near": "treasure-island",
     "provenance": "RECORDED",
     "source": "Locator.X src/app.js CITIES, Apache-2.0",
-    "blurb": "Peninsula city midway between San Francisco and Silicon Valley.",
-    "km": 29.2,
-    "bearing_deg": 172.2,
+    "blurb": "East Bay manufacturing city directly south of Oakland.",
+    "km": 21.8,
+    "bearing_deg": 120.1,
     "blurb_provenance": "authored from public record"
    }
   },
@@ -374,19 +542,19 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     -122.2727,
-     37.8716
+     -122.5311,
+     37.9735
     ]
    },
    "properties": {
     "kind": "anchor",
-    "name": "Berkeley",
-    "near": "oakland",
+    "name": "San Rafael",
+    "near": "treasure-island",
     "provenance": "RECORDED",
     "source": "Locator.X src/app.js CITIES, Apache-2.0",
-    "blurb": "East Bay city, home of the University of California\u2019s founding campus.",
-    "km": 7.5,
-    "bearing_deg": 359.0,
+    "blurb": "Marin County\u2019s seat, north of the bay along the 101 corridor.",
+    "km": 21.8,
+    "bearing_deg": 319.9,
     "blurb_provenance": "authored from public record"
    }
   },
@@ -416,6 +584,27 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
+     -122.2316,
+     37.8244
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Piedmont",
+    "near": "oakland",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "blurb": "A small city entirely surrounded by Oakland, in the hills above the estuary.",
+    "km": 4.1,
+    "bearing_deg": 57.4,
+    "blurb_provenance": "authored from public record"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
      -122.2416,
      37.7652
     ]
@@ -437,6 +626,111 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
+     -122.2727,
+     37.8716
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Berkeley",
+    "near": "oakland",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "blurb": "East Bay city, home of the University of California\u2019s founding campus.",
+    "km": 7.5,
+    "bearing_deg": 359.0,
+    "blurb_provenance": "authored from public record"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.2978,
+     37.8869
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Albany",
+    "near": "oakland",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "blurb": "Compact East Bay city on the shoreline between Berkeley and El Cerrito.",
+    "km": 9.5,
+    "bearing_deg": 345.7,
+    "blurb_provenance": "authored from public record"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.1797,
+     37.8771
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Orinda",
+    "near": "oakland",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "blurb": "Residential city east of the Berkeley hills, through the Caldecott Tunnel from Oakland.",
+    "km": 11.4,
+    "bearing_deg": 44.8,
+    "blurb_provenance": "authored from public record"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.3108,
+     37.9158
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "El Cerrito",
+    "near": "oakland",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "blurb": "East Bay city along the hills north of Albany, on the Richmond side of the ridge.",
+    "km": 12.9,
+    "bearing_deg": 344.3,
+    "blurb_provenance": "authored from public record"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.4194,
+     37.7749
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "San Francisco",
+    "near": "oakland",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "blurb": "The peninsula city at the Golden Gate - the Bay Area\u2019s historic urban core, west across the bay from the campus island.",
+    "km": 13.4,
+    "bearing_deg": 255.9,
+    "blurb_provenance": "authored from public record"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
      -122.1561,
      37.7249
     ]
@@ -450,6 +744,174 @@
     "blurb": "East Bay manufacturing city directly south of Oakland.",
     "km": 13.4,
     "bearing_deg": 131.1,
+    "blurb_provenance": "authored from public record"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.3477,
+     37.9358
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Richmond",
+    "near": "oakland",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "blurb": "East Bay port city on San Pablo Bay, home of the wartime Kaiser shipyards.",
+    "km": 16.1,
+    "bearing_deg": 335.3,
+    "blurb_provenance": "authored from public record"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.118,
+     37.8858
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Lafayette",
+    "near": "oakland",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "blurb": "Central Contra Costa city east of Orinda along the ridge road to Walnut Creek.",
+    "km": 16.2,
+    "bearing_deg": 56.0,
+    "blurb_provenance": "authored from public record"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.4566,
+     37.8735
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Tiburon",
+    "near": "oakland",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "blurb": "Peninsula town on the Marin side of the bay, facing Angel Island and the campus across the water.",
+    "km": 18.0,
+    "bearing_deg": 295.3,
+    "blurb_provenance": "authored from public record"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.4853,
+     37.859
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Sausalito",
+    "near": "oakland",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "blurb": "Waterfront town just inside the Golden Gate, on Richardson Bay under the Marin Headlands.",
+    "km": 19.8,
+    "bearing_deg": 288.0,
+    "blurb_provenance": "authored from public record"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.0864,
+     37.6941
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Castro Valley",
+    "near": "oakland",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "blurb": "Unincorporated community in the East Bay hills south-east of San Leandro.",
+    "km": 20.4,
+    "bearing_deg": 127.0,
+    "blurb_provenance": "authored from public record"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.4077,
+     37.6547
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "South San Francisco",
+    "near": "oakland",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "blurb": "The industrial city - its hillside sign says so - between San Francisco and the airport.",
+    "km": 20.5,
+    "bearing_deg": 215.8,
+    "blurb_provenance": "authored from public record"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.0652,
+     37.9101
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Walnut Creek",
+    "near": "oakland",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "blurb": "Central Contra Costa\u2019s commercial hub, east of the Berkeley hills at the foot of Mount Diablo.",
+    "km": 21.6,
+    "bearing_deg": 56.9,
+    "blurb_provenance": "authored from public record"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.4702,
+     37.6879
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Daly City",
+    "near": "oakland",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "blurb": "The gateway city where the San Francisco peninsula meets San Mateo County.",
+    "km": 21.8,
+    "bearing_deg": 233.5,
     "blurb_provenance": "authored from public record"
    }
   },

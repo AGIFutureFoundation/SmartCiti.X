@@ -1,0 +1,1146 @@
+{
+ "attribution": {
+  "author": "U.S. Geological Survey",
+  "license_file": "elevation/vendor/USGS_3DEP_USE_CONSTRAINTS.txt",
+  "license_id": "LicenseRef-US-Government-Public-Domain",
+  "source_url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/",
+  "text": "Elevation: USGS 3D Elevation Program (3DEP), 1 arc-second DEM; resampled by this bundle",
+  "title": "USGS 3D Elevation Program (3DEP), 1 arc-second DEM, staged GeoTIFF tiles"
+ },
+ "contract": "ELEV_CONTRACT v1",
+ "grids": {
+  "bayarea": {
+   "bounds_arcsec": {
+    "e": -436350,
+    "n": 139914,
+    "s": 132828,
+    "w": -444726
+   },
+   "bounds_deg": {
+    "e": -121.208333,
+    "n": 38.865,
+    "s": 36.896667,
+    "w": -123.535
+   },
+   "bounds_from": "bayarea/registry/bayarea.json#counties[*].bbox_wgs84 (union, snapped outward)",
+   "bytes": 1677335,
+   "cell_arcsec": 6,
+   "cell_deg": 0.001666667,
+   "cell_size_m": {
+    "east_west_at_mid_lat": 146.3,
+    "north_south": 185.3
+   },
+   "cols": 1396,
+   "encoding": {
+    "cell_value": "mean of the valid 1-arc-second source pixels in the cell; nodata when fewer than half are valid",
+    "compression": "gzip (mtime 0)",
+    "dtype": "uint16 little-endian",
+    "height_m": "v * 0.1 - 100.0",
+    "nodata_value": 0,
+    "offset_m": 100.0,
+    "order": "row-major, rows north->south, cols west->east",
+    "scale_m": 0.1
+   },
+   "file": "bayarea.u16.gz",
+   "horizontal_datum": "NAD83 (used as WGS84; ~1-2 m apart here)",
+   "origin_nw": {
+    "lat": 38.865,
+    "lng": -123.535,
+    "what": "outer north-west corner of cell (0, 0); rows run south, cols run east"
+   },
+   "rows": 1181,
+   "sha256": "ecd3673bff2e555c2f1905c047f0912f795be965da0f68025e889a1024a8935d",
+   "stats": {
+    "max_at": {
+     "col": 476,
+     "lat": 38.8075,
+     "lng": -122.740833,
+     "row": 34
+    },
+    "max_m": 1432.0,
+    "mean_m": 128.05,
+    "min_at": {
+     "col": 649,
+     "lat": 37.9875,
+     "lng": -122.4525,
+     "row": 526
+    },
+    "min_m": -63.5,
+    "nodata_cells": 19902,
+    "valid_cells": 1628774
+   },
+   "tile_pubdates": [
+    "20200115",
+    "20211116",
+    "20250708",
+    "20250827",
+    "20260601"
+   ],
+   "tiles_absent": [
+    "n37w124"
+   ],
+   "tiles_published": [
+    "n37w123",
+    "n37w122",
+    "n38w124",
+    "n38w123",
+    "n38w122",
+    "n39w124",
+    "n39w123",
+    "n39w122"
+   ],
+   "units": "m",
+   "vertical_datum": "NAVD88",
+   "what": "the 9 San Francisco Bay Area counties of the Bay world, California"
+  },
+  "parishes": {
+   "bounds_arcsec": {
+    "e": -319734,
+    "n": 111600,
+    "s": 104142,
+    "w": -328812
+   },
+   "bounds_deg": {
+    "e": -88.815,
+    "n": 31.0,
+    "s": 28.928333,
+    "w": -91.336667
+   },
+   "bounds_from": "parishes/registry/parishes.json#parishes[*].bbox_wgs84 (union, snapped outward)",
+   "bytes": 1127177,
+   "cell_arcsec": 6,
+   "cell_deg": 0.001666667,
+   "cell_size_m": {
+    "east_west_at_mid_lat": 160.6,
+    "north_south": 185.3
+   },
+   "cols": 1513,
+   "encoding": {
+    "cell_value": "mean of the valid 1-arc-second source pixels in the cell; nodata when fewer than half are valid",
+    "compression": "gzip (mtime 0)",
+    "dtype": "uint16 little-endian",
+    "height_m": "v * 0.1 - 100.0",
+    "nodata_value": 0,
+    "offset_m": 100.0,
+    "order": "row-major, rows north->south, cols west->east",
+    "scale_m": 0.1
+   },
+   "file": "parishes.u16.gz",
+   "horizontal_datum": "NAD83 (used as WGS84; ~1-2 m apart here)",
+   "origin_nw": {
+    "lat": 31.0,
+    "lng": -91.336667,
+    "what": "outer north-west corner of cell (0, 0); rows run south, cols run east"
+   },
+   "rows": 1243,
+   "sha256": "1e256dd888337f7a0b714e244348d825a6ffa41a8e7ebeb1dc643b75e6db0b8c",
+   "stats": {
+    "max_at": {
+     "col": 1156,
+     "lat": 30.905833,
+     "lng": -89.409167,
+     "row": 56
+    },
+    "max_m": 115.9,
+    "mean_m": 13.18,
+    "min_at": {
+     "col": 654,
+     "lat": 29.919167,
+     "lng": -90.245833,
+     "row": 648
+    },
+    "min_m": -8.7,
+    "nodata_cells": 105588,
+    "valid_cells": 1775071
+   },
+   "tile_pubdates": [
+    "20191212",
+    "20231213",
+    "20240502",
+    "20251209",
+    "20260312",
+    "20260316"
+   ],
+   "tiles_absent": [
+    "n29w092",
+    "n29w091",
+    "n29w089"
+   ],
+   "tiles_published": [
+    "n29w090",
+    "n30w092",
+    "n30w091",
+    "n30w090",
+    "n30w089",
+    "n31w092",
+    "n31w091",
+    "n31w090",
+    "n31w089"
+   ],
+   "units": "m",
+   "vertical_datum": "NAVD88",
+   "what": "the 13 parishes of the parish worlds, Louisiana"
+  }
+ },
+ "honesty": [
+  "bare-earth DEM cell means at about 150-185 m: a levee, a street grade, a building pad or a ravine narrower than a cell is NOT resolved and must not be drawn as if measured",
+  "water bodies carry whatever the source publishes for them - mostly flat water surfaces, in places below-zero values (see grids.*.stats.min_at) - they are not a depth survey; ground placement must use the water masks, not a height threshold; underwater/ bathymetry stays AUTHORED",
+  "cells the USGS publishes no tile for (open Gulf of Mexico, open Pacific) are nodata, never filled",
+  "NAVD88 metres; sea level is not 0 m NAVD88 exactly and this pack does not claim a shoreline"
+ ],
+ "licence": "U.S. public domain (work of the U.S. federal government, 17 U.S.C. 105); use constraints from the USGS tile metadata vendored verbatim in USGS_3DEP_USE_CONSTRAINTS.txt",
+ "licence_file": "elevation/vendor/USGS_3DEP_USE_CONSTRAINTS.txt",
+ "manifest_sha256": "5cf6de8f8d3a0514869fa0ec227acff0c225003b31c1313a728754208ac398f4",
+ "members": {
+  "bayarea": {
+   "06001": {
+    "bbox_wgs84": [
+     -122.332405,
+     37.454066,
+     -121.470975,
+     37.905931
+    ],
+    "frame_origin": {
+     "lat": 37.645694,
+     "lng": -121.888216
+    },
+    "frame_origin_height_m": 115.12,
+    "name": "Alameda",
+    "stats_over_bbox": {
+     "max_at": {
+      "col": 1187,
+      "lat": 37.4775,
+      "lng": -121.555833,
+      "row": 832
+     },
+     "max_m": 1235.0,
+     "mean_m": 222.48,
+     "min_at": {
+      "col": 1188,
+      "lat": 37.905833,
+      "lng": -121.554167,
+      "row": 575
+     },
+     "min_m": -3.6,
+     "nodata_cells": 0,
+     "valid_cells": 140352
+    }
+   },
+   "06013": {
+    "bbox_wgs84": [
+     -122.429316,
+     37.719515,
+     -121.535582,
+     38.095783
+    ],
+    "frame_origin": {
+     "lat": 37.919527,
+     "lng": -121.929038
+    },
+    "frame_origin_height_m": 185.14,
+    "name": "Contra Costa",
+    "stats_over_bbox": {
+     "max_at": {
+      "col": 971,
+      "lat": 37.880833,
+      "lng": -121.915833,
+      "row": 590
+     },
+     "max_m": 1132.9,
+     "mean_m": 110.13,
+     "min_at": {
+      "col": 1185,
+      "lat": 38.0425,
+      "lng": -121.559167,
+      "row": 493
+     },
+     "min_m": -6.3,
+     "nodata_cells": 0,
+     "valid_cells": 120825
+    }
+   },
+   "06041": {
+    "bbox_wgs84": [
+     -123.010782,
+     37.819166,
+     -122.436495,
+     38.320857
+    ],
+    "frame_origin": {
+     "lat": 38.07502,
+     "lng": -122.724299
+    },
+    "frame_origin_height_m": 63.74,
+    "name": "Marin",
+    "stats_over_bbox": {
+     "max_at": {
+      "col": 562,
+      "lat": 37.924167,
+      "lng": -122.5975,
+      "row": 564
+     },
+     "max_m": 777.6,
+     "mean_m": 78.67,
+     "min_at": {
+      "col": 649,
+      "lat": 37.9875,
+      "lng": -122.4525,
+      "row": 526
+     },
+     "min_m": -63.5,
+     "nodata_cells": 0,
+     "valid_cells": 103888
+    }
+   },
+   "06055": {
+    "bbox_wgs84": [
+     -122.644674,
+     38.155058,
+     -122.063208,
+     38.864642
+    ],
+    "frame_origin": {
+     "lat": 38.506651,
+     "lng": -122.331322
+    },
+    "frame_origin_height_m": 380.94,
+    "name": "Napa",
+    "stats_over_bbox": {
+     "max_at": {
+      "col": 541,
+      "lat": 38.669167,
+      "lng": -122.6325,
+      "row": 117
+     },
+     "max_m": 1299.6,
+     "mean_m": 279.72,
+     "min_at": {
+      "col": 874,
+      "lat": 38.190833,
+      "lng": -122.0775,
+      "row": 404
+     },
+     "min_m": -0.9,
+     "nodata_cells": 0,
+     "valid_cells": 148674
+    }
+   },
+   "06075": {
+    "bbox_wgs84": [
+     -122.515459,
+     37.708347,
+     -122.328816,
+     37.811434
+    ],
+    "frame_origin": {
+     "lat": 37.754584,
+     "lng": -122.440049
+    },
+    "frame_origin_height_m": 114.5,
+    "name": "San Francisco",
+    "stats_over_bbox": {
+     "max_at": {
+      "col": 646,
+      "lat": 37.7575,
+      "lng": -122.4575,
+      "row": 664
+     },
+     "max_m": 257.7,
+     "mean_m": 35.22,
+     "min_at": {
+      "col": 631,
+      "lat": 37.810833,
+      "lng": -122.4825,
+      "row": 632
+     },
+     "min_m": -1.6,
+     "nodata_cells": 0,
+     "valid_cells": 6944
+    }
+   },
+   "06081": {
+    "bbox_wgs84": [
+     -122.519049,
+     37.107005,
+     -122.109869,
+     37.708347
+    ],
+    "frame_origin": {
+     "lat": 37.424548,
+     "lng": -122.330845
+    },
+    "frame_origin_height_m": 471.61,
+    "name": "San Mateo",
+    "stats_over_bbox": {
+     "max_at": {
+      "col": 849,
+      "lat": 37.250833,
+      "lng": -122.119167,
+      "row": 968
+     },
+     "max_m": 876.8,
+     "mean_m": 139.16,
+     "min_at": {
+      "col": 622,
+      "lat": 37.675833,
+      "lng": -122.4975,
+      "row": 713
+     },
+     "min_m": -3.5,
+     "nodata_cells": 0,
+     "valid_cells": 88445
+    }
+   },
+   "06085": {
+    "bbox_wgs84": [
+     -122.203191,
+     36.897395,
+     -121.208956,
+     37.483274
+    ],
+    "frame_origin": {
+     "lat": 37.232517,
+     "lng": -121.697129
+    },
+    "frame_origin_height_m": 316.57,
+    "name": "Santa Clara",
+    "stats_over_bbox": {
+     "max_at": {
+      "col": 1142,
+      "lat": 37.3475,
+      "lng": -121.630833,
+      "row": 910
+     },
+     "max_m": 1289.6,
+     "mean_m": 348.54,
+     "min_at": {
+      "col": 1153,
+      "lat": 36.899167,
+      "lng": -121.6125,
+      "row": 1179
+     },
+     "min_m": -26.4,
+     "nodata_cells": 0,
+     "valid_cells": 210144
+    }
+   },
+   "06095": {
+    "bbox_wgs84": [
+     -122.407781,
+     38.031354,
+     -121.593011,
+     38.538199
+    ],
+    "frame_origin": {
+     "lat": 38.270618,
+     "lng": -121.932984
+    },
+    "frame_origin_height_m": 18.32,
+    "name": "Solano",
+    "stats_over_bbox": {
+     "max_at": {
+      "col": 857,
+      "lat": 38.400833,
+      "lng": -122.105833,
+      "row": 278
+     },
+     "max_m": 849.9,
+     "mean_m": 80.44,
+     "min_at": {
+      "col": 1014,
+      "lat": 38.310833,
+      "lng": -121.844167,
+      "row": 332
+     },
+     "min_m": -9.4,
+     "nodata_cells": 0,
+     "valid_cells": 148656
+    }
+   },
+   "06097": {
+    "bbox_wgs84": [
+     -123.534819,
+     38.109528,
+     -122.350352,
+     38.852615
+    ],
+    "frame_origin": {
+     "lat": 38.528522,
+     "lng": -122.888207
+    },
+    "frame_origin_height_m": 114.66,
+    "name": "Sonoma",
+    "stats_over_bbox": {
+     "max_at": {
+      "col": 476,
+      "lat": 38.8075,
+      "lng": -122.740833,
+      "row": 34
+     },
+     "max_m": 1432.0,
+     "mean_m": 183.39,
+     "min_at": {
+      "col": 325,
+      "lat": 38.279167,
+      "lng": -122.9925,
+      "row": 351
+     },
+     "min_m": -1.6,
+     "nodata_cells": 0,
+     "valid_cells": 317106
+    }
+   }
+  },
+  "parishes": {
+   "22005": {
+    "bbox_wgs84": [
+     -91.105548,
+     30.062716,
+     -90.631761,
+     30.345347
+    ],
+    "frame_origin": {
+     "lat": 30.202946,
+     "lng": -90.912536
+    },
+    "frame_origin_height_m": 1.47,
+    "name": "Ascension",
+    "stats_over_bbox": {
+     "max_at": {
+      "col": 179,
+      "lat": 30.244167,
+      "lng": -91.0375,
+      "row": 453
+     },
+     "max_m": 46.3,
+     "mean_m": 2.5,
+     "min_at": {
+      "col": 282,
+      "lat": 30.140833,
+      "lng": -90.865833,
+      "row": 515
+     },
+     "min_m": -1.7,
+     "nodata_cells": 0,
+     "valid_cells": 47996
+    }
+   },
+   "22051": {
+    "bbox_wgs84": [
+     -90.28001,
+     29.16414,
+     -89.903134,
+     30.189857
+    ],
+    "frame_origin": {
+     "lat": 29.741878,
+     "lng": -90.112935
+    },
+    "frame_origin_height_m": 0.22,
+    "name": "Jefferson",
+    "stats_over_bbox": {
+     "max_at": {
+      "col": 648,
+      "lat": 29.934167,
+      "lng": -90.255833,
+      "row": 639
+     },
+     "max_m": 21.8,
+     "mean_m": -0.23,
+     "min_at": {
+      "col": 654,
+      "lat": 29.919167,
+      "lng": -90.245833,
+      "row": 648
+     },
+     "min_m": -8.7,
+     "nodata_cells": 0,
+     "valid_cells": 139216
+    }
+   },
+   "22057": {
+    "bbox_wgs84": [
+     -91.005047,
+     29.06363,
+     -90.000045,
+     29.92183
+    ],
+    "frame_origin": {
+     "lat": 29.558251,
+     "lng": -90.418832
+    },
+    "frame_origin_height_m": 0.15,
+    "name": "Lafourche",
+    "stats_over_bbox": {
+     "max_at": {
+      "col": 657,
+      "lat": 29.920833,
+      "lng": -90.240833,
+      "row": 647
+     },
+     "max_m": 14.6,
+     "mean_m": 0.04,
+     "min_at": {
+      "col": 654,
+      "lat": 29.919167,
+      "lng": -90.245833,
+      "row": 648
+     },
+     "min_m": -8.7,
+     "nodata_cells": 2362,
+     "valid_cells": 308183
+    }
+   },
+   "22063": {
+    "bbox_wgs84": [
+     -90.99069,
+     30.175253,
+     -90.4846,
+     30.650313
+    ],
+    "frame_origin": {
+     "lat": 30.439521,
+     "lng": -90.728657
+    },
+    "frame_origin_height_m": 7.26,
+    "name": "Livingston",
+    "stats_over_bbox": {
+     "max_at": {
+      "col": 307,
+      "lat": 30.4875,
+      "lng": -90.824167,
+      "row": 307
+     },
+     "max_m": 59.9,
+     "mean_m": 8.63,
+     "min_at": {
+      "col": 342,
+      "lat": 30.2525,
+      "lng": -90.765833,
+      "row": 448
+     },
+     "min_m": -0.6,
+     "nodata_cells": 0,
+     "valid_cells": 86355
+    }
+   },
+   "22071": {
+    "bbox_wgs84": [
+     -90.140028,
+     29.867709,
+     -89.623169,
+     30.198447
+    ],
+    "frame_origin": {
+     "lat": 30.070098,
+     "lng": -89.927224
+    },
+    "frame_origin_height_m": -0.81,
+    "name": "Orleans",
+    "stats_over_bbox": {
+     "max_at": {
+      "col": 796,
+      "lat": 29.990833,
+      "lng": -90.009167,
+      "row": 605
+     },
+     "max_m": 19.9,
+     "mean_m": -0.13,
+     "min_at": {
+      "col": 850,
+      "lat": 30.064167,
+      "lng": -89.919167,
+      "row": 561
+     },
+     "min_m": -4.1,
+     "nodata_cells": 0,
+     "valid_cells": 61380
+    }
+   },
+   "22075": {
+    "bbox_wgs84": [
+     -90.068242,
+     28.929616,
+     -89.002221,
+     29.895199
+    ],
+    "frame_origin": {
+     "lat": 29.433573,
+     "lng": -89.623085
+    },
+    "frame_origin_height_m": 0.11,
+    "name": "Plaquemines",
+    "stats_over_bbox": {
+     "max_at": {
+      "col": 783,
+      "lat": 29.7875,
+      "lng": -90.030833,
+      "row": 727
+     },
+     "max_m": 14.2,
+     "mean_m": -0.13,
+     "min_at": {
+      "col": 913,
+      "lat": 29.5725,
+      "lng": -89.814167,
+      "row": 856
+     },
+     "min_m": -8.4,
+     "nodata_cells": 61219,
+     "valid_cells": 309341
+    }
+   },
+   "22087": {
+    "bbox_wgs84": [
+     -90.010813,
+     29.652085,
+     -88.815578,
+     30.161508
+    ],
+    "frame_origin": {
+     "lat": 29.875819,
+     "lng": -89.541465
+    },
+    "frame_origin_height_m": -0.33,
+    "name": "St. Bernard",
+    "stats_over_bbox": {
+     "max_at": {
+      "col": 796,
+      "lat": 29.990833,
+      "lng": -90.009167,
+      "row": 605
+     },
+     "max_m": 19.9,
+     "mean_m": -0.07,
+     "min_at": {
+      "col": 800,
+      "lat": 29.654167,
+      "lng": -90.0025,
+      "row": 807
+     },
+     "min_m": -5.2,
+     "nodata_cells": 0,
+     "valid_cells": 219402
+    }
+   },
+   "22089": {
+    "bbox_wgs84": [
+     -90.549207,
+     29.691602,
+     -90.168742,
+     30.163226
+    ],
+    "frame_origin": {
+     "lat": 29.905405,
+     "lng": -90.358338
+    },
+    "frame_origin_height_m": 1.19,
+    "name": "St. Charles",
+    "stats_over_bbox": {
+     "max_at": {
+      "col": 648,
+      "lat": 29.934167,
+      "lng": -90.255833,
+      "row": 639
+     },
+     "max_m": 21.8,
+     "mean_m": 0.24,
+     "min_at": {
+      "col": 654,
+      "lat": 29.919167,
+      "lng": -90.245833,
+      "row": 648
+     },
+     "min_m": -8.7,
+     "nodata_cells": 0,
+     "valid_cells": 64807
+    }
+   },
+   "22093": {
+    "bbox_wgs84": [
+     -90.961976,
+     29.889186,
+     -90.642529,
+     30.166662
+    ],
+    "frame_origin": {
+     "lat": 30.026879,
+     "lng": -90.796157
+    },
+    "frame_origin_height_m": 2.08,
+    "name": "St. James",
+    "stats_over_bbox": {
+     "max_at": {
+      "col": 311,
+      "lat": 30.044167,
+      "lng": -90.8175,
+      "row": 573
+     },
+     "max_m": 58.9,
+     "mean_m": 1.65,
+     "min_at": {
+      "col": 282,
+      "lat": 30.140833,
+      "lng": -90.865833,
+      "row": 515
+     },
+     "min_m": -1.7,
+     "nodata_cells": 0,
+     "valid_cells": 31706
+    }
+   },
+   "22095": {
+    "bbox_wgs84": [
+     -90.68919,
+     29.884891,
+     -90.157974,
+     30.294662
+    ],
+    "frame_origin": {
+     "lat": 30.12647,
+     "lng": -90.470816
+    },
+    "frame_origin_height_m": 0.6,
+    "name": "St. John the Baptist",
+    "stats_over_bbox": {
+     "max_at": {
+      "col": 648,
+      "lat": 29.934167,
+      "lng": -90.255833,
+      "row": 639
+     },
+     "max_m": 21.8,
+     "mean_m": 0.32,
+     "min_at": {
+      "col": 654,
+      "lat": 29.919167,
+      "lng": -90.245833,
+      "row": 648
+     },
+     "min_m": -8.7,
+     "nodata_cells": 0,
+     "valid_cells": 78474
+    }
+   },
+   "22103": {
+    "bbox_wgs84": [
+     -90.254885,
+     30.15034,
+     -89.526258,
+     30.712165
+    ],
+    "frame_origin": {
+     "lat": 30.410254,
+     "lng": -89.957388
+    },
+    "frame_origin_height_m": 11.23,
+    "name": "St. Tammany",
+    "stats_over_bbox": {
+     "max_at": {
+      "col": 1038,
+      "lat": 30.6725,
+      "lng": -89.605833,
+      "row": 196
+     },
+     "max_m": 78.5,
+     "mean_m": 13.58,
+     "min_at": {
+      "col": 942,
+      "lat": 30.2225,
+      "lng": -89.765833,
+      "row": 466
+     },
+     "min_m": -2.7,
+     "nodata_cells": 0,
+     "valid_cells": 147269
+    }
+   },
+   "22105": {
+    "bbox_wgs84": [
+     -90.567154,
+     30.234528,
+     -90.161563,
+     30.99995
+    ],
+    "frame_origin": {
+     "lat": 30.626271,
+     "lng": -90.404976
+    },
+    "frame_origin_height_m": 35.01,
+    "name": "Tangipahoa",
+    "stats_over_bbox": {
+     "max_at": {
+      "col": 648,
+      "lat": 30.995833,
+      "lng": -90.255833,
+      "row": 2
+     },
+     "max_m": 111.0,
+     "mean_m": 33.25,
+     "min_at": {
+      "col": 676,
+      "lat": 30.3825,
+      "lng": -90.209167,
+      "row": 370
+     },
+     "min_m": -0.6,
+     "nodata_cells": 0,
+     "valid_cells": 111537
+    }
+   },
+   "22109": {
+    "bbox_wgs84": [
+     -91.335262,
+     29.040435,
+     -90.376921,
+     29.77579
+    ],
+    "frame_origin": {
+     "lat": 29.41015,
+     "lng": -90.864829
+    },
+    "frame_origin_height_m": -0.36,
+    "name": "Terrebonne",
+    "stats_over_bbox": {
+     "max_at": {
+      "col": 56,
+      "lat": 29.6775,
+      "lng": -91.2425,
+      "row": 793
+     },
+     "max_m": 11.7,
+     "mean_m": 0.08,
+     "min_at": {
+      "col": 477,
+      "lat": 29.5275,
+      "lng": -90.540833,
+      "row": 883
+     },
+     "min_m": -5.7,
+     "nodata_cells": 161,
+     "valid_cells": 253414
+    }
+   }
+  }
+ },
+ "modifications": "block mean of the 1 arc-second pixels to cell_arcsec, cells under half valid are nodata, rounded to 0.1 m, clipped to the union of the registry bboxes (elevation/fetch_dem.py)",
+ "not_gridded": {
+  "smiles": {
+   "provenance": "AUTHORED",
+   "relief": "AUTHORED only, labelled AUTHORED on the page legend",
+   "why": "no real anchor to sample: AUTHORED game district - not a real place, not surveyed; Unspoken Smiles is named only as the programme the clinic stations belong to (no endorsement, partnership or clinical claim)."
+  }
+ },
+ "pack": "elevation",
+ "pack_version": "3.2.0",
+ "pins": [
+  {
+   "height_m": 1.47,
+   "id": "22005.frame_origin",
+   "lat": 30.202946,
+   "lng": -90.912536,
+   "point_provenance": "DERIVED - parishes/registry/parishes.json#22005.frame.origin (area-weighted centroid)",
+   "region": "parishes"
+  },
+  {
+   "height_m": 0.22,
+   "id": "22051.frame_origin",
+   "lat": 29.741878,
+   "lng": -90.112935,
+   "point_provenance": "DERIVED - parishes/registry/parishes.json#22051.frame.origin (area-weighted centroid)",
+   "region": "parishes"
+  },
+  {
+   "height_m": 0.15,
+   "id": "22057.frame_origin",
+   "lat": 29.558251,
+   "lng": -90.418832,
+   "point_provenance": "DERIVED - parishes/registry/parishes.json#22057.frame.origin (area-weighted centroid)",
+   "region": "parishes"
+  },
+  {
+   "height_m": 7.26,
+   "id": "22063.frame_origin",
+   "lat": 30.439521,
+   "lng": -90.728657,
+   "point_provenance": "DERIVED - parishes/registry/parishes.json#22063.frame.origin (area-weighted centroid)",
+   "region": "parishes"
+  },
+  {
+   "height_m": -0.81,
+   "id": "22071.frame_origin",
+   "lat": 30.070098,
+   "lng": -89.927224,
+   "point_provenance": "DERIVED - parishes/registry/parishes.json#22071.frame.origin (area-weighted centroid)",
+   "region": "parishes"
+  },
+  {
+   "height_m": 0.11,
+   "id": "22075.frame_origin",
+   "lat": 29.433573,
+   "lng": -89.623085,
+   "point_provenance": "DERIVED - parishes/registry/parishes.json#22075.frame.origin (area-weighted centroid)",
+   "region": "parishes"
+  },
+  {
+   "height_m": -0.33,
+   "id": "22087.frame_origin",
+   "lat": 29.875819,
+   "lng": -89.541465,
+   "point_provenance": "DERIVED - parishes/registry/parishes.json#22087.frame.origin (area-weighted centroid)",
+   "region": "parishes"
+  },
+  {
+   "height_m": 1.19,
+   "id": "22089.frame_origin",
+   "lat": 29.905405,
+   "lng": -90.358338,
+   "point_provenance": "DERIVED - parishes/registry/parishes.json#22089.frame.origin (area-weighted centroid)",
+   "region": "parishes"
+  },
+  {
+   "height_m": 2.08,
+   "id": "22093.frame_origin",
+   "lat": 30.026879,
+   "lng": -90.796157,
+   "point_provenance": "DERIVED - parishes/registry/parishes.json#22093.frame.origin (area-weighted centroid)",
+   "region": "parishes"
+  },
+  {
+   "height_m": 0.6,
+   "id": "22095.frame_origin",
+   "lat": 30.12647,
+   "lng": -90.470816,
+   "point_provenance": "DERIVED - parishes/registry/parishes.json#22095.frame.origin (area-weighted centroid)",
+   "region": "parishes"
+  },
+  {
+   "height_m": 11.23,
+   "id": "22103.frame_origin",
+   "lat": 30.410254,
+   "lng": -89.957388,
+   "point_provenance": "DERIVED - parishes/registry/parishes.json#22103.frame.origin (area-weighted centroid)",
+   "region": "parishes"
+  },
+  {
+   "height_m": 35.01,
+   "id": "22105.frame_origin",
+   "lat": 30.626271,
+   "lng": -90.404976,
+   "point_provenance": "DERIVED - parishes/registry/parishes.json#22105.frame.origin (area-weighted centroid)",
+   "region": "parishes"
+  },
+  {
+   "height_m": -0.36,
+   "id": "22109.frame_origin",
+   "lat": 29.41015,
+   "lng": -90.864829,
+   "point_provenance": "DERIVED - parishes/registry/parishes.json#22109.frame.origin (area-weighted centroid)",
+   "region": "parishes"
+  },
+  {
+   "height_m": -0.45,
+   "id": "world.origin",
+   "lat": 29.975,
+   "lng": -90.09,
+   "point_provenance": "parishes/registry/parishes.json#frames.world.origin (the shared scene frame of every world file)",
+   "region": "parishes"
+  },
+  {
+   "height_m": 115.12,
+   "id": "06001.frame_origin",
+   "lat": 37.645694,
+   "lng": -121.888216,
+   "point_provenance": "DERIVED - bayarea/registry/bayarea.json#06001.frame.origin (area-weighted centroid)",
+   "region": "bayarea"
+  },
+  {
+   "height_m": 185.14,
+   "id": "06013.frame_origin",
+   "lat": 37.919527,
+   "lng": -121.929038,
+   "point_provenance": "DERIVED - bayarea/registry/bayarea.json#06013.frame.origin (area-weighted centroid)",
+   "region": "bayarea"
+  },
+  {
+   "height_m": 63.74,
+   "id": "06041.frame_origin",
+   "lat": 38.07502,
+   "lng": -122.724299,
+   "point_provenance": "DERIVED - bayarea/registry/bayarea.json#06041.frame.origin (area-weighted centroid)",
+   "region": "bayarea"
+  },
+  {
+   "height_m": 380.94,
+   "id": "06055.frame_origin",
+   "lat": 38.506651,
+   "lng": -122.331322,
+   "point_provenance": "DERIVED - bayarea/registry/bayarea.json#06055.frame.origin (area-weighted centroid)",
+   "region": "bayarea"
+  },
+  {
+   "height_m": 114.5,
+   "id": "06075.frame_origin",
+   "lat": 37.754584,
+   "lng": -122.440049,
+   "point_provenance": "DERIVED - bayarea/registry/bayarea.json#06075.frame.origin (area-weighted centroid)",
+   "region": "bayarea"
+  },
+  {
+   "height_m": 471.61,
+   "id": "06081.frame_origin",
+   "lat": 37.424548,
+   "lng": -122.330845,
+   "point_provenance": "DERIVED - bayarea/registry/bayarea.json#06081.frame.origin (area-weighted centroid)",
+   "region": "bayarea"
+  },
+  {
+   "height_m": 316.57,
+   "id": "06085.frame_origin",
+   "lat": 37.232517,
+   "lng": -121.697129,
+   "point_provenance": "DERIVED - bayarea/registry/bayarea.json#06085.frame.origin (area-weighted centroid)",
+   "region": "bayarea"
+  },
+  {
+   "height_m": 18.32,
+   "id": "06095.frame_origin",
+   "lat": 38.270618,
+   "lng": -121.932984,
+   "point_provenance": "DERIVED - bayarea/registry/bayarea.json#06095.frame.origin (area-weighted centroid)",
+   "region": "bayarea"
+  },
+  {
+   "height_m": 114.66,
+   "id": "06097.frame_origin",
+   "lat": 38.528522,
+   "lng": -122.888207,
+   "point_provenance": "DERIVED - bayarea/registry/bayarea.json#06097.frame.origin (area-weighted centroid)",
+   "region": "bayarea"
+  },
+  {
+   "height_m": 0.0,
+   "id": "world.origin",
+   "lat": 37.72,
+   "lng": -122.27,
+   "point_provenance": "bayarea/registry/bayarea.json#frames.world.origin (the shared scene frame of every world file)",
+   "region": "bayarea"
+  }
+ ],
+ "provenance": "RECORDED",
+ "provenance_note": "every height is RECORDED from the vendored USGS 3DEP grids; the point it is sampled at keeps its own registry provenance; anything drawn where a grid says None is AUTHORED and labelled",
+ "sampler": {
+  "functions": [
+   "load_grid(region)",
+   "height_m(grid, lat, lng)",
+   "height_world_m(grid, origin, x, z)"
+  ],
+  "js_twin": "elevation/test.mjs heightM() - must agree with every pin",
+  "module": "elevation/sample.py",
+  "rule": "bilinear between the 4 cell centres around the point (edges clamp); if any of the 4 is nodata, the containing cell's own value; None when that is nodata or the point is outside the grid; never 0 or a default"
+ },
+ "sampler_stamp": "16c930b774da4ac8",
+ "source": "USGS 3D Elevation Program (3DEP), 1 arc-second DEM, staged GeoTIFF tiles",
+ "source_stamp": "e5e001e470758f96",
+ "source_url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/"
+}

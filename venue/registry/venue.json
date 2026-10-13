@@ -1,0 +1,760 @@
+{
+ "attribution": {
+  "author": "GL events Paris Venues",
+  "author_profile_url": "https://sketchfab.com/GLeventsParisVenues",
+  "changes_indication": "The work itself was NOT modified and is NOT redistributed here. No geometry, no texture and no part of the file is copied into this repository. What this pack publishes is measurement derived from the work - dimensions, areas, counts and ratios computed by reading it - which is a change from the work in the sense the licence asks about, so it is declared as one rather than argued about.",
+  "changes_made": true,
+  "license_id": "CC-BY-4.0",
+  "license_name": "Creative Commons Attribution 4.0 International",
+  "license_url": "http://creativecommons.org/licenses/by/4.0/",
+  "measured_by": "read verbatim out of the file's own asset.extras block; nothing here is typed by this build",
+  "redistribution": "none. The source file stays outside this repository, at the upload path recorded beside this block, and the bundle ships no derivative of its geometry.",
+  "source_url": "https://sketchfab.com/3d-models/r5-salons-rive-gauche-maison-de-la-mutualite-e9e40a09c82e42e8a145afa679ffac28",
+  "tier": "RECORDED",
+  "title": "R+5_Salons Rive Gauche_Maison de la Mutualit\u00e9",
+  "why_this_block_exists": "CC-BY-4.0 requires attribution, a link to the work, a link to the licence and an indication of changes. Those four are fields here rather than a sentence somewhere, so a check can fail on a missing one - and venue/test.mjs does."
+ },
+ "building": {
+  "contents_meshes": 1003,
+  "extent_mu": {
+   "x": 18.635,
+   "y": 2.238,
+   "z": 15.657
+  },
+  "fabric_meshes": [
+   "polySurface1_lambert17_0",
+   "polySurface2_lambert10_0",
+   "polySurface2_lambert14_0",
+   "polySurface2_lambert21_0",
+   "polySurface2_standardSurface3_0"
+  ],
+  "fabric_split": {
+   "largest_below": 7.678,
+   "note": "the threshold sits in an empty band between those two footprints, so the split is not knife-edge: any threshold inside that band gives the same set",
+   "smallest_above": 18.193,
+   "threshold_mu2": 9.0
+  },
+  "max_mu": [
+   10.094,
+   1.853,
+   6.727
+  ],
+  "measured_by": "every mesh's POSITION accessor bounds, transformed by the node chain above it and unioned. This is a BOUNDING BOX over a model, not a surveyed building dimension: it includes whatever sticks out furthest and it is not wall-to-wall anything.",
+  "min_mu": [
+   -8.542,
+   -0.385,
+   -8.93
+  ],
+  "plan_aspect": 1.19,
+  "plan_footprint_mu2": 291.77,
+  "tier": "DERIVED",
+  "triangles": 575792
+ },
+ "circulation": {
+  "caveat": "a clear run is not a corridor. It is the distance across unfurnished floor in one of the two plan axes, which is what circulation width means in a room laid out with loose seating and nothing else. It says nothing about a walled corridor, because this model has no walled corridors to measure.",
+  "cells_clear": 6119,
+  "cells_occupied": 2411,
+  "clear_run_distribution_mu": [
+   [
+    0.1,
+    71
+   ],
+   [
+    0.2,
+    16
+   ],
+   [
+    0.3,
+    21
+   ],
+   [
+    0.4,
+    38
+   ],
+   [
+    0.5,
+    98
+   ],
+   [
+    0.6,
+    97
+   ],
+   [
+    0.7,
+    53
+   ],
+   [
+    0.8,
+    38
+   ],
+   [
+    0.9,
+    67
+   ],
+   [
+    1.0,
+    78
+   ],
+   [
+    1.2,
+    14
+   ],
+   [
+    1.3,
+    21
+   ],
+   [
+    1.5,
+    20
+   ],
+   [
+    1.6,
+    15
+   ],
+   [
+    2.4,
+    22
+   ],
+   [
+    2.6,
+    12
+   ],
+   [
+    2.9,
+    27
+   ],
+   [
+    3.0,
+    27
+   ],
+   [
+    3.2,
+    18
+   ],
+   [
+    3.4,
+    22
+   ],
+   [
+    3.5,
+    11
+   ],
+   [
+    5.4,
+    19
+   ]
+  ],
+  "clear_run_median_mu": 0.9,
+  "floor_cells": 8530,
+  "measured_by": "the upper floor plate rasterised at 0.1 mu, minus the plan footprint of every contents mesh standing on it (rising more than 0.05 mu above the floor and starting below 1.0 mu). What is left is clear floor; the runs are its uninterrupted spans along both plan axes.",
+  "occupancy": 0.283,
+  "tier": "DERIVED"
+ },
+ "clear_heights": {
+  "cells_measured": 1104,
+  "distribution_mu": [
+   [
+    1.35,
+    1076
+   ],
+   [
+    1.32,
+    14
+   ],
+   [
+    1.65,
+    14
+   ]
+  ],
+  "measured_by": "for every 0.1 mu plan cell that building-fabric geometry reaches over, the height it reaches minus the floor datum below it. Cells where the fabric rises less than 0.5 mu are floor-only and excluded - this model has a roof over part of its plan, not all of it, and the count below says over how much.",
+  "modal_clear_storey_mu": 1.35,
+  "modal_share": 0.975,
+  "note": "the distribution is narrow, not a spread: the modal height carries 0.975 of the measured cells and both floor datums return the same clear height, which is why this pack is willing to call it a storey height at all.",
+  "tier": "DERIVED"
+ },
+ "contents_clusters": {
+  "clusters": [
+   {
+    "aspect": 1.982,
+    "base_above_upper_datum_mu": -0.448,
+    "bbox_depth_mu": 6.64,
+    "bbox_height_mu": 1.865,
+    "bbox_width_mu": 13.163,
+    "measured_by": "the axis-aligned bounding box over a single-linkage cluster of contents meshes at a 0.2 mu gap. This is a box around what stands in a space, NOT a room dimension and NOT a wall-to-wall survey.",
+    "members": 224,
+    "plan_area_mu2": 87.404,
+    "tier": "DERIVED"
+   },
+   {
+    "aspect": 1.222,
+    "base_above_upper_datum_mu": -0.001,
+    "bbox_depth_mu": 1.968,
+    "bbox_height_mu": 0.33,
+    "bbox_width_mu": 1.61,
+    "measured_by": "the axis-aligned bounding box over a single-linkage cluster of contents meshes at a 0.2 mu gap. This is a box around what stands in a space, NOT a room dimension and NOT a wall-to-wall survey.",
+    "members": 119,
+    "plan_area_mu2": 3.168,
+    "tier": "DERIVED"
+   },
+   {
+    "aspect": 1.076,
+    "base_above_upper_datum_mu": -0.025,
+    "bbox_depth_mu": 2.95,
+    "bbox_height_mu": 1.457,
+    "bbox_width_mu": 3.173,
+    "measured_by": "the axis-aligned bounding box over a single-linkage cluster of contents meshes at a 0.2 mu gap. This is a box around what stands in a space, NOT a room dimension and NOT a wall-to-wall survey.",
+    "members": 113,
+    "plan_area_mu2": 9.358,
+    "tier": "DERIVED"
+   },
+   {
+    "aspect": 1.912,
+    "base_above_upper_datum_mu": -0.321,
+    "bbox_depth_mu": 1.785,
+    "bbox_height_mu": 1.36,
+    "bbox_width_mu": 3.414,
+    "measured_by": "the axis-aligned bounding box over a single-linkage cluster of contents meshes at a 0.2 mu gap. This is a box around what stands in a space, NOT a room dimension and NOT a wall-to-wall survey.",
+    "members": 88,
+    "plan_area_mu2": 6.096,
+    "tier": "DERIVED"
+   },
+   {
+    "aspect": 1.266,
+    "base_above_upper_datum_mu": -0.318,
+    "bbox_depth_mu": 2.14,
+    "bbox_height_mu": 1.429,
+    "bbox_width_mu": 1.691,
+    "measured_by": "the axis-aligned bounding box over a single-linkage cluster of contents meshes at a 0.2 mu gap. This is a box around what stands in a space, NOT a room dimension and NOT a wall-to-wall survey.",
+    "members": 73,
+    "plan_area_mu2": 3.618,
+    "tier": "DERIVED"
+   },
+   {
+    "aspect": 1.356,
+    "base_above_upper_datum_mu": 0.002,
+    "bbox_depth_mu": 2.339,
+    "bbox_height_mu": 0.331,
+    "bbox_width_mu": 1.725,
+    "measured_by": "the axis-aligned bounding box over a single-linkage cluster of contents meshes at a 0.2 mu gap. This is a box around what stands in a space, NOT a room dimension and NOT a wall-to-wall survey.",
+    "members": 63,
+    "plan_area_mu2": 4.036,
+    "tier": "DERIVED"
+   },
+   {
+    "aspect": 1.261,
+    "base_above_upper_datum_mu": -0.315,
+    "bbox_depth_mu": 2.432,
+    "bbox_height_mu": 1.425,
+    "bbox_width_mu": 3.066,
+    "measured_by": "the axis-aligned bounding box over a single-linkage cluster of contents meshes at a 0.2 mu gap. This is a box around what stands in a space, NOT a room dimension and NOT a wall-to-wall survey.",
+    "members": 37,
+    "plan_area_mu2": 7.458,
+    "tier": "DERIVED"
+   },
+   {
+    "aspect": 1.029,
+    "base_above_upper_datum_mu": -0.0,
+    "bbox_depth_mu": 2.81,
+    "bbox_height_mu": 1.251,
+    "bbox_width_mu": 2.732,
+    "measured_by": "the axis-aligned bounding box over a single-linkage cluster of contents meshes at a 0.2 mu gap. This is a box around what stands in a space, NOT a room dimension and NOT a wall-to-wall survey.",
+    "members": 30,
+    "plan_area_mu2": 7.678,
+    "tier": "DERIVED"
+   },
+   {
+    "aspect": 4.311,
+    "base_above_upper_datum_mu": 0.024,
+    "bbox_depth_mu": 1.909,
+    "bbox_height_mu": 0.331,
+    "bbox_width_mu": 0.443,
+    "measured_by": "the axis-aligned bounding box over a single-linkage cluster of contents meshes at a 0.2 mu gap. This is a box around what stands in a space, NOT a room dimension and NOT a wall-to-wall survey.",
+    "members": 27,
+    "plan_area_mu2": 0.845,
+    "tier": "DERIVED"
+   },
+   {
+    "aspect": 2.797,
+    "base_above_upper_datum_mu": -0.013,
+    "bbox_depth_mu": 0.68,
+    "bbox_height_mu": 0.331,
+    "bbox_width_mu": 1.901,
+    "measured_by": "the axis-aligned bounding box over a single-linkage cluster of contents meshes at a 0.2 mu gap. This is a box around what stands in a space, NOT a room dimension and NOT a wall-to-wall survey.",
+    "members": 27,
+    "plan_area_mu2": 1.292,
+    "tier": "DERIVED"
+   },
+   {
+    "aspect": 2.797,
+    "base_above_upper_datum_mu": -0.013,
+    "bbox_depth_mu": 0.68,
+    "bbox_height_mu": 0.331,
+    "bbox_width_mu": 1.901,
+    "measured_by": "the axis-aligned bounding box over a single-linkage cluster of contents meshes at a 0.2 mu gap. This is a box around what stands in a space, NOT a room dimension and NOT a wall-to-wall survey.",
+    "members": 27,
+    "plan_area_mu2": 1.292,
+    "tier": "DERIVED"
+   },
+   {
+    "aspect": 1.469,
+    "base_above_upper_datum_mu": -0.307,
+    "bbox_depth_mu": 1.227,
+    "bbox_height_mu": 1.418,
+    "bbox_width_mu": 1.803,
+    "measured_by": "the axis-aligned bounding box over a single-linkage cluster of contents meshes at a 0.2 mu gap. This is a box around what stands in a space, NOT a room dimension and NOT a wall-to-wall survey.",
+    "members": 27,
+    "plan_area_mu2": 2.213,
+    "tier": "DERIVED"
+   },
+   {
+    "aspect": 4.311,
+    "base_above_upper_datum_mu": -0.002,
+    "bbox_depth_mu": 1.909,
+    "bbox_height_mu": 0.331,
+    "bbox_width_mu": 0.443,
+    "measured_by": "the axis-aligned bounding box over a single-linkage cluster of contents meshes at a 0.2 mu gap. This is a box around what stands in a space, NOT a room dimension and NOT a wall-to-wall survey.",
+    "members": 27,
+    "plan_area_mu2": 0.845,
+    "tier": "DERIVED"
+   },
+   {
+    "aspect": 1.884,
+    "base_above_upper_datum_mu": -0.389,
+    "bbox_depth_mu": 1.428,
+    "bbox_height_mu": 1.424,
+    "bbox_width_mu": 2.69,
+    "measured_by": "the axis-aligned bounding box over a single-linkage cluster of contents meshes at a 0.2 mu gap. This is a box around what stands in a space, NOT a room dimension and NOT a wall-to-wall survey.",
+    "members": 19,
+    "plan_area_mu2": 3.842,
+    "tier": "DERIVED"
+   },
+   {
+    "aspect": 1.347,
+    "base_above_upper_datum_mu": -0.801,
+    "bbox_depth_mu": 1.441,
+    "bbox_height_mu": 0.921,
+    "bbox_width_mu": 1.069,
+    "measured_by": "the axis-aligned bounding box over a single-linkage cluster of contents meshes at a 0.2 mu gap. This is a box around what stands in a space, NOT a room dimension and NOT a wall-to-wall survey.",
+    "members": 17,
+    "plan_area_mu2": 1.541,
+    "tier": "DERIVED"
+   }
+  ],
+  "gap_mu": 0.2,
+  "gap_sensitivity": [
+   {
+    "clusters": 145,
+    "clusters_at_or_above_min": 26,
+    "gap_mu": 0.1
+   },
+   {
+    "clusters": 55,
+    "clusters_at_or_above_min": 15,
+    "gap_mu": 0.15
+   },
+   {
+    "clusters": 52,
+    "clusters_at_or_above_min": 15,
+    "gap_mu": 0.2
+   },
+   {
+    "clusters": 41,
+    "clusters_at_or_above_min": 10,
+    "gap_mu": 0.3
+   },
+   {
+    "clusters": 31,
+    "clusters_at_or_above_min": 8,
+    "gap_mu": 0.4
+   }
+  ],
+  "measured_by": "single-linkage clustering of the contents meshes' plan bounding boxes at the gap below, with the sensitivity of the count to that gap published beside it",
+  "min_members": 8,
+  "tier": "DERIVED"
+ },
+ "counts": {
+  "contents_clusters": 15,
+  "contents_meshes": 1003,
+  "fabric_meshes": 5,
+  "floor_datum_levels": 2,
+  "floor_plates": 4,
+  "opening_family_members": 12
+ },
+ "honesty": {
+  "a_box_is_not_a_room": "the building extent and every cluster dimension is an axis-aligned BOUNDING BOX over a set of meshes. It is not a wall-to-wall room dimension, it includes anything that sticks out, and no record here calls it a survey. The floor plates come closer - they are the actual extent of modelled floor - but their width and depth are still the box around a floor patch.",
+  "nothing_of_the_work_is_redistributed": "no geometry and no texture from the source is in this tree. The registry holds numbers about it and the four attribution fields the licence requires.",
+  "the_clusters_depend_on_a_threshold": "single-linkage clustering has no natural answer; the count depends on the gap. The sensitivity table is published beside the clusters for exactly that reason, and it moves from 145 clusters to 31 across the probed range.",
+  "the_model_is_partial": "fabric geometry covers only part of the plan: 1104 plan cells carry a measurable height above a floor datum, out of 8530 cells of modelled floor on the upper datum alone. The clear-height figure is a measurement of where there is a roof, not of the whole building.",
+  "the_openings_are_an_inference": "INFERRED FROM SHAPE, NOT LABELLED IN THE FILE",
+  "the_unit_is_not_metres": "The file does not establish a metre scale and this pack does not invent one. Every dimension published here is in model units. The plan-to-height ratio is the decisive evidence: the building is 13.8 times wider than its clear storey is high, and no reading of the file in which one unit is one metre survives that.",
+  "what_is_derived": "every dimension, area, height and ratio. They are computed here from the node transforms and the vertex buffer, and a computation from recorded geometry is DERIVED however careful it is.",
+  "what_is_recorded": "the asset block, the counts, the byte length and the digest. That is all. Those are statements the file makes about itself and this build copies them."
+ },
+ "levels": [
+  {
+   "datum_mu": 0.416,
+   "floor_plates": [
+    {
+     "aspect": 1.603,
+     "bbox_depth_mu": 5.8,
+     "bbox_fill": 0.817,
+     "bbox_width_mu": 9.3,
+     "clear_height_cells_measured": 308,
+     "clear_height_modes_mu": [
+      [
+       1.35,
+       308
+      ]
+     ],
+     "measured_by": "four-connected components of the horizontal triangles at this datum, rasterised onto a 0.1 mu plan grid. The width and depth are the bounding box OF THAT COMPONENT in plan - a box around a floor patch, not a wall-to-wall survey.",
+     "plan_area_mu2": 44.07,
+     "tier": "DERIVED"
+    },
+    {
+     "aspect": 1.117,
+     "bbox_depth_mu": 6.0,
+     "bbox_fill": 0.822,
+     "bbox_width_mu": 6.7,
+     "clear_height_cells_measured": 232,
+     "clear_height_modes_mu": [
+      [
+       1.35,
+       232
+      ]
+     ],
+     "measured_by": "four-connected components of the horizontal triangles at this datum, rasterised onto a 0.1 mu plan grid. The width and depth are the bounding box OF THAT COMPONENT in plan - a box around a floor patch, not a wall-to-wall survey.",
+     "plan_area_mu2": 33.03,
+     "tier": "DERIVED"
+    },
+    {
+     "aspect": 1.185,
+     "bbox_depth_mu": 2.7,
+     "bbox_fill": 0.949,
+     "bbox_width_mu": 3.2,
+     "clear_height_cells_measured": 42,
+     "clear_height_modes_mu": [
+      [
+       1.32,
+       14
+      ],
+      [
+       1.35,
+       28
+      ]
+     ],
+     "measured_by": "four-connected components of the horizontal triangles at this datum, rasterised onto a 0.1 mu plan grid. The width and depth are the bounding box OF THAT COMPONENT in plan - a box around a floor patch, not a wall-to-wall survey.",
+     "plan_area_mu2": 8.2,
+     "tier": "DERIVED"
+    }
+   ],
+   "horizontal_area_mu2": 85.02,
+   "measured_by": "the horizontal triangles of the whole scene, summed by height; these are the two heights that carry the most surface area",
+   "tier": "DERIVED"
+  },
+  {
+   "datum_mu": 0.11,
+   "floor_plates": [
+    {
+     "aspect": 1.663,
+     "bbox_depth_mu": 15.3,
+     "bbox_fill": 0.562,
+     "bbox_width_mu": 9.2,
+     "clear_height_cells_measured": 522,
+     "clear_height_modes_mu": [
+      [
+       1.35,
+       508
+      ],
+      [
+       1.65,
+       14
+      ]
+     ],
+     "measured_by": "four-connected components of the horizontal triangles at this datum, rasterised onto a 0.1 mu plan grid. The width and depth are the bounding box OF THAT COMPONENT in plan - a box around a floor patch, not a wall-to-wall survey.",
+     "plan_area_mu2": 79.15,
+     "tier": "DERIVED"
+    }
+   ],
+   "horizontal_area_mu2": 78.79,
+   "measured_by": "the horizontal triangles of the whole scene, summed by height; these are the two heights that carry the most surface area",
+   "tier": "DERIVED"
+  }
+ ],
+ "openings": {
+  "all_panel_families": [
+   {
+    "both_sides_share": 1.0,
+    "distinct_widths": 9,
+    "floor_on_both_sides": 12,
+    "height_mu": 0.739,
+    "members": 12,
+    "thickness_mu": 0.09,
+    "widths_mu": [
+     0.513,
+     0.682,
+     0.682,
+     0.682,
+     0.704,
+     0.711,
+     0.711,
+     0.712,
+     0.75,
+     0.82,
+     0.855,
+     0.882
+    ]
+   },
+   {
+    "both_sides_share": 1.0,
+    "distinct_widths": 3,
+    "floor_on_both_sides": 7,
+    "height_mu": 1.228,
+    "members": 7,
+    "thickness_mu": 0.0,
+    "widths_mu": [
+     0.849,
+     0.849,
+     0.849,
+     0.849,
+     0.857,
+     0.868,
+     0.868
+    ]
+   },
+   {
+    "both_sides_share": 0.857,
+    "distinct_widths": 7,
+    "floor_on_both_sides": 6,
+    "height_mu": 1.307,
+    "members": 7,
+    "thickness_mu": 0.0,
+    "widths_mu": [
+     0.279,
+     0.313,
+     0.612,
+     0.645,
+     0.653,
+     0.878,
+     0.933
+    ]
+   },
+   {
+    "both_sides_share": 0.857,
+    "distinct_widths": 7,
+    "floor_on_both_sides": 6,
+    "height_mu": 1.321,
+    "members": 7,
+    "thickness_mu": 0.043,
+    "widths_mu": [
+     0.283,
+     0.317,
+     0.62,
+     0.654,
+     0.662,
+     0.89,
+     0.946
+    ]
+   },
+   {
+    "both_sides_share": 0.571,
+    "distinct_widths": 3,
+    "floor_on_both_sides": 4,
+    "height_mu": 1.241,
+    "members": 7,
+    "thickness_mu": 0.043,
+    "widths_mu": [
+     0.86,
+     0.86,
+     0.86,
+     0.86,
+     0.869,
+     0.88,
+     0.88
+    ]
+   },
+   {
+    "both_sides_share": 0.0,
+    "distinct_widths": 8,
+    "floor_on_both_sides": 0,
+    "height_mu": 1.372,
+    "members": 17,
+    "thickness_mu": 0.027,
+    "widths_mu": [
+     0.35,
+     0.35,
+     0.35,
+     0.35,
+     0.35,
+     0.35,
+     0.35,
+     0.35,
+     0.35,
+     0.415,
+     0.43,
+     0.453,
+     0.455,
+     0.56,
+     0.591,
+     0.591,
+     0.637
+    ]
+   },
+   {
+    "both_sides_share": 0.0,
+    "distinct_widths": 1,
+    "floor_on_both_sides": 0,
+    "height_mu": 1.39,
+    "members": 11,
+    "thickness_mu": 0.083,
+    "widths_mu": [
+     1.017,
+     1.017,
+     1.017,
+     1.017,
+     1.017,
+     1.017,
+     1.017,
+     1.017,
+     1.017,
+     1.017,
+     1.017
+    ]
+   }
+  ],
+  "family_height_mu": 0.739,
+  "family_thickness_mu": 0.09,
+  "floor_on_both_sides": 12,
+  "identification": "INFERRED FROM SHAPE, NOT LABELLED IN THE FILE",
+  "measured_by": "the largest family of floor-standing panels sharing ONE height and ONE thickness while their widths vary. Constant height and thickness with varying width is what an opening set looks like; the model names nothing, so this is an inference and is labelled as one.",
+  "members": 12,
+  "selected_by": "among floor-standing panel families of at least that many members, the opening set is the one with the highest share of members that have modelled floor on BOTH sides - the evidence picks it, not its size",
+  "tier": "DERIVED",
+  "what_that_test_means": "12 of 12 sit with modelled floor within 0.35 mu on BOTH sides. A partition or a screen has floor on one side or none; a doorway has it on both. That supports the reading and does not prove it - a glazed bay between two furnished areas would pass the same test.",
+  "what_would_settle_it": "a named object, a door material, or a hole in the wall mesh at the same place. The file has none of the three: the walls are one shell mesh and the panel family carries a flat black material with no name beyond its index.",
+  "width_max_mu": 0.882,
+  "width_median_mu": 0.711,
+  "width_min_mu": 0.513,
+  "widths_mu": [
+   0.513,
+   0.682,
+   0.682,
+   0.682,
+   0.704,
+   0.711,
+   0.711,
+   0.712,
+   0.75,
+   0.82,
+   0.855,
+   0.882
+  ]
+ },
+ "pack": "venue",
+ "pack_version": "3.2.0",
+ "parameters": {
+  "cluster_gap": 0.2,
+  "cluster_gap_means": "two contents meshes join one cluster when their plan bounding boxes are within this many model units of each other on both plan axes",
+  "cluster_min_members": 8,
+  "fabric_footprint_threshold": 9.0,
+  "fabric_footprint_threshold_means": "a mesh whose world bounding box covers more than this many square model units in plan is treated as building fabric rather than contents",
+  "floor_plate_min_cells": 50,
+  "horizontal_tolerance": 0.002,
+  "horizontal_tolerance_means": "a triangle counts as horizontal when its three vertices lie within this many model units of one height",
+  "model_unit_basis": "the exporter node's 0.01 scale is UNDONE, so one model unit is one unit of the authored geometry as it sits in the vertex buffer",
+  "obstruction_band": [
+   0.05,
+   1.0
+  ],
+  "obstruction_band_means": "an object obstructs circulation on a floor plate when it rises more than the first value above that floor and starts below the second - lower is underfoot, higher is overhead",
+  "panel_family_min_members": 4,
+  "panel_family_selection": "among floor-standing panel families of at least that many members, the opening set is the one with the highest share of members that have modelled floor on BOTH sides - the evidence picks it, not its size",
+  "plan_grid": 0.1,
+  "plan_grid_means": "the cell size, in model units, that floor triangles and object footprints are rasterised onto"
+ },
+ "product": "measurements taken off a recorded 3D model of a real multi-salon event building, published as proportions the generated halls can be held against - and published in model units, because the file does not establish metres",
+ "ratios": {
+  "building_plan_aspect": 1.19,
+  "clear_run_median_over_clear_storey": 0.6667,
+  "clear_storey_over_building_short_side": 0.0862,
+  "clear_storey_over_largest_plate_short_side": 0.2328,
+  "datum_step_over_clear_storey": 0.2267,
+  "floor_plate_fill_of_its_own_bbox": 0.817,
+  "furniture_occupancy_of_floor_plate": 0.283,
+  "how_to_use_these": "take a hall's short plan dimension as the one number you own, and the rest follow. A room proportioned like this one is roughly 0.233 times as high as it is narrow, opens through gaps about 0.527 of its height across, and carries loose contents over about 0.283 of its floor. None of that is a rule; it is what one real building did.",
+  "largest_floor_plate_aspect": 1.603,
+  "measured_by": "each ratio is two of the DERIVED figures above divided by one another; nothing new is measured here and nothing is typed",
+  "modelled_floor_over_building_footprint": 0.561,
+  "opening_height_over_clear_storey": 0.5474,
+  "opening_width_over_clear_storey": 0.5267,
+  "tier": "DERIVED",
+  "why_these_are_the_useful_ones": "a ratio does not care what the unit is. The unit of this file is not established, so the proportions are the part of the measurement that transfers to a hall at any scale - and proportion is what the generated halls lack, not size."
+ },
+ "recorded": {
+  "bin_chunk_bytes": 27308412,
+  "counts": {
+   "accessors": 4079,
+   "animations": 1,
+   "bufferViews": 16,
+   "buffers": 1,
+   "images": 10,
+   "materials": 70,
+   "meshes": 1008,
+   "nodes": 1542,
+   "samplers": 1,
+   "scenes": 1,
+   "textures": 10
+  },
+  "file_bytes": 28210940,
+  "file_sha256": "b3b850ee49c5c5b8657fc1872e34b97456431934aebfcd87cb551929f5f26838",
+  "generator": "Sketchfab-16.16.0",
+  "glb_container_version": 2,
+  "gltf_version": "2.0",
+  "json_chunk_bytes": 902500,
+  "measured_by": "the file's own bytes and its own JSON chunk; every number below is read, none is typed",
+  "tier": "RECORDED",
+  "why_not_shipped": "the mesh count is the reason. The hall view of this bundle runs at 164 draw calls against a ceiling of 196; this one model is roughly five times that whole ceiling by itself. It is also a Paris conference venue and not a union training hall. It is measured, not imported."
+ },
+ "source": {
+  "in_repository": false,
+  "path": "/root/.claude/uploads/a56b2578-e24c-588e-b54f-1798a964624b/7ba02a37-r5_salons_rive_gauche_maison_de_la_mutualite.glb",
+  "tier": "RECORDED",
+  "why_not_in_repository": "the mesh count is the reason. The hall view of this bundle runs at 164 draw calls against a ceiling of 196; this one model is roughly five times that whole ceiling by itself. It is also a Paris conference venue and not a union training hall. It is measured, not imported."
+ },
+ "source_stamp": "529a69fce99689b5",
+ "unit": {
+  "means": "one unit of the authored geometry with the exporter node's 0.009999999776482582 scale undone. NOT a metre. See unit_scale.",
+  "name": "model unit",
+  "symbol": "mu"
+ },
+ "unit_scale": {
+  "conclusion": "The file does not establish a metre scale and this pack does not invent one. Every dimension published here is in model units. The plan-to-height ratio is the decisive evidence: the building is 13.8 times wider than its clear storey is high, and no reading of the file in which one unit is one metre survives that.",
+  "declared_conversion": {
+   "node": 1,
+   "node_name": "8f103d18d47d4d9780948232f9f3e61c.fbx",
+   "reading": "the conventional centimetre-to-metre factor an FBX exporter writes. It is the ONLY unit statement in the file.",
+   "uniform_scale": 0.009999999776482582
+  },
+  "if_someone_wants_metres": "multiply by a single uniform factor and say where the factor came from. The panel family below is the only anchor in the file with a conventional real size: if those panels are door leaves of 1.8 to 2.3 metres, the factor falls between 2.44 and 3.11, which would put the clear storey between 3.29 and 4.2 metres. That is an ESTIMATE resting on an assumption about what the panels are, it is not a measurement, and nothing in this registry is computed from it.",
+  "measured_by": "the file's only declared unit conversion, checked against the geometry it applies to",
+  "resolution": "UNRESOLVED",
+  "tier": "DERIVED",
+  "unit_published": "model unit (mu)",
+  "what_honouring_it_gives_if_read_as_metres": {
+   "building_extent": [
+    0.18635,
+    0.02238,
+    0.15657
+   ],
+   "verdict": "a multi-salon building 0.19 across. Not metres."
+  },
+  "what_undoing_it_gives": {
+   "building_extent_mu": [
+    18.635,
+    2.238,
+    15.657
+   ],
+   "clear_storey_mu": 1.35,
+   "verdict": "a plan 18.635 by 15.657 with a 1.35 clear storey. Read as metres that is a room wider than a house with a ceiling nobody could stand under, so this is not metres either."
+  }
+ }
+}

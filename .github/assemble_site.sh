@@ -14,6 +14,69 @@ cp web/*.html _site/web/
 cp -r web/vendor/. _site/web/vendor/
 cp console/trade_craft_console.html _site/console/
 cp -r wiki _site/wiki
+# The front door's background footage and poster (web/herovideo.py), and the
+# search-engine files web/build_seo.py writes at the root.
+cp -r web/media _site/web/media
+cp sitemap.xml robots.txt _site/
+# SHARE BEGIN (wave 18): the whitepaper's share card (web/build_whitepaper.py), named by its og:image
+cp -r web/img _site/web/img
+[ -f _site/web/img/smartcitix_whitepaper_card.png ] || { echo "assemble: web/img/smartcitix_whitepaper_card.png missing from _site"; exit 1; }
+# SHARE END
+# The parish world loads each parish's drawn map at run time ('../' + map path
+# from parishes/registry), so the link check below cannot see them: copy the
+# maps and require every map the registry names to be present.
+mkdir -p _site/parishes
+cp -r parishes/maps _site/parishes/maps
+rm -rf _site/parishes/maps/tiles   # the pages load one ground atlas per parish (parishes/maps/atlas)
+python3 - <<'PY'
+import json, pathlib, sys
+reg = json.load(open('parishes/registry/parishes.json'))
+named = [p['map'][k] for p in reg['parishes'].values() for k in ('path', 'preview')]
+atl = json.load(open('parishes/registry/ground_atlas.json'))['atlases']
+named += [a['path'] for k, a in atl.items() if k.startswith('parishes/')]
+if (pathlib.Path('_site') / 'parishes/maps/tiles').exists():
+    sys.exit('assemble: ground tiles must not ship; pages load parishes/maps/atlas')
+named += [p['map']['streets']['path'] for p in reg['parishes'].values()]
+missing = [m for m in named if not (pathlib.Path('_site') / m).is_file()]
+if missing:
+    sys.exit('assemble: parish maps named in parishes/registry are missing from _site: ' + ', '.join(missing))
+print(f"parish maps: all {len(named)} registry-named maps, ground atlases and street files present in _site")
+PY
+# The Bay world loads its county maps the same way ('../' + path from
+# bayarea/registry), and both worlds fetch underwater/registry/underwater.json
+# on the first Dive/ROV press: copy them and require what the registries name.
+mkdir -p _site/bayarea _site/underwater/registry
+cp -r bayarea/maps _site/bayarea/maps
+rm -rf _site/bayarea/maps/tiles    # the pages load one ground atlas per county (bayarea/maps/atlas)
+cp underwater/registry/underwater.json _site/underwater/registry/underwater.json
+# The Unspoken Smiles world loads its 4k map and one ground atlas at run time (paths from smiles/registry).
+mkdir -p _site/smiles && cp -r smiles/maps _site/smiles/maps
+# The parish and Bay worlds fetch the vendored USGS 3DEP grids at run time when relief is on (elevation/vendor).
+mkdir -p _site/elevation/vendor && cp elevation/vendor/*.u16.gz elevation/vendor/manifest.json elevation/vendor/USGS_3DEP_USE_CONSTRAINTS.txt _site/elevation/vendor/
+# ... and the vendored ESA WorldCover land-cover grids (CC BY 4.0, attribution beside them) that place the vegetation.
+mkdir -p _site/landcover/vendor && cp landcover/vendor/*.u8.gz landcover/vendor/manifest.json landcover/vendor/WORLDCOVER_ATTRIBUTION.txt landcover/vendor/LICENSE_CC-BY-4.0.txt _site/landcover/vendor/
+for f in landcover/vendor/parishes.u8.gz landcover/vendor/bayarea.u8.gz; do [ -f "_site/$f" ] || { echo "assemble: $f missing from _site"; exit 1; }; done
+# GROUND w16: the geomap's relief shading - PNGs made at build time from those grids (elevation/hillshade.py), same-origin.
+mkdir -p _site/elevation/derived && cp elevation/derived/hillshade_*.png _site/elevation/derived/
+for f in elevation/derived/hillshade_parishes.png elevation/derived/hillshade_bayarea.png; do [ -f "_site/$f" ] || { echo "assemble: $f missing from _site"; exit 1; }; done
+for f in elevation/vendor/parishes.u16.gz elevation/vendor/bayarea.u16.gz; do [ -f "_site/$f" ] || { echo "assemble: $f missing from _site"; exit 1; }; done
+for f in smiles/maps/district-4k.webp smiles/maps/atlas.webp; do [ -f "_site/$f" ] || { echo "assemble: $f missing from _site"; exit 1; }; done
+python3 - <<'PY'
+import json, pathlib, sys
+reg = json.load(open('bayarea/registry/bayarea.json'))
+cs = reg['counties']
+named = [c['map'][k] for c in cs.values() for k in ('path', 'preview')]
+atl = json.load(open('parishes/registry/ground_atlas.json'))['atlases']
+named += [a['path'] for k, a in atl.items() if k.startswith('bayarea/')]
+if (pathlib.Path('_site') / 'bayarea/maps/tiles').exists():
+    sys.exit('assemble: ground tiles must not ship; pages load bayarea/maps/atlas')
+named += [c['map']['streets']['path'] for c in cs.values()]
+named += ['underwater/registry/underwater.json']
+missing = [m for m in named if not (pathlib.Path('_site') / m).is_file()]
+if missing:
+    sys.exit('assemble: Bay maps / underwater registry missing from _site: ' + ', '.join(missing))
+print(f"bay maps: all {len(named)} registry-named Bay maps, ground atlases, street files and the underwater registry present in _site")
+PY
 
 python3 - <<'PY'
 import pathlib, re, sys, urllib.parse
@@ -41,7 +104,10 @@ def resolve(page, href):
 pages = list(site.rglob('*.html'))
 for page in pages:
     html = SCRIPT.sub(' ', page.read_text(errors='ignore'))
-    for href in re.findall(r'(?:href|src)="([^"]+)"', html):
+    # an attribute NAMED href or src, not one that merely ends in it: the front
+    # door records each figure's registry in data-src="...", which is a citation
+    # a reader sees, not a file the browser loads
+    for href in re.findall(r'(?<![\w-])(?:href|src)="([^"]+)"', html):
         resolve(page, href)
 
 # Stylesheets carry their own links, and the fonts now live behind one. A

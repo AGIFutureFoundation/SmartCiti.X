@@ -1,0 +1,139 @@
+{
+ "id": "scaffold-court",
+ "title": "Scaffold court",
+ "purpose": "An open matted floor for the scaffold and boom-lift seats, with harness, lanyard, helmet and edge-protection fixtures along the back wall and two trestles for the tie-in work.",
+ "unions": [
+  "scaffold",
+  "carpenters"
+ ],
+ "strand": "procedure",
+ "footprint_m": {
+  "w": 14.0,
+  "d": 8.0
+ },
+ "floor": "impact-mat",
+ "wall": "impact-block",
+ "items": [
+  {
+   "kind": "prop",
+   "id": "harness-rail",
+   "x": 2.0,
+   "y": 7.7,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "lanyard-locker",
+   "x": 4.0,
+   "y": 7.7,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "helmet-shelf",
+   "x": 6.0,
+   "y": 7.8,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "edge-stack",
+   "x": 8.5,
+   "y": 7.6,
+   "rotation": 0
+  },
+  {
+   "kind": "furniture",
+   "id": "rope-grab-frame",
+   "x": 11.0,
+   "y": 7.7,
+   "rotation": 0
+  },
+  {
+   "kind": "furniture",
+   "id": "rope-grab-rack",
+   "x": 13.0,
+   "y": 7.7,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "work-trestle",
+   "x": 3.0,
+   "y": 3.0,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "work-trestle",
+   "x": 7.0,
+   "y": 3.0,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "task-board",
+   "x": 0.5,
+   "y": 4.0,
+   "rotation": 90
+  },
+  {
+   "kind": "prop",
+   "id": "ppe-station",
+   "x": 13.9,
+   "y": 4.0,
+   "rotation": 90
+  },
+  {
+   "kind": "seat",
+   "id": "scaffold-bay",
+   "x": 5.0,
+   "y": 5.5,
+   "rotation": 0
+  },
+  {
+   "kind": "seat",
+   "id": "boom-lift",
+   "x": 10.0,
+   "y": 4.0,
+   "rotation": 0
+  },
+  {
+   "kind": "station",
+   "id": "st003",
+   "x": 1.5,
+   "y": 1.0,
+   "rotation": 0
+  },
+  {
+   "kind": "crib",
+   "id": "earthworks",
+   "x": 12.5,
+   "y": 1.0,
+   "rotation": 0
+  },
+  {
+   "kind": "sign",
+   "id": "placard",
+   "x": 0.3,
+   "y": 0.3,
+   "rotation": 0
+  },
+  {
+   "kind": "sign",
+   "id": "hazard",
+   "x": 0.3,
+   "y": 7.5,
+   "rotation": 0
+  },
+  {
+   "kind": "sign",
+   "id": "station",
+   "x": 1.5,
+   "y": 0.3,
+   "rotation": 0
+  }
+ ],
+ "provenance": "AUTHORED",
+ "note": "declared, not yet walkable: a proposal composed from this bundle's own assets, not a measurement of any venue"
+}

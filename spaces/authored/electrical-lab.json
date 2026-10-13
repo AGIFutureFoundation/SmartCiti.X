@@ -1,0 +1,124 @@
+{
+ "id": "electrical-lab",
+ "title": "Electrical lab",
+ "purpose": "Two fault-finding benches under a live rig frame, a prove-dead post and the rubber goods and lockout fixtures a live-electrical room hangs on its wall.",
+ "unions": [
+  "electricians"
+ ],
+ "strand": "troubleshooting",
+ "footprint_m": {
+  "w": 10.0,
+  "d": 5.5
+ },
+ "floor": "rubber-dielectric",
+ "wall": "ply-lined",
+ "items": [
+  {
+   "kind": "prop",
+   "id": "rig-frame",
+   "x": 2.0,
+   "y": 5.2,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "test-bench",
+   "x": 2.0,
+   "y": 3.0,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "test-bench",
+   "x": 5.0,
+   "y": 3.0,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "instrument-cabinet",
+   "x": 4.5,
+   "y": 5.2,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "fault-log-board",
+   "x": 7.0,
+   "y": 5.4,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "isolation-post",
+   "x": 8.5,
+   "y": 5.0,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "rubber-goods-rack",
+   "x": 9.5,
+   "y": 3.0,
+   "rotation": 90
+  },
+  {
+   "kind": "prop",
+   "id": "lockout-station",
+   "x": 9.5,
+   "y": 1.0,
+   "rotation": 90
+  },
+  {
+   "kind": "furniture",
+   "id": "multimeter-bench",
+   "x": 2.0,
+   "y": 1.0,
+   "rotation": 0
+  },
+  {
+   "kind": "furniture",
+   "id": "voltage-tester-post",
+   "x": 5.0,
+   "y": 1.0,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "learner-stool",
+   "x": 2.0,
+   "y": 2.1,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "learner-stool",
+   "x": 5.0,
+   "y": 2.1,
+   "rotation": 0
+  },
+  {
+   "kind": "crib",
+   "id": "systems",
+   "x": 8.0,
+   "y": 1.0,
+   "rotation": 0
+  },
+  {
+   "kind": "sign",
+   "id": "placard",
+   "x": 0.3,
+   "y": 0.3,
+   "rotation": 0
+  },
+  {
+   "kind": "sign",
+   "id": "hazard",
+   "x": 0.3,
+   "y": 4.5,
+   "rotation": 0
+  }
+ ],
+ "provenance": "AUTHORED",
+ "note": "declared, not yet walkable: a proposal composed from this bundle's own assets, not a measurement of any venue"
+}

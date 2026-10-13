@@ -1,0 +1,4323 @@
+{
+ "authorities": {
+  "ahj": {
+   "document_read_by_this_build": false,
+   "kind": "local regulator or agency head",
+   "name": "the authority having jurisdiction",
+   "owns": "the operating procedure that actually binds on a given incident, which is local and is not this pack",
+   "this_pack_reproduces": "none of it - an SOP belongs to the agency that wrote it",
+   "url": null
+  },
+  "behavioral-health-agency": {
+   "document_read_by_this_build": false,
+   "kind": "federal agency and state authority",
+   "name": "the federal behavioral health services agency and the state behavioral health authority",
+   "owns": "crisis system guidance, the national crisis line standards and the service definitions underneath them",
+   "this_pack_reproduces": "none of it",
+   "url": null
+  },
+  "courts": {
+   "document_read_by_this_build": false,
+   "kind": "judiciary",
+   "name": "the courts and the constitutional case law they produce",
+   "owns": "the limits on state authority that every officer works inside, which move and are not a training pack's to state",
+   "this_pack_reproduces": "none of it - no holding, no test and no element is summarised here",
+   "url": null
+  },
+  "em-accreditation": {
+   "document_read_by_this_build": false,
+   "kind": "voluntary programme accreditation body",
+   "name": "the emergency management accreditation programme",
+   "owns": "the standard a state or local emergency management programme is assessed against",
+   "this_pack_reproduces": "none of it",
+   "url": null
+  },
+  "em-professional-association": {
+   "document_read_by_this_build": false,
+   "kind": "professional association and credentialing body",
+   "name": "the professional association of emergency managers",
+   "owns": "the voluntary individual credential for emergency managers and its competency framework",
+   "this_pack_reproduces": "none of it",
+   "url": null
+  },
+  "employer-agency": {
+   "document_read_by_this_build": false,
+   "kind": "employer and negotiated agreement",
+   "name": "the employing agency and, where one exists, the collective bargaining agreement",
+   "owns": "staffing, duty hours, peer support access, discipline and the conditions a responder actually works under",
+   "this_pack_reproduces": "none of it - no agreement is quoted, characterised or assumed to exist",
+   "url": null
+  },
+  "ems-medical-director": {
+   "document_read_by_this_build": false,
+   "kind": "named physician with delegated practice authority",
+   "name": "the EMS agency medical director",
+   "owns": "the clinical protocol, the standing orders and every dose in them; a paramedic practises on that physician's licence",
+   "this_pack_reproduces": "none of it - there is no drug, dose, route or clinical threshold anywhere in this pack and there never will be",
+   "url": null
+  },
+  "exercise-programme-doctrine": {
+   "document_read_by_this_build": false,
+   "kind": "federal doctrine",
+   "name": "the federal exercise and evaluation programme doctrine",
+   "owns": "how an exercise is designed, conducted, evaluated and turned into an improvement plan",
+   "this_pack_reproduces": "none of it - the debrief structures below are this pack's own scaffold and are not that doctrine",
+   "url": null
+  },
+  "fema-nims": {
+   "document_read_by_this_build": false,
+   "kind": "federal doctrine and training programme",
+   "name": "FEMA and the National Incident Management System",
+   "owns": "the incident command structure, its position descriptions and the resource typing everything else refers to",
+   "this_pack_reproduces": "none of it - ICS positions are named as names, and the doctrine is left where it is",
+   "url": null
+  },
+  "fire-accrediting-bodies": {
+   "document_read_by_this_build": false,
+   "kind": "certification accreditation bodies",
+   "name": "fire service certification accrediting bodies",
+   "owns": "accreditation of the agencies that issue fire service certificates, and therefore whether a certificate travels between states",
+   "this_pack_reproduces": "none of it - no certificate, reciprocity claim or equivalency is asserted here",
+   "url": null
+  },
+  "health-privacy-law": {
+   "document_read_by_this_build": false,
+   "kind": "statute and regulation",
+   "name": "federal health privacy law and the substance use disorder confidentiality regulation, as applied by state law",
+   "owns": "what may be recorded, what may be said aloud and to whom",
+   "this_pack_reproduces": "none of it - no rule is summarised as if a reader could rely on the summary",
+   "url": null
+  },
+  "law-enforcement-accreditation": {
+   "document_read_by_this_build": false,
+   "kind": "voluntary accreditation body",
+   "name": "law enforcement agency accreditation bodies",
+   "owns": "written-directive standards an agency is assessed against",
+   "this_pack_reproduces": "none of it",
+   "url": null
+  },
+  "nasw-code": {
+   "document_read_by_this_build": false,
+   "kind": "professional association ethical code",
+   "name": "the National Association of Social Workers code of ethics",
+   "owns": "the ethical standards a social worker is held to, including the ones that bite hardest in a disaster",
+   "this_pack_reproduces": "none of it - no standard is quoted or paraphrased as if it were the code",
+   "url": null
+  },
+  "national-ems-scope-model": {
+   "document_read_by_this_build": false,
+   "kind": "federal model document and state regulator",
+   "name": "the national EMS scope of practice model and the state EMS office that adopts it",
+   "owns": "what each certification level may and may not do, which is set by the state and not by a training vendor",
+   "this_pack_reproduces": "none of it - no skill is listed as in or out of any level's scope here",
+   "url": null
+  },
+  "nfpa": {
+   "document_read_by_this_build": false,
+   "kind": "standards-development organization",
+   "name": "National Fire Protection Association",
+   "owns": "the professional qualification standards for fire service roles and the codes those roles work against",
+   "this_pack_reproduces": "none of it - the body is named so a reader goes to the source for the actual requirement",
+   "url": null
+  },
+  "nremt": {
+   "document_read_by_this_build": false,
+   "kind": "national certification body",
+   "name": "the National Registry of Emergency Medical Technicians",
+   "owns": "the national EMS certification examinations and the practice analysis behind them",
+   "this_pack_reproduces": "none of it",
+   "url": null
+  },
+  "osha-and-state-plans": {
+   "document_read_by_this_build": false,
+   "kind": "federal and state regulator",
+   "name": "the federal occupational safety and health administration and the state plans that stand in for it",
+   "owns": "the worker-protection rules that bind on responders as employees, including the ones about entry and rescue",
+   "this_pack_reproduces": "none of it",
+   "url": null
+  },
+  "social-work-accreditation": {
+   "document_read_by_this_build": false,
+   "kind": "educational accreditation body",
+   "name": "the social work education accreditation body",
+   "owns": "what an accredited social work degree must contain",
+   "this_pack_reproduces": "none of it",
+   "url": null
+  },
+  "state-fire-marshal": {
+   "document_read_by_this_build": false,
+   "kind": "state regulator",
+   "name": "the state fire marshal or state fire training authority",
+   "owns": "what a firefighter in that state must hold, and the delivery of the training that leads to it",
+   "this_pack_reproduces": "none of it - requirements differ by state and this pack states none of them",
+   "url": null
+  },
+  "state-mandated-reporting-law": {
+   "document_read_by_this_build": false,
+   "kind": "state statute",
+   "name": "state mandated reporting statute",
+   "owns": "who must report what, to whom, and in what time",
+   "this_pack_reproduces": "none of it - the duty differs by state and by role and a wrong summary here would be worse than none",
+   "url": null
+  },
+  "state-post": {
+   "document_read_by_this_build": false,
+   "kind": "state licensing and standards commission",
+   "name": "the state Peace Officer Standards and Training commission",
+   "owns": "law enforcement certification, the minimum training curriculum, and decertification",
+   "this_pack_reproduces": "none of it - no curriculum content, no hours and no standard is restated",
+   "url": null
+  },
+  "state-social-work-board": {
+   "document_read_by_this_build": false,
+   "kind": "state licensing board",
+   "name": "the state social work licensing board",
+   "owns": "who may call themselves a social worker in that state, at what level, under what supervision",
+   "this_pack_reproduces": "none of it",
+   "url": null
+  },
+  "voad": {
+   "document_read_by_this_build": false,
+   "kind": "coordinating network of non-governmental relief bodies",
+   "name": "the voluntary organizations active in disaster network and its member relief organizations",
+   "owns": "how voluntary and faith-based relief organizations coordinate with each other and with government",
+   "this_pack_reproduces": "none of it",
+   "url": null
+  }
+ },
+ "authorities_unused": [],
+ "competencies": [
+  {
+   "authority": "nfpa",
+   "id": "fire.size-up",
+   "look_for": [
+    "gives a description that a person who cannot see the building could act on",
+    "names what is NOT there as well as what is - no smoke showing is information",
+    "updates the picture out loud when it changes rather than quietly revising it",
+    "separates what is observed from what is assumed"
+   ],
+   "needs_practitioner_review": true,
+   "service": "fire",
+   "signed_off_by": null,
+   "tier_floor": "firefighter",
+   "title": "Scene size-up and its transmission",
+   "what_it_is": "Forming a picture of what is in front of you on arrival and saying it out loud so that everybody still driving towards it has the same picture.",
+   "why_it_matters": "The first sixty seconds of description sets what every later crew expects to find, and a size-up nobody transmitted is a size-up only one person has."
+  },
+  {
+   "authority": "fema-nims",
+   "id": "fire.command-establishment",
+   "look_for": [
+    "announces command in terms that can be heard and logged",
+    "a transfer includes a face-to-face or explicit acknowledgement, not an assumption",
+    "the person relinquishing command can say what they handed over",
+    "nobody on the incident is unable to name who has command"
+   ],
+   "needs_practitioner_review": true,
+   "service": "fire",
+   "signed_off_by": null,
+   "tier_floor": "company-officer",
+   "title": "Establishing, holding and transferring command",
+   "what_it_is": "Declaring that command exists, holding it visibly, and passing it in a way that leaves no gap where nobody is in charge.",
+   "why_it_matters": "Every multi-agency review of a bad incident finds the same gap: two people each thought the other had it, or a transfer happened on a radio channel one of them was not on."
+  },
+  {
+   "authority": "nfpa",
+   "id": "fire.crew-integrity",
+   "look_for": [
+    "can state where each member of their crew is without looking",
+    "does not separate without saying so and being acknowledged",
+    "responds to accountability checks promptly and accurately",
+    "flags a crew that has gone quiet rather than waiting"
+   ],
+   "needs_practitioner_review": true,
+   "service": "fire",
+   "signed_off_by": null,
+   "tier_floor": "firefighter",
+   "title": "Crew integrity and personnel accountability",
+   "what_it_is": "Staying a crew: knowing where your people are, being findable yourself, and being counted.",
+   "why_it_matters": "A responder who is alone in a building nobody knows they are in is the precondition for most of the worst outcomes in this service."
+  },
+  {
+   "authority": "nfpa",
+   "id": "fire.air-awareness",
+   "look_for": [
+    "reports air status without being asked for it",
+    "plans the way out at the same time as the way in",
+    "treats a crew member's consumption as the crew's problem",
+    "does not negotiate with an alarm"
+   ],
+   "needs_practitioner_review": true,
+   "service": "fire",
+   "signed_off_by": null,
+   "tier_floor": "firefighter",
+   "title": "Treating breathing air as a managed resource",
+   "what_it_is": "Holding, as a habit, the awareness that a finite consumable is being spent and that the exit takes as long as the entry did.",
+   "why_it_matters": "This is a culture competency, not an arithmetic one. The actual management points and thresholds belong to the standard and the agency procedure and are not stated here."
+  },
+  {
+   "authority": "nfpa",
+   "id": "fire.mayday-readiness",
+   "look_for": [
+    "can articulate what would make them declare, in advance",
+    "does not treat a declaration by somebody else as an overreaction",
+    "a crew that declares is debriefed on the decision, not on the noise",
+    "the training culture has actually rehearsed somebody declaring"
+   ],
+   "needs_practitioner_review": true,
+   "service": "fire",
+   "signed_off_by": null,
+   "tier_floor": "firefighter",
+   "title": "Recognising trouble and declaring it early",
+   "what_it_is": "Being able to recognise that you are the emergency now, and saying so before the situation has decided for you.",
+   "why_it_matters": "The reluctance to declare is the documented failure mode - responders delay because declaring feels like a personal failure. The scaffold here is the psychological one; the message format and the response to it belong to the standard and the agency."
+  },
+  {
+   "authority": "nfpa",
+   "id": "fire.building-construction-literacy",
+   "look_for": [
+    "names the construction features they can actually see",
+    "identifies where a building has been altered rather than built",
+    "says what they do not know about the concealed spaces",
+    "connects a construction observation to a consequence out loud"
+   ],
+   "needs_practitioner_review": true,
+   "service": "fire",
+   "signed_off_by": null,
+   "tier_floor": "firefighter",
+   "title": "Reading what a building is made of",
+   "what_it_is": "Recognising construction type, era and alteration from the outside, and knowing that the answer changes what the building will do.",
+   "why_it_matters": "This is the single competency that most directly connects this pack to the rest of the bundle: the 111 trade halls are the people who built, altered and maintained the thing the crew is standing in."
+  },
+  {
+   "authority": "ahj",
+   "id": "fire.apparatus-positioning-judgement",
+   "look_for": [
+    "states what the position is FOR before taking it",
+    "leaves room for the units not yet on scene",
+    "reports the position in terms others can build on",
+    "can explain what the position gave up"
+   ],
+   "needs_practitioner_review": true,
+   "service": "fire",
+   "signed_off_by": null,
+   "tier_floor": "driver-operator",
+   "title": "Positioning as a decision that forecloses other decisions",
+   "what_it_is": "Understanding that where the apparatus stops decides what it and everything behind it can do for the rest of the incident.",
+   "why_it_matters": "A position is easy to take and expensive to change. The judgement is about what the next three arriving units will now be unable to do; the distances and the setup belong to the manufacturer and the agency."
+  },
+  {
+   "authority": "ahj",
+   "id": "fire.water-supply-reasoning",
+   "look_for": [
+    "identifies the supply before it is needed, not when it fails",
+    "tells command what the constraint is in time to change the plan",
+    "notices when another unit's draw is the explanation",
+    "reports a supply problem as a problem, not as an apology"
+   ],
+   "needs_practitioner_review": true,
+   "service": "fire",
+   "signed_off_by": null,
+   "tier_floor": "driver-operator",
+   "title": "Reasoning about supply as a constraint",
+   "what_it_is": "Thinking about where the water is coming from, how long it lasts and who else is drawing on it, as a constraint on the plan rather than a plumbing detail.",
+   "why_it_matters": "Supply failures are rarely dramatic; they are a plan that quietly could not be sustained. No flow, pressure or volume figure appears in this pack."
+  },
+  {
+   "authority": "fema-nims",
+   "id": "fire.fireground-communication",
+   "look_for": [
+    "messages are addressed and acknowledged, both ways",
+    "priority traffic is recognisably different from routine traffic",
+    "the speaker stops when the message is complete",
+    "an unacknowledged transmission is repeated rather than assumed"
+   ],
+   "needs_practitioner_review": true,
+   "service": "fire",
+   "signed_off_by": null,
+   "tier_floor": "firefighter",
+   "title": "Radio discipline and closed-loop communication",
+   "what_it_is": "Brief, ordered, acknowledged traffic: who you are, who you want, what you need, and hearing it come back.",
+   "why_it_matters": "The fireground is loud, the channel is shared, and an unacknowledged message is not a message. This is the competency that makes every other one transmissible."
+  },
+  {
+   "authority": "ahj",
+   "id": "fire.risk-benefit-framing",
+   "look_for": [
+    "states the benefit being sought, specifically",
+    "states what information the decision rests on and how old it is",
+    "revisits the decision when a report contradicts the assumption",
+    "is able to withdraw without treating it as a defeat"
+   ],
+   "needs_practitioner_review": true,
+   "service": "fire",
+   "signed_off_by": null,
+   "tier_floor": "company-officer",
+   "title": "Risk and benefit as an explicit frame",
+   "what_it_is": "Being able to say what is being risked, for what, and on what information - before committing, and again when the information changes.",
+   "why_it_matters": "The frame is the profession's own and is stated in its standards and its culture. What this pack scaffolds is the habit of saying it out loud; what counts as acceptable risk is the agency's and the standard's to set."
+  },
+  {
+   "authority": "nfpa",
+   "id": "fire.company-officer-supervision",
+   "look_for": [
+    "delegates rather than absorbing every task",
+    "knows the state of each member, not just the task",
+    "gives an assignment the member can repeat back",
+    "notices a member who has stopped speaking"
+   ],
+   "needs_practitioner_review": true,
+   "service": "fire",
+   "signed_off_by": null,
+   "tier_floor": "company-officer",
+   "title": "Supervising a company under load",
+   "what_it_is": "Keeping a small team effective when the environment is hostile, the information is partial and the officer is also doing a task.",
+   "why_it_matters": "The step from doing to supervising is the step most often taken with no training at all, and it is where crew integrity is either kept or lost."
+  },
+  {
+   "authority": "exercise-programme-doctrine",
+   "id": "fire.post-incident-analysis",
+   "look_for": [
+    "separates what happened from who did it",
+    "the most junior person present says something",
+    "produces at least one thing that will actually change",
+    "records a disagreement as a disagreement rather than resolving it for the room"
+   ],
+   "needs_practitioner_review": true,
+   "service": "fire",
+   "signed_off_by": null,
+   "tier_floor": "company-officer",
+   "title": "Running a debrief that people tell the truth in",
+   "what_it_is": "Structuring a review so that what actually happened surfaces, including the parts that are embarrassing.",
+   "why_it_matters": "A debrief that only produces agreement has produced nothing. This competency is the one that makes every other record in this pack correctable."
+  },
+  {
+   "authority": "osha-and-state-plans",
+   "id": "fire.contamination-discipline",
+   "look_for": [
+    "the habit is visible when nobody is watching",
+    "contaminated gear does not travel into clean space",
+    "a new member is corrected without ceremony",
+    "the officer models it rather than mandating it"
+   ],
+   "needs_practitioner_review": true,
+   "service": "fire",
+   "signed_off_by": null,
+   "tier_floor": "firefighter",
+   "title": "Exposure reduction as an ordinary habit",
+   "what_it_is": "Treating post-incident contamination as a routine hazard with routine handling, rather than as a special case.",
+   "why_it_matters": "The long-run occupational disease burden in this service is the largest single threat to the people in it, and it is carried home on gear. The specific cleaning and monitoring requirements belong to the standard and the employer."
+  },
+  {
+   "authority": "ahj",
+   "id": "fire.wui-awareness",
+   "look_for": [
+    "recognises the interface condition and says so",
+    "thinks about egress for civilians and for the crew as one question",
+    "hands off to the agency that owns the landscape fire rather than competing with it",
+    "can state what the weather is doing to the problem"
+   ],
+   "needs_practitioner_review": true,
+   "service": "fire",
+   "signed_off_by": null,
+   "tier_floor": "firefighter",
+   "title": "Wildland-urban interface awareness",
+   "what_it_is": "Recognising that a structure incident in an interface is also a landscape incident, with different time constants and a different evacuation problem.",
+   "why_it_matters": "The interface is where this service, law enforcement, emergency management and social services all end up on the same road at the same time, and each has a different clock."
+  },
+  {
+   "authority": "courts",
+   "id": "law.authority-literacy",
+   "look_for": [
+    "can state the basis for an action at the time, not only later",
+    "the written account matches the stated basis",
+    "stops when the basis stops",
+    "asks a supervisor rather than proceeding on an unclear basis"
+   ],
+   "needs_practitioner_review": true,
+   "service": "law",
+   "signed_off_by": null,
+   "tier_floor": "cadet",
+   "title": "Knowing where the authority comes from and where it stops",
+   "what_it_is": "Being able to articulate the source and the limit of the authority being exercised, in the moment and afterwards in writing.",
+   "why_it_matters": "Authority that cannot be articulated is authority that will not survive review, and the person it was exercised on already knew that."
+  },
+  {
+   "authority": "state-post",
+   "id": "law.de-escalation-communication",
+   "look_for": [
+    "creates time rather than consuming it",
+    "the words used would read the same way in a transcript",
+    "asks rather than commands where asking is available",
+    "can say afterwards what they were trying to achieve with each step"
+   ],
+   "needs_practitioner_review": true,
+   "service": "law",
+   "signed_off_by": null,
+   "tier_floor": "probationary",
+   "title": "De-escalation as communication, and time as a resource",
+   "what_it_is": "Using distance, time, cover and language to reduce the pressure on a decision rather than to accelerate it.",
+   "why_it_matters": "Most of what this competency is about is deciding not to close the distance yet. The tactics are the agency's and the POST commission's; the scaffold here is the disposition."
+  },
+  {
+   "authority": "behavioral-health-agency",
+   "id": "law.crisis-recognition-referral",
+   "look_for": [
+    "names what they observed rather than what they concluded",
+    "requests the co-response or clinical resource early",
+    "can describe the local pathway without looking it up",
+    "hands over with information rather than with a label"
+   ],
+   "needs_practitioner_review": true,
+   "service": "law",
+   "signed_off_by": null,
+   "tier_floor": "probationary",
+   "title": "Recognising a behavioural health crisis and getting the right people",
+   "what_it_is": "Identifying that the call is a health call, and knowing the referral and co-response pathway rather than improvising a clinical judgement.",
+   "why_it_matters": "This is the hinge between this service and the social work service, and the competency is explicitly NOT to assess or diagnose - it is to recognise and hand over."
+  },
+  {
+   "authority": "state-post",
+   "id": "law.force-reporting-and-review",
+   "look_for": [
+    "the account is specific enough to be disagreed with",
+    "the account is written before the officer has seen the video, where the agency requires that",
+    "a supervisor's review adds something rather than initialling",
+    "a pattern across reports is treated as a finding"
+   ],
+   "needs_practitioner_review": true,
+   "service": "law",
+   "signed_off_by": null,
+   "tier_floor": "officer",
+   "title": "Reporting and reviewing force, as an accountability practice",
+   "what_it_is": "Documenting what was done and why in a way that a reviewer, a court and the public can follow. This pack carries nothing about technique.",
+   "why_it_matters": "The review is where the profession either learns or does not. A report that is a template is a review that did not happen."
+  },
+  {
+   "authority": "law-enforcement-accreditation",
+   "id": "law.procedural-justice",
+   "look_for": [
+    "explains what is happening and why, unprompted",
+    "lets the person speak before the decision is announced",
+    "treats the outcome and the explanation as separate obligations",
+    "behaves the same way when not recorded"
+   ],
+   "needs_practitioner_review": true,
+   "service": "law",
+   "signed_off_by": null,
+   "tier_floor": "officer",
+   "title": "Procedural justice in ordinary encounters",
+   "what_it_is": "Voice, neutrality, respect and explanation, in the encounters nobody will ever review, which is almost all of them.",
+   "why_it_matters": "Legitimacy is built in the routine stop and spent in the crisis. The research base and the standard belong to others; the behaviours are observable here."
+  },
+  {
+   "authority": "law-enforcement-accreditation",
+   "id": "law.field-supervision",
+   "look_for": [
+    "goes to the call rather than waiting for the report",
+    "gives a correction close to the event",
+    "can name which of their people is currently struggling",
+    "escalates rather than absorbing"
+   ],
+   "needs_practitioner_review": true,
+   "service": "law",
+   "signed_off_by": null,
+   "tier_floor": "first-line-supervisor",
+   "title": "First-line supervision as the first accountability layer",
+   "what_it_is": "Being present at the calls that matter, reviewing what the squad produced, and intervening early rather than documenting late.",
+   "why_it_matters": "The first-line supervisor is the only person positioned to stop a developing problem, and is usually the least trained for it."
+  },
+  {
+   "authority": "courts",
+   "id": "law.report-and-evidence-integrity",
+   "look_for": [
+    "records what is not known as not known",
+    "distinguishes observation from inference in the text",
+    "the evidence record is contemporaneous",
+    "a correction is made as a correction, not as an overwrite"
+   ],
+   "needs_practitioner_review": true,
+   "service": "law",
+   "signed_off_by": null,
+   "tier_floor": "probationary",
+   "title": "Report writing and evidence integrity",
+   "what_it_is": "Writing an account that is accurate, complete and honest about uncertainty, and handling evidence so that its history is intact.",
+   "why_it_matters": "Everything downstream - charging, defence, review, the person's life - runs on this document and this chain."
+  },
+  {
+   "authority": "state-post",
+   "id": "law.impartiality",
+   "look_for": [
+    "can identify the decision point in their own account",
+    "accepts an audit of their own stop data without treating it as an accusation",
+    "interrupts a colleague's shortcut in the moment",
+    "the explanation given is behaviour-based and survives being written down"
+   ],
+   "needs_practitioner_review": true,
+   "service": "law",
+   "signed_off_by": null,
+   "tier_floor": "cadet",
+   "title": "Impartial policing and bias awareness",
+   "what_it_is": "Noticing the decision points where a judgement was made on something other than behaviour, and building the habit of checking.",
+   "why_it_matters": "Named here as a domain with an authority rather than as a slogan; the curriculum content belongs to the POST commission and the agency."
+  },
+  {
+   "authority": "fema-nims",
+   "id": "law.interagency-role-clarity",
+   "look_for": [
+    "identifies the incident commander and reports in",
+    "requests through the structure rather than around it",
+    "holds a perimeter as an assignment with a stated purpose",
+    "does not create a second command post"
+   ],
+   "needs_practitioner_review": true,
+   "service": "law",
+   "signed_off_by": null,
+   "tier_floor": "officer",
+   "title": "Knowing your role inside somebody else's incident",
+   "what_it_is": "At a fire, a hazmat release or a disaster, the officer is usually supporting a structure they do not command, and the competency is knowing that and working inside it.",
+   "why_it_matters": "The documented multi-agency failure is not hostility; it is two agencies each running their own incident on the same ground."
+  },
+  {
+   "authority": "employer-agency",
+   "id": "law.wellness-peer-support",
+   "look_for": [
+    "can name the support that exists without looking it up",
+    "has used it or can say honestly why not",
+    "raises it with a colleague rather than about a colleague",
+    "a supervisor's response to a disclosure is not a duty change by default"
+   ],
+   "needs_practitioner_review": true,
+   "service": "law",
+   "signed_off_by": null,
+   "tier_floor": "officer",
+   "title": "Wellness, peer support and the culture that permits it",
+   "what_it_is": "Knowing what support exists, being willing to use it, and being willing to be the person who suggests it to somebody else.",
+   "why_it_matters": "The access, the confidentiality and the limits of any programme are the employer's and the agreement's; the competency is the willingness."
+  },
+  {
+   "authority": "law-enforcement-accreditation",
+   "id": "law.community-legitimacy",
+   "look_for": [
+    "can name the community relationships the agency actually has",
+    "brings community organizations into planning rather than into briefings",
+    "accepts a public account of a failure",
+    "measures something other than activity"
+   ],
+   "needs_practitioner_review": true,
+   "service": "law",
+   "signed_off_by": null,
+   "tier_floor": "command",
+   "title": "Building and spending legitimacy deliberately",
+   "what_it_is": "Treating the relationship with a community as an account that is paid into in ordinary times and drawn on in emergencies.",
+   "why_it_matters": "In a disaster, whether an evacuation order is believed depends on work done years earlier by people who are not on the incident."
+  },
+  {
+   "authority": "ems-medical-director",
+   "id": "law.handover-to-medical",
+   "look_for": [
+    "states scene safety status explicitly",
+    "reports what was observed, with times, not a diagnosis",
+    "does not delay the handover to finish the police task",
+    "stays reachable for the question that comes ten minutes later"
+   ],
+   "needs_practitioner_review": true,
+   "service": "law",
+   "signed_off_by": null,
+   "tier_floor": "officer",
+   "title": "Handover to the medical service",
+   "what_it_is": "Getting the scene to the point where clinicians can work, and giving them what they need in the order they need it.",
+   "why_it_matters": "The officer is very often the first person with a patient and the last person with the information about how they got that way. The clinical content belongs entirely to EMS and the medical director."
+  },
+  {
+   "authority": "osha-and-state-plans",
+   "id": "ems.scene-assessment",
+   "look_for": [
+    "pauses at the threshold rather than at the patient",
+    "states the hazard out loud to the partner",
+    "reassesses when the scene composition changes",
+    "withdraws and says why, rather than continuing and hoping"
+   ],
+   "needs_practitioner_review": true,
+   "service": "ems",
+   "signed_off_by": null,
+   "tier_floor": "emt",
+   "title": "Scene safety and situational assessment",
+   "what_it_is": "Reading the environment before and while working in it, and treating it as a thing that changes.",
+   "why_it_matters": "The clinician who is injured has converted one patient into two and removed the person who was going to treat the first."
+  },
+  {
+   "authority": "nremt",
+   "id": "ems.assessment-framework",
+   "look_for": [
+    "the same structure is visible on a simple call and a complex one",
+    "findings are stated as findings, in order",
+    "a reassessment actually happens and is recorded",
+    "the partner can follow the assessment without being told it"
+   ],
+   "needs_practitioner_review": true,
+   "service": "ems",
+   "signed_off_by": null,
+   "tier_floor": "emt",
+   "title": "Working to an assessment framework rather than to a hunch",
+   "what_it_is": "Following a consistent structure so that the same information is gathered every time, including on the calls that look obvious.",
+   "why_it_matters": "The framework is the authority's. This pack records that a framework exists, that consistency is the point, and that no finding, threshold or cut-off appears anywhere in this pack."
+  },
+  {
+   "authority": "national-ems-scope-model",
+   "id": "ems.scope-literacy",
+   "look_for": [
+    "can state the limit without hedging",
+    "asks for the higher level early rather than late",
+    "does not let a bystander's expectation move the limit",
+    "reports having reached the limit as information, not as failure"
+   ],
+   "needs_practitioner_review": true,
+   "service": "ems",
+   "signed_off_by": null,
+   "tier_floor": "emr",
+   "title": "Knowing the edge of your own certification",
+   "what_it_is": "Being able to say what your level may do here, in this state, for this agency - and what it may not.",
+   "why_it_matters": "The edge moves between states and between agencies. A clinician who is unsure of their own edge will either exceed it or stop short of it, and both are harms."
+  },
+  {
+   "authority": "ems-medical-director",
+   "id": "ems.medical-direction",
+   "look_for": [
+    "can name who their medical director is, as a role",
+    "contacts medical control when the situation is outside the standing order, rather than improvising",
+    "documents the contact and the instruction",
+    "raises a protocol that did not fit through the review route rather than working around it next time"
+   ],
+   "needs_practitioner_review": true,
+   "service": "ems",
+   "signed_off_by": null,
+   "tier_floor": "emt",
+   "title": "Working under medical direction",
+   "what_it_is": "Understanding that the protocol belongs to a named physician, that practice happens on their authority, and how to reach them.",
+   "why_it_matters": "This is the fact that most distinguishes this service from the other four, and the reason this pack contains no clinical content at all."
+  },
+  {
+   "authority": "nremt",
+   "id": "ems.documentation-handover",
+   "look_for": [
+    "gives a structured handover without reading the whole record aloud",
+    "stops for the receiving team's question",
+    "the written record supports the verbal one",
+    "the times in the record are real times"
+   ],
+   "needs_practitioner_review": true,
+   "service": "ems",
+   "signed_off_by": null,
+   "tier_floor": "emt",
+   "title": "The verbal handover and the record behind it",
+   "what_it_is": "Transferring a patient with the information the receiving team needs, in an order they can use, and writing a record that still makes sense a year later.",
+   "why_it_matters": "The handover is the highest-density information transfer in the whole chain and the most frequently identified failure point in reviews."
+  },
+  {
+   "authority": "ems-medical-director",
+   "id": "ems.consent-capacity-refusal",
+   "look_for": [
+    "treats a refusal as an assessment, not as an exit",
+    "documents what was explained and what was understood",
+    "involves medical control where the agency requires it",
+    "leaves a route back - the person knows how to change their mind"
+   ],
+   "needs_practitioner_review": true,
+   "service": "ems",
+   "signed_off_by": null,
+   "tier_floor": "emt",
+   "title": "Consent, capacity and refusal",
+   "what_it_is": "The legal and ethical frame around treating somebody who does not want to be treated, or who may not be able to decide.",
+   "why_it_matters": "The highest-risk call in this service is frequently the one where nobody was transported. The determination itself belongs to the state and the medical director."
+  },
+  {
+   "authority": "fema-nims",
+   "id": "ems.mci-role-clarity",
+   "look_for": [
+    "takes the assigned role and stays in it",
+    "does not begin individual care while holding a system role",
+    "reports counts upward in the form that was asked for",
+    "hands the role over explicitly when relieved"
+   ],
+   "needs_practitioner_review": true,
+   "service": "ems",
+   "signed_off_by": null,
+   "tier_floor": "emt",
+   "title": "Role clarity in a mass casualty incident",
+   "what_it_is": "Knowing which positional role you hold, doing that and not the other one, and accepting that the ordinary standard of care has been replaced by a system decision made above you.",
+   "why_it_matters": "The triage system, its categories and every cut-off in it belong to the state EMS office and the medical director. This pack names the role discipline and stops."
+  },
+  {
+   "authority": "nremt",
+   "id": "ems.crew-resource-management",
+   "look_for": [
+    "the senior clinician invites the challenge explicitly",
+    "the junior clinician raises a concern and it changes something",
+    "roles are stated at the start of the call",
+    "a disagreement is resolved audibly and then recorded"
+   ],
+   "needs_practitioner_review": true,
+   "service": "ems",
+   "signed_off_by": null,
+   "tier_floor": "emt",
+   "title": "Crew resource management in a two-person team",
+   "what_it_is": "Two people, one of whom may be far more experienced, making decisions without the junior one going silent.",
+   "why_it_matters": "The junior clinician who noticed something and said nothing is a recurring finding, and it is a team design problem rather than a character problem."
+  },
+  {
+   "authority": "osha-and-state-plans",
+   "id": "ems.exposure-control",
+   "look_for": [
+    "the habit does not degrade under time pressure",
+    "an exposure is reported the same day it happens",
+    "a new member is corrected immediately",
+    "the vehicle is treated as a clinical space"
+   ],
+   "needs_practitioner_review": true,
+   "service": "ems",
+   "signed_off_by": null,
+   "tier_floor": "emr",
+   "title": "Infection and exposure control as routine",
+   "what_it_is": "Standard precautions as an unremarkable habit, plus knowing what to do about an exposure afterwards.",
+   "why_it_matters": "The reporting pathway, the prophylaxis and the timeframes belong to the employer and the health authority; the habit belongs here."
+  },
+  {
+   "authority": "nremt",
+   "id": "ems.special-population-framing",
+   "look_for": [
+    "reaches for the reference or the resource rather than the analogy",
+    "adapts communication to the patient in front of them",
+    "involves a carer or interpreter as a source rather than a nuisance",
+    "says out loud when the call is outside their usual population"
+   ],
+   "needs_practitioner_review": true,
+   "service": "ems",
+   "signed_off_by": null,
+   "tier_floor": "emt",
+   "title": "Recognising that populations differ, without pretending to the specifics",
+   "what_it_is": "Holding the awareness that paediatric, geriatric, pregnant, disabled and non-communicating patients are not small or large versions of a default patient.",
+   "why_it_matters": "Named as a domain with an owner. Every specific difference - anatomical, physiological, pharmacological - belongs to the authority and none is stated here."
+  },
+  {
+   "authority": "behavioral-health-agency",
+   "id": "ems.behavioural-emergency",
+   "look_for": [
+    "establishes who is leading the interaction, early",
+    "reduces the number of people in the space",
+    "treats the medical assessment as still owed",
+    "the handover names what was tried, not only what happened"
+   ],
+   "needs_practitioner_review": true,
+   "service": "ems",
+   "signed_off_by": null,
+   "tier_floor": "emt",
+   "title": "The behavioural emergency, and the other services in it",
+   "what_it_is": "Working a call whose presenting problem is behavioural, alongside police and crisis clinicians, without defaulting to the tool nearest to hand.",
+   "why_it_matters": "This is the four-way junction of this pack: the patient, the clinician, the officer and the social worker are all in the same small room with different obligations."
+  },
+  {
+   "authority": "employer-agency",
+   "id": "ems.fatigue-and-critical-incident",
+   "look_for": [
+    "a supervisor takes a crew out of service and says why",
+    "the difficult call gets a check-in that is not a debrief",
+    "a pattern in one person is noticed by somebody other than them",
+    "the support offered is specific, not a poster"
+   ],
+   "needs_practitioner_review": true,
+   "service": "ems",
+   "signed_off_by": null,
+   "tier_floor": "field-supervisor",
+   "title": "Fatigue, critical incident stress and the supervisor's part in it",
+   "what_it_is": "Recognising the accumulation, having a route for the call that lands badly, and knowing that shift design is a clinical safety question.",
+   "why_it_matters": "Duty hours and support access are bargained and employer-set; the competency is the supervisor noticing and acting."
+  },
+  {
+   "authority": "fema-nims",
+   "id": "em.ics-role-discipline",
+   "look_for": [
+    "can state their position and who they report to",
+    "requests through their supervisor rather than laterally",
+    "does not exercise authority their position does not carry",
+    "briefs their relief rather than simply leaving"
+   ],
+   "needs_practitioner_review": true,
+   "service": "em",
+   "signed_off_by": null,
+   "tier_floor": "volunteer",
+   "title": "Holding an ICS position and only that position",
+   "what_it_is": "Taking a positional role, working inside its span, and handing it back cleanly - including when your day job is more senior than the role.",
+   "why_it_matters": "The structure only works if rank outside it does not leak into it. The position descriptions and the doctrine belong to the national system; the discipline is the competency."
+  },
+  {
+   "authority": "em-accreditation",
+   "id": "em.eoc-coordination",
+   "look_for": [
+    "the common picture is maintained and is actually common",
+    "a request is tracked from arrival to resolution",
+    "the facility supports the incident rather than directing it",
+    "shift change does not lose the thread"
+   ],
+   "needs_practitioner_review": true,
+   "service": "em",
+   "signed_off_by": null,
+   "tier_floor": "specialist",
+   "title": "Operating a coordination facility",
+   "what_it_is": "Running the place where agencies that do not report to each other have to produce one picture and one set of priorities.",
+   "why_it_matters": "An emergency operations centre coordinates; it does not command the incident. Confusing the two produces the second command post that every after-action report warns about."
+  },
+  {
+   "authority": "fema-nims",
+   "id": "em.mutual-aid-requesting",
+   "look_for": [
+    "asks before the need is acute",
+    "requests a capability in typed terms rather than by local name",
+    "plans for the receiving of it - feeding, housing, tasking",
+    "demobilises deliberately rather than by attrition"
+   ],
+   "needs_practitioner_review": true,
+   "service": "em",
+   "signed_off_by": null,
+   "tier_floor": "coordinator",
+   "title": "Requesting and receiving help from other jurisdictions",
+   "what_it_is": "Knowing the mechanisms by which resources cross a jurisdictional line, and what obligations come attached.",
+   "why_it_matters": "Asking late is the most common and most expensive error, and the second most common is asking for a capability in words the other jurisdiction does not use."
+  },
+  {
+   "authority": "fema-nims",
+   "id": "em.planning-cycle",
+   "look_for": [
+    "objectives are written so that somebody could tell if they were met",
+    "the plan covers a stated period and then is replaced",
+    "the planning meeting produces decisions rather than updates",
+    "the next period reflects the last one's results"
+   ],
+   "needs_practitioner_review": true,
+   "service": "em",
+   "signed_off_by": null,
+   "tier_floor": "specialist",
+   "title": "The operational period planning cycle",
+   "what_it_is": "The rhythm by which objectives are set, a plan is produced for a fixed period, and the next period starts from what actually happened.",
+   "why_it_matters": "The cycle is the mechanism that stops an incident being managed by whoever spoke last. Its structure and forms belong to the national system."
+  },
+  {
+   "authority": "fema-nims",
+   "id": "em.public-information-warning",
+   "look_for": [
+    "one voice, and it is identifiable",
+    "the message says what to DO, not only what is happening",
+    "the message exists in the languages of the affected population",
+    "a correction is issued as visibly as the original"
+   ],
+   "needs_practitioner_review": true,
+   "service": "em",
+   "signed_off_by": null,
+   "tier_floor": "coordinator",
+   "title": "Public information and warning",
+   "what_it_is": "Saying something true, actionable and timely to a public that may not trust you, in the languages they actually speak.",
+   "why_it_matters": "A warning that is not believed is not a warning, and belief was decided before the event. Message content and alerting systems are governed elsewhere."
+  },
+  {
+   "authority": "voad",
+   "id": "em.mass-care-coordination",
+   "look_for": [
+    "the voluntary organizations are in the planning, not only the response",
+    "shelter capability is described in terms of who it can actually take",
+    "reunification is treated as a named function with an owner",
+    "the count reported is a count somebody could reproduce"
+   ],
+   "needs_practitioner_review": true,
+   "service": "em",
+   "signed_off_by": null,
+   "tier_floor": "coordinator",
+   "title": "Mass care and sheltering coordination",
+   "what_it_is": "Coordinating the feeding, sheltering and reunification effort, most of which is delivered by organizations that do not work for you.",
+   "why_it_matters": "This is where government and the voluntary sector meet, and where the relationship either exists already or does not exist at all."
+  },
+  {
+   "authority": "em-accreditation",
+   "id": "em.damage-assessment",
+   "look_for": [
+    "the method is stated before the data is collected",
+    "assessors record what they saw, not what they concluded about eligibility",
+    "safety of the assessors is somebody's explicit job",
+    "the trade expertise needed for a structural judgement is requested rather than improvised"
+   ],
+   "needs_practitioner_review": true,
+   "service": "em",
+   "signed_off_by": null,
+   "tier_floor": "specialist",
+   "title": "Coordinating damage assessment",
+   "what_it_is": "Getting a defensible picture of what is damaged, quickly enough to drive decisions and rigorously enough to survive audit.",
+   "why_it_matters": "The assessment drives both immediate life safety and every later assistance programme, which are different questions asked of the same walk down the same street."
+  },
+  {
+   "authority": "em-accreditation",
+   "id": "em.continuity",
+   "look_for": [
+    "essential functions are named and prioritised in advance",
+    "succession is written down and the successors know",
+    "the plan has been exercised from a degraded starting state",
+    "staff whose own homes are affected are planned for"
+   ],
+   "needs_practitioner_review": true,
+   "service": "em",
+   "signed_off_by": null,
+   "tier_floor": "director",
+   "title": "Continuity of operations for the responding jurisdiction",
+   "what_it_is": "Keeping the jurisdiction's own essential functions running while it responds, including when its own buildings and staff are affected.",
+   "why_it_matters": "The agency responding to the disaster is also in the disaster. This is routinely the plan that exists on paper and has never been walked."
+  },
+  {
+   "authority": "voad",
+   "id": "em.volunteer-donations",
+   "look_for": [
+    "a donations plan exists before it is needed",
+    "spontaneous volunteers are registered rather than turned away or turned loose",
+    "unsolicited goods have a stated destination",
+    "the ask to the public is specific"
+   ],
+   "needs_practitioner_review": true,
+   "service": "em",
+   "signed_off_by": null,
+   "tier_floor": "coordinator",
+   "title": "Volunteer and donations management",
+   "what_it_is": "Handling the spontaneous arrival of people and goods, which is a certainty and is usually treated as a surprise.",
+   "why_it_matters": "Unmanaged generosity consumes the response. Saying so out loud is not cynicism; it is the difference between help and a second logistics problem."
+  },
+  {
+   "authority": "em-accreditation",
+   "id": "em.access-functional-needs",
+   "look_for": [
+    "the plan names the populations rather than saying \"vulnerable\"",
+    "disability-led organizations were in the planning",
+    "transport-dependent populations have a stated mechanism",
+    "the shelter can actually receive the people the plan sends it"
+   ],
+   "needs_practitioner_review": true,
+   "service": "em",
+   "signed_off_by": null,
+   "tier_floor": "specialist",
+   "title": "Access and functional needs inclusion",
+   "what_it_is": "Planning so that disabled people, people without transport, people with limited English and people in institutions are in the plan rather than an exception to it.",
+   "why_it_matters": "Every evacuation and sheltering failure that becomes a lawsuit becomes one here. The legal requirements belong to statute and are not stated in this pack."
+  },
+  {
+   "authority": "em-accreditation",
+   "id": "em.recovery-transition",
+   "look_for": [
+    "the transition has a date, a structure and a named owner",
+    "the recovery structure includes people who were not in the response",
+    "unmet-needs work is a standing function rather than an appeal",
+    "the case-management handover to social services is explicit"
+   ],
+   "needs_practitioner_review": true,
+   "service": "em",
+   "signed_off_by": null,
+   "tier_floor": "director",
+   "title": "Recovery and the transition out of response",
+   "what_it_is": "Handing the problem from the responding structure to the long, unglamorous recovery structure without dropping it.",
+   "why_it_matters": "Recovery lasts years, is where most of the money goes, and has almost none of the training attention. The transition is where communities get lost."
+  },
+  {
+   "authority": "exercise-programme-doctrine",
+   "id": "em.exercise-and-after-action",
+   "look_for": [
+    "objectives are set before the scenario is written",
+    "the exercise is allowed to produce a failure",
+    "findings have an owner and a date",
+    "the next exercise starts from the last one's findings"
+   ],
+   "needs_practitioner_review": true,
+   "service": "em",
+   "signed_off_by": null,
+   "tier_floor": "specialist",
+   "title": "Exercise design and turning findings into change",
+   "what_it_is": "Designing an exercise that can fail, evaluating it honestly and producing improvements somebody is accountable for.",
+   "why_it_matters": "An exercise designed to be passed has taught nothing and has consumed the day everybody had. The doctrine is federal; the honesty is local."
+  },
+  {
+   "authority": "nasw-code",
+   "id": "social.ethics-and-boundaries",
+   "look_for": [
+    "can name the boundary being pressured, in the moment",
+    "consults rather than deciding alone",
+    "dual relationships are surfaced rather than managed privately",
+    "documents the ethical reasoning, not only the action"
+   ],
+   "needs_practitioner_review": true,
+   "service": "social",
+   "signed_off_by": null,
+   "tier_floor": "case-worker",
+   "title": "Professional ethics and boundaries under disaster conditions",
+   "what_it_is": "Holding the professional frame when the usual conditions - an office, a scheduled hour, a known caseload - have all gone.",
+   "why_it_matters": "The code does not suspend in a disaster, and the situations that test it hardest are the ones where suspending it would feel kind."
+  },
+  {
+   "authority": "behavioral-health-agency",
+   "id": "social.trauma-informed-practice",
+   "look_for": [
+    "offers choice where choice is available",
+    "explains before doing",
+    "does not require the story to be retold to each new person",
+    "notices when the setting itself is the problem"
+   ],
+   "needs_practitioner_review": true,
+   "service": "social",
+   "signed_off_by": null,
+   "tier_floor": "peer-specialist",
+   "title": "Trauma-informed practice as a default posture",
+   "what_it_is": "Assuming that the person in front of you may have a history that makes the ordinary interaction costly, and designing the interaction accordingly.",
+   "why_it_matters": "Applies to colleagues as well as clients, which is the part most often left out of the training."
+  },
+  {
+   "authority": "behavioral-health-agency",
+   "id": "social.crisis-engagement",
+   "look_for": [
+    "slows the interaction rather than resolving it",
+    "the person's own words are used back to them",
+    "the number of people and the amount of noise is actively reduced",
+    "can say afterwards what the person actually asked for"
+   ],
+   "needs_practitioner_review": true,
+   "service": "social",
+   "signed_off_by": null,
+   "tier_floor": "peer-specialist",
+   "title": "Engagement and de-escalation in a crisis contact",
+   "what_it_is": "Establishing enough connection, fast, that a person in acute distress will stay in the conversation.",
+   "why_it_matters": "This is the competency that co-response exists to bring to a call. Clinical intervention beyond engagement belongs to the clinician's licence and to the state board."
+  },
+  {
+   "authority": "behavioral-health-agency",
+   "id": "social.risk-screening-referral",
+   "look_for": [
+    "uses the instrument the agency actually adopted, as intended",
+    "the referral is warm rather than a phone number",
+    "the loop is closed - somebody knows whether it landed",
+    "a refused referral is documented and revisited"
+   ],
+   "needs_practitioner_review": true,
+   "service": "social",
+   "signed_off_by": null,
+   "tier_floor": "case-worker",
+   "title": "Screening and referral pathways",
+   "what_it_is": "Recognising the indicators that a referral is needed and knowing where the referral goes, in this jurisdiction, today.",
+   "why_it_matters": "No screening tool, score, threshold or cut-off appears in this pack. Those belong to the instrument's owner, the state authority and the clinical supervisor."
+  },
+  {
+   "authority": "state-mandated-reporting-law",
+   "id": "social.mandated-reporting",
+   "look_for": [
+    "can state that they are a reporter and under what law, in general terms",
+    "consults the agency route rather than deciding alone under pressure",
+    "tells the client what the limits of confidentiality are at the start",
+    "documents the decision either way"
+   ],
+   "needs_practitioner_review": true,
+   "service": "social",
+   "signed_off_by": null,
+   "tier_floor": "case-worker",
+   "title": "Mandated reporting literacy",
+   "what_it_is": "Knowing that you are a mandated reporter, what that duty attaches to in your state and role, and what it does to the relationship.",
+   "why_it_matters": "The duty is statutory, varies by state and role, and is one of the few things in this pack where a wrong summary could directly harm a child or an adult. No content is restated here."
+  },
+  {
+   "authority": "behavioral-health-agency",
+   "id": "social.co-response-role-clarity",
+   "look_for": [
+    "the division of roles is agreed before the door, not at it",
+    "the clinician can call for the interaction to slow down and it does",
+    "the officer's safety role and the clinician's engagement role are both stated",
+    "the debrief includes both agencies in the same room"
+   ],
+   "needs_practitioner_review": true,
+   "service": "social",
+   "signed_off_by": null,
+   "tier_floor": "clinician",
+   "title": "Role clarity in co-response",
+   "what_it_is": "Working on a call alongside an armed officer or a medical crew with a clear, agreed division of who is leading what.",
+   "why_it_matters": "Co-response fails in one of two directions: the clinician is a passenger, or the clinician is treated as having authority they do not have. Both are design failures."
+  },
+  {
+   "authority": "nasw-code",
+   "id": "social.cultural-humility-language-access",
+   "look_for": [
+    "a qualified interpreter is obtained rather than improvised",
+    "children are not used as interpreters",
+    "the worker asks rather than assuming the frame",
+    "materials exist in the languages of the population served"
+   ],
+   "needs_practitioner_review": true,
+   "service": "social",
+   "signed_off_by": null,
+   "tier_floor": "case-worker",
+   "title": "Cultural humility and language access",
+   "what_it_is": "Working with people whose frame is not yours, and getting real interpretation rather than using a family member.",
+   "why_it_matters": "In a disaster this becomes an operational question about who receives services at all, not a courtesy."
+  },
+  {
+   "authority": "health-privacy-law",
+   "id": "social.documentation-confidentiality",
+   "look_for": [
+    "knows which record is under which rule",
+    "shares the minimum that answers the question asked",
+    "a request from another agency is answered against the rule rather than the relationship",
+    "the client is told what was shared where that is required"
+   ],
+   "needs_practitioner_review": true,
+   "service": "social",
+   "signed_off_by": null,
+   "tier_floor": "case-worker",
+   "title": "Documentation and confidentiality",
+   "what_it_is": "Recording what is needed, sharing what is permitted, and knowing that the rules differ for behavioural health and substance use records.",
+   "why_it_matters": "In multi-agency disaster work the pressure to share everything is constant and the consequences of over-sharing land on the client."
+  },
+  {
+   "authority": "behavioral-health-agency",
+   "id": "social.psychological-first-aid",
+   "look_for": [
+    "meets practical needs first and says so",
+    "does not require or invite disclosure",
+    "identifies who needs more than this and refers",
+    "works at the scale the situation actually has"
+   ],
+   "needs_practitioner_review": true,
+   "service": "social",
+   "signed_off_by": null,
+   "tier_floor": "peer-specialist",
+   "title": "Psychological first aid in a disaster setting",
+   "what_it_is": "The immediate, non-clinical support offered to large numbers of people in the hours and days after an event.",
+   "why_it_matters": "It is explicitly not therapy and explicitly not debriefing, and the distinction is the competency. The model belongs to its publishers and is not reproduced here."
+  },
+  {
+   "authority": "nasw-code",
+   "id": "social.vicarious-trauma-supervision",
+   "look_for": [
+    "supervision covers the worker as well as the case",
+    "caseload is treated as a safety variable and is actually adjusted",
+    "the supervisor models using support",
+    "a leaving worker is exit-interviewed honestly"
+   ],
+   "needs_practitioner_review": true,
+   "service": "social",
+   "signed_off_by": null,
+   "tier_floor": "supervisor",
+   "title": "Vicarious trauma and the supervision that catches it",
+   "what_it_is": "Recognising the cumulative cost of the work in yourself and in the people you supervise, and building supervision that can hold it.",
+   "why_it_matters": "Attrition in this workforce is a service continuity problem as much as a human one, and it is predictable."
+  },
+  {
+   "authority": "voad",
+   "id": "social.resource-navigation",
+   "look_for": [
+    "the list is current because somebody checks it",
+    "eligibility barriers are named to the client in advance",
+    "the worker has contacted the resource rather than only listed it",
+    "gaps are reported upward as findings"
+   ],
+   "needs_practitioner_review": true,
+   "service": "social",
+   "signed_off_by": null,
+   "tier_floor": "case-worker",
+   "title": "Community resource navigation",
+   "what_it_is": "Knowing what actually exists in this jurisdiction, whether it is open, and what it really takes to get in.",
+   "why_it_matters": "The gap between the resource list and the resource is where most of the harm in this service happens, and it is invisible from a desk."
+  },
+  {
+   "authority": "fema-nims",
+   "id": "social.disaster-behavioral-health-integration",
+   "look_for": [
+    "behavioural health is a named function in the plan, with a position",
+    "the function is activated at the same time as the others",
+    "the staffing plan covers weeks, not the first forty-eight hours",
+    "responder support and public support are planned as separate workloads"
+   ],
+   "needs_practitioner_review": true,
+   "service": "social",
+   "signed_off_by": null,
+   "tier_floor": "programme-director",
+   "title": "Integrating behavioural health into the emergency structure",
+   "what_it_is": "Getting behavioural health a seat in the planning and in the incident structure rather than an appearance at the shelter after the press leaves.",
+   "why_it_matters": "It is nearly always the last function integrated and the one with the longest tail; the structure it has to integrate into is the national incident management system's."
+  }
+ ],
+ "competencies_unexercised": [
+  "em.planning-cycle",
+  "ems.medical-direction",
+  "fire.air-awareness",
+  "fire.company-officer-supervision",
+  "fire.mayday-readiness",
+  "law.force-reporting-and-review",
+  "law.impartiality",
+  "law.procedural-justice",
+  "social.documentation-confidentiality",
+  "social.mandated-reporting"
+ ],
+ "counts": {
+  "authorities": 23,
+  "authorities_unused": 0,
+  "authority_documents_opened": 0,
+  "by_service": {
+   "em": {
+    "competencies": 12,
+    "frames": 17,
+    "role_tiers": 6,
+    "standards_bodies": 6
+   },
+   "ems": {
+    "competencies": 12,
+    "frames": 17,
+    "role_tiers": 6,
+    "standards_bodies": 5
+   },
+   "fire": {
+    "competencies": 14,
+    "frames": 23,
+    "role_tiers": 6,
+    "standards_bodies": 5
+   },
+   "law": {
+    "competencies": 12,
+    "frames": 14,
+    "role_tiers": 6,
+    "standards_bodies": 4
+   },
+   "social": {
+    "competencies": 12,
+    "frames": 13,
+    "role_tiers": 6,
+    "standards_bodies": 6
+   }
+  },
+  "competencies": 62,
+  "competencies_exercised": 52,
+  "competencies_unexercised": 10,
+  "debrief_questions": 125,
+  "debrief_stages": 8,
+  "forbidden_patterns_scanned": 8,
+  "frames_without_hall_contact": 2,
+  "hall_cross_links": 152,
+  "halls_total": 111,
+  "halls_touched": 81,
+  "halls_untouched": 30,
+  "multi_agency_frames": 17,
+  "observable_behaviours": 248,
+  "organization_endorsements": 0,
+  "role_tiers": 30,
+  "scenario_frames": 25,
+  "services": 5,
+  "signed_off_items": 0,
+  "training_items": 117
+ },
+ "debrief_structure": [
+  {
+   "n": 1,
+   "purpose": "Establish an agreed sequence before anybody explains anything. Disagreements about the sequence are recorded as disagreements.",
+   "question": "What actually happened, in order",
+   "stage": "facts"
+  },
+  {
+   "n": 2,
+   "purpose": "The gap between two people's pictures at the same moment is the finding. This is the question that most often produces one.",
+   "question": "What did each person think was going on at the time",
+   "stage": "picture"
+  },
+  {
+   "n": 3,
+   "purpose": "Attach each decision to the information available then, not to the information available now.",
+   "question": "Which decisions were made, by whom, on what information",
+   "stage": "decisions"
+  },
+  {
+   "n": 4,
+   "purpose": "Time, hierarchy, an audience, a family member, a radio that would not clear. Pressure is a cause, not an excuse, and it is usually designable.",
+   "question": "What pressure was acting on the decision",
+   "stage": "pressure"
+  },
+  {
+   "n": 5,
+   "purpose": "Tie the discussion back to the observable behaviours on the competency records so that the debrief produces something comparable across sessions.",
+   "question": "Which of the named competencies were exercised, and what was observed",
+   "stage": "competencies"
+  },
+  {
+   "n": 6,
+   "purpose": "The moment a debrief starts arguing about the correct procedure, it has left this pack's scope. Name the body, go and read the actual standard, and bring it back.",
+   "question": "Which real standard or protocol governs the part we are now arguing about",
+   "stage": "authority"
+  },
+  {
+   "n": 7,
+   "purpose": "A debrief with no owner and no date has produced agreement rather than change.",
+   "question": "What will be different, who owns it, by when",
+   "stage": "change"
+  },
+  {
+   "n": 8,
+   "purpose": "Held separately and last, and it is not a clinical intervention. The route belongs to the employer and to the behavioural health authority.",
+   "question": "Who needs something after this, and what is the route",
+   "stage": "people"
+  }
+ ],
+ "frames_without_hall_contact": [
+  "resp.s.behavioural-co-response",
+  "resp.s.line-of-duty-aftermath"
+ ],
+ "gaps": [
+  {
+   "have": 0,
+   "how": "every role tier, competency domain and scenario frame this build produced, counted here, against the ones whose signed_off_by is not null - which is none of them",
+   "id": "respond.signed_off_items",
+   "missing": 117,
+   "note": "this is the same shape of number as pack.signed_off_halls at 0 of 111, and for the same reason: the field exists, refuses an unnamed reviewer by being null, and nobody who does this work has filled one in",
+   "of": 117,
+   "question": "how many first-responder training items carry a named practitioner sign-off",
+   "share": 0.0,
+   "unit": "items"
+  },
+  {
+   "have": 0,
+   "how": "competency items whose signed_off_by is not null, over every competency domain in this registry, both counted from the item list",
+   "id": "respond.signed_off_competencies",
+   "missing": 62,
+   "note": "a competency domain that no firefighter, officer, paramedic, emergency manager or licensed social worker has read is a proposal about their job written by somebody who does not do it",
+   "of": 62,
+   "question": "how many competency domains have been reviewed by a serving practitioner of that service",
+   "share": 0.0,
+   "unit": "competencies"
+  },
+  {
+   "have": 0,
+   "how": "scenario frame items whose signed_off_by is not null, over every frame in this registry, both counted from the item list",
+   "id": "respond.signed_off_scenario_frames",
+   "missing": 25,
+   "note": "the frames are the part most likely to be mistaken for training material, so the number that says nobody has checked them matters most here",
+   "of": 25,
+   "question": "how many scenario frames have been reviewed by a serving practitioner",
+   "share": 0.0,
+   "unit": "frames"
+  },
+  {
+   "have": 0,
+   "how": "role tier items whose signed_off_by is not null, over every tier across the five services, both counted from the item list",
+   "id": "respond.signed_off_role_tiers",
+   "missing": 30,
+   "note": "rank and role names differ between agencies in the same county; these descriptions are written to be corrected and nobody has corrected them",
+   "of": 30,
+   "question": "how many role tier descriptions have been confirmed by somebody who holds that role",
+   "share": 0.0,
+   "unit": "tiers"
+  },
+  {
+   "have": 0,
+   "how": "a service counts only when every item attributed to it is signed off; computed over the item list, not asserted",
+   "id": "respond.practitioner_reviewed_services",
+   "missing": 5,
+   "note": "no service is partially done here - all five are at zero, and a partial figure would be the more dangerous one to publish because it would imply the rest had been looked at",
+   "of": 5,
+   "question": "how many of the services have had all of their content reviewed",
+   "share": 0.0,
+   "unit": "services"
+  },
+  {
+   "have": 0,
+   "how": "authority records whose document_read_by_this_build is true, over every authority named in this pack; the field is set from the build, and this build has no network at all",
+   "id": "respond.authority_documents_opened",
+   "missing": 23,
+   "note": "this is why the tier is AUTHORED. Every standards host is unreachable from here, nothing was fetched, and a citation nobody opened would be a citation costume rather than a source",
+   "of": 23,
+   "question": "how many of the named standards documents this build actually read",
+   "share": 0.0,
+   "unit": "authorities"
+  },
+  {
+   "have": 0,
+   "how": "a service counts when its representation record carries a non-null endorsement; the field is absent-and-therefore-null on all five and the count is taken from the records",
+   "id": "respond.organization_endorsements",
+   "missing": 5,
+   "note": "IAFF, FOP, NAGE, AFSCME, SEIU, NASW and the rest are real bodies with real members. None of them has seen this, none has been contacted, and no local, lodge, chapter or council of any of them is named anywhere in this pack",
+   "of": 5,
+   "question": "how many of the representing organizations have endorsed any of this",
+   "share": 0.0,
+   "unit": "services"
+  },
+  {
+   "have": 81,
+   "how": "the distinct hall slugs named across every scenario frame, each one resolved against pack/registry/halls.json at build time, over the full roster in that file",
+   "id": "respond.halls_touched_by_a_frame",
+   "missing": 30,
+   "note": "this one is not zero, and it is the number that says how much of the bundle a responder curriculum would reach. The halls it does not reach are listed so the omission is inspectable rather than implied",
+   "of": 111,
+   "question": "how many of the bundle's trade halls a responder scenario actually touches",
+   "share": 0.7297,
+   "unit": "halls"
+  },
+  {
+   "have": 52,
+   "how": "the distinct competency ids named across every frame, over every competency in the registry, both counted from the source lists",
+   "id": "respond.competencies_exercised_by_a_frame",
+   "missing": 10,
+   "note": "a competency no frame exercises is a competency with nowhere to be observed, and the unexercised ones are listed by name rather than averaged away",
+   "of": 62,
+   "question": "how many competency domains at least one scenario frame exercises",
+   "share": 0.8387,
+   "unit": "competencies"
+  },
+  {
+   "have": 17,
+   "how": "frames whose services list holds three or more of the five, counted here from the frame records",
+   "id": "respond.multi_agency_frames",
+   "missing": 8,
+   "note": "multi-agency coordination is the thing every after-action report in this domain finds broken, so the share of frames that actually force it is worth publishing rather than assuming",
+   "of": 25,
+   "question": "how many frames put three or more services on the same incident",
+   "share": 0.68,
+   "unit": "frames"
+  }
+ ],
+ "hall_cross_links": {
+  "acoustic": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.hot-work-fire",
+    "resp.s.mass-casualty-venue"
+   ],
+   "hall_name": "Acoustic Specialists",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "airfield": {
+   "campus": "oakland",
+   "frames": [
+    "resp.s.airport-ground"
+   ],
+   "hall_name": "Airfield Trades",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "asbestos": {
+   "campus": "new-orleans",
+   "frames": [
+    "resp.s.post-fire-reentry"
+   ],
+   "hall_name": "Asbestos Abatement Workers",
+   "trade_ppe_in_that_hall": [
+    "coveralls",
+    "face shield",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "respirator",
+    "safety boots",
+    "safety glasses",
+    "waterproof boots"
+   ]
+  },
+  "aviation-ground": {
+   "campus": "oakland",
+   "frames": [
+    "resp.s.airport-ground"
+   ],
+   "hall_name": "Aviation Ground Support",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "bas-controls": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.elevator-entrapment",
+    "resp.s.sprinkler-impairment"
+   ],
+   "hall_name": "Building Automation Techs",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "battery-storage": {
+   "campus": "new-orleans",
+   "frames": [
+    "resp.s.elevator-entrapment",
+    "resp.s.energy-storage-fire"
+   ],
+   "hall_name": "Battery Storage Technicians",
+   "trade_ppe_in_that_hall": [
+    "face shield",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "blasters": {
+   "campus": "oakland",
+   "frames": [
+    "resp.s.underground-entrapment"
+   ],
+   "hall_name": "Drillers & Blasters",
+   "trade_ppe_in_that_hall": [
+    "anti-static clothing",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "bricklayers": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.earthquake-facade"
+   ],
+   "hall_name": "Bricklayers & Allied Craft",
+   "trade_ppe_in_that_hall": [
+    "face shield",
+    "flame-resistant clothing",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "bridge-inspect": {
+   "campus": "oakland",
+   "frames": [
+    "resp.s.earthquake-facade",
+    "resp.s.structural-collapse"
+   ],
+   "hall_name": "Bridge Inspection Crews",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "cable-splicers": {
+   "campus": "new-orleans",
+   "frames": [
+    "resp.s.utility-strike"
+   ],
+   "hall_name": "Cable Splicers",
+   "trade_ppe_in_that_hall": [
+    "arc-flash face shield",
+    "dielectric gloves",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "carpenters": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.night-residential-fire"
+   ],
+   "hall_name": "Carpenters",
+   "trade_ppe_in_that_hall": [
+    "dust mask",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "catenary": {
+   "campus": "oakland",
+   "frames": [
+    "resp.s.rail-incident"
+   ],
+   "hall_name": "Overhead Catenary Linemen",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "cement-masons": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.structural-collapse"
+   ],
+   "hall_name": "Cement Masons",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "cladding": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.earthquake-facade",
+    "resp.s.high-angle-facade",
+    "resp.s.wui-evacuation"
+   ],
+   "hall_name": "Rainscreen Cladding Fitters",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "confined-space": {
+   "campus": "new-orleans",
+   "frames": [
+    "resp.s.ammonia-release",
+    "resp.s.confined-space",
+    "resp.s.industrial-hazmat",
+    "resp.s.underground-entrapment"
+   ],
+   "hall_name": "Confined Space Rescue",
+   "trade_ppe_in_that_hall": [
+    "gas monitor",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "rescue harness",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "crane-ops": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.crane-collapse",
+    "resp.s.structural-collapse"
+   ],
+   "hall_name": "Crane Operators",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "curtainwall": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.earthquake-facade",
+    "resp.s.high-angle-facade"
+   ],
+   "hall_name": "Curtain Wall Erectors",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "data-center": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.energy-storage-fire"
+   ],
+   "hall_name": "Data Centre Technicians",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "demolition": {
+   "campus": "oakland",
+   "frames": [
+    "resp.s.crane-collapse",
+    "resp.s.structural-collapse"
+   ],
+   "hall_name": "Demolition Workers",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "district-energy": {
+   "campus": "new-orleans",
+   "frames": [
+    "resp.s.offsite-notification"
+   ],
+   "hall_name": "District Energy Operators",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "divers": {
+   "campus": "oakland",
+   "frames": [
+    "resp.s.confined-space",
+    "resp.s.port-terminal"
+   ],
+   "hall_name": "Commercial Divers",
+   "trade_ppe_in_that_hall": [
+    "flame-resistant clothing",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "immersion suit",
+    "safety boots",
+    "safety glasses",
+    "welding hood"
+   ]
+  },
+  "drywall": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.hot-work-fire",
+    "resp.s.night-residential-fire"
+   ],
+   "hall_name": "Drywall Finishers",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "electricians": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.elevator-entrapment",
+    "resp.s.energy-storage-fire",
+    "resp.s.night-residential-fire"
+   ],
+   "hall_name": "Electrical Workers",
+   "trade_ppe_in_that_hall": [
+    "arc-flash face shield",
+    "dielectric gloves",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "elevator": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.elevator-entrapment"
+   ],
+   "hall_name": "Elevator Constructors",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "ev-charging": {
+   "campus": "new-orleans",
+   "frames": [
+    "resp.s.energy-storage-fire"
+   ],
+   "hall_name": "EV Charging Installers",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "fire-alarm": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.mass-casualty-venue",
+    "resp.s.rail-incident",
+    "resp.s.sprinkler-impairment"
+   ],
+   "hall_name": "Fire Alarm Technicians",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "fire-sprinkler": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.sprinkler-impairment"
+   ],
+   "hall_name": "Fire Sprinkler Fitters",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "firestop": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.hot-work-fire",
+    "resp.s.post-fire-reentry",
+    "resp.s.sprinkler-impairment"
+   ],
+   "hall_name": "Firestop Installers",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "fleet-diesel": {
+   "campus": "oakland",
+   "frames": [
+    "resp.s.airport-ground",
+    "resp.s.port-terminal"
+   ],
+   "hall_name": "Fleet Diesel Technicians",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "gas-distrib": {
+   "campus": "new-orleans",
+   "frames": [
+    "resp.s.utility-strike"
+   ],
+   "hall_name": "Gas Distribution Fitters",
+   "trade_ppe_in_that_hall": [
+    "anti-static clothing",
+    "gas monitor",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "grounds": {
+   "campus": "oakland",
+   "frames": [
+    "resp.s.riverine-flood",
+    "resp.s.shelter-operations",
+    "resp.s.wui-evacuation"
+   ],
+   "hall_name": "Grounds & Landscape",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "hazmat": {
+   "campus": "new-orleans",
+   "frames": [
+    "resp.s.industrial-hazmat"
+   ],
+   "hall_name": "Hazmat & Environmental",
+   "trade_ppe_in_that_hall": [
+    "apron",
+    "chemical gloves",
+    "coveralls",
+    "face shield",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "respirator",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "heavy-equip": {
+   "campus": "oakland",
+   "frames": [
+    "resp.s.crane-collapse"
+   ],
+   "hall_name": "Heavy Equipment Technicians",
+   "trade_ppe_in_that_hall": [
+    "close-fitting clothing",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "high-angle": {
+   "campus": "new-orleans",
+   "frames": [
+    "resp.s.high-angle-facade",
+    "resp.s.underground-entrapment"
+   ],
+   "hall_name": "High-Angle Rescue",
+   "trade_ppe_in_that_hall": [
+    "chinstrap helmet",
+    "full-body harness",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "hvacr": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.ammonia-release",
+    "resp.s.energy-storage-fire",
+    "resp.s.shelter-operations"
+   ],
+   "hall_name": "HVAC/R Technicians",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "hydro": {
+   "campus": "new-orleans",
+   "frames": [
+    "resp.s.offsite-notification"
+   ],
+   "hall_name": "Hydro Plant Trades",
+   "trade_ppe_in_that_hall": [
+    "close-fitting clothing",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "hydrogen": {
+   "campus": "new-orleans",
+   "frames": [
+    "resp.s.energy-storage-fire"
+   ],
+   "hall_name": "Hydrogen Systems Trades",
+   "trade_ppe_in_that_hall": [
+    "anti-static clothing",
+    "face shield",
+    "gas monitor",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "industrial-clean": {
+   "campus": "new-orleans",
+   "frames": [
+    "resp.s.ammonia-release",
+    "resp.s.confined-space",
+    "resp.s.industrial-hazmat",
+    "resp.s.post-fire-reentry"
+   ],
+   "hall_name": "Industrial Cleaning Crews",
+   "trade_ppe_in_that_hall": [
+    "apron",
+    "chemical gloves",
+    "face shield",
+    "gas monitor",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "rescue harness",
+    "safety boots",
+    "safety glasses",
+    "waterproof boots"
+   ]
+  },
+  "instrumentation": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.ammonia-release",
+    "resp.s.energy-storage-fire",
+    "resp.s.industrial-hazmat",
+    "resp.s.offsite-notification",
+    "resp.s.underground-entrapment"
+   ],
+   "hall_name": "Instrumentation Technicians",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "insulators": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.ammonia-release",
+    "resp.s.hot-work-fire",
+    "resp.s.night-residential-fire",
+    "resp.s.post-fire-reentry",
+    "resp.s.wui-evacuation"
+   ],
+   "hall_name": "Heat & Frost Insulators",
+   "trade_ppe_in_that_hall": [
+    "coveralls",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "respirator",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "ironworkers": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.crane-collapse",
+    "resp.s.structural-collapse"
+   ],
+   "hall_name": "Ironworkers",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "laborers": {
+   "campus": "oakland",
+   "frames": [
+    "resp.s.structural-collapse",
+    "resp.s.utility-strike"
+   ],
+   "hall_name": "Laborers",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "lead-abatement": {
+   "campus": "new-orleans",
+   "frames": [
+    "resp.s.post-fire-reentry"
+   ],
+   "hall_name": "Lead Abatement Workers",
+   "trade_ppe_in_that_hall": [
+    "coveralls",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "respirator",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "line-workers": {
+   "campus": "new-orleans",
+   "frames": [
+    "resp.s.utility-strike",
+    "resp.s.wui-evacuation"
+   ],
+   "hall_name": "Utility Line Workers",
+   "trade_ppe_in_that_hall": [
+    "arc-flash face shield",
+    "dielectric gloves",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "marine-pipe": {
+   "campus": "oakland",
+   "frames": [
+    "resp.s.port-terminal"
+   ],
+   "hall_name": "Marine Pipefitters",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "immersion suit",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "marine-terminal": {
+   "campus": "oakland",
+   "frames": [
+    "resp.s.port-terminal",
+    "resp.s.riverine-flood"
+   ],
+   "hall_name": "Marine Terminal Operators",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "immersion suit",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "masonry-restore": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.earthquake-facade"
+   ],
+   "hall_name": "Masonry Restoration",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "miners": {
+   "campus": "oakland",
+   "frames": [
+    "resp.s.underground-entrapment"
+   ],
+   "hall_name": "Underground Miners",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "mold-remediation": {
+   "campus": "new-orleans",
+   "frames": [
+    "resp.s.post-fire-reentry"
+   ],
+   "hall_name": "Mould Remediation Techs",
+   "trade_ppe_in_that_hall": [
+    "coveralls",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "respirator",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "network-cabling": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.mass-casualty-venue"
+   ],
+   "hall_name": "Structured Cabling Techs",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "nuclear": {
+   "campus": "new-orleans",
+   "frames": [
+    "resp.s.offsite-notification"
+   ],
+   "hall_name": "Nuclear Plant Trades",
+   "trade_ppe_in_that_hall": [
+    "coveralls",
+    "dosimeter",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "respirator",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "operating-eng": {
+   "campus": "oakland",
+   "frames": [
+    "resp.s.airport-ground",
+    "resp.s.crane-collapse",
+    "resp.s.utility-strike"
+   ],
+   "hall_name": "Operating Engineers",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "pipefitters": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.ammonia-release",
+    "resp.s.industrial-hazmat",
+    "resp.s.sprinkler-impairment"
+   ],
+   "hall_name": "Plumbers & Pipefitters",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "pipeline": {
+   "campus": "oakland",
+   "frames": [
+    "resp.s.industrial-hazmat",
+    "resp.s.riverine-flood"
+   ],
+   "hall_name": "Pipeline Trades",
+   "trade_ppe_in_that_hall": [
+    "apron",
+    "chemical gloves",
+    "face shield",
+    "flame-resistant clothing",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses",
+    "welding hood"
+   ]
+  },
+  "port-crane": {
+   "campus": "oakland",
+   "frames": [
+    "resp.s.port-terminal"
+   ],
+   "hall_name": "Port Crane Technicians",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "post-tension": {
+   "campus": "oakland",
+   "frames": [
+    "resp.s.structural-collapse"
+   ],
+   "hall_name": "Post-Tension Technicians",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "precast": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.structural-collapse"
+   ],
+   "hall_name": "Precast Erectors",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "rail-signals": {
+   "campus": "oakland",
+   "frames": [
+    "resp.s.rail-incident"
+   ],
+   "hall_name": "Rail Signal Technicians",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "rail-track": {
+   "campus": "oakland",
+   "frames": [
+    "resp.s.rail-incident"
+   ],
+   "hall_name": "Rail Track Workers",
+   "trade_ppe_in_that_hall": [
+    "flame-resistant clothing",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses",
+    "welding hood"
+   ]
+  },
+  "riggers": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.crane-collapse",
+    "resp.s.high-angle-facade",
+    "resp.s.structural-collapse"
+   ],
+   "hall_name": "Riggers & Signalpersons",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "roofers": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.night-residential-fire",
+    "resp.s.wui-evacuation"
+   ],
+   "hall_name": "Roofers & Waterproofers",
+   "trade_ppe_in_that_hall": [
+    "chinstrap helmet",
+    "full-body harness",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "scaffold": {
+   "campus": "oakland",
+   "frames": [
+    "resp.s.high-angle-facade"
+   ],
+   "hall_name": "Scaffold Erectors",
+   "trade_ppe_in_that_hall": [
+    "chinstrap helmet",
+    "dust mask",
+    "full-body harness",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "security-sys": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.mass-casualty-venue"
+   ],
+   "hall_name": "Security Systems Installers",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "sheetmetal": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.hot-work-fire"
+   ],
+   "hall_name": "Sheet Metal Workers",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "shipfitters": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.port-terminal"
+   ],
+   "hall_name": "Shipfitters",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "immersion suit",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "shoring": {
+   "campus": "oakland",
+   "frames": [
+    "resp.s.earthquake-facade",
+    "resp.s.riverine-flood",
+    "resp.s.structural-collapse",
+    "resp.s.underground-entrapment"
+   ],
+   "hall_name": "Shoring & Underpinning",
+   "trade_ppe_in_that_hall": [
+    "dust mask",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "site-safety": {
+   "campus": "new-orleans",
+   "frames": [
+    "resp.s.confined-space",
+    "resp.s.crane-collapse",
+    "resp.s.hot-work-fire",
+    "resp.s.mass-casualty-venue",
+    "resp.s.riverine-flood",
+    "resp.s.shelter-operations"
+   ],
+   "hall_name": "Site Safety Coordinators",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "spill-response": {
+   "campus": "new-orleans",
+   "frames": [
+    "resp.s.industrial-hazmat"
+   ],
+   "hall_name": "Spill Response Technicians",
+   "trade_ppe_in_that_hall": [
+    "apron",
+    "chemical gloves",
+    "face shield",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "steel-erectors": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.crane-collapse",
+    "resp.s.earthquake-facade",
+    "resp.s.structural-collapse"
+   ],
+   "hall_name": "Steel Erectors",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "stone-carvers": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.earthquake-facade"
+   ],
+   "hall_name": "Stone Carvers",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "substation": {
+   "campus": "new-orleans",
+   "frames": [
+    "resp.s.energy-storage-fire",
+    "resp.s.offsite-notification",
+    "resp.s.rail-incident",
+    "resp.s.utility-strike"
+   ],
+   "hall_name": "Substation Technicians",
+   "trade_ppe_in_that_hall": [
+    "arc-flash face shield",
+    "dielectric gloves",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "surveyors": {
+   "campus": "new-orleans",
+   "frames": [
+    "resp.s.underground-entrapment",
+    "resp.s.utility-strike"
+   ],
+   "hall_name": "Construction Surveyors",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "tank-erectors": {
+   "campus": "oakland",
+   "frames": [
+    "resp.s.industrial-hazmat"
+   ],
+   "hall_name": "Tank Erectors",
+   "trade_ppe_in_that_hall": [
+    "face shield",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses",
+    "waterproof boots"
+   ]
+  },
+  "teamsters": {
+   "campus": "oakland",
+   "frames": [
+    "resp.s.port-terminal"
+   ],
+   "hall_name": "Teamsters",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "transit-vehicle": {
+   "campus": "oakland",
+   "frames": [
+    "resp.s.rail-incident"
+   ],
+   "hall_name": "Transit Vehicle Technicians",
+   "trade_ppe_in_that_hall": [
+    "close-fitting clothing",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "transmission": {
+   "campus": "new-orleans",
+   "frames": [
+    "resp.s.offsite-notification",
+    "resp.s.rail-incident"
+   ],
+   "hall_name": "Transmission Linemen",
+   "trade_ppe_in_that_hall": [
+    "arc-flash face shield",
+    "dielectric gloves",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "wastewater": {
+   "campus": "new-orleans",
+   "frames": [
+    "resp.s.confined-space",
+    "resp.s.riverine-flood",
+    "resp.s.shelter-operations"
+   ],
+   "hall_name": "Wastewater Operators",
+   "trade_ppe_in_that_hall": [
+    "face shield",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses",
+    "waterproof boots"
+   ]
+  },
+  "water-distrib": {
+   "campus": "new-orleans",
+   "frames": [
+    "resp.s.confined-space",
+    "resp.s.riverine-flood",
+    "resp.s.shelter-operations",
+    "resp.s.utility-strike"
+   ],
+   "hall_name": "Water Distribution Fitters",
+   "trade_ppe_in_that_hall": [
+    "apron",
+    "chemical gloves",
+    "face shield",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses",
+    "waterproof boots"
+   ]
+  },
+  "waterproofers": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.high-angle-facade",
+    "resp.s.post-fire-reentry",
+    "resp.s.wui-evacuation"
+   ],
+   "hall_name": "Below-Grade Waterproofers",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  },
+  "welders": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.hot-work-fire"
+   ],
+   "hall_name": "Welding Trades",
+   "trade_ppe_in_that_hall": [
+    "flame-resistant clothing",
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses",
+    "welding hood"
+   ]
+  },
+  "window-glazing": {
+   "campus": "treasure-island",
+   "frames": [
+    "resp.s.high-angle-facade"
+   ],
+   "hall_name": "Architectural Glaziers",
+   "trade_ppe_in_that_hall": [
+    "gloves",
+    "hard hat",
+    "hearing protection",
+    "hi-vis",
+    "safety boots",
+    "safety glasses"
+   ]
+  }
+ },
+ "halls_untouched": [
+  "automation-int",
+  "boilermakers",
+  "cleanroom",
+  "concrete-pump",
+  "decking",
+  "fabricators",
+  "fiber-splicers",
+  "flooring",
+  "foundry",
+  "geothermal",
+  "glaziers",
+  "lathers",
+  "machinists",
+  "medical-gas",
+  "meter-techs",
+  "millwrights",
+  "painters",
+  "piling",
+  "plasterers",
+  "platers",
+  "plc-techs",
+  "refractory",
+  "robotics",
+  "smelter",
+  "solar",
+  "survey-drone",
+  "terrazzo",
+  "tilesetters",
+  "toolmakers",
+  "wind"
+ ],
+ "honesty": {
+  "coverage_is_published_as_a_number": "Nothing here is described as comprehensive. 62 competency domains across 5 services, 25 scenario frames, 52 of 62 competencies exercised by at least one frame, 81 halls touched of 111. The gaps block carries 10 numbers and the closed ones stay listed.",
+  "nobody_qualified_has_read_this": "Nothing in this pack has been reviewed by a serving firefighter, a police officer, a paramedic, an emergency manager or a licensed social worker. Not one of the 117 training items carries a sign-off - the number is 0 of 117 - and it must not be used as the basis of any real certification, qualification, hiring decision or operational procedure.",
+  "ppe_is_not_transferable": "Each cross-linked hall publishes the PPE its own practice rooms require, read from surfaces/registry/finishes.json. That is the TRADE's protective equipment for a teaching space. It is not responder PPE, it is not an entry decision and it does not transfer. It is carried so that a frame about a collapse can show what the people who built the thing already wear, not so anybody can dress for an incident from it.",
+  "scaffold_not_protocol": "This is a scaffold: role taxonomy, competency domains, scenario frames and debrief structures. It is not a protocol and contains no procedure, no drug, no dose, no triage cut-off, no vital-sign threshold, no tactical technique and no flow, pressure or air figure. 8 patterns for exactly those things are scanned over the finished registry and the build fails on any of them. Where a reader wants the real requirement, every one of the 117 items names the body that owns it.",
+  "status": "AUTHORED: every word of this pack was written here. No standards document was opened, no page was fetched and no model produced any of it. This environment has no network - NFPA, NREMT, FEMA, the state POST commissions and the social work boards are all unreachable from it - so all 23 authority records carry document_read_by_this_build false and none carries a URL. A citation nobody opened is a costume.",
+  "the_authority_is_elsewhere": "Each of the 23 authority records names a real body and states that this pack reproduces none of its content. NFPA owns the fire service qualification standards; the state POST commission owns law enforcement certification; NREMT and the state EMS office own the certification levels and the agency medical director owns every clinical decision under them; FEMA and the national incident management system own the command structure; the NASW code of ethics and the state licensing board own social work practice. This pack points; it does not restate.",
+  "the_cross_links_are_real": "The 81 trade halls a scenario frame touches are resolved against pack/registry/halls.json at build time and an unresolvable slug stops the build, so no link here is invented. 30 of the 111 halls are touched by no frame at all and are listed by name. 2 frames touch no trade hall - a crisis call in a flat and the days after a line-of-duty death are not building problems, and pretending otherwise to improve a coverage number would be the dishonest option.",
+  "the_debrief_structure_is_ours": "The 8-stage debrief structure below is this pack's own scaffold. It is not the federal exercise and evaluation doctrine, and it is not a critical incident stress intervention - the first belongs to FEMA, the second is a clinical activity belonging to licensed people, and confusing either with this would be a real harm.",
+  "unions_and_associations": "IAFF, FOP, NAGE, AFSCME, SEIU, NASW and the other bodies named across the 5 services are real organizations. They are named here as TYPES of organization and by the role they play in a workforce. No local, lodge, chapter, council or bargaining unit number appears anywhere in this pack, no officer or member is named, and none of these organizations has reviewed, approved or endorsed any part of this - the endorsement count is 0 of 5 services.",
+  "what_a_frame_is": "A scenario frame records a situation, the decision pressure it creates, the competencies it exercises and the questions a debrief would ask. It records no correct answer, and that is deliberate: the correct answer belongs to the governing authority and the local agency, and this pack holds neither. All 25 frames also state, in their own words, what they are NOT."
+ },
+ "pack": "respond",
+ "pack_version": "3.2.0",
+ "product": "a first-responder and disaster-relief training scaffold: role taxonomy, competency domains, scenario frames and debrief structures across five services, every item naming the body that owns the real standard and none of them signed off by anybody",
+ "provenance": "AUTHORED",
+ "reads": [
+  "pack/manifest.json",
+  "pack/registry/halls.json",
+  "surfaces/registry/finishes.json",
+  "unions/registry/campuses.json"
+ ],
+ "scenario_frames": [
+  {
+   "authority": "ahj",
+   "competencies": [
+    "fire.size-up",
+    "fire.command-establishment",
+    "fire.crew-integrity",
+    "fire.risk-benefit-framing",
+    "fire.fireground-communication",
+    "ems.scene-assessment"
+   ],
+   "debrief_questions": [
+    "At what moment did the first officer's picture of occupancy change, and who else knew?",
+    "What information was the commit decision made on, and how old was it?",
+    "Who could name the incident commander at any given minute, and who could not?",
+    "What did the crowd change about the decision, and was that acknowledged out loud?",
+    "What would have had to be true for the decision to go the other way?"
+   ],
+   "decision_pressure": "Incomplete information about occupancy, a short window in which the first decisions foreclose the later ones, and a crowd whose expectations are not the officer's risk frame.",
+   "halls": [
+    "carpenters",
+    "drywall",
+    "roofers",
+    "insulators",
+    "electricians"
+   ],
+   "id": "resp.s.night-residential-fire",
+   "needs_practitioner_review": true,
+   "services": [
+    "fire",
+    "ems"
+   ],
+   "setting": "a two-storey timber-framed dwelling in a residential street",
+   "signed_off_by": null,
+   "situation": "Companies arrive to a working fire in an occupied dwelling. The first-arriving officer has a partial account from a neighbour about who lives there and no confirmation about who is out.",
+   "this_frame_is_not": "a tactical worksheet. No assignment, order of operations or entry decision is recorded here or implied by the questions.",
+   "title": "A house fire at three in the morning"
+  },
+  {
+   "authority": "nfpa",
+   "competencies": [
+    "fire.size-up",
+    "fire.building-construction-literacy",
+    "fire.water-supply-reasoning",
+    "fire.risk-benefit-framing",
+    "fire.post-incident-analysis"
+   ],
+   "debrief_questions": [
+    "When did anybody on the incident learn that the system was impaired?",
+    "What in the pre-incident information would have carried that, and did it?",
+    "Which assumptions in the initial plan depended on a working system?",
+    "Who owns the impairment process in this jurisdiction, and is that a finding for them rather than for the crews?",
+    "What would make this discoverable on arrival next time?"
+   ],
+   "decision_pressure": "A protection assumption that the building normally carries has been removed, quietly, by a process that is nobody on the incident's fault.",
+   "halls": [
+    "fire-sprinkler",
+    "fire-alarm",
+    "bas-controls",
+    "firestop",
+    "pipefitters"
+   ],
+   "id": "resp.s.sprinkler-impairment",
+   "needs_practitioner_review": true,
+   "services": [
+    "fire",
+    "em"
+   ],
+   "setting": "a mid-rise commercial occupancy under partial renovation",
+   "signed_off_by": null,
+   "situation": "A fire is reported in a building where the sprinkler system has been impaired for contractor work and the alarm panel has been in trouble for two days. The impairment paperwork exists somewhere.",
+   "this_frame_is_not": "a guide to suppression system operation or impairment procedure. Both belong to the code and to the building owner.",
+   "title": "A commercial building whose suppression system is out of service"
+  },
+  {
+   "authority": "fema-nims",
+   "competencies": [
+    "fire.size-up",
+    "fire.command-establishment",
+    "fire.building-construction-literacy",
+    "fire.risk-benefit-framing",
+    "em.ics-role-discipline",
+    "em.mutual-aid-requesting",
+    "em.damage-assessment",
+    "ems.mci-role-clarity",
+    "law.interagency-role-clarity",
+    "social.psychological-first-aid"
+   ],
+   "debrief_questions": [
+    "How long after arrival did anybody with structural expertise get a say, and how was it requested?",
+    "How was the disputed occupancy count handled - which number drove the plan, and was the uncertainty stated?",
+    "What was the mechanism for stopping work if the structure moved, and who was authorised to use it?",
+    "Which trades' knowledge would have changed the picture, and does the jurisdiction have a way to reach them at 2am?",
+    "Who was talking to the families, from what point, and with what information?"
+   ],
+   "decision_pressure": "A rescue problem that is simultaneously an engineering problem, where the expertise that could answer the engineering question is not on the first alarm and the people who might be alive are on a clock.",
+   "halls": [
+    "ironworkers",
+    "steel-erectors",
+    "shoring",
+    "cement-masons",
+    "post-tension",
+    "precast",
+    "riggers",
+    "crane-ops",
+    "demolition",
+    "bridge-inspect",
+    "laborers"
+   ],
+   "id": "resp.s.structural-collapse",
+   "needs_practitioner_review": true,
+   "services": [
+    "fire",
+    "ems",
+    "em",
+    "law",
+    "social"
+   ],
+   "setting": "a building under renovation in a dense block",
+   "signed_off_by": null,
+   "situation": "Part of a floor system has come down during occupied hours. The number of people inside is disputed between the contractor, the building manager and a bystander. Adjacent structures are of unknown stability.",
+   "this_frame_is_not": "a collapse rescue or shoring manual. Structural collapse technical rescue is a specialist discipline with its own standards and this pack states none of them.",
+   "title": "A partial structural collapse with people unaccounted for"
+  },
+  {
+   "authority": "ahj",
+   "competencies": [
+    "fire.size-up",
+    "fire.fireground-communication",
+    "fire.risk-benefit-framing",
+    "ems.scene-assessment",
+    "law.interagency-role-clarity",
+    "law.authority-literacy"
+   ],
+   "debrief_questions": [
+    "What was the first reliable statement about what had been struck, and where did it come from?",
+    "Who from the utility was on scene or on the phone, and how long did that take?",
+    "How was the perimeter decided, and what was it protecting against?",
+    "Was the digging crew treated as a hazard, a resource or both?",
+    "What does the locate-and-mark record say, and whose finding is that?"
+   ],
+   "decision_pressure": "The correct response differs completely depending on what was struck, and the people who know are the crew standing closest to it.",
+   "halls": [
+    "line-workers",
+    "gas-distrib",
+    "water-distrib",
+    "substation",
+    "cable-splicers",
+    "operating-eng",
+    "laborers",
+    "surveyors"
+   ],
+   "id": "resp.s.utility-strike",
+   "needs_practitioner_review": true,
+   "services": [
+    "fire",
+    "ems",
+    "law"
+   ],
+   "setting": "a street excavation beside an occupied building",
+   "signed_off_by": null,
+   "situation": "A crew digging in the street has struck something. The dispatch information is contradictory about what was struck. People are standing near the excavation.",
+   "this_frame_is_not": "a utility emergency procedure. What to do about a struck gas, electrical or water asset belongs to the utility and the jurisdiction.",
+   "title": "An excavator strikes a buried utility"
+  },
+  {
+   "authority": "osha-and-state-plans",
+   "competencies": [
+    "fire.size-up",
+    "fire.command-establishment",
+    "fire.risk-benefit-framing",
+    "em.ics-role-discipline",
+    "em.public-information-warning",
+    "em.mutual-aid-requesting",
+    "ems.scene-assessment",
+    "law.interagency-role-clarity"
+   ],
+   "debrief_questions": [
+    "How was unified command actually established with the facility, and when?",
+    "What product information was available, how was it obtained, and how confident was it?",
+    "What drove the protective action decision, and who made it?",
+    "How were the facility's own responders accounted for?",
+    "Which of the trade disciplines on site had information nobody asked for?"
+   ],
+   "decision_pressure": "Two command systems - the facility's and the jurisdiction's - meet at a fence, while a protective action decision for the public needs making on incomplete product information.",
+   "halls": [
+    "hazmat",
+    "pipefitters",
+    "pipeline",
+    "tank-erectors",
+    "spill-response",
+    "industrial-clean",
+    "instrumentation",
+    "confined-space"
+   ],
+   "id": "resp.s.industrial-hazmat",
+   "needs_practitioner_review": true,
+   "services": [
+    "fire",
+    "em",
+    "ems",
+    "law"
+   ],
+   "setting": "a fenced industrial site with process piping and storage",
+   "signed_off_by": null,
+   "situation": "A release has occurred inside a facility fence line. Site personnel have begun their own response. The wind is carrying towards a residential area.",
+   "this_frame_is_not": "a hazardous materials response guide. Product identification, protective distances, decontamination and entry all belong to the regulation, the emergency response guidance and the agency procedure.",
+   "title": "A release at a process facility"
+  },
+  {
+   "authority": "osha-and-state-plans",
+   "competencies": [
+    "fire.size-up",
+    "fire.crew-integrity",
+    "fire.risk-benefit-framing",
+    "fire.command-establishment",
+    "ems.scene-assessment",
+    "ems.scope-literacy"
+   ],
+   "debrief_questions": [
+    "What stopped, or did not stop, the third worker?",
+    "At what point was it stated out loud that this was now a recovery risk rather than a rescue, and who was empowered to say that?",
+    "What did the site's own permit and rescue arrangements say, and did anybody read them?",
+    "Who held the \"nobody enters\" authority, and was that person physically at the opening?",
+    "How does this jurisdiction train the reflex, rather than the knowledge?"
+   ],
+   "decision_pressure": "The single most reliably fatal pattern in this domain is the would-be rescuer, and the pressure to become one is at its maximum in the first ninety seconds.",
+   "halls": [
+    "confined-space",
+    "wastewater",
+    "water-distrib",
+    "divers",
+    "site-safety",
+    "industrial-clean"
+   ],
+   "id": "resp.s.confined-space",
+   "needs_practitioner_review": true,
+   "services": [
+    "fire",
+    "ems"
+   ],
+   "setting": "a municipal wastewater structure",
+   "signed_off_by": null,
+   "situation": "A maintenance worker is unresponsive in a below-grade space. A second worker has already gone in after them and is now also unresponsive. A third is at the opening.",
+   "this_frame_is_not": "a permit-required confined space entry or rescue procedure. Entry, atmospheric monitoring and retrieval are regulated activities and nothing about them is stated here.",
+   "title": "A worker down in a below-grade space"
+  },
+  {
+   "authority": "osha-and-state-plans",
+   "competencies": [
+    "fire.size-up",
+    "fire.crew-integrity",
+    "fire.risk-benefit-framing",
+    "fire.command-establishment",
+    "ems.scene-assessment",
+    "ems.crew-resource-management"
+   ],
+   "debrief_questions": [
+    "How was the tempo of the incident managed against the tempo the audience expected?",
+    "Who on scene actually understood the access system, and how were they found?",
+    "What was the plan if the weather closed before the primary method worked?",
+    "How was information given to the two workers, and by whom?",
+    "What did the building's own rescue plan say it would do?"
+   ],
+   "decision_pressure": "A slow problem that feels fast, where the technically correct answer takes longer than everybody watching believes it should.",
+   "halls": [
+    "high-angle",
+    "scaffold",
+    "riggers",
+    "curtainwall",
+    "window-glazing",
+    "cladding",
+    "waterproofers"
+   ],
+   "id": "resp.s.high-angle-facade",
+   "needs_practitioner_review": true,
+   "services": [
+    "fire",
+    "ems"
+   ],
+   "setting": "a high-rise with a suspended platform",
+   "signed_off_by": null,
+   "situation": "A suspended access platform has failed on one side, leaving two workers at height in harnesses. The building's roof rigging is reachable. Weather is deteriorating.",
+   "this_frame_is_not": "a rope rescue or fall protection procedure. Technical rescue at height has its own standards and this pack reproduces none of them.",
+   "title": "Workers stranded on a facade access system"
+  },
+  {
+   "authority": "ahj",
+   "competencies": [
+    "fire.command-establishment",
+    "fire.fireground-communication",
+    "fire.risk-benefit-framing",
+    "ems.scene-assessment",
+    "ems.assessment-framework",
+    "ems.scope-literacy"
+   ],
+   "debrief_questions": [
+    "How was the triage between cars decided, and by whom?",
+    "What did building engineering know that the crew did not, and how was that surfaced?",
+    "How was information given to occupants who could not be reached quickly?",
+    "What is the jurisdiction's arrangement with lift contractors, and is that a finding?",
+    "Was the medical complaint reassessed while the mechanical problem was being worked?"
+   ],
+   "decision_pressure": "A low-acuity problem that becomes a high-acuity one in one car, with a finite crew and several simultaneous demands.",
+   "halls": [
+    "elevator",
+    "bas-controls",
+    "electricians",
+    "battery-storage"
+   ],
+   "id": "resp.s.elevator-entrapment",
+   "needs_practitioner_review": true,
+   "services": [
+    "fire",
+    "ems"
+   ],
+   "setting": "a high-rise office building on generator power",
+   "signed_off_by": null,
+   "situation": "Multiple cars are stopped with occupants inside during a utility outage. One occupant is reporting a medical complaint. Building engineering staff are present but the lift contractor is an hour away.",
+   "this_frame_is_not": "a lift release procedure. Moving a lift car is the contractor's and the code's business.",
+   "title": "An entrapment in a tall building during a power event"
+  },
+  {
+   "authority": "fema-nims",
+   "competencies": [
+    "fire.size-up",
+    "fire.command-establishment",
+    "fire.fireground-communication",
+    "fire.crew-integrity",
+    "em.ics-role-discipline",
+    "em.public-information-warning",
+    "ems.mci-role-clarity",
+    "law.interagency-role-clarity",
+    "social.psychological-first-aid"
+   ],
+   "debrief_questions": [
+    "How and when was traction power status confirmed, and by whom, to whom?",
+    "What did the responders do in the interval before that confirmation?",
+    "How was self-evacuation handled - as a problem or as a fact?",
+    "Where did the transit organization sit in the command structure, and had that ever been exercised?",
+    "What happened to communications underground, and what was the fallback?"
+   ],
+   "decision_pressure": "Two organizations with complete and non-overlapping halves of the information, a communications environment that degrades underground, and self-evacuating passengers.",
+   "halls": [
+    "rail-track",
+    "rail-signals",
+    "catenary",
+    "transit-vehicle",
+    "substation",
+    "transmission",
+    "fire-alarm"
+   ],
+   "id": "resp.s.rail-incident",
+   "needs_practitioner_review": true,
+   "services": [
+    "fire",
+    "ems",
+    "em",
+    "law",
+    "social"
+   ],
+   "setting": "an underground station and the tunnel beyond it",
+   "signed_off_by": null,
+   "situation": "A train has stopped between stations with passengers aboard and smoke reported. Traction power status is unclear to the responders and clear to the transit control centre, which is not on the responders' radio system.",
+   "this_frame_is_not": "a rail emergency procedure. Track access, power isolation and train evacuation belong to the transit authority and its regulator.",
+   "title": "A transit incident in a tunnel section"
+  },
+  {
+   "authority": "ahj",
+   "competencies": [
+    "fire.command-establishment",
+    "fire.apparatus-positioning-judgement",
+    "fire.fireground-communication",
+    "em.ics-role-discipline",
+    "em.mutual-aid-requesting",
+    "ems.mci-role-clarity"
+   ],
+   "debrief_questions": [
+    "How were arriving mutual aid units staged, and who told them?",
+    "Who held movement area authority and how did that interact with incident command?",
+    "What did the airfield emergency plan say, and when was it last walked with the mutual aid agencies?",
+    "How was the casualty count communicated, and to whom first?",
+    "What would have happened if the first unit had simply driven on?"
+   ],
+   "decision_pressure": "A controlled-access environment where the ordinary reflex - drive to the incident - is itself the hazard.",
+   "halls": [
+    "aviation-ground",
+    "airfield",
+    "fleet-diesel",
+    "operating-eng"
+   ],
+   "id": "resp.s.airport-ground",
+   "needs_practitioner_review": true,
+   "services": [
+    "fire",
+    "ems",
+    "em"
+   ],
+   "setting": "the movement area of a commercial airfield",
+   "signed_off_by": null,
+   "situation": "An aircraft ground incident has occurred with the airfield still active. Mutual aid units are arriving at a perimeter gate and do not have movement area authorisation.",
+   "this_frame_is_not": "an aircraft rescue and firefighting procedure. That discipline has its own standards, its own agents and its own training, none of which is here.",
+   "title": "A ground emergency at an airfield"
+  },
+  {
+   "authority": "fema-nims",
+   "competencies": [
+    "fire.size-up",
+    "fire.command-establishment",
+    "fire.risk-benefit-framing",
+    "em.ics-role-discipline",
+    "em.mutual-aid-requesting",
+    "law.authority-literacy",
+    "law.interagency-role-clarity"
+   ],
+   "debrief_questions": [
+    "Who was in unified command, and how long did agreeing that take?",
+    "How was cargo information obtained and how confident was it?",
+    "What was the cost of stopping operations, and who was authorised to accept it?",
+    "How were terminal workers accounted for as distinct from ship's crew?",
+    "Which federal and state agencies had a role, and were they notified?"
+   ],
+   "decision_pressure": "Jurisdiction is genuinely unclear, cargo information is commercially held, and the terminal cannot simply be stopped without consequences that nobody on the first alarm is authorised to accept.",
+   "halls": [
+    "port-crane",
+    "marine-terminal",
+    "marine-pipe",
+    "divers",
+    "shipfitters",
+    "teamsters",
+    "fleet-diesel"
+   ],
+   "id": "resp.s.port-terminal",
+   "needs_practitioner_review": true,
+   "services": [
+    "fire",
+    "em",
+    "law"
+   ],
+   "setting": "a container and bulk terminal on a working waterfront",
+   "signed_off_by": null,
+   "situation": "An incident has occurred at a terminal with active cargo operations, a vessel alongside and a cargo manifest that is partly electronic and partly not.",
+   "this_frame_is_not": "a marine firefighting or port security procedure. Both are specialist, both are federally governed, and neither is described here.",
+   "title": "An incident at a working marine terminal"
+  },
+  {
+   "authority": "fema-nims",
+   "competencies": [
+    "em.public-information-warning",
+    "em.mass-care-coordination",
+    "em.access-functional-needs",
+    "em.ics-role-discipline",
+    "em.eoc-coordination",
+    "law.community-legitimacy",
+    "social.cultural-humility-language-access",
+    "social.resource-navigation",
+    "ems.scene-assessment"
+   ],
+   "debrief_questions": [
+    "Who made the evacuation decision and on what forecast product?",
+    "How was the uncertainty communicated to the public - was it communicated at all?",
+    "What was done for households without transport, and how were they identified before the day?",
+    "What did the previous unnecessary evacuation cost in credibility, and was that named in the decision?",
+    "Which institutions - care facilities, schools, custody - had a plan, and who checked?"
+   ],
+   "decision_pressure": "The decision has to be made while the evidence is still ambiguous, and the cost of being wrong is asymmetric in both directions.",
+   "halls": [
+    "water-distrib",
+    "wastewater",
+    "pipeline",
+    "grounds",
+    "marine-terminal",
+    "shoring",
+    "site-safety"
+   ],
+   "id": "resp.s.riverine-flood",
+   "needs_practitioner_review": true,
+   "services": [
+    "em",
+    "fire",
+    "law",
+    "social",
+    "ems"
+   ],
+   "setting": "a low-lying district behind flood defences",
+   "signed_off_by": null,
+   "situation": "The forecast has moved. A decision about evacuating a district has to be made hours before the water arrives, on a forecast with a stated uncertainty, in a community with previous experience of an evacuation that turned out to be unnecessary.",
+   "this_frame_is_not": "a flood fight or swiftwater rescue procedure. Levee operations and water rescue are separate disciplines with their own authorities.",
+   "title": "A river forecast to crest above a levee"
+  },
+  {
+   "authority": "ahj",
+   "competencies": [
+    "fire.wui-awareness",
+    "fire.size-up",
+    "fire.risk-benefit-framing",
+    "fire.command-establishment",
+    "law.community-legitimacy",
+    "law.interagency-role-clarity",
+    "em.public-information-warning",
+    "em.access-functional-needs",
+    "social.psychological-first-aid"
+   ],
+   "debrief_questions": [
+    "When was the evacuation trigger set, and by whom - before the day or during it?",
+    "How was the single access road deconflicted between incoming apparatus and outgoing residents?",
+    "What was said to residents who intended to stay, and by whom?",
+    "How did the agencies with different legal authorities agree on one message?",
+    "Who was checking on the households that had been identified in advance, and had they been?"
+   ],
+   "decision_pressure": "Evacuation and suppression want the same road, the window is set by weather rather than by anybody's plan, and the decision authority is split across agencies.",
+   "halls": [
+    "roofers",
+    "cladding",
+    "insulators",
+    "grounds",
+    "line-workers",
+    "waterproofers"
+   ],
+   "id": "resp.s.wui-evacuation",
+   "needs_practitioner_review": true,
+   "services": [
+    "fire",
+    "law",
+    "em",
+    "social"
+   ],
+   "setting": "a residential area at the edge of open land",
+   "signed_off_by": null,
+   "situation": "A landscape fire is moving under wind towards a community on a single access road. Some residents are preparing to leave, some are preparing to stay, and the road is about to be needed in both directions.",
+   "this_frame_is_not": "a wildland fire tactics or evacuation procedure. Landscape fire behaviour and evacuation authority both belong elsewhere.",
+   "title": "A fire moving towards an interface community"
+  },
+  {
+   "authority": "behavioral-health-agency",
+   "competencies": [
+    "law.crisis-recognition-referral",
+    "law.de-escalation-communication",
+    "law.authority-literacy",
+    "social.co-response-role-clarity",
+    "social.crisis-engagement",
+    "social.trauma-informed-practice",
+    "social.risk-screening-referral",
+    "ems.behavioural-emergency",
+    "ems.consent-capacity-refusal"
+   ],
+   "debrief_questions": [
+    "Who led the interaction, and was that agreed before the door or at it?",
+    "What was the slowest acceptable tempo, and did anybody protect it?",
+    "How was the family member's pressure handled without dismissing their information?",
+    "At what point would the legal authority to act have changed, and did everybody present know that line?",
+    "What happened after - who owned the follow-up, and was the loop closed?"
+   ],
+   "decision_pressure": "Three obligations in one doorway - safety, care and the person's own autonomy - with a family member applying pressure towards the fastest option.",
+   "halls": [],
+   "id": "resp.s.behavioural-co-response",
+   "needs_practitioner_review": true,
+   "services": [
+    "law",
+    "social",
+    "ems"
+   ],
+   "setting": "a small flat with one person in acute distress",
+   "signed_off_by": null,
+   "situation": "A call has come in from a family member. An officer and a crisis clinician arrive together. The person in distress is alone in a room and is not answering. The family member is asking the responders to do something now.",
+   "this_frame_is_not": "a crisis intervention protocol, a risk assessment instrument or a legal standard for involuntary intervention. All three belong to the state, the board and the behavioural health authority.",
+   "title": "A behavioural health call at a private address"
+  },
+  {
+   "authority": "fema-nims",
+   "competencies": [
+    "ems.mci-role-clarity",
+    "ems.documentation-handover",
+    "ems.scene-assessment",
+    "fire.command-establishment",
+    "fire.fireground-communication",
+    "law.interagency-role-clarity",
+    "law.handover-to-medical",
+    "em.ics-role-discipline",
+    "em.public-information-warning",
+    "em.eoc-coordination",
+    "social.psychological-first-aid",
+    "social.disaster-behavioral-health-integration"
+   ],
+   "debrief_questions": [
+    "How long until one person could state the total casualty count, and how wrong was the first number?",
+    "What was done about casualties who arrived at hospitals by private car?",
+    "How was the boundary between the security problem and the medical problem managed in space and in command?",
+    "Which positional roles were filled late, and what did that cost?",
+    "Who was responsible for the uninjured thousands, and when did that start?"
+   ],
+   "decision_pressure": "Every service is at maximum, the structure has to be built while it is being used, and the informal system is outrunning the formal one.",
+   "halls": [
+    "site-safety",
+    "security-sys",
+    "fire-alarm",
+    "acoustic",
+    "network-cabling"
+   ],
+   "id": "resp.s.mass-casualty-venue",
+   "needs_practitioner_review": true,
+   "services": [
+    "fire",
+    "ems",
+    "law",
+    "em",
+    "social"
+   ],
+   "setting": "an indoor venue with several thousand people present",
+   "signed_off_by": null,
+   "situation": "A mass casualty incident has occurred at a public venue. The scene is not yet confirmed secure, casualties are being moved by members of the public, and hospitals are being self-referred to faster than they are being notified.",
+   "this_frame_is_not": "a triage system, a tactical response doctrine or a hospital surge plan. Each has an owner and none of them is this pack.",
+   "title": "A mass casualty event at a public venue"
+  },
+  {
+   "authority": "voad",
+   "competencies": [
+    "em.mass-care-coordination",
+    "em.volunteer-donations",
+    "em.access-functional-needs",
+    "em.recovery-transition",
+    "social.resource-navigation",
+    "social.ethics-and-boundaries",
+    "social.trauma-informed-practice",
+    "social.vicarious-trauma-supervision",
+    "ems.special-population-framing",
+    "ems.scene-assessment"
+   ],
+   "debrief_questions": [
+    "On what day did this stop being a response problem, and who noticed?",
+    "Who was responsible for the medical needs of residents, as distinct from emergency response to them?",
+    "How was the voluntary agency's staffing limit surfaced, and by whom?",
+    "What was the exit plan for each resident, and when was it first written?",
+    "What did the conflict between residents reveal about the shelter's design rather than about the residents?"
+   ],
+   "decision_pressure": "The problem has silently changed category from response to social services, and the structure running it was designed for the first category.",
+   "halls": [
+    "grounds",
+    "hvacr",
+    "water-distrib",
+    "wastewater",
+    "site-safety"
+   ],
+   "id": "resp.s.shelter-operations",
+   "needs_practitioner_review": true,
+   "services": [
+    "em",
+    "social",
+    "ems"
+   ],
+   "setting": "a school gymnasium operating as a shelter",
+   "signed_off_by": null,
+   "situation": "A shelter opened for an overnight event is still open on day four. The population has changed from evacuees to people with nowhere to go. Two residents are in conflict, one needs dialysis, and the voluntary agency staffing it is at the end of its rota.",
+   "this_frame_is_not": "a shelter operations manual or a medical special-needs sheltering standard. Both belong to the sheltering organizations and the state health authority.",
+   "title": "A congregate shelter on its fourth day"
+  },
+  {
+   "authority": "nfpa",
+   "competencies": [
+    "fire.size-up",
+    "fire.command-establishment",
+    "fire.risk-benefit-framing",
+    "fire.building-construction-literacy",
+    "em.ics-role-discipline",
+    "em.public-information-warning",
+    "fire.post-incident-analysis"
+   ],
+   "debrief_questions": [
+    "What did the site's own emergency plan say, and had the fire service ever read it?",
+    "Who made the decision to hold rather than intervene, and on what basis?",
+    "How was the multi-hour nature of the incident resourced - relief, feeding, command continuity?",
+    "What was told to the neighbouring occupancies, and when?",
+    "Which trades on that site had the knowledge the incident needed?"
+   ],
+   "decision_pressure": "A hazard whose time constant is hours or days rather than minutes, in a facility whose operator has strong commercial reasons to minimise disruption.",
+   "halls": [
+    "battery-storage",
+    "data-center",
+    "ev-charging",
+    "hydrogen",
+    "substation",
+    "electricians",
+    "instrumentation",
+    "hvacr"
+   ],
+   "id": "resp.s.energy-storage-fire",
+   "needs_practitioner_review": true,
+   "services": [
+    "fire",
+    "em"
+   ],
+   "setting": "a data centre campus with battery storage and on-site generation",
+   "signed_off_by": null,
+   "situation": "A thermal event has been reported in a battery installation serving a data centre. Site staff have isolated what they believe they can. The behaviour of the installation over the next hours is not something anybody on scene has seen before.",
+   "this_frame_is_not": "a guide to energy storage system firefighting. That is an active, contested technical area owned by the codes and the manufacturers, and nothing about agents, isolation or entry is stated here.",
+   "title": "A thermal event in an energy storage installation"
+  },
+  {
+   "authority": "em-accreditation",
+   "competencies": [
+    "fire.size-up",
+    "fire.building-construction-literacy",
+    "em.damage-assessment",
+    "em.ics-role-discipline",
+    "em.public-information-warning",
+    "law.interagency-role-clarity",
+    "social.psychological-first-aid"
+   ],
+   "debrief_questions": [
+    "Who first said the street itself was unsafe, and how long did that take?",
+    "How were cordons set with no engineering assessment available yet?",
+    "How were building inspectors and structural engineers requested, and how long did they take?",
+    "What was the message to a public that wanted to go back inside?",
+    "Which of the building trades could have answered the questions being asked, and is there a standing arrangement to reach them?"
+   ],
+   "decision_pressure": "The urge of every responder and every civilian is to be in the street, and the street is the hazard.",
+   "halls": [
+    "masonry-restore",
+    "bricklayers",
+    "stone-carvers",
+    "cladding",
+    "curtainwall",
+    "shoring",
+    "bridge-inspect",
+    "steel-erectors"
+   ],
+   "id": "resp.s.earthquake-facade",
+   "needs_practitioner_review": true,
+   "services": [
+    "fire",
+    "em",
+    "law",
+    "social"
+   ],
+   "setting": "a downtown block of older masonry buildings",
+   "signed_off_by": null,
+   "situation": "After a significant earthquake, the street is full of people, parapets and cladding are visibly displaced on several buildings, and the natural gathering point for the public is directly beneath them.",
+   "this_frame_is_not": "a post-earthquake safety evaluation procedure. Placarding and structural evaluation are the building official's and the engineer's.",
+   "title": "Facade and masonry hazard after an earthquake"
+  },
+  {
+   "authority": "osha-and-state-plans",
+   "competencies": [
+    "fire.command-establishment",
+    "fire.crew-integrity",
+    "fire.risk-benefit-framing",
+    "em.ics-role-discipline",
+    "em.mutual-aid-requesting",
+    "ems.scope-literacy",
+    "social.psychological-first-aid",
+    "social.crisis-engagement"
+   ],
+   "debrief_questions": [
+    "How was command shared with the operator's own rescue organisation?",
+    "What was the information route to the families, and who owned it from the first hour?",
+    "How was the temptation to commit untrained responders managed?",
+    "When did the statutory regulator arrive, and what changed then?",
+    "What was the plan for a multi-day operation, written on day one?"
+   ],
+   "decision_pressure": "Specialist capability sits with the operator, statutory authority sits with regulators who are not yet on scene, and the families are already at the gate.",
+   "halls": [
+    "miners",
+    "blasters",
+    "shoring",
+    "confined-space",
+    "high-angle",
+    "surveyors",
+    "instrumentation"
+   ],
+   "id": "resp.s.underground-entrapment",
+   "needs_practitioner_review": true,
+   "services": [
+    "fire",
+    "ems",
+    "em",
+    "social"
+   ],
+   "setting": "a tunnel or mine working with a single access",
+   "signed_off_by": null,
+   "situation": "Workers are unaccounted for beyond a blockage in an underground working. Atmosphere beyond the blockage is unknown. The operator has its own trained rescue capability and its own commercial exposure.",
+   "this_frame_is_not": "a mine or tunnel rescue procedure. Underground rescue is a regulated, certified discipline and nothing about it is described here.",
+   "title": "Entrapment in an underground works"
+  },
+  {
+   "authority": "osha-and-state-plans",
+   "competencies": [
+    "fire.contamination-discipline",
+    "fire.post-incident-analysis",
+    "fire.building-construction-literacy",
+    "em.damage-assessment",
+    "em.recovery-transition",
+    "social.resource-navigation",
+    "social.trauma-informed-practice"
+   ],
+   "debrief_questions": [
+    "Who was authorised to permit re-entry, and did the crews on scene know that?",
+    "What was told to residents about the hazard, in what language, and in writing?",
+    "How were the responders' own exposures recorded?",
+    "Who picked up the residents' housing problem, and on what day?",
+    "Which remediation trades had to be involved, and did anybody have their number?"
+   ],
+   "decision_pressure": "The emergency is over and the hazard is not, which is exactly when the organisational attention leaves.",
+   "halls": [
+    "asbestos",
+    "lead-abatement",
+    "mold-remediation",
+    "industrial-clean",
+    "insulators",
+    "waterproofers",
+    "firestop"
+   ],
+   "id": "resp.s.post-fire-reentry",
+   "needs_practitioner_review": true,
+   "services": [
+    "fire",
+    "em",
+    "social"
+   ],
+   "setting": "a fire-damaged mixed-use building of early twentieth century construction",
+   "signed_off_by": null,
+   "situation": "The fire is out. Residents want their belongings. The building contains materials typical of its era, the water has been in it for twelve hours, and the owner wants a decision tonight.",
+   "this_frame_is_not": "an asbestos, lead or mould assessment and abatement procedure. Each is a licensed activity governed by regulation.",
+   "title": "Re-entry to a fire-damaged older building"
+  },
+  {
+   "authority": "osha-and-state-plans",
+   "competencies": [
+    "fire.size-up",
+    "fire.command-establishment",
+    "fire.building-construction-literacy",
+    "fire.risk-benefit-framing",
+    "ems.mci-role-clarity",
+    "law.interagency-role-clarity",
+    "law.report-and-evidence-integrity",
+    "em.ics-role-discipline",
+    "em.damage-assessment",
+    "social.psychological-first-aid"
+   ],
+   "debrief_questions": [
+    "How was the tension between rescue access and evidence preservation handled, and who arbitrated it?",
+    "Who assessed the stability of the remaining structure, and how long did that take?",
+    "How were site workers accounted for, given the site's own records?",
+    "When did the regulator and the investigating agency arrive, and what did they need that was already gone?",
+    "How was the wider construction workforce - who will all hear about this - supported?"
+   ],
+   "decision_pressure": "A rescue problem, a stability problem and a criminal-investigation problem occupying the same square metres from the first minute.",
+   "halls": [
+    "crane-ops",
+    "riggers",
+    "operating-eng",
+    "heavy-equip",
+    "ironworkers",
+    "steel-erectors",
+    "site-safety",
+    "demolition"
+   ],
+   "id": "resp.s.crane-collapse",
+   "needs_practitioner_review": true,
+   "services": [
+    "fire",
+    "ems",
+    "law",
+    "em",
+    "social"
+   ],
+   "setting": "a downtown construction site with adjacent occupied buildings",
+   "signed_off_by": null,
+   "situation": "A tower crane has failed, with debris across a street and into an adjacent building. The site was active. The failure mechanism is unknown and the remaining structure is still loaded.",
+   "this_frame_is_not": "a lifting equipment investigation or heavy rigging procedure. Failure analysis belongs to the regulator and to engineers.",
+   "title": "A crane failure in a city centre"
+  },
+  {
+   "authority": "osha-and-state-plans",
+   "competencies": [
+    "fire.size-up",
+    "fire.risk-benefit-framing",
+    "fire.command-establishment",
+    "ems.scene-assessment",
+    "ems.scope-literacy",
+    "ems.exposure-control",
+    "ems.documentation-handover"
+   ],
+   "debrief_questions": [
+    "Who could actually describe the plant, and how were they found?",
+    "How was the pressure to keep the plant running handled, and by whom?",
+    "How were potentially exposed workers identified and accounted for, including those who had already gone home?",
+    "What information went to the receiving hospital, and when?",
+    "What does the facility's own emergency plan say, and had the fire service seen it?"
+   ],
+   "decision_pressure": "A commercial cost to the correct action, a symptomatic worker, and a plant that only three people in the building understand.",
+   "halls": [
+    "hvacr",
+    "pipefitters",
+    "instrumentation",
+    "confined-space",
+    "industrial-clean",
+    "insulators"
+   ],
+   "id": "resp.s.ammonia-release",
+   "needs_practitioner_review": true,
+   "services": [
+    "fire",
+    "ems"
+   ],
+   "setting": "a cold storage warehouse with an industrial refrigeration plant",
+   "signed_off_by": null,
+   "situation": "A refrigerant release has been reported in a plant room. Workers have self-evacuated, one is symptomatic, and the plant continues to run because stopping it has consequences for the stored product.",
+   "this_frame_is_not": "a refrigerant emergency procedure or an exposure treatment guide. The first belongs to the process safety regulation, the second to the medical director.",
+   "title": "A refrigerant release at a cold storage facility"
+  },
+  {
+   "authority": "nfpa",
+   "competencies": [
+    "fire.size-up",
+    "fire.building-construction-literacy",
+    "fire.command-establishment",
+    "fire.post-incident-analysis",
+    "law.report-and-evidence-integrity",
+    "law.authority-literacy"
+   ],
+   "debrief_questions": [
+    "What did the permit system require, and what actually happened?",
+    "How did the fire get into the concealed space, and what does that say about the firestopping?",
+    "How was the investigation separated from the blame, in the first hour?",
+    "Who on the site knew the fire watch had ended, and who could have stopped the work?",
+    "Is this a finding for the crews, the contractor or the permit system?"
+   ],
+   "decision_pressure": "A preventable incident where the prevention system existed and did not run, and where the people who could say why are the people who will be blamed.",
+   "halls": [
+    "welders",
+    "firestop",
+    "insulators",
+    "site-safety",
+    "drywall",
+    "sheetmetal",
+    "acoustic"
+   ],
+   "id": "resp.s.hot-work-fire",
+   "needs_practitioner_review": true,
+   "services": [
+    "fire",
+    "law"
+   ],
+   "setting": "a partially occupied building undergoing fit-out",
+   "signed_off_by": null,
+   "situation": "A fire has started in a concealed space during welding work on an occupied floor of a building under fit-out. The hot work permit system exists. The fire watch had ended.",
+   "this_frame_is_not": "a hot work permit procedure or a fire investigation methodology. Both have their own standards and their own qualified people.",
+   "title": "A fire started by hot work on an occupied site"
+  },
+  {
+   "authority": "employer-agency",
+   "competencies": [
+    "fire.post-incident-analysis",
+    "fire.command-establishment",
+    "law.wellness-peer-support",
+    "law.field-supervision",
+    "ems.fatigue-and-critical-incident",
+    "em.continuity",
+    "social.vicarious-trauma-supervision",
+    "social.ethics-and-boundaries",
+    "social.crisis-engagement",
+    "social.disaster-behavioral-health-integration"
+   ],
+   "debrief_questions": [
+    "Who was the family's single point of contact, and how quickly was that named?",
+    "How was the workforce kept in service without pretending nothing had happened?",
+    "How were the investigation's needs and the agency's grief kept from colliding?",
+    "Who supported the supervisors, who were supporting everybody else?",
+    "What was in place before the day, and what had to be invented?"
+   ],
+   "decision_pressure": "Every organisational system is loaded at once, the people who would normally manage it are the people affected by it, and every decision is permanent in the family's memory.",
+   "halls": [],
+   "id": "resp.s.line-of-duty-aftermath",
+   "needs_practitioner_review": true,
+   "services": [
+    "fire",
+    "law",
+    "ems",
+    "em",
+    "social"
+   ],
+   "setting": "an agency, its families and its community",
+   "signed_off_by": null,
+   "situation": "A responder has been killed on duty. The agency has to continue responding, support a family, cooperate with an investigation, manage a public funeral and hold together a workforce that has just learned the job can do this.",
+   "this_frame_is_not": "a critical incident stress intervention, a line-of-duty death protocol or a benefits guide. The first is clinical, the second is the agency's and the association's, the third is statutory.",
+   "title": "The days after a line-of-duty death"
+  },
+  {
+   "authority": "fema-nims",
+   "competencies": [
+    "em.public-information-warning",
+    "em.eoc-coordination",
+    "em.ics-role-discipline",
+    "em.access-functional-needs",
+    "em.exercise-and-after-action",
+    "law.community-legitimacy",
+    "law.interagency-role-clarity",
+    "fire.risk-benefit-framing",
+    "social.cultural-humility-language-access"
+   ],
+   "debrief_questions": [
+    "What did the jurisdiction independently know, and what did it take entirely on trust?",
+    "How was the protective action decision made and who signed it?",
+    "How was the message delivered to people who do not speak English and people without power?",
+    "When was this last exercised, and did the exercise allow failure?",
+    "What would the jurisdiction have done if the facility's information had been wrong?"
+   ],
+   "decision_pressure": "The jurisdiction must make a public protective action decision using technical information it cannot independently verify, from an operator with its own interests, on a timeline set by the facility.",
+   "halls": [
+    "nuclear",
+    "instrumentation",
+    "substation",
+    "transmission",
+    "hydro",
+    "district-energy"
+   ],
+   "id": "resp.s.offsite-notification",
+   "needs_practitioner_review": true,
+   "services": [
+    "em",
+    "law",
+    "fire",
+    "social"
+   ],
+   "setting": "a jurisdiction inside a facility's emergency planning zone",
+   "signed_off_by": null,
+   "situation": "A facility has made a notification that escalates its emergency classification. The jurisdiction's role is protective action for the public, and its information comes entirely from the facility.",
+   "this_frame_is_not": "a radiological emergency plan or a protective action guide. Both are federally governed and neither is stated here.",
+   "title": "An offsite notification from a major energy facility"
+  }
+ ],
+ "services": {
+  "em": {
+   "name": "Emergency Management and Disaster Relief",
+   "representation": {
+    "endorsement": null,
+    "endorsement_note": "no organization named here has reviewed, approved or endorsed any part of this pack, and none has been contacted",
+    "kinds": [
+     "public employee union representing county, state and municipal emergency management staff",
+     "federal-sector employee union",
+     "professional association of emergency managers",
+     "coordinating network of voluntary and faith-based relief organizations"
+    ],
+    "real_acronyms": [
+     "AFSCME",
+     "NAGE",
+     "SEIU",
+     "IAEM"
+    ],
+    "what_they_do_here": "a great deal of disaster relief is done by volunteers and non-governmental bodies who have no bargaining unit at all, and a training scaffold that only described government staff would be describing a minority of the people in the building"
+   },
+   "scope": "preparedness, coordination, sheltering, resource movement and recovery - the work that happens above and around the incident rather than at it",
+   "standards_bodies": [
+    "fema-nims",
+    "em-accreditation",
+    "em-professional-association",
+    "exercise-programme-doctrine",
+    "voad",
+    "ahj"
+   ],
+   "tiers": [
+    {
+     "authority": "fema-nims",
+     "id": "volunteer",
+     "name": "Trained volunteer / community team member",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "a neighbour with training, working inside a structure, not an employee of anything"
+    },
+    {
+     "authority": "fema-nims",
+     "id": "specialist",
+     "name": "Emergency management specialist / planner",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "writes the plans, runs the exercises, maintains the relationships that have to exist before the day"
+    },
+    {
+     "authority": "fema-nims",
+     "id": "coordinator",
+     "name": "Emergency management coordinator",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "runs a function or a facility during an activation and coordinates across agencies that do not report to them"
+    },
+    {
+     "authority": "fema-nims",
+     "id": "director",
+     "name": "Emergency management director",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "accountable to an elected official for the jurisdiction's preparedness and for what the activation does"
+    },
+    {
+     "authority": "fema-nims",
+     "id": "ics-section",
+     "name": "ICS section-level role",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "a positional role inside an incident command structure - operations, planning, logistics, finance and administration - held for the duration and then handed back"
+    },
+    {
+     "authority": "fema-nims",
+     "id": "ics-command",
+     "name": "ICS command-level role",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "incident commander or unified command member, including the information, safety and liaison roles that report to command"
+    }
+   ]
+  },
+  "ems": {
+   "name": "Emergency Medical Services",
+   "representation": {
+    "endorsement": null,
+    "endorsement_note": "no organization named here has reviewed, approved or endorsed any part of this pack, and none has been contacted",
+    "kinds": [
+     "international labour union of fire fighters and fire-based emergency medical workers",
+     "public employee union representing third-service and county EMS staff",
+     "service employees union representing hospital-based and private-provider EMS staff",
+     "professional association of emergency medical technicians and paramedics"
+    ],
+    "real_acronyms": [
+     "IAFF",
+     "AFSCME",
+     "SEIU",
+     "NAEMT"
+    ],
+    "what_they_do_here": "who represents an EMS worker depends on who employs them, which is the single most confusing fact about this workforce and is recorded here rather than smoothed over"
+   },
+   "scope": "out-of-hospital emergency medical care and transport, delivered from fire departments, third services, hospital systems and private providers",
+   "standards_bodies": [
+    "nremt",
+    "national-ems-scope-model",
+    "ems-medical-director",
+    "ahj",
+    "osha-and-state-plans"
+   ],
+   "tiers": [
+    {
+     "authority": "nremt",
+     "id": "emr",
+     "name": "Emergency medical responder level",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "the entry certification level; often held by people whose main job is something else entirely"
+    },
+    {
+     "authority": "nremt",
+     "id": "emt",
+     "name": "Emergency medical technician level",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "the level most of the workforce holds, and the level most transport crews are built around"
+    },
+    {
+     "authority": "nremt",
+     "id": "aemt",
+     "name": "Advanced emergency medical technician level",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "an intermediate level that exists in some states and not others, which is itself worth a learner knowing"
+    },
+    {
+     "authority": "nremt",
+     "id": "paramedic",
+     "name": "Paramedic level",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "the highest widely recognised out-of-hospital level, practising under a physician medical director's delegated authority"
+    },
+    {
+     "authority": "nremt",
+     "id": "field-supervisor",
+     "name": "Field training officer / field supervisor",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "supervises crews in the field, signs off new members and is the first review of a difficult call"
+    },
+    {
+     "authority": "nremt",
+     "id": "ems-officer",
+     "name": "EMS officer / chief",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "runs the service: staffing, quality, medical direction relationship, and the answer when it goes wrong"
+    }
+   ]
+  },
+  "fire": {
+   "name": "Fire Service",
+   "representation": {
+    "endorsement": null,
+    "endorsement_note": "no organization named here has reviewed, approved or endorsed any part of this pack, and none has been contacted",
+    "kinds": [
+     "international labour union of fire fighters and fire-based emergency medical workers",
+     "professional association of fire chiefs and fire officers",
+     "state and provincial associations of fire fighters"
+    ],
+    "real_acronyms": [
+     "IAFF",
+     "IAFC"
+    ],
+    "what_they_do_here": "they represent the workforce and the officers respectively; they are named as the kind of body a reader would go to, not as a party to this"
+   },
+   "scope": "fire suppression, rescue, hazardous materials response and, in most of the country, the first medical response as well",
+   "standards_bodies": [
+    "nfpa",
+    "fire-accrediting-bodies",
+    "state-fire-marshal",
+    "ahj",
+    "osha-and-state-plans"
+   ],
+   "tiers": [
+    {
+     "authority": "nfpa",
+     "id": "recruit",
+     "name": "Recruit / probationary firefighter",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "in an academy or a probationary period, working under direct supervision and not yet counted as a working member of a crew"
+    },
+    {
+     "authority": "nfpa",
+     "id": "firefighter",
+     "name": "Firefighter",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "a working member of a crew, expected to hold their position on a task and to communicate what they find"
+    },
+    {
+     "authority": "nfpa",
+     "id": "driver-operator",
+     "name": "Driver / operator",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "responsible for getting the apparatus there and for what it can then do; a technical role with its own qualification"
+    },
+    {
+     "authority": "nfpa",
+     "id": "company-officer",
+     "name": "Company officer",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "supervises one company, owns its accountability, and is the first person on most incidents who is making decisions rather than executing them"
+    },
+    {
+     "authority": "nfpa",
+     "id": "chief-officer",
+     "name": "Chief officer",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "commands multiple companies or an incident, and is accountable for strategy, risk and the people at it"
+    },
+    {
+     "authority": "nfpa",
+     "id": "prevention-investigation",
+     "name": "Prevention, inspection and investigation roles",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "the side of the service that works before and after the incident: code enforcement, plan review, origin and cause"
+    }
+   ]
+  },
+  "law": {
+   "name": "Law Enforcement",
+   "representation": {
+    "endorsement": null,
+    "endorsement_note": "no organization named here has reviewed, approved or endorsed any part of this pack, and none has been contacted",
+    "kinds": [
+     "fraternal police organization",
+     "police labour union or benevolent association",
+     "public employee union representing civilian and sworn staff",
+     "professional association of chiefs and sheriffs"
+    ],
+    "real_acronyms": [
+     "FOP",
+     "NAGE",
+     "AFSCME"
+    ],
+    "what_they_do_here": "representation in this service is split between fraternal bodies, bargaining units and chiefs' associations, which want different things; the pack names the kinds rather than picking one"
+   },
+   "scope": "patrol response, investigation, traffic, court process and the scene-security role at almost every other service's incidents",
+   "standards_bodies": [
+    "state-post",
+    "law-enforcement-accreditation",
+    "courts",
+    "ahj"
+   ],
+   "tiers": [
+    {
+     "authority": "state-post",
+     "id": "cadet",
+     "name": "Cadet / academy recruit",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "in a basic academy, not yet certified, no independent authority to act"
+    },
+    {
+     "authority": "state-post",
+     "id": "probationary",
+     "name": "Probationary officer in field training",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "certified but riding with a field training officer; every decision is reviewed"
+    },
+    {
+     "authority": "state-post",
+     "id": "officer",
+     "name": "Patrol officer / deputy",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "working a beat alone or with a partner, making the first decision at most calls"
+    },
+    {
+     "authority": "state-post",
+     "id": "first-line-supervisor",
+     "name": "First-line supervisor",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "supervises a squad, reviews their reports and their force, and is the first accountability layer"
+    },
+    {
+     "authority": "state-post",
+     "id": "command",
+     "name": "Mid-level command",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "runs a shift, a district or a unit; sets the local priorities and owns the resourcing"
+    },
+    {
+     "authority": "state-post",
+     "id": "executive",
+     "name": "Agency executive",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "chief, sheriff or commissioner: accountable to a governing body and to the public for what the agency does"
+    }
+   ]
+  },
+  "social": {
+   "name": "Social Work and Crisis Response",
+   "representation": {
+    "endorsement": null,
+    "endorsement_note": "no organization named here has reviewed, approved or endorsed any part of this pack, and none has been contacted",
+    "kinds": [
+     "professional association of social workers",
+     "public employee union representing county and state behavioural health and child welfare staff",
+     "service employees union representing non-profit and hospital behavioural health workers"
+    ],
+    "real_acronyms": [
+     "NASW",
+     "AFSCME",
+     "SEIU"
+    ],
+    "what_they_do_here": "the professional association owns the ethical code; the unions bargain the caseload, and caseload is a safety question in this service the way staffing is in the other four"
+   },
+   "scope": "behavioural health crisis response, co-response alongside police and EMS, disaster behavioural health, case work and the long tail of a disaster that arrives months later",
+   "standards_bodies": [
+    "nasw-code",
+    "state-social-work-board",
+    "social-work-accreditation",
+    "behavioral-health-agency",
+    "health-privacy-law",
+    "state-mandated-reporting-law"
+   ],
+   "tiers": [
+    {
+     "authority": "nasw-code",
+     "id": "peer-specialist",
+     "name": "Peer support specialist",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "credentialed on the basis of lived experience rather than a degree, and a distinct role rather than a junior clinician"
+    },
+    {
+     "authority": "nasw-code",
+     "id": "case-worker",
+     "name": "Bachelor-level case worker",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "carries a caseload, navigates systems, works under supervision"
+    },
+    {
+     "authority": "nasw-code",
+     "id": "clinician",
+     "name": "Master-level clinician, pre-licence",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "clinical work under a licensed supervisor, accumulating the hours the state requires"
+    },
+    {
+     "authority": "nasw-code",
+     "id": "licensed-clinical",
+     "name": "Licensed clinical social worker",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "independently licensed, may supervise, carries the clinical accountability"
+    },
+    {
+     "authority": "nasw-code",
+     "id": "supervisor",
+     "name": "Clinical or programme supervisor",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "responsible for other people's clinical decisions and for the conditions they make them in"
+    },
+    {
+     "authority": "nasw-code",
+     "id": "programme-director",
+     "name": "Programme director",
+     "needs_practitioner_review": true,
+     "signed_off_by": null,
+     "what_the_role_is": "owns the service design, the staffing and the relationship with the other four services"
+    }
+   ]
+  }
+ },
+ "source_stamp": "f62da3510df71459"
+}

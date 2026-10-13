@@ -1033,7 +1033,7 @@ Per room: maintained illuminance, air changes per hour, the noise level the room
 
 Where two hazards meet, **the more demanding value wins on every axis**, so a second hazard can never cancel the first. That property is asserted directly rather than inferred from the code.
 
-The first pass left 65% of halls with no hazard at all, which was a gap rather than a finding: most of those trades name a hazard plainly in their own focus line and the table simply lacked the vocabulary. After extending it from their own words, 31 halls remain — and those now say **"no acute physical hazard"** explicitly. Bench, design and coordination trades genuinely have none in their practice bay, and saying so is more useful than a blank field a reader has to interpret.
+The first pass left 65% of halls with no hazard at all, which was a gap rather than a finding: most of those trades name a hazard plainly in their own focus line and the table simply lacked the vocabulary. After extending it from their own words, 48 halls remain with no hazard the finish schedule has to drive around; the registry lists them under `no_finish_driving_hazard`, which is the name this bundle actually uses. (The prose here said 31, and said those halls "now say “no acute physical hazard”" — a phrase that appears in no registry and no source file. The registry was right and the sentence was stale; it now quotes the field that exists.) Bench, design and coordination trades genuinely have none in their practice bay, and saying so is more useful than a blank field a reader has to interpret.
 
 ### 24.3 What these numbers are not
 

@@ -1,0 +1,105 @@
+{
+ "pack": "payments",
+ "provenance": "AUTHORED",
+ "live": false,
+ "status": "Payments are not live: no Stripe account is connected to this deployment",
+ "commercial_terms": "set by the operator in Stripe",
+ "card_data": "never handled by this code: Stripe-hosted Checkout only",
+ "checkout": {
+  "endpoint": "/api/checkout",
+  "success_path": "/web/trade_craft_plans.html?checkout=success",
+  "cancel_path": "/web/trade_craft_plans.html?checkout=cancelled",
+  "secret_env": "STRIPE_SECRET_KEY",
+  "origin_env": "SITE_ORIGIN",
+  "stripe_api": "https://api.stripe.com/v1/checkout/sessions",
+  "hosted_prefix": "https://checkout.stripe.com/"
+ },
+ "rate_limit": {
+  "applies_to": "/api/checkout",
+  "kind": "token bucket in KV per (hashed client IP, plan)",
+  "max_env": "RATE_LIMIT_CHECKOUT_MAX",
+  "window_env": "RATE_LIMIT_CHECKOUT_WINDOW_S",
+  "salt_env": "RATE_LIMIT_SALT",
+  "ip_header": "cf-connecting-ip",
+  "kv_binding": "PAYMENTS_KV",
+  "limits": "set by the operator in env; no limit is policy in this repo"
+ },
+ "webhook": {
+  "endpoint": "/api/stripe-webhook",
+  "secret_env": "STRIPE_WEBHOOK_SECRET",
+  "kv_binding": "PAYMENTS_KV",
+  "tolerance_s": 300,
+  "handled": [
+   "checkout.session.completed"
+  ],
+  "stored_fields": [
+   "plan",
+   "payment_status",
+   "mode",
+   "livemode",
+   "at"
+  ]
+ },
+ "api_headers_from": "security/headers.json",
+ "api_headers": [
+  {
+   "key": "Content-Security-Policy",
+   "value": "default-src 'none'; frame-ancestors 'none'"
+  },
+  {
+   "key": "Cache-Control",
+   "value": "no-store"
+  }
+ ],
+ "plans": [
+  {
+   "id": "individual-learner",
+   "audience": "one learner",
+   "price_id": null,
+   "price_env": "STRIPE_PRICE_INDIVIDUAL_LEARNER",
+   "mode_env": "STRIPE_MODE_INDIVIDUAL_LEARNER",
+   "label_key": "plans.plan.individual-learner.title",
+   "desc_key": "plans.plan.individual-learner.desc",
+   "price": null,
+   "currency": null,
+   "interval": null,
+   "trial": null,
+   "discount": null,
+   "tax": null,
+   "commercial_terms": "set by the operator in Stripe"
+  },
+  {
+   "id": "union-hall",
+   "audience": "a union training hall and its apprentices",
+   "price_id": null,
+   "price_env": "STRIPE_PRICE_UNION_HALL",
+   "mode_env": "STRIPE_MODE_UNION_HALL",
+   "label_key": "plans.plan.union-hall.title",
+   "desc_key": "plans.plan.union-hall.desc",
+   "price": null,
+   "currency": null,
+   "interval": null,
+   "trial": null,
+   "discount": null,
+   "tax": null,
+   "commercial_terms": "set by the operator in Stripe"
+  },
+  {
+   "id": "school-district",
+   "audience": "a K-12 school or district (PROPOSED partner, no agreement)",
+   "price_id": null,
+   "price_env": "STRIPE_PRICE_SCHOOL_DISTRICT",
+   "mode_env": "STRIPE_MODE_SCHOOL_DISTRICT",
+   "label_key": "plans.plan.school-district.title",
+   "desc_key": "plans.plan.school-district.desc",
+   "price": null,
+   "currency": null,
+   "interval": null,
+   "trial": null,
+   "discount": null,
+   "tax": null,
+   "commercial_terms": "set by the operator in Stripe"
+  }
+ ],
+ "source_stamp": "sha256:003f8c3fb66af81a26b67caa7f50e1f0be48625c218880793e00c8581d74bc79"
+}

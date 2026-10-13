@@ -1,0 +1,3166 @@
+{
+ "pack": "outdoors",
+ "version": 1,
+ "provenance": {
+  "catalog": "AUTHORED",
+  "spots": "DERIVED from AUTHORED water"
+ },
+ "frame": "page frame: x = east metres, z = -north metres from the region origin_m (parishes/bay); wilds = the world x/z",
+ "rules": {
+  "coast_max_m": 30000,
+  "shore_step_m": 3.0,
+  "coast_inland_m": 25.0,
+  "wilds_habitat": {
+   "mountain": "lake",
+   "forest": "lake",
+   "canyon": "river",
+   "delta": "marsh"
+  },
+  "wilds_region": {
+   "mountain": "west",
+   "forest": "west",
+   "canyon": "west",
+   "delta": "gulf"
+  }
+ },
+ "regions": {
+  "gulf": {
+   "title": "Gulf coast parishes and delta",
+   "agency": "Louisiana Department of Wildlife and Fisheries"
+  },
+  "bay": {
+   "title": "San Francisco Bay Area",
+   "agency": "California Department of Fish and Wildlife"
+  },
+  "west": {
+   "title": "Western mountains, forests and canyons (general geography only)",
+   "agency": null
+  }
+ },
+ "habitats": {
+  "lake": "open lake water with a shoreline",
+  "bayou": "slow, winding bayou channel",
+  "canal": "straight drainage canal or ditch",
+  "stream": "small moving stream",
+  "pond": "small still pond",
+  "flooded-field": "shallow flooded field edge (crawfish ground)",
+  "bay-shore": "salt or brackish bay shoreline",
+  "river": "moving river water",
+  "marsh": "shallow marsh and braided channels"
+ },
+ "times": [
+  "dawn",
+  "day",
+  "dusk",
+  "night"
+ ],
+ "rods": [
+  {
+   "id": "cane-pole",
+   "title": "Cane pole",
+   "method": "line",
+   "stats": {
+    "reach": 1,
+    "power": 1,
+    "finesse": 4,
+    "tension_window": 5
+   },
+   "habitats": [
+    "pond",
+    "canal",
+    "bayou",
+    "stream",
+    "lake",
+    "marsh"
+   ],
+   "tip": "No reel: swing the bait out and lift the fish straight up - simple and gentle for panfish."
+  },
+  {
+   "id": "spinning-rod",
+   "title": "Spinning rod",
+   "method": "cast",
+   "stats": {
+    "reach": 3,
+    "power": 3,
+    "finesse": 4,
+    "tension_window": 4
+   },
+   "habitats": [
+    "pond",
+    "canal",
+    "bayou",
+    "stream",
+    "lake",
+    "river",
+    "marsh",
+    "bay-shore"
+   ],
+   "tip": "An open-face reel that is easy to learn; the drag lets line slip before it breaks."
+  },
+  {
+   "id": "baitcasting-rod",
+   "title": "Baitcasting rod",
+   "method": "cast",
+   "stats": {
+    "reach": 4,
+    "power": 5,
+    "finesse": 2,
+    "tension_window": 3
+   },
+   "habitats": [
+    "lake",
+    "bayou",
+    "river",
+    "marsh",
+    "bay-shore"
+   ],
+   "tip": "Accurate and strong, but a careless cast can tangle the spool (a 'backlash') - thumb the spool."
+  },
+  {
+   "id": "fly-rod",
+   "title": "Fly rod",
+   "method": "cast",
+   "stats": {
+    "reach": 3,
+    "power": 2,
+    "finesse": 5,
+    "tension_window": 3
+   },
+   "habitats": [
+    "stream",
+    "river",
+    "lake",
+    "pond"
+   ],
+   "tip": "The weight is in the line, not the lure: the rod loads the line and a light fly follows."
+  },
+  {
+   "id": "surf-rod",
+   "title": "Surf rod",
+   "method": "cast",
+   "stats": {
+    "reach": 5,
+    "power": 4,
+    "finesse": 2,
+    "tension_window": 4
+   },
+   "habitats": [
+    "bay-shore",
+    "lake",
+    "river"
+   ],
+   "tip": "A long rod to reach past near-shore water from a bank or beach."
+  },
+  {
+   "id": "crab-line",
+   "title": "Crab line",
+   "method": "line",
+   "stats": {
+    "reach": 1,
+    "power": 2,
+    "finesse": 3,
+    "tension_window": 5
+   },
+   "habitats": [
+    "bay-shore",
+    "marsh",
+    "bayou"
+   ],
+   "tip": "A weighted line with bait and no hook: pull it in slowly and scoop the crab with a net."
+  },
+  {
+   "id": "crawfish-trap",
+   "title": "Crawfish trap",
+   "method": "trap",
+   "stats": {
+    "reach": 1,
+    "power": 1,
+    "finesse": 1,
+    "tension_window": 5
+   },
+   "habitats": [
+    "flooded-field",
+    "canal",
+    "pond",
+    "marsh"
+   ],
+   "tip": "A mesh trap with funnel entrances: set it, wait, then run the trap line and check each one."
+  }
+ ],
+ "baits": [
+  {
+   "id": "worm",
+   "title": "Worm",
+   "kind": "live bait"
+  },
+  {
+   "id": "cricket",
+   "title": "Cricket",
+   "kind": "live bait"
+  },
+  {
+   "id": "minnow",
+   "title": "Minnow",
+   "kind": "live bait"
+  },
+  {
+   "id": "shrimp",
+   "title": "Shrimp",
+   "kind": "bait"
+  },
+  {
+   "id": "cut-bait",
+   "title": "Cut bait",
+   "kind": "bait"
+  },
+  {
+   "id": "chicken-neck",
+   "title": "Chicken neck",
+   "kind": "crab bait"
+  },
+  {
+   "id": "trap-bait",
+   "title": "Fish-based trap bait",
+   "kind": "trap bait"
+  },
+  {
+   "id": "soft-plastic",
+   "title": "Soft plastic worm",
+   "kind": "lure"
+  },
+  {
+   "id": "spinner",
+   "title": "Spinner",
+   "kind": "lure"
+  },
+  {
+   "id": "crankbait",
+   "title": "Crankbait",
+   "kind": "lure"
+  },
+  {
+   "id": "topwater",
+   "title": "Topwater popper",
+   "kind": "lure"
+  },
+  {
+   "id": "dry-fly",
+   "title": "Dry fly",
+   "kind": "fly"
+  },
+  {
+   "id": "nymph",
+   "title": "Nymph",
+   "kind": "fly"
+  }
+ ],
+ "species": [
+  {
+   "id": "largemouth-bass",
+   "title": "Largemouth bass",
+   "regions": [
+    "gulf",
+    "bay"
+   ],
+   "habitats": [
+    "lake",
+    "bayou",
+    "canal",
+    "pond",
+    "marsh"
+   ],
+   "methods": [
+    "cast",
+    "line"
+   ],
+   "baits": [
+    "soft-plastic",
+    "crankbait",
+    "topwater",
+    "spinner",
+    "minnow",
+    "worm"
+   ],
+   "season": [
+    3,
+    10
+   ],
+   "times": {
+    "dawn": 3,
+    "day": 1,
+    "dusk": 3,
+    "night": 1
+   },
+   "stats": {
+    "fight": 4,
+    "wariness": 3,
+    "rarity": 2
+   },
+   "fact": "Its upper jaw reaches back past the eye - the easiest way to tell it from other black basses.",
+   "handling": "Wet your hands, support its body level and keep it in the water while you unhook it.",
+   "spot_count": 101,
+   "seasons_link": null
+  },
+  {
+   "id": "bluegill",
+   "title": "Bluegill",
+   "regions": [
+    "gulf",
+    "bay",
+    "west"
+   ],
+   "habitats": [
+    "pond",
+    "lake",
+    "canal",
+    "bayou",
+    "stream"
+   ],
+   "methods": [
+    "line",
+    "cast"
+   ],
+   "baits": [
+    "worm",
+    "cricket",
+    "dry-fly",
+    "nymph"
+   ],
+   "season": [
+    3,
+    10
+   ],
+   "times": {
+    "dawn": 2,
+    "day": 3,
+    "dusk": 2,
+    "night": 0
+   },
+   "stats": {
+    "fight": 2,
+    "wariness": 1,
+    "rarity": 1
+   },
+   "fact": "Bluegill are sunfish that nest in shallow colonies, and the males guard the nests.",
+   "handling": "Smooth the sharp top fin down from front to back before you hold it.",
+   "spot_count": 125,
+   "seasons_link": null
+  },
+  {
+   "id": "redear-sunfish",
+   "title": "Redear sunfish",
+   "regions": [
+    "gulf"
+   ],
+   "habitats": [
+    "pond",
+    "lake",
+    "canal"
+   ],
+   "methods": [
+    "line",
+    "cast"
+   ],
+   "baits": [
+    "worm",
+    "cricket"
+   ],
+   "season": [
+    4,
+    9
+   ],
+   "times": {
+    "dawn": 2,
+    "day": 3,
+    "dusk": 2,
+    "night": 0
+   },
+   "stats": {
+    "fight": 2,
+    "wariness": 2,
+    "rarity": 2
+   },
+   "fact": "Redear sunfish eat snails, which is why many anglers call them shellcrackers.",
+   "handling": "Use a small hook and a dehooker so the fish goes back quickly.",
+   "spot_count": 41,
+   "seasons_link": null
+  },
+  {
+   "id": "crappie",
+   "title": "Crappie",
+   "regions": [
+    "gulf"
+   ],
+   "habitats": [
+    "lake",
+    "bayou",
+    "canal"
+   ],
+   "methods": [
+    "line",
+    "cast"
+   ],
+   "baits": [
+    "minnow",
+    "spinner"
+   ],
+   "season": [
+    1,
+    5
+   ],
+   "times": {
+    "dawn": 3,
+    "day": 1,
+    "dusk": 3,
+    "night": 2
+   },
+   "stats": {
+    "fight": 2,
+    "wariness": 2,
+    "rarity": 2
+   },
+   "fact": "Crappie often school around sunken brush and other cover, so where you find one you may find more.",
+   "handling": "Their mouths tear easily: reel steadily and lift gently.",
+   "spot_count": 41,
+   "seasons_link": null
+  },
+  {
+   "id": "channel-catfish",
+   "title": "Channel catfish",
+   "regions": [
+    "gulf",
+    "bay",
+    "west"
+   ],
+   "habitats": [
+    "bayou",
+    "canal",
+    "lake",
+    "river",
+    "pond"
+   ],
+   "methods": [
+    "cast",
+    "line"
+   ],
+   "baits": [
+    "cut-bait",
+    "worm",
+    "shrimp"
+   ],
+   "season": [
+    4,
+    10
+   ],
+   "times": {
+    "dawn": 2,
+    "day": 1,
+    "dusk": 3,
+    "night": 3
+   },
+   "stats": {
+    "fight": 3,
+    "wariness": 2,
+    "rarity": 1
+   },
+   "fact": "Catfish find much of their food by taste and smell - their whisker-like barbels carry taste buds.",
+   "handling": "Hold it behind the side and top spines; those spines can give a painful jab.",
+   "spot_count": 108,
+   "seasons_link": null
+  },
+  {
+   "id": "red-drum",
+   "title": "Red drum (redfish)",
+   "regions": [
+    "gulf"
+   ],
+   "habitats": [
+    "marsh",
+    "bayou",
+    "lake"
+   ],
+   "methods": [
+    "cast"
+   ],
+   "baits": [
+    "shrimp",
+    "cut-bait",
+    "spinner",
+    "soft-plastic"
+   ],
+   "season": [
+    1,
+    12
+   ],
+   "times": {
+    "dawn": 3,
+    "day": 2,
+    "dusk": 3,
+    "night": 1
+   },
+   "stats": {
+    "fight": 5,
+    "wariness": 3,
+    "rarity": 3
+   },
+   "fact": "Red drum usually carry one or more dark spots near the tail.",
+   "handling": "Support its weight with two hands and let it swim off on its own before you let go.",
+   "spot_count": 35,
+   "seasons_link": null
+  },
+  {
+   "id": "spotted-seatrout",
+   "title": "Spotted seatrout",
+   "regions": [
+    "gulf"
+   ],
+   "habitats": [
+    "marsh",
+    "lake"
+   ],
+   "methods": [
+    "cast"
+   ],
+   "baits": [
+    "shrimp",
+    "soft-plastic",
+    "topwater"
+   ],
+   "season": [
+    3,
+    11
+   ],
+   "times": {
+    "dawn": 3,
+    "day": 1,
+    "dusk": 3,
+    "night": 2
+   },
+   "stats": {
+    "fight": 3,
+    "wariness": 3,
+    "rarity": 3
+   },
+   "fact": "Spotted seatrout carry scattered black spots on the back, fins and tail.",
+   "handling": "Keep it in the water and handle it as little as possible - its slime coat protects it.",
+   "spot_count": 9,
+   "seasons_link": null
+  },
+  {
+   "id": "southern-flounder",
+   "title": "Southern flounder",
+   "regions": [
+    "gulf"
+   ],
+   "habitats": [
+    "marsh",
+    "lake"
+   ],
+   "methods": [
+    "cast"
+   ],
+   "baits": [
+    "minnow",
+    "shrimp",
+    "soft-plastic"
+   ],
+   "season": [
+    9,
+    12
+   ],
+   "times": {
+    "dawn": 2,
+    "day": 2,
+    "dusk": 3,
+    "night": 2
+   },
+   "stats": {
+    "fight": 3,
+    "wariness": 4,
+    "rarity": 4
+   },
+   "fact": "Flounder are flatfish: as they grow, both eyes move to one side of the head so they can lie flat and ambush prey.",
+   "handling": "Lay it flat on a wet hand and slide it back into the water.",
+   "spot_count": 9,
+   "seasons_link": null
+  },
+  {
+   "id": "blue-crab",
+   "title": "Blue crab",
+   "regions": [
+    "gulf"
+   ],
+   "habitats": [
+    "marsh",
+    "bayou",
+    "lake"
+   ],
+   "methods": [
+    "line",
+    "trap"
+   ],
+   "baits": [
+    "chicken-neck",
+    "trap-bait"
+   ],
+   "season": [
+    3,
+    11
+   ],
+   "times": {
+    "dawn": 3,
+    "day": 2,
+    "dusk": 2,
+    "night": 1
+   },
+   "stats": {
+    "fight": 2,
+    "wariness": 2,
+    "rarity": 2
+   },
+   "fact": "Blue crabs are swimming crabs: their last pair of legs is flattened like paddles.",
+   "handling": "Hold a crab from behind, at the back legs, away from the claws; rules often protect egg-bearing females - return them.",
+   "spot_count": 35,
+   "seasons_link": null
+  },
+  {
+   "id": "red-swamp-crawfish",
+   "title": "Red swamp crawfish",
+   "regions": [
+    "gulf"
+   ],
+   "habitats": [
+    "flooded-field",
+    "canal",
+    "pond",
+    "marsh"
+   ],
+   "methods": [
+    "trap"
+   ],
+   "baits": [
+    "trap-bait"
+   ],
+   "season": [
+    1,
+    6
+   ],
+   "times": {
+    "dawn": 2,
+    "day": 2,
+    "dusk": 2,
+    "night": 2
+   },
+   "stats": {
+    "fight": 1,
+    "wariness": 1,
+    "rarity": 1
+   },
+   "fact": "Red swamp crawfish dig burrows and wait out dry months underground until water returns.",
+   "handling": "Keep a catch cool, damp and shaded; release small or egg-bearing crawfish where you found them.",
+   "spot_count": 46,
+   "seasons_link": {
+    "registry": "seasons/registry/seasons.json",
+    "id": "rice-crawfish-rotation"
+   }
+  },
+  {
+   "id": "striped-bass",
+   "title": "Striped bass",
+   "regions": [
+    "bay"
+   ],
+   "habitats": [
+    "bay-shore",
+    "river"
+   ],
+   "methods": [
+    "cast"
+   ],
+   "baits": [
+    "minnow",
+    "cut-bait",
+    "spinner",
+    "topwater"
+   ],
+   "season": [
+    3,
+    11
+   ],
+   "times": {
+    "dawn": 3,
+    "day": 1,
+    "dusk": 3,
+    "night": 2
+   },
+   "stats": {
+    "fight": 5,
+    "wariness": 3,
+    "rarity": 3
+   },
+   "fact": "Striped bass move between salt and fresh water: many swim upriver to spawn.",
+   "handling": "Keep your fingers out of the gills; hold it by the lower lip and support the belly.",
+   "spot_count": 9,
+   "seasons_link": null
+  },
+  {
+   "id": "california-halibut",
+   "title": "California halibut",
+   "regions": [
+    "bay"
+   ],
+   "habitats": [
+    "bay-shore"
+   ],
+   "methods": [
+    "cast"
+   ],
+   "baits": [
+    "minnow",
+    "soft-plastic"
+   ],
+   "season": [
+    4,
+    10
+   ],
+   "times": {
+    "dawn": 2,
+    "day": 3,
+    "dusk": 2,
+    "night": 0
+   },
+   "stats": {
+    "fight": 4,
+    "wariness": 4,
+    "rarity": 4
+   },
+   "fact": "Like every flatfish, a young halibut swims upright; one eye then migrates so the fish can lie flat on the sand.",
+   "handling": "Its teeth are sharp: use pliers and keep the fish flat and wet.",
+   "spot_count": 9,
+   "seasons_link": null
+  },
+  {
+   "id": "surfperch",
+   "title": "Surfperch",
+   "regions": [
+    "bay"
+   ],
+   "habitats": [
+    "bay-shore"
+   ],
+   "methods": [
+    "cast",
+    "line"
+   ],
+   "baits": [
+    "shrimp",
+    "worm",
+    "soft-plastic"
+   ],
+   "season": [
+    1,
+    12
+   ],
+   "times": {
+    "dawn": 2,
+    "day": 3,
+    "dusk": 2,
+    "night": 0
+   },
+   "stats": {
+    "fight": 2,
+    "wariness": 2,
+    "rarity": 1
+   },
+   "fact": "Surfperch give birth to live young instead of laying eggs.",
+   "handling": "Wet your hands and return it quickly - especially in spring, when females may be carrying young.",
+   "spot_count": 9,
+   "seasons_link": null
+  },
+  {
+   "id": "dungeness-crab",
+   "title": "Dungeness crab",
+   "regions": [
+    "bay"
+   ],
+   "habitats": [
+    "bay-shore"
+   ],
+   "methods": [
+    "line",
+    "trap"
+   ],
+   "baits": [
+    "chicken-neck",
+    "trap-bait"
+   ],
+   "season": [
+    11,
+    6
+   ],
+   "times": {
+    "dawn": 2,
+    "day": 2,
+    "dusk": 2,
+    "night": 2
+   },
+   "stats": {
+    "fight": 2,
+    "wariness": 3,
+    "rarity": 3
+   },
+   "fact": "Dungeness crabs often bury themselves in sandy bottoms with only their eyes showing.",
+   "handling": "Hold from behind at the back legs; rules on size and sex apply to real crabbing - check the state wildlife agency.",
+   "spot_count": 9,
+   "seasons_link": null
+  },
+  {
+   "id": "rainbow-trout",
+   "title": "Rainbow trout",
+   "regions": [
+    "west",
+    "bay"
+   ],
+   "habitats": [
+    "stream",
+    "river",
+    "lake"
+   ],
+   "methods": [
+    "cast"
+   ],
+   "baits": [
+    "dry-fly",
+    "nymph",
+    "spinner",
+    "worm"
+   ],
+   "season": [
+    4,
+    11
+   ],
+   "times": {
+    "dawn": 3,
+    "day": 2,
+    "dusk": 3,
+    "night": 0
+   },
+   "stats": {
+    "fight": 3,
+    "wariness": 4,
+    "rarity": 2
+   },
+   "fact": "Rainbow trout need cool, oxygen-rich water, so they hold where currents mix and shade the stream.",
+   "handling": "Barbless hooks and wet hands help a trout recover; keep it in the water for the photo.",
+   "spot_count": 23,
+   "seasons_link": null
+  },
+  {
+   "id": "cutthroat-trout",
+   "title": "Cutthroat trout",
+   "regions": [
+    "west"
+   ],
+   "habitats": [
+    "stream",
+    "lake",
+    "river"
+   ],
+   "methods": [
+    "cast"
+   ],
+   "baits": [
+    "dry-fly",
+    "nymph",
+    "spinner"
+   ],
+   "season": [
+    5,
+    10
+   ],
+   "times": {
+    "dawn": 3,
+    "day": 2,
+    "dusk": 3,
+    "night": 0
+   },
+   "stats": {
+    "fight": 3,
+    "wariness": 3,
+    "rarity": 3
+   },
+   "fact": "Cutthroat trout are named for the red-orange slash under the lower jaw.",
+   "handling": "Face it into gentle current until it swims away strongly.",
+   "spot_count": 14,
+   "seasons_link": null
+  },
+  {
+   "id": "brown-trout",
+   "title": "Brown trout",
+   "regions": [
+    "west"
+   ],
+   "habitats": [
+    "river",
+    "stream"
+   ],
+   "methods": [
+    "cast"
+   ],
+   "baits": [
+    "nymph",
+    "dry-fly",
+    "spinner",
+    "minnow"
+   ],
+   "season": [
+    4,
+    10
+   ],
+   "times": {
+    "dawn": 3,
+    "day": 1,
+    "dusk": 3,
+    "night": 2
+   },
+   "stats": {
+    "fight": 4,
+    "wariness": 5,
+    "rarity": 4
+   },
+   "fact": "Brown trout were brought to North America from Europe and are among the warier trout.",
+   "handling": "Keep the fight short so the fish is not exhausted before release.",
+   "spot_count": 5,
+   "seasons_link": null
+  },
+  {
+   "id": "smallmouth-bass",
+   "title": "Smallmouth bass",
+   "regions": [
+    "west"
+   ],
+   "habitats": [
+    "river",
+    "lake"
+   ],
+   "methods": [
+    "cast"
+   ],
+   "baits": [
+    "crankbait",
+    "soft-plastic",
+    "spinner",
+    "minnow"
+   ],
+   "season": [
+    4,
+    10
+   ],
+   "times": {
+    "dawn": 3,
+    "day": 2,
+    "dusk": 3,
+    "night": 0
+   },
+   "stats": {
+    "fight": 4,
+    "wariness": 3,
+    "rarity": 3
+   },
+   "fact": "Smallmouth bass favour clearer, rockier water with some current.",
+   "handling": "Hold by the lower lip with the body supported, then let it swim from your hand.",
+   "spot_count": 14,
+   "seasons_link": null
+  },
+  {
+   "id": "yellow-perch",
+   "title": "Yellow perch",
+   "regions": [
+    "west"
+   ],
+   "habitats": [
+    "lake",
+    "pond"
+   ],
+   "methods": [
+    "line",
+    "cast"
+   ],
+   "baits": [
+    "worm",
+    "minnow"
+   ],
+   "season": [
+    1,
+    12
+   ],
+   "times": {
+    "dawn": 2,
+    "day": 3,
+    "dusk": 2,
+    "night": 0
+   },
+   "stats": {
+    "fight": 1,
+    "wariness": 1,
+    "rarity": 1
+   },
+   "fact": "Yellow perch have dark vertical bars on a golden body and often travel in schools.",
+   "handling": "Flatten the spiny top fin before gripping it.",
+   "spot_count": 9,
+   "seasons_link": null
+  }
+ ],
+ "spots": [
+  {
+   "id": "parishes-22005-0",
+   "world": "parishes",
+   "region_id": "22005",
+   "region": "gulf",
+   "habitat": "bayou",
+   "x": -2460.7,
+   "z": -11905.1,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22005.json#water.channels[0]",
+   "basis": "bayou bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22005-1",
+   "world": "parishes",
+   "region_id": "22005",
+   "region": "gulf",
+   "habitat": "bayou",
+   "x": -3529.1,
+   "z": -9114.7,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22005.json#water.channels[1]",
+   "basis": "bayou bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22005-2",
+   "world": "parishes",
+   "region_id": "22005",
+   "region": "gulf",
+   "habitat": "canal",
+   "x": -1789.0,
+   "z": -2958.2,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22005.json#water.channels[3]",
+   "basis": "canal bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22005-3",
+   "world": "parishes",
+   "region_id": "22005",
+   "region": "gulf",
+   "habitat": "stream",
+   "x": -6463.8,
+   "z": -9661.9,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22005.json#water.channels[5]",
+   "basis": "stream bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22005-4",
+   "world": "parishes",
+   "region_id": "22005",
+   "region": "gulf",
+   "habitat": "pond",
+   "x": -16738.0,
+   "z": 15019.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22005.json#water.ponds[4]",
+   "basis": "pond edge vertex, stepped onto the bank",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22005-5",
+   "world": "parishes",
+   "region_id": "22005",
+   "region": "gulf",
+   "habitat": "pond",
+   "x": -8527.0,
+   "z": -13325.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22005.json#water.ponds[3]",
+   "basis": "pond edge vertex, stepped onto the bank (the smallest pond: a quiet corner)",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22051-0",
+   "world": "parishes",
+   "region_id": "22051",
+   "region": "gulf",
+   "habitat": "bayou",
+   "x": -12199.1,
+   "z": -44398.1,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22051.json#water.channels[0]",
+   "basis": "bayou bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22051-1",
+   "world": "parishes",
+   "region_id": "22051",
+   "region": "gulf",
+   "habitat": "bayou",
+   "x": 5439.0,
+   "z": 8259.6,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22051.json#water.channels[1]",
+   "basis": "bayou bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22051-2",
+   "world": "parishes",
+   "region_id": "22051",
+   "region": "gulf",
+   "habitat": "canal",
+   "x": -13391.0,
+   "z": -20415.7,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22051.json#water.channels[3]",
+   "basis": "canal bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22051-3",
+   "world": "parishes",
+   "region_id": "22051",
+   "region": "gulf",
+   "habitat": "stream",
+   "x": -2164.3,
+   "z": -46889.7,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22051.json#water.channels[5]",
+   "basis": "stream bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22051-4",
+   "world": "parishes",
+   "region_id": "22051",
+   "region": "gulf",
+   "habitat": "pond",
+   "x": -13783.0,
+   "z": -44866.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22051.json#water.ponds[1]",
+   "basis": "pond edge vertex, stepped onto the bank",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22051-5",
+   "world": "parishes",
+   "region_id": "22051",
+   "region": "gulf",
+   "habitat": "pond",
+   "x": 9663.0,
+   "z": 10188.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22051.json#water.ponds[2]",
+   "basis": "pond edge vertex, stepped onto the bank (the smallest pond: a quiet corner)",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22057-0",
+   "world": "parishes",
+   "region_id": "22057",
+   "region": "gulf",
+   "habitat": "bayou",
+   "x": -10675.5,
+   "z": -12232.3,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22057.json#water.channels[0]",
+   "basis": "bayou bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22057-1",
+   "world": "parishes",
+   "region_id": "22057",
+   "region": "gulf",
+   "habitat": "bayou",
+   "x": 11761.1,
+   "z": 2208.3,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22057.json#water.channels[1]",
+   "basis": "bayou bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22057-2",
+   "world": "parishes",
+   "region_id": "22057",
+   "region": "gulf",
+   "habitat": "canal",
+   "x": -13694.0,
+   "z": -19506.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22057.json#water.channels[3]",
+   "basis": "canal bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22057-3",
+   "world": "parishes",
+   "region_id": "22057",
+   "region": "gulf",
+   "habitat": "stream",
+   "x": 6160.7,
+   "z": 8003.7,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22057.json#water.channels[5]",
+   "basis": "stream bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22057-4",
+   "world": "parishes",
+   "region_id": "22057",
+   "region": "gulf",
+   "habitat": "pond",
+   "x": -12809.0,
+   "z": -6845.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22057.json#water.ponds[1]",
+   "basis": "pond edge vertex, stepped onto the bank",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22057-5",
+   "world": "parishes",
+   "region_id": "22057",
+   "region": "gulf",
+   "habitat": "pond",
+   "x": -16987.0,
+   "z": -3680.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22057.json#water.ponds[7]",
+   "basis": "pond edge vertex, stepped onto the bank (the smallest pond: a quiet corner)",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22063-0",
+   "world": "parishes",
+   "region_id": "22063",
+   "region": "gulf",
+   "habitat": "lake",
+   "x": 24924.0,
+   "z": 21074.0,
+   "name": "Lake Maurepas",
+   "hidden": false,
+   "source": "parishes/maps/world/22063.json#water.lakes[0]",
+   "basis": "lake edge vertex, stepped onto the bank",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22063-1",
+   "world": "parishes",
+   "region_id": "22063",
+   "region": "gulf",
+   "habitat": "bayou",
+   "x": 10202.3,
+   "z": -5608.9,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22063.json#water.channels[0]",
+   "basis": "bayou bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22063-2",
+   "world": "parishes",
+   "region_id": "22063",
+   "region": "gulf",
+   "habitat": "bayou",
+   "x": 16574.0,
+   "z": 13017.5,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22063.json#water.channels[1]",
+   "basis": "bayou bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22063-3",
+   "world": "parishes",
+   "region_id": "22063",
+   "region": "gulf",
+   "habitat": "canal",
+   "x": -3069.0,
+   "z": 12660.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22063.json#water.channels[3]",
+   "basis": "canal bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22063-4",
+   "world": "parishes",
+   "region_id": "22063",
+   "region": "gulf",
+   "habitat": "stream",
+   "x": 5671.7,
+   "z": -6180.3,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22063.json#water.channels[5]",
+   "basis": "stream bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22063-5",
+   "world": "parishes",
+   "region_id": "22063",
+   "region": "gulf",
+   "habitat": "pond",
+   "x": 13306.0,
+   "z": -12930.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22063.json#water.ponds[1]",
+   "basis": "pond edge vertex, stepped onto the bank",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22063-6",
+   "world": "parishes",
+   "region_id": "22063",
+   "region": "gulf",
+   "habitat": "pond",
+   "x": 1206.0,
+   "z": 26730.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22063.json#water.ponds[4]",
+   "basis": "pond edge vertex, stepped onto the bank (the smallest pond: a quiet corner)",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22071-0",
+   "world": "parishes",
+   "region_id": "22071",
+   "region": "gulf",
+   "habitat": "bayou",
+   "x": -6520.6,
+   "z": 4772.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22071.json#water.channels[0]",
+   "basis": "bayou bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22071-1",
+   "world": "parishes",
+   "region_id": "22071",
+   "region": "gulf",
+   "habitat": "bayou",
+   "x": -14475.7,
+   "z": 1389.5,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22071.json#water.channels[1]",
+   "basis": "bayou bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22071-2",
+   "world": "parishes",
+   "region_id": "22071",
+   "region": "gulf",
+   "habitat": "canal",
+   "x": 19221.7,
+   "z": -1519.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22071.json#water.channels[3]",
+   "basis": "canal bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22071-3",
+   "world": "parishes",
+   "region_id": "22071",
+   "region": "gulf",
+   "habitat": "stream",
+   "x": -4694.0,
+   "z": 7744.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22071.json#water.channels[5]",
+   "basis": "stream bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22071-4",
+   "world": "parishes",
+   "region_id": "22071",
+   "region": "gulf",
+   "habitat": "pond",
+   "x": -15969.0,
+   "z": 15046.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22071.json#water.ponds[0]",
+   "basis": "pond edge vertex, stepped onto the bank",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22071-5",
+   "world": "parishes",
+   "region_id": "22071",
+   "region": "gulf",
+   "habitat": "pond",
+   "x": 4339.0,
+   "z": -6348.0,
+   "name": null,
+   "hidden": true,
+   "source": "parishes/maps/world/22071.json#water.ponds[7]",
+   "basis": "pond edge vertex, stepped onto the bank (the smallest pond: a quiet corner)",
+   "provenance": "DERIVED",
+   "hidden_rule": "the smallest pond in the start parish (22071)"
+  },
+  {
+   "id": "parishes-22075-0",
+   "world": "parishes",
+   "region_id": "22075",
+   "region": "gulf",
+   "habitat": "bayou",
+   "x": 24590.9,
+   "z": 15985.7,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22075.json#water.channels[0]",
+   "basis": "bayou bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22075-1",
+   "world": "parishes",
+   "region_id": "22075",
+   "region": "gulf",
+   "habitat": "bayou",
+   "x": 32997.9,
+   "z": 37139.2,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22075.json#water.channels[1]",
+   "basis": "bayou bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22075-2",
+   "world": "parishes",
+   "region_id": "22075",
+   "region": "gulf",
+   "habitat": "canal",
+   "x": -20245.0,
+   "z": -33437.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22075.json#water.channels[4]",
+   "basis": "canal bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22075-3",
+   "world": "parishes",
+   "region_id": "22075",
+   "region": "gulf",
+   "habitat": "stream",
+   "x": -13350.2,
+   "z": -16448.9,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22075.json#water.channels[6]",
+   "basis": "stream bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22075-4",
+   "world": "parishes",
+   "region_id": "22075",
+   "region": "gulf",
+   "habitat": "pond",
+   "x": 37880.0,
+   "z": 23695.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22075.json#water.ponds[7]",
+   "basis": "pond edge vertex, stepped onto the bank",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22075-5",
+   "world": "parishes",
+   "region_id": "22075",
+   "region": "gulf",
+   "habitat": "pond",
+   "x": 14633.0,
+   "z": 4220.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22075.json#water.ponds[2]",
+   "basis": "pond edge vertex, stepped onto the bank (the smallest pond: a quiet corner)",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22087-0",
+   "world": "parishes",
+   "region_id": "22087",
+   "region": "gulf",
+   "habitat": "bayou",
+   "x": -27568.8,
+   "z": -1660.9,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22087.json#water.channels[0]",
+   "basis": "bayou bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22087-1",
+   "world": "parishes",
+   "region_id": "22087",
+   "region": "gulf",
+   "habitat": "bayou",
+   "x": -131.6,
+   "z": 4795.6,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22087.json#water.channels[1]",
+   "basis": "bayou bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22087-2",
+   "world": "parishes",
+   "region_id": "22087",
+   "region": "gulf",
+   "habitat": "canal",
+   "x": -35818.0,
+   "z": -5304.5,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22087.json#water.channels[4]",
+   "basis": "canal bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22087-3",
+   "world": "parishes",
+   "region_id": "22087",
+   "region": "gulf",
+   "habitat": "stream",
+   "x": -24494.0,
+   "z": 3643.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22087.json#water.channels[7]",
+   "basis": "stream bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22087-4",
+   "world": "parishes",
+   "region_id": "22087",
+   "region": "gulf",
+   "habitat": "pond",
+   "x": 21504.0,
+   "z": -5026.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22087.json#water.ponds[5]",
+   "basis": "pond edge vertex, stepped onto the bank",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22087-5",
+   "world": "parishes",
+   "region_id": "22087",
+   "region": "gulf",
+   "habitat": "pond",
+   "x": -1695.0,
+   "z": 6494.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22087.json#water.ponds[0]",
+   "basis": "pond edge vertex, stepped onto the bank (the smallest pond: a quiet corner)",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22089-0",
+   "world": "parishes",
+   "region_id": "22089",
+   "region": "gulf",
+   "habitat": "bayou",
+   "x": -6816.1,
+   "z": -10418.3,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22089.json#water.channels[0]",
+   "basis": "bayou bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22089-1",
+   "world": "parishes",
+   "region_id": "22089",
+   "region": "gulf",
+   "habitat": "bayou",
+   "x": -4843.3,
+   "z": -1461.3,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22089.json#water.channels[1]",
+   "basis": "bayou bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22089-2",
+   "world": "parishes",
+   "region_id": "22089",
+   "region": "gulf",
+   "habitat": "canal",
+   "x": 6604.0,
+   "z": 23328.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22089.json#water.channels[3]",
+   "basis": "canal bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22089-3",
+   "world": "parishes",
+   "region_id": "22089",
+   "region": "gulf",
+   "habitat": "stream",
+   "x": -3024.5,
+   "z": -17076.7,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22089.json#water.channels[5]",
+   "basis": "stream bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22089-4",
+   "world": "parishes",
+   "region_id": "22089",
+   "region": "gulf",
+   "habitat": "pond",
+   "x": -149.0,
+   "z": 22229.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22089.json#water.ponds[7]",
+   "basis": "pond edge vertex, stepped onto the bank",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22089-5",
+   "world": "parishes",
+   "region_id": "22089",
+   "region": "gulf",
+   "habitat": "pond",
+   "x": 2255.0,
+   "z": -8105.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22089.json#water.ponds[6]",
+   "basis": "pond edge vertex, stepped onto the bank (the smallest pond: a quiet corner)",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22093-0",
+   "world": "parishes",
+   "region_id": "22093",
+   "region": "gulf",
+   "habitat": "bayou",
+   "x": 4327.7,
+   "z": -10745.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22093.json#water.channels[0]",
+   "basis": "bayou bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22093-1",
+   "world": "parishes",
+   "region_id": "22093",
+   "region": "gulf",
+   "habitat": "bayou",
+   "x": -1386.2,
+   "z": 4711.2,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22093.json#water.channels[1]",
+   "basis": "bayou bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22093-2",
+   "world": "parishes",
+   "region_id": "22093",
+   "region": "gulf",
+   "habitat": "canal",
+   "x": -9214.0,
+   "z": 5988.7,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22093.json#water.channels[5]",
+   "basis": "canal bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22093-3",
+   "world": "parishes",
+   "region_id": "22093",
+   "region": "gulf",
+   "habitat": "stream",
+   "x": -6466.2,
+   "z": -2693.9,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22093.json#water.channels[8]",
+   "basis": "stream bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22093-4",
+   "world": "parishes",
+   "region_id": "22093",
+   "region": "gulf",
+   "habitat": "pond",
+   "x": 3922.0,
+   "z": 4032.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22093.json#water.ponds[6]",
+   "basis": "pond edge vertex, stepped onto the bank",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22093-5",
+   "world": "parishes",
+   "region_id": "22093",
+   "region": "gulf",
+   "habitat": "pond",
+   "x": 4180.0,
+   "z": 11455.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22093.json#water.ponds[3]",
+   "basis": "pond edge vertex, stepped onto the bank (the smallest pond: a quiet corner)",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22095-0",
+   "world": "parishes",
+   "region_id": "22095",
+   "region": "gulf",
+   "habitat": "bayou",
+   "x": -6568.0,
+   "z": 4643.8,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22095.json#water.channels[0]",
+   "basis": "bayou bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22095-1",
+   "world": "parishes",
+   "region_id": "22095",
+   "region": "gulf",
+   "habitat": "bayou",
+   "x": -10940.2,
+   "z": -6215.3,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22095.json#water.channels[1]",
+   "basis": "bayou bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22095-2",
+   "world": "parishes",
+   "region_id": "22095",
+   "region": "gulf",
+   "habitat": "canal",
+   "x": 4616.3,
+   "z": -13459.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22095.json#water.channels[3]",
+   "basis": "canal bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22095-3",
+   "world": "parishes",
+   "region_id": "22095",
+   "region": "gulf",
+   "habitat": "stream",
+   "x": -325.9,
+   "z": -14090.1,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22095.json#water.channels[5]",
+   "basis": "stream bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22095-4",
+   "world": "parishes",
+   "region_id": "22095",
+   "region": "gulf",
+   "habitat": "pond",
+   "x": 932.0,
+   "z": -10850.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22095.json#water.ponds[6]",
+   "basis": "pond edge vertex, stepped onto the bank",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22095-5",
+   "world": "parishes",
+   "region_id": "22095",
+   "region": "gulf",
+   "habitat": "pond",
+   "x": 9174.0,
+   "z": -12084.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22095.json#water.ponds[1]",
+   "basis": "pond edge vertex, stepped onto the bank (the smallest pond: a quiet corner)",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22103-0",
+   "world": "parishes",
+   "region_id": "22103",
+   "region": "gulf",
+   "habitat": "lake",
+   "x": -10673.0,
+   "z": 25603.0,
+   "name": "Lake Pontchartrain",
+   "hidden": false,
+   "source": "parishes/maps/world/22103.json#water.lakes[0]",
+   "basis": "lake edge vertex, stepped onto the bank",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22103-1",
+   "world": "parishes",
+   "region_id": "22103",
+   "region": "gulf",
+   "habitat": "bayou",
+   "x": -4046.6,
+   "z": 3558.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22103.json#water.channels[0]",
+   "basis": "bayou bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22103-2",
+   "world": "parishes",
+   "region_id": "22103",
+   "region": "gulf",
+   "habitat": "bayou",
+   "x": 22736.0,
+   "z": 15979.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22103.json#water.channels[1]",
+   "basis": "bayou bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22103-3",
+   "world": "parishes",
+   "region_id": "22103",
+   "region": "gulf",
+   "habitat": "canal",
+   "x": 7222.3,
+   "z": 5802.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22103.json#water.channels[3]",
+   "basis": "canal bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22103-4",
+   "world": "parishes",
+   "region_id": "22103",
+   "region": "gulf",
+   "habitat": "stream",
+   "x": 18955.5,
+   "z": 2810.3,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22103.json#water.channels[5]",
+   "basis": "stream bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22103-5",
+   "world": "parishes",
+   "region_id": "22103",
+   "region": "gulf",
+   "habitat": "pond",
+   "x": 17952.0,
+   "z": -3937.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22103.json#water.ponds[4]",
+   "basis": "pond edge vertex, stepped onto the bank",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22103-6",
+   "world": "parishes",
+   "region_id": "22103",
+   "region": "gulf",
+   "habitat": "pond",
+   "x": -13755.0,
+   "z": -30306.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22103.json#water.ponds[0]",
+   "basis": "pond edge vertex, stepped onto the bank (the smallest pond: a quiet corner)",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22105-0",
+   "world": "parishes",
+   "region_id": "22105",
+   "region": "gulf",
+   "habitat": "bayou",
+   "x": 9612.5,
+   "z": 13026.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22105.json#water.channels[0]",
+   "basis": "bayou bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22105-1",
+   "world": "parishes",
+   "region_id": "22105",
+   "region": "gulf",
+   "habitat": "bayou",
+   "x": -2210.7,
+   "z": 31251.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22105.json#water.channels[1]",
+   "basis": "bayou bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22105-2",
+   "world": "parishes",
+   "region_id": "22105",
+   "region": "gulf",
+   "habitat": "canal",
+   "x": -1177.0,
+   "z": 12517.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22105.json#water.channels[3]",
+   "basis": "canal bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22105-3",
+   "world": "parishes",
+   "region_id": "22105",
+   "region": "gulf",
+   "habitat": "stream",
+   "x": 7558.3,
+   "z": 4069.7,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22105.json#water.channels[5]",
+   "basis": "stream bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22105-4",
+   "world": "parishes",
+   "region_id": "22105",
+   "region": "gulf",
+   "habitat": "pond",
+   "x": -676.0,
+   "z": -21230.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22105.json#water.ponds[7]",
+   "basis": "pond edge vertex, stepped onto the bank",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22105-5",
+   "world": "parishes",
+   "region_id": "22105",
+   "region": "gulf",
+   "habitat": "pond",
+   "x": -12171.0,
+   "z": 6938.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22105.json#water.ponds[0]",
+   "basis": "pond edge vertex, stepped onto the bank (the smallest pond: a quiet corner)",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22109-0",
+   "world": "parishes",
+   "region_id": "22109",
+   "region": "gulf",
+   "habitat": "bayou",
+   "x": -3623.8,
+   "z": -30831.9,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22109.json#water.channels[0]",
+   "basis": "bayou bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22109-1",
+   "world": "parishes",
+   "region_id": "22109",
+   "region": "gulf",
+   "habitat": "bayou",
+   "x": 8179.7,
+   "z": -18115.7,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22109.json#water.channels[1]",
+   "basis": "bayou bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22109-2",
+   "world": "parishes",
+   "region_id": "22109",
+   "region": "gulf",
+   "habitat": "canal",
+   "x": 6717.0,
+   "z": 30101.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22109.json#water.channels[3]",
+   "basis": "canal bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22109-3",
+   "world": "parishes",
+   "region_id": "22109",
+   "region": "gulf",
+   "habitat": "stream",
+   "x": -31586.0,
+   "z": -6686.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22109.json#water.channels[5]",
+   "basis": "stream bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22109-4",
+   "world": "parishes",
+   "region_id": "22109",
+   "region": "gulf",
+   "habitat": "pond",
+   "x": 20010.0,
+   "z": 16033.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22109.json#water.ponds[5]",
+   "basis": "pond edge vertex, stepped onto the bank",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "parishes-22109-5",
+   "world": "parishes",
+   "region_id": "22109",
+   "region": "gulf",
+   "habitat": "pond",
+   "x": 30804.0,
+   "z": -7548.0,
+   "name": null,
+   "hidden": false,
+   "source": "parishes/maps/world/22109.json#water.ponds[4]",
+   "basis": "pond edge vertex, stepped onto the bank (the smallest pond: a quiet corner)",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06001-0",
+   "world": "bay",
+   "region_id": "06001",
+   "region": "bay",
+   "habitat": "canal",
+   "x": -18183.3,
+   "z": -3898.0,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06001.json#water.channels[0]",
+   "basis": "canal bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06001-1",
+   "world": "bay",
+   "region_id": "06001",
+   "region": "bay",
+   "habitat": "stream",
+   "x": 26181.3,
+   "z": 5158.7,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06001.json#water.channels[2]",
+   "basis": "stream bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06001-2",
+   "world": "bay",
+   "region_id": "06001",
+   "region": "bay",
+   "habitat": "pond",
+   "x": -7740.0,
+   "z": -7367.0,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06001.json#water.ponds[4]",
+   "basis": "pond edge vertex, stepped onto the bank",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06001-3",
+   "world": "bay",
+   "region_id": "06001",
+   "region": "bay",
+   "habitat": "pond",
+   "x": 9321.0,
+   "z": -3980.0,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06001.json#water.ponds[5]",
+   "basis": "pond edge vertex, stepped onto the bank (the smallest pond: a quiet corner)",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06013-0",
+   "world": "bay",
+   "region_id": "06013",
+   "region": "bay",
+   "habitat": "canal",
+   "x": -4819.7,
+   "z": -9486.0,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06013.json#water.channels[0]",
+   "basis": "canal bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06013-1",
+   "world": "bay",
+   "region_id": "06013",
+   "region": "bay",
+   "habitat": "stream",
+   "x": -14477.7,
+   "z": 5613.7,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06013.json#water.channels[2]",
+   "basis": "stream bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06013-2",
+   "world": "bay",
+   "region_id": "06013",
+   "region": "bay",
+   "habitat": "pond",
+   "x": -29378.0,
+   "z": 787.0,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06013.json#water.ponds[2]",
+   "basis": "pond edge vertex, stepped onto the bank",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06013-3",
+   "world": "bay",
+   "region_id": "06013",
+   "region": "bay",
+   "habitat": "pond",
+   "x": -2157.0,
+   "z": 20886.0,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06013.json#water.ponds[0]",
+   "basis": "pond edge vertex, stepped onto the bank (the smallest pond: a quiet corner)",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06041-0",
+   "world": "bay",
+   "region_id": "06041",
+   "region": "bay",
+   "habitat": "canal",
+   "x": 2857.0,
+   "z": 5157.2,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06041.json#water.channels[0]",
+   "basis": "canal bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06041-1",
+   "world": "bay",
+   "region_id": "06041",
+   "region": "bay",
+   "habitat": "stream",
+   "x": -1570.3,
+   "z": -266.9,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06041.json#water.channels[2]",
+   "basis": "stream bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06041-2",
+   "world": "bay",
+   "region_id": "06041",
+   "region": "bay",
+   "habitat": "pond",
+   "x": 18277.0,
+   "z": 22935.0,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06041.json#water.ponds[7]",
+   "basis": "pond edge vertex, stepped onto the bank",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06041-3",
+   "world": "bay",
+   "region_id": "06041",
+   "region": "bay",
+   "habitat": "pond",
+   "x": -17088.0,
+   "z": 677.0,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06041.json#water.ponds[4]",
+   "basis": "pond edge vertex, stepped onto the bank (the smallest pond: a quiet corner)",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06055-0",
+   "world": "bay",
+   "region_id": "06055",
+   "region": "bay",
+   "habitat": "canal",
+   "x": 6510.3,
+   "z": -8149.0,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06055.json#water.channels[0]",
+   "basis": "canal bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06055-1",
+   "world": "bay",
+   "region_id": "06055",
+   "region": "bay",
+   "habitat": "stream",
+   "x": 5661.8,
+   "z": 35663.9,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06055.json#water.channels[2]",
+   "basis": "stream bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06055-2",
+   "world": "bay",
+   "region_id": "06055",
+   "region": "bay",
+   "habitat": "pond",
+   "x": -3696.0,
+   "z": -19193.0,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06055.json#water.ponds[2]",
+   "basis": "pond edge vertex, stepped onto the bank",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06055-3",
+   "world": "bay",
+   "region_id": "06055",
+   "region": "bay",
+   "habitat": "pond",
+   "x": 4034.0,
+   "z": 35815.0,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06055.json#water.ponds[1]",
+   "basis": "pond edge vertex, stepped onto the bank (the smallest pond: a quiet corner)",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06075-0",
+   "world": "bay",
+   "region_id": "06075",
+   "region": "bay",
+   "habitat": "canal",
+   "x": -1004.2,
+   "z": -3063.0,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06075.json#water.channels[0]",
+   "basis": "canal bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06075-1",
+   "world": "bay",
+   "region_id": "06075",
+   "region": "bay",
+   "habitat": "stream",
+   "x": 220.1,
+   "z": -1678.1,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06075.json#water.channels[2]",
+   "basis": "stream bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06075-2",
+   "world": "bay",
+   "region_id": "06075",
+   "region": "bay",
+   "habitat": "pond",
+   "x": -151.0,
+   "z": -5588.0,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06075.json#water.ponds[7]",
+   "basis": "pond edge vertex, stepped onto the bank",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06075-3",
+   "world": "bay",
+   "region_id": "06075",
+   "region": "bay",
+   "habitat": "pond",
+   "x": -2507.0,
+   "z": 4607.0,
+   "name": null,
+   "hidden": true,
+   "source": "bayarea/maps/world/06075.json#water.ponds[3]",
+   "basis": "pond edge vertex, stepped onto the bank (the smallest pond: a quiet corner)",
+   "provenance": "DERIVED",
+   "hidden_rule": "the smallest pond in the Bay start county (06075)"
+  },
+  {
+   "id": "bay-06081-0",
+   "world": "bay",
+   "region_id": "06081",
+   "region": "bay",
+   "habitat": "canal",
+   "x": -3889.0,
+   "z": -8203.0,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06081.json#water.channels[0]",
+   "basis": "canal bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06081-1",
+   "world": "bay",
+   "region_id": "06081",
+   "region": "bay",
+   "habitat": "stream",
+   "x": -190.7,
+   "z": -10430.7,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06081.json#water.channels[2]",
+   "basis": "stream bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06081-2",
+   "world": "bay",
+   "region_id": "06081",
+   "region": "bay",
+   "habitat": "pond",
+   "x": -253.0,
+   "z": 8227.0,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06081.json#water.ponds[3]",
+   "basis": "pond edge vertex, stepped onto the bank",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06081-3",
+   "world": "bay",
+   "region_id": "06081",
+   "region": "bay",
+   "habitat": "pond",
+   "x": 1900.0,
+   "z": -15002.0,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06081.json#water.ponds[6]",
+   "basis": "pond edge vertex, stepped onto the bank (the smallest pond: a quiet corner)",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06085-0",
+   "world": "bay",
+   "region_id": "06085",
+   "region": "bay",
+   "habitat": "canal",
+   "x": 21719.0,
+   "z": -7453.0,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06085.json#water.channels[0]",
+   "basis": "canal bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06085-1",
+   "world": "bay",
+   "region_id": "06085",
+   "region": "bay",
+   "habitat": "stream",
+   "x": 39184.0,
+   "z": 12997.0,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06085.json#water.channels[3]",
+   "basis": "stream bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06085-2",
+   "world": "bay",
+   "region_id": "06085",
+   "region": "bay",
+   "habitat": "pond",
+   "x": 5621.0,
+   "z": 22046.0,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06085.json#water.ponds[6]",
+   "basis": "pond edge vertex, stepped onto the bank",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06085-3",
+   "world": "bay",
+   "region_id": "06085",
+   "region": "bay",
+   "habitat": "pond",
+   "x": 16893.0,
+   "z": -8185.0,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06085.json#water.ponds[4]",
+   "basis": "pond edge vertex, stepped onto the bank (the smallest pond: a quiet corner)",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06095-0",
+   "world": "bay",
+   "region_id": "06095",
+   "region": "bay",
+   "habitat": "canal",
+   "x": -11132.7,
+   "z": -24776.0,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06095.json#water.channels[0]",
+   "basis": "canal bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06095-1",
+   "world": "bay",
+   "region_id": "06095",
+   "region": "bay",
+   "habitat": "stream",
+   "x": -13597.0,
+   "z": -22236.0,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06095.json#water.channels[3]",
+   "basis": "stream bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06095-2",
+   "world": "bay",
+   "region_id": "06095",
+   "region": "bay",
+   "habitat": "pond",
+   "x": 26747.0,
+   "z": 8991.0,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06095.json#water.ponds[2]",
+   "basis": "pond edge vertex, stepped onto the bank",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06095-3",
+   "world": "bay",
+   "region_id": "06095",
+   "region": "bay",
+   "habitat": "pond",
+   "x": 1063.0,
+   "z": 22068.0,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06095.json#water.ponds[6]",
+   "basis": "pond edge vertex, stepped onto the bank (the smallest pond: a quiet corner)",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06097-0",
+   "world": "bay",
+   "region_id": "06097",
+   "region": "bay",
+   "habitat": "canal",
+   "x": -10324.0,
+   "z": 9188.3,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06097.json#water.channels[0]",
+   "basis": "canal bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06097-1",
+   "world": "bay",
+   "region_id": "06097",
+   "region": "bay",
+   "habitat": "stream",
+   "x": 9034.3,
+   "z": -19773.5,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06097.json#water.channels[2]",
+   "basis": "stream bank at the middle of its centre line",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06097-2",
+   "world": "bay",
+   "region_id": "06097",
+   "region": "bay",
+   "habitat": "pond",
+   "x": -7132.0,
+   "z": -15752.0,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06097.json#water.ponds[3]",
+   "basis": "pond edge vertex, stepped onto the bank",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06097-3",
+   "world": "bay",
+   "region_id": "06097",
+   "region": "bay",
+   "habitat": "pond",
+   "x": 14020.0,
+   "z": 34415.0,
+   "name": null,
+   "hidden": false,
+   "source": "bayarea/maps/world/06097.json#water.ponds[7]",
+   "basis": "pond edge vertex, stepped onto the bank (the smallest pond: a quiet corner)",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06001-4",
+   "world": "bay",
+   "region_id": "06001",
+   "region": "bay",
+   "habitat": "bay-shore",
+   "x": -31499.9,
+   "z": -8488.6,
+   "name": "San Francisco Bay",
+   "hidden": false,
+   "source": "bayarea/registry/bayarea.json#counties.06001.outline_local_m",
+   "basis": "coast vertex nearest the AUTHORED label point of San Francisco Bay (5 km), stepped inland",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06013-4",
+   "world": "bay",
+   "region_id": "06013",
+   "region": "bay",
+   "habitat": "bay-shore",
+   "x": -38507.3,
+   "z": -10326.6,
+   "name": "San Pablo Bay",
+   "hidden": false,
+   "source": "bayarea/registry/bayarea.json#counties.06013.outline_local_m",
+   "basis": "coast vertex nearest the AUTHORED label point of San Pablo Bay (5 km), stepped inland",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06041-4",
+   "world": "bay",
+   "region_id": "06041",
+   "region": "bay",
+   "habitat": "bay-shore",
+   "x": 21083.0,
+   "z": 365.4,
+   "name": "San Pablo Bay",
+   "hidden": false,
+   "source": "bayarea/registry/bayarea.json#counties.06041.outline_local_m",
+   "basis": "coast vertex nearest the AUTHORED label point of San Pablo Bay (9 km), stepped inland",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06055-4",
+   "world": "bay",
+   "region_id": "06055",
+   "region": "bay",
+   "habitat": "bay-shore",
+   "x": -3527.6,
+   "z": 38784.0,
+   "name": "San Pablo Bay",
+   "hidden": false,
+   "source": "bayarea/registry/bayarea.json#counties.06055.outline_local_m",
+   "basis": "coast vertex nearest the AUTHORED label point of San Pablo Bay (11 km), stepped inland",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06075-4",
+   "world": "bay",
+   "region_id": "06075",
+   "region": "bay",
+   "habitat": "bay-shore",
+   "x": 6917.9,
+   "z": 4363.7,
+   "name": "San Francisco Bay",
+   "hidden": false,
+   "source": "bayarea/registry/bayarea.json#counties.06075.outline_local_m",
+   "basis": "coast vertex nearest the AUTHORED label point of San Francisco Bay (6 km), stepped inland",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06081-4",
+   "world": "bay",
+   "region_id": "06081",
+   "region": "bay",
+   "habitat": "bay-shore",
+   "x": -5205.0,
+   "z": -31532.4,
+   "name": "San Francisco Bay",
+   "hidden": false,
+   "source": "bayarea/registry/bayarea.json#counties.06081.outline_local_m",
+   "basis": "coast vertex nearest the AUTHORED label point of San Francisco Bay (9 km), stepped inland",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06085-4",
+   "world": "bay",
+   "region_id": "06085",
+   "region": "bay",
+   "habitat": "bay-shore",
+   "x": -41285.8,
+   "z": -24526.9,
+   "name": "San Francisco Bay",
+   "hidden": false,
+   "source": "bayarea/registry/bayarea.json#counties.06085.outline_local_m",
+   "basis": "coast vertex nearest the AUTHORED label point of San Francisco Bay (30 km), stepped inland",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06095-4",
+   "world": "bay",
+   "region_id": "06095",
+   "region": "bay",
+   "habitat": "bay-shore",
+   "x": -32027.2,
+   "z": 18377.6,
+   "name": "San Pablo Bay",
+   "hidden": false,
+   "source": "bayarea/registry/bayarea.json#counties.06095.outline_local_m",
+   "basis": "coast vertex nearest the AUTHORED label point of San Pablo Bay (9 km), stepped inland",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "bay-06097-4",
+   "world": "bay",
+   "region_id": "06097",
+   "region": "bay",
+   "habitat": "bay-shore",
+   "x": 38965.0,
+   "z": 45711.3,
+   "name": "San Pablo Bay",
+   "hidden": false,
+   "source": "bayarea/registry/bayarea.json#counties.06097.outline_local_m",
+   "basis": "coast vertex nearest the AUTHORED label point of San Pablo Bay (9 km), stepped inland",
+   "provenance": "DERIVED"
+  },
+  {
+   "id": "wilds-mountain-0",
+   "world": "wilds",
+   "region_id": "mountain",
+   "region": "west",
+   "habitat": "lake",
+   "x": 1300,
+   "z": 884,
+   "name": null,
+   "hidden": false,
+   "source": "wilds/core.mjs wildsTerrain(wilds/registry/wilds.json#worlds.mountain) via outdoors/wilds_shore.mjs",
+   "basis": "shore cell below water_level_m next to dry ground, nearest m-adit-portal (3200 m)",
+   "provenance": "DERIVED",
+   "near_site": "m-adit-portal"
+  },
+  {
+   "id": "wilds-mountain-1",
+   "world": "wilds",
+   "region_id": "mountain",
+   "region": "west",
+   "habitat": "lake",
+   "x": 2196,
+   "z": 1236,
+   "name": null,
+   "hidden": true,
+   "source": "wilds/core.mjs wildsTerrain(wilds/registry/wilds.json#worlds.mountain) via outdoors/wilds_shore.mjs",
+   "basis": "shore cell below water_level_m next to dry ground, nearest m-snow-road (436 m)",
+   "provenance": "DERIVED",
+   "near_site": "m-snow-road",
+   "hidden_rule": "the mountain shore spot farthest from the world centre"
+  },
+  {
+   "id": "wilds-forest-0",
+   "world": "wilds",
+   "region_id": "forest",
+   "region": "west",
+   "habitat": "lake",
+   "x": 1698,
+   "z": 994,
+   "name": null,
+   "hidden": false,
+   "source": "wilds/core.mjs wildsTerrain(wilds/registry/wilds.json#worlds.forest) via outdoors/wilds_shore.mjs",
+   "basis": "shore cell below water_level_m next to dry ground, nearest f-line-clearance (106 m)",
+   "provenance": "DERIVED",
+   "near_site": "f-line-clearance"
+  },
+  {
+   "id": "wilds-forest-1",
+   "world": "wilds",
+   "region_id": "forest",
+   "region": "west",
+   "habitat": "lake",
+   "x": -1342,
+   "z": 2018,
+   "name": null,
+   "hidden": false,
+   "source": "wilds/core.mjs wildsTerrain(wilds/registry/wilds.json#worlds.forest) via outdoors/wilds_shore.mjs",
+   "basis": "shore cell below water_level_m next to dry ground, nearest f-trail-bridge (521 m)",
+   "provenance": "DERIVED",
+   "near_site": "f-trail-bridge"
+  },
+  {
+   "id": "wilds-forest-2",
+   "world": "wilds",
+   "region_id": "forest",
+   "region": "west",
+   "habitat": "lake",
+   "x": 3202,
+   "z": -1982,
+   "name": null,
+   "hidden": true,
+   "source": "wilds/core.mjs wildsTerrain(wilds/registry/wilds.json#worlds.forest) via outdoors/wilds_shore.mjs",
+   "basis": "shore cell below water_level_m next to dry ground, nearest f-fuel-break (665 m)",
+   "provenance": "DERIVED",
+   "near_site": "f-fuel-break",
+   "hidden_rule": "the forest shore spot farthest from the world centre"
+  },
+  {
+   "id": "wilds-forest-3",
+   "world": "wilds",
+   "region_id": "forest",
+   "region": "west",
+   "habitat": "lake",
+   "x": -2078,
+   "z": -1822,
+   "name": null,
+   "hidden": false,
+   "source": "wilds/core.mjs wildsTerrain(wilds/registry/wilds.json#worlds.forest) via outdoors/wilds_shore.mjs",
+   "basis": "shore cell below water_level_m next to dry ground, nearest f-timber-frame (930 m)",
+   "provenance": "DERIVED",
+   "near_site": "f-timber-frame"
+  },
+  {
+   "id": "wilds-forest-4",
+   "world": "wilds",
+   "region_id": "forest",
+   "region": "west",
+   "habitat": "lake",
+   "x": 642,
+   "z": 2914,
+   "name": null,
+   "hidden": false,
+   "source": "wilds/core.mjs wildsTerrain(wilds/registry/wilds.json#worlds.forest) via outdoors/wilds_shore.mjs",
+   "basis": "shore cell below water_level_m next to dry ground, nearest f-water-intake (44 m)",
+   "provenance": "DERIVED",
+   "near_site": "f-water-intake"
+  },
+  {
+   "id": "wilds-forest-5",
+   "world": "wilds",
+   "region_id": "forest",
+   "region": "west",
+   "habitat": "lake",
+   "x": -638,
+   "z": -2846,
+   "name": null,
+   "hidden": false,
+   "source": "wilds/core.mjs wildsTerrain(wilds/registry/wilds.json#worlds.forest) via outdoors/wilds_shore.mjs",
+   "basis": "shore cell below water_level_m next to dry ground, nearest f-fire-lookout (66 m)",
+   "provenance": "DERIVED",
+   "near_site": "f-fire-lookout"
+  },
+  {
+   "id": "wilds-forest-6",
+   "world": "wilds",
+   "region_id": "forest",
+   "region": "west",
+   "habitat": "lake",
+   "x": 898,
+   "z": 418,
+   "name": null,
+   "hidden": false,
+   "source": "wilds/core.mjs wildsTerrain(wilds/registry/wilds.json#worlds.forest) via outdoors/wilds_shore.mjs",
+   "basis": "shore cell below water_level_m next to dry ground, nearest trailhead (991 m)",
+   "provenance": "DERIVED",
+   "near_site": "trailhead"
+  },
+  {
+   "id": "wilds-canyon-0",
+   "world": "wilds",
+   "region_id": "canyon",
+   "region": "west",
+   "habitat": "river",
+   "x": -688,
+   "z": -1392,
+   "name": null,
+   "hidden": false,
+   "source": "wilds/core.mjs wildsTerrain(wilds/registry/wilds.json#worlds.canyon) via outdoors/wilds_shore.mjs",
+   "basis": "shore cell below water_level_m next to dry ground, nearest c-river-intake (64 m)",
+   "provenance": "DERIVED",
+   "near_site": "c-river-intake"
+  },
+  {
+   "id": "wilds-canyon-1",
+   "world": "wilds",
+   "region_id": "canyon",
+   "region": "west",
+   "habitat": "river",
+   "x": 752,
+   "z": 1648,
+   "name": null,
+   "hidden": false,
+   "source": "wilds/core.mjs wildsTerrain(wilds/registry/wilds.json#worlds.canyon) via outdoors/wilds_shore.mjs",
+   "basis": "shore cell below water_level_m next to dry ground, nearest c-pipeline-crossing (58 m)",
+   "provenance": "DERIVED",
+   "near_site": "c-pipeline-crossing"
+  },
+  {
+   "id": "wilds-canyon-2",
+   "world": "wilds",
+   "region_id": "canyon",
+   "region": "west",
+   "habitat": "river",
+   "x": 688,
+   "z": -3632,
+   "name": null,
+   "hidden": true,
+   "source": "wilds/core.mjs wildsTerrain(wilds/registry/wilds.json#worlds.canyon) via outdoors/wilds_shore.mjs",
+   "basis": "shore cell below water_level_m next to dry ground, nearest c-valve-vault (1801 m)",
+   "provenance": "DERIVED",
+   "near_site": "c-valve-vault",
+   "hidden_rule": "the canyon shore spot farthest from the world centre"
+  },
+  {
+   "id": "wilds-canyon-3",
+   "world": "wilds",
+   "region_id": "canyon",
+   "region": "west",
+   "habitat": "river",
+   "x": -688,
+   "z": 3248,
+   "name": null,
+   "hidden": false,
+   "source": "wilds/core.mjs wildsTerrain(wilds/registry/wilds.json#worlds.canyon) via outdoors/wilds_shore.mjs",
+   "basis": "shore cell below water_level_m next to dry ground, nearest c-mesa-solar (2007 m)",
+   "provenance": "DERIVED",
+   "near_site": "c-mesa-solar"
+  },
+  {
+   "id": "wilds-canyon-4",
+   "world": "wilds",
+   "region_id": "canyon",
+   "region": "west",
+   "habitat": "river",
+   "x": 560,
+   "z": 368,
+   "name": null,
+   "hidden": false,
+   "source": "wilds/core.mjs wildsTerrain(wilds/registry/wilds.json#worlds.canyon) via outdoors/wilds_shore.mjs",
+   "basis": "shore cell below water_level_m next to dry ground, nearest trailhead (743 m)",
+   "provenance": "DERIVED",
+   "near_site": "trailhead"
+  },
+  {
+   "id": "wilds-delta-0",
+   "world": "wilds",
+   "region_id": "delta",
+   "region": "gulf",
+   "habitat": "marsh",
+   "x": -2508,
+   "z": -2124,
+   "name": null,
+   "hidden": false,
+   "source": "wilds/core.mjs wildsTerrain(wilds/registry/wilds.json#worlds.delta) via outdoors/wilds_shore.mjs",
+   "basis": "shore cell below water_level_m next to dry ground, nearest d-levee-pump (164 m)",
+   "provenance": "DERIVED",
+   "near_site": "d-levee-pump"
+  },
+  {
+   "id": "wilds-delta-1",
+   "world": "wilds",
+   "region_id": "delta",
+   "region": "gulf",
+   "habitat": "marsh",
+   "x": 2900,
+   "z": 2548,
+   "name": null,
+   "hidden": false,
+   "source": "wilds/core.mjs wildsTerrain(wilds/registry/wilds.json#worlds.delta) via outdoors/wilds_shore.mjs",
+   "basis": "shore cell below water_level_m next to dry ground, nearest d-terminal-berth (179 m)",
+   "provenance": "DERIVED",
+   "near_site": "d-terminal-berth"
+  },
+  {
+   "id": "wilds-delta-2",
+   "world": "wilds",
+   "region_id": "delta",
+   "region": "gulf",
+   "habitat": "marsh",
+   "x": -3308,
+   "z": 2868,
+   "name": null,
+   "hidden": true,
+   "source": "wilds/core.mjs wildsTerrain(wilds/registry/wilds.json#worlds.delta) via outdoors/wilds_shore.mjs",
+   "basis": "shore cell below water_level_m next to dry ground, nearest d-pile-trestle (132 m)",
+   "provenance": "DERIVED",
+   "near_site": "d-pile-trestle",
+   "hidden_rule": "the delta shore spot farthest from the world centre"
+  },
+  {
+   "id": "wilds-delta-3",
+   "world": "wilds",
+   "region_id": "delta",
+   "region": "gulf",
+   "habitat": "marsh",
+   "x": -588,
+   "z": 3060,
+   "name": null,
+   "hidden": false,
+   "source": "wilds/core.mjs wildsTerrain(wilds/registry/wilds.json#worlds.delta) via outdoors/wilds_shore.mjs",
+   "basis": "shore cell below water_level_m next to dry ground, nearest d-outfall-dive (160 m)",
+   "provenance": "DERIVED",
+   "near_site": "d-outfall-dive"
+  },
+  {
+   "id": "wilds-delta-4",
+   "world": "wilds",
+   "region_id": "delta",
+   "region": "gulf",
+   "habitat": "marsh",
+   "x": 692,
+   "z": -3308,
+   "name": null,
+   "hidden": false,
+   "source": "wilds/core.mjs wildsTerrain(wilds/registry/wilds.json#worlds.delta) via outdoors/wilds_shore.mjs",
+   "basis": "shore cell below water_level_m next to dry ground, nearest d-spill-boom (234 m)",
+   "provenance": "DERIVED",
+   "near_site": "d-spill-boom"
+  },
+  {
+   "id": "wilds-delta-5",
+   "world": "wilds",
+   "region_id": "delta",
+   "region": "gulf",
+   "habitat": "marsh",
+   "x": 2612,
+   "z": -3020,
+   "name": null,
+   "hidden": false,
+   "source": "wilds/core.mjs wildsTerrain(wilds/registry/wilds.json#worlds.delta) via outdoors/wilds_shore.mjs",
+   "basis": "shore cell below water_level_m next to dry ground, nearest d-wind-staging (420 m)",
+   "provenance": "DERIVED",
+   "near_site": "d-wind-staging"
+  },
+  {
+   "id": "wilds-delta-6",
+   "world": "wilds",
+   "region_id": "delta",
+   "region": "gulf",
+   "habitat": "marsh",
+   "x": -268,
+   "z": 948,
+   "name": null,
+   "hidden": false,
+   "source": "wilds/core.mjs wildsTerrain(wilds/registry/wilds.json#worlds.delta) via outdoors/wilds_shore.mjs",
+   "basis": "shore cell below water_level_m next to dry ground, nearest trailhead (238 m)",
+   "provenance": "DERIVED",
+   "near_site": "trailhead"
+  }
+ ],
+ "hidden": [
+  "parishes-22071-5",
+  "bay-06075-3",
+  "wilds-mountain-1",
+  "wilds-forest-2",
+  "wilds-canyon-2",
+  "wilds-delta-2"
+ ],
+ "seasons_link": {
+  "registry": "seasons/registry/seasons.json",
+  "id": "rice-crawfish-rotation"
+ },
+ "worlds": {
+  "parishes": [
+   "22005",
+   "22051",
+   "22057",
+   "22063",
+   "22071",
+   "22075",
+   "22087",
+   "22089",
+   "22093",
+   "22095",
+   "22103",
+   "22105",
+   "22109"
+  ],
+  "bay": [
+   "06001",
+   "06013",
+   "06041",
+   "06055",
+   "06075",
+   "06081",
+   "06085",
+   "06095",
+   "06097"
+  ],
+  "wilds": [
+   "mountain",
+   "forest",
+   "canyon",
+   "delta"
+  ]
+ },
+ "honesty": {
+  "play": "Every catch, trap haul and codex entry is PLAY: stored only on this device, never a completion record, never money, never a licence.",
+  "real": "Real activity follows state rules - check the state wildlife agency (Louisiana Department of Wildlife and Fisheries; California Department of Fish and Wildlife) for licences, seasons, sizes and limits.",
+  "seasons": "Seasons here are approximate, game calendar - not the legal seasons.",
+  "facts": "Species facts are general, from the kind of material state wildlife agencies publish in species profiles; game stats are AUTHORED on a 1-5 scale and are not sizes or records.",
+  "wildlife": "Never approach, feed or harass wildlife; alligators share Gulf waters and are dangerous - keep your distance.",
+  "places": "Fishing spots sit on AUTHORED water (procedural lakes, bayous, canals, ponds and terrain) - not the real waters."
+ },
+ "counts": {
+  "spots": 146,
+  "hidden": 6,
+  "rods": 7,
+  "baits": 13,
+  "species": 19,
+  "by_world": {
+   "parishes": 80,
+   "bay": 45,
+   "wilds": 21
+  }
+ },
+ "inputs": [
+  "outdoors/authored/catalog.json",
+  "outdoors/wilds_shore.mjs",
+  "wilds/core.mjs",
+  "wilds/registry/wilds.json",
+  "parishes/registry/world.json",
+  "bayarea/registry/world.json",
+  "bayarea/registry/bayarea.json",
+  "outdoors/build.py",
+  "seasons/registry/seasons.json"
+ ],
+ "source_stamp": "74c6f82c3c492b36",
+ "source_stamp_sha256": "74c6f82c3c492b36c8808b398df0dba6078a29c4e8c05b14292c4f03608a7636"
+}

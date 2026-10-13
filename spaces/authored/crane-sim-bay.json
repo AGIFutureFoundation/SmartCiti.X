@@ -1,0 +1,153 @@
+{
+ "id": "crane-sim-bay",
+ "title": "Crane simulator bay",
+ "purpose": "The tower crane, overhead crane and load chart seats behind two guard rails, with the checkout board and log desk a plant bay signs in and out on.",
+ "unions": [
+  "crane-ops",
+  "riggers"
+ ],
+ "strand": "machines",
+ "footprint_m": {
+  "w": 14.0,
+  "d": 8.0
+ },
+ "floor": "broom-concrete",
+ "wall": "mesh-guard",
+ "items": [
+  {
+   "kind": "seat",
+   "id": "crane-lift",
+   "x": 4.0,
+   "y": 4.5,
+   "rotation": 0
+  },
+  {
+   "kind": "seat",
+   "id": "overhead-crane",
+   "x": 10.0,
+   "y": 4.5,
+   "rotation": 0
+  },
+  {
+   "kind": "seat",
+   "id": "load-chart",
+   "x": 7.0,
+   "y": 1.5,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "checkout-board",
+   "x": 1.0,
+   "y": 7.9,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "bay-guard-rail",
+   "x": 4.0,
+   "y": 7.5,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "bay-guard-rail",
+   "x": 10.0,
+   "y": 7.5,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "machine-log-desk",
+   "x": 7.0,
+   "y": 7.5,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "plant-service-bench",
+   "x": 12.5,
+   "y": 7.4,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "chock-bin",
+   "x": 13.5,
+   "y": 4.0,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "learner-stool",
+   "x": 1.0,
+   "y": 1.0,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "learner-stool",
+   "x": 2.0,
+   "y": 1.0,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "learner-stool",
+   "x": 1.0,
+   "y": 2.0,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "learner-stool",
+   "x": 2.0,
+   "y": 2.0,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "ppe-station",
+   "x": 13.9,
+   "y": 1.5,
+   "rotation": 90
+  },
+  {
+   "kind": "prop",
+   "id": "plug-dispenser",
+   "x": 0.3,
+   "y": 5.0,
+   "rotation": 90
+  },
+  {
+   "kind": "crib",
+   "id": "structural",
+   "x": 12.5,
+   "y": 1.0,
+   "rotation": 0
+  },
+  {
+   "kind": "sign",
+   "id": "placard",
+   "x": 0.3,
+   "y": 0.3,
+   "rotation": 0
+  },
+  {
+   "kind": "sign",
+   "id": "hazard",
+   "x": 0.3,
+   "y": 4.0,
+   "rotation": 0
+  },
+  {
+   "kind": "sign",
+   "id": "station",
+   "x": 7.0,
+   "y": 2.6,
+   "rotation": 0
+  }
+ ],
+ "provenance": "AUTHORED",
+ "note": "declared, not yet walkable: a proposal composed from this bundle's own assets, not a measurement of any venue"
+}

@@ -1,0 +1,34 @@
+{
+ "id": "ti-scaffold-court-bay",
+ "title": "One bay up and tagged, scaffold court",
+ "job": "Build one scaffold bay in stage order from bedded sills to guardrails, hold the drop zone, and hand it to a competent person to inspect and tag before anyone stands on it.",
+ "place": {"kind": "space", "id": "scaffold-court"},
+ "crew": "scaffold-crew",
+ "roles": {
+  "scaffold-competent-person": {"union": "scaffold"},
+  "erector": {"union": "scaffold"},
+  "ground-tender": {"union": "laborers"}
+ },
+ "handoffs": [
+  {"by": "ground-tender", "to": "erector",
+   "from_evidence": {"kind": "walkaround", "sim": "scaffold-bay", "point": "sills"},
+   "to_evidence": {"kind": "walkaround", "sim": "scaffold-bay", "point": "plumb"}},
+  {"by": "erector", "to": "ground-tender",
+   "from_evidence": {"kind": "walkaround", "sim": "scaffold-bay", "point": "plumb"},
+   "to_evidence": {"kind": "crew", "crew": "scaffold-crew", "role": "ground-tender", "topic": "order"}},
+  {"by": "ground-tender", "to": "erector",
+   "from_evidence": {"kind": "crew", "crew": "scaffold-crew", "role": "ground-tender", "topic": "order"},
+   "to_evidence": {"kind": "sim", "sim": "scaffold-bay", "scenario": "bay-training-bay"}},
+  {"by": "erector", "to": "scaffold-competent-person",
+   "from_evidence": {"kind": "sim", "sim": "scaffold-bay", "scenario": "bay-training-bay"},
+   "to_evidence": {"kind": "walkaround", "sim": "scaffold-bay", "point": "brace-pins"}},
+  {"by": "scaffold-competent-person", "to": "ground-tender",
+   "from_evidence": {"kind": "station", "station": "st003"},
+   "to_evidence": {"kind": "crew", "crew": "scaffold-crew", "role": "ground-tender", "topic": "zone"}}
+ ],
+ "stop_work": "The ground tender stops this build when anyone walks under it, and the competent person stops it when the bay has changed since it was tagged.",
+ "gates": {
+  "walkaround_before_first_move": [{"sim": "scaffold-bay", "point": "planks"}],
+  "ppe": "derived"
+ }
+}

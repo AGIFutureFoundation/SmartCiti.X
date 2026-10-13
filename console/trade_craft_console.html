@@ -1,12 +1,12 @@
-<title>Trade Craft Adaptive Console</title>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Trade Craft Adaptive Console</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%230C1113%22/%3E%3Cpath d=%22M7 21 L16 7 L25 21 Z%22 fill=%22none%22 stroke=%22%23E8A33D%22 stroke-width=%222.6%22 stroke-linejoin=%22round%22/%3E%3Cpath d=%22M11 21 h10%22 stroke=%22%2341C4D4%22 stroke-width=%222.6%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">
 <!-- Self-hosted: nothing on this page is fetched from another origin at run time. See web/fetch_fonts.py. -->
 <link rel="stylesheet" href="../web/vendor/fonts/fonts.css">
 <style>
 :root{
   --steel:#EEF1F2; --panel:#F7F9F9; --sunk:#E3E8E9; --ink:#1B252A; --ink2:#5A6B71;
-  --line:#CCD6D8; --accent:#0090A0; --accent-ink:#046B78; --band:#C97A10;
-  --good:#2F7D4F; --warn:#B0771A; --crit:#B04432; --violet:#6A6FBF;
+  --line:#CCD6D8; --accent:#007A88; --accent-ink:#046B78; --band:#8F560A;
+  --good:#256B42; --warn:#8F5E12; --crit:#9A3A2A; --violet:#515597;
   --grid:#DCE3E4; --shadow:0 1px 2px rgba(20,40,45,.06),0 6px 18px rgba(20,40,45,.05);
   color-scheme:light dark;
 }
@@ -31,6 +31,7 @@ h1,h2,h3{font-family:"Archivo",system-ui,sans-serif;text-wrap:balance;margin:0}
 /* ---------- shell ---------- */
 .shell{max-width:1180px;margin:0 auto;padding:0 20px 64px}
 header.top{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;padding:22px 0 14px}
+h1.title{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin:0;font:inherit}
 .brand{font:700 21px/1.1 "Archivo",sans-serif;letter-spacing:-.01em}
 .brand .x{color:var(--accent)}
 .brand .colon{color:var(--band);padding:0 .12em;font-weight:500}
@@ -58,14 +59,20 @@ header.top{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;padding:22p
 .st-PINNED{background:var(--sunk);color:var(--ink2);border-color:var(--line)}
 
 /* ---------- nav ---------- */
-nav.views{display:flex;gap:4px;margin:18px 0 16px;border-bottom:1px solid var(--line);
+.views{display:flex;gap:4px;margin:18px 0 16px;border-bottom:1px solid var(--line);
   flex-wrap:wrap}
-nav.views button{appearance:none;background:none;border:none;cursor:pointer;
+.views button{appearance:none;background:none;border:none;cursor:pointer;
   font:600 13px/1 "Archivo",sans-serif;letter-spacing:.02em;color:var(--ink2);
   padding:10px 13px;border-bottom:2px solid transparent;margin-bottom:-1px}
-nav.views button:hover{color:var(--ink)}
-nav.views button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
-nav.views button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.views button:hover{color:var(--ink)}
+.views button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.views button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+[role=tabpanel]:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:8px}
+.filter{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--ink2)}
+.filter select{font:500 12.5px/1.2 "IBM Plex Sans",sans-serif;color:var(--ink);background:var(--panel);
+  border:1px solid var(--line);border-radius:5px;padding:5px 8px;min-height:30px}
+.filter select:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+tbody tr:hover td{background:color-mix(in srgb,var(--accent) 5%,transparent)}
 
 /* ---------- layout ---------- */
 .grid2{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:18px;align-items:start}
@@ -165,23 +172,24 @@ th:last-child,td:last-child{padding-right:0}
 
 <div class="shell">
   <header class="top">
-    <div class="brand">SmartCiti<span class="x">.X</span><span class="colon">:</span>Trade Craft Academy</div>
-    <div class="tagline">Adaptive Console &middot; powered by AGI&nbsp;Corp</div>
+    <h1 class="title"><span class="brand">SmartCiti<span class="x">.X</span><span class="colon">:</span>Trade Craft Academy</span>
+      <span class="tagline">Adaptive Console &middot; powered by AGI&nbsp;Corp</span></h1>
     <div style="flex:1"></div>
-    <div class="pill" id="packpill">pack v2.0</div>
+    <div class="pill" id="packpill">pack v3.2.0</div>
   </header>
 
   <div class="strip" id="strip"></div>
 
-  <nav class="views" role="tablist" aria-label="Views">
-    <button role="tab" data-view="learn" aria-selected="true">Learn</button>
-    <button role="tab" data-view="graph" aria-selected="false">Skill graph</button>
-    <button role="tab" data-view="cert" aria-selected="false">Certification</button>
-    <button role="tab" data-view="ops" aria-selected="false">Operations</button>
-  </nav>
+  <main id="main">
+  <div class="views" role="tablist" aria-label="Views">
+    <button role="tab" id="tab-learn" aria-controls="view-learn" data-view="learn" aria-selected="true" tabindex="0">Learn</button>
+    <button role="tab" id="tab-graph" aria-controls="view-graph" data-view="graph" aria-selected="false" tabindex="-1">Skill graph</button>
+    <button role="tab" id="tab-cert" aria-controls="view-cert" data-view="cert" aria-selected="false" tabindex="-1">Certification</button>
+    <button role="tab" id="tab-ops" aria-controls="view-ops" data-view="ops" aria-selected="false" tabindex="-1">Operations</button>
+  </div>
 
   <!-- ================= LEARN ================= -->
-  <section id="view-learn">
+  <section id="view-learn" role="tabpanel" aria-labelledby="tab-learn" tabindex="0">
     <div class="grid2">
       <div class="stack">
         <div class="panel">
@@ -232,7 +240,7 @@ th:last-child,td:last-child{padding-right:0}
   </section>
 
   <!-- ================= GRAPH ================= -->
-  <section id="view-graph" class="hidden">
+  <section id="view-graph" role="tabpanel" aria-labelledby="tab-graph" tabindex="0" class="hidden">
     <div class="panel">
       <div class="head"><h2>Skill graph</h2><span class="taskid" id="graphmeta"></span></div>
       <div class="body">
@@ -250,11 +258,22 @@ th:last-child,td:last-child{padding-right:0}
   </section>
 
   <!-- ================= CERT ================= -->
-  <section id="view-cert" class="hidden">
+  <section id="view-cert" role="tabpanel" aria-labelledby="tab-cert" tabindex="0" class="hidden">
     <div class="grid2">
       <div class="panel">
         <div class="head"><h2>Skill gates</h2><span class="taskid">tier 1 of 3</span></div>
-        <div class="body"><div class="tw"><table id="gatetable"></table></div>
+        <div class="body">
+          <div class="actions" style="justify-content:space-between;align-items:center;margin-bottom:10px">
+            <label class="filter">Status
+              <select id="gatefilter">
+                <option value="all">all skills</option>
+                <option value="certified">certified</option>
+                <option value="awaiting proof">awaiting proof</option>
+                <option value="in progress">in progress</option>
+              </select></label>
+            <span class="taskid" id="gatecount" aria-live="polite"></span>
+          </div>
+          <div class="tw"><table id="gatetable"></table></div>
           <p class="note">A gate needs mastery <b>believed</b> and <b>demonstrated</b>: three consecutive
           unaided successes served at gate difficulty. Ordinary practice sits at the band centre and
           cannot qualify &mdash; the sequencer serves deliberate verification runs instead.</p>
@@ -277,7 +296,7 @@ th:last-child,td:last-child{padding-right:0}
   </section>
 
   <!-- ================= OPS ================= -->
-  <section id="view-ops" class="hidden">
+  <section id="view-ops" role="tabpanel" aria-labelledby="tab-ops" tabindex="0" class="hidden">
     <div class="grid2">
       <div class="stack">
         <div class="panel">
@@ -350,6 +369,7 @@ th:last-child,td:last-child{padding-right:0}
       </div>
     </div>
   </section>
+  </main>
 </div>
 <!-- control-plane-source-stamp: eac3024137fe281f -->
 <script type="module">
@@ -3237,17 +3257,23 @@ function renderGraph() {
 
 /* ---------------- certification ---------------- */
 function renderCert() {
-  const rows = SKILL_IDS.map(id => {
+  const allRows = SKILL_IDS.map(id => {
     const st = S.profile.get(id);
     const g = checkSkillGate(S.profile, id, S.history);
-    return { id, st, g };
-  }).sort((a, b) => (b.st.gated_at !== undefined) - (a.st.gated_at !== undefined) || b.st.p_mastery - a.st.p_mastery)
-    .slice(0, 12);
+    const label = g.pass ? 'certified' : (st.p_mastery >= 0.95 ? 'awaiting proof' : 'in progress');
+    return { id, st, g, label };
+  }).sort((a, b) => (b.st.gated_at !== undefined) - (a.st.gated_at !== undefined) || b.st.p_mastery - a.st.p_mastery);
+  /* the status filter: the table lists the first 12 of the chosen status */
+  const want = $('#gatefilter').value;
+  const match = allRows.filter(r => want === 'all' || r.label === want);
+  const rows = match.slice(0, 12);
+  $('#gatecount').textContent = `${rows.length} shown of ${match.length} ${want === 'all' ? 'skills' : want}`;
   $('#gatetable').innerHTML =
-    `<thead><tr><th>Skill</th><th class="num">θ</th><th class="num">mastery</th><th>Status</th></tr></thead><tbody>` +
+    `<thead><tr><th scope="col">Skill</th><th scope="col" class="num">θ</th><th scope="col" class="num">mastery</th><th scope="col">Status</th></tr></thead><tbody>` +
+    (rows.length ? '' : `<tr><td colspan="4" class="empty">No skill is ${want} yet.</td></tr>`) +
     rows.map(r => {
-      const cls = r.g.pass ? 'g-pass' : (r.st.p_mastery >= 0.95 ? 'g-wait' : 'g-wait');
-      const label = r.g.pass ? 'certified' : (r.st.p_mastery >= 0.95 ? 'awaiting proof' : 'in progress');
+      const cls = r.g.pass ? 'g-pass' : 'g-wait';
+      const label = r.label;
       return `<tr><td>${shortSkill(r.id)}</td><td class="num">${fmt(r.st.theta)}</td>
         <td class="num">${fmt(r.st.p_mastery, 2)}</td>
         <td><span class="gatepill ${cls}">${label}</span>
@@ -3312,7 +3338,7 @@ async function renderMentorGates() {
   }
   const cell = (ok, txt) => `<span class="gatepill ${ok ? 'g-pass' : 'g-fail'}">${txt}</span>`;
   $('#mentorgates').innerHTML = `<div class="tw"><table>
-    <thead><tr><th>Mentor</th><th>Rung discipline</th><th>Scope</th><th>Persona</th></tr></thead>
+    <thead><tr><th scope="col">Mentor</th><th scope="col">Rung discipline</th><th scope="col">Scope</th><th scope="col">Persona</th></tr></thead>
     <tbody>${out.map(o => `<tr><td class="mono">${o.name}</td>
       <td>${cell(o.rung <= 0.10, `${(o.rung * 100).toFixed(0)}% over`)}</td>
       <td>${cell(o.viol === 0, `${o.viol} violations`)}</td>
@@ -3359,7 +3385,7 @@ function renderBus() {
 
 function renderOps() {
   const L = SLICE.ledger;
-  $('#ledgertable').innerHTML = `<thead><tr><th>Line</th><th>Computation</th><th class="num">Modules</th></tr></thead><tbody>
+  $('#ledgertable').innerHTML = `<thead><tr><th scope="col">Line</th><th scope="col">Computation</th><th scope="col" class="num">Modules</th></tr></thead><tbody>
     <tr><td>Core lessons</td><td class="mono">${L.halls} × ${L.levels_per_hall} × ${L.slots_per_level}</td><td class="num mono">${L.core_lessons.toLocaleString()}</td></tr>
     <tr><td>Dial variants</td><td class="mono">3 modalities × 3 bands</td><td class="num mono">× ${L.variants_per_lesson}</td></tr>
     <tr><td><b>Core modules</b></td><td></td><td class="num mono"><b>${L.core_modules.toLocaleString()}</b></td></tr>
@@ -3395,13 +3421,23 @@ function renderOps() {
 }
 
 /* ---------------- wiring ---------------- */
-document.querySelectorAll('nav.views button').forEach(b => {
-  b.addEventListener('click', () => {
-    document.querySelectorAll('nav.views button').forEach(o => o.setAttribute('aria-selected', String(o === b)));
-    ['learn', 'graph', 'cert', 'ops'].forEach(v =>
-      document.getElementById('view-' + v).classList.toggle('hidden', v !== b.dataset.view));
+const TABS = [...document.querySelectorAll('.views [role=tab]')];
+function selectTab(b, focus) {
+  TABS.forEach(o => { o.setAttribute('aria-selected', String(o === b)); o.tabIndex = o === b ? 0 : -1; });
+  TABS.forEach(o => document.getElementById(o.getAttribute('aria-controls')).classList.toggle('hidden', o !== b));
+  if (focus) b.focus();
+}
+TABS.forEach((b, i) => {
+  b.addEventListener('click', () => selectTab(b, false));
+  /* WAI-ARIA tabs: arrows move between tabs, Home/End jump to the ends */
+  b.addEventListener('keydown', (e) => {
+    const to = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: TABS.length - 1 }[e.key];
+    if (to === undefined) return;
+    e.preventDefault();
+    selectTab(TABS[(to + TABS.length) % TABS.length], true);
   });
 });
+$('#gatefilter').addEventListener('change', renderCert);
 $('#btn-solve').addEventListener('click', () => { step(true); advance(); });
 $('#btn-fail').addEventListener('click', () => { step(false); advance(); });
 $('#btn-run10').addEventListener('click', () => { for (let k = 0; k < 10; k++) step(null); advance(); });
@@ -3444,8 +3480,275 @@ $('#btn-violate').addEventListener('click', () => {
   renderBus();
 });
 
-$('#packpill').textContent = `pack v${SLICE.pack_version} · 4 halls`;
+$('#packpill').textContent = `pack v${SLICE.pack_version} · ${SLICE.unions.length} halls`;
 boot();
 renderMentorGates();
 
+</script>
+<style>
+.tc-toast{position:fixed;inset-inline:16px;inset-block-end:16px;max-inline-size:36rem;margin-inline:auto;padding:.7rem 1rem;
+  border-radius:10px;background:var(--ink,#1b1f24);color:var(--paper,#fff);font:inherit;font-size:.92rem;line-height:1.4;
+  box-shadow:0 6px 24px rgba(0,0,0,.25);opacity:0;transform:translateY(8px);transition:opacity .2s,transform .2s;
+  pointer-events:none;z-index:9999}
+.tc-toast.on{opacity:1;transform:none}
+.tc-hooks{display:flex;justify-content:flex-end;padding:0 16px 8px}
+.tc-cache{appearance:none;border:0;background:none;color:inherit;opacity:.18;font-size:.7rem;line-height:1;
+  padding:.4rem;cursor:pointer;min-inline-size:24px;min-block-size:24px}
+.tc-cache:hover,.tc-cache:focus-visible{opacity:.9}
+@media (prefers-reduced-motion:reduce){.tc-toast{transition:none}}
+</style>
+<div class="tc-hooks"><span hidden data-tc-egg="egg-console-knock" data-tc-trigger="clicks:3" data-tc-target="h1"></span><span hidden data-tc-egg="egg-console-word" data-tc-trigger="typed:mentor"></span><button type="button" class="tc-cache" data-tc-egg="treasure-console-cache" aria-label="A small mark sits at the foot of the page. Look closely.">&#x25C6;</button></div>
+<script data-tc-quests>
+(function () {
+"use strict";
+/* QUEST_CORE:BEGIN - the pure quest core. No DOM, no storage, no clock: the
+   page glue hands it what it read and what time it is. Carried byte-for-byte
+   into every page that carries quests; quests/test.mjs holds it identical.
+   The evidence functions below are a verbatim copy of the ones in
+   web/build_progress.py's COMPLETION_JS, so a lesson counts here from exactly
+   the evidence the progress page counts; quests/test.mjs holds the copy. */
+const QUEST_STORE = 'tc-quests';
+const QUEST_KINDS_FINDABLE = ['treasure', 'egg'];
+const QUEST_KONAMI = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+const EVIDENCED_KINDS = ['sim', 'station', 'crib'];
+/* the reference a step of an episode kind carries, as lessons.json spells it;
+   a training episode must equal every one of these AND the lesson's hall */
+const REF_FIELDS = { walkaround: ['sim', 'point'], advisor: ['advisor', 'topic', 'answer_kind'],
+  crew: ['crew', 'role', 'topic', 'answer_kind', 'seat', 'muster'] };
+/* an episode kind whose recorded fields do not cover the step's reference can
+   never mark a step done; the missing fields are named, not skipped */
+function unmatchableKinds(episodeKinds) {
+  const out = {};
+  for (const k of Object.keys(REF_FIELDS)) {
+    const fields = episodeKinds && episodeKinds[k] && Array.isArray(episodeKinds[k].fields) ? episodeKinds[k].fields : [];
+    const missing = REF_FIELDS[k].filter((f) => !fields.includes(f));
+    if (!fields.includes('hall')) missing.push('hall');
+    if (missing.length) out[k] = missing;
+  }
+  return out;
+}
+/* the app stamps t as new Date().toISOString() (web/build_3d.py, recordEpisode);
+   an episode whose t is not a string that parses to a finite time is no match */
+function episodeTimeOk(ep) { return typeof ep.t === 'string' && isFinite(Date.parse(ep.t)); }
+function episodeEvidence(step, hall, training, meta, skipped) {
+  if (!(step.kind in REF_FIELDS) || !Array.isArray(training)) return null;
+  if (step.kind in unmatchableKinds(meta.episode_kinds)) return null;
+  for (const ep of training) {
+    if (!ep || typeof ep !== 'object' || ep.kind !== step.kind || ep.hall !== hall) continue;
+    if (!episodeTimeOk(ep)) { if (skipped) skipped.add(ep); continue; }
+    if (ep.actor !== undefined && ep.actor !== meta.human_actor) continue;
+    if (!REF_FIELDS[step.kind].every((f) => step[f] !== undefined && ep[f] === step[f])) continue;
+    const ev = { episode: step.kind, t: ep.t, hall };
+    for (const f of REF_FIELDS[step.kind]) ev[f] = step[f];
+    return ev;
+  }
+  return null;
+}
+
+function stepEvidence(step, prog, hall, training, meta, skipped) {
+  if (step.kind in REF_FIELDS) return episodeEvidence(step, hall, training, meta, skipped);
+  const sims = (prog && typeof prog.sims === 'object' && prog.sims) ? prog.sims : {};
+  const tools = (prog && typeof prog.tools === 'object' && prog.tools) ? prog.tools : {};
+  const stations = (prog && Array.isArray(prog.stations)) ? prog.stations : [];
+  if (step.kind === 'sim') {
+    const rec = Object.prototype.hasOwnProperty.call(sims, step.sim) ? sims[step.sim] : null;
+    if (!rec || typeof rec !== 'object') return null;
+    /* the app keeps one record per seat; a record that names scenarios is
+       held to the scenario the step names, one that does not is held to the seat */
+    let src = rec;
+    if (rec.scenarios && typeof rec.scenarios === 'object') {
+      if (!Object.prototype.hasOwnProperty.call(rec.scenarios, step.scenario)) return null;
+      src = rec.scenarios[step.scenario];
+      if (!src || typeof src !== 'object') return null;
+    }
+    if (src.passed !== true) return null;
+    return { sim: step.sim, scenario: step.scenario,
+      score: typeof src.score === 'number' ? src.score : null, passed: true };
+  }
+  if (step.kind === 'station') {
+    return stations.includes(step.station) ? { station: step.station } : null;
+  }
+  if (step.kind === 'crib') {
+    const rec = Object.prototype.hasOwnProperty.call(tools, step.crib) ? tools[step.crib] : null;
+    if (!rec || typeof rec !== 'object' || rec.passed !== true) return null;
+    return { crib: step.crib, passed: true };
+  }
+  /* walk and placard record nothing anywhere; walkaround, advisor and crew
+     write episodes to the training log, which is not the record this is
+     built from, and the seat-level walkaround tally names no point */
+  return null;
+}
+
+/* A lesson counts as done for play when every step of it that this device CAN
+   record carries evidence under the progress page's own rule, and there is at
+   least one such step. Silent kinds (records null and not device-marked: walk,
+   placard) and episode kinds whose fields cannot match (unmatchableKinds) are
+   recorded by nothing, so no lesson could ever count if they were required;
+   this is the line the progress page's continue point draws, not its
+   "complete", and it never enters any record. */
+function questLessonsDone(prog, training, D) {
+  if (!D || !D.lessons || !D.meta || !D.meta.step_kinds || !D.meta.episode_kinds) throw new Error('quests: lesson data missing');
+  const unmatch = unmatchableKinds(D.meta.episode_kinds);
+  const sk = D.meta.step_kinds;
+  const silent = Object.keys(sk).filter((k) => sk[k].records === null && !EVIDENCED_KINDS.includes(k));
+  const p = (prog && typeof prog === 'object' && !Array.isArray(prog)) ? prog : {};
+  const t = Array.isArray(training) ? training : null;
+  const out = new Set();
+  for (const id of Object.keys(D.lessons)) {
+    const L = D.lessons[id];
+    const rec = L.steps.filter((s) => !silent.includes(s.kind) && !(s.kind in unmatch));
+    if (!rec.length) continue;
+    if (rec.every((s) => stepEvidence(s, p, L.hall, t, D.meta, null) !== null)) out.add(id);
+  }
+  return out;
+}
+function questEmptyState() { return { found: {}, done: {}, badges: [] }; }
+function questParseState(raw) {
+  const st = questEmptyState();
+  let v = null;
+  try { v = raw ? JSON.parse(raw) : null; } catch (e) { v = null; }
+  if (!v || typeof v !== 'object' || Array.isArray(v)) return st;
+  for (const k of ['found', 'done']) {
+    if (v[k] && typeof v[k] === 'object' && !Array.isArray(v[k])) {
+      for (const id of Object.keys(v[k])) if (typeof v[k][id] === 'string') st[k][id] = v[k][id];
+    }
+  }
+  if (Array.isArray(v.badges)) st.badges = v.badges.filter((b) => typeof b === 'string');
+  return st;
+}
+function questCheck(q, st, lessonsDone, T) {
+  if (!q || !q.requires) throw new Error('quests: no such quest');
+  const missing = [];
+  for (const id of q.requires.lessons) if (!lessonsDone.has(id)) missing.push({ kind: 'lesson', id, title: T.lessons[id] });
+  for (const h of q.requires.halls) {
+    let any = false;
+    for (const l of lessonsDone) if (T.lesson_hall[l] === h) any = true;
+    if (!any) missing.push({ kind: 'hall', id: h, title: T.halls[h] });
+  }
+  for (const id of q.requires.quests) if (!(id in st.done) && !(id in st.found)) missing.push({ kind: 'quest', id, title: T.quests[id] });
+  return { ok: missing.length === 0, missing };
+}
+/* records a find (treasure/egg) or a completion (everything else); returns a
+   new state and whether anything changed. Never records a locked entry. */
+function questRecord(st, q, iso, check) {
+  if (!check.ok) return { state: st, changed: false };
+  const slot = QUEST_KINDS_FINDABLE.includes(q.kind) ? 'found' : 'done';
+  if (q.id in st[slot]) return { state: st, changed: false };
+  const next = { found: { ...st.found }, done: { ...st.done }, badges: st.badges.slice() };
+  next[slot][q.id] = iso;
+  if (!next.badges.includes(q.reward.badge)) next.badges.push(q.reward.badge);
+  return { state: next, changed: true };
+}
+/* one keystroke into a rolling buffer; returns the triggers it completes */
+function questKeys(buf, key, words) {
+  const b = buf.concat([key]).slice(-24);
+  const hits = [];
+  const tail = b.slice(-QUEST_KONAMI.length).map((k) => (k.length === 1 ? k.toLowerCase() : k));
+  if (tail.length === QUEST_KONAMI.length && tail.every((k, i) => k === QUEST_KONAMI[i])) hits.push('konami');
+  const typed = b.filter((k) => k.length === 1).join('').toLowerCase();
+  for (const w of words) if (typed.endsWith(w)) hits.push('typed:' + w);
+  return { buf: b, hits };
+}
+/* QUEST_CORE:END */
+const QD = {"honesty":"Quests, games, treasures, easter eggs and badges are play: they are kept on this device only, they are never evidence of anything, and they never enter a completion record.","keys":{"progress":"tc-progress","training":"tc-training"},"lessons_href":"../web/trade_craft_lessons.html","quests_href":"../web/trade_craft_quests.html","lessons":{},"meta":{"step_kinds":{"walk":{"act":"walk to a room of this hall","records":null,"stage":"class","reads":"web/interiors.py","why_no_episode":"arriving somewhere is not an achievement, and a bundle that logged footsteps would be counting attendance while claiming to teach"},"placard":{"act":"read the door placard of a room and take on what it requires","records":null,"stage":"class","reads":"surfaces/registry/finishes.json","why_no_episode":"the placard states the room condition record; reading a record changes nothing and is nobody's score"},"station":{"act":"take a training station at its bench","records":null,"stage":"class","reads":"stations/registry/stations.json","why_no_episode":"a station mark lands in the device-local progress record the halls already keep; the training log holds simulator, advisor, crew and walkaround episodes and this pack adds no fifth kind to it"},"crib":{"act":"run the district crib check at the pegboard","records":null,"stage":"class","reads":"tools/registry/toolcribs.json","why_no_episode":"the crib check is graded deterministically against the crib record and kept with the progress record, not as a training episode"},"walkaround":{"act":"walk one pre-shift point of a seat and mark it","records":"walkaround","stage":"floor","reads":"sims/registry/sims.json","why_no_episode":null},"sim":{"act":"run one seat on the scenario its campus owns","records":"sim","stage":"floor","reads":"sims/registry/sims.json","why_no_episode":null},"advisor":{"act":"ask the advisor who stands in this room one of its fixed topics","records":"advisor","stage":"class","reads":"agents/registry/advisors.json","why_no_episode":null},"crew":{"act":"ask one role of the standing crew one of its fixed topics while the seat runs","records":"crew","stage":"floor","reads":"agents/registry/crews.json","why_no_episode":null}},"episode_kinds":{"sim":{"fields":["t","kind","campus","hall","sim","scenario","controls","actor","operator","outcome"],"actor":"one of ACTORS: `human` or `scripted-reference`","operator":"{level, seed, scenario, steps, dt} - present ONLY when actor is scripted-reference: the closed level name, the integer seed of its fixed-seed generator, the scenario id, the number of control steps the run took, and the fixed step length when the run was headless (steps x dt is then its deterministic sim time - the `time` axis itself is wall-clock and informational) or null when a learner watched it at real time; absent on a human episode","outcome_shape":{"passed":"bool","rows":"[{axis, value, ok}] - the rubric rows","trace":"[{t, gauges}] - OPTIONAL, present only when TRACE is on: ~1 Hz samples of the sim's own gauges() readout across the run, capped at TRACE['max_samples']"},"granularity":"episode-level by default: the scenario and control scheme a run was attempted under, and how it ended. With TRACE on, also a coarse (~1 Hz) gauge trace across the run - still not a per-tick physics or joint trajectory; see TRACE below","what":"one completed simulator run"},"advisor":{"fields":["t","kind","campus","hall","advisor","topic","answer_kind"],"outcome_shape":null,"granularity":"one exchange: which fixed topic was asked and whether the answer was read from a record or written in the advisor registry","what":"one advisor question asked and answered"},"crew":{"fields":["t","kind","campus","hall","crew","role","topic","answer_kind"],"outcome_shape":null,"granularity":"one exchange with one role of one crew: which crew was standing, which role was asked, which fixed topic, and whether the answer was read from a record or written in the crews registry","what":"one crew role asked one question while its seat was running"},"walkaround":{"fields":["t","kind","campus","hall","sim","point"],"outcome_shape":null,"granularity":"one point marked - not a score, the same habit the sim registry already declares is not a gate","what":"one pre-shift walkaround point checked"}},"human_actor":"human"},"titles":{"lessons":{},"lesson_hall":{},"halls":{},"quests":{}},"quests":[{"id":"egg-console-knock","kind":"egg","title":"Knock three times","world":"page:console/trade_craft_console.html","requires":{"lessons":[],"halls":[],"quests":[]},"unlock_text":"Open to everyone.","hint":"Knock on the page's heading three times.","reward":{"badge":"badge-egg-console-knock","label":"Knocker: console"},"band":"K-5","trigger":"clicks:3","target":"h1"},{"id":"egg-console-word","kind":"egg","title":"The word","world":"page:console/trade_craft_console.html","requires":{"lessons":[],"halls":[],"quests":[]},"unlock_text":"Open to everyone.","hint":"Type who voices the system.","reward":{"badge":"badge-egg-console-word","label":"Word finder: console"},"band":"K-5","trigger":"typed:mentor"},{"id":"treasure-console-cache","kind":"treasure","title":"A hidden cache","world":"page:console/trade_craft_console.html","requires":{"lessons":[],"halls":[],"quests":[]},"unlock_text":"Open to everyone.","hint":"A small mark sits at the foot of the page. Look closely.","reward":{"badge":"badge-treasure-console-cache","label":"Cache finder: console"},"band":"K-5"}]};
+
+const QW = window;
+const Q_BY = {};
+for (const q of QD.quests) Q_BY[q.id] = q;
+const Q_ON = { found: [], done: [], locked: [] };
+function qRead(k) { try { return QW.localStorage.getItem(k); } catch (e) { return null; } }
+function qJSON(raw) { try { return raw ? JSON.parse(raw) : null; } catch (e) { return null; } }
+function qState() { return questParseState(qRead(QUEST_STORE)); }
+function qSave(st) { try { QW.localStorage.setItem(QUEST_STORE, JSON.stringify(st)); return true; } catch (e) { return false; } }
+function qLessonsDone() { return questLessonsDone(qJSON(qRead(QD.keys.progress)), qJSON(qRead(QD.keys.training)), QD); }
+function qEmit(ev, x) { for (const fn of Q_ON[ev]) { try { fn(x); } catch (e) { /* a listener's fault is its own */ } } }
+function qEntry(id) { const q = Q_BY[id]; if (!q) throw new Error('quests: ' + id + ' is not carried on this page'); return q; }
+function qCheck(id) { return questCheck(qEntry(id), qState(), qLessonsDone(), QD.titles); }
+function qToast(msg) {
+  let t = document.querySelector('[data-tc-toast]');
+  if (!t) { t = document.createElement('div'); t.className = 'tc-toast'; t.setAttribute('data-tc-toast', ''); t.setAttribute('role', 'status'); t.setAttribute('aria-live', 'polite'); document.body.appendChild(t); }
+  t.textContent = msg; t.classList.add('on');
+  clearTimeout(qToast.h); qToast.h = setTimeout(() => t.classList.remove('on'), 5200);
+}
+function qRecord(id, findable) {
+  const q = qEntry(id);
+  if (findable !== QUEST_KINDS_FINDABLE.includes(q.kind)) throw new Error('quests: ' + id + ' is a ' + q.kind);
+  const c = qCheck(id);
+  if (!c.ok) { qToast('Locked: ' + q.title + '. ' + q.unlock_text); qEmit('locked', { id, check: c }); return c; }
+  const r = questRecord(qState(), q, new Date().toISOString(), c);
+  if (r.changed) {
+    qSave(r.state);
+    qToast((findable ? 'Found: ' : 'Done: ') + q.title + ' - badge "' + q.reward.label + '". ' + QD.honesty);
+    qEmit(findable ? 'found' : 'done', { id, quest: q });
+    qRender();
+  }
+  return { ok: true };
+}
+function qRender() {
+  for (const el of document.querySelectorAll('[data-tc-questlog]')) {
+    if (typeof QW.TCQuestsRender === 'function') { QW.TCQuestsRender(el, QW.TCQuests); continue; }
+    const st = qState(); const ld = qLessonsDone();
+    const ul = document.createElement('ul'); ul.className = 'tc-log';
+    for (const q of QD.quests) {
+      const got = (q.id in st.done) || (q.id in st.found);
+      const c = questCheck(q, st, ld, QD.titles);
+      const li = document.createElement('li');
+      li.dataset.state = got ? 'got' : (c.ok ? 'open' : 'locked');
+      li.textContent = (got ? '✓ ' : (c.ok ? '○ ' : '■ ')) + q.title + ' - ' + (got ? q.reward.label : (c.ok ? q.hint : q.unlock_text));
+      ul.appendChild(li);
+    }
+    el.replaceChildren(ul);
+  }
+}
+QW.TCQuests = {
+  data: QD,
+  state: qState,
+  lessonsDone: qLessonsDone,
+  check: qCheck,
+  complete: (id) => qRecord(id, false),
+  find: (id) => qRecord(id, true),
+  on: (ev, fn) => { if (!(ev in Q_ON)) throw new Error('quests: no event ' + ev); Q_ON[ev].push(fn); },
+  render: qRender,
+  toast: qToast,
+};
+function qBind() {
+  const words = [];
+  const keyed = {};
+  for (const el of document.querySelectorAll('[data-tc-egg]')) {
+    const id = el.getAttribute('data-tc-egg');
+    const trig = el.getAttribute('data-tc-trigger');
+    if (!trig) {
+      el.addEventListener('click', () => qRecord(id, true));
+      el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); qRecord(id, true); } });
+    } else if (trig === 'konami' || trig.startsWith('typed:')) {
+      if (trig.startsWith('typed:')) words.push(trig.slice(6));
+      (keyed[trig] = keyed[trig] || []).push(id);
+    } else if (trig.startsWith('clicks:')) {
+      const n = Number(trig.slice(7));
+      const target = document.querySelector(el.getAttribute('data-tc-target') || '');
+      if (!target || !(n > 0)) continue;
+      let count = 0; let last = 0;
+      target.addEventListener('click', () => {
+        const now = performance.now();
+        count = (now - last < 1500) ? count + 1 : 1; last = now;
+        if (count >= n) { count = 0; qRecord(id, true); }
+      });
+    }
+  }
+  let buf = [];
+  if (Object.keys(keyed).length) {
+    document.addEventListener('keydown', (e) => {
+      if (typeof e.key !== 'string') return;
+      const r = questKeys(buf, e.key, words); buf = r.buf;
+      for (const h of r.hits) for (const id of (keyed[h] || [])) qRecord(id, true);
+    });
+  }
+  for (const el of document.querySelectorAll('[data-tc-quest]')) {
+    const id = el.getAttribute('data-tc-quest');
+    el.addEventListener('click', () => qRecord(id, false));
+  }
+  qRender();
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', qBind); else qBind();
+})();
 </script>
