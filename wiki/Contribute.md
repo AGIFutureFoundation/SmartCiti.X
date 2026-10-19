@@ -46,7 +46,7 @@ ok consent.scope: checked 4, failing 0
 ok consent.license: checked 1, failing 0
 ok consent.granted_at: checked 1, failing 0
 ok episode.kind: checked 6, failing 0
-ok episode.fields: checked 107, failing 0
+ok episode.fields: checked 111, failing 0
 ok episode.t: checked 6, failing 0
 ok trace: checked 5, failing 0
 ok ids.sim: checked 4, failing 0

@@ -597,6 +597,33 @@ for _cid, _c in need(CAMPUSES_REG, 'campuses', 'unions/registry/campuses.json').
     for _h in need(_c, 'halls', 'campuses.json#campuses[%s]' % _cid):
         _CAMPUS_OF[_h] = _cid
 
+# MATCHABILITY (wave 20). A step that records an episode can only be marked
+# done from an episode if the episode records every reference the step
+# carries (and the lesson's hall): a step reference the episode never writes
+# can be matched by nothing, so a lesson holding such a step can never be
+# completed, whatever the counts of "evidence-backed" steps say. Measured
+# from lessons.json step fields and training.json#episode_kinds[k].fields,
+# the same two sources the completion contract derives its evidence rule
+# from; nothing here is typed.
+_TRAINING_FOR_MATCH, _training_match_in = _reg('training/registry/training.json')
+_EP_KINDS = need(_TRAINING_FOR_MATCH, 'episode_kinds', 'training/registry/training.json')
+_STEP_META = {'n', 'kind', 'records', 'stage', 'reads', 'note', 'do', 'names_read', 'where', 'label_kind'}
+_STEP_REFS = {}
+for _l0 in _LESSONS.values():
+    for _s0 in need(_l0, 'steps', 'lessons.json#lessons[]'):
+        _STEP_REFS.setdefault(_s0['kind'], set()).update(k for k in _s0 if k not in _STEP_META)
+MATCHABILITY = {}
+for _k in RECORDING_KINDS:
+    _ep = need(need(_EP_KINDS, _KINDS[_k]['records'], 'training.json#episode_kinds'), 'fields',
+               'training.json#episode_kinds[%s]' % _KINDS[_k]['records'])
+    _refs = sorted(_STEP_REFS.get(_k, set()) | {'hall'})
+    MATCHABILITY[_k] = {'episode': _KINDS[_k]['records'],
+                        'step_references': _refs,
+                        'episode_fields': list(_ep),
+                        'unrecorded_references': [f for f in _refs if f not in _ep],
+                        'matchable': all(f in _ep for f in _refs)}
+UNMATCHABLE_KINDS = sorted(k for k, v in MATCHABILITY.items() if not v['matchable'])
+
 PER_LESSON = {}
 for _lid in sorted(_LESSONS):
     _l = _LESSONS[_lid]
@@ -622,6 +649,8 @@ for _lid in sorted(_LESSONS):
         'silent_kinds': sorted({s['kind'] for s in _sil}),
         'sims_run': sorted({need(s, 'sim', 'a sim step of %s' % _lid)
                             for s in _steps if s['kind'] == 'sim'}),
+        'unmatchable_step_kinds': sorted({s['kind'] for s in _rec if s['kind'] in UNMATCHABLE_KINDS}),
+        'completable': not any(s['kind'] in UNMATCHABLE_KINDS for s in _rec),
         'can_be_evidence_backed': len(_rec) >= 1,
         'fully_evidence_backed': _cls == 'full',
         'classification': _cls,
@@ -709,9 +738,16 @@ _edges_into_unverifiable = sum(1 for a in _needs for b in _needs[a] if b not in 
 
 COMPLETION_EVIDENCE = {
     'inputs': {'lessons': _lessons_in, 'sims': _sims_in, 'campuses': _campuses_in,
-               'unions': _unions_in, 'halls': _halls_in},
+               'unions': _unions_in, 'halls': _halls_in, 'training': _training_match_in},
     'recording_kinds': RECORDING_KINDS,
     'silent_kinds': SILENT_KINDS,
+    'matchability': MATCHABILITY,
+    'unmatchable_kinds': UNMATCHABLE_KINDS,
+    'matchability_means': 'a recording step can be marked done from an episode only when the episode records '
+                          'every reference the step carries and the hall; a kind whose episode lacks one is '
+                          'unmatchable and every lesson holding a step of it is not completable, however many '
+                          'steps are counted evidence-backed. Read from lessons.json step fields and '
+                          'training.json#episode_kinds[k].fields.',
     'kinds_read_from': 'lessons/registry/lessons.json#step_kinds[k].records; a '
                        'kind records when that field is a kind name, and is '
                        'silent when it is null. station and crib are silent '
@@ -722,6 +758,14 @@ COMPLETION_EVIDENCE = {
         'steps': sum(v['steps'] for v in PER_LESSON.values()),
         'evidence_backed_steps': sum(v['evidence_backed_steps'] for v in PER_LESSON.values()),
         'self_reported_steps': sum(v['self_reported_steps'] for v in PER_LESSON.values()),
+        'recording_steps_matchable': sum(1 for l in _LESSONS.values() for st in l['steps']
+                                         if st['kind'] in RECORDING_KINDS and st['kind'] not in UNMATCHABLE_KINDS),
+        'recording_steps_unmatchable': sum(1 for l in _LESSONS.values() for st in l['steps']
+                                           if st['kind'] in UNMATCHABLE_KINDS),
+        'completable': sum(1 for v in PER_LESSON.values() if v['completable']),
+        'not_completable': sum(1 for v in PER_LESSON.values() if not v['completable']),
+        'fully_verifiable_by_episode': sum(1 for v in PER_LESSON.values()
+                                           if v['fully_evidence_backed'] and v['completable']),
         'fully_verifiable': len(_by_cls['full']),
         'partly_verifiable': len(_by_cls['partial']),
         'not_verifiable': len(_by_cls['none']),

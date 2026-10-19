@@ -25,7 +25,7 @@
   "app_renderers_scanned": 38,
   "doc_renderers_scanned": 3,
   "builders_scanned": 75,
-  "suites_scanned": 144,
+  "suites_scanned": 147,
   "declared_unbuilt": 5,
   "declared_unbuilt_by_their_own_words": 2,
   "declared_unbuilt_not_drawn": 4,
@@ -38,13 +38,13 @@
   "budget_views": 6,
   "budget_currencies": 2,
   "budget_agreements": 7,
-  "suites_run": 146,
-  "suite_checks_declared": 7166,
+  "suites_run": 149,
+  "suite_checks_declared": 7304,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 436
+  "files_read": 441
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -1678,6 +1678,7 @@
     "hive/build.py",
     "lessons/build.py",
     "modules/build.py",
+    "training/build.py",
     "unionpaths/build.py",
     "worksites/build.py"
    ],
@@ -1922,6 +1923,7 @@
     "worksites/build.py"
    ],
    "suites": [
+    "evals/test.mjs",
     "tasks/test.mjs",
     "web/test_home.mjs",
     "web/test_interactive.mjs",
@@ -2525,11 +2527,14 @@
   },
   "modules/registry/modules.json": {
    "app_renderers": [
-    "web/build_courses.py"
+    "web/build_bayworld.py",
+    "web/build_courses.py",
+    "web/build_parishes.py"
    ],
    "doc_renderers": [],
    "builders": [],
    "suites": [
+    "web/test_modulelinks.mjs",
     "web/test_worldmodules.mjs"
    ],
    "own_pack": [
@@ -3529,7 +3534,8 @@
     "web/test_home.mjs",
     "web/test_spaces.mjs",
     "worksites/test.mjs",
-    "xr/test.mjs"
+    "xr/test.mjs",
+    "xr/test_session.mjs"
    ],
    "own_pack": [
     "surfaces/build.py",
@@ -4278,6 +4284,7 @@
    "web/test_ladder.mjs",
    "web/test_lookkit.mjs",
    "web/test_map.mjs",
+   "web/test_modulelinks.mjs",
    "web/test_nav.mjs",
    "web/test_packs.mjs",
    "web/test_parishes.mjs",
@@ -4286,6 +4293,7 @@
    "web/test_programs.mjs",
    "web/test_progress.mjs",
    "web/test_quests.mjs",
+   "web/test_rendercull.mjs",
    "web/test_restokit.mjs",
    "web/test_restoscene.mjs",
    "web/test_robotics.mjs",
@@ -4310,7 +4318,8 @@
    "worksites/test.mjs",
    "worksites/verify.mjs",
    "world/test.mjs",
-   "xr/test.mjs"
+   "xr/test.mjs",
+   "xr/test_session.mjs"
   ],
   "why": "an app renderer is a page generator under web/ and what it reads is something a learner can stand in front of; a doc renderer is the wiki or the console and what it reads has been written ABOUT, which is not the same as built; a builder is another pack's build.py; and a suite reads a registry to check it, which is not consumption at all. This pack excludes itself from every one of the four, because it reads every registry in the tree by definition."
  },
@@ -5080,7 +5089,7 @@
    {
     "suite": "training/test.mjs",
     "pack": "training",
-    "readme_checks": 52,
+    "readme_checks": 56,
     "declared": true,
     "in_readme_table": true
    },
@@ -5241,7 +5250,7 @@
    {
     "suite": "evals/test.mjs",
     "pack": "evals",
-    "readme_checks": 75,
+    "readme_checks": 78,
     "declared": true,
     "in_readme_table": true
    },
@@ -5255,7 +5264,7 @@
    {
     "suite": "completion/test.mjs",
     "pack": "completion",
-    "readme_checks": 75,
+    "readme_checks": 81,
     "declared": true,
     "in_readme_table": true
    },
@@ -5360,7 +5369,7 @@
    {
     "suite": "web/test_verify.mjs",
     "pack": "web",
-    "readme_checks": 65,
+    "readme_checks": 68,
     "declared": true,
     "in_readme_table": true
    },
@@ -5381,7 +5390,7 @@
    {
     "suite": "web/test_progress.mjs",
     "pack": "web",
-    "readme_checks": 49,
+    "readme_checks": 50,
     "declared": true,
     "in_readme_table": true
    },
@@ -5885,7 +5894,7 @@
    {
     "suite": "web/test_lookkit.mjs",
     "pack": "web",
-    "readme_checks": 67,
+    "readme_checks": 72,
     "declared": true,
     "in_readme_table": true
    },
@@ -5895,21 +5904,42 @@
     "readme_checks": 34,
     "declared": true,
     "in_readme_table": true
+   },
+   {
+    "suite": "web/test_modulelinks.mjs",
+    "pack": "web",
+    "readme_checks": 61,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "xr/test_session.mjs",
+    "pack": "xr",
+    "readme_checks": 41,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_rendercull.mjs",
+    "pack": "web",
+    "readme_checks": 14,
+    "declared": true,
+    "in_readme_table": true
    }
   ],
-  "suites_run": 146,
-  "suites_declaring_a_count": 144,
+  "suites_run": 149,
+  "suites_declaring_a_count": 147,
   "suites_without_a_count": [
    "control/soak.mjs",
    "restoration/test_scenarios.mjs"
   ],
-  "declared_total": 7166,
-  "readme_headline": 7201,
+  "declared_total": 7304,
+  "readme_headline": 7339,
   "unaccounted_for": 35,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
   "max": 398,
-  "median": 41.5,
+  "median": 41,
   "thinnest": [
    {
     "suite": "ops/fuzz.mjs",
@@ -6547,6 +6577,7 @@
   "web/test_ladder.mjs",
   "web/test_lookkit.mjs",
   "web/test_map.mjs",
+  "web/test_modulelinks.mjs",
   "web/test_nav.mjs",
   "web/test_packs.mjs",
   "web/test_parishes.mjs",
@@ -6555,6 +6586,7 @@
   "web/test_programs.mjs",
   "web/test_progress.mjs",
   "web/test_quests.mjs",
+  "web/test_rendercull.mjs",
   "web/test_restokit.mjs",
   "web/test_restoscene.mjs",
   "web/test_robotics.mjs",
@@ -6591,7 +6623,10 @@
   "world/registry/world.json",
   "world/test.mjs",
   "xr/build.py",
+  "xr/mock_webxr.js",
   "xr/registry/devices.json",
-  "xr/test.mjs"
+  "xr/session_harness.mjs",
+  "xr/test.mjs",
+  "xr/test_session.mjs"
  ]
 }

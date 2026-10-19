@@ -324,6 +324,8 @@
   "wilds.legend": "小地图：橙色方块是作业点；带圆环的方块设有模拟任务。",
   "wilds.flora_honesty": "地面植物：按生物群系对一般名称植物进行的 AUTHORED 布置——不是调查、物种地图或数量统计。",
   "wilds.side_quest": "支线任务",
+  "modlink.practice": "练习模块",
+  "wilds.practice_module": "练习模块",
   "wilds.toast.cache": "你找到了一个隐藏的宝藏。任务日志尚未接入本页面，因此不会记录任何内容。",
   "wilds.toast.trailhead": "你在步道起点的留言簿上签了名。任务日志尚未接入本页面，因此不会记录任何内容。",
   "wilds.not_on_globe": "不在地球仪上",

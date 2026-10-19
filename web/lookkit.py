@@ -17,6 +17,8 @@ Everything here is AUTHORED by rule - a stated choice, not a measurement of any 
    Kelvin to RGB is the Tanner Helland fit (sRGB, 0-255). The worlds pages apply the rule to their one sun and one
    hemisphere at load. The 3D campus page does NOT: its hour and weather registry (sky/) already sets the sun and sky
    per phase, and that registry stays the rule there (the kit records which rule a page uses: 'kit' or 'registry').
+   The network view (the page's opening board of dark water) alone is metered up by VIEW_EXPOSURE; every other view
+   keeps the page's 1.12.
 3. Surface classes (CLASSES): roughness / metalness / environment-light share for glass, metal, masonry,
    paving (asphalt and concrete), foliage and water. A page names which of its materials belong to which class; a
    material the page does not name keeps its own numbers. Only uniforms change, so draw calls and triangles do not.
@@ -37,6 +39,12 @@ class LookError(Exception):
 
 TONE = {'tone_mapping': 'ACESFilmic', 'output_color_space': 'srgb'}
 EXPOSURE = {'campus3d': 1.12, 'worlds': 0.95}
+# A per-view exposure on the 3D campus page (AUTHORED): the opening network view is a top-down board of dark water with
+# small plates, and at the page's 1.12 its frame meaned luma 28.2 of 255 (absolute band [40, 215]). A view that is
+# mostly dark water is metered up, not the page: the campus and hall views keep 1.12 and so do their frames. Measured
+# (SwiftShader, 1280x800, noon, same view): region mean luma 28.2 at 1.12, 40.4 at 2.2, 47.5 at 3.0, 52.2 at 3.6, 55.1 at 4.0;
+# 3.6 is the stated choice (clipped >= 250 share unchanged at 0.01 %, crushed <= 5 share 15.2 % -> 0.0 %).
+VIEW_EXPOSURE = {'region': 3.6}
 SUN_RULE = {'cct_low_k': 2000.0, 'cct_span_k': 3800.0, 'cct_e_deg': 12.0,
             'sun_zenith_i': 2.6, 'meinel_t': 0.7, 'meinel_p': 0.678,
             'sky_i': 1.1, 'sky_base': 0.45, 'sky_slope': 0.55, 'sky_k': 8000.0}
@@ -51,12 +59,12 @@ CLASSES = {
 }
 # per page: the material -> class map (names as the page's own JS knows them) and which sun rule applies
 PAGES = {
-    'campus3d': {'exposure': 'campus3d', 'sun': 'registry',
+    'campus3d': {'exposure': 'campus3d', 'sun': 'registry', 'views': ['region'],
                  'map': {'win': 'glass', 'metal': 'metal', 'brick': 'masonry', 'block': 'masonry',
                          'slab': 'masonry', 'land': 'paving', 'road': 'paving', 'drive': 'paving',
                          'walkway': 'paving', 'veg': 'foliage', 'grass': 'foliage', 'water': 'water'}},
-    'parishes': {'exposure': 'worlds', 'sun': 'kit', 'map': {'matWater': 'water'}},
-    'wilds':    {'exposure': 'worlds', 'sun': 'kit', 'map': {'matWater': 'water'}},
+    'parishes': {'exposure': 'worlds', 'sun': 'kit', 'views': [], 'map': {'matWater': 'water'}},
+    'wilds':    {'exposure': 'worlds', 'sun': 'kit', 'views': [], 'map': {'matWater': 'water'}},
 }
 SAMPLE_DEG = (5.0, 20.0, 38.3, 53.2, 90.0)
 
@@ -88,6 +96,9 @@ def _check():
     for k in ('tone_mapping', 'output_color_space'):
         if k not in TONE:
             raise LookError(f'lookkit: TONE has no {k!r}')
+    for v, e in VIEW_EXPOSURE.items():
+        if not 0 < e <= 4:
+            raise LookError(f'lookkit: view {v!r} exposure {e} is outside (0, 4]')
     for name, c in CLASSES.items():
         for k in ('roughness', 'metalness', 'env'):
             if k not in c or not 0 <= c[k] <= 1:
@@ -95,6 +106,9 @@ def _check():
     for pid, p in PAGES.items():
         if p['exposure'] not in EXPOSURE or p['sun'] not in ('kit', 'registry'):
             raise LookError(f'lookkit: page {pid!r} names an unknown exposure or sun rule')
+        badv = sorted(set(p['views']) - set(VIEW_EXPOSURE))
+        if badv:
+            raise LookError(f'lookkit: page {pid!r} names views without an exposure {badv}')
         bad = sorted(set(p['map'].values()) - set(CLASSES))
         if bad:
             raise LookError(f'lookkit: page {pid!r} maps to unknown classes {bad}')
@@ -107,7 +121,7 @@ def look_js(page_id):
     if page_id not in PAGES:
         raise LookError(f'lookkit: no page {page_id!r} (known: {sorted(PAGES)})')
     p = PAGES[page_id]
-    cfg = {'page': page_id, 'tone': TONE, 'exposure': EXPOSURE[p['exposure']], 'sunRule': p['sun'],
+    cfg = {'page': page_id, 'tone': TONE, 'exposure': EXPOSURE[p['exposure']], 'view_exposure': {v: VIEW_EXPOSURE[v] for v in p['views']}, 'sunRule': p['sun'],
            'rule': SUN_RULE, 'classes': CLASSES, 'map': p['map'],
            'samples': [sun_rule(h) for h in SAMPLE_DEG]}
     blob = json.dumps(cfg, sort_keys=True, separators=(',', ':')).replace('</', '<\\/')
@@ -123,6 +137,11 @@ function lookRenderer(r) {
   r.outputColorSpace = THREE.SRGBColorSpace;
   r.toneMappingExposure = LOOK.exposure;
   lookStat.r = r;
+}
+function lookView(v) {
+  /* per-view exposure: a view the page names is metered by its own number, every other view by the page's */
+  const e = Object.hasOwn(LOOK.view_exposure, v) ? LOOK.view_exposure[v] : LOOK.exposure, r = lookStat.r;
+  if (r && r.toneMappingExposure !== e) r.toneMappingExposure = e;
 }
 function lookKelvin(k) {
   const t = k / 100, c = (v) => Math.round(Math.min(255, Math.max(0, v)));
@@ -169,7 +188,7 @@ window.__look = () => {
     cls[k] = lookStat.applied[k].map((m) => ({ roughness: m.roughness, metalness: m.metalness }));
   return { page: LOOK.page, sunRule: LOOK.sunRule,
            tone: r && r.toneMapping === THREE.ACESFilmicToneMapping ? 'ACESFilmic' : (r ? String(r.toneMapping) : null),
-           space: r ? r.outputColorSpace : null, exposure: r ? r.toneMappingExposure : null,
+           space: r ? r.outputColorSpace : null, exposure: r ? r.toneMappingExposure : null, pageExposure: LOOK.exposure, viewExposure: LOOK.view_exposure,
            sun: lookStat.sun, classes: cls, mapped: Object.keys(LOOK.map).length };
 };
 """

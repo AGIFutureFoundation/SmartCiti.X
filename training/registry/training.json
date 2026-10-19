@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-11",
- "source_stamp": "6ac8622613550c50",
+ "source_stamp": "e152407ead3af3f1",
  "honesty": {
   "schematic": "every episode comes from SCHEMATIC physics and deterministic rubrics, not a real robot or a real machine: useful for exercising a training pipeline's plumbing and export format, not for training a controller that will run on real equipment.",
   "anonymous": "no name, no email, no biometric or device-identifying data is ever recorded - an episode carries only a scenario id, the control scheme the registry already declares, and the measured outcome.",
@@ -65,10 +65,12 @@
     "crew",
     "role",
     "topic",
-    "answer_kind"
+    "answer_kind",
+    "seat",
+    "muster"
    ],
    "outcome_shape": null,
-   "granularity": "one exchange with one role of one crew: which crew was standing, which role was asked, which fixed topic, and whether the answer was read from a record or written in the crews registry",
+   "granularity": "one exchange with one role of one crew: which crew was standing, which role was asked, which fixed topic, which seat and muster strand that crew is bound to in the crews registry, and whether the answer was read from a record or written in the crews registry",
    "what": "one crew role asked one question while its seat was running"
   },
   "walkaround": {

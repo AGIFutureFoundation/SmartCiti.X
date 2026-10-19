@@ -167,14 +167,24 @@ EPISODE_KINDS = {
     # a signalperson's answer and a rigger's are different evidence about
     # the same lift. So the crew and the role are recorded, not an
     # advisor id that would flatten both into one figure.
+    #
+    # `seat` and `muster` are recorded too (wave 20): both are read verbatim
+    # from the crew's own entry in agents/registry/crews.json at the moment of
+    # the exchange - the simulator seat the crew stands at and the room
+    # strand it musters in (both declared by that registry, not retyped). A lesson's crew step carries
+    # exactly these two as references, so without them in the episode the
+    # completion verifier could never match the step to an episode and no
+    # lesson that holds a crew step could be completed.
     'crew': {
         'fields': ['t', 'kind', 'campus', 'hall', 'crew', 'role', 'topic',
-                   'answer_kind'],
+                   'answer_kind', 'seat', 'muster'],
         'outcome_shape': None,
         'granularity': 'one exchange with one role of one crew: which crew '
                        'was standing, which role was asked, which fixed '
-                       'topic, and whether the answer was read from a '
-                       'record or written in the crews registry',
+                       'topic, which seat and muster strand that crew is '
+                       'bound to in the crews registry, '
+                       'and whether the answer was read from a record or '
+                       'written in the crews registry',
         'what': 'one crew role asked one question while its seat was running',
     },
     'walkaround': {

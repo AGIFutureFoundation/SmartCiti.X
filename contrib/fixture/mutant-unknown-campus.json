@@ -200,7 +200,9 @@
     "crew": "fixture-crew",
     "role": "fixture-role",
     "topic": "fixture-topic",
-    "answer_kind": "registry"
+    "answer_kind": "registry",
+    "seat": "fixture-seat",
+    "muster": "fixture-muster"
    }
   ],
   "traces_attached": 1,
@@ -244,7 +246,9 @@
     "crew",
     "role",
     "topic",
-    "answer_kind"
+    "answer_kind",
+    "seat",
+    "muster"
    ],
    "walkaround": [
     "t",
@@ -282,6 +286,6 @@
  "digest": {
   "alg": "SHA-256",
   "over": "canonical JSON of every top-level field except digest, with contributor.signature forced to null: keys sorted recursively, no whitespace, UTF-8",
-  "hex": "50a8025e1e4353850166b978f7cd02e20df0180eaa92bec8e52e261d254d887e"
+  "hex": "8b2999f116fa083394c3718b9604c822d5336a93f73f35950ee0a92f039c6f96"
  }
 }

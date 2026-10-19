@@ -242,10 +242,13 @@ ok('[shipped] the sign-off layer cannot show a signed hall while the pack signs 
   && !/data-signed="true"/.test(html));
 
 // -------------------------------------------------------- typed figures
+/* a zero count (nothing is blocked once the crew episode records seat and muster) is indistinguishable
+   from the literal 0 in `=== 0` and `[0]`, so it is not a typed-figure candidate; the blocked layer's
+   own count is held by the completability check above */
 const FIGS = [
   L.counts.halls_covered, S.coverage.halls.with_a_seat, C.counts.lessons_completable,
   C.counts.lessons_not_completable, halls.length,
-];
+].filter((n) => n !== 0);
 const legendM = /<div class="layers" id="layers">([\s\S]*?)<\/div>/.exec(html);
 const layersJs = js.slice(js.indexOf('const LAYERS = {'), js.indexOf("const dlist = document.getElementById('dlist');"));
 const panelJs = js.slice(js.indexOf('function hallPanel(h)'), js.indexOf('function apply()'));

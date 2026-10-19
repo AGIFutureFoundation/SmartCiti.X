@@ -2,7 +2,7 @@
  "pack": "modules",
  "schema": "tc-modules/1",
  "built": "2026-10-12",
- "source_stamp": "b8861c8e24246a32ba0a5339bc24eb3465ec1a149d8e2d180f9b50e5c014a36b",
+ "source_stamp": "9c2d0ef09989de5a30317372da6cd28489e3ce9fb7228bcd548de36bb18db2b5",
  "sources": [
   "lessons/registry/lessons.json",
   "training/registry/training.json",

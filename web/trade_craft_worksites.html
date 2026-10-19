@@ -418,7 +418,7 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
 <details><summary>Hand-offs, in order, with the evidence at each end</summary>
 <div class="tablewrap"><table class="sched"><thead><tr><th>#</th><th>hand-off</th><th>step</th><th>from-evidence</th><th>to-evidence</th><th>verifiable?</th></tr></thead><tbody><tr data-handoff-row="1"><td class="num">1</td><td>permit-holder → welder</td><td>walks the area, clears or covers what can burn, and issues for that area only</td><td>crew <code>permit-holder</code> asked “What does a hot work permit cover?”</td><td>walkaround <code>weld-bead</code> point <code>screens</code></td><td>verifiable</td></tr><tr data-handoff-row="2"><td class="num">2</td><td>welder → fire-watch</td><td>sets the screens and the leads, then says the arc is about to be struck</td><td>walkaround <code>weld-bead</code> point <code>screens</code></td><td>walkaround <code>weld-bead</code> point <code>firewatch</code></td><td>verifiable</td></tr><tr data-handoff-row="3"><td class="num">3</td><td>fire-watch → welder</td><td>takes station where the sparks land, not where the arc is, and says the watch is set</td><td>walkaround <code>weld-bead</code> point <code>firewatch</code></td><td>sim <code>weld-bead</code> / <code>bay-deck-seam</code> passed</td><td>verifiable</td></tr><tr data-handoff-row="4"><td class="num">4</td><td>welder → fire-watch</td><td>runs the bead, and says out loud when the arc is out</td><td>sim <code>weld-bead</code> / <code>bay-deck-seam</code> passed</td><td>crew <code>fire-watch</code> asked “How long do you stay after?”</td><td>verifiable</td></tr><tr data-handoff-row="5"><td class="num">5</td><td>fire-watch → permit-holder</td><td>holds the watch through the whole post-work period, then hands the permit back to be closed</td><td>crew <code>fire-watch</code> asked “How long do you stay after?”</td><td>crew <code>permit-holder</code> asked “What closes it?”</td><td>verifiable</td></tr></tbody></table></div></details>
 </section>
-<footer class="serves">Registry: <code>worksites/registry/worksites.json</code> · stamp <code data-stamp>ca18d283b7935e0f</code> · authored <code data-authored-stamp>4fc3c55d8b8e1198</code> · embedded verbatim below.</footer>
+<footer class="serves">Registry: <code>worksites/registry/worksites.json</code> · stamp <code data-stamp>bda3130ecce5f81e</code> · authored <code data-authored-stamp>4fc3c55d8b8e1198</code> · embedded verbatim below.</footer>
 <script type="application/json" id="worksites-registry">{
  "authored_stamp": "4fc3c55d8b8e1198",
  "built": "2026-09-26",
@@ -618,7 +618,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -720,7 +722,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -744,7 +748,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -860,7 +866,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -884,7 +892,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -906,7 +916,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -1094,7 +1106,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -1116,7 +1130,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -1140,7 +1156,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -1202,7 +1220,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -1226,7 +1246,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -1248,7 +1270,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -1321,7 +1345,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -1534,7 +1560,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -1784,7 +1812,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -1808,7 +1838,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -1830,7 +1862,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -1854,7 +1888,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -1876,7 +1912,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -2097,7 +2135,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -2119,7 +2159,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -2143,7 +2185,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -2205,7 +2249,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -2229,7 +2275,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -2385,7 +2433,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -2795,7 +2845,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -2819,7 +2871,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -2841,7 +2895,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -3170,7 +3226,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -3194,7 +3252,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -3364,7 +3424,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -3794,7 +3856,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -4118,7 +4182,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -4142,7 +4208,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -4164,7 +4232,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -4626,7 +4696,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -4828,7 +4900,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -4852,7 +4926,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -4874,7 +4950,9 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ],
       "episode_kind": "crew",
       "kind": "crew",
@@ -5190,7 +5268,7 @@ letter-spacing:.04em;color:#D3DCDB;background:rgb(18 24 27 / .78);padding:3px 8p
    "title": "Deck seam under permit, welding bay"
   }
  ],
- "source_stamp": "ca18d283b7935e0f",
+ "source_stamp": "bda3130ecce5f81e",
  "unions_covered": [
   "boilermakers",
   "crane-ops",
@@ -5434,7 +5512,7 @@ function questKeys(buf, key, words) {
   return { buf: b, hits };
 }
 /* QUEST_CORE:END */
-const QD = {"honesty":"Quests, games, treasures, easter eggs and badges are play: they are kept on this device only, they are never evidence of anything, and they never enter a completion record.","keys":{"progress":"tc-progress","training":"tc-training"},"lessons_href":"trade_craft_lessons.html","quests_href":"trade_craft_quests.html","lessons":{},"meta":{"step_kinds":{"walk":{"act":"walk to a room of this hall","records":null,"stage":"class","reads":"web/interiors.py","why_no_episode":"arriving somewhere is not an achievement, and a bundle that logged footsteps would be counting attendance while claiming to teach"},"placard":{"act":"read the door placard of a room and take on what it requires","records":null,"stage":"class","reads":"surfaces/registry/finishes.json","why_no_episode":"the placard states the room condition record; reading a record changes nothing and is nobody's score"},"station":{"act":"take a training station at its bench","records":null,"stage":"class","reads":"stations/registry/stations.json","why_no_episode":"a station mark lands in the device-local progress record the halls already keep; the training log holds simulator, advisor, crew and walkaround episodes and this pack adds no fifth kind to it"},"crib":{"act":"run the district crib check at the pegboard","records":null,"stage":"class","reads":"tools/registry/toolcribs.json","why_no_episode":"the crib check is graded deterministically against the crib record and kept with the progress record, not as a training episode"},"walkaround":{"act":"walk one pre-shift point of a seat and mark it","records":"walkaround","stage":"floor","reads":"sims/registry/sims.json","why_no_episode":null},"sim":{"act":"run one seat on the scenario its campus owns","records":"sim","stage":"floor","reads":"sims/registry/sims.json","why_no_episode":null},"advisor":{"act":"ask the advisor who stands in this room one of its fixed topics","records":"advisor","stage":"class","reads":"agents/registry/advisors.json","why_no_episode":null},"crew":{"act":"ask one role of the standing crew one of its fixed topics while the seat runs","records":"crew","stage":"floor","reads":"agents/registry/crews.json","why_no_episode":null}},"episode_kinds":{"sim":{"fields":["t","kind","campus","hall","sim","scenario","controls","actor","operator","outcome"],"actor":"one of ACTORS: `human` or `scripted-reference`","operator":"{level, seed, scenario, steps, dt} - present ONLY when actor is scripted-reference: the closed level name, the integer seed of its fixed-seed generator, the scenario id, the number of control steps the run took, and the fixed step length when the run was headless (steps x dt is then its deterministic sim time - the `time` axis itself is wall-clock and informational) or null when a learner watched it at real time; absent on a human episode","outcome_shape":{"passed":"bool","rows":"[{axis, value, ok}] - the rubric rows","trace":"[{t, gauges}] - OPTIONAL, present only when TRACE is on: ~1 Hz samples of the sim's own gauges() readout across the run, capped at TRACE['max_samples']"},"granularity":"episode-level by default: the scenario and control scheme a run was attempted under, and how it ended. With TRACE on, also a coarse (~1 Hz) gauge trace across the run - still not a per-tick physics or joint trajectory; see TRACE below","what":"one completed simulator run"},"advisor":{"fields":["t","kind","campus","hall","advisor","topic","answer_kind"],"outcome_shape":null,"granularity":"one exchange: which fixed topic was asked and whether the answer was read from a record or written in the advisor registry","what":"one advisor question asked and answered"},"crew":{"fields":["t","kind","campus","hall","crew","role","topic","answer_kind"],"outcome_shape":null,"granularity":"one exchange with one role of one crew: which crew was standing, which role was asked, which fixed topic, and whether the answer was read from a record or written in the crews registry","what":"one crew role asked one question while its seat was running"},"walkaround":{"fields":["t","kind","campus","hall","sim","point"],"outcome_shape":null,"granularity":"one point marked - not a score, the same habit the sim registry already declares is not a gate","what":"one pre-shift walkaround point checked"}},"human_actor":"human"},"titles":{"lessons":{},"lesson_hall":{},"halls":{},"quests":{}},"quests":[{"id":"egg-worksites-knock","kind":"egg","title":"Knock three times","world":"page:web/trade_craft_worksites.html","requires":{"lessons":[],"halls":[],"quests":[]},"unlock_text":"Open to everyone.","hint":"Knock on the page's heading three times.","reward":{"badge":"badge-egg-worksites-knock","label":"Knocker: worksites"},"band":"K-5","trigger":"clicks:3","target":"h1"},{"id":"egg-worksites-word","kind":"egg","title":"The word","world":"page:web/trade_craft_worksites.html","requires":{"lessons":[],"halls":[],"quests":[]},"unlock_text":"Open to everyone.","hint":"Type the talk before the shift.","reward":{"badge":"badge-egg-worksites-word","label":"Word finder: worksites"},"band":"K-5","trigger":"typed:toolbox"},{"id":"treasure-worksites-cache","kind":"treasure","title":"A hidden cache","world":"page:web/trade_craft_worksites.html","requires":{"lessons":[],"halls":[],"quests":[]},"unlock_text":"Open to everyone.","hint":"A small mark sits at the foot of the page. Look closely.","reward":{"badge":"badge-treasure-worksites-cache","label":"Cache finder: worksites"},"band":"K-5"}]};
+const QD = {"honesty":"Quests, games, treasures, easter eggs and badges are play: they are kept on this device only, they are never evidence of anything, and they never enter a completion record.","keys":{"progress":"tc-progress","training":"tc-training"},"lessons_href":"trade_craft_lessons.html","quests_href":"trade_craft_quests.html","lessons":{},"meta":{"step_kinds":{"walk":{"act":"walk to a room of this hall","records":null,"stage":"class","reads":"web/interiors.py","why_no_episode":"arriving somewhere is not an achievement, and a bundle that logged footsteps would be counting attendance while claiming to teach"},"placard":{"act":"read the door placard of a room and take on what it requires","records":null,"stage":"class","reads":"surfaces/registry/finishes.json","why_no_episode":"the placard states the room condition record; reading a record changes nothing and is nobody's score"},"station":{"act":"take a training station at its bench","records":null,"stage":"class","reads":"stations/registry/stations.json","why_no_episode":"a station mark lands in the device-local progress record the halls already keep; the training log holds simulator, advisor, crew and walkaround episodes and this pack adds no fifth kind to it"},"crib":{"act":"run the district crib check at the pegboard","records":null,"stage":"class","reads":"tools/registry/toolcribs.json","why_no_episode":"the crib check is graded deterministically against the crib record and kept with the progress record, not as a training episode"},"walkaround":{"act":"walk one pre-shift point of a seat and mark it","records":"walkaround","stage":"floor","reads":"sims/registry/sims.json","why_no_episode":null},"sim":{"act":"run one seat on the scenario its campus owns","records":"sim","stage":"floor","reads":"sims/registry/sims.json","why_no_episode":null},"advisor":{"act":"ask the advisor who stands in this room one of its fixed topics","records":"advisor","stage":"class","reads":"agents/registry/advisors.json","why_no_episode":null},"crew":{"act":"ask one role of the standing crew one of its fixed topics while the seat runs","records":"crew","stage":"floor","reads":"agents/registry/crews.json","why_no_episode":null}},"episode_kinds":{"sim":{"fields":["t","kind","campus","hall","sim","scenario","controls","actor","operator","outcome"],"actor":"one of ACTORS: `human` or `scripted-reference`","operator":"{level, seed, scenario, steps, dt} - present ONLY when actor is scripted-reference: the closed level name, the integer seed of its fixed-seed generator, the scenario id, the number of control steps the run took, and the fixed step length when the run was headless (steps x dt is then its deterministic sim time - the `time` axis itself is wall-clock and informational) or null when a learner watched it at real time; absent on a human episode","outcome_shape":{"passed":"bool","rows":"[{axis, value, ok}] - the rubric rows","trace":"[{t, gauges}] - OPTIONAL, present only when TRACE is on: ~1 Hz samples of the sim's own gauges() readout across the run, capped at TRACE['max_samples']"},"granularity":"episode-level by default: the scenario and control scheme a run was attempted under, and how it ended. With TRACE on, also a coarse (~1 Hz) gauge trace across the run - still not a per-tick physics or joint trajectory; see TRACE below","what":"one completed simulator run"},"advisor":{"fields":["t","kind","campus","hall","advisor","topic","answer_kind"],"outcome_shape":null,"granularity":"one exchange: which fixed topic was asked and whether the answer was read from a record or written in the advisor registry","what":"one advisor question asked and answered"},"crew":{"fields":["t","kind","campus","hall","crew","role","topic","answer_kind","seat","muster"],"outcome_shape":null,"granularity":"one exchange with one role of one crew: which crew was standing, which role was asked, which fixed topic, which seat and muster strand that crew is bound to in the crews registry, and whether the answer was read from a record or written in the crews registry","what":"one crew role asked one question while its seat was running"},"walkaround":{"fields":["t","kind","campus","hall","sim","point"],"outcome_shape":null,"granularity":"one point marked - not a score, the same habit the sim registry already declares is not a gate","what":"one pre-shift walkaround point checked"}},"human_actor":"human"},"titles":{"lessons":{},"lesson_hall":{},"halls":{},"quests":{}},"quests":[{"id":"egg-worksites-knock","kind":"egg","title":"Knock three times","world":"page:web/trade_craft_worksites.html","requires":{"lessons":[],"halls":[],"quests":[]},"unlock_text":"Open to everyone.","hint":"Knock on the page's heading three times.","reward":{"badge":"badge-egg-worksites-knock","label":"Knocker: worksites"},"band":"K-5","trigger":"clicks:3","target":"h1"},{"id":"egg-worksites-word","kind":"egg","title":"The word","world":"page:web/trade_craft_worksites.html","requires":{"lessons":[],"halls":[],"quests":[]},"unlock_text":"Open to everyone.","hint":"Type the talk before the shift.","reward":{"badge":"badge-egg-worksites-word","label":"Word finder: worksites"},"band":"K-5","trigger":"typed:toolbox"},{"id":"treasure-worksites-cache","kind":"treasure","title":"A hidden cache","world":"page:web/trade_craft_worksites.html","requires":{"lessons":[],"halls":[],"quests":[]},"unlock_text":"Open to everyone.","hint":"A small mark sits at the foot of the page. Look closely.","reward":{"badge":"badge-treasure-worksites-cache","label":"Cache finder: worksites"},"band":"K-5"}]};
 
 const QW = window;
 const Q_BY = {};

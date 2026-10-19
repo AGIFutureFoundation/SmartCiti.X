@@ -35,7 +35,7 @@ On the completion pack's own fixture record:
 $ node compliance/verify.mjs completion/fixture/good.json
 compliance report: 3 halls touched by this record (of 111); ledger built 2026-09-26, stamp 8a4ceed33db622e1
 
-hall riggers (Riggers & Signalpersons) — lesson riggers-first-card, seat rigging-signals passed, seat load-chart passed
+hall riggers (Riggers & Signalpersons) — lesson riggers-first-card, lesson riggers-carry-under-control, seat rigging-signals passed, seat crane-lift passed
   hazards: suspended-load; hazard rooms: materials
   room safety [no hazard] PPE: hi-vis, safety boots — placard hung — not-evidenced (a room requirement is the bundle's fact; no record field carries it)
   room procedure [no hazard] PPE: gloves, hard hat, hi-vis, safety boots, safety glasses — placard hung — not-evidenced (a room requirement is the bundle's fact; no record field carries it)
@@ -50,47 +50,40 @@ hall riggers (Riggers & Signalpersons) — lesson riggers-first-card, seat riggi
     step 2 advisor @coordination: evidenced
     step 3 walkaround @yard: evidenced
     step 4 sim @yard: evidenced
-  lesson riggers-carry-under-control: in progress in the record; placard step in every hazard room: no; hazard rooms not walked: materials
-    step 1 walk @machines: not done
-    step 2 walkaround @yard: not done
-    step 3 crew @yard: not done
-    step 4 sim @yard: not done
-    step 5 advisor @yard: not done
+  lesson riggers-carry-under-control: complete in the record; placard step in every hazard room: no; hazard rooms not walked: materials
+    step 1 walk @machines: self-reported (done is the learner's word)
+    step 2 walkaround @yard: evidenced
+    step 3 crew @yard: evidenced
+    step 4 sim @yard: evidenced
+    step 5 advisor @yard: evidenced
   lesson f-timber-frame-site-walk: in progress in the record; placard step in every hazard room: no; hazard rooms not walked: materials
     step 1 walk @safety: not done
     step 2 placard @safety: not done
     step 3 advisor @safety: not done
     step 4 advisor @safety: not done
-  seat crane-lift: not passed in this record
+  seat crane-lift (Tower Crane Lift): passed — evidenced by record.sims and a sim step episode; decided by the seat's rule: placement <= 1.2, swing <= 2.0, strikes == 0, time informational — the axes are the seat's rule in sims.json, not the record's evidence; the record carries passed only
   seat rigging-signals (Rigging Signal Call): passed — evidenced by record.sims and a sim step episode; decided by the seat's rule: calls == all, wrong == 0, time informational — the axes are the seat's rule in sims.json, not the record's evidence; the record carries passed only
-  seat load-chart (Load Chart Judgment): passed — evidenced by record.sims and a sim step episode; decided by the seat's rule: judgments == all, overloads == 0, time informational — the axes are the seat's rule in sims.json, not the record's evidence; the record carries passed only
+  seat load-chart: not passed in this record
   seat overhead-crane: not passed in this record
   sign-off: UNSIGNED — this hall's content is unverified general practice (content_status absent: inherits the global caveat) (0 of 111 halls signed off today, read through pack/hall_signoff.mjs) — not-evidenced (a hall's fact, not the record's)
 
-hall crane-ops (Crane Operators) — lesson crane-ops-read-the-chart, seat rigging-signals passed, seat load-chart passed
-  hazards: suspended-load; hazard rooms: materials
+hall welders (Welding Trades) — lesson welders-the-watch
+  hazards: hot-work; hazard rooms: procedure
   room safety [no hazard] PPE: hi-vis, safety boots — placard hung — not-evidenced (a room requirement is the bundle's fact; no record field carries it)
-  room procedure [no hazard] PPE: gloves, hard hat, hi-vis, safety boots, safety glasses — placard hung — not-evidenced (a room requirement is the bundle's fact; no record field carries it)
+  room procedure [hazard hot-work] PPE: flame-resistant clothing, gloves, hard hat, hi-vis, safety boots, safety glasses, welding hood — placard hung — not-evidenced (a room requirement is the bundle's fact; no record field carries it)
   room machines [no hazard] PPE: gloves, hard hat, hearing protection, hi-vis, safety boots, safety glasses — placard hung — not-evidenced (a room requirement is the bundle's fact; no record field carries it)
   room tools [no hazard] PPE: safety boots, safety glasses — placard hung — not-evidenced (a room requirement is the bundle's fact; no record field carries it)
-  room materials [hazard suspended-load] PPE: gloves, hard hat, hi-vis, safety boots — placard hung — not-evidenced (a room requirement is the bundle's fact; no record field carries it)
+  room materials [no hazard] PPE: gloves, hard hat, hi-vis, safety boots — placard hung — not-evidenced (a room requirement is the bundle's fact; no record field carries it)
   room layout [no hazard] PPE: safety boots — placard hung — not-evidenced (a room requirement is the bundle's fact; no record field carries it)
   room inspection [no hazard] PPE: safety glasses — placard hung — not-evidenced (a room requirement is the bundle's fact; no record field carries it)
   room troubleshooting [no hazard] PPE: safety boots, safety glasses — placard hung — not-evidenced (a room requirement is the bundle's fact; no record field carries it)
-  lesson crane-ops-read-the-chart: complete in the record; placard step in every hazard room: no; hazard rooms not walked: materials
-    step 1 walk @machines: self-reported (done is the learner's word)
-    step 2 walkaround @yard: evidenced
-    step 3 sim @yard: evidenced
-    step 4 advisor @yard: evidenced
-  lesson d-wind-staging-site-walk: in progress in the record; placard step in every hazard room: no; hazard rooms not walked: materials
-    step 1 walk @safety: not done
-    step 2 placard @safety: not done
-    step 3 advisor @safety: not done
-    step 4 advisor @safety: not done
-  seat crane-lift: not passed in this record
-  seat rigging-signals (Rigging Signal Call): passed — evidenced by record.sims and a sim step episode; decided by the seat's rule: calls == all, wrong == 0, time informational — the axes are the seat's rule in sims.json, not the record's evidence; the record carries passed only
-  seat load-chart (Load Chart Judgment): passed — evidenced by record.sims and a sim step episode; decided by the seat's rule: judgments == all, overloads == 0, time informational — the axes are the seat's rule in sims.json, not the record's evidence; the record carries passed only
-  seat overhead-crane: not passed in this record
+  lesson welders-the-watch: complete in the record; placard step in every hazard room: no; hazard rooms not walked: procedure
+    step 1 walk @safety: self-reported (done is the learner's word)
+    step 2 placard @safety: self-reported (done is the learner's word)
+    step 3 advisor @safety: evidenced
+    step 4 walkaround @yard: evidenced
+    step 5 crew @yard: evidenced
+  seat weld-bead: not passed in this record
   sign-off: UNSIGNED — this hall's content is unverified general practice (content_status absent: inherits the global caveat) (0 of 111 halls signed off today, read through pack/hall_signoff.mjs) — not-evidenced (a hall's fact, not the record's)
 
 hall scaffold (Scaffold Erectors) — lesson scaffold-read-the-tag
@@ -118,7 +111,7 @@ hall scaffold (Scaffold Erectors) — lesson scaffold-read-the-tag
   seat scaffold-bay: not passed in this record
   sign-off: UNSIGNED — this hall's content is unverified general practice (content_status absent: inherits the global caveat) (0 of 111 halls signed off today, read through pack/hall_signoff.mjs) — not-evidenced (a hall's fact, not the record's)
 
-totals: 10 evidenced, 4 self-reported, 27 not-evidenced items across the halls touched
+totals: 12 evidenced, 6 self-reported, 27 not-evidenced items across the halls touched
 signature: unsigned: this device only
 this report is against the bundle's own rules, not any jurisdiction's; a signed record attests a key, not a person; nothing here is a certification or an inspection
 ```

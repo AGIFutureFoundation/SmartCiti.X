@@ -430,7 +430,7 @@
     },
     {
      "path": "layers/registry/layers.json",
-     "sha256": "83842f1ae5f11c87"
+     "sha256": "674421440ae397e3"
     }
    ],
    "status": "SHIPPING",
@@ -453,7 +453,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "4e39ef2629b65f2f"
+     "sha256": "118d4b3708e97692"
     }
    ],
    "status": "SHIPPING",
@@ -477,7 +477,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "4e39ef2629b65f2f"
+     "sha256": "118d4b3708e97692"
     }
    ],
    "status": "SHIPPING",
@@ -501,7 +501,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "4e39ef2629b65f2f"
+     "sha256": "118d4b3708e97692"
     }
    ],
    "status": "SHIPPING",
@@ -525,7 +525,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "4e39ef2629b65f2f"
+     "sha256": "118d4b3708e97692"
     }
    ],
    "status": "PROPOSED",
@@ -549,7 +549,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "4e39ef2629b65f2f"
+     "sha256": "118d4b3708e97692"
     }
    ],
    "status": "SHIPPING",
@@ -573,7 +573,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "4e39ef2629b65f2f"
+     "sha256": "118d4b3708e97692"
     }
    ],
    "status": "SHIPPING",
@@ -597,7 +597,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "4e39ef2629b65f2f"
+     "sha256": "118d4b3708e97692"
     }
    ],
    "status": "SHIPPING",
@@ -624,7 +624,7 @@
     },
     {
      "path": "layers/registry/layers.json",
-     "sha256": "83842f1ae5f11c87"
+     "sha256": "674421440ae397e3"
     }
    ],
    "status": "SHIPPING",
@@ -820,7 +820,7 @@
    "sources": [
     {
      "path": "datashare/registry/datashare.json",
-     "sha256": "d16df5f66369b82b"
+     "sha256": "af059349d2b3beba"
     }
    ],
    "status": "SHIPPING",
@@ -863,7 +863,7 @@
    "sources": [
     {
      "path": "hive/registry/hive.json",
-     "sha256": "8ea7563bca70a5f9"
+     "sha256": "c7a6617578e65d42"
     }
    ],
    "status": "SHIPPING",

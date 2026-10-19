@@ -2721,6 +2721,105 @@ for _a, _b in _SK_ANCHORS:
         raise BuildError(f'build_parishes: STREET-KIT anchor must occur exactly once, found {JS.count(_a)}: {_a.strip()[:60]!r}')
     JS = JS.replace(_a, _b, 1)
 # STREETS END street-kit
+# RENDER-CULL BEGIN fabric-view-cull (wave 20, RENDER·Frame Cost): the fabric InstancedMeshes (houses, midrise, trees, lamps)
+# are each ONE draw call but SwiftShader still shades every instance's vertices, also the ones behind the camera (the 22051
+# border view: houses 28,116 + trees 30,540 + midrise 6,430 + lamps 3,708 of 85,890 triangles; frustumCulled is false on
+# purpose because the instances span the whole 7x7 chunk window). This keeps the BUILT instances in a snapshot (what the
+# eval's fabric floor, the kit rows and the elevation audit count) and fills the meshes' own arrays with only the instances
+# whose bounding sphere touches the camera frustum (inflated 4 m + 2.5 % of its distance; a re-cull runs at every 2 m of travel or
+# half a degree of turn, so the drift between two culls never shows a pop). Same instances on screen: lossless, no ceiling or target touched. DIAG.noCull
+# (eval only) draws all of them again, as it does for the PERF w13 culls.
+_FC_JS = r"""
+/* FABRIC-CULL BEGIN: draw only the fabric instances inside the view frustum; the built set stays in FAB */
+const FAB = { fam: [], key: '', drawn: { house: 0, midrise: 0, tree: 0, lamp: 0 }, culls: 0, ms: 0 };
+const FAB_PM = new THREE.Matrix4(), FAB_FR = new Float32Array(24);
+function fabSnapshot() {
+  FAB.fam = [['house', houses], ['midrise', blocks], ['tree', trees], ['lamp', lamps]].map(([name, m]) => {
+    const n = m.count, g = m.geometry; if (!g.boundingSphere) g.computeBoundingSphere();
+    const mat = m.instanceMatrix.array.slice(0, n * 16), sp = new Float32Array(n * 4), c = g.boundingSphere.center, R = g.boundingSphere.radius;
+    for (let i = 0; i < n; i++) {
+      const o = i * 16, sx = Math.hypot(mat[o], mat[o + 1], mat[o + 2]), sy = Math.hypot(mat[o + 4], mat[o + 5], mat[o + 6]), sz = Math.hypot(mat[o + 8], mat[o + 9], mat[o + 10]);
+      sp[i * 4] = mat[o] * c.x + mat[o + 4] * c.y + mat[o + 8] * c.z + mat[o + 12];
+      sp[i * 4 + 1] = mat[o + 1] * c.x + mat[o + 5] * c.y + mat[o + 9] * c.z + mat[o + 13];
+      sp[i * 4 + 2] = mat[o + 2] * c.x + mat[o + 6] * c.y + mat[o + 10] * c.z + mat[o + 14];
+      sp[i * 4 + 3] = R * Math.max(sx, sy, sz);
+    }
+    const ku = g.attributes.kitUse;
+    return { name, m, n, mat, sp, col: m.instanceColor ? m.instanceColor.array.slice(0, n * 3) : null, use: ku ? ku.array.slice(0, n) : null, kuAttr: ku || null };
+  });
+  FAB.key = '';
+}
+const fabFam = (m) => FAB.fam.find((f) => f.m === m) || null;
+const fabBuilt = (m) => { const f = fabFam(m); return f ? f.n : m.count; };
+function fabCull(over) {
+  if (over || !FAB.fam.length) return;
+  const e = camera.matrixWorld.elements, p = camera.projectionMatrix.elements;
+  /* the key cells bound the drift between two culls: 2 m per axis (< 3.5 m in 3D) and 1/114 per direction component (< 0.9 degrees),
+     inside the 4 m + 2.5 % of distance (1.4 degrees) the spheres are inflated by */
+  const key = [Math.round(e[12] / 2), Math.round(e[13] / 2), Math.round(e[14] / 2), Math.round(e[8] * 114), Math.round(e[9] * 114), Math.round(e[10] * 114), Math.round(p[0] * 1000), Math.round(p[5] * 1000), !!DIAG.noCull].join(',');
+  if (key === FAB.key) return;
+  FAB.key = key; const t0 = performance.now();
+  if (DIAG.noCull) { for (const f of FAB.fam) fabFill(f, null); FAB.culls++; FAB.ms = performance.now() - t0; return; }
+  FAB_PM.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
+  const q = FAB_PM.elements, F = FAB_FR;   // Gribb-Hartmann planes, normalised
+  const rows = [[3, 0, 1], [3, 0, -1], [3, 1, 1], [3, 1, -1], [3, 2, 1], [3, 2, -1]];
+  for (let k = 0; k < 6; k++) {
+    const [, r, s] = rows[k]; let a = q[3] + s * q[r], b = q[7] + s * q[r + 4], c = q[11] + s * q[r + 8], d = q[15] + s * q[r + 12];
+    const L = Math.hypot(a, b, c) || 1; F[k * 4] = a / L; F[k * 4 + 1] = b / L; F[k * 4 + 2] = c / L; F[k * 4 + 3] = d / L;
+  }
+  const cx = e[12], cy = e[13], cz = e[14];
+  for (const f of FAB.fam) {
+    const keep = new Uint32Array(f.n); let k = 0; const sp = f.sp;
+    for (let i = 0; i < f.n; i++) {
+      const x = sp[i * 4], y = sp[i * 4 + 1], z = sp[i * 4 + 2], r = sp[i * 4 + 3] + 4 + 0.025 * Math.hypot(x - cx, y - cy, z - cz);
+      let out = false;
+      for (let j = 0; j < 24; j += 4) if (F[j] * x + F[j + 1] * y + F[j + 2] * z + F[j + 3] < -r) { out = true; break; }
+      if (!out) keep[k++] = i;
+    }
+    fabFill(f, keep.subarray(0, k));
+  }
+  FAB.culls++; FAB.ms = performance.now() - t0;
+}
+function fabFill(f, idx) {
+  const m = f.m, k = idx ? idx.length : f.n, A = m.instanceMatrix, C = m.instanceColor;
+  for (let j = 0; j < k; j++) {
+    const i = idx ? idx[j] : j;
+    A.array.set(f.mat.subarray(i * 16, i * 16 + 16), j * 16);
+    if (f.col) C.array.set(f.col.subarray(i * 3, i * 3 + 3), j * 3);
+    if (f.use) f.kuAttr.array[j] = f.use[i];
+  }
+  m.count = k; FAB.drawn[f.name] = k;
+  for (const a of [A, C, f.kuAttr]) if (a) { a.needsUpdate = true; if (a.clearUpdateRanges) { a.clearUpdateRanges(); a.addUpdateRange(0, k * a.itemSize); } }
+}
+/* FABRIC-CULL END */
+"""
+_FC_ANCHORS = [
+    # the built set is snapshotted when refillFabric has filled the meshes' arrays
+    ('  blocks.instanceMatrix.needsUpdate = true; trees.instanceMatrix.needsUpdate = true; lamps.instanceMatrix.needsUpdate = true; dirty = false; markPhys();\n',
+     '  blocks.instanceMatrix.needsUpdate = true; trees.instanceMatrix.needsUpdate = true; lamps.instanceMatrix.needsUpdate = true; dirty = false; markPhys(); fabSnapshot();   // FABRIC-CULL\n'),
+    # frame(): after the camera is placed
+    # the fabric cull runs at the top of perfCull (which frame() calls once, right after placeCamera)
+    ('function perfCull(over) {\n',
+     'function perfCull(over) {\n  camera.updateMatrixWorld(); camera.matrixWorldInverse.copy(camera.matrixWorld).invert(); fabCull(over);   // FABRIC-CULL (the camera is placed)\n'),
+    # the eval's counts are the BUILT instances, not the drawn ones
+    ('    instances: { block: blocks.visible ? houses.count + blocks.count : 0, tree: trees.visible ? trees.count : 0, lamp: lamps.visible ? lamps.count : 0, marker: markers.count,\n',
+     '    instances: { block: blocks.visible ? fabBuilt(houses) + fabBuilt(blocks) : 0, tree: trees.visible ? fabBuilt(trees) : 0, lamp: lamps.visible ? fabBuilt(lamps) : 0, marker: markers.count,\n'
+     '      drawn: { ...FAB.drawn }, cullMs: +FAB.ms.toFixed(2), culls: FAB.culls,   // FABRIC-CULL: what the frustum cut left in the draw (built counts above)\n'),
+    ('    kit: Object.fromEntries(Object.entries(KIT).map(([k, m]) => [k, m.visible ? m.count : 0])),\n',
+     '    kit: Object.fromEntries(Object.entries(KIT).map(([k, m]) => [k, m.visible ? fabBuilt(m) : 0])),\n'),
+    ('const a = m.geometry.attributes.kitUse.array, c = [0, 0, 0]; for (let i = 0; i < m.count; i++) c[Math.floor(a[i] + 0.01)]++;',
+     'const f = fabFam(m), a = f && f.use ? f.use : m.geometry.attributes.kitUse.array, c = [0, 0, 0]; for (let i = 0; i < fabBuilt(m); i++) c[Math.floor(a[i] + 0.01)]++;'),
+    ('for (let i = 0; i < m.count && drawn.length < n; i++) { m.getMatrixAt(i, M4);',
+     'for (let i = 0; i < fabBuilt(m) && drawn.length < n; i++) { const f = fabFam(m); if (f) M4.fromArray(f.mat, i * 16); else m.getMatrixAt(i, M4);'),
+]
+# the block's JS rides in front of the KIT-less helpers that need `camera` and `DIAG` (both exist before frame())
+_FC_ANCHORS.append(('const M4 = new THREE.Matrix4(), Q = new THREE.Quaternion(), V = new THREE.Vector3(), S = new THREE.Vector3();\nconst UP = new THREE.Vector3(0, 1, 0);\nfunction refillFabric() {\n',
+                    'const M4 = new THREE.Matrix4(), Q = new THREE.Quaternion(), V = new THREE.Vector3(), S = new THREE.Vector3();\nconst UP = new THREE.Vector3(0, 1, 0);\n' + _FC_JS + 'function refillFabric() {\n'))
+for _a, _b in _FC_ANCHORS:
+    if JS.count(_a) != 1:
+        raise BuildError(f'build_parishes: RENDER-CULL anchor must occur exactly once, found {JS.count(_a)}: {_a.strip()[:60]!r}')
+    JS = JS.replace(_a, _b, 1)
+# RENDER-CULL END fabric-view-cull
 # ROBOWORLD BEGIN robot-yard (wave 18, ROBOWORLD·Robots in the Worlds): ONE small robot yard in the walkable world.
 # An AUTHORED rover runs on a loop near the walker's spawn point: it replays the arena's SCRIPTED reference steps for
 # world.litter-pickup (robotics/registry/robotics.json reference_policy, read fail closed): turn toward the nearest open
@@ -2817,6 +2916,11 @@ window.__robotYard = {
 };
 /* ROVER-YARD END */
 """.replace('__RY_POL_ID__', _RY_POL_ID)
+# MODULE-LINK BEGIN (wave 20, MODULE-LINK): the robot yard label gets a "Practice module" link to its world module
+# (modules/registry/modules.json, read fail closed by web/modulelinks.py); the link shows and hides with the label.
+import modulelinks  # noqa: E402
+_RY_JS = modulelinks.robot_yard_js(_RY_JS, ROOT)
+# MODULE-LINK END
 _RY_ANCHORS = [
     ('window.__parishes = {', _RY_JS + 'window.__parishes = {'),
     ('  streetKitFrame(over);   // STREET-KIT\n',   # after perfCull and the street kit (STREETS block above)

@@ -27,7 +27,7 @@ function kitOf(page) {
 function lift(kit) {
   const THREE = { ACESFilmicToneMapping: 4, SRGBColorSpace: 'srgb' };
   const window = {};
-  const api = new Function('THREE', 'window', kit + '\nreturn { LOOK, lookRenderer, lookSunRule, lookSun, lookMat, lookMats, lookStat };')(THREE, window);
+  const api = new Function('THREE', 'window', kit + '\nreturn { LOOK, lookRenderer, lookView, lookSunRule, lookSun, lookMat, lookMats, lookStat };')(THREE, window);
   api.window = window;
   return api;
 }
@@ -118,6 +118,24 @@ for (const W of [{ id: 'parishes', file: 'trade_craft_parishes.html', flat: true
     && JSON.stringify(K.LOOK.map) === '{"matWater":"water"}');
   check(`${W.id}: land, buildings and trees stay diffuse (no other material changed shading model)`,
     (body.match(/new THREE\.MeshStandardMaterial\(/g) || []).length === W.std, String((body.match(/new THREE\.MeshStandardMaterial\(/g) || []).length));
+}
+
+// wave 20: PER-VIEW EXPOSURE - the network view is metered up, the campus and hall frames keep the page's number
+{
+  const page = read('trade_craft_3d.html'), K = lift(kitOf(page)), py = read('lookkit.py');
+  const ve = K.LOOK.view_exposure, pyVal = Number((/VIEW_EXPOSURE = \{'region': ([0-9.]+)\}/.exec(py) || [])[1]);
+  check('campus3d: the page names exactly one view with its own exposure, region, equal to the Python kit, above the page exposure and within (0, 4]',
+    Object.keys(ve).join() === 'region' && ve.region === pyVal && ve.region > K.LOOK.exposure && ve.region <= 4, JSON.stringify(ve));
+  const r = {}; K.lookRenderer(r);
+  const at = (v) => { K.lookView(v); return r.toneMappingExposure; };
+  check('campus3d: lookView sets the region exposure for the network view and the page exposure (1.12) for campus, hall, avatar, sim, restoration and an unknown view',
+    at('region') === ve.region && ['campus', 'hall', 'avatar', 'sim', 'restoration', 'nonsense', 'toString'].every((v) => at('region') === ve.region && at(v) === 1.12));
+  const wk = lift(kitOf(read('trade_craft_parishes.html')));
+  check('parishes, Bay and wilds: no view has its own exposure (the worlds keep 0.95 everywhere)',
+    ['trade_craft_parishes.html', 'trade_craft_bay.html', 'trade_craft_wilds.html'].every((f) => Object.keys(lift(kitOf(read(f))).LOOK.view_exposure).length === 0) && wk.LOOK.exposure === 0.95);
+  check('campus3d: the exposure of the view drawn is set at the top of xrRender, the one draw, once',
+    /function xrRender\(\) \{\n  lookView\(view\);   \/\/ LOOK-KIT/.test(page) && page.split('lookView(view);').length === 2);
+  check('campus3d: the per-view exposure moves a uniform only (no new draw call or object in the kit, no scene.add)', !/new THREE\.|scene\.add|Geometry|InstancedMesh/.test(kitOf(page)));
 }
 
 console.log(fails ? `web/test_lookkit: ${fails} of ${n} checks FAILED` : `web/test_lookkit: ${n} checks passed - one physically based look, drawn with nothing new`);

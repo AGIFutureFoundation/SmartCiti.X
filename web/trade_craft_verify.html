@@ -172,7 +172,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-26",
- "source_stamp": "d3cae35643b4f2cb",
+ "source_stamp": "d283528d808b1140",
  "provenance": "DERIVED",
  "provenance_note": "every fact here is read from the registry that owns it and re-derivable by build.py; the fixture record is SCRIPTED and labelled as not a learner",
  "honesty": {
@@ -431,15 +431,17 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "class": "episode-backed",
    "records": "crew",
    "evidence_required_when_done": true,
-   "evidenceable": false,
-   "evidenceable_why": "a crew step cannot be evidenced by this bundle: the crew episode records no muster and no seat",
+   "evidenceable": true,
+   "evidenceable_why": "every reference field the step carries is recorded by the episode",
    "evidence_shape": {
     "episode": "crew",
     "t": "ISO-8601 string (the page writes new Date().toISOString()); Date.parse must be finite",
     "answer_kind": "the step's own answer_kind, verbatim",
     "crew": "the step's own crew, verbatim",
     "hall": "the step's own hall, verbatim",
+    "muster": "the step's own muster, verbatim",
     "role": "the step's own role, verbatim",
+    "seat": "the step's own seat, verbatim",
     "topic": "the step's own topic, verbatim"
    },
    "episode_fields": [
@@ -450,19 +452,20 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     "crew",
     "role",
     "topic",
-    "answer_kind"
+    "answer_kind",
+    "seat",
+    "muster"
    ],
    "checkable": [
     "answer_kind",
     "crew",
     "hall",
+    "muster",
     "role",
+    "seat",
     "topic"
    ],
-   "not_checkable": [
-    "muster",
-    "seat"
-   ],
+   "not_checkable": [],
    "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
    "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value"
   }
@@ -489,9 +492,9 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   "sims": 11,
   "sims_with_threshold": 0,
   "ladder_edges": 40,
-  "lessons_completable": 116,
-  "lessons_not_completable": 23,
-  "fixture_mutants": 16
+  "lessons_completable": 139,
+  "lessons_not_completable": 0,
+  "fixture_mutants": 19
  },
  "lessons": {
   "riggers-first-card": {
@@ -508,8 +511,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   },
   "riggers-carry-under-control": {
    "hall": "riggers",
-   "completable": false,
-   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 5,
    "recording_steps": 4,
    "silent_steps": 1,
@@ -536,8 +539,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   },
   "ironworkers-plan-out-loud": {
    "hall": "ironworkers",
-   "completable": false,
-   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 4,
    "recording_steps": 3,
    "silent_steps": 1,
@@ -564,8 +567,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   },
   "welders-the-watch": {
    "hall": "welders",
-   "completable": false,
-   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 5,
    "recording_steps": 3,
    "silent_steps": 2,
@@ -576,8 +579,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   },
   "boilermakers-get-them-out": {
    "hall": "boilermakers",
-   "completable": false,
-   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 5,
    "recording_steps": 3,
    "silent_steps": 2,
@@ -590,8 +593,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   },
   "operating-eng-locate-first": {
    "hall": "operating-eng",
-   "completable": false,
-   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 5,
    "recording_steps": 4,
    "silent_steps": 1,
@@ -628,8 +631,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   },
   "scaffold-build-in-order": {
    "hall": "scaffold",
-   "completable": false,
-   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 5,
    "recording_steps": 3,
    "silent_steps": 2,
@@ -814,8 +817,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   },
   "electricians-clip-in-first": {
    "hall": "electricians",
-   "completable": false,
-   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 4,
    "recording_steps": 3,
    "silent_steps": 1,
@@ -826,8 +829,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   },
   "glaziers-watch-the-line": {
    "hall": "glaziers",
-   "completable": false,
-   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 4,
    "recording_steps": 2,
    "silent_steps": 2,
@@ -912,8 +915,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   },
   "steel-erectors-land-it-on-the-bolts": {
    "hall": "steel-erectors",
-   "completable": false,
-   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 5,
    "recording_steps": 4,
    "silent_steps": 1,
@@ -927,8 +930,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   },
   "port-crane-read-the-rope": {
    "hall": "port-crane",
-   "completable": false,
-   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 5,
    "recording_steps": 4,
    "silent_steps": 1,
@@ -955,8 +958,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   },
   "tank-erectors-isolate-before-testing": {
    "hall": "tank-erectors",
-   "completable": false,
-   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 6,
    "recording_steps": 4,
    "silent_steps": 2,
@@ -969,8 +972,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   },
   "piling-stand-the-rig-on-something": {
    "hall": "piling",
-   "completable": false,
-   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 5,
    "recording_steps": 3,
    "silent_steps": 2,
@@ -983,8 +986,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   },
   "shoring-read-the-ground-again": {
    "hall": "shoring",
-   "completable": false,
-   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 5,
    "recording_steps": 4,
    "silent_steps": 1,
@@ -997,8 +1000,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   },
   "laborers-stand-where-the-cab-can-see": {
    "hall": "laborers",
-   "completable": false,
-   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 5,
    "recording_steps": 3,
    "silent_steps": 2,
@@ -1051,8 +1054,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   },
   "shipfitters-say-what-you-cannot-see": {
    "hall": "shipfitters",
-   "completable": false,
-   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 5,
    "recording_steps": 3,
    "silent_steps": 2,
@@ -1079,8 +1082,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   },
   "pipeline-close-the-permit-properly": {
    "hall": "pipeline",
-   "completable": false,
-   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 5,
    "recording_steps": 3,
    "silent_steps": 2,
@@ -1093,8 +1096,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   },
   "marine-pipe-know-when-to-come-out": {
    "hall": "marine-pipe",
-   "completable": false,
-   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 5,
    "recording_steps": 3,
    "silent_steps": 2,
@@ -1107,8 +1110,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   },
   "roofers-mind-the-edge-and-the-skylight": {
    "hall": "roofers",
-   "completable": false,
-   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 6,
    "recording_steps": 4,
    "silent_steps": 2,
@@ -1121,8 +1124,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   },
   "insulators-stay-inside-the-rails": {
    "hall": "insulators",
-   "completable": false,
-   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 6,
    "recording_steps": 3,
    "silent_steps": 3,
@@ -1135,8 +1138,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   },
   "plasterers-pin-every-brace": {
    "hall": "plasterers",
-   "completable": false,
-   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 5,
    "recording_steps": 4,
    "silent_steps": 1,
@@ -1149,8 +1152,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   },
   "firestop-write-down-what-you-sealed": {
    "hall": "firestop",
-   "completable": false,
-   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 4,
    "recording_steps": 3,
    "silent_steps": 1,
@@ -1177,8 +1180,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   },
   "curtainwall-fuss-about-the-sills": {
    "hall": "curtainwall",
-   "completable": false,
-   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 5,
    "recording_steps": 4,
    "silent_steps": 1,
@@ -1191,8 +1194,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   },
   "window-glazing-let-the-ground-judge-it": {
    "hall": "window-glazing",
-   "completable": false,
-   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 4,
    "recording_steps": 3,
    "silent_steps": 1,
@@ -2817,7 +2820,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "fixture/mutant-episode-wrong-kind.json": "step.episode-evidence",
    "fixture/mutant-episode-wrong-point.json": "step.episode-evidence",
    "fixture/mutant-episode-t-unparseable.json": "step.episode-evidence",
-   "fixture/mutant-crew-done-unrecordable.json": "step.episode-evidence",
+   "fixture/mutant-crew-done-wrong-seat.json": "step.episode-evidence",
+   "fixture/mutant-crew-done-wrong-muster.json": "step.episode-evidence",
+   "fixture/mutant-crew-done-no-seat.json": "record.fields",
+   "fixture/mutant-crew-done-no-muster.json": "record.fields",
    "fixture/mutant-unknown-lesson.json": "ids.lesson",
    "fixture/mutant-unknown-station.json": "ids.station",
    "fixture/mutant-missing-field.json": "record.fields",
@@ -26724,7 +26730,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-26",
- "source_stamp": "6bdddfe5d0f1ed84",
+ "source_stamp": "a0f6a3710441ef77",
  "provenance": "DERIVED",
  "provenance_note": "every fact here is read from the registry that owns it and re-derivable by build.py; the episode shapes are training/registry/training.json#episode_kinds verbatim; the fixture package is SCRIPTED and labelled as not a learner",
  "honesty": {
@@ -27464,7 +27470,9 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     "crew",
     "role",
     "topic",
-    "answer_kind"
+    "answer_kind",
+    "seat",
+    "muster"
    ],
    "conditional_fields": {},
    "what": "one crew role asked one question while its seat was running"
@@ -27792,7 +27800,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-11",
- "source_stamp": "6ac8622613550c50",
+ "source_stamp": "e152407ead3af3f1",
  "honesty": {
   "schematic": "every episode comes from SCHEMATIC physics and deterministic rubrics, not a real robot or a real machine: useful for exercising a training pipeline's plumbing and export format, not for training a controller that will run on real equipment.",
   "anonymous": "no name, no email, no biometric or device-identifying data is ever recorded - an episode carries only a scenario id, the control scheme the registry already declares, and the measured outcome.",
@@ -27854,10 +27862,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     "crew",
     "role",
     "topic",
-    "answer_kind"
+    "answer_kind",
+    "seat",
+    "muster"
    ],
    "outcome_shape": null,
-   "granularity": "one exchange with one role of one crew: which crew was standing, which role was asked, which fixed topic, and whether the answer was read from a record or written in the crews registry",
+   "granularity": "one exchange with one role of one crew: which crew was standing, which role was asked, which fixed topic, which seat and muster strand that crew is bound to in the crews registry, and whether the answer was read from a record or written in the crews registry",
    "what": "one crew role asked one question while its seat was running"
   },
   "walkaround": {

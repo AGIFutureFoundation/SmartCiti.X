@@ -25,7 +25,9 @@
     "crew": "crane-lift-crew",
     "hall": "ironworkers",
     "kind": "crew",
+    "muster": "coordination",
     "role": "lift-director",
+    "seat": "crane-lift",
     "t": "2026-09-26T03:00:00.000Z",
     "topic": "plan"
    },
@@ -35,7 +37,9 @@
     "crew": "crane-lift-crew",
     "hall": "ironworkers",
     "kind": "crew",
+    "muster": "coordination",
     "role": "lift-director",
+    "seat": "crane-lift",
     "t": "2026-09-26T03:00:09.000Z",
     "topic": "change"
    }
@@ -58,7 +62,9 @@
     "crew",
     "role",
     "topic",
-    "answer_kind"
+    "answer_kind",
+    "seat",
+    "muster"
    ],
    "sim": [
     "t",

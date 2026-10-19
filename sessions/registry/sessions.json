@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-26",
- "source_stamp": "ce6d57d59d759bcd",
+ "source_stamp": "1a68c594858f9047",
  "provenance": "DERIVED",
  "provenance_note": "every fact here is read from the registry that owns it and re-derivable by build.py: the episode shapes from training/registry/training.json, the recording step kinds from lessons/registry/lessons.json, the fixture ids from sims/registry/sims.json. The gap is the ONE declared number. The fixture is SCRIPTED and labelled as not a learner",
  "honesty": {
@@ -70,7 +70,9 @@
     "crew",
     "role",
     "topic",
-    "answer_kind"
+    "answer_kind",
+    "seat",
+    "muster"
    ],
    "what": "one crew role asked one question while its seat was running"
   },

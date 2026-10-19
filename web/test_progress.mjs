@@ -835,7 +835,13 @@ if (!WANT_BROWSER) {
       { t: '2026-09-26T03:05:00.000Z', kind: 'advisor', campus: 'x', hall: 'some-other-hall', advisor: firstAdv.advisor, topic: firstAdv.topic, answer_kind: firstAdv.answer_kind },
       { t: '2026-09-26T03:01:00.000Z', kind: 'walkaround', campus: 'x', hall: firstWalk.hall, sim: firstWalk.sim, point: firstWalk.point },
       { t: '2026-09-26T03:04:00.000Z', kind: 'advisor', campus: 'x', hall: firstAdv.hall, advisor: firstAdv.advisor, topic: firstAdv.topic, answer_kind: firstAdv.answer_kind },
+      /* crew decoys: the shape the recorder wrote before it recorded seat and muster, then a wrong seat, a
+         wrong muster, and a wrong hall - none may mark the step - and finally the episode as recorded now */
       { t: '2026-09-26T03:06:00.000Z', kind: 'crew', campus: 'x', hall: firstCrew.hall, crew: firstCrew.crew, role: firstCrew.role, topic: firstCrew.topic, answer_kind: firstCrew.answer_kind },
+      { t: '2026-09-26T03:07:00.000Z', kind: 'crew', campus: 'x', hall: firstCrew.hall, crew: firstCrew.crew, role: firstCrew.role, topic: firstCrew.topic, answer_kind: firstCrew.answer_kind, seat: 'not-' + firstCrew.seat, muster: firstCrew.muster },
+      { t: '2026-09-26T03:08:00.000Z', kind: 'crew', campus: 'x', hall: firstCrew.hall, crew: firstCrew.crew, role: firstCrew.role, topic: firstCrew.topic, answer_kind: firstCrew.answer_kind, seat: firstCrew.seat, muster: 'not-' + firstCrew.muster },
+      { t: '2026-09-26T03:08:30.000Z', kind: 'crew', campus: 'x', hall: 'some-other-hall', crew: firstCrew.crew, role: firstCrew.role, topic: firstCrew.topic, answer_kind: firstCrew.answer_kind, seat: firstCrew.seat, muster: firstCrew.muster },
+      { t: '2026-09-26T03:09:00.000Z', kind: 'crew', campus: 'x', hall: firstCrew.hall, crew: firstCrew.crew, role: firstCrew.role, topic: firstCrew.topic, answer_kind: firstCrew.answer_kind, seat: firstCrew.seat, muster: firstCrew.muster },
     ];
     const rec = await C.buildCompletionRecord(prog, L, lessonsReg.ladder, meta, NOW, training);
     const wa = rec.lessons.flatMap((l) => l.steps.map((s) => ({ ...s, hall: l.hall }))).filter((s) => s.kind === 'walkaround');
@@ -868,14 +874,22 @@ if (!WANT_BROWSER) {
       noTrain.lessons.flatMap((l) => l.steps).filter((s) => ['walkaround', 'advisor', 'crew'].includes(s.kind)).every((s) => !s.done && s.evidence === null)
       && noTrain.honesty.does_not_prove.some((x) => x.includes('absent')),
       noTrain.honesty.does_not_prove);
-    const crewSteps = rec.lessons.flatMap((l) => l.steps).filter((s) => s.kind === 'crew');
+    const crewSteps = rec.lessons.flatMap((l) => l.steps.map((x) => ({ ...x, hall: l.hall }))).filter((x) => x.kind === 'crew');
+    const crewDone = crewSteps.filter((x) => x.done);
     const crewMissing = ['seat', 'muster'].filter((f) => !trainingReg.episode_kinds.crew.fields.includes(f));
-    ok('[shipped] a crew step carries seat and muster, which the crew episode does not record, so no crew '
-      + 'step is done even with a crew episode matching every field the episode does record, and honesty '
-      + 'names the kind and the missing fields',
-      crewMissing.length === 2 && crewSteps.every((s) => !s.done && s.evidence === null)
-      && rec.honesty.does_not_prove.some((x) => x.includes('crew step can never be done') && crewMissing.every((f) => x.includes(f))),
-      rec.honesty.does_not_prove);
+    ok('[shipped] a crew step is done only from a crew episode in its hall that equals every reference the step carries, '
+      + 'seat and muster included: the episode the recorder writes now marks its step; the same exchange without seat or '
+      + 'muster (the shape the recorder wrote before), with a wrong seat, with a wrong muster, or in another hall does not; '
+      + 'the crew episode records both fields, and honesty no longer says a crew step can never be done',
+      crewMissing.length === 0 && crewSteps.length >= 1 && crewDone.length >= 1
+      && crewDone.every((x) => x.hall === firstCrew.hall && x.evidence.episode === 'crew' && x.evidence.t === '2026-09-26T03:09:00.000Z'
+        && x.evidence.seat === firstCrew.seat && x.evidence.muster === firstCrew.muster && x.evidence.crew === firstCrew.crew
+        && x.evidence.role === firstCrew.role && x.evidence.topic === firstCrew.topic)
+      && !rec.honesty.does_not_prove.some((x) => x.includes('crew step can never be done')),
+      [JSON.stringify(crewDone.slice(0, 2)), rec.honesty.does_not_prove]);
+    const crewOldOnly = await C.buildCompletionRecord(prog, L, lessonsReg.ladder, meta, NOW, training.filter((e) => e.kind !== 'crew' || e.t === '2026-09-26T03:06:00.000Z'));
+    ok('[shipped] with only the crew episode of the old shape (no seat, no muster) no crew step is done: the missing fields are never defaulted',
+      crewOldOnly.lessons.flatMap((l) => l.steps).filter((x) => x.kind === 'crew').every((x) => !x.done && x.evidence === null));
     const TOP = ['record', 'product', 'pack_version', 'exported_at', 'identity', 'lessons', 'sims', 'tools', 'stations', 'honesty', 'digest'];
     ok('[shipped] the record has exactly the contracted top-level fields, record tc-completion/1, '
       + 'an unsigned device-only identity carrying the claimed label, and one entry per lesson with one per step',
@@ -894,7 +908,7 @@ if (!WANT_BROWSER) {
       + 'not done, and the passed seat, the done station and the passed crib are the only evidence',
       allSteps.every((s) => s.done === (s.evidence !== null))
       && allSteps.filter((s) => s.kind === 'sim' && s.evidence && s.evidence.sim === secondSim.sim).length === 0
-      && allSteps.filter((s) => ['walk', 'placard', 'crew'].includes(s.kind)).every((s) => !s.done && s.evidence === null)
+      && allSteps.filter((s) => ['walk', 'placard'].includes(s.kind)).every((s) => !s.done && s.evidence === null)
       && simDone.length > 0 && simDone.every((s) => s.evidence.sim === firstSim.sim && s.evidence.passed === true && s.evidence.score === null)
       && allSteps.filter((s) => s.kind === 'station' && s.done).every((s) => s.evidence.station === firstStation.station)
       && allSteps.filter((s) => s.kind === 'crib' && s.done).every((s) => s.evidence.crib === firstCrib.crib && s.evidence.passed === true),
@@ -939,7 +953,7 @@ if (!WANT_BROWSER) {
       && S.self_reported_steps_done === 0 && S.self_reported_steps === 1
       && S.episode_kinds.join() === recKinds.join()
       && S.device_mark_kinds.join() === 'station,crib' && S.self_reported_kinds.join() === 'walk,placard'
-      && S.episode_kinds_unmarked_here.join() === 'crew'
+      && S.episode_kinds_unmarked_here.join() === ''
       && R.lessons === Object.keys(L).length && R.steps_done === allSteps.filter((s) => s.done).length
       && R.episode_steps_done === allSteps.filter((s) => recKinds.includes(s.kind) && s.done).length && R.episode_steps_done > allSteps.filter((s) => s.kind === 'sim' && s.done).length
       && R.episode_steps === allSteps.filter((s) => recKinds.includes(s.kind)).length

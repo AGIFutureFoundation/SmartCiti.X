@@ -22,7 +22,7 @@
    "tc-contribution/2"
   ],
   "intake_tag": "tc-contribution/2",
-  "contrib_source_stamp": "6bdddfe5d0f1ed84",
+  "contrib_source_stamp": "a0f6a3710441ef77",
   "robotics_schema": "tc-robotics/1",
   "robotics_contract_version": 1
  },
@@ -56,7 +56,9 @@
    "crew",
    "role",
    "topic",
-   "answer_kind"
+   "answer_kind",
+   "seat",
+   "muster"
   ],
   "walkaround": [
    "t",

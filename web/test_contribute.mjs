@@ -153,7 +153,7 @@ if (C !== null) {
       outcome: { passed: true, rows: sim.rubric.map((a) => ({ axis: a.axis, value: 1, ok: true })), trace: [0, 1, 2].map((i) => ({ t: i * 1000, gauges: { load_pct: 10 + i, mode: 'test' } })) } }),
     shape('sim', { t: '2026-09-26T10:02:00.000Z', kind: 'sim', campus: scenario.campus, hall, sim: simId, scenario: null, controls, actor: 'human', outcome: { passed: false, rows: [] } }),
     shape('advisor', { t: '2026-09-26T10:03:00.000Z', kind: 'advisor', campus: scenario.campus, hall, advisor: 'test-advisor', topic: 'test-topic', answer_kind: 'record' }),
-    shape('crew', { t: '2026-09-26T10:04:00.000Z', kind: 'crew', campus: scenario.campus, hall, crew: 'test-crew', role: 'test-role', topic: 'test-topic', answer_kind: 'registry' }),
+    shape('crew', { t: '2026-09-26T10:04:00.000Z', kind: 'crew', campus: scenario.campus, hall, crew: 'test-crew', role: 'test-role', topic: 'test-topic', answer_kind: 'registry', seat: 'test-seat', muster: 'test-muster' }),
   ];
   const identity = { v: 1, method: 'local-label', label: 'test label', set_at: '2026-09-26T09:00:00.000Z', authenticates: false };
   const pkg = await C.buildContribution(training, identity, consent, meta, NOW);

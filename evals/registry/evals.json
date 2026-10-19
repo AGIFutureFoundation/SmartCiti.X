@@ -44,6 +44,11 @@
     "sha256": "987a9d4812b4c73baaaaa2ede0eaf57834ad8186489892ad88df33b4979f0eaa",
     "source_stamp": "8695efefa336b10d"
    },
+   "training": {
+    "path": "training/registry/training.json",
+    "sha256": "7116d0847c1143b6796a8994a086b6fc650578f1c4e56dd735c0533a730c9d20",
+    "source_stamp": "e152407ead3af3f1"
+   },
    "unions": {
     "path": "unions/registry/unions.json",
     "sha256": "619bc8ea7328f5ea46e52b988a5f8407df01c2cd854e247060f9abd4c836cbf4",
@@ -58,12 +63,103 @@
    "lessons_on_a_cycle": 0,
    "prerequisites_not_verifiable": []
   },
+  "matchability": {
+   "advisor": {
+    "episode": "advisor",
+    "episode_fields": [
+     "t",
+     "kind",
+     "campus",
+     "hall",
+     "advisor",
+     "topic",
+     "answer_kind"
+    ],
+    "matchable": true,
+    "step_references": [
+     "advisor",
+     "answer_kind",
+     "hall",
+     "topic"
+    ],
+    "unrecorded_references": []
+   },
+   "crew": {
+    "episode": "crew",
+    "episode_fields": [
+     "t",
+     "kind",
+     "campus",
+     "hall",
+     "crew",
+     "role",
+     "topic",
+     "answer_kind",
+     "seat",
+     "muster"
+    ],
+    "matchable": true,
+    "step_references": [
+     "answer_kind",
+     "crew",
+     "hall",
+     "muster",
+     "role",
+     "seat",
+     "topic"
+    ],
+    "unrecorded_references": []
+   },
+   "sim": {
+    "episode": "sim",
+    "episode_fields": [
+     "t",
+     "kind",
+     "campus",
+     "hall",
+     "sim",
+     "scenario",
+     "controls",
+     "actor",
+     "operator",
+     "outcome"
+    ],
+    "matchable": true,
+    "step_references": [
+     "campus",
+     "hall",
+     "scenario",
+     "sim"
+    ],
+    "unrecorded_references": []
+   },
+   "walkaround": {
+    "episode": "walkaround",
+    "episode_fields": [
+     "t",
+     "kind",
+     "campus",
+     "hall",
+     "sim",
+     "point"
+    ],
+    "matchable": true,
+    "step_references": [
+     "hall",
+     "point",
+     "sim"
+    ],
+    "unrecorded_references": []
+   }
+  },
+  "matchability_means": "a recording step can be marked done from an episode only when the episode records every reference the step carries and the hall; a kind whose episode lacks one is unmatchable and every lesson holding a step of it is not completable, however many steps are counted evidence-backed. Read from lessons.json step fields and training.json#episode_kinds[k].fields.",
   "means": "a lesson is verifiable when at least one of its steps records an episode; fully verifiable when every step does. A self-reported step is one the learner marks done and nothing else records.",
   "per_lesson": {
    "acoustic-documentation-first-walk": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -75,12 +171,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 3
+    "steps": 3,
+    "unmatchable_step_kinds": []
    },
    "airfield-tools-first-walk": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 1,
     "evidence_kinds": [
      "advisor"
@@ -94,12 +192,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "asbestos-coordination-first-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -111,12 +211,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 3
+    "steps": 3,
+    "unmatchable_step_kinds": []
    },
    "automation-int-documentation-first-walk": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -128,12 +230,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 3
+    "steps": 3,
+    "unmatchable_step_kinds": []
    },
    "aviation-ground-safety-first-walk": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -146,12 +250,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "bas-controls-inspection-first-walk": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -164,12 +270,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "battery-storage-documentation-first-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -181,12 +289,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 3
+    "steps": 3,
+    "unmatchable_step_kinds": []
    },
    "blasters-inspection-first-walk": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -199,12 +309,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "boilermakers-get-them-out": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 3,
     "evidence_kinds": [
      "advisor",
@@ -219,12 +331,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 5
+    "steps": 5,
+    "unmatchable_step_kinds": []
    },
    "bricklayers-gear-that-stays-on": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 1,
     "evidence_kinds": [
      "advisor"
@@ -238,12 +352,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "bricklayers-grout-the-lift": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 1,
     "evidence_kinds": [
      "advisor"
@@ -257,12 +373,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "bridge-inspect-inspection-first-walk": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -275,12 +393,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "c-mesa-solar-site-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -293,12 +413,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "c-pipeline-crossing-site-walk": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -311,12 +433,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "c-quarry-bench-site-walk": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -329,12 +453,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "c-river-intake-site-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -347,12 +473,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "c-valve-vault-site-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -365,12 +493,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "cable-splicers-inspection-first-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -383,12 +513,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "carpenters-return-it-the-same": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 1,
     "evidence_kinds": [
      "advisor"
@@ -402,12 +534,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "catenary-coordination-first-walk": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -419,12 +553,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 3
+    "steps": 3,
+    "unmatchable_step_kinds": []
    },
    "cement-masons-mind-the-weather": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 1,
     "evidence_kinds": [
      "advisor"
@@ -439,12 +575,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 6
+    "steps": 6,
+    "unmatchable_step_kinds": []
    },
    "cladding-check-the-plank-you-stand-on": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 3,
     "evidence_kinds": [
      "advisor",
@@ -460,12 +598,14 @@
     "sims_run": [
      "scaffold-bay"
     ],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "cleanroom-safety-first-walk": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -478,12 +618,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "concrete-pump-safety-first-walk": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -496,12 +638,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "confined-space-layout-first-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -514,12 +658,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "crane-ops-read-the-chart": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 3,
     "evidence_kinds": [
      "advisor",
@@ -535,12 +681,14 @@
     "sims_run": [
      "load-chart"
     ],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "curtainwall-fuss-about-the-sills": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 4,
     "evidence_kinds": [
      "advisor",
@@ -557,12 +705,14 @@
     "sims_run": [
      "scaffold-bay"
     ],
-    "steps": 5
+    "steps": 5,
+    "unmatchable_step_kinds": []
    },
    "d-levee-pump-site-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -575,12 +725,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "d-outfall-dive-site-walk": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -593,12 +745,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "d-pile-trestle-site-walk": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -611,12 +765,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "d-spill-boom-site-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -629,12 +785,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "d-terminal-berth-site-walk": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -647,12 +805,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "d-wind-staging-site-walk": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -665,12 +825,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "data-center-tools-first-walk": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 1,
     "evidence_kinds": [
      "advisor"
@@ -684,12 +846,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "decking-walk-the-path-first": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 3,
     "evidence_kinds": [
      "advisor",
@@ -706,12 +870,14 @@
     "sims_run": [
      "rigging-signals"
     ],
-    "steps": 5
+    "steps": 5,
+    "unmatchable_step_kinds": []
    },
    "demolition-stand-back": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor",
@@ -725,12 +891,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "district-energy-inspection-first-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -743,12 +911,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "divers-layout-first-walk": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -761,12 +931,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "drywall-layout-first-walk": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -779,12 +951,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "electricians-clip-in-first": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 3,
     "evidence_kinds": [
      "crew",
@@ -800,12 +974,14 @@
     "sims_run": [
      "boom-lift"
     ],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "elevator-tools-first-walk": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 1,
     "evidence_kinds": [
      "advisor"
@@ -819,12 +995,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "ev-charging-safety-first-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -837,12 +1015,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "f-fire-lookout-site-walk": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -855,12 +1035,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "f-fuel-break-site-walk": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -873,12 +1055,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "f-line-clearance-site-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -891,12 +1075,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "f-timber-frame-site-walk": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -909,12 +1095,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "f-trail-bridge-site-walk": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -927,12 +1115,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "f-water-intake-site-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -945,12 +1135,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "fabricators-lay-it-out-then-prove-it": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 4,
     "evidence_kinds": [
      "advisor",
@@ -966,12 +1158,14 @@
     "sims_run": [
      "weld-bead"
     ],
-    "steps": 5
+    "steps": 5,
+    "unmatchable_step_kinds": []
    },
    "fiber-splicers-keep-the-trace": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -983,12 +1177,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 3
+    "steps": 3,
+    "unmatchable_step_kinds": []
    },
    "fire-alarm-coordination-first-walk": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -1000,12 +1196,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 3
+    "steps": 3,
+    "unmatchable_step_kinds": []
    },
    "fire-sprinkler-tools-first-walk": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 1,
     "evidence_kinds": [
      "advisor"
@@ -1019,12 +1217,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "firestop-write-down-what-you-sealed": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 3,
     "evidence_kinds": [
      "advisor",
@@ -1038,12 +1238,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "fleet-diesel-layout-first-walk": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -1056,12 +1258,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "flooring-inspection-first-walk": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -1074,12 +1278,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "foundry-clear-the-runway-first": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 3,
     "evidence_kinds": [
      "advisor",
@@ -1097,12 +1303,14 @@
     "sims_run": [
      "overhead-crane"
     ],
-    "steps": 6
+    "steps": 6,
+    "unmatchable_step_kinds": []
    },
    "gas-distrib-documentation-first-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -1114,12 +1322,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 3
+    "steps": 3,
+    "unmatchable_step_kinds": []
    },
    "geothermal-coordination-first-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -1131,12 +1341,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 3
+    "steps": 3,
+    "unmatchable_step_kinds": []
    },
    "glaziers-watch-the-line": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "crew",
@@ -1150,12 +1362,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "grounds-coordination-first-walk": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -1167,12 +1381,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 3
+    "steps": 3,
+    "unmatchable_step_kinds": []
    },
    "hazmat-wash-and-decon": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 3,
     "evidence_kinds": [
      "advisor",
@@ -1189,12 +1405,14 @@
     "sims_run": [
      "pressure-washer"
     ],
-    "steps": 5
+    "steps": 5,
+    "unmatchable_step_kinds": []
    },
    "heavy-equip-listen-to-the-dash": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 3,
     "evidence_kinds": [
      "advisor",
@@ -1210,12 +1428,14 @@
     "sims_run": [
      "forklift-run"
     ],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "high-angle-inspection-first-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -1228,12 +1448,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "hvacr-prove-the-sequence": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 1,
     "evidence_kinds": [
      "advisor"
@@ -1247,12 +1469,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "hydro-inspection-first-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -1265,12 +1489,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "hydrogen-tools-first-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 1,
     "evidence_kinds": [
      "advisor"
@@ -1284,12 +1510,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "industrial-clean-coordination-first-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -1301,12 +1529,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 3
+    "steps": 3,
+    "unmatchable_step_kinds": []
    },
    "instrumentation-layout-first-walk": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -1319,12 +1549,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "insulators-stay-inside-the-rails": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 3,
     "evidence_kinds": [
      "crew",
@@ -1342,12 +1574,14 @@
     "sims_run": [
      "boom-lift"
     ],
-    "steps": 6
+    "steps": 6,
+    "unmatchable_step_kinds": []
    },
    "ironworkers-plan-out-loud": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 3,
     "evidence_kinds": [
      "advisor",
@@ -1361,12 +1595,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "laborers-stand-where-the-cab-can-see": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 3,
     "evidence_kinds": [
      "advisor",
@@ -1381,12 +1617,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 5
+    "steps": 5,
+    "unmatchable_step_kinds": []
    },
    "lathers-frame-for-the-next-trade": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 1,
     "evidence_kinds": [
      "advisor"
@@ -1400,12 +1638,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "lead-abatement-documentation-first-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -1417,12 +1657,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 3
+    "steps": 3,
+    "unmatchable_step_kinds": []
    },
    "line-workers-find-the-fault": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 1,
     "evidence_kinds": [
      "advisor"
@@ -1436,12 +1678,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 5
+    "steps": 5,
+    "unmatchable_step_kinds": []
    },
    "m-adit-portal-site-walk": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -1454,12 +1698,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "m-hv-corridor-site-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -1472,12 +1718,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "m-rockfall-netting-site-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -1490,12 +1738,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "m-snow-road-site-walk": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -1508,12 +1758,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "m-survey-control-site-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -1526,12 +1778,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "m-wind-ridge-site-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -1544,12 +1798,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "machinists-move-the-job-without-marking-it": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 3,
     "evidence_kinds": [
      "advisor",
@@ -1565,12 +1821,14 @@
     "sims_run": [
      "overhead-crane"
     ],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "marine-pipe-know-when-to-come-out": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 3,
     "evidence_kinds": [
      "crew",
@@ -1587,12 +1845,14 @@
     "sims_run": [
      "weld-bead"
     ],
-    "steps": 5
+    "steps": 5,
+    "unmatchable_step_kinds": []
    },
    "marine-terminal-brief-the-lane": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 3,
     "evidence_kinds": [
      "advisor",
@@ -1608,12 +1868,14 @@
     "sims_run": [
      "forklift-run"
     ],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "medical-gas-tools-first-walk": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 1,
     "evidence_kinds": [
      "advisor"
@@ -1627,12 +1889,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "meter-techs-coordination-first-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -1644,12 +1908,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 3
+    "steps": 3,
+    "unmatchable_step_kinds": []
    },
    "millwrights-shop-move": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 3,
     "evidence_kinds": [
      "advisor",
@@ -1666,12 +1932,14 @@
     "sims_run": [
      "overhead-crane"
     ],
-    "steps": 5
+    "steps": 5,
+    "unmatchable_step_kinds": []
    },
    "miners-coordination-first-walk": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -1683,12 +1951,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 3
+    "steps": 3,
+    "unmatchable_step_kinds": []
    },
    "mold-remediation-safety-first-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -1701,12 +1971,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "network-cabling-safety-first-walk": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -1719,12 +1991,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "nuclear-layout-first-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -1737,12 +2011,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "operating-eng-locate-first": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 4,
     "evidence_kinds": [
      "advisor",
@@ -1759,12 +2035,14 @@
     "sims_run": [
      "excavator-trench"
     ],
-    "steps": 5
+    "steps": 5,
+    "unmatchable_step_kinds": []
    },
    "painters-contain-it": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 3,
     "evidence_kinds": [
      "advisor",
@@ -1781,12 +2059,14 @@
     "sims_run": [
      "pressure-washer"
     ],
-    "steps": 5
+    "steps": 5,
+    "unmatchable_step_kinds": []
    },
    "painters-lay-the-coat": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "sim",
@@ -1802,12 +2082,14 @@
     "sims_run": [
      "airless-sprayer"
     ],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "piling-stand-the-rig-on-something": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 3,
     "evidence_kinds": [
      "crew",
@@ -1824,12 +2106,14 @@
     "sims_run": [
      "crane-lift"
     ],
-    "steps": 5
+    "steps": 5,
+    "unmatchable_step_kinds": []
    },
    "pipefitters-safety-first-walk": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -1842,12 +2126,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "pipeline-close-the-permit-properly": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 3,
     "evidence_kinds": [
      "crew",
@@ -1864,12 +2150,14 @@
     "sims_run": [
      "weld-bead"
     ],
-    "steps": 5
+    "steps": 5,
+    "unmatchable_step_kinds": []
    },
    "plasterers-pin-every-brace": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 4,
     "evidence_kinds": [
      "advisor",
@@ -1886,12 +2174,14 @@
     "sims_run": [
      "scaffold-bay"
     ],
-    "steps": 5
+    "steps": 5,
+    "unmatchable_step_kinds": []
    },
    "platers-tools-first-walk": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 1,
     "evidence_kinds": [
      "advisor"
@@ -1905,12 +2195,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "plc-techs-inspection-first-walk": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -1923,12 +2215,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "port-crane-read-the-rope": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 4,
     "evidence_kinds": [
      "crew",
@@ -1944,12 +2238,14 @@
     "sims_run": [
      "crane-lift"
     ],
-    "steps": 5
+    "steps": 5,
+    "unmatchable_step_kinds": []
    },
    "post-tension-tools-first-walk": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 1,
     "evidence_kinds": [
      "advisor"
@@ -1963,12 +2259,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "precast-layout-first-walk": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -1981,12 +2279,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "rail-signals-inspection-first-walk": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -1999,12 +2299,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "rail-track-layout-first-walk": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -2017,12 +2319,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "refractory-dry-it-slowly": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 1,
     "evidence_kinds": [
      "advisor"
@@ -2037,12 +2341,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 5
+    "steps": 5,
+    "unmatchable_step_kinds": []
    },
    "restore-point-the-joint": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 1,
     "evidence_kinds": [
      "advisor"
@@ -2056,12 +2362,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "restore-write-it-down": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 1,
     "evidence_kinds": [
      "advisor"
@@ -2074,12 +2382,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 3
+    "steps": 3,
+    "unmatchable_step_kinds": []
    },
    "riggers-carry-under-control": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 4,
     "evidence_kinds": [
      "advisor",
@@ -2096,12 +2406,14 @@
     "sims_run": [
      "crane-lift"
     ],
-    "steps": 5
+    "steps": 5,
+    "unmatchable_step_kinds": []
    },
    "riggers-first-card": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 3,
     "evidence_kinds": [
      "advisor",
@@ -2117,12 +2429,14 @@
     "sims_run": [
      "rigging-signals"
     ],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "robotics-coordination-first-walk": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -2134,12 +2448,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 3
+    "steps": 3,
+    "unmatchable_step_kinds": []
    },
    "roofers-mind-the-edge-and-the-skylight": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 4,
     "evidence_kinds": [
      "advisor",
@@ -2157,12 +2473,14 @@
     "sims_run": [
      "scaffold-bay"
     ],
-    "steps": 6
+    "steps": 6,
+    "unmatchable_step_kinds": []
    },
    "scaffold-build-in-order": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 3,
     "evidence_kinds": [
      "crew",
@@ -2179,12 +2497,14 @@
     "sims_run": [
      "scaffold-bay"
     ],
-    "steps": 5
+    "steps": 5,
+    "unmatchable_step_kinds": []
    },
    "scaffold-read-the-tag": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor",
@@ -2199,12 +2519,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 5
+    "steps": 5,
+    "unmatchable_step_kinds": []
    },
    "security-sys-documentation-first-walk": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -2216,12 +2538,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 3
+    "steps": 3,
+    "unmatchable_step_kinds": []
    },
    "sheetmetal-name-the-kit-before-you-climb": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 3,
     "evidence_kinds": [
      "advisor",
@@ -2235,12 +2559,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 5
+    "steps": 5,
+    "unmatchable_step_kinds": []
    },
    "shipfitters-say-what-you-cannot-see": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 3,
     "evidence_kinds": [
      "crew",
@@ -2257,12 +2583,14 @@
     "sims_run": [
      "weld-bead"
     ],
-    "steps": 5
+    "steps": 5,
+    "unmatchable_step_kinds": []
    },
    "shoring-read-the-ground-again": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 4,
     "evidence_kinds": [
      "advisor",
@@ -2279,12 +2607,14 @@
     "sims_run": [
      "excavator-trench"
     ],
-    "steps": 5
+    "steps": 5,
+    "unmatchable_step_kinds": []
    },
    "site-safety-make-it-normal": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 1,
     "evidence_kinds": [
      "advisor"
@@ -2297,12 +2627,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 3
+    "steps": 3,
+    "unmatchable_step_kinds": []
    },
    "smelter-documentation-first-walk": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -2314,12 +2646,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 3
+    "steps": 3,
+    "unmatchable_step_kinds": []
    },
    "solar-documentation-first-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -2331,12 +2665,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 3
+    "steps": 3,
+    "unmatchable_step_kinds": []
    },
    "spill-response-tools-first-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 1,
     "evidence_kinds": [
      "advisor"
@@ -2350,12 +2686,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "steel-erectors-land-it-on-the-bolts": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 4,
     "evidence_kinds": [
      "advisor",
@@ -2372,12 +2710,14 @@
     "sims_run": [
      "crane-lift"
     ],
-    "steps": 5
+    "steps": 5,
+    "unmatchable_step_kinds": []
    },
    "stone-carvers-hang-it-safely": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 1,
     "evidence_kinds": [
      "advisor"
@@ -2390,12 +2730,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 3
+    "steps": 3,
+    "unmatchable_step_kinds": []
    },
    "substation-layout-first-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -2408,12 +2750,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "survey-drone-documentation-first-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -2425,12 +2769,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 3
+    "steps": 3,
+    "unmatchable_step_kinds": []
    },
    "surveyors-trust-the-control": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -2444,12 +2790,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 5
+    "steps": 5,
+    "unmatchable_step_kinds": []
    },
    "tank-erectors-isolate-before-testing": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 4,
     "evidence_kinds": [
      "advisor",
@@ -2467,12 +2815,14 @@
     "sims_run": [
      "weld-bead"
     ],
-    "steps": 6
+    "steps": 6,
+    "unmatchable_step_kinds": []
    },
    "teamsters-check-the-truck-before-the-load": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 3,
     "evidence_kinds": [
      "advisor",
@@ -2489,12 +2839,14 @@
     "sims_run": [
      "forklift-run"
     ],
-    "steps": 5
+    "steps": 5,
+    "unmatchable_step_kinds": []
    },
    "terrazzo-coordination-first-walk": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -2506,12 +2858,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 3
+    "steps": 3,
+    "unmatchable_step_kinds": []
    },
    "tilesetters-start-underneath": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 1,
     "evidence_kinds": [
      "advisor"
@@ -2525,12 +2879,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "toolmakers-safety-first-walk": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -2543,12 +2899,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "transit-vehicle-documentation-first-walk": {
     "campus": "oakland",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -2560,12 +2918,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 3
+    "steps": 3,
+    "unmatchable_step_kinds": []
    },
    "transmission-layout-first-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -2578,12 +2938,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "wastewater-tools-first-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 1,
     "evidence_kinds": [
      "advisor"
@@ -2597,12 +2959,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "water-distrib-safety-first-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -2615,12 +2979,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "waterproofers-flash-it-right": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor",
@@ -2634,12 +3000,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "welders-the-watch": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 3,
     "evidence_kinds": [
      "advisor",
@@ -2654,12 +3022,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 5
+    "steps": 5,
+    "unmatchable_step_kinds": []
    },
    "wind-safety-first-walk": {
     "campus": "new-orleans",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 2,
     "evidence_kinds": [
      "advisor"
@@ -2672,12 +3042,14 @@
      "walk"
     ],
     "sims_run": [],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    },
    "window-glazing-let-the-ground-judge-it": {
     "campus": "treasure-island",
     "can_be_evidence_backed": true,
     "classification": "partial",
+    "completable": true,
     "evidence_backed_steps": 3,
     "evidence_kinds": [
      "crew",
@@ -2693,7 +3065,8 @@
     "sims_run": [
      "boom-lift"
     ],
-    "steps": 4
+    "steps": 4,
+    "unmatchable_step_kinds": []
    }
   },
   "per_union": {
@@ -3265,8 +3638,10 @@
     "oakland",
     "treasure-island"
    ],
+   "completable": 139,
    "evidence_backed_steps": 301,
    "fully_verifiable": 0,
+   "fully_verifiable_by_episode": 0,
    "halls_total": 111,
    "halls_with_a_lesson": 111,
    "halls_with_no_lesson": 0,
@@ -3419,8 +3794,11 @@
      "window-glazing-let-the-ground-judge-it"
     ]
    },
+   "not_completable": 0,
    "not_verifiable": 0,
    "partly_verifiable": 139,
+   "recording_steps_matchable": 301,
+   "recording_steps_unmatchable": 0,
    "self_reported_steps": 267,
    "steps": 568
   },
@@ -3551,7 +3929,8 @@
    "where": "sims/registry/sims.json#sims[id].rubric[].pass, one rule per axis; there is no seat-level or scenario-level pass threshold field anywhere in sims.json"
   },
   "unions_total": 111,
-  "unions_with_a_lesson": 111
+  "unions_with_a_lesson": 111,
+  "unmatchable_kinds": []
  },
  "counts": {
   "assumptions_recorded": 3,
@@ -3565,10 +3944,10 @@
   "metrics": 9,
   "runs": 36,
   "seeds": 12,
-  "sim_elapsed_ms": 703,
+  "sim_elapsed_ms": 893,
   "strategies": 3,
   "total_attempts_simulated": 15120,
-  "wall_ms": 756
+  "wall_ms": 965
  },
  "hall_independence": {
   "contrast": {
@@ -3621,7 +4000,7 @@
    4242
   ],
   "strategy": "graph",
-  "sweep_ms": 2934,
+  "sweep_ms": 3982,
   "why": "every union carries the same eleven strands by three tiers wired by the same requires edges, so the graph handed to the sequencer is isomorphic across halls and the seeded generator is the only source of variation. Nothing in control/ reads the simulator registry, so no seat, no piece of equipment and no difference in available evidence reaches this simulation."
  },
  "honesty": {
@@ -3629,7 +4008,7 @@
   "determinism": "The subject seeds mulberry32 per run and touches no clock and no network. The 12 seeds are recorded, and evals/test.mjs re-runs every one of the 36 runs and compares field by field against what is written here. A result that cannot be reproduced is not a result.",
   "no_cohort_claim": "Nothing in this registry licenses a statement about real learners, real halls, real apprentices or real outcomes. \"The sequencer beats blocked practice by X\" is not a sentence this pack supports in any form; the supported sentence names the simulation and its assumptions in the same breath as the number.",
   "one_union": "Every run is the subject's default union, 'welders' - 33 skills. This pack does not sweep unions and says nothing about the other ladders in pack/registry/skills.json.",
-  "runtime": "The full 36-run sweep took 703 ms of simulation time inside node (756 ms wall including process start) on the machine that built this. Nothing was shortened to make it quick: attempts, per-day and session length are the subject's own constants, read out of the file rather than typed here.",
+  "runtime": "The full 36-run sweep took 893 ms of simulation time inside node (965 ms wall including process start) on the machine that built this. Nothing was shortened to make it quick: attempts, per-day and session length are the subject's own constants, read out of the file rather than typed here.",
   "status": "SCRIPTED: every number in this registry came out of running control/sim_curriculum.mjs, a hand-written deterministic simulation over an authored skill ladder and an authored learner model. Nothing here was observed of a person. Not one number is RECORDED, and the summary statistics are not promoted to DERIVED - see tier_is_not_derived.",
   "the_limit_is_the_sources_own": "The limit is not this pack's summary of the subject. It is quoted verbatim from the header of control/sim_curriculum.mjs into limit.sentence, and evals/test.mjs re-extracts it from that file and fails if the two stop matching or if the quotation is softened.",
   "the_one_field_that_is_not_reproducible": "counts.sim_elapsed_ms and counts.wall_ms are wall-clock timings of the machine that ran the build. They change on every build and no check holds them to a value; they are here so a reader knows the sweep is seconds rather than hours. Every other number in this registry is reproduced exactly by evals/test.mjs.",
@@ -3720,7 +4099,9 @@
      "crew",
      "role",
      "topic",
-     "answer_kind"
+     "answer_kind",
+     "seat",
+     "muster"
     ],
     "has_outcome": false,
     "outcome_shape": null
@@ -3774,7 +4155,7 @@
    },
    "page": {
     "path": "web/build_3d.py",
-    "sha256": "c17b9617c046cfb3e0433359cce0542a321c7a47abcba0fa593b6aa527c20f71",
+    "sha256": "d58173fa40e1f19b96ebc32117dc635fa7a6d18f5c791b4f84143939b33ed8f8",
     "source_stamp": null,
     "why_no_stamp": "web/build_3d.py is a builder, not a registry, and carries no source_stamp; its sha256 is the guard"
    },
@@ -3785,8 +4166,8 @@
    },
    "training": {
     "path": "training/registry/training.json",
-    "sha256": "8976752af1d28bcd07d3b25eba745e9e2009434182d39ee331ed604adee82b36",
-    "source_stamp": "6ac8622613550c50"
+    "sha256": "7116d0847c1143b6796a8994a086b6fc650578f1c4e56dd735c0533a730c9d20",
+    "source_stamp": "e152407ead3af3f1"
    }
   },
   "kinds_that_can_carry_a_trace": [
@@ -5931,7 +6312,7 @@
    }
   }
  },
- "source_stamp": "7ffe52503a5e16e5",
+ "source_stamp": "62dd5d9ede2474bd",
  "spread": {
   "blocked": {
    "distinctSkillsTouched": {

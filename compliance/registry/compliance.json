@@ -9,12 +9,12 @@
   "sims": "987a9d4812b4c73b",
   "lessons": "e905659b0a718ab6",
   "halls": "3807e54afe6abfe6",
-  "completion": "a95de65feb282e76",
+  "completion": "30d83e47c337a53c",
   "manifest": "169fa4e75499d00e",
-  "build_3d": "c17b9617c046cfb3",
+  "build_3d": "d58173fa40e1f19b",
   "hall_signoff": "e67ba161ef70d996",
-  "roadmap": "edb0a399213e9e56",
-  "completion_fixture": "55c31b9c5b7ce667",
+  "roadmap": "815674051e32e658",
+  "completion_fixture": "66bd936cbff28a76",
   "self": "8a4ceed33db622e1"
  },
  "stamped_paths": {
@@ -36,8 +36,8 @@
   "why_none": "the values in surfaces/registry/finishes.json are general good practice, not a code reference; no figure is read from any jurisdiction's standard and no surface names a product, brand, fire rating or specification number. A real deployment replaces these with the local standard.",
   "roadmap_status_verbatim": "- A jurisdiction overlay validates end-to-end for one real jurisdiction with\n  every value sourced or explicitly waived.\n  *Status:* **not met, and deliberately left that way.** Meeting it needs\n  real cited values from Title 24, OSHA 1926 or a real AHJ for illuminance,\n  air changes, noise and PPE. This sandbox cannot fetch them, and they must\n  not be typed from memory into a platform whose surface pack currently\n  proves the opposite — `surfaces/build.py`'s own honesty block states\n  \"general good practice, not a code reference; no figure is read from any\n  jurisdiction's standard.\" A wrong safety value that looks sourced is worse\n  than an honest gap, so this criterion stays open rather than closed with\n  invented numbers.",
   "roadmap_status_lines": [
-   287,
-   297
+   290,
+   300
   ],
   "quote_marker": "VERBATIM-ROADMAP-QUOTE: the only place a jurisdiction or standard is named in this registry, and only because the roadmap names them as what this sandbox must NOT type"
  },
@@ -58,15 +58,15 @@
  },
  "placard_rule": {
   "hangs_when": {
-   "line": 12149,
+   "line": 12154,
    "read": "if (rc.ppe.length) { const plac = label(rc.ppe.join(' · '), ..., { kind: 'placard', items: rc.ppe })"
   },
   "rc_is": {
-   "line": 12093,
+   "line": 12098,
    "read": "const rc = condOf(h.slug, r.strand);"
   },
   "condOf": {
-   "line": 16281,
+   "line": 16286,
    "read": "return D.condOver[hallSlug]?.[strand], else D.baseCond[strand]"
   },
   "condOver": {
@@ -122,9 +122,9 @@
    "why": "every reference field the step carries is recorded by the episode"
   },
   "crew": {
-   "ledger_class": "not-recordable",
+   "ledger_class": "evidenceable",
    "completion_class": "episode-backed",
-   "why": "a crew step cannot be evidenced by this bundle: the crew episode records no muster and no seat"
+   "why": "every reference field the step carries is recorded by the episode"
   }
  },
  "signoff_statuses": {
@@ -1019,9 +1019,9 @@
       "materials"
      ],
      "steps_by_ledger_class": {
-      "evidenceable": 2,
+      "evidenceable": 3,
       "self-reported": 1,
-      "not-recordable": 1
+      "not-recordable": 0
      },
      "step_kinds": [
       {
@@ -1040,7 +1040,7 @@
        "n": 3,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "not-recordable"
+       "ledger_class": "evidenceable"
       },
       {
        "n": 4,
@@ -1406,9 +1406,9 @@
       "troubleshooting"
      ],
      "steps_by_ledger_class": {
-      "evidenceable": 2,
+      "evidenceable": 3,
       "self-reported": 1,
-      "not-recordable": 1
+      "not-recordable": 0
      },
      "step_kinds": [
       {
@@ -1427,7 +1427,7 @@
        "n": 3,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "not-recordable"
+       "ledger_class": "evidenceable"
       },
       {
        "n": 4,
@@ -2577,9 +2577,9 @@
       "materials"
      ],
      "steps_by_ledger_class": {
-      "evidenceable": 3,
+      "evidenceable": 4,
       "self-reported": 1,
-      "not-recordable": 1
+      "not-recordable": 0
      },
      "step_kinds": [
       {
@@ -2604,7 +2604,7 @@
        "n": 4,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "not-recordable"
+       "ledger_class": "evidenceable"
       },
       {
        "n": 5,
@@ -3046,9 +3046,9 @@
       "materials"
      ],
      "steps_by_ledger_class": {
-      "evidenceable": 2,
+      "evidenceable": 3,
       "self-reported": 2,
-      "not-recordable": 1
+      "not-recordable": 0
      },
      "step_kinds": [
       {
@@ -3079,7 +3079,7 @@
        "n": 5,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "not-recordable"
+       "ledger_class": "evidenceable"
       }
      ]
     }
@@ -4623,9 +4623,9 @@
       "procedure"
      ],
      "steps_by_ledger_class": {
-      "evidenceable": 3,
+      "evidenceable": 4,
       "self-reported": 2,
-      "not-recordable": 1
+      "not-recordable": 0
      },
      "step_kinds": [
       {
@@ -4656,7 +4656,7 @@
        "n": 5,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "not-recordable"
+       "ledger_class": "evidenceable"
       },
       {
        "n": 6,
@@ -5462,9 +5462,9 @@
      "hazard_rooms_walked_without_placard_step": [],
      "hazard_rooms_not_walked": [],
      "steps_by_ledger_class": {
-      "evidenceable": 1,
+      "evidenceable": 2,
       "self-reported": 2,
-      "not-recordable": 1
+      "not-recordable": 0
      },
      "step_kinds": [
       {
@@ -5489,7 +5489,7 @@
        "n": 4,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "not-recordable"
+       "ledger_class": "evidenceable"
       }
      ]
     }
@@ -5846,9 +5846,9 @@
       "procedure"
      ],
      "steps_by_ledger_class": {
-      "evidenceable": 3,
+      "evidenceable": 4,
       "self-reported": 2,
-      "not-recordable": 1
+      "not-recordable": 0
      },
      "step_kinds": [
       {
@@ -5879,7 +5879,7 @@
        "n": 5,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "not-recordable"
+       "ledger_class": "evidenceable"
       },
       {
        "n": 6,
@@ -6637,9 +6637,9 @@
      "hazard_rooms_walked_without_placard_step": [],
      "hazard_rooms_not_walked": [],
      "steps_by_ledger_class": {
-      "evidenceable": 2,
+      "evidenceable": 3,
       "self-reported": 2,
-      "not-recordable": 1
+      "not-recordable": 0
      },
      "step_kinds": [
       {
@@ -6664,7 +6664,7 @@
        "n": 4,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "not-recordable"
+       "ledger_class": "evidenceable"
       },
       {
        "n": 5,
@@ -7768,9 +7768,9 @@
       "procedure"
      ],
      "steps_by_ledger_class": {
-      "evidenceable": 2,
+      "evidenceable": 3,
       "self-reported": 2,
-      "not-recordable": 1
+      "not-recordable": 0
      },
      "step_kinds": [
       {
@@ -7801,7 +7801,7 @@
        "n": 5,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "not-recordable"
+       "ledger_class": "evidenceable"
       }
      ]
     }
@@ -8983,9 +8983,9 @@
       "materials"
      ],
      "steps_by_ledger_class": {
-      "evidenceable": 3,
+      "evidenceable": 4,
       "self-reported": 1,
-      "not-recordable": 1
+      "not-recordable": 0
      },
      "step_kinds": [
       {
@@ -9004,7 +9004,7 @@
        "n": 3,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "not-recordable"
+       "ledger_class": "evidenceable"
       },
       {
        "n": 4,
@@ -12641,9 +12641,9 @@
       "procedure"
      ],
      "steps_by_ledger_class": {
-      "evidenceable": 2,
+      "evidenceable": 3,
       "self-reported": 2,
-      "not-recordable": 1
+      "not-recordable": 0
      },
      "step_kinds": [
       {
@@ -12662,7 +12662,7 @@
        "n": 3,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "not-recordable"
+       "ledger_class": "evidenceable"
       },
       {
        "n": 4,
@@ -14598,9 +14598,9 @@
       "procedure"
      ],
      "steps_by_ledger_class": {
-      "evidenceable": 2,
+      "evidenceable": 3,
       "self-reported": 2,
-      "not-recordable": 1
+      "not-recordable": 0
      },
      "step_kinds": [
       {
@@ -14625,7 +14625,7 @@
        "n": 4,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "not-recordable"
+       "ledger_class": "evidenceable"
       },
       {
        "n": 5,
@@ -15061,9 +15061,9 @@
       "machines"
      ],
      "steps_by_ledger_class": {
-      "evidenceable": 3,
+      "evidenceable": 4,
       "self-reported": 2,
-      "not-recordable": 1
+      "not-recordable": 0
      },
      "step_kinds": [
       {
@@ -15088,7 +15088,7 @@
        "n": 4,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "not-recordable"
+       "ledger_class": "evidenceable"
       },
       {
        "n": 5,
@@ -15443,9 +15443,9 @@
      "hazard_rooms_walked_without_placard_step": [],
      "hazard_rooms_not_walked": [],
      "steps_by_ledger_class": {
-      "evidenceable": 2,
+      "evidenceable": 3,
       "self-reported": 2,
-      "not-recordable": 1
+      "not-recordable": 0
      },
      "step_kinds": [
       {
@@ -15470,7 +15470,7 @@
        "n": 4,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "not-recordable"
+       "ledger_class": "evidenceable"
       },
       {
        "n": 5,
@@ -15819,9 +15819,9 @@
      "hazard_rooms_walked_without_placard_step": [],
      "hazard_rooms_not_walked": [],
      "steps_by_ledger_class": {
-      "evidenceable": 2,
+      "evidenceable": 3,
       "self-reported": 2,
-      "not-recordable": 1
+      "not-recordable": 0
      },
      "step_kinds": [
       {
@@ -15846,7 +15846,7 @@
        "n": 4,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "not-recordable"
+       "ledger_class": "evidenceable"
       },
       {
        "n": 5,
@@ -25878,9 +25878,9 @@
      "hazard_rooms_walked_without_placard_step": [],
      "hazard_rooms_not_walked": [],
      "steps_by_ledger_class": {
-      "evidenceable": 3,
+      "evidenceable": 4,
       "self-reported": 1,
-      "not-recordable": 1
+      "not-recordable": 0
      },
      "step_kinds": [
       {
@@ -25899,7 +25899,7 @@
        "n": 3,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "not-recordable"
+       "ledger_class": "evidenceable"
       },
       {
        "n": 4,
@@ -27279,9 +27279,9 @@
      "hazard_rooms_walked_without_placard_step": [],
      "hazard_rooms_not_walked": [],
      "steps_by_ledger_class": {
-      "evidenceable": 3,
+      "evidenceable": 4,
       "self-reported": 1,
-      "not-recordable": 1
+      "not-recordable": 0
      },
      "step_kinds": [
       {
@@ -27306,7 +27306,7 @@
        "n": 4,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "not-recordable"
+       "ledger_class": "evidenceable"
       },
       {
        "n": 5,
@@ -27992,9 +27992,9 @@
      "hazard_rooms_walked_without_placard_step": [],
      "hazard_rooms_not_walked": [],
      "steps_by_ledger_class": {
-      "evidenceable": 2,
+      "evidenceable": 3,
       "self-reported": 1,
-      "not-recordable": 1
+      "not-recordable": 0
      },
      "step_kinds": [
       {
@@ -28019,7 +28019,7 @@
        "n": 4,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "not-recordable"
+       "ledger_class": "evidenceable"
       }
      ]
     }
@@ -29059,9 +29059,9 @@
       "procedure"
      ],
      "steps_by_ledger_class": {
-      "evidenceable": 3,
+      "evidenceable": 4,
       "self-reported": 1,
-      "not-recordable": 1
+      "not-recordable": 0
      },
      "step_kinds": [
       {
@@ -29086,7 +29086,7 @@
        "n": 4,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "not-recordable"
+       "ledger_class": "evidenceable"
       },
       {
        "n": 5,
@@ -29455,9 +29455,9 @@
       "materials"
      ],
      "steps_by_ledger_class": {
-      "evidenceable": 2,
+      "evidenceable": 3,
       "self-reported": 2,
-      "not-recordable": 1
+      "not-recordable": 0
      },
      "step_kinds": [
       {
@@ -29482,7 +29482,7 @@
        "n": 4,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "not-recordable"
+       "ledger_class": "evidenceable"
       },
       {
        "n": 5,
@@ -30935,9 +30935,9 @@
      "hazard_rooms_walked_without_placard_step": [],
      "hazard_rooms_not_walked": [],
      "steps_by_ledger_class": {
-      "evidenceable": 3,
+      "evidenceable": 4,
       "self-reported": 1,
-      "not-recordable": 1
+      "not-recordable": 0
      },
      "step_kinds": [
       {
@@ -30956,7 +30956,7 @@
        "n": 3,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "not-recordable"
+       "ledger_class": "evidenceable"
       },
       {
        "n": 4,
@@ -31734,9 +31734,9 @@
      "hazard_rooms_walked_without_placard_step": [],
      "hazard_rooms_not_walked": [],
      "steps_by_ledger_class": {
-      "evidenceable": 2,
+      "evidenceable": 3,
       "self-reported": 1,
-      "not-recordable": 1
+      "not-recordable": 0
      },
      "step_kinds": [
       {
@@ -31755,7 +31755,7 @@
        "n": 3,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "not-recordable"
+       "ledger_class": "evidenceable"
       },
       {
        "n": 4,
@@ -38492,9 +38492,9 @@
       "materials"
      ],
      "steps_by_ledger_class": {
-      "evidenceable": 3,
+      "evidenceable": 4,
       "self-reported": 1,
-      "not-recordable": 1
+      "not-recordable": 0
      },
      "step_kinds": [
       {
@@ -38519,7 +38519,7 @@
        "n": 4,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "not-recordable"
+       "ledger_class": "evidenceable"
       },
       {
        "n": 5,
@@ -43170,9 +43170,9 @@
   "seats_with_an_informational_axis": 11,
   "seats_with_scalar_threshold": 0,
   "items_by_ledger_class": {
-   "evidenceable": 391,
+   "evidenceable": 414,
    "self-reported": 233,
-   "not-recordable": 1355
+   "not-recordable": 1332
   },
   "items": 1979
  },

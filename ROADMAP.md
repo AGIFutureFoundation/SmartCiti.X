@@ -12,9 +12,12 @@ harness can run rather than a sentence a reader has to trust.
 ```mermaid
 timeline
     title Release train
-    v3.2 (now) : Unions and modules separated : 8 locale catalogs : Wiki and roadmap : Adversarial-review fixes
+    v3.2 : Unions and modules separated : 8 locale catalogs : Wiki and roadmap : Adversarial-review fixes
     v3.3 : Native-reviewed translations : Localized surfaces : Reviewed trade-name translations
     v3.4 : Practitioner-authored content pilot : Local-standards mapping : Live telemetry calibration
+    v3.5 (2026-09-26) : Completion record : Contribution package : Robot-readiness eval
+    v3.6 (2026-10-12, now) : Courses and the Omega Hive : Furnished halls and street kit : Union paths and programs : Bay restoration scenes : Robot arena and Omega Claw : World modules, look kit and doors
+    v3.7 (in progress, wave 20) : Mocked WebXR session : Crew lessons complete : Parish frame cost and 3D luminance : Module links in the worlds
     v4.0 : Staged hall rollout : Security launch checklist closed : Tenancy GA
 ```
 
@@ -447,19 +450,176 @@ registries' own; none is typed here from memory.
 
 - The eight lessons that hold a crew step cannot complete until the crew
   episode records `seat` and `muster` (`training/`), or the lesson step stops
-  carrying them (`lessons/`). Not a verifier problem.
+  carrying them (`lessons/`). Not a verifier problem. (At the 2026-09-26 pass; carried to
+  v3.7, workstream 2: 23 of 139 lessons today.)
 - No page links to the spaces or contribute pages yet.
 - The map layers' labels on two surfaces are registry field paths, and the
   XR HUD's 15 new keys are machine-drafted in seven locales, as those catalogs
   already declare.
 - A mocked WebXR session harness driving `renderer.xr` in headless Chromium
-  does not exist; every XR contract is held at the source by regex.
+  does not exist; every XR contract is held at the source by regex. (Carried to v3.7,
+  workstream 1.)
 - The jurisdiction overlay stays deliberately not started (see v3.4). The
   compliance ledger this pass adds is the bundle's own rules, not a code
   reference.
 - No cohort, no learner record, no agent or robot trained, no platform
   reached, nothing on any chain. Every registry that could be read as
   claiming otherwise says this in its own honesty block.
+
+---
+
+## v3.6 — the worlds (shipped 2026-10-12)
+
+**Theme:** the walkable worlds get people, places, paths and a measured look,
+and the robotics work gets an honest, small, measured learning result. This
+release covers waves 16 to 19, `f20ca33` to `83db20b`. Each row cites the
+commit that carries it; each number is the registry's own or printed in that
+commit's message, none typed here from memory.
+
+| What shipped | Where | Status |
+| --- | --- | --- |
+| Trade Craft **courses**: 122 courses (111 trade, 11 strand) over 139 lessons and 568 steps, plus one supplement per lesson (139 of 139: 2,486 glossary terms, 707 self-check questions whose answers are registry ids, worksheet lines for 568 of 568 steps) | `courses/`, `web/trade_craft_courses.html` | shipped, `f42a9b0`; AUTHORED by stated rule; no scenario declares a duration so 0 minutes are stated; unverified general practice; certifies nobody |
+| The **Omega Hive**: 197 agents (9 advisors, 20 crew roles, 168 guides) joined to a locker avatar, an AUTHORED personality and a device voice profile, with 1,133 lines quoted from their source registries; a deterministic council of 3 to 5 agents | `hive/`, `web/trade_craft_hive.html` | shipped, `f42a9b0`; SCRIPTED, no AI model; the device's own speech synthesis, only on a click, with Mute; classroom mode seats 79 play-safe agents, starts muted |
+| Hive agents **embodied in the worlds**: 3D advisors and crew wear their roster outfit, an AUTHORED trait table picks the idle gesture and the opening line, parish guides wear hair, sleeves and tool belt, a council point stands on the flagship plaza | `web/build_3d.py`, `web/build_parishes.py`, `hive/` | shipped, `c066319`; every line is still a registry quote; `web/test_hive.mjs` 77 at landing, 53 headless mutations failed by name |
+| Holodeck packs list Courses and the Omega Hive, each recounted from its own registry | `holodeck/`, `web/trade_craft_packs.html` | shipped, `ae17cb3`; 30 packs, 29 shipping, 1 proposed; no prices |
+| Building and campus **dressing**: surface textures by device tier, pooled luminaire housings, a header-sign atlas per hall, name boards on all 111 building fronts, instanced street lamps and plaza benches; then rooftop units, door hoods, glazing mullions and campus trees | `web/build_3d.py` | shipped, `f42a9b0` and `43c063d`; flagship 32 trees; no ceiling raised |
+| **Furnished hall interiors**: the props registry's 192 district fit-out pieces placed by room type with a 1.5 m aisle; all 111 halls swept | `web/build_3d.py`, `web/test_scenes.mjs` | shipped, `c066319` and `43c063d`; 7 to 15 pieces per hall, 1,130 in all, 1 drawable per hall; the dearest hall is at 14,600 of its 15,224 triangle cap |
+| **Device-tier world textures** on the parish, Bay and wilds pages (high 1,024 px, ultra 2,048 px), inside a stepped memory budget | `web/build_parishes.py`, `web/build_bayworld.py`, `web/build_wilds.py`, `web/eval_worldtex.mjs` | shipped, `c066319`; draw calls and triangles equal on every tier; frame time measured only on software rendering |
+| **Street kit** in the parish and Bay worlds: porches, fences, hedges, mailboxes, street-name signposts, hydrants, collection boxes, bus-stop shelters, one pooled mesh of at most 300 boxes within 90 m | `web/build_parishes.py` | shipped, `834434b`; AUTHORED placement rule; +1 draw call in walk views, 0 in overviews; `web/test_parishes.mjs` 135, 19 mutations failed by name |
+| **Recorded ground**: a same-origin geomap hillshade shaded at build time from the vendored USGS 3DEP grids (DERIVED from RECORDED), its lit side fixed to the shadow side's alpha (dark-style relief contrast 5.91 to 8.96 at Bay zoom 10), and an AUTHORED San Francisco shore shelf giving Dive/ROV a depth at 1,360 of 1,360 samples | `elevation/hillshade.py`, `web/build_geomap.py` | shipped, `f20ca33` and `c066319`; `web/test_geomap.mjs` 103 |
+| Terrain relief measured explicitly off and on, and parked while the camera is in the overview | `web/eval_relief.mjs`, `web/terrainkit.py` | shipped, `f20ca33` and `ae17cb3`; relief stays **off** by default: 12 rows still fail the flat-ground rule (land at y = 0) which relief breaks by construction; no row changed |
+| Robotics lab **replay viewer** (all 240 reference traces re-run equal their rows) and an AUTHORED litter-sort level 4 "reachable" | `robotics/`, `web/trade_craft_robotics.html` | shipped, `f20ca33`; level 4 passes 20 of 20 seeds, 80 of 80 items; levels 1 to 3 and their caps unchanged |
+| Wilds **flora**: 9 generally named ground plants on all 4 wild worlds as one instanced mesh | `web/build_wilds.py` | shipped, `f20ca33`; every `web/eval_wilds.mjs` calls row inside its unchanged ceiling |
+| **Union-hall pathways**: one ordered path per hall, 111 in all, 604 path steps over 139 lessons, with seats (45 halls, 79 bindings), crews (38 halls), tool crib and Omega Hive advisor | `unionpaths/` | shipped, `aff302b`; DERIVED by stated rules; a union named is not a partner or affiliate; no hours, wages, credentials, membership or affiliation stated, and the build refuses a record that carries one |
+| The **union directory**: one card per hall with its path, filters by district, cohort and focus | `web/trade_craft_unions.html` | shipped, `c2d6a97`; `web/test_unions.mjs` 38 |
+| **K-12 programs and nonprofit sectors**: pathways over 4 grade bands, 105 teacher program cards, 4 nonprofit sectors, in 8 locales | `programs/`, `web/trade_craft_programs.html` | shipped, `aff302b` (registry) and `c2d6a97` (page); districts, programmes and organisations are **PROPOSED**; the UN path is PROPOSED and not affiliated; nothing is accredited |
+| **Deep Bay restoration scenes** at the 8 walkable RECORDED sites (marsh bands, mudflat, salt-pond levees, riprap, living shoreline, planting) with SCRIPTED restoration crews quoting 179 lines; levees, riprap and sills solid to the walker | `web/restoscene.py`, `web/test_restoscene.mjs` | shipped, `aff302b` and `c2d6a97`; AUTHORED habitat, at most 15,940 triangles, near the sites only; 276 berm boxes at the South Bay salt ponds; federal cleanup sites stay non-walkable with their reason verbatim |
+| The SEO **whitepaper page**, every figure pointing at its registry, with structured data that carries no rating, review or price | `web/smartcitix_whitepaper.html` | shipped, `aff302b` and `c2d6a97`; `web/test_whitepaper.mjs` 37, `web/test_seo.mjs` 19; public only when this branch is merged to the deploy branch |
+| The **robot model arena** (`tc-arena/1`): carded policies on 4 world tasks, every level and seed, with bootstrap 95% CIs and paired win rates; one small behaviour-cloning MLP (24-16-4, 468 weights) trained on 130 SCRIPTED episodes | `robotics/arena/`, `web/test_arena.mjs` | shipped, `c2d6a97`; held-out seeds 11 to 20: SCRIPTED reference 0.592 [0.515, 0.677], cloned policy 0.423 [0.339, 0.508], paired win rate 0.108, uniform random 0; it never learned grip timing; **not a language model**, no learner's data, **no LLM trained**; the 11 sim seats are excluded (no headless runner) |
+| **Omega Claw**: five SCRIPTED orchestration agents, a 1,040-run refereed tournament (0 referee disagreements), and a 260-sample instruction-conditioned dataset (splits 208/26/26 by seed, 140/60/60 by task family, 0 duplicate trajectories) | `robotics/claw/` | shipped, `c2d6a97`; no AI model; `robotics/claw/test.mjs` 58; learner episodes merge only through the datashare consent scope; no LLM or VLA trained |
+| A **robot yard** in the parish and Bay worlds: one AUTHORED rover in a 12 m yard replaying the SCRIPTED litter-pickup reference policy at a fixed 10 Hz over 6 seeded targets | `web/build_parishes.py` | shipped, `3a5a889`; +1 draw call and 156 triangles in walk view; stores, sends and listens for nothing; `web/test_parishes.mjs` 140 |
+| **World training modules**: 16 modules and 191 steps over 3 worksite districts, 8 walkable Bay sites, 4 wilds worlds and the robot yard, each greeted by an Omega Hive agent | `modules/`, `web/test_worldmodules.mjs` | shipped, `83db20b`; AUTHORED by rule; 8 candidates refused with the reason printed; 0 durations, certifies nobody; `modules/test.mjs` 37, `web/test_worldmodules.mjs` 34 |
+| The **look kit**: one physically based look (sun by elevation, per-class roughness and metalness, tone mapping, colour space) across the 3D campus, parish, Bay and wilds pages | `web/lookkit.py`, `web/test_lookkit.mjs` | shipped, `83db20b`; draw calls and triangles equal on all four; mean frame luminance 3D network 26.2 to 28.2, parish 95.7 to 89.2, Bay 97.2 to 95.3, wilds 47.8 to 43.6; `web/test_lookkit.mjs` 67 |
+| **Doors in and out of the worlds**: keyboard-reachable doors from the parish (29) and Bay (9) walks into 3D interiors and restoration scenes, a skip link, and a back link from every 3D view | `web/test_access.mjs` | shipped, `83db20b`; 28 union hall cards open their parish door; 202 Programs links open their place in a world; 40 of 40 mutations caught by name; `web/test_access.mjs` 62 |
+| Evaluation ergonomics: `eval_parishes --part=1\|2\|3` and `eval_bayworld --part=1\|2` so each part fits one browser run | `web/eval_parishes.mjs`, `web/eval_bayworld.mjs` | shipped, `f42a9b0`; `web/test_evalparts.mjs` 14 |
+| The whole tree held to its checks: 7,201 passing at `83db20b` (6,337 at `f20ca33`) | `verify_all.sh` | shipped, `83db20b`; the figures and brand lints, both staleness guards and every pack suite in one exit code |
+
+### Open after this pass
+
+- **No cohort, no learner, no learner episode.** Every completion, pathway
+  and program above is a derived plan, not a record of anyone finishing it.
+  0 of 111 halls carry a named practitioner's sign-off.
+- **No LLM trained.** The one trained model is a 468-weight cloned policy on
+  SCRIPTED episodes; it scores 0.423 against the reference's 0.592 on held-out
+  seeds and never learned grip timing. Omega Hive and Omega Claw are SCRIPTED.
+- **No headset session, mocked or real.** Every WebXR contract is still held
+  at the source by regex. Hand joints are proven against synthetic positions
+  only.
+- **Partners are PROPOSED.** Districts, programmes and organisations on the
+  Programs page, and every union on the directory, are named without an
+  agreement; the UN path is PROPOSED and not affiliated; nothing is accredited.
+- **Parish 22051 border frame row is over its ceiling** (200 against 166.6 ms
+  at `3a5a889`, 233.3 in another run) on load-bound software rendering. Its
+  draw-call and triangle rows hold; no ceiling was moved; there is no
+  measurement on a real GPU.
+- **The 3D network view is below its luminance band**: mean frame luminance
+  28.2 against the [40, 215] band (it was 26.2 before the look kit).
+- 23 of 139 lessons cannot complete: the crew episode still records neither
+  seat nor muster (`completion/registry/completion.json`, 116 completable).
+- The 16 world modules are listed on the Courses page but not yet linked from
+  inside the worlds they teach.
+- Terrain relief stays off by default (12 rows fail the flat-ground rule).
+- Pages go public only when the branch merges to the deploy branch.
+
+---
+
+## v3.7 — deep worlds (in progress, wave 20; planning target November 2026)
+
+**Theme:** close the gaps the v3.6 list names, each with a check a harness can
+run, and add nothing that needs a person, a cohort or a headset. This release
+reaches only the rungs this tree can honestly reach: a *mocked* XR session is
+not a headset session, and a lesson that *can* complete is not a lesson a
+learner completed.
+
+Status key: **in progress (wave 20)** means work is under way and nothing
+below is claimed shipped. The landing commit is added to each row when it
+lands; until then the row names the check that will prove it.
+
+### Workstreams
+
+1. **Mocked WebXR session harness** — *in progress (wave 20).* Drive the 3D
+   page's `renderer.xr` in headless Chromium under a fake `XRSession` (frame
+   loop, input sources, reference spaces), so the XR contracts stop being held
+   by regex alone. *Landing commit:* pending.
+2. **Crew episodes record seat and muster** — *in progress (wave 20).* The
+   crew episode in `training/` records the two fields the completion verifier
+   asks for, so the 23 lessons with a crew step can complete. The lessons are
+   not weakened: the crew step still records an episode. *Landing commit:*
+   pending.
+3. **Parish frame cost and 3D-view luminance** — *in progress (wave 20).*
+   Reduce the cost behind the parish 22051 border frame row and lift the 3D
+   network view's mean luminance into its band, both with draw calls and
+   triangles unchanged and no ceiling or band edge moved. *Landing commit:*
+   pending.
+4. **Module links inside the worlds** — *in progress (wave 20).* Each of the
+   16 world modules is reachable from the world it teaches (keyboard and
+   pointer), extending the doors of v3.6. *Landing commit:* pending.
+5. **A learned policy that bins something** — *planned, not started.* The
+   cloned policy never learned grip timing, so it bins nothing in litter sort.
+   A second carded policy is measured on the same held-out seeds with its
+   interval, and the registry reports it whatever the number is.
+6. **Spaces walkable and linked** — *planned, not started.* The six custom
+   training spaces are declared, not walkable (v3.5), and the spaces and
+   contribute pages are linked from no other page.
+7. **Relief on, honestly** — *planned, not started.* Replace the flat-ground
+   rule's reason to keep relief off with a measured relief-aware rule, added
+   beside the old one rather than in place of it.
+
+### Exit criteria
+
+Each is a command that exits non-zero when the criterion fails. "Name" means
+the suite or eval that proves it; a name marked *proposed* is fixed at landing.
+
+| # | Exit criterion | Proved by | State |
+| --- | --- | --- | --- |
+| 1 | A fake `XRSession` enters and leaves on the 3D page in headless Chromium: the rig moves and the camera does not, `local-floor` falls back to `local`, snap turn and the controller map reach every one of the 11 seats' key state, the wrist panel reads the dash's gauges, ending the session restores the camera and the sky | a mocked-session browser suite (*proposed:* `web/test_xr_session.mjs`), plus `meta/test.mjs` changing its "no session driven" claim to "mocked session driven, no headset", with a mutation that breaks each contract failing by name | in progress (wave 20) |
+| 2 | `lessons_not_completable` is 0 of 139 (23 today) while every crew step still records an episode, and an episode missing seat or muster still fails the verifier | `node completion/test.mjs`, `node training/test.mjs`, `node lessons/test.mjs`, and `evals/registry/evals.json#completion_evidence` | in progress (wave 20) |
+| 3a | `eval_parishes` part 1 reports 0 rows over a declared limit on 22051, 22071 and 22103, with the load average printed beside every frame row, and the `BASE` table and the three headroom constants in the eval byte-equal to `83db20b` | `node web/eval_parishes.mjs --part=1` (a browser eval; frame rows), and a check pinning the `BASE` table and the headroom constants (*proposed*, added with the change; `web/test_evalparts.mjs` does not pin them today) | in progress (wave 20) |
+| 3b | Mean frame luminance of the 3D network view is inside [40, 215] with the clipped and crushed shares no worse than at `83db20b`, and draw calls and triangles equal (204 and 5,254) | a committed browser luminance eval over the four 3D pages (*proposed:* `web/eval_look.mjs`), `web/test_lookkit.mjs` | in progress (wave 20) |
+| 4 | Every one of the 16 modules is linked from a place inside its world, every link resolves to a registry id, and each is reachable by keyboard | `node web/test_worldmodules.mjs`, `node web/test_access.mjs` (counts raised, never lowered), `node modules/test.mjs` | in progress (wave 20) |
+| 5 | A second carded policy has a held-out interval on seeds 11 to 20 in `robotics/arena/registry`, `trained_models` equals the models registry's count, every honesty line still says no language model is trained | `node robotics/arena/test.mjs`, `node web/test_arena.mjs`, `node robotics/test.mjs` | planned |
+| 6 | The six spaces load in the 3D page and a walker reaches each one's rooms, and the home or map page links both pages | `node web/test_spaces.mjs` (a walkability check added to it), `node web/test_nav.mjs` | planned |
+| 7 | `eval_relief` passes both off and on with 0 rows failing, no existing flat-ground row edited, and the Bay overview triangle rows inside their ceilings | `node web/eval_relief.mjs` for the parish and Bay pages | planned |
+| 8 | Totals hold: `verify_all.sh` exits zero with the check count at least the 7,201 of `83db20b`, and each new row above has a mutation that fails by name | `./verify_all.sh`, `node brand/figures.mjs .`, `node brand/lint.mjs .`, `node roadmap/test.mjs` | continuous |
+
+A row is flipped at landing by replacing "pending" in its workstream with
+the commit and changing its State cell to "shipped, `<sha>`". A criterion that
+passes on a mocked or load-bound run says so in its own row; it is never
+reworded to a wider claim.
+
+---
+
+## Path to v4.0
+
+v3.7 is the last release this tree can finish alone. What stands between it
+and "the campus opens" (the v4.0 section above) is outside the repository, and
+each item already has the check that will prove it once the input exists.
+
+| v4.0 gate | What v3.7 contributes | What is still missing | Proved by, once it exists |
+| --- | --- | --- | --- |
+| One VR sim module end to end | A mocked session (criterion 1) | A session on a physical headset; none has run | the mocked-session suite re-run against a recorded real session, and the `meta/` honesty block changed by hand, with a person named |
+| Staged rollout lanes complete | Lessons that can complete (criterion 2) | A deployment and real learners; `ops/rehearsal.mjs` runs on seeded synthetic cohorts only | `node ops/rehearsal.mjs` and `node ops/test.mjs` against a real cohort's audit evidence |
+| Security checklist at zero open | Nothing | Authentication, storage, backup, secrets, scanning, a penetration test, an on-call rotation, a reporting address, each with a named owner | the checklist table in `SECURITY.md` with its "Accepted by" column filled |
+| Content signed off | Nothing | A practitioner's sign-off on a hall; 0 of 111 today | `node pack/verify.mjs` (the sign-off rule) with at least one hall carrying a named practitioner and a date |
+| Partners real | Nothing | An agreement; every district, programme, organisation and union is PROPOSED | a registry row with an agreement reference; no registry carries one today, so new checks would be written with it, never an existing check loosened |
+| A trained model claim | A second carded policy (criterion 5) | Learner episodes through the consent path; none exist | `node contrib/test.mjs` verifying a real contribution package, and the arena's honesty lines amended to match the count |
+
+The order does not change: v3.3 and v3.4 are not closed by this plan (see their
+sections: native-reviewed translations, practitioner-authored content), v3.7
+closes what the tree can,
+and v4.0 starts only when the inputs above exist, not when a date arrives.
+
+---
 
 ## Standing rules, every release
 

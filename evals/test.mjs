@@ -456,12 +456,12 @@ const r4 = (x) => Math.round(x * 1e4) / 1e4;
   const U = J('unions/registry/unions.json');
   const sha = (p) => createHash('sha256').update(readFileSync(join(ROOT, p))).digest('hex');
 
-  const stampsOk = [['lessons', L], ['sims', S], ['campuses', C], ['unions', U]].every(
+  const stampsOk = [['lessons', L], ['sims', S], ['campuses', C], ['unions', U], ['training', J('training/registry/training.json')]].every(
     ([k, reg]) => at(ce, `inputs.${k}.source_stamp`) === at(reg, 'source_stamp')
       && at(ce, `inputs.${k}.sha256`) === sha(at(ce, `inputs.${k}.path`)));
   ok(stampsOk && at(ce, 'inputs.halls.sha256') === sha('pack/registry/halls.json'),
      'completion_evidence exists and every input stamp and sha256 matches the '
-     + 'registry it was read from (lessons, sims, campuses, unions, halls)');
+     + 'registry it was read from (lessons, sims, campuses, unions, training, halls)');
 
   const kinds = at(L, 'step_kinds');
   const recKinds = Object.keys(kinds).filter((k) => at(kinds[k], 'records') !== null).sort();
@@ -511,6 +511,48 @@ const r4 = (x) => Math.round(x * 1e4) / 1e4;
      && at(r, 'self_reported_steps') === at(L, 'counts.silent_steps')
      && at(r, 'steps') === at(L, 'counts.steps'),
      'the step rollups equal the lessons registry\'s own recording/silent counts');
+
+  /* wave 20: completable is a property of what the episode records, not of how many steps are counted
+     evidence-backed. Recomputed here from lessons.json step fields and training.json episode fields, and
+     held equal to the completion contract's own derivation, a second source that reads the same two files. */
+  {
+    const T = J('training/registry/training.json');
+    const CMP = J('completion/registry/completion.json');
+    const META = new Set(['n', 'kind', 'records', 'stage', 'reads', 'note', 'do', 'names_read', 'where', 'label_kind']);
+    const refs = {}, unm = new Set();
+    for (const l of Object.values(lessons)) for (const st of at(l, 'steps')) {
+      refs[st.kind] = refs[st.kind] || new Set(['hall']);
+      for (const f of Object.keys(st)) if (!META.has(f)) refs[st.kind].add(f);
+    }
+    const missingOf = {};
+    for (const k of recKinds) {
+      const ep = at(T, `episode_kinds.${at(kinds[k], 'records')}.fields`);
+      missingOf[k] = [...refs[k]].filter((f) => !ep.includes(f)).sort();
+      if (missingOf[k].length) unm.add(k);
+    }
+    const mm = at(ce, 'matchability');
+    ok(recKinds.every((k) => at(mm[k], 'matchable') === (missingOf[k].length === 0)
+         && JSON.stringify(at(mm[k], 'unrecorded_references')) === JSON.stringify(missingOf[k])
+         && JSON.stringify(at(mm[k], 'step_references')) === JSON.stringify([...refs[k]].sort())
+         && JSON.stringify(at(mm[k], 'episode_fields')) === JSON.stringify(at(T, `episode_kinds.${at(kinds[k], 'records')}.fields`)))
+       && JSON.stringify(at(ce, 'unmatchable_kinds')) === JSON.stringify([...unm].sort())
+       && at(ce, 'inputs.training.sha256') === sha('training/registry/training.json')
+       && at(ce, 'inputs.training.source_stamp') === at(T, 'source_stamp'),
+       `matchability per recording kind is recomputed from the step references and the episode fields (unmatchable now: ${[...unm].join(', ') || 'none'})`);
+    const compl = (id) => !at(lessons[id], 'steps').some((s) => unm.has(s.kind));
+    ok(Object.keys(lessons).every((id) => at(pl[id], 'completable') === compl(id)
+         && JSON.stringify(at(pl[id], 'unmatchable_step_kinds')) === JSON.stringify([...new Set(at(lessons[id], 'steps').map((s) => s.kind))].filter((k) => unm.has(k)).sort()))
+       && at(r, 'completable') === Object.keys(lessons).filter(compl).length
+       && at(r, 'not_completable') === Object.keys(lessons).filter((id) => !compl(id)).length
+       && at(r, 'completable') + at(r, 'not_completable') === at(r, 'lessons')
+       && at(r, 'recording_steps_unmatchable') === Object.values(lessons).flatMap((l) => at(l, 'steps')).filter((s) => unm.has(s.kind)).length
+       && at(r, 'recording_steps_matchable') + at(r, 'recording_steps_unmatchable') === at(r, 'evidence_backed_steps')
+       && at(r, 'fully_verifiable_by_episode') === Object.keys(lessons).filter((id) => compl(id) && mine[id].cls === 'full').length,
+       `completable lessons are recomputed per lesson and in total (${Object.keys(lessons).filter(compl).length} of ${Object.keys(lessons).length}), and the matchable/unmatchable step split sums to the evidence-backed steps`);
+    ok(at(r, 'completable') === at(CMP, 'counts.lessons_completable') && at(r, 'not_completable') === at(CMP, 'counts.lessons_not_completable')
+       && Object.keys(lessons).every((id) => at(pl[id], 'completable') === at(CMP, `lessons.${id}.completable`)),
+       'the completable count and every lesson\'s completable flag equal the completion contract\'s own derivation, which reads the same two registries by a separate path');
+  }
 
   const pu = at(ce, 'per_union');
   const unionSlugs = at(U, 'unions').map((u) => at(u, 'slug'));

@@ -189,6 +189,15 @@ def _finish_restore(page, states, why):
     return page[:m.start(2)] + blob + page[m.end(2):]
 T.finish = _finish_restore
 # RESTORE END
+# MODULE-LINK BEGIN (wave 20, MODULE-LINK): the Bay restoration site panel and the scenario runner panel each get a
+# "Practice module" link to that site's module (modules/registry/modules.json, fail closed: web/modulelinks.py).
+import modulelinks  # noqa: E402
+_finish_modlink_base = T.finish
+def _finish_modlink(page, states, why):
+    page = _finish_modlink_base(page, states, why)
+    return modulelinks.bay_page(page, ROOT)
+T.finish = _finish_modlink
+# MODULE-LINK END
 sys.modules['__world_target__'] = T
 
 EDITS = [

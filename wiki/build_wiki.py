@@ -3802,6 +3802,8 @@ def page_completion_record():
     shown, argv, inputs = cmd_completion()
     rules = ' · '.join(f'`{r}`' for r in R['verifier']['rules'])
     c = R['counts']
+    _blocked = sorted(k for k, v in R['evidence_rule'].items() if v['class'] == 'episode-backed' and not v['evidenceable'])
+    blocked_why = ('a ' + ', '.join(_blocked) + ' step is of a kind its episode does not fully record') if _blocked else 'no step kind is blocked'
     return f'''# The completion record
 
 A completion record is a `{R["record_tag"]}` file a learner exports from the
@@ -3832,8 +3834,10 @@ the learner's device.
 
 `{R["verifier"]["run"]}` applies {len(R["verifier"]["rules"])} rules: {rules}.
 Of the registry's {c["lessons"]} lessons, {c["lessons_completable"]} can be
-completed from recorded evidence and {c["lessons_not_completable"]} cannot (a
-crew step no single device can record).
+completed from recorded evidence and {c["lessons_not_completable"]} cannot ({blocked_why}).
+A lesson is blocked only by a recording step whose episode lacks a reference the
+step carries; the crew episode records the crew's seat and muster, so a crew
+step is held to both.
 
 ## Check it offline
 

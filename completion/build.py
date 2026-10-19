@@ -324,7 +324,14 @@ def stamp_digest(record):
 # Computed, so a lesson that stops being completable drops out by itself.
 ROOT_LESSON = next(lid for lid, p in PER_LESSON.items() if p['completable'] and not p['needs'])
 NEXT_LESSON = next(lid for lid, p in PER_LESSON.items() if p['completable'] and p['needs'] == [ROOT_LESSON])
-COMPLETE = [ROOT_LESSON, NEXT_LESSON]
+# Since the crew episode records `seat` and `muster` (training/), a lesson that
+# holds a crew step is completable too, and the fixture proves that path with a
+# done crew step: the first completable lesson with a crew step that needs
+# nothing. Computed, not named.
+CREW_LESSON = next(lid for lid, p in PER_LESSON.items()
+                   if p['completable'] and not p['needs'] and lid != ROOT_LESSON
+                   and any(st['kind'] == 'crew' for st in LESSON_MAP[lid]['steps']))
+COMPLETE = [ROOT_LESSON, NEXT_LESSON, CREW_LESSON]
 PARTIAL = {'scaffold-read-the-tag': 2}  # first N steps done, the rest not
 for lid in COMPLETE:
     assert PER_LESSON[lid]['completable'], f'fixture: {lid} is not completable'
@@ -456,14 +463,23 @@ def mutants(good):
     st['evidence']['t'] = 'yesterday'
     out['episode-t-unparseable'] = ('step.episode-evidence', stamp_digest(m))
 
-    m = copy.deepcopy(good)
-    crew_lid, crew_step = next((lid, st) for lid, L in LESSON_MAP.items() for st in L['steps'] if st['kind'] == 'crew')
-    entry = next(x for x in find_lesson(m, crew_lid)['steps'] if x['step'] == crew_step['n'])
-    entry['done'] = True
-    entry['evidence'] = {'episode': 'crew', 't': f'{BUILT}T03:00:{crew_step["n"]:02d}.000Z', 'hall': LESSON_MAP[crew_lid]['hall'],
-                         'crew': crew_step['crew'], 'role': crew_step['role'], 'topic': crew_step['topic'],
-                         'answer_kind': crew_step['answer_kind']}
-    out['crew-done-unrecordable'] = ('step.episode-evidence', stamp_digest(m))
+    # the crew step is held to every reference it carries, seat and muster
+    # included. A wrong value fails the episode-evidence rule; an episode that
+    # lacks the field altogether (what the crew episode wrote before it
+    # recorded them) is refused as a missing field, the verifier's fail-closed
+    # reading, never defaulted. Each breaks exactly one rule.
+    for name, how in (('crew-done-wrong-seat', 'wrong'), ('crew-done-wrong-muster', 'wrong'),
+                      ('crew-done-no-seat', 'drop'), ('crew-done-no-muster', 'drop')):
+        field = 'seat' if name.endswith('seat') else 'muster'
+        m = copy.deepcopy(good)
+        crew_n = next(st['n'] for st in LESSON_MAP[CREW_LESSON]['steps'] if st['kind'] == 'crew')
+        entry = next(x for x in find_lesson(m, CREW_LESSON)['steps'] if x['step'] == crew_n)
+        assert entry['done'] and entry['evidence'][field], f'fixture: the crew step must be done with a {field}'
+        if how == 'wrong':
+            entry['evidence'][field] = 'not-the-' + field
+        else:
+            del entry['evidence'][field]
+        out[name] = ('step.episode-evidence' if how == 'wrong' else 'record.fields', stamp_digest(m))
 
     m = copy.deepcopy(good)
     m['lessons'].append({'lesson': 'no-such-lesson', 'hall': HALL_SLUGS[0], 'complete': False, 'steps': []})

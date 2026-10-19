@@ -61,6 +61,71 @@
   {
    "lesson": "riggers-carry-under-control",
    "hall": "riggers",
+   "complete": true,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": true,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "walkaround",
+     "done": true,
+     "evidence": {
+      "episode": "walkaround",
+      "t": "2026-09-26T03:00:02.000Z",
+      "hall": "riggers",
+      "point": "rope",
+      "sim": "crane-lift"
+     }
+    },
+    {
+     "step": 3,
+     "kind": "crew",
+     "done": true,
+     "evidence": {
+      "episode": "crew",
+      "t": "2026-09-26T03:00:03.000Z",
+      "answer_kind": "say",
+      "crew": "crane-lift-crew",
+      "hall": "riggers",
+      "muster": "coordination",
+      "role": "rigger",
+      "seat": "crane-lift",
+      "topic": "weight"
+     }
+    },
+    {
+     "step": 4,
+     "kind": "sim",
+     "done": true,
+     "evidence": {
+      "sim": "crane-lift",
+      "scenario": "bay-steel",
+      "score": 3,
+      "passed": true
+     }
+    },
+    {
+     "step": 5,
+     "kind": "advisor",
+     "done": true,
+     "evidence": {
+      "episode": "advisor",
+      "t": "2026-09-26T03:00:05.000Z",
+      "advisor": "operator",
+      "answer_kind": "read",
+      "hall": "riggers",
+      "topic": "rubric"
+     }
+    }
+   ]
+  },
+  {
+   "lesson": "crane-ops-read-the-chart",
+   "hall": "crane-ops",
    "complete": false,
    "steps": [
     {
@@ -77,70 +142,15 @@
     },
     {
      "step": 3,
-     "kind": "crew",
-     "done": false,
-     "evidence": null
-    },
-    {
-     "step": 4,
      "kind": "sim",
      "done": false,
      "evidence": null
     },
     {
-     "step": 5,
+     "step": 4,
      "kind": "advisor",
      "done": false,
      "evidence": null
-    }
-   ]
-  },
-  {
-   "lesson": "crane-ops-read-the-chart",
-   "hall": "crane-ops",
-   "complete": true,
-   "steps": [
-    {
-     "step": 1,
-     "kind": "walk",
-     "done": true,
-     "evidence": null
-    },
-    {
-     "step": 2,
-     "kind": "walkaround",
-     "done": true,
-     "evidence": {
-      "episode": "walkaround",
-      "t": "2026-09-26T03:00:02.000Z",
-      "hall": "crane-ops",
-      "point": "chart",
-      "sim": "load-chart"
-     }
-    },
-    {
-     "step": 3,
-     "kind": "sim",
-     "done": true,
-     "evidence": {
-      "sim": "load-chart",
-      "scenario": "bay-pick-list",
-      "score": 2,
-      "passed": true
-     }
-    },
-    {
-     "step": 4,
-     "kind": "advisor",
-     "done": true,
-     "evidence": {
-      "episode": "advisor",
-      "t": "2026-09-26T03:00:04.000Z",
-      "advisor": "operator",
-      "answer_kind": "read",
-      "hall": "crane-ops",
-      "topic": "task"
-     }
     }
    ]
   },
@@ -215,37 +225,64 @@
   {
    "lesson": "welders-the-watch",
    "hall": "welders",
-   "complete": false,
+   "complete": true,
    "steps": [
     {
      "step": 1,
      "kind": "walk",
-     "done": false,
+     "done": true,
      "evidence": null
     },
     {
      "step": 2,
      "kind": "placard",
-     "done": false,
-     "evidence": null
+     "done": true,
+     "evidence": {
+      "episode": "placard",
+      "t": "2026-09-26T03:00:00.000Z",
+      "hall": "welders"
+     }
     },
     {
      "step": 3,
      "kind": "advisor",
-     "done": false,
-     "evidence": null
+     "done": true,
+     "evidence": {
+      "episode": "advisor",
+      "t": "2026-09-26T03:00:03.000Z",
+      "advisor": "safety-steward",
+      "answer_kind": "read",
+      "hall": "welders",
+      "topic": "hazard"
+     }
     },
     {
      "step": 4,
      "kind": "walkaround",
-     "done": false,
-     "evidence": null
+     "done": true,
+     "evidence": {
+      "episode": "walkaround",
+      "t": "2026-09-26T03:00:04.000Z",
+      "hall": "welders",
+      "point": "firewatch",
+      "sim": "weld-bead"
+     }
     },
     {
      "step": 5,
      "kind": "crew",
-     "done": false,
-     "evidence": null
+     "done": true,
+     "evidence": {
+      "episode": "crew",
+      "t": "2026-09-26T03:00:05.000Z",
+      "answer_kind": "say",
+      "crew": "hot-work-crew",
+      "hall": "welders",
+      "muster": "safety",
+      "role": "fire-watch",
+      "seat": "weld-bead",
+      "topic": "watching"
+     }
     }
    ]
   },
@@ -369,11 +406,7 @@
      "step": 2,
      "kind": "placard",
      "done": true,
-     "evidence": {
-      "episode": "placard",
-      "t": "2026-09-26T03:00:00.000Z",
-      "hall": "scaffold"
-     }
+     "evidence": null
     },
     {
      "step": 3,
@@ -4437,9 +4470,9 @@
    "score": 2,
    "attempts": 1
   },
-  "load-chart": {
+  "crane-lift": {
    "passed": true,
-   "score": 2,
+   "score": 3,
    "attempts": 1
   }
  },
@@ -4466,6 +4499,6 @@
  "digest": {
   "alg": "SHA-256",
   "over": "canonical JSON of every top-level field except digest, with identity.signature forced to null: keys sorted recursively, no whitespace, UTF-8",
-  "hex": "37a5920f54ec0b3502debeae6043d9faf58db98679c74521de6f585d57575042"
+  "hex": "7b747382255b20d8f9f868d0ff2571ccc9f7ff2ec2c888a5fa62b756945df7c7"
  }
 }

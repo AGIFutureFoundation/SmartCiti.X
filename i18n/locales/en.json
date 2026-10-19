@@ -324,6 +324,8 @@
   "wilds.legend": "Minimap: orange squares are work sites; a ringed square has simulated tasks.",
   "wilds.flora_honesty": "Ground flora: AUTHORED placement of generally named plants by biome - not a survey, species map or count.",
   "wilds.side_quest": "Side quest",
+  "modlink.practice": "Practice module",
+  "wilds.practice_module": "Practice module",
   "wilds.toast.cache": "You found a hidden cache. The quest log is not wired to this page yet, so nothing is recorded.",
   "wilds.toast.trailhead": "You signed the trailhead book. The quest log is not wired to this page yet, so nothing is recorded.",
   "wilds.not_on_globe": "Not on the globe",

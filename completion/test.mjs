@@ -200,7 +200,8 @@ ok('the on-disk signature mutants are there: a typed-in string, a wrong scheme, 
     .every((f) => reg.fixture.mutants[f] === 'identity.signature'));
 ok('the required mutations are among them, including episode-wrong-kind and episode-wrong-point',
   REQUIRED.every((r) => mutants.some(([, rule]) => rule === r))
-  && ['fixture/mutant-episode-wrong-kind.json', 'fixture/mutant-episode-wrong-point.json', 'fixture/mutant-crew-done-unrecordable.json', 'fixture/mutant-episode-t-unparseable.json'].every((f) => reg.fixture.mutants[f] === 'step.episode-evidence'));
+  && ['fixture/mutant-episode-wrong-kind.json', 'fixture/mutant-episode-wrong-point.json', 'fixture/mutant-crew-done-wrong-seat.json', 'fixture/mutant-crew-done-wrong-muster.json', 'fixture/mutant-episode-t-unparseable.json'].every((f) => reg.fixture.mutants[f] === 'step.episode-evidence')
+  && ['fixture/mutant-crew-done-no-seat.json', 'fixture/mutant-crew-done-no-muster.json'].every((f) => reg.fixture.mutants[f] === 'record.fields'));
 const trainingReg = read('../training/registry/training.json');
 ok('per recording kind, checkable and not-checkable step references are read from training.json episode fields',
   reg.recording_kinds.every((k) => {
@@ -215,8 +216,24 @@ ok('evidenceable per recording kind recomputes from lessons.json step references
     for (const L of Object.values(lessonsReg.lessons)) for (const st of L.steps) if (st.kind === k) for (const f of Object.keys(st)) if (!STEP_META.has(f)) refs.add(f);
     const ep = trainingReg.episode_kinds[lessonsReg.step_kinds[k].records].fields;
     return [...refs].every((f) => ep.includes(f)) === reg.evidence_rule[k].evidenceable;
-  }) && reg.evidence_rule.crew.evidenceable === false && /no muster and no seat|no seat and no muster/.test(reg.evidence_rule.crew.evidenceable_why)
-  && ['advisor', 'walkaround', 'sim'].every((k) => reg.evidence_rule[k].evidenceable === true));
+  }) && ['advisor', 'walkaround', 'sim', 'crew'].every((k) => reg.evidence_rule[k].evidenceable === true));
+ok('a crew step is evidenceable and held to seat and muster: both are fields of the crew episode, both are checkable, none is not-checkable',
+  trainingReg.episode_kinds.crew.fields.includes('seat') && trainingReg.episode_kinds.crew.fields.includes('muster')
+  && reg.evidence_rule.crew.checkable.includes('seat') && reg.evidence_rule.crew.checkable.includes('muster')
+  && reg.evidence_rule.crew.not_checkable.length === 0
+  && reg.evidence_rule.crew.evidence_shape.seat && reg.evidence_rule.crew.evidence_shape.muster
+  && Object.values(lessonsReg.lessons).flatMap((L) => L.steps).filter((s) => s.kind === 'crew')
+    .every((s) => reg.evidence_rule.crew.checkable.every((f) => f === 'hall' || f in s)));
+ok('every lesson is completable now and none is blocked: the count is derived from the evidence rule, and no step kind is non-evidenceable',
+  reg.counts.lessons_completable === reg.counts.lessons && reg.counts.lessons_not_completable === 0
+  && Object.values(reg.lessons).every((p) => p.completable && p.not_completable_why === null)
+  && reg.recording_kinds.every((k) => reg.evidence_rule[k].evidenceable === true));
+ok('the fixture has a crew step done with an episode carrying the step\'s own crew, role, topic, answer_kind, seat and muster',
+  good.lessons.some((l) => l.complete && l.steps.some((s) => {
+    const st = lessonsReg.lessons[l.lesson].steps.find((k) => k.n === s.step);
+    return s.kind === 'crew' && s.done && s.evidence.episode === 'crew' && s.evidence.hall === l.hall
+      && ['crew', 'role', 'topic', 'answer_kind', 'seat', 'muster'].every((f) => st[f] !== undefined && s.evidence[f] === st[f]);
+  })));
 ok('a lesson is completable exactly when none of its steps is of a non-evidenceable kind, and the count is derived',
   Object.entries(reg.lessons).every(([lid, p]) => p.completable
     === lessonsReg.lessons[lid].steps.every((st) => reg.evidence_rule[st.kind].class !== 'episode-backed' || reg.evidence_rule[st.kind].evidenceable))

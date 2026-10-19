@@ -107,6 +107,27 @@ ok('every declared episode kind is actually recorded by the page, by name',
 ok('recordEpisode is called from exactly the declared integration points, one per kind',
   (page.match(/recordEpisode\(\{/g) || []).length === kinds.length);
 
+/* wave 20: the fields a kind DECLARES are the fields the page WRITES. The call literal of the three
+   flat kinds is read out of the page and its keys must equal the declared fields (minus the stamp `t`
+   recordEpisode adds itself); a declared field the page never writes, or a field written and never
+   declared, fails by the kind's name. The sim literal nests objects and a spread, so it is held by the
+   outcome/actor checks below instead. */
+const callKeys = (kk) => {
+  const at0 = page.indexOf(`recordEpisode({ kind: '${kk}'`);
+  if (at0 < 0) return null;
+  const body = page.slice(at0, page.indexOf('});', at0)).replace(/^recordEpisode\(\{/, '');
+  return [...body.matchAll(/(?:^|[\s,{])([a-z_]+):\s/g)].map((m) => m[1]).sort();
+};
+for (const kk of ['advisor', 'crew', 'walkaround']) {
+  ok(`the page writes exactly the declared fields of a ${kk} episode (the stamp t is added by recordEpisode)`,
+    JSON.stringify(callKeys(kk)) === JSON.stringify(reg.episode_kinds[kk].fields.filter((f) => f !== 't').sort()),
+    [JSON.stringify(callKeys(kk)), JSON.stringify(reg.episode_kinds[kk].fields)]);
+}
+ok('a crew episode records the crew\'s own seat and muster, copied from the crews registry entry the page already holds',
+  reg.episode_kinds.crew.fields.includes('seat') && reg.episode_kinds.crew.fields.includes('muster')
+  && /CREW-EPISODE BEGIN[\s\S]*?seat: crew\.seat, muster: crew\.muster[\s\S]*?CREW-EPISODE END/.test(page)
+  && /const crew = a\.inCrew \? CREW_TABLE\[a\.inCrew\] : null;/.test(page));
+
 /* ------------------------------------------------------------------ TRACE --- */
 ok('TRACE has its own toggle key, separate from the base recorder\'s, off by default',
   reg.trace.toggle_key !== reg.storage.toggle_key

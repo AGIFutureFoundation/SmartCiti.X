@@ -6244,9 +6244,14 @@ function openAdvisor(aid, topicId) {
        training/build.py counts the recorder's integration points against
        its declared episode kinds - and a call whose shape is decided at
        runtime is exactly the thing that count exists to refuse. */
+    /* CREW-EPISODE BEGIN: the seat and the muster are the crew's own entry
+       in the crews registry, copied verbatim into the episode, so a lesson
+       step that names a crew can be matched on every reference it carries. */
     if (tp && crew) recordEpisode({ kind: 'crew', campus: campusKey,
       hall: slug, crew: a.inCrew, role: aid.split(':')[1],
-      topic: topicId, answer_kind: tp.kind });
+      topic: topicId, answer_kind: tp.kind,
+      seat: crew.seat, muster: crew.muster });
+    /* CREW-EPISODE END */
     else if (tp) recordEpisode({ kind: 'advisor', campus: campusKey,
       hall: slug, advisor: aid, topic: topicId, answer_kind: tp.kind });
   }
@@ -18275,6 +18280,8 @@ _LK_SUBS = [
      'lookRenderer(renderer);   // LOOK-KIT\n'),
     ('for (const m of Object.values(mat)) m.userData.shared = true;\n',
      'for (const m of Object.values(mat)) m.userData.shared = true;\nlookMats(mat);   // LOOK-KIT\n'),
+    # wave 20: the per-view exposure (the network view is metered up; every other view keeps the page's number)
+    ('function xrRender() {\n', 'function xrRender() {\n  lookView(view);   // LOOK-KIT: the exposure of the view being drawn\n'),
 ]
 for _o, _n in _LK_SUBS:
     if page.count(_o) != 1:

@@ -498,7 +498,8 @@ def build_fixture():
         episode('advisor', T(4), campus=FIX_CAMPUS, hall=FIX_HALL, advisor='fixture-advisor', topic='fixture-topic',
                 answer_kind='record'),
         episode('crew', T(5), campus=FIX_CAMPUS, hall=FIX_HALL, crew='fixture-crew', role='fixture-role',
-                topic='fixture-topic', answer_kind='registry'),
+                topic='fixture-topic', answer_kind='registry',
+                seat='fixture-seat', muster='fixture-muster'),
     ]
     c = counts_of(episodes)
     rec = {
