@@ -430,7 +430,7 @@
     },
     {
      "path": "layers/registry/layers.json",
-     "sha256": "edf4b6d304349ad8"
+     "sha256": "83516ca7770ae016"
     }
    ],
    "status": "SHIPPING",
@@ -453,7 +453,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "9c9ee07cf9f2a6b5"
+     "sha256": "0bd6fc84d3ced2eb"
     }
    ],
    "status": "SHIPPING",
@@ -477,7 +477,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "9c9ee07cf9f2a6b5"
+     "sha256": "0bd6fc84d3ced2eb"
     }
    ],
    "status": "SHIPPING",
@@ -501,7 +501,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "9c9ee07cf9f2a6b5"
+     "sha256": "0bd6fc84d3ced2eb"
     }
    ],
    "status": "SHIPPING",
@@ -525,7 +525,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "9c9ee07cf9f2a6b5"
+     "sha256": "0bd6fc84d3ced2eb"
     }
    ],
    "status": "PROPOSED",
@@ -549,7 +549,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "9c9ee07cf9f2a6b5"
+     "sha256": "0bd6fc84d3ced2eb"
     }
    ],
    "status": "SHIPPING",
@@ -573,7 +573,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "9c9ee07cf9f2a6b5"
+     "sha256": "0bd6fc84d3ced2eb"
     }
    ],
    "status": "SHIPPING",
@@ -597,7 +597,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "9c9ee07cf9f2a6b5"
+     "sha256": "0bd6fc84d3ced2eb"
     }
    ],
    "status": "SHIPPING",
@@ -624,7 +624,7 @@
     },
     {
      "path": "layers/registry/layers.json",
-     "sha256": "edf4b6d304349ad8"
+     "sha256": "83516ca7770ae016"
     }
    ],
    "status": "SHIPPING",
@@ -841,7 +841,7 @@
    "sources": [
     {
      "path": "courses/registry/courses.json",
-     "sha256": "8bb7e12b0beac87d"
+     "sha256": "5811cd019bf5f6e8"
     }
    ],
    "status": "SHIPPING",
@@ -863,7 +863,7 @@
    "sources": [
     {
      "path": "hive/registry/hive.json",
-     "sha256": "a5eb0b97bffc0ccc"
+     "sha256": "e2b2ccae493b79e6"
     }
    ],
    "status": "SHIPPING",

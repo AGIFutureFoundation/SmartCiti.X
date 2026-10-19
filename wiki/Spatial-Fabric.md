@@ -196,7 +196,7 @@ this fabric is static files a plain web server serves next to the site - the dec
 | `crib:transport` | toolroom-crib | Transport & mobility tool crib | `campus:oakland` | `tools/registry/toolcribs.json` |
 | `crib:control` | toolroom-crib | Survey, safety & environment tool crib | `campus:new-orleans` | `tools/registry/toolcribs.json` |
 | `restoration-panel` | panel | Bay Restoration panel - 11 sites, 3 field-skill tracks | `campus:treasure-island` | `restoration/registry/restoration.json` |
-| `training-recorder` | recorder | training-data recorder - 6 episode kinds, device-local under tc-training | `campus:treasure-island` | `training/registry/training.json` |
+| `training-recorder` | recorder | training-data recorder - 8 episode kinds, device-local under tc-training | `campus:treasure-island` | `training/registry/training.json` |
 
 ## Other operators are other origins
 

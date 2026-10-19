@@ -1,0 +1,3156 @@
+{
+ "pack": "smartcitix-trade-craft-academy-lesson-plans",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-10-12",
+ "source_stamp": "685c05aa16c884ba",
+ "honesty": {
+  "status": "every lesson plan is a PLANNED DRAFT derived only from the courses registry; none has been reviewed by a qualified instructor and none is an approved syllabus",
+  "credit": "no licensing board, jurisdiction or employer has accepted any minute of these plans; simulator and station time never count toward a licence or certification",
+  "marks": "no plan is accredited, and no union, standards body or school is a partner of it",
+  "minutes": "minutes are an arithmetic split of hours_planned (20/30/35/15 across home/class/floor/gate), not a measured or validated pacing"
+ },
+ "source": {
+  "courses": "courses/registry/courses.json",
+  "courses_stamp": "43202e1c25bfaeed"
+ },
+ "stage_split_percent": {
+  "home": 20,
+  "class": 30,
+  "floor": 35,
+  "gate": 15
+ },
+ "plans": [
+  {
+   "code": "TCA-110",
+   "title": "Residential Electrical Foundations (NEC 2023)",
+   "trade": "Electrical",
+   "status": "planned draft",
+   "hours_planned": 120,
+   "minutes_total": 7200,
+   "mentors": [
+    "Chris",
+    "Sam"
+   ],
+   "halls": [
+    "electricians"
+   ],
+   "delivery_status": "all four stages planned: the floor stage runs on the bound simulator(s) or class station(s) named in each week, or as a paper or demo exercise where none is bound",
+   "catalog_section": "available",
+   "teacher_note": "planned draft: generated from registry data and not reviewed by a qualified instructor; adapt it, and do not present it as an approved syllabus",
+   "weeks": [
+    {
+     "week": 1,
+     "module": 1,
+     "title": "Ohm's Law, Circuits and Meter Use",
+     "minutes": 1440,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Read on series vs parallel circuits and watch a CAT III multimeter walkthrough; 10-question check on V=IR and P=VI.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 288
+      },
+      {
+       "stage": "class",
+       "assign": "Given a 3-room panel schedule, compute branch loads and flag any 15 A circuit above 80% continuous load.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 432
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim bench: measure voltage, continuity and resistance on a live-dead-live test sequence without skipping the proving step.",
+       "teacher_role": "supervise the practice on floor simulator(s) boom-lift; watch each seat and record results as practice only",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 504,
+       "floor_sims": [
+        "boom-lift"
+       ],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Virtual job site: troubleshoot a dead bedroom receptacle traced to an open neutral on a backstabbed device.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 216
+      }
+     ],
+     "wired": true,
+     "sites": [
+      {
+       "kind": "crib",
+       "id": "systems",
+       "tool": "multimeter",
+       "use": "prepare: name the multimeter in the Building-systems crib check before the meter-use practice"
+      }
+     ],
+     "wiring_note": "the module practises measuring voltage, continuity and resistance; the systems crib drill (bound to the electricians hall) asks for the tool that reads voltage, current and resistance in one instrument - the multimeter. It covers tool identification only; no simulator runs the live-dead-live sequence itself"
+    },
+    {
+     "week": 2,
+     "module": 2,
+     "title": "Grounding and Bonding (NEC Art. 250)",
+     "minutes": 1440,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Short reading on equipment grounding conductor vs grounded conductor, main bonding jumper and grounding electrode system.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 288
+      },
+      {
+       "stage": "class",
+       "assign": "Spot-the-fault on 6 panel photos: neutrals and grounds bonded in a subpanel, missing water-pipe bond, undersized GEC.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 432
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: land EGCs, separate neutral and ground bars in a subpanel, install bonding jumper at the water heater.",
+       "teacher_role": "supervise the practice on floor simulator(s) boom-lift; watch each seat and record results as practice only",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 504,
+       "floor_sims": [
+        "boom-lift"
+       ],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Job-site inspection walk with an inspector NPC; student must cite the article for each correction.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 216
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 3,
+     "module": 3,
+     "title": "Branch Circuits and Conductor Sizing (Art. 210, 310.16)",
+     "minutes": 1440,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Ampacity table primer: 14 AWG Cu = 15 A, 12 AWG = 20 A, 10 AWG = 30 A (small-conductor rule 240.4(D)).",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 288
+      },
+      {
+       "stage": "class",
+       "assign": "Size conductors and OCPD for a 30 A dryer and 50 A range; compute voltage drop on a 120 ft run and keep it under 3%.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 432
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim rough-in: drill studs, staple NM cable within 12 in. of boxes, box fill calculation per 314.16.",
+       "teacher_role": "supervise the practice on floor simulator(s) boom-lift; watch each seat and record results as practice only",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 504,
+       "floor_sims": [
+        "boom-lift"
+       ],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Finish trim-out of a kitchen with 20 A small-appliance circuits and GFCI/AFCI where required; pass the sim inspection.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 216
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 4,
+     "module": 4,
+     "title": "GFCI, AFCI and Device Wiring",
+     "minutes": 1440,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Watch a module on line vs load terminals and 3-way/4-way switching.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 288
+      },
+      {
+       "stage": "class",
+       "assign": "Read 4 switch-loop diagrams and pick which one creates a switched neutral (code violation).",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 432
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: wire a 3-way hallway circuit and a GFCI protecting downstream bathroom receptacles.",
+       "teacher_role": "supervise the practice on floor simulator(s) boom-lift; watch each seat and record results as practice only",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 504,
+       "floor_sims": [
+        "boom-lift"
+       ],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Customer call: tripping AFCI on a bedroom circuit; isolate a shared neutral and report findings to the homeowner NPC.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 216
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 5,
+     "module": 5,
+     "title": "Lockout/Tagout and Arc-Flash Awareness",
+     "minutes": 1440,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Read OSHA 1910.147 LOTO steps and NFPA 70E arc-flash boundary basics.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 288
+      },
+      {
+       "stage": "class",
+       "assign": "Order 6 shuffled LOTO steps and identify the missing verification of zero energy.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 432
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: apply personal lock and tag on a 200 A disconnect, test-before-touch with a proven meter.",
+       "teacher_role": "supervise the practice on floor simulator(s) boom-lift; watch each seat and record results as practice only",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 504,
+       "floor_sims": [
+        "boom-lift"
+       ],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Sam runs a surprise energized-equipment scenario; any skipped step ends the attempt and triggers a debrief.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 216
+      }
+     ],
+     "wired": false
+    }
+   ]
+  },
+  {
+   "code": "TCA-120",
+   "title": "Plumbing Systems: DWV, Supply and Fixtures",
+   "trade": "Plumbing",
+   "status": "planned draft",
+   "hours_planned": 110,
+   "minutes_total": 6600,
+   "mentors": [
+    "Chris",
+    "Sam"
+   ],
+   "halls": [
+    "pipefitters"
+   ],
+   "delivery_status": "all four stages planned: the floor stage runs on the bound simulator(s) or class station(s) named in each week, or as a paper or demo exercise where none is bound",
+   "catalog_section": "home-and-class",
+   "teacher_note": "planned draft: generated from registry data and not reviewed by a qualified instructor; adapt it, and do not present it as an approved syllabus",
+   "weeks": [
+    {
+     "week": 1,
+     "module": 1,
+     "title": "Drain-Waste-Vent Principles",
+     "minutes": 1650,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Reading on traps, vents and fall: 1/4 in. per ft for drains 3 in. and smaller; why trap seals siphon.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 330
+      },
+      {
+       "stage": "class",
+       "assign": "Isometric review: find an S-trap, an unvented island sink and a horizontal wet vent sized too small.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 495
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: lay out a bathroom group DWV with correct fittings (long-sweep 90s, sanitary tees on vertical only).",
+       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 578,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Virtual job site: water test the stack to 10 ft head and locate a leaking joint.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 247
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 2,
+     "module": 2,
+     "title": "Water Supply Sizing and Materials",
+     "minutes": 1650,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Watch a primer on PEX, copper Type L/M and CPVC, and fixture units.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 330
+      },
+      {
+       "stage": "class",
+       "assign": "Compute fixture units for a 2-bath house and size the main and branches from a provided table.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 495
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: sweat a copper joint (clean, flux, heat fitting, feed solder) and crimp PEX with a go/no-go gauge.",
+       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 578,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Pressure-test the rough-in at the required test pressure and hold time; document results on a test sheet.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 247
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 3,
+     "module": 3,
+     "title": "Fixture Installation",
+     "minutes": 1650,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Read install sheets for a toilet, lav faucet and tub/shower valve with anti-scald limit stop.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 330
+      },
+      {
+       "stage": "class",
+       "assign": "Diagnose 5 callback photos: rocking toilet, wax ring leak, reversed hot/cold, missing escutcheon, no air gap.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 495
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: set a toilet on a flange, install a lav with P-trap and set the shower valve limit stop to 120 F.",
+       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 578,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Customer walkthrough with homeowner NPC; explain the work and leave the site clean.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 247
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 4,
+     "module": 4,
+     "title": "Water Heaters and Backflow",
+     "minutes": 1650,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Reading on T&P relief valves, expansion tanks, and cross-connection control.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 330
+      },
+      {
+       "stage": "class",
+       "assign": "Review 4 water-heater installs and flag a capped T&P discharge and a missing expansion tank on a closed system.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 495
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: replace a 50 gal gas water heater including venting check, sediment trap and gas leak test.",
+       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 578,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Job site: commercial kitchen with a cross-connection; specify the correct backflow assembly type.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 247
+      }
+     ],
+     "wired": true,
+     "sites": [
+      {
+       "kind": "crib",
+       "id": "systems",
+       "tool": "pipe-wrench",
+       "use": "prepare: name the pipe wrench in the Building-systems crib check before assembling the threaded sediment trap"
+      }
+     ],
+     "wiring_note": "the module practises replacing a gas water heater, including its sediment trap, which is assembled from threaded pipe and fittings; the systems crib drill (bound to the pipefitters hall) asks for the tool that grips and turns threaded pipe - the pipe wrench. It covers tool identification only; no simulator runs the water-heater swap, the venting check or the gas leak test, and the pipefitters hall stands in for a plumbing hall"
+    }
+   ]
+  },
+  {
+   "code": "TCA-130",
+   "title": "HVAC/R Service Technician",
+   "trade": "HVAC",
+   "status": "planned draft",
+   "hours_planned": 140,
+   "minutes_total": 8400,
+   "mentors": [
+    "Chris",
+    "Sam"
+   ],
+   "halls": [
+    "hvacr"
+   ],
+   "delivery_status": "all four stages planned: the floor stage runs on the bound simulator(s) or class station(s) named in each week, or as a paper or demo exercise where none is bound",
+   "catalog_section": "home-and-class",
+   "teacher_note": "planned draft: generated from registry data and not reviewed by a qualified instructor; adapt it, and do not present it as an approved syllabus",
+   "weeks": [
+    {
+     "week": 1,
+     "module": 1,
+     "title": "Refrigeration Cycle",
+     "minutes": 1680,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Watch the 4-component cycle (compressor, condenser, metering device, evaporator) with a P-H diagram overlay.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 336
+      },
+      {
+       "stage": "class",
+       "assign": "Given gauge readings, determine saturation temps from a PT chart for R-410A and R-454B.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 504
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: connect manifold gauges and read suction/liquid pressures on a running split system.",
+       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 588,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Service call: system blowing warm; identify a dirty condenser coil from high head pressure.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 252
+      }
+     ],
+     "wired": true,
+     "sites": [
+      {
+       "kind": "crib",
+       "id": "systems",
+       "tool": "manifold-gauge",
+       "use": "prepare: name the manifold gauge set in the Building-systems crib check before connecting gauges"
+      },
+      {
+       "kind": "lesson",
+       "id": "hvacr-prove-the-sequence",
+       "use": "class: the hvacr Inspection Bench lesson that walks to that crib check and asks the Inspector whether talk can stand in for a measurement"
+      }
+     ],
+     "wiring_note": "the module practises connecting manifold gauges and reading suction and liquid pressures; the systems crib drill (bound to the hvacr hall) asks for the tool that reads both sides of a refrigeration circuit at once, and the hvacr lesson hvacr-prove-the-sequence runs that crib check. It covers tool identification and a measurement-first inspection habit only; no simulator runs a refrigeration circuit"
+    },
+    {
+     "week": 2,
+     "module": 2,
+     "title": "Superheat and Subcooling Diagnostics",
+     "minutes": 1680,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Read on target superheat for fixed orifice and target subcooling for TXV systems.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 336
+      },
+      {
+       "stage": "class",
+       "assign": "Classify 6 reading sets as undercharge, overcharge, restriction or low airflow.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 504
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: weigh in charge to subcooling target with a digital scale; adaptive dial varies outdoor temp.",
+       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 588,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Job site: 3-ton TXV system with 2 F subcooling; find and repair the leak before recharging.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 252
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 3,
+     "module": 3,
+     "title": "EPA 608 Refrigerant Handling",
+     "minutes": 1680,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Study guide covering Core, Type I, II and III content: venting prohibition, recovery and leak-repair rules.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 336
+      },
+      {
+       "stage": "class",
+       "assign": "Practice items mirroring the Core section; hint engine explains each miss.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 504
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: recover refrigerant into a DOT cylinder without exceeding 80% fill by weight.",
+       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 588,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Timed mock exam; results logged as practice only.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 252
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 4,
+     "module": 4,
+     "title": "Airflow, Load and Duct Basics",
+     "minutes": 1680,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Primer on Manual J load and Manual D duct design concepts, static pressure and CFM per ton.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 336
+      },
+      {
+       "stage": "class",
+       "assign": "Read a total external static measurement and judge whether the blower can deliver 400 CFM/ton.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 504
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: measure static, swap a restrictive filter, adjust blower tap and re-measure.",
+       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 588,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Job site: comfort complaint in a 2-story home; balance dampers and document before/after temps.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 252
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 5,
+     "module": 5,
+     "title": "Electrical Controls and Safety",
+     "minutes": 1680,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Watch: contactors, run capacitors, 24 V control wiring (R, C, Y, G, W).",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 336
+      },
+      {
+       "stage": "class",
+       "assign": "Ladder diagram exercise: trace why the condenser fan runs but the compressor hums and trips.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 504
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: test a dual run capacitor in microfarads after safely discharging it, replace if out of tolerance.",
+       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 588,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Sam scenario: arc-flash and LOTO before opening the disconnect; any skip fails the visit.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 252
+      }
+     ],
+     "wired": false
+    }
+   ]
+  },
+  {
+   "code": "TCA-140",
+   "title": "Structural Welding: SMAW and GMAW Plate",
+   "trade": "Welding",
+   "status": "planned draft",
+   "hours_planned": 160,
+   "minutes_total": 9600,
+   "mentors": [
+    "Joyce"
+   ],
+   "halls": [
+    "welders",
+    "fabricators"
+   ],
+   "delivery_status": "all four stages planned: the floor stage runs on the bound simulator(s) or class station(s) named in each week, or as a paper or demo exercise where none is bound",
+   "catalog_section": "available",
+   "teacher_note": "planned draft: generated from registry data and not reviewed by a qualified instructor; adapt it, and do not present it as an approved syllabus",
+   "weeks": [
+    {
+     "week": 1,
+     "module": 1,
+     "title": "Welding Safety and Setup",
+     "minutes": 1920,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Read on fume control, shade numbers (10-13 for SMAW), hot-work permits and fire watch.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Joyce"
+       ],
+       "minutes": 384
+      },
+      {
+       "stage": "class",
+       "assign": "Spot 6 hazards in a booth photo: cylinders unchained, wet gloves, missing screen, cracked lens.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Joyce"
+       ],
+       "minutes": 576
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: set amperage for 1/8 in. E7018 (about 90-140 A), check ground clamp and stinger insulation.",
+       "teacher_role": "supervise the practice on floor simulator(s) weld-bead; watch each seat and record results as practice only",
+       "mentors": [
+        "Joyce"
+       ],
+       "minutes": 672,
+       "floor_sims": [
+        "weld-bead"
+       ],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Sam audits the booth before Joyce allows the first arc.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Joyce"
+       ],
+       "minutes": 288
+      }
+     ],
+     "wired": true,
+     "sites": [
+      {
+       "kind": "sim",
+       "id": "weld-bead",
+       "use": "practice: set-up and first arc on the Weld Bead Run seat"
+      },
+      {
+       "kind": "lesson",
+       "id": "welders-the-watch",
+       "use": "prepare/verify: fire watch and hot-work walk in the welders Induction & PPE room"
+      }
+     ],
+     "wiring_note": "the S1 welding slice: the sites named run this module"
+    },
+    {
+     "week": 2,
+     "module": 2,
+     "title": "SMAW Flat and Horizontal Fillets",
+     "minutes": 1920,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Watch Joyce demo arc length, travel speed and 5-15 degree drag angle with E7018.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Joyce"
+       ],
+       "minutes": 384
+      },
+      {
+       "stage": "class",
+       "assign": "Grade 6 bead photos for undercut, porosity, slag inclusions and cold lap.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Joyce"
+       ],
+       "minutes": 576
+      },
+      {
+       "stage": "floor",
+       "assign": "Haptic sim: run 2F fillets; dial adjusts travel-speed tolerance per AI-ZPD.",
+       "teacher_role": "supervise the practice on floor simulator(s) weld-bead; watch each seat and record results as practice only",
+       "mentors": [
+        "Joyce"
+       ],
+       "minutes": 672,
+       "floor_sims": [
+        "weld-bead"
+       ],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Visual inspection to a workmanship checklist modeled on AWS D1.1 Table 8.1 criteria.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Joyce"
+       ],
+       "minutes": 288
+      }
+     ],
+     "wired": true,
+     "sites": [
+      {
+       "kind": "sim",
+       "id": "weld-bead",
+       "use": "practice: bead runs graded on fusion and gap band"
+      }
+     ],
+     "wiring_note": "the S1 welding slice: the sites named run this module"
+    },
+    {
+     "week": 3,
+     "module": 3,
+     "title": "SMAW 3G Vertical-Up Groove Plate",
+     "minutes": 1920,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Read on joint prep: 22.5 degree bevel, 1/4 in. root opening, backing strip.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Joyce"
+       ],
+       "minutes": 384
+      },
+      {
+       "stage": "class",
+       "assign": "Review a WPS and identify essential variables (process, filler, position, preheat).",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Joyce"
+       ],
+       "minutes": 576
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: root, hot pass, fill and cap on 3/8 in. plate in 3G with weave control.",
+       "teacher_role": "supervise the practice on floor simulator(s) weld-bead; watch each seat and record results as practice only",
+       "mentors": [
+        "Joyce"
+       ],
+       "minutes": 672,
+       "floor_sims": [
+        "weld-bead"
+       ],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Virtual bend test: sim coupons are cut and bent; discontinuities over 1/8 in. fail.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Joyce"
+       ],
+       "minutes": 288
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 4,
+     "module": 4,
+     "title": "GMAW Short-Circuit and Spray Transfer",
+     "minutes": 1920,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Watch: wire feed speed vs voltage, 75/25 Ar/CO2 vs 90/10 for spray.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Joyce"
+       ],
+       "minutes": 384
+      },
+      {
+       "stage": "class",
+       "assign": "Match 4 sound/spatter profiles to their transfer mode and fix the settings.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Joyce"
+       ],
+       "minutes": 576
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: run 1F and 2F fillets in spray, 3F in short-circuit.",
+       "teacher_role": "supervise the practice on floor simulator(s) weld-bead; watch each seat and record results as practice only",
+       "mentors": [
+        "Joyce"
+       ],
+       "minutes": 672,
+       "floor_sims": [
+        "weld-bead"
+       ],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Job site: steel stair stringer repair; Joyce reviews against the posted WPS.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Joyce"
+       ],
+       "minutes": 288
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 5,
+     "module": 5,
+     "title": "Weld Symbols and Fit-Up",
+     "minutes": 1920,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Primer on AWS A2.4 symbols: arrow vs other side, field weld flag, all-around.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Joyce"
+       ],
+       "minutes": 384
+      },
+      {
+       "stage": "class",
+       "assign": "Read 8 symbols from a structural drawing and state size, type and side.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Joyce"
+       ],
+       "minutes": 576
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: tack and fit a T-joint within 1/16 in. tolerance using a square and clamps.",
+       "teacher_role": "supervise the practice on floor simulator(s) weld-bead; watch each seat and record results as practice only",
+       "mentors": [
+        "Joyce"
+       ],
+       "minutes": 672,
+       "floor_sims": [
+        "weld-bead"
+       ],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Fabricate a bracket from print; measured against drawing tolerances.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Joyce"
+       ],
+       "minutes": 288
+      }
+     ],
+     "wired": false
+    }
+   ]
+  },
+  {
+   "code": "TCA-150",
+   "title": "Residential Framing and Finish Carpentry",
+   "trade": "Carpentry",
+   "status": "planned draft",
+   "hours_planned": 120,
+   "minutes_total": 7200,
+   "mentors": [
+    "Chris",
+    "Sam"
+   ],
+   "halls": [
+    "carpenters"
+   ],
+   "delivery_status": "all four stages planned: the floor stage runs on the bound simulator(s) or class station(s) named in each week, or as a paper or demo exercise where none is bound",
+   "catalog_section": "available",
+   "teacher_note": "planned draft: generated from registry data and not reviewed by a qualified instructor; adapt it, and do not present it as an approved syllabus",
+   "weeks": [
+    {
+     "week": 1,
+     "module": 1,
+     "title": "Tools, Layout and Measurement",
+     "minutes": 1440,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Watch: tape reading to 1/16 in., speed square, chalk line, 3-4-5 squaring method.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 288
+      },
+      {
+       "stage": "class",
+       "assign": "Check a slab layout using diagonals and find the 1/2 in. out-of-square corner.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 432
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: lay out a wall plate at 16 in. on center with king, jack and cripple locations.",
+       "teacher_role": "supervise the practice on floor simulator(s) scaffold-bay; watch each seat and record results as practice only",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 504,
+       "floor_sims": [
+        "scaffold-bay"
+       ],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Job site: snap wall lines on a slab from the foundation plan.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 216
+      }
+     ],
+     "wired": true,
+     "sites": [
+      {
+       "kind": "crib",
+       "id": "envelope",
+       "tool": "chalk-line",
+       "use": "prepare: name the chalk line in the Envelope & finish crib check before snapping wall lines"
+      },
+      {
+       "kind": "lesson",
+       "id": "carpenters-return-it-the-same",
+       "use": "class: the carpenters Tool Crib lesson (issue, calibration and return) that ends at that crib check"
+      }
+     ],
+     "wiring_note": "the module practises layout and has the learner snap wall lines with a chalk line; the envelope crib drill (bound to the carpenters hall) asks for the tool that snaps a straight layout line, and the carpenters lesson carpenters-return-it-the-same runs that crib check. It covers tool identification and crib discipline only; no simulator runs wall-plate layout or squaring"
+    },
+    {
+     "week": 2,
+     "module": 2,
+     "title": "Wall Framing and Headers",
+     "minutes": 1440,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Read IRC basics on header sizing, top plate splices and 2x6 exterior walls.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 288
+      },
+      {
+       "stage": "class",
+       "assign": "Pick a header size for a 6 ft opening from a span table given load conditions.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 432
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: frame and raise a 12 ft wall with a door and window opening, plumb and brace.",
+       "teacher_role": "supervise the practice on floor simulator(s) scaffold-bay; watch each seat and record results as practice only",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 504,
+       "floor_sims": [
+        "scaffold-bay"
+       ],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Inspection NPC checks stud spacing, nailing schedule and opening sizes.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 216
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 3,
+     "module": 3,
+     "title": "Stairs",
+     "minutes": 1440,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Read IRC stair limits: max riser 7-3/4 in., min tread 10 in., headroom 6 ft 8 in.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 288
+      },
+      {
+       "stage": "class",
+       "assign": "Compute riser count and size for a 108 in. total rise; check the tread run fits.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 432
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: lay out a stringer with a framing square and stair gauges, cut and test-fit.",
+       "teacher_role": "supervise the practice on floor simulator(s) scaffold-bay; watch each seat and record results as practice only",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 504,
+       "floor_sims": [
+        "scaffold-bay"
+       ],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Build a 3-stringer stair on site; tolerance check of 3/8 in. max riser variation.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 216
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 4,
+     "module": 4,
+     "title": "Roof Framing",
+     "minutes": 1440,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Watch: common rafter, birdsmouth, ridge board vs ridge beam, roof pitch.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 288
+      },
+      {
+       "stage": "class",
+       "assign": "Calculate common rafter length for a 24 ft span at 6/12 pitch.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 432
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: cut a pattern rafter and set rafters with fall protection anchors in place.",
+       "teacher_role": "supervise the practice on floor simulator(s) scaffold-bay; watch each seat and record results as practice only",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 504,
+       "floor_sims": [
+        "scaffold-bay"
+       ],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Sam audits fall protection (guardrail or PFAS at 6 ft in construction) before sign-off.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 216
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 5,
+     "module": 5,
+     "title": "Interior Trim and Finish",
+     "minutes": 1440,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Read on miter vs cope joints, reveals and hanging prehung doors.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 288
+      },
+      {
+       "stage": "class",
+       "assign": "Diagnose why a door binds at the head jamb and rubs at the latch side.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 432
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: hang a prehung door, case it, cope inside base corners.",
+       "teacher_role": "supervise the practice on floor simulator(s) scaffold-bay; watch each seat and record results as practice only",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 504,
+       "floor_sims": [
+        "scaffold-bay"
+       ],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Homeowner punch-list walk; fix 5 finish defects.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Chris",
+        "Sam"
+       ],
+       "minutes": 216
+      }
+     ],
+     "wired": false
+    }
+   ]
+  },
+  {
+   "code": "TCA-160",
+   "title": "Heavy Equipment Operation and Site Survey (Drone and Rover)",
+   "trade": "Heavy Equipment / Robotics",
+   "status": "planned draft",
+   "hours_planned": 150,
+   "minutes_total": 9000,
+   "mentors": [
+    "Sam"
+   ],
+   "halls": [
+    "heavy-equip",
+    "operating-eng",
+    "survey-drone"
+   ],
+   "delivery_status": "all four stages planned: the floor stage runs on the bound simulator(s) or class station(s) named in each week, or as a paper or demo exercise where none is bound",
+   "catalog_section": "available",
+   "teacher_note": "planned draft: generated from registry data and not reviewed by a qualified instructor; adapt it, and do not present it as an approved syllabus",
+   "weeks": [
+    {
+     "week": 1,
+     "module": 1,
+     "title": "Pre-Op Inspection and Site Safety",
+     "minutes": 1800,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Read on walkaround inspection, three-point contact, swing radius barricades and 811 call-before-you-dig.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 360
+      },
+      {
+       "stage": "class",
+       "assign": "Find 6 defects on an excavator walkaround photo set: hydraulic leak, cracked bucket tooth, missing seat belt.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 540
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: complete a pre-op checklist on a 20-ton excavator and a skid steer.",
+       "teacher_role": "supervise the practice on floor simulator(s) excavator-trench, forklift-run, load-chart; watch each seat and record results as practice only",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 630,
+       "floor_sims": [
+        "excavator-trench",
+        "forklift-run",
+        "load-chart"
+       ],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Sam: site start-up meeting where the student briefs utilities locates and exclusion zones.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 270
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 2,
+     "module": 2,
+     "title": "Excavator Controls and Trenching",
+     "minutes": 1800,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Read OSHA 1926 Subpart P: protective systems at 5 ft and deeper, soil types A/B/C, spoil 2 ft from edge.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 360
+      },
+      {
+       "stage": "class",
+       "assign": "Choose a sloping ratio or trench box for a 7 ft trench in Type C soil (1.5:1).",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 540
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: dig a 60 ft trench to grade with ISO controls; dial adjusts depth tolerance.",
+       "teacher_role": "supervise the practice on floor simulator(s) excavator-trench, forklift-run, load-chart; watch each seat and record results as practice only",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 630,
+       "floor_sims": [
+        "excavator-trench",
+        "forklift-run",
+        "load-chart"
+       ],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Job site: trench for a sewer lateral; competent-person NPC inspects before entry.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 270
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 3,
+     "module": 3,
+     "title": "Grading and GNSS Machine Control",
+     "minutes": 1800,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Watch: grade stakes, cut/fill, 2D vs 3D machine control with a site design model.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 360
+      },
+      {
+       "stage": "class",
+       "assign": "Read a cut/fill sheet and compute volumes for a 50 x 80 ft pad.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 540
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: dozer finish-grade to plus or minus 0.1 ft using 3D guidance.",
+       "teacher_role": "supervise the practice on floor simulator(s) excavator-trench, forklift-run, load-chart; watch each seat and record results as practice only",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 630,
+       "floor_sims": [
+        "excavator-trench",
+        "forklift-run",
+        "load-chart"
+       ],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Rover check-shots across the pad; out-of-tolerance cells must be reworked.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 270
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 4,
+     "module": 4,
+     "title": "Drone Photogrammetry Survey",
+     "minutes": 1800,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Study FAA Part 107 topics: airspace classes, LAANC, VLOS, 400 ft AGL, weather minimums.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 360
+      },
+      {
+       "stage": "class",
+       "assign": "Plan a grid mission: 75% front / 65% side overlap, GSD target, ground control point placement.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 540
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: fly the mission, set 5 GCPs, process an orthomosaic and surface model.",
+       "teacher_role": "supervise the practice on floor simulator(s) excavator-trench, forklift-run, load-chart; watch each seat and record results as practice only",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 630,
+       "floor_sims": [
+        "excavator-trench",
+        "forklift-run",
+        "load-chart"
+       ],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Compare stockpile volume from drone vs rover; explain differences over 3%.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 270
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 5,
+     "module": 5,
+     "title": "RTK Rover Stakeout",
+     "minutes": 1800,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Read on RTK base/rover, fixed vs float solutions and localization to site control.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 360
+      },
+      {
+       "stage": "class",
+       "assign": "Reject 3 shots taken in float solution from a data log.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 540
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: stake out 12 building corners from a design file with an autonomous survey rover.",
+       "teacher_role": "supervise the practice on floor simulator(s) excavator-trench, forklift-run, load-chart; watch each seat and record results as practice only",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 630,
+       "floor_sims": [
+        "excavator-trench",
+        "forklift-run",
+        "load-chart"
+       ],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "As-built report checked against plans by the superintendent NPC.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 270
+      }
+     ],
+     "wired": false
+    }
+   ]
+  },
+  {
+   "code": "TCA-210",
+   "title": "Hair Design: Cutting and Color Theory",
+   "trade": "Cosmetology",
+   "status": "planned draft",
+   "hours_planned": 180,
+   "minutes_total": 10800,
+   "mentors": [
+    "Tessa"
+   ],
+   "halls": [],
+   "delivery_status": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+   "catalog_section": "coming-soon",
+   "teacher_note": "planned draft: generated from registry data and not reviewed by a qualified instructor; adapt it, and do not present it as an approved syllabus",
+   "weeks": [
+    {
+     "week": 1,
+     "module": 1,
+     "title": "Infection Control and Client Consultation",
+     "minutes": 2160,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Read on EPA-registered disinfectants, contact time, and the client intake card.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Tessa"
+       ],
+       "minutes": 432
+      },
+      {
+       "stage": "class",
+       "assign": "Review 5 consultation transcripts and flag missed contraindications (scalp abrasions, prior henna).",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Tessa"
+       ],
+       "minutes": 648
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: disinfect implements and run a consultation with a client NPC asking for a dramatic change.",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+       "mentors": [
+        "Tessa"
+       ],
+       "minutes": 756,
+       "available": false,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "State-board-style sanitation check by Tessa.",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+       "mentors": [
+        "Tessa"
+       ],
+       "minutes": 324,
+       "available": false
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 2,
+     "module": 2,
+     "title": "Sectioning and Elevation",
+     "minutes": 2160,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Watch Tessa demo 4-section parting, 0/45/90/180 degree elevation and stationary vs traveling guides.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Tessa"
+       ],
+       "minutes": 432
+      },
+      {
+       "stage": "class",
+       "assign": "Match 6 finished shapes to the elevation and guide used.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Tessa"
+       ],
+       "minutes": 648
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim mannequin: one-length bob at 0 degrees and a uniform layer at 90 degrees.",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+       "mentors": [
+        "Tessa"
+       ],
+       "minutes": 756,
+       "available": false,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Client booking: graduated bob; Tessa scores balance and weight line.",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+       "mentors": [
+        "Tessa"
+       ],
+       "minutes": 324,
+       "available": false
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 3,
+     "module": 3,
+     "title": "Color Theory and Formulation",
+     "minutes": 2160,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Read the level system 1-10, underlying pigment, and developer volumes (10, 20, 30, 40).",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Tessa"
+       ],
+       "minutes": 432
+      },
+      {
+       "stage": "class",
+       "assign": "Formulate for a client at level 5 wanting level 7 neutral; identify exposed orange-gold to neutralize.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Tessa"
+       ],
+       "minutes": 648
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: mix, apply a root retouch with 1/2 in. partings, process and rinse.",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+       "mentors": [
+        "Tessa"
+       ],
+       "minutes": 756,
+       "available": false,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Client returns with banding; correct it and document the formula card.",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+       "mentors": [
+        "Tessa"
+       ],
+       "minutes": 324,
+       "available": false
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 4,
+     "module": 4,
+     "title": "Lightening and Toning",
+     "minutes": 2160,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Watch on foil placement, bond builders, and strand and patch testing (24-48 h patch test per manufacturer).",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Tessa"
+       ],
+       "minutes": 432
+      },
+      {
+       "stage": "class",
+       "assign": "Decide whether a box-dyed client can safely be lifted in one session.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Tessa"
+       ],
+       "minutes": 648
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: partial highlight with lightener, then tone with a demi-permanent.",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+       "mentors": [
+        "Tessa"
+       ],
+       "minutes": 756,
+       "available": false,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Client consultation where Tessa expects the student to decline or stage the service if unsafe.",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+       "mentors": [
+        "Tessa"
+       ],
+       "minutes": 324,
+       "available": false
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 5,
+     "module": 5,
+     "title": "Chemical Texture Services",
+     "minutes": 2160,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Read on alkaline waves and thio vs hydroxide relaxers; never overlap incompatible chemicals.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Tessa"
+       ],
+       "minutes": 432
+      },
+      {
+       "stage": "class",
+       "assign": "Test-curl results: decide when to rinse and neutralize.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Tessa"
+       ],
+       "minutes": 648
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: perm wrap with end papers on a 9-block pattern.",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+       "mentors": [
+        "Tessa"
+       ],
+       "minutes": 756,
+       "available": false,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "State-board-style practical walkthrough timed against a mock exam clock.",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+       "mentors": [
+        "Tessa"
+       ],
+       "minutes": 324,
+       "available": false
+      }
+     ],
+     "wired": false
+    }
+   ]
+  },
+  {
+   "code": "TCA-220",
+   "title": "Nail Technology: Natural Nail to Enhancements",
+   "trade": "Nail Technology",
+   "status": "planned draft",
+   "hours_planned": 120,
+   "minutes_total": 7200,
+   "mentors": [
+    "Gemma"
+   ],
+   "halls": [],
+   "delivery_status": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+   "catalog_section": "coming-soon",
+   "teacher_note": "planned draft: generated from registry data and not reviewed by a qualified instructor; adapt it, and do not present it as an approved syllabus",
+   "weeks": [
+    {
+     "week": 1,
+     "module": 1,
+     "title": "Nail Anatomy, Disorders and Infection Control",
+     "minutes": 1800,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Read on nail plate, matrix, eponychium vs cuticle; when to refer (paronychia, onycholysis with infection).",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Gemma"
+       ],
+       "minutes": 360
+      },
+      {
+       "stage": "class",
+       "assign": "Sort 10 photos into service-OK vs refer-to-physician.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Gemma"
+       ],
+       "minutes": 540
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: clean and disinfect a pedicure spa per manufacturer and log it.",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+       "mentors": [
+        "Gemma"
+       ],
+       "minutes": 630,
+       "available": false,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Gemma inspects the station; single-use items must be discarded.",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+       "mentors": [
+        "Gemma"
+       ],
+       "minutes": 270,
+       "available": false
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 2,
+     "module": 2,
+     "title": "Manicure and Pedicure",
+     "minutes": 1800,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Watch Gemma demo filing shapes (square, squoval, oval, almond) and cuticle care.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Gemma"
+       ],
+       "minutes": 360
+      },
+      {
+       "stage": "class",
+       "assign": "Spot over-filing and cuticle nipping errors in 5 videos.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Gemma"
+       ],
+       "minutes": 540
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: full manicure with polish, clean cuticle line, no flooding.",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+       "mentors": [
+        "Gemma"
+       ],
+       "minutes": 630,
+       "available": false,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Client NPC with diabetes on a pedicure booking; student must modify (no cutting, no sharp implements on calluses).",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+       "mentors": [
+        "Gemma"
+       ],
+       "minutes": 270,
+       "available": false
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 3,
+     "module": 3,
+     "title": "E-File Safety and Gel Polish",
+     "minutes": 1800,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Read on bit types, RPM ranges and why to avoid heat spikes; LED vs UV curing.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Gemma"
+       ],
+       "minutes": 360
+      },
+      {
+       "stage": "class",
+       "assign": "Diagnose lifting and wrinkling: thick coats, under-curing, cuticle contact.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Gemma"
+       ],
+       "minutes": 540
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: gel prep, thin coats, cure per lamp spec, and safe soak-off.",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+       "mentors": [
+        "Gemma"
+       ],
+       "minutes": 630,
+       "available": false,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Client returns in 2 weeks; evaluate wear and adjust technique.",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+       "mentors": [
+        "Gemma"
+       ],
+       "minutes": 270,
+       "available": false
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 4,
+     "module": 4,
+     "title": "Acrylic and Hard Gel Enhancements",
+     "minutes": 1800,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Read on liquid-to-powder ratio, apex placement and the MMA liquid ban in many states.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Gemma"
+       ],
+       "minutes": 360
+      },
+      {
+       "stage": "class",
+       "assign": "Identify a structure lacking apex and a stress area at risk of cracking.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Gemma"
+       ],
+       "minutes": 540
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: sculpt on forms with a smile line; adaptive dial tightens symmetry tolerance.",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+       "mentors": [
+        "Gemma"
+       ],
+       "minutes": 630,
+       "available": false,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Board-style practical: one sculptured nail, timed, with sanitation scored.",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+       "mentors": [
+        "Gemma"
+       ],
+       "minutes": 270,
+       "available": false
+      }
+     ],
+     "wired": false
+    }
+   ]
+  },
+  {
+   "code": "TCA-230",
+   "title": "Esthetics: Skin Analysis and Facial Treatments",
+   "trade": "Esthetics",
+   "status": "planned draft",
+   "hours_planned": 150,
+   "minutes_total": 9000,
+   "mentors": [
+    "Iris"
+   ],
+   "halls": [],
+   "delivery_status": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+   "catalog_section": "coming-soon",
+   "teacher_note": "planned draft: generated from registry data and not reviewed by a qualified instructor; adapt it, and do not present it as an approved syllabus",
+   "weeks": [
+    {
+     "week": 1,
+     "module": 1,
+     "title": "Skin Science and Analysis",
+     "minutes": 1800,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Read on epidermis layers, Fitzpatrick types I-VI and Glogau photoaging scale.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Iris"
+       ],
+       "minutes": 360
+      },
+      {
+       "stage": "class",
+       "assign": "Analyze 6 client images under woods lamp simulation; record skin type and conditions.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Iris"
+       ],
+       "minutes": 540
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: full skin analysis with magnifying lamp and consultation form.",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+       "mentors": [
+        "Iris"
+       ],
+       "minutes": 630,
+       "available": false,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Iris reviews the treatment plan for accuracy and scope.",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+       "mentors": [
+        "Iris"
+       ],
+       "minutes": 270,
+       "available": false
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 2,
+     "module": 2,
+     "title": "Contraindications and Scope of Practice",
+     "minutes": 1800,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Read on contraindications: isotretinoin use, active infection, recent laser, pregnancy for certain actives.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Iris"
+       ],
+       "minutes": 360
+      },
+      {
+       "stage": "class",
+       "assign": "Triage 8 intake forms into proceed, modify, or refer.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Iris"
+       ],
+       "minutes": 540
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: client discloses retinoid use; adjust the service and document.",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+       "mentors": [
+        "Iris"
+       ],
+       "minutes": 630,
+       "available": false,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Iris scenario where the client requests a medical procedure; student must decline within scope.",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+       "mentors": [
+        "Iris"
+       ],
+       "minutes": 270,
+       "available": false
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 3,
+     "module": 3,
+     "title": "Basic Facial Protocol",
+     "minutes": 1800,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Watch Iris demo cleanse, exfoliate, steam, extract, massage, mask, protect.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Iris"
+       ],
+       "minutes": 360
+      },
+      {
+       "stage": "class",
+       "assign": "Order a scrambled protocol and justify each step's purpose.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Iris"
+       ],
+       "minutes": 540
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: full facial with Swedish-style effleurage and petrissage on a client avatar.",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+       "mentors": [
+        "Iris"
+       ],
+       "minutes": 630,
+       "available": false,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Client NPC feedback and post-care instructions including SPF.",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+       "mentors": [
+        "Iris"
+       ],
+       "minutes": 270,
+       "available": false
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 4,
+     "module": 4,
+     "title": "Extractions and Superficial Peels",
+     "minutes": 1800,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Read on comedone types and superficial peels (low-percent glycolic, lactic) within esthetician scope.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Iris"
+       ],
+       "minutes": 360
+      },
+      {
+       "stage": "class",
+       "assign": "Decide which lesions are safe to extract vs refer (cystic acne).",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Iris"
+       ],
+       "minutes": 540
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: gloved extractions with proper angle and pressure; apply and neutralize a superficial peel on timing.",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+       "mentors": [
+        "Iris"
+       ],
+       "minutes": 630,
+       "available": false,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Client returns with mild erythema; handle the follow-up and record it.",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+       "mentors": [
+        "Iris"
+       ],
+       "minutes": 270,
+       "available": false
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 5,
+     "module": 5,
+     "title": "Waxing and Brow Design",
+     "minutes": 1800,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Watch hard vs soft wax technique and brow mapping.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Iris"
+       ],
+       "minutes": 360
+      },
+      {
+       "stage": "class",
+       "assign": "Identify lifting risk factors in 5 intake forms.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Iris"
+       ],
+       "minutes": 540
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: brow wax with correct direction of pull and skin support.",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+       "mentors": [
+        "Iris"
+       ],
+       "minutes": 630,
+       "available": false,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Board-style practical with sanitation scoring.",
+       "teacher_role": "home and class only in this bundle: the floor and gate stages need the separate Beauty School simulator, which is not part of this repository",
+       "mentors": [
+        "Iris"
+       ],
+       "minutes": 270,
+       "available": false
+      }
+     ],
+     "wired": false
+    }
+   ]
+  },
+  {
+   "code": "TCA-310",
+   "title": "Industrial Robot Arm Operator",
+   "trade": "Robotics / Mechatronics",
+   "status": "planned draft",
+   "hours_planned": 100,
+   "minutes_total": 6000,
+   "mentors": [
+    "Joyce",
+    "Sam"
+   ],
+   "halls": [
+    "robotics",
+    "automation-int"
+   ],
+   "delivery_status": "all four stages planned: the floor stage runs on the bound simulator(s) or class station(s) named in each week, or as a paper or demo exercise where none is bound",
+   "catalog_section": "home-and-class",
+   "teacher_note": "planned draft: generated from registry data and not reviewed by a qualified instructor; adapt it, and do not present it as an approved syllabus",
+   "weeks": [
+    {
+     "week": 1,
+     "module": 1,
+     "title": "Cell Safety and Standards",
+     "minutes": 1200,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Read on ANSI/RIA R15.06 and ISO 10218 concepts: safeguarded space, E-stop, 3-position enabling device, T1 reduced speed (250 mm/s).",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Joyce",
+        "Sam"
+       ],
+       "minutes": 240
+      },
+      {
+       "stage": "class",
+       "assign": "Spot 5 safeguarding failures in a cell layout: bypassed interlock, light curtain gap, no lockout point.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Joyce",
+        "Sam"
+       ],
+       "minutes": 360
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: enter a cell under LOTO and verify zero energy including pneumatics.",
+       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "mentors": [
+        "Joyce",
+        "Sam"
+       ],
+       "minutes": 420,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Sam audits the student's cell entry; any bypass ends the attempt.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Joyce",
+        "Sam"
+       ],
+       "minutes": 180
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 2,
+     "module": 2,
+     "title": "Teach Pendant and Jogging Frames",
+     "minutes": 1200,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Watch: joint, world, user and tool frames; jog increments.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Joyce",
+        "Sam"
+       ],
+       "minutes": 240
+      },
+      {
+       "stage": "class",
+       "assign": "Predict arm motion for a jog command in each frame from a still image.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Joyce",
+        "Sam"
+       ],
+       "minutes": 360
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: jog a 6-axis arm in T1 to touch 4 fixture points without collision.",
+       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "mentors": [
+        "Joyce",
+        "Sam"
+       ],
+       "minutes": 420,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Timed pick-and-place setup with a part fixture.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Joyce",
+        "Sam"
+       ],
+       "minutes": 180
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 3,
+     "module": 3,
+     "title": "TCP Calibration and Simple Programs",
+     "minutes": 1200,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Read on tool center point calibration via 4-point method and linear vs joint moves.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Joyce",
+        "Sam"
+       ],
+       "minutes": 240
+      },
+      {
+       "stage": "class",
+       "assign": "Debug a program where a joint move clips the fixture; choose where linear moves are needed.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Joyce",
+        "Sam"
+       ],
+       "minutes": 360
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: teach a palletizing program with approach, pick, retract points.",
+       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "mentors": [
+        "Joyce",
+        "Sam"
+       ],
+       "minutes": 420,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Run the program at production speed in auto with guarding closed; cycle time logged.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Joyce",
+        "Sam"
+       ],
+       "minutes": 180
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 4,
+     "module": 4,
+     "title": "Robotic Welding Cell",
+     "minutes": 1200,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Joyce reviews how GMAW variables map to robot weld schedules.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Joyce",
+        "Sam"
+       ],
+       "minutes": 240
+      },
+      {
+       "stage": "class",
+       "assign": "Read a weld-schedule table and fix a travel speed causing undercut.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Joyce",
+        "Sam"
+       ],
+       "minutes": 360
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: touch-sense a joint and run a fillet with seam tracking.",
+       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "mentors": [
+        "Joyce",
+        "Sam"
+       ],
+       "minutes": 420,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Production lot of 10 brackets inspected visually by Joyce.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Joyce",
+        "Sam"
+       ],
+       "minutes": 180
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 5,
+     "module": 5,
+     "title": "Faults, Recovery and Preventive Maintenance",
+     "minutes": 1200,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Read on common faults: collision detection, overtravel, encoder battery low.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Joyce",
+        "Sam"
+       ],
+       "minutes": 240
+      },
+      {
+       "stage": "class",
+       "assign": "Order recovery steps for a collision fault without losing position data.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Joyce",
+        "Sam"
+       ],
+       "minutes": 360
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: recover from a fault, replace a worn torch tip, back up the controller.",
+       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "mentors": [
+        "Joyce",
+        "Sam"
+       ],
+       "minutes": 420,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Shift-handoff report to supervisor NPC.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Joyce",
+        "Sam"
+       ],
+       "minutes": 180
+      }
+     ],
+     "wired": false
+    }
+   ]
+  },
+  {
+   "code": "TCA-320",
+   "title": "Collaborative Robot (Cobot) Safety and Deployment",
+   "trade": "Robotics / Mechatronics",
+   "status": "planned draft",
+   "hours_planned": 60,
+   "minutes_total": 3600,
+   "mentors": [
+    "Sam"
+   ],
+   "halls": [
+    "robotics",
+    "automation-int",
+    "plc-techs"
+   ],
+   "delivery_status": "all four stages planned: the floor stage runs on the bound simulator(s) or class station(s) named in each week, or as a paper or demo exercise where none is bound",
+   "catalog_section": "home-and-class",
+   "teacher_note": "planned draft: generated from registry data and not reviewed by a qualified instructor; adapt it, and do not present it as an approved syllabus",
+   "weeks": [
+    {
+     "week": 1,
+     "module": 1,
+     "title": "Collaborative Operation Modes",
+     "minutes": 900,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Read the 4 modes: safety-rated monitored stop, hand guiding, speed and separation monitoring, power and force limiting.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 180
+      },
+      {
+       "stage": "class",
+       "assign": "Assign the right mode to 6 described tasks.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 270
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: configure speed and separation monitoring zones with an area scanner.",
+       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 315,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Walk-in test with a worker avatar; arm must slow and stop at the configured distances.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 135
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 2,
+     "module": 2,
+     "title": "Risk Assessment",
+     "minutes": 900,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Read on task-based risk assessment and hazard identification (pinch points, sharp tooling).",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 180
+      },
+      {
+       "stage": "class",
+       "assign": "Complete a risk assessment for a cobot screwdriving station; rate severity and exposure.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 270
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: add mitigations (padding, reduced speed, tool change) and re-score.",
+       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 315,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Sam reviews the residual risk; unmitigated high risks block go-live.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 135
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 3,
+     "module": 3,
+     "title": "Power and Force Limiting (ISO/TS 15066)",
+     "minutes": 900,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Watch on body-region contact limits and transient vs quasi-static contact.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 180
+      },
+      {
+       "stage": "class",
+       "assign": "Interpret a force-measurement report and decide pass/fail per body region.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 270
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: tune payload, speed and force limits for a machine-tending task.",
+       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 315,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Run a validated cycle with a co-worker avatar sharing the workspace.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 135
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 4,
+     "module": 4,
+     "title": "Commissioning and Change Management",
+     "minutes": 900,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Read on safety checksums, password-protected safety config and revalidation after changes.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 180
+      },
+      {
+       "stage": "class",
+       "assign": "Find why a config change after commissioning invalidated the risk assessment.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 270
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: document commissioning, sign-off sheet and operator training record.",
+       "teacher_role": "no floor simulator is bound in this bundle yet — run the practice as a paper or demo exercise and record it as such",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 315,
+       "floor_sims": [],
+       "class_stations": []
+      },
+      {
+       "stage": "gate",
+       "assign": "Audit by Sam and Dana: operator briefing delivered to a mixed crew.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Sam"
+       ],
+       "minutes": 135
+      }
+     ],
+     "wired": false
+    }
+   ]
+  },
+  {
+   "code": "TCA-410",
+   "title": "Crew Leadership and Emotional Intelligence on the Job",
+   "trade": "Leadership / EI",
+   "status": "planned draft",
+   "hours_planned": 40,
+   "minutes_total": 2400,
+   "mentors": [
+    "Dana",
+    "Chris"
+   ],
+   "halls": [
+    "site-safety"
+   ],
+   "delivery_status": "all four stages planned: the floor stage runs on the bound simulator(s) or class station(s) named in each week, or as a paper or demo exercise where none is bound",
+   "catalog_section": "home-and-class",
+   "teacher_note": "planned draft: generated from registry data and not reviewed by a qualified instructor; adapt it, and do not present it as an approved syllabus",
+   "weeks": [
+    {
+     "week": 1,
+     "module": 1,
+     "title": "Self-Awareness Under Pressure",
+     "minutes": 600,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Chris's EI reading on recognizing stress signals and naming emotions before acting.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Dana",
+        "Chris"
+       ],
+       "minutes": 120
+      },
+      {
+       "stage": "class",
+       "assign": "Review a tense job-site transcript and mark where the foreman escalated.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Dana",
+        "Chris"
+       ],
+       "minutes": 180
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim role-play: a late concrete truck and an angry GC; student practices pause-and-reframe.",
+       "teacher_role": "supervise the practice on class station(s) st013; watch each seat and record results as practice only",
+       "mentors": [
+        "Dana",
+        "Chris"
+       ],
+       "minutes": 210,
+       "floor_sims": [],
+       "class_stations": [
+        "st013"
+       ]
+      },
+      {
+       "stage": "gate",
+       "assign": "Dana debrief scored on a behavior rubric, not personality.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Dana",
+        "Chris"
+       ],
+       "minutes": 90
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 2,
+     "module": 2,
+     "title": "Toolbox Talks and Clear Direction",
+     "minutes": 600,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Watch Sam and Dana run a 10-minute toolbox talk.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Dana",
+        "Chris"
+       ],
+       "minutes": 120
+      },
+      {
+       "stage": "class",
+       "assign": "Rewrite a vague assignment into who/what/when/standard.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Dana",
+        "Chris"
+       ],
+       "minutes": 180
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: deliver a toolbox talk on ladder safety to a crew of avatars with questions.",
+       "teacher_role": "supervise the practice on class station(s) st013; watch each seat and record results as practice only",
+       "mentors": [
+        "Dana",
+        "Chris"
+       ],
+       "minutes": 210,
+       "floor_sims": [],
+       "class_stations": [
+        "st013"
+       ]
+      },
+      {
+       "stage": "gate",
+       "assign": "Crew avatars execute the task; errors traced to unclear instructions count against the leader.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Dana",
+        "Chris"
+       ],
+       "minutes": 90
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 3,
+     "module": 3,
+     "title": "Feedback and Conflict Resolution",
+     "minutes": 600,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Read on the situation-behavior-impact feedback model.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Dana",
+        "Chris"
+       ],
+       "minutes": 120
+      },
+      {
+       "stage": "class",
+       "assign": "Classify 6 feedback statements as specific or vague, blaming or behavioral.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Dana",
+        "Chris"
+       ],
+       "minutes": 180
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: resolve a conflict between a journeyworker and an apprentice over task assignments.",
+       "teacher_role": "supervise the practice on class station(s) st013; watch each seat and record results as practice only",
+       "mentors": [
+        "Dana",
+        "Chris"
+       ],
+       "minutes": 210,
+       "floor_sims": [],
+       "class_stations": [
+        "st013"
+       ]
+      },
+      {
+       "stage": "gate",
+       "assign": "Follow-up session days later in sim; check if agreements held.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Dana",
+        "Chris"
+       ],
+       "minutes": 90
+      }
+     ],
+     "wired": false
+    },
+    {
+     "week": 4,
+     "module": 4,
+     "title": "Mentoring Apprentices",
+     "minutes": 600,
+     "stages": [
+      {
+       "stage": "home",
+       "assign": "Chris reading on psychological safety and stop-work authority.",
+       "teacher_role": "assign the reading or video and check the prepare check before class",
+       "mentors": [
+        "Dana",
+        "Chris"
+       ],
+       "minutes": 120
+      },
+      {
+       "stage": "class",
+       "assign": "Review an incident report where an apprentice did not speak up; identify cultural causes.",
+       "teacher_role": "circulate between groups and run the analyze case",
+       "mentors": [
+        "Dana",
+        "Chris"
+       ],
+       "minutes": 180
+      },
+      {
+       "stage": "floor",
+       "assign": "Sim: coach an apprentice through a first-time task using demonstrate-observe-correct.",
+       "teacher_role": "supervise the practice on class station(s) st013; watch each seat and record results as practice only",
+       "mentors": [
+        "Dana",
+        "Chris"
+       ],
+       "minutes": 210,
+       "floor_sims": [],
+       "class_stations": [
+        "st013"
+       ]
+      },
+      {
+       "stage": "gate",
+       "assign": "Dana evaluates the apprentice avatar's progress across 3 sessions.",
+       "teacher_role": "run the unaided verification: the learner works alone with no mentor hints; the gate is not gamified, per the schools model, and no home, class or simulator time substitutes for it",
+       "mentors": [
+        "Dana",
+        "Chris"
+       ],
+       "minutes": 90
+      }
+     ],
+     "wired": false
+    }
+   ]
+  }
+ ]
+}

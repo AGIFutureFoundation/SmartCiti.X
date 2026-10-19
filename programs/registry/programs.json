@@ -1,7 +1,7 @@
 {
  "pack": "smartcitix-programs",
  "schema": "programs/1",
- "source_stamp": "549d335314cfc88c",
+ "source_stamp": "4741bce25f850d68",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "sources": [
   {
@@ -10,23 +10,23 @@
   },
   {
    "path": "classroom/registry/classroom.json",
-   "sha256": "f1a00074748ea39e5a8560c7701907b9813f74cd76ac10445227bbac1191f433"
+   "sha256": "9bdf5a8be54246774a58726dbf2a6f6af18298f5eff9ba87f563abc3e4fd4a31"
   },
   {
    "path": "cognitionx/registry/cognitionx.json",
-   "sha256": "199838af2613afc722a39de30d9fef565d2de33c5a9ddbebc9b05a6421d01d70"
+   "sha256": "47fcebc59b4a9c97a12a7986e0393ee3ddde73d403162fe7ceca3576e3d37764"
   },
   {
    "path": "courses/registry/courses.json",
-   "sha256": "8bb7e12b0beac87d48d1a3ad429ddb5f5d00bbeaf6ab0c84e97257a9dfe8d26d"
+   "sha256": "5811cd019bf5f6e8a89fc0976a8f45890d55c9c9bbb4be229e32501500976245"
   },
   {
    "path": "lessons/registry/lessons.json",
-   "sha256": "881eadd1629dc903589e40b116be8382f7690a9987c62e2150f854252cfd1aff"
+   "sha256": "75e757b1c322727a614a8b5c349517cf79548e29fb83f2a100bb80cd04d6923a"
   },
   {
    "path": "hive/registry/hive.json",
-   "sha256": "a5eb0b97bffc0ccca757d5a9168f00fc12a00bc956a9758396230cb54c30c94e"
+   "sha256": "e2b2ccae493b79e6604aa3d4dbfb0009d554bb9c0553a9bc5af82924abf816bf"
   },
   {
    "path": "respond/registry/respond.json",
@@ -34,7 +34,7 @@
   },
   {
    "path": "layers/registry/paths.json",
-   "sha256": "9c9ee07cf9f2a6b576429682eb73bb7436d3e7538833ffa70ce40dc341caa3d6"
+   "sha256": "0bd6fc84d3ced2eba35ff23aac9850bd61df0cc7c6097fde28c5393cc633468d"
   },
   {
    "path": "smiles/registry/smiles.json",

@@ -21,16 +21,16 @@
   "measured_elsewhere": 51,
   "computed_from_registry": 12,
   "measured_source_files": 11,
-  "registries_scanned": 92,
+  "registries_scanned": 99,
   "app_renderers_scanned": 38,
   "doc_renderers_scanned": 3,
-  "builders_scanned": 75,
-  "suites_scanned": 147,
-  "declared_unbuilt": 5,
+  "builders_scanned": 76,
+  "suites_scanned": 155,
+  "declared_unbuilt": 12,
   "declared_unbuilt_by_their_own_words": 2,
-  "declared_unbuilt_not_drawn": 4,
+  "declared_unbuilt_not_drawn": 11,
   "declared_unbuilt_documented_but_not_drawn": 1,
-  "declared_unbuilt_read_by_nothing": 2,
+  "declared_unbuilt_read_by_nothing": 7,
   "gaps": 21,
   "gaps_open": 16,
   "gaps_closed": 5,
@@ -38,13 +38,13 @@
   "budget_views": 6,
   "budget_currencies": 2,
   "budget_agreements": 7,
-  "suites_run": 149,
-  "suite_checks_declared": 7370,
+  "suites_run": 156,
+  "suite_checks_declared": 7745,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 443
+  "files_read": 467
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -1575,6 +1575,139 @@
    "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
   },
   {
+   "registry": "courses/registry/lesson_plans.json",
+   "pack": "courses",
+   "reasons": [
+    "no page generator under web/ names this path, so nothing a learner opens reads it",
+    "and nothing outside its own pack names it either - not a builder, not the wiki, not another pack's suite; inside it, courses/lesson_plans.py, courses/test_lesson_plans.mjs does"
+   ],
+   "says": null,
+   "read_by_app_renderers": [],
+   "read_by_doc_renderers": [],
+   "read_by_builders": [],
+   "read_by_suites": [],
+   "read_by_its_own_pack": [
+    "courses/lesson_plans.py",
+    "courses/test_lesson_plans.mjs"
+   ],
+   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
+  },
+  {
+   "registry": "courses_roadmap/registry/courses.json",
+   "pack": "courses_roadmap",
+   "reasons": [
+    "no page generator under web/ names this path, so nothing a learner opens reads it"
+   ],
+   "says": null,
+   "read_by_app_renderers": [],
+   "read_by_doc_renderers": [],
+   "read_by_builders": [],
+   "read_by_suites": [
+    "cohort/test.mjs"
+   ],
+   "read_by_its_own_pack": [
+    "courses_roadmap/build.py",
+    "courses_roadmap/lesson_plans.py",
+    "courses_roadmap/test.mjs",
+    "courses_roadmap/test_lesson_plans.mjs"
+   ],
+   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
+  },
+  {
+   "registry": "courses_roadmap/registry/lesson_plans.json",
+   "pack": "courses_roadmap",
+   "reasons": [
+    "no page generator under web/ names this path, so nothing a learner opens reads it",
+    "and nothing outside its own pack names it either - not a builder, not the wiki, not another pack's suite; inside it, courses_roadmap/lesson_plans.py, courses_roadmap/test_lesson_plans.mjs does"
+   ],
+   "says": null,
+   "read_by_app_renderers": [],
+   "read_by_doc_renderers": [],
+   "read_by_builders": [],
+   "read_by_suites": [],
+   "read_by_its_own_pack": [
+    "courses_roadmap/lesson_plans.py",
+    "courses_roadmap/test_lesson_plans.mjs"
+   ],
+   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
+  },
+  {
+   "registry": "loop/registry/cycles.json",
+   "pack": "loop",
+   "reasons": [
+    "no page generator under web/ names this path, so nothing a learner opens reads it",
+    "and nothing outside its own pack names it either - not a builder, not the wiki, not another pack's suite; inside it, loop/cycle.mjs, loop/heartbeat.mjs, loop/review_video.py, loop/test.mjs does"
+   ],
+   "says": null,
+   "read_by_app_renderers": [],
+   "read_by_doc_renderers": [],
+   "read_by_builders": [],
+   "read_by_suites": [],
+   "read_by_its_own_pack": [
+    "loop/cycle.mjs",
+    "loop/heartbeat.mjs",
+    "loop/review_video.py",
+    "loop/test.mjs"
+   ],
+   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
+  },
+  {
+   "registry": "loop/registry/environments_draft.json",
+   "pack": "loop",
+   "reasons": [
+    "no page generator under web/ names this path, so nothing a learner opens reads it",
+    "and nothing outside its own pack names it either - not a builder, not the wiki, not another pack's suite; inside it, loop/test.mjs does"
+   ],
+   "says": null,
+   "read_by_app_renderers": [],
+   "read_by_doc_renderers": [],
+   "read_by_builders": [],
+   "read_by_suites": [],
+   "read_by_its_own_pack": [
+    "loop/test.mjs"
+   ],
+   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
+  },
+  {
+   "registry": "loop/registry/honesty_fixtures.json",
+   "pack": "loop",
+   "reasons": [
+    "no page generator under web/ names this path, so nothing a learner opens reads it"
+   ],
+   "says": null,
+   "read_by_app_renderers": [],
+   "read_by_doc_renderers": [],
+   "read_by_builders": [
+    "courses_roadmap/build.py"
+   ],
+   "read_by_suites": [
+    "courses_roadmap/test.mjs"
+   ],
+   "read_by_its_own_pack": [
+    "loop/evals.mjs",
+    "loop/honesty.mjs",
+    "loop/test.mjs"
+   ],
+   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
+  },
+  {
+   "registry": "loop/registry/tech_draft.json",
+   "pack": "loop",
+   "reasons": [
+    "no page generator under web/ names this path, so nothing a learner opens reads it",
+    "and nothing outside its own pack names it either - not a builder, not the wiki, not another pack's suite; inside it, loop/test.mjs does"
+   ],
+   "says": null,
+   "read_by_app_renderers": [],
+   "read_by_doc_renderers": [],
+   "read_by_builders": [],
+   "read_by_suites": [],
+   "read_by_its_own_pack": [
+    "loop/test.mjs"
+   ],
+   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
+  },
+  {
    "registry": "pack/registry/library.json",
    "pack": "pack",
    "reasons": [
@@ -2002,7 +2135,43 @@
    ],
    "own_pack": [
     "courses/build.py",
-    "courses/test.mjs"
+    "courses/lesson_plans.py",
+    "courses/test.mjs",
+    "courses/test_lesson_plans.mjs"
+   ]
+  },
+  "courses/registry/lesson_plans.json": {
+   "app_renderers": [],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [],
+   "own_pack": [
+    "courses/lesson_plans.py",
+    "courses/test_lesson_plans.mjs"
+   ]
+  },
+  "courses_roadmap/registry/courses.json": {
+   "app_renderers": [],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [
+    "cohort/test.mjs"
+   ],
+   "own_pack": [
+    "courses_roadmap/build.py",
+    "courses_roadmap/lesson_plans.py",
+    "courses_roadmap/test.mjs",
+    "courses_roadmap/test_lesson_plans.mjs"
+   ]
+  },
+  "courses_roadmap/registry/lesson_plans.json": {
+   "app_renderers": [],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [],
+   "own_pack": [
+    "courses_roadmap/lesson_plans.py",
+    "courses_roadmap/test_lesson_plans.mjs"
    ]
   },
   "datashare/registry/datashare.json": {
@@ -2441,6 +2610,7 @@
     "completion/build.py",
     "compliance/build.py",
     "courses/build.py",
+    "courses_roadmap/build.py",
     "evals/build.py",
     "holodeck/build.py",
     "layers/build.py",
@@ -2460,6 +2630,7 @@
     "completion/test.mjs",
     "completion/verify.mjs",
     "courses/test.mjs",
+    "courses_roadmap/test.mjs",
     "evals/test.mjs",
     "holodeck/test.mjs",
     "layers/test.mjs",
@@ -2486,6 +2657,51 @@
    "own_pack": [
     "lessons/build.py",
     "lessons/test.mjs"
+   ]
+  },
+  "loop/registry/cycles.json": {
+   "app_renderers": [],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [],
+   "own_pack": [
+    "loop/cycle.mjs",
+    "loop/heartbeat.mjs",
+    "loop/review_video.py",
+    "loop/test.mjs"
+   ]
+  },
+  "loop/registry/environments_draft.json": {
+   "app_renderers": [],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [],
+   "own_pack": [
+    "loop/test.mjs"
+   ]
+  },
+  "loop/registry/honesty_fixtures.json": {
+   "app_renderers": [],
+   "doc_renderers": [],
+   "builders": [
+    "courses_roadmap/build.py"
+   ],
+   "suites": [
+    "courses_roadmap/test.mjs"
+   ],
+   "own_pack": [
+    "loop/evals.mjs",
+    "loop/honesty.mjs",
+    "loop/test.mjs"
+   ]
+  },
+  "loop/registry/tech_draft.json": {
+   "app_renderers": [],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [],
+   "own_pack": [
+    "loop/test.mjs"
    ]
   },
   "media/registry/media.json": {
@@ -2709,6 +2925,7 @@
     "bundles/test.mjs",
     "bus/test.mjs",
     "bus/test_safeguards.mjs",
+    "cohort/test.mjs",
     "control/test_graph.mjs",
     "evals/test.mjs",
     "i18n/test.mjs",
@@ -3267,6 +3484,7 @@
     "compliance/build.py",
     "contrib/build.py",
     "courses/build.py",
+    "courses_roadmap/build.py",
     "evals/build.py",
     "fleet/build.py",
     "guide/build.py",
@@ -3291,11 +3509,15 @@
     "bundles/test.mjs",
     "classroom/test.mjs",
     "cognitionx/test.mjs",
+    "cohort/test.mjs",
     "completion/test.mjs",
     "completion/verify.mjs",
     "contrib/test.mjs",
     "contrib/verify.mjs",
     "courses/test.mjs",
+    "courses/test_lesson_plans.mjs",
+    "courses_roadmap/test.mjs",
+    "courses_roadmap/test_lesson_plans.mjs",
     "evals/test.mjs",
     "fleet/test.mjs",
     "guide/test.mjs",
@@ -3459,6 +3681,7 @@
    "builders": [
     "completion/build.py",
     "courses/build.py",
+    "courses_roadmap/build.py",
     "lessons/build.py",
     "modules/build.py",
     "props/build.py",
@@ -3469,6 +3692,9 @@
    "suites": [
     "completion/verify.mjs",
     "courses/test.mjs",
+    "courses/test_lesson_plans.mjs",
+    "courses_roadmap/test.mjs",
+    "courses_roadmap/test_lesson_plans.mjs",
     "lessons/test.mjs",
     "modules/test.mjs",
     "props/test.mjs",
@@ -3609,6 +3835,7 @@
     "agents/build.py",
     "completion/build.py",
     "courses/build.py",
+    "courses_roadmap/build.py",
     "guide/build.py",
     "lessons/build.py",
     "props/build.py",
@@ -3624,6 +3851,7 @@
     "completion/test.mjs",
     "completion/verify.mjs",
     "courses/test.mjs",
+    "courses_roadmap/test.mjs",
     "lessons/test.mjs",
     "props/test.mjs",
     "schools/test.mjs",
@@ -3867,6 +4095,7 @@
     "agents/build.py",
     "avatars/build.py",
     "bundles/build.py",
+    "courses_roadmap/build.py",
     "economy/build.py",
     "evals/build.py",
     "guide/build.py",
@@ -3889,6 +4118,7 @@
     "agents/test.mjs",
     "avatars/test.mjs",
     "bundles/test.mjs",
+    "courses_roadmap/test.mjs",
     "economy/test.mjs",
     "evals/test.mjs",
     "holodeck/test.mjs",
@@ -4118,6 +4348,7 @@
    "compliance/build.py",
    "contrib/build.py",
    "courses/build.py",
+   "courses_roadmap/build.py",
    "datashare/build.py",
    "economy/build.py",
    "ei/build.py",
@@ -4194,6 +4425,7 @@
    "classroom/test.mjs",
    "cloudflare/test.mjs",
    "cognitionx/test.mjs",
+   "cohort/test.mjs",
    "completion/test.mjs",
    "completion/verify.mjs",
    "compliance/test.mjs",
@@ -4204,12 +4436,16 @@
    "control/test_graph.mjs",
    "control/test_hints.mjs",
    "courses/test.mjs",
+   "courses/test_lesson_plans.mjs",
+   "courses_roadmap/test.mjs",
+   "courses_roadmap/test_lesson_plans.mjs",
    "datashare/test.mjs",
    "economy/test.mjs",
    "ei/test.mjs",
    "elevation/test.mjs",
    "evals/test.mjs",
    "fabric/test.mjs",
+   "fabric/test_mentor_scope.mjs",
    "facades/test.mjs",
    "fleet/test.mjs",
    "flora/test.mjs",
@@ -4224,6 +4460,7 @@
    "landcover/test.mjs",
    "layers/test.mjs",
    "lessons/test.mjs",
+   "loop/test.mjs",
    "media/test.mjs",
    "meta/test.mjs",
    "modules/test.mjs",
@@ -4246,6 +4483,7 @@
    "restoration/test_scenarios.mjs",
    "roadmap/test.mjs",
    "robotics/test.mjs",
+   "safety_gate/test.mjs",
    "schools/test.mjs",
    "seasons/test.mjs",
    "security/test.mjs",
@@ -4316,6 +4554,7 @@
    "web/test_tqkit.mjs",
    "web/test_unions.mjs",
    "web/test_verify.mjs",
+   "web/test_watersk.mjs",
    "web/test_whitepaper.mjs",
    "web/test_wildkit.mjs",
    "web/test_wilds.mjs",
@@ -5097,7 +5336,7 @@
    {
     "suite": "training/test.mjs",
     "pack": "training",
-    "readme_checks": 84,
+    "readme_checks": 101,
     "declared": true,
     "in_readme_table": true
    },
@@ -5207,6 +5446,48 @@
     "in_readme_table": true
    },
    {
+    "suite": "courses_roadmap/test.mjs",
+    "pack": "courses_roadmap",
+    "readme_checks": 46,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "courses_roadmap/test_lesson_plans.mjs",
+    "pack": "courses_roadmap",
+    "readme_checks": 25,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "loop/test.mjs",
+    "pack": "loop",
+    "readme_checks": 42,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "fabric/test_mentor_scope.mjs",
+    "pack": "fabric",
+    "readme_checks": 19,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "safety_gate/test.mjs",
+    "pack": "safety_gate",
+    "readme_checks": 36,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "cohort/test.mjs",
+    "pack": "cohort",
+    "readme_checks": 26,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
     "suite": "web/test_seo.mjs",
     "pack": "web",
     "readme_checks": 19,
@@ -5258,7 +5539,7 @@
    {
     "suite": "evals/test.mjs",
     "pack": "evals",
-    "readme_checks": 79,
+    "readme_checks": 80,
     "declared": true,
     "in_readme_table": true
    },
@@ -5272,7 +5553,7 @@
    {
     "suite": "completion/test.mjs",
     "pack": "completion",
-    "readme_checks": 95,
+    "readme_checks": 114,
     "declared": true,
     "in_readme_table": true
    },
@@ -5377,7 +5658,7 @@
    {
     "suite": "web/test_verify.mjs",
     "pack": "web",
-    "readme_checks": 77,
+    "readme_checks": 93,
     "declared": true,
     "in_readme_table": true
    },
@@ -5398,7 +5679,7 @@
    {
     "suite": "web/test_progress.mjs",
     "pack": "web",
-    "readme_checks": 52,
+    "readme_checks": 55,
     "declared": true,
     "in_readme_table": true
    },
@@ -5916,14 +6197,14 @@
    {
     "suite": "web/test_modulelinks.mjs",
     "pack": "web",
-    "readme_checks": 61,
+    "readme_checks": 88,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "xr/test_session.mjs",
     "pack": "xr",
-    "readme_checks": 41,
+    "readme_checks": 82,
     "declared": true,
     "in_readme_table": true
    },
@@ -5933,21 +6214,28 @@
     "readme_checks": 21,
     "declared": true,
     "in_readme_table": true
+   },
+   {
+    "suite": "web/test_watersk.mjs",
+    "pack": "web",
+    "readme_checks": 57,
+    "declared": true,
+    "in_readme_table": true
    }
   ],
-  "suites_run": 149,
-  "suites_declaring_a_count": 147,
+  "suites_run": 156,
+  "suites_declaring_a_count": 154,
   "suites_without_a_count": [
    "control/soak.mjs",
    "restoration/test_scenarios.mjs"
   ],
-  "declared_total": 7370,
-  "readme_headline": 7405,
+  "declared_total": 7745,
+  "readme_headline": 7780,
   "unaccounted_for": 35,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
   "max": 398,
-  "median": 41,
+  "median": 41.5,
   "thinnest": [
    {
     "suite": "ops/fuzz.mjs",
@@ -6239,6 +6527,7 @@
   "cognitionx/build.py",
   "cognitionx/registry/cognitionx.json",
   "cognitionx/test.mjs",
+  "cohort/test.mjs",
   "completion/build.py",
   "completion/registry/completion.json",
   "completion/test.mjs",
@@ -6257,9 +6546,18 @@
   "control/test_graph.mjs",
   "control/test_hints.mjs",
   "courses/build.py",
+  "courses/lesson_plans.py",
   "courses/registry/courses.json",
+  "courses/registry/lesson_plans.json",
   "courses/supplements.py",
   "courses/test.mjs",
+  "courses/test_lesson_plans.mjs",
+  "courses_roadmap/build.py",
+  "courses_roadmap/lesson_plans.py",
+  "courses_roadmap/registry/courses.json",
+  "courses_roadmap/registry/lesson_plans.json",
+  "courses_roadmap/test.mjs",
+  "courses_roadmap/test_lesson_plans.mjs",
   "datashare/analyse.mjs",
   "datashare/build.py",
   "datashare/build_dataset.mjs",
@@ -6288,6 +6586,7 @@
   "evals/registry/evals.json",
   "evals/test.mjs",
   "fabric/test.mjs",
+  "fabric/test_mentor_scope.mjs",
   "facades/build.py",
   "facades/registry/facades.json",
   "facades/test.mjs",
@@ -6341,6 +6640,17 @@
   "lessons/build.py",
   "lessons/registry/lessons.json",
   "lessons/test.mjs",
+  "loop/cycle.mjs",
+  "loop/evals.mjs",
+  "loop/heartbeat.mjs",
+  "loop/honesty.mjs",
+  "loop/patch_cycle.mjs",
+  "loop/registry/cycles.json",
+  "loop/registry/environments_draft.json",
+  "loop/registry/honesty_fixtures.json",
+  "loop/registry/tech_draft.json",
+  "loop/review_video.py",
+  "loop/test.mjs",
   "media/build.py",
   "media/encode.py",
   "media/fetch_icons.py",
@@ -6445,6 +6755,7 @@
   "robotics/claw/test.mjs",
   "robotics/registry/robotics.json",
   "robotics/test.mjs",
+  "safety_gate/test.mjs",
   "schools/build.py",
   "schools/registry/schools.json",
   "schools/test.mjs",
@@ -6609,6 +6920,7 @@
   "web/test_tqkit.mjs",
   "web/test_unions.mjs",
   "web/test_verify.mjs",
+  "web/test_watersk.mjs",
   "web/test_whitepaper.mjs",
   "web/test_wildkit.mjs",
   "web/test_wilds.mjs",
