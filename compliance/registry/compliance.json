@@ -7,14 +7,14 @@
  "stamps": {
   "finishes": "a305c18b33261ef5",
   "sims": "1af48d2eed34ccb2",
-  "lessons": "881eadd1629dc903",
+  "lessons": "75e757b1c322727a",
   "halls": "3807e54afe6abfe6",
-  "completion": "398ddecde8b9d3be",
+  "completion": "0efb0906905f6c7d",
   "manifest": "169fa4e75499d00e",
-  "build_3d": "c08bec8f05849b6f",
+  "build_3d": "de3561f05d9b15b9",
   "hall_signoff": "e67ba161ef70d996",
   "roadmap": "b6790b517202a57f",
-  "completion_fixture": "21f480338789ada4",
+  "completion_fixture": "7f6d929aa0f0ecb4",
   "self": "9c72ddb44180716e"
  },
  "stamped_paths": {
@@ -58,15 +58,15 @@
  },
  "placard_rule": {
   "hangs_when": {
-   "line": 12168,
+   "line": 12218,
    "read": "if (rc.ppe.length) { const plac = label(rc.ppe.join(' · '), ..., { kind: 'placard', items: rc.ppe })"
   },
   "rc_is": {
-   "line": 12112,
+   "line": 12162,
    "read": "const rc = condOf(h.slug, r.strand);"
   },
   "condOf": {
-   "line": 16400,
+   "line": 16506,
    "read": "return D.condOver[hallSlug]?.[strand], else D.baseCond[strand]"
   },
   "condOver": {
@@ -82,7 +82,7 @@
  },
  "evidence_classes": {
   "episode-backed": "the step kind records a training episode; only this class is called evidence-backed",
-  "device-mark": "station or crib: a mark in the device-local progress record, not a recorded episode",
+  "device-mark": "no step kind today (station and crib were device marks until wave 21 and now write episodes): a mark in the device-local progress record, not a recorded episode. The class and the verifier branch for it stay, inert, so a kind added later that leaves only a mark cannot be called evidence-backed",
   "self-reported": "no step kind today (walk and placard recorded nothing before wave 20 and now write episodes): done would be the learner's word. The class and its rules stay, so a kind added with no record cannot carry evidence it does not have"
  },
  "step_kind_evidence": {
@@ -98,13 +98,13 @@
   },
   "station": {
    "ledger_class": "evidenceable",
-   "completion_class": "device-mark",
-   "why": "a device-local mark in tc-progress.stations - a mark, not a recorded episode"
+   "completion_class": "episode-backed",
+   "why": "every reference field the step carries is recorded by the episode"
   },
   "crib": {
    "ledger_class": "evidenceable",
-   "completion_class": "device-mark",
-   "why": "a device-local mark in tc-progress.tools[district].passed - a mark, not a recorded episode"
+   "completion_class": "episode-backed",
+   "why": "every reference field the step carries is recorded by the episode"
   },
   "walkaround": {
    "ledger_class": "evidenceable",

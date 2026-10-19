@@ -74,11 +74,18 @@ HALL_SLUGS = [req(h, 'slug', 'hall') for h in req(HALLS, 'halls', 'halls.json')]
 # ------------------------------------------------------------ evidence rule ---
 # What a done step can be backed by is a property of its KIND, read from the
 # lessons registry. A kind that writes a training episode is 'episode-backed'
-# (the only class this bundle calls evidence-backed). Two silent kinds
-# (station, crib) leave a DEVICE MARK in the local progress record the page
-# keeps - a mark, not a recorded episode - so an export can carry that mark as
-# 'device-mark'. The other two silent kinds leave nothing at all, and a done
-# mark on them is the learner's word: 'self-reported'.
+# (the only class this bundle calls evidence-backed). Station and crib
+# left, until wave 21, a DEVICE MARK in the local progress
+# record the page keeps - a mark, not a recorded episode - so an export could
+# carry that mark as 'device-mark'. Since wave 21 station and crib write a
+# training episode of their own and are episode-backed like every other
+# recording kind, so NO step kind is a device mark today. The class, its
+# evidence shape and the verifier's branch for it stay on purpose, and are
+# inert: they exist so a kind added later that leaves only a mark in
+# tc-progress is classed as exactly that and never as evidence-backed. A silent
+# kind with no mark at all would be 'self-reported'. The tc-progress marks
+# themselves (stations, tools) are still kept for the halls' own HUD and still
+# exported as the record's `stations` and `tools` blocks; they feed no step.
 PROGRESS_RECORD_KINDS = {
     'station': {'evidence': {'station': 'station id'}, 'from': 'tc-progress.stations'},
     'crib': {'evidence': {'crib': 'district', 'passed': 'bool'}, 'from': 'tc-progress.tools[district].passed'},
@@ -224,7 +231,7 @@ HONESTY = {
         'that the device was honest: a record can be written by hand and will verify if it is internally consistent',
         'that a walk or placard episode means more than it says: it records that a device saw the walker\'s position inside a room, or a placard panel left open for its dwell with the walker in that room - not that anyone read, understood or took on what the placard requires, and not that the room exists outside this bundle',
         'that a self-reported step happened at all (no step kind is self-reported today; the rule stays so one that is added cannot carry evidence it does not have)',
-        'a station or crib mark is a device-local mark, not a recorded episode',
+        'that a station or crib episode means more than it says: it records that a device saw a correct pick on a station quiz, or a crib check finished with every pick right - not that the checklist was read, that the pick was not found by trying every option, that anything was learned or that the learner can name the tools. The marks in tc-progress (the record\'s `stations` and `tools` blocks) are device-local marks the halls keep for their own HUD; they feed no step',
         'that the seat was passed under supervision, or that any score means anything outside this bundle',
         'any accreditation, ticket, licence or credential; no hall, employer or authority has signed anything',
         'any duration of training, and no price is claimed',
@@ -359,6 +366,14 @@ if not any(st['kind'] == 'placard' for lid in COMPLETE for st in LESSON_MAP[lid]
     COMPLETE.append(next(lid for lid, p in PER_LESSON.items()
                          if p['completable'] and not p['needs'] and lid not in COMPLETE
                          and any(st['kind'] == 'placard' for st in LESSON_MAP[lid]['steps'])))
+# wave 21: and one lesson that holds a station step and one that holds a crib step, so the fixture proves both new kinds
+for _kind in ('station', 'crib'):
+    if not any(st['kind'] == _kind for lid in COMPLETE for st in LESSON_MAP[lid]['steps']):
+        COMPLETE.append(next(lid for lid, p in PER_LESSON.items()
+                             if p['completable'] and not p['needs'] and lid not in COMPLETE
+                             and any(st['kind'] == _kind for st in LESSON_MAP[lid]['steps'])))
+STATION_LESSON = next(lid for lid in COMPLETE if any(st['kind'] == 'station' for st in LESSON_MAP[lid]['steps']))
+CRIB_LESSON = next(lid for lid in COMPLETE if any(st['kind'] == 'crib' for st in LESSON_MAP[lid]['steps']))
 PLACARD_LESSON = next(lid for lid in COMPLETE if any(st['kind'] == 'placard' for st in LESSON_MAP[lid]['steps']))
 WALK_LESSON = next(lid for lid in COMPLETE if any(st['kind'] == 'walk' for st in LESSON_MAP[lid]['steps']))
 PARTIAL = {'scaffold-read-the-tag': 2}  # first N steps done, the rest not
@@ -375,10 +390,6 @@ def evidence_for(step, done, hall):
     if kind == 'sim':
         n_gated = sum(1 for a in SIM_RULES[step['sim']]['rubric_axes'] if a['pass'] != 'informational')
         return {'sim': step['sim'], 'scenario': step['scenario'], 'score': n_gated, 'passed': True}
-    if kind == 'station':
-        return {'station': step['station']}
-    if kind == 'crib':
-        return {'crib': step['crib'], 'passed': True}
     if kind in RECORDING_KINDS and kind != 'sim':
         ev = {'episode': kind, 't': f'{BUILT}T03:00:{step["n"]:02d}.000Z'}
         for f in EVIDENCE_RULE[kind]['checkable']:
@@ -386,7 +397,8 @@ def evidence_for(step, done, hall):
         if EVIDENCE_RULE[kind]['names_read_field']:
             ev[EVIDENCE_RULE[kind]['names_read_field']] = step['names_read'][0]
         for f, minimum in EVIDENCE_RULE[kind]['at_least'].items():
-            ev[f] = minimum + 250
+            # a placard's dwell sits above its floor; a crib's picks sit exactly at it (every pick right)
+            ev[f] = minimum + 250 if f == 'dwell_ms' else minimum
         return ev
     return None
 
@@ -566,6 +578,88 @@ def mutants(good):
     e['evidence'] = None
     out['placard-done-without-evidence'] = ('step.recording-evidence', stamp_digest(m))
 
+    # wave 21: station and crib are held to the station / district they name, to the room, the name the step lists and,
+    # for a crib, to every pick right. Each breaks exactly one rule.
+    m = copy.deepcopy(good)
+    e = step_entry(m, STATION_LESSON, 'station')
+    e['evidence']['station'] = next(i for i in STATION_IDS if i != e['evidence']['station'])
+    out['station-done-wrong-station'] = ('step.episode-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, STATION_LESSON, 'station')
+    e['evidence']['station_name'] = 'Some Other Station'
+    out['station-done-wrong-station-name'] = ('step.episode-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, STATION_LESSON, 'station')
+    e['evidence']['where'] = 'not-a-strand'
+    out['station-done-wrong-room'] = ('step.episode-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, STATION_LESSON, 'station')
+    e['evidence']['hall'] = next(h for h in HALL_SLUGS if h != e['evidence']['hall'])
+    out['station-done-wrong-hall'] = ('step.episode-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, STATION_LESSON, 'station')
+    e['evidence']['episode'] = 'walk'
+    out['station-done-as-walk'] = ('step.episode-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, STATION_LESSON, 'station')
+    del e['evidence']['station']
+    out['station-done-no-station'] = ('record.fields', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, STATION_LESSON, 'station')
+    e['evidence'] = {'station': e['evidence']['station']}   # the old device mark: not an episode, no longer enough
+    out['station-done-device-mark-only'] = ('record.fields', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, STATION_LESSON, 'station')
+    e['evidence'] = None
+    out['station-done-without-evidence'] = ('step.recording-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, CRIB_LESSON, 'crib')
+    e['evidence']['crib'] = next(d for d in CRIB_MAP if d != e['evidence']['crib'])
+    out['crib-done-wrong-district'] = ('step.episode-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, CRIB_LESSON, 'crib')
+    e['evidence']['crib_name'] = 'Some Other Crib'
+    out['crib-done-wrong-crib-name'] = ('step.episode-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, CRIB_LESSON, 'crib')
+    e['evidence']['picks'] = EVIDENCE_RULE['crib']['at_least']['picks'] - 1
+    out['crib-done-picks-too-few'] = ('step.episode-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, CRIB_LESSON, 'crib')
+    e['evidence']['picks'] = str(EVIDENCE_RULE['crib']['at_least']['picks'])
+    out['crib-done-picks-not-a-number'] = ('step.episode-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, CRIB_LESSON, 'crib')
+    del e['evidence']['picks']
+    out['crib-done-no-picks'] = ('record.fields', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, CRIB_LESSON, 'crib')
+    e['evidence']['where'] = 'safety'
+    out['crib-done-wrong-room'] = ('step.episode-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, CRIB_LESSON, 'crib')
+    e['evidence'] = {'crib': e['evidence']['crib'], 'passed': True}   # the old device mark: not an episode, no longer enough
+    out['crib-done-device-mark-only'] = ('record.fields', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, CRIB_LESSON, 'crib')
+    e['evidence'] = None
+    out['crib-done-without-evidence'] = ('step.recording-evidence', stamp_digest(m))
+
     m = copy.deepcopy(good)
     m['lessons'].append({'lesson': 'no-such-lesson', 'hall': HALL_SLUGS[0], 'complete': False, 'steps': []})
     out['unknown-lesson'] = ('ids.lesson', stamp_digest(m))
@@ -610,7 +704,7 @@ registry = {
     'signature': SIGNATURE_RULE,
     'evidence_classes': {
         'episode-backed': 'the step kind records a training episode; only this class is called evidence-backed',
-        'device-mark': 'station or crib: a mark in the device-local progress record, not a recorded episode',
+        'device-mark': 'no step kind today (station and crib were device marks until wave 21 and now write episodes): a mark in the device-local progress record, not a recorded episode. The class and the verifier branch for it stay, inert, so a kind added later that leaves only a mark cannot be called evidence-backed',
         'self-reported': 'no step kind today (walk and placard recorded nothing before wave 20 and now write episodes): done would be the learner\'s word. The class and its rules stay, so a kind added with no record cannot carry evidence it does not have',
     },
     'evidence_rule': EVIDENCE_RULE,

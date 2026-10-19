@@ -176,6 +176,9 @@
       if (stats.firstFrameMs === null) stats.firstFrameMs = now;
       stats.lastFrameMs = now;
       this.frame.time = t;
+      // the harness's per-frame input driver (a seat run writes the controllers here, so the
+      // page reads fresh sticks and buttons in the very frame it is handed)
+      if (window.__xrMock && window.__xrMock.beforeFrame) window.__xrMock.beforeFrame(now);
       for (const [, cb] of batch) {
         cb(t, this.frame);                           // MUT: deliver-frames
         stats.framesDelivered++;
@@ -247,14 +250,14 @@
     cfg, stats,
     live: () => live,
     // a thumbstick: x, y in [-1, 1] on the xr-standard thumbstick axes 2 and 3
-    stick(side, x, y) { bySide[side].gamepad.axes[2] = x; bySide[side].gamepad.axes[3] = y; stats.axes.push([side, x, y]); },
+    stick(side, x, y) { bySide[side].gamepad.axes[2] = x; bySide[side].gamepad.axes[3] = y; if (stats.axes.length < 400) stats.axes.push([side, x, y]); },
     // a button by xr-standard index (0 trigger, 1 squeeze, 4 A/X, 5 B/Y); the
     // trigger and squeeze ALSO raise the session's select / squeeze events, as a runtime does
     button(side, i, down) {
       const src = bySide[side], b = src.gamepad.buttons[i];
       const was = b.pressed;
       b.pressed = b.touched = !!down; b.value = down ? 1 : 0;        // MUT: button-state
-      stats.buttons.push([side, i, !!down]);
+      if (stats.buttons.length < 400) stats.buttons.push([side, i, !!down]);
       if (!live || live._ended || was === !!down) return;
       if (i === 0) {
         if (down) { stats.selectStart++; live.dispatchEvent(evt('selectstart', src)); }

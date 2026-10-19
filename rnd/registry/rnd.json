@@ -44,7 +44,7 @@
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 441
+  "files_read": 443
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -2531,7 +2531,8 @@
    "app_renderers": [
     "web/build_bayworld.py",
     "web/build_courses.py",
-    "web/build_parishes.py"
+    "web/build_parishes.py",
+    "web/build_worksites.py"
    ],
    "doc_renderers": [],
    "builders": [],
@@ -3473,6 +3474,7 @@
     "props/test.mjs",
     "schools/test.mjs",
     "spaces/test.mjs",
+    "training/test.mjs",
     "worksites/test.mjs"
    ],
    "own_pack": [
@@ -3615,9 +3617,11 @@
     "spaces/build.py",
     "spatial/build.py",
     "tasks/build.py",
+    "training/build.py",
     "unionpaths/build.py"
    ],
    "suites": [
+    "completion/test.mjs",
     "completion/verify.mjs",
     "courses/test.mjs",
     "lessons/test.mjs",
@@ -3626,6 +3630,7 @@
     "spaces/test.mjs",
     "spatial/test.mjs",
     "tasks/test.mjs",
+    "training/test.mjs",
     "unionpaths/test.mjs",
     "web/test_3d.mjs"
    ],
@@ -4004,6 +4009,7 @@
     "tasks/test.mjs",
     "web/test_geomap.mjs",
     "web/test_home.mjs",
+    "web/test_modulelinks.mjs",
     "web/test_worksites.mjs"
    ],
    "own_pack": [
@@ -6627,6 +6633,8 @@
   "xr/build.py",
   "xr/mock_webxr.js",
   "xr/registry/devices.json",
+  "xr/seat_batches.mjs",
+  "xr/seats_harness.mjs",
   "xr/session_harness.mjs",
   "xr/test.mjs",
   "xr/test_session.mjs"

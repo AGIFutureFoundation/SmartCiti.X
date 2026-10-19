@@ -163,6 +163,25 @@
    "dwell_ms": 5250
   },
   {
+   "t": "2026-09-26T03:00:50.000Z",
+   "kind": "station",
+   "campus": "treasure-island",
+   "hall": "painters",
+   "where": "fixture-strand",
+   "station": "fixture-station",
+   "station_name": "Fixture Station"
+  },
+  {
+   "t": "2026-09-26T03:01:00.000Z",
+   "kind": "crib",
+   "campus": "treasure-island",
+   "hall": "painters",
+   "where": "tools",
+   "crib": "fixture-crib",
+   "crib_name": "Fixture Crib",
+   "picks": 5
+  },
+  {
    "t": "2026-09-26T03:04:00.000Z",
    "kind": "advisor",
    "campus": "treasure-island",
@@ -360,12 +379,14 @@
     "start": "2026-09-26T03:00:00.000Z",
     "end": "2026-09-26T03:04:00.000Z",
     "wall_ms": 240000,
-    "episodes": 6,
+    "episodes": 8,
     "by_kind": {
      "walkaround": 1,
      "walk": 1,
      "placard": 1,
+     "station": 1,
      "sim": 2,
+     "crib": 1,
      "advisor": 1
     },
     "halls": [
@@ -397,6 +418,8 @@
     "could_advance": {
      "walk": true,
      "placard": true,
+     "station": true,
+     "crib": true,
      "walkaround": true,
      "sim": true,
      "advisor": true,
@@ -442,6 +465,8 @@
     "could_advance": {
      "walk": false,
      "placard": false,
+     "station": false,
+     "crib": false,
      "walkaround": false,
      "sim": true,
      "advisor": false,
@@ -486,6 +511,8 @@
     "could_advance": {
      "walk": false,
      "placard": false,
+     "station": false,
+     "crib": false,
      "walkaround": false,
      "sim": true,
      "advisor": false,
@@ -495,12 +522,14 @@
   ],
   "rollups": {
    "sessions": 3,
-   "episodes": 11,
+   "episodes": 13,
    "by_kind": {
     "walkaround": 1,
     "walk": 1,
     "placard": 1,
+    "station": 1,
     "sim": 6,
+    "crib": 1,
     "advisor": 1,
     "crew": 1
    },

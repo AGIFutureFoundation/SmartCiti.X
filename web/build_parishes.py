@@ -2862,6 +2862,175 @@ for _a, _b in _FC_ANCHORS:
         raise BuildError(f'build_parishes: RENDER-CULL anchor must occur exactly once, found {JS.count(_a)}: {_a.strip()[:60]!r}')
     JS = JS.replace(_a, _b, 1)
 # RENDER-CULL END fabric-view-cull
+# WATER-SKIP BEGIN inland-water-skip (wave 21, WATER·Inland Water): the water plane is ONE full-screen pass (a 40 km plane
+# that follows the eye; SwiftShader shades every pixel of it, the ones the land then covers included, RENDER2: 0-20 ms where
+# water shows). It is not drawn when NO water can be seen from the eye, decided by exact geometry, never a guess:
+#   water that can show = a point of the water plane (y = -0.4) inside the view that no land mesh covers. The land is flat at
+#   y = 0 and the eye is above it, so a ray reaches the plane only through the ground plane: the footprint F of the view
+#   frustum on y = 0 (the four side planes, and the view depth capped at the fog's far distance: beyond it water is exactly
+#   the fog colour) holds every such point. F is convex. If NO edge that can border water (a loaded parish outline edge that
+#   is not shared, with opposite interior sides, by another loaded outline; the edges of every cut hole) touches F, no cut
+#   hole contains or overlaps F, and one point of F is on drawn land, then ALL of F is land and the plane is skipped.
+#   Anything else draws it (an eye at or under the surface, a dive, the overview keeps its own rule). The decision is
+#   re-run only when the camera or the loaded land/holes change; stats report it (water.skip) and the true plane state.
+_WSK_JS = r"""
+/* WATER-SKIP BEGIN: the water plane is not drawn when no water can be seen (exact frustum-vs-land geometry, see WATER-SKIP PURE) */
+/* WATER-SKIP PURE BEGIN */
+function wskIn(r, x, z) {
+  let c = false;
+  for (let i = 0, j = r.length - 1; i < r.length; j = i++) {
+    const xi = r[i][0], zi = r[i][1], xj = r[j][0], zj = r[j][1];
+    if ((zi > z) !== (zj > z) && x < (xj - xi) * (z - zi) / (zj - zi) + xi) c = !c;
+  }
+  return c;
+}
+function wskBox(r) { let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity; for (const q of r) { if (q[0] < x0) x0 = q[0]; if (q[0] > x1) x1 = q[0]; if (q[1] < z0) z0 = q[1]; if (q[1] > z1) z1 = q[1]; } return [x0, z0, x1, z1]; }
+/* P: [{ rings: [[x, z]...], holes: [[[x, z]...]...] }] for the LOADED parishes (the holes are the ones cut into that parish's land mesh) */
+function wskGeo(P) {
+  const seen = new Map(), bnd = [], parishes = [], holes = [];
+  for (const p of P) {
+    const rings = p.rings.map((r) => ({ r, box: wskBox(r) })), hs = p.holes.map((r) => ({ r, box: wskBox(r) }));
+    parishes.push({ rings, holes: hs, box: wskBox(rings.flatMap((q) => q.r)) });
+    for (const h of hs) holes.push(h);
+    for (const { r } of rings) {
+      let a2 = 0; for (let i = 0; i < r.length; i++) { const a = r[i], b = r[(i + 1) % r.length]; a2 += a[0] * b[1] - b[0] * a[1]; }
+      const s = a2 >= 0 ? 1 : -1;   // +1: the interior is left of the walk direction, -1: right
+      for (let i = 0; i < r.length; i++) {
+        const a = r[i], b = r[(i + 1) % r.length]; if (a[0] === b[0] && a[1] === b[1]) continue;
+        const fwd = a[0] < b[0] || (a[0] === b[0] && a[1] < b[1]), key = fwd ? a[0] + ',' + a[1] + '|' + b[0] + ',' + b[1] : b[0] + ',' + b[1] + '|' + a[0] + ',' + a[1];
+        const bit = s * (fwd ? 1 : -1) > 0 ? 1 : 2, e = seen.get(key);
+        if (e) e.mask |= bit; else { const o = { mask: bit, a, b }; seen.set(key, o); bnd.push(o); }
+      }
+    }
+  }
+  const edges = bnd.filter((o) => o.mask !== 3);   // an edge walked from both sides, interiors on opposite sides, is a seam between two drawn lands
+  return { parishes, holes, edges: Float64Array.from(edges.flatMap((o) => [o.a[0], o.a[1], o.b[0], o.b[1]])), seams: bnd.length - edges.length, nEdges: bnd.length };
+}
+/* a point on drawn land: inside some ring of a parish and not inside a hole cut into that parish's mesh */
+function wskLand(G, x, z) {
+  for (const p of G.parishes) {
+    const b = p.box; if (x < b[0] || x > b[2] || z < b[1] || z > b[3]) continue;
+    if (!p.rings.some((q) => x >= q.box[0] && x <= q.box[2] && z >= q.box[1] && z <= q.box[3] && wskIn(q.r, x, z))) continue;
+    if (p.holes.some((h) => x >= h.box[0] && x <= h.box[2] && z >= h.box[1] && z <= h.box[3] && wskIn(h.r, x, z))) continue;
+    return true;
+  }
+  return false;
+}
+/* the view's half-planes on y = 0, A x + B z + C >= 0, grown by a 1 % slope slack and 2 m. c: eye ex/ey/ez, forward f, right r, up u
+   (unit, world), half-tangents tx/ty, depth cap far. Points of y = 0 inside the view pyramid with depth <= far (the near plane is left
+   out on purpose: a ray crosses y = 0 before it reaches the water at y = -0.4, so its crossing is never deeper than its water point). */
+function wskPlanes(c) {
+  const sx = c.tx * 1.01 + 0.01, sy = c.ty * 1.01 + 0.01, M = 2, out = [];
+  const add = (nx, ny, nz) => { const A = nx, B = nz, C = -(nx * c.ex + ny * c.ey + nz * c.ez); out.push([A, B, C + M * Math.hypot(A, B)]); };
+  add(sx * c.fx - c.rx, sx * c.fy - c.ry, sx * c.fz - c.rz);   // right
+  add(sx * c.fx + c.rx, sx * c.fy + c.ry, sx * c.fz + c.rz);   // left
+  add(sy * c.fx - c.ux, sy * c.fy - c.uy, sy * c.fz - c.uz);   // top
+  add(sy * c.fx + c.ux, sy * c.fy + c.uy, sy * c.fz + c.uz);   // bottom
+  const far = c.far + 2; out.push([-c.fx, -c.fz, c.fx * c.ex + c.fy * c.ey + c.fz * c.ez + far + M * Math.hypot(c.fx, c.fz)]);   // depth <= far
+  return out;
+}
+/* the convex footprint polygon (Sutherland-Hodgman from a square that holds the whole truncated pyramid) */
+function wskPoly(pl, c) {
+  const R = (c.far + 2) * (1 + c.tx * 1.01 + c.ty * 1.01 + 0.02) + 50;
+  let poly = [[c.ex - R, c.ez - R], [c.ex + R, c.ez - R], [c.ex + R, c.ez + R], [c.ex - R, c.ez + R]];
+  for (const [A, B, C] of pl) {
+    const out = [];
+    for (let i = 0; i < poly.length; i++) {
+      const p = poly[i], q = poly[(i + 1) % poly.length], fp = A * p[0] + B * p[1] + C, fq = A * q[0] + B * q[1] + C;
+      if (fp >= 0) out.push(p);
+      if ((fp >= 0) !== (fq >= 0)) { const t = fp / (fp - fq); out.push([p[0] + t * (q[0] - p[0]), p[1] + t * (q[1] - p[1])]); }
+    }
+    poly = out; if (poly.length < 3) return [];
+  }
+  return poly;
+}
+/* does the segment touch the convex region (Cyrus-Beck)? */
+function wskSeg(pl, x0, z0, x1, z1) {
+  let t0 = 0, t1 = 1;
+  for (const [A, B, C] of pl) {
+    const f0 = A * x0 + B * z0 + C, f1 = A * x1 + B * z1 + C;
+    if (f0 < 0 && f1 < 0) return false;
+    if (f0 < 0) t0 = Math.max(t0, f0 / (f0 - f1)); else if (f1 < 0) t1 = Math.min(t1, f0 / (f0 - f1));
+    if (t0 > t1) return false;
+  }
+  return true;
+}
+/* { water: can any water be seen, why } - water is true whenever it cannot be shown that none can be */
+function wskWater(c, G) {
+  if (!(c.ey > 0.25)) return { water: true, why: 'eye-low' };
+  const pl = wskPlanes(c), poly = wskPoly(pl, c);
+  if (poly.length < 3) return { water: false, why: 'no-ground' };   // the view holds no ray that reaches the ground plane
+  let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity, cx = 0, cz = 0;
+  for (const [x, z] of poly) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (z < z0) z0 = z; if (z > z1) z1 = z; cx += x; cz += z; }
+  cx /= poly.length; cz /= poly.length;
+  const E = G.edges;
+  for (let i = 0; i < E.length; i += 4) {
+    if (Math.max(E[i], E[i + 2]) < x0 || Math.min(E[i], E[i + 2]) > x1 || Math.max(E[i + 1], E[i + 3]) < z0 || Math.min(E[i + 1], E[i + 3]) > z1) continue;
+    if (wskSeg(pl, E[i], E[i + 1], E[i + 2], E[i + 3])) return { water: true, why: 'outline-edge' };
+  }
+  for (const h of G.holes) {
+    const b = h.box; if (b[2] < x0 || b[0] > x1 || b[3] < z0 || b[1] > z1) continue;
+    if (wskIn(h.r, cx, cz)) return { water: true, why: 'in-hole' };
+    const r = h.r;
+    for (let i = 0; i < r.length; i++) {
+      const p = r[i], q = r[(i + 1) % r.length];
+      if (Math.max(p[0], q[0]) < x0 || Math.min(p[0], q[0]) > x1 || Math.max(p[1], q[1]) < z0 || Math.min(p[1], q[1]) > z1) continue;
+      if (wskSeg(pl, p[0], p[1], q[0], q[1])) return { water: true, why: 'hole-edge' };
+    }
+  }
+  if (!wskLand(G, cx, cz)) return { water: true, why: 'off-land' };
+  return { water: false, why: 'inland' };
+}
+/* WATER-SKIP PURE END */
+const WSK = { frames: 0, skipped: 0, evals: 0, ms: 0, skip: false, why: 'init', cam: new Float64Array(14), geoKey: '', geo: null, dive: false };
+function wskCam() {
+  camera.updateMatrixWorld(); const e = camera.matrixWorld.elements, pj = camera.projectionMatrix.elements;
+  return { ex: e[12], ey: e[13], ez: e[14], rx: e[0], ry: e[1], rz: e[2], ux: e[4], uy: e[5], uz: e[6], fx: -e[8], fy: -e[9], fz: -e[10], tx: 1 / pj[0], ty: 1 / pj[5],
+    far: Math.min(camera.far, scene.fog ? scene.fog.far : camera.far) };
+}
+/* the land the renderer holds right now: the loaded parishes' outlines and the holes cutWater really cut into their meshes */
+function wskLandNow() {
+  const P = [];
+  for (const id of loaded) {
+    const p = PAR.get(id), net = waterNet.get(id), cut = waterCut.has(id) && net;
+    P.push({ rings: p.rings_m, holes: cut ? net.feats.filter((f) => p.rings_m.some((r) => inRing(r, f.ring[0][0], f.ring[0][1]))).map((f) => f.ring) : [] });
+  }
+  return wskGeo(P);
+}
+function wskFrame(over) {
+  WSK.frames++;
+  if (over) { WSK.skip = false; WSK.why = 'overview'; WSK.geoKey = ''; return; }   // frame() hid the plane for the overview already
+  if (DIAG.noWaterSkip) { WSK.skip = false; WSK.why = 'diag-off'; WSK.geoKey = ''; water.visible = true; return; }
+  if (deep && deep.state && deep.state.mode !== 'off') { WSK.skip = false; WSK.why = 'dive'; WSK.geoKey = ''; water.visible = true; return; }
+  const t0 = performance.now(), c = wskCam();
+  const v = [c.ex, c.ey, c.ez, c.rx, c.ry, c.rz, c.ux, c.uy, c.uz, c.fx, c.fy, c.fz, c.tx, c.ty];
+  const gk = [...loaded].sort().map((id) => id + (waterCut.has(id) && waterNet.get(id) ? ':' + waterNet.get(id).feats.length : '')).join(';') + '/' + c.far;
+  let same = gk === WSK.geoKey; for (let i = 0; same && i < 14; i++) if (Math.abs(v[i] - WSK.cam[i]) > 1e-9) same = false;
+  if (!same) {
+    if (gk !== WSK.geoKey || !WSK.geo) { WSK.geo = wskLandNow(); WSK.geoKey = gk; }
+    WSK.cam.set(v); const r = wskWater(c, WSK.geo); WSK.skip = !r.water; WSK.why = r.why; WSK.evals++; WSK.ms += performance.now() - t0;
+  }
+  water.visible = !WSK.skip; if (WSK.skip) WSK.skipped++;
+}
+function wskStats() { return { on: !DIAG.noWaterSkip, skip: WSK.skip, why: WSK.why, frames: WSK.frames, skippedFrames: WSK.skipped, evals: WSK.evals, ms: +WSK.ms.toFixed(2), edges: WSK.geo ? WSK.geo.edges.length / 4 : 0, seams: WSK.geo ? WSK.geo.seams : 0 }; }
+/* WATER-SKIP END */
+"""
+_WSK_ANCHORS = [
+    # the block rides in front of frame() (DIAG, camera, scene, water, loaded, waterNet, waterCut, deep all exist by the time a frame runs)
+    ('function frame(now) {\n  const tf0 = performance.now();   // PERF w13\n',
+     _WSK_JS + 'function frame(now) {\n  const tf0 = performance.now();   // PERF w13\n'),
+    # after the camera is placed and the culls ran, right before the draw
+    ('  fabNpc(over);   // FABRIC-CULL (after perfCull)\n',
+     '  wskFrame(over);   // WATER-SKIP (the plane is drawn only where water can show)\n  fabNpc(over);   // FABRIC-CULL (after perfCull)\n'),
+    # the stats say the truth about the plane
+    ('    water: { cut: [...waterCut].sort(), failed: waterFailed.slice(),',
+     '    water: { visible: water.visible, skip: wskStats(), cut: [...waterCut].sort(), failed: waterFailed.slice(),'),
+]
+for _a, _b in _WSK_ANCHORS:
+    if JS.count(_a) != 1:
+        raise BuildError(f'build_parishes: WATER-SKIP anchor must occur exactly once, found {JS.count(_a)}: {_a.strip()[:60]!r}')
+    JS = JS.replace(_a, _b, 1)
+# WATER-SKIP END inland-water-skip
 # ROBOWORLD BEGIN robot-yard (wave 18, ROBOWORLD·Robots in the Worlds): ONE small robot yard in the walkable world.
 # An AUTHORED rover runs on a loop near the walker's spawn point: it replays the arena's SCRIPTED reference steps for
 # world.litter-pickup (robotics/registry/robotics.json reference_policy, read fail closed): turn toward the nearest open
@@ -3148,6 +3317,13 @@ for _a, _b in _DL_ANCHORS:
         raise BuildError(f'build_parishes: DOOR-LINK anchor must occur exactly once, found {JS.count(_a)}: {_a.strip()[:60]!r}')
     JS = JS.replace(_a, _b, 1)
 # ACCESS END door-link
+# MODULE-LINK BEGIN (wave 21, LINKS2): a campus door whose campus carries a work site of a district module gets a
+# second "Practice module" link beneath it (modules/registry/modules.json, read fail closed by web/modulelinks.py).
+_MOD_DOOR_ANCHOR = '/* DOOR-LINK END */\n'
+if JS.count(_MOD_DOOR_ANCHOR) != 1:
+    raise BuildError(f'build_parishes: MODULE-LINK door anchor must occur exactly once, found {JS.count(_MOD_DOOR_ANCHOR)}')
+JS = JS.replace(_MOD_DOOR_ANCHOR, _MOD_DOOR_ANCHOR + modulelinks.campus_door_js([d['id'] for d in _DL_DOORS], ROOT), 1)
+# MODULE-LINK END
 # BEGIN FACADE w11 (FACADE·Exteriors & Signs): AUTHORED facade details on the kit buildings nearest the eye and PLAY
 # signs on the economy/ commercial lots (web/facadekit.py, facades/registry/facades.json) - ONE InstancedMesh, one draw
 # call, hidden in the overview; the glue reads the streamed chunks and never changes them (details are not solid).

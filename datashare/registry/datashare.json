@@ -22,7 +22,7 @@
    "tc-contribution/2"
   ],
   "intake_tag": "tc-contribution/2",
-  "contrib_source_stamp": "d1282db9df77044a",
+  "contrib_source_stamp": "c457bdbd846feee9",
   "robotics_schema": "tc-robotics/1",
   "robotics_contract_version": 1
  },
@@ -76,6 +76,25 @@
    "where",
    "room",
    "dwell_ms"
+  ],
+  "station": [
+   "t",
+   "kind",
+   "campus",
+   "hall",
+   "where",
+   "station",
+   "station_name"
+  ],
+  "crib": [
+   "t",
+   "kind",
+   "campus",
+   "hall",
+   "where",
+   "crib",
+   "crib_name",
+   "picks"
   ],
   "walkaround": [
    "t",
@@ -781,7 +800,7 @@
   "card_sections": 7,
   "world_envs": 4,
   "sim_seat_envs": 11,
-  "kinds": 7,
+  "kinds": 9,
   "trained_models": 0
  }
 }

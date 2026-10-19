@@ -5,6 +5,12 @@
  *   flock <the shared browser lock> node xr/test_session.mjs --browser
  *                                        the static half, then the MOCKED session driven in
  *                                        headless Chromium (landing browser round, <= 90 s)
+ *   flock <lock> node xr/test_session.mjs --browser --seats=A|B|C|all|id,id,...
+ *                                        the static half, then ONE mocked session that enters VR once and
+ *                                        drives the named sim seats in turn through the controller map
+ *                                        (key state, then completion; <= 90 s a batch, see SEAT_BATCHES)
+ *                                        options: --coach-secs=N (cap per seat), --probe[=all] (time each
+ *                                        seat's reference run headlessly before the session)
  *
  * MOCKED session in headless Chromium. No physical headset, no browser XR
  * runtime, no tracking. The roadmap criterion "one VR sim module running
@@ -25,6 +31,8 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import vm from 'node:vm';
 import { SEAT, HALL, SCENARIO, SEAT_DEF, SEQ, signalPlan, KEY_STICK, runSession } from './session_harness.mjs';
+import { SEAT_IDS, seatDef, firstScenario, seatVerbs, sweepWant, SWEEPS, coachAllowed, hallOrder, levelOf, judgeSeat, runSeats } from './seats_harness.mjs';
+import { SEAT_BATCHES, SEAT_EXPECT, SEAT_COACH_SECS } from './seat_batches.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, '..');
@@ -39,6 +47,7 @@ const BROWSER = args.includes('--browser');
 console.log('xr/test_session.mjs' + (BROWSER ? ' --browser' : ' (static)'));
 
 const MOCK = R('xr/mock_webxr.js'), HARN = R('xr/session_harness.mjs'), SELF = R('xr/test_session.mjs');
+const SEATH = R('xr/seats_harness.mjs'), BATCHF = R('xr/seat_batches.mjs');
 const PAGE = R('web/build_3d.py');
 const THREE = R('web/vendor/three.module.min.js');
 const J = (p) => JSON.parse(R(p));
@@ -114,13 +123,88 @@ const J = (p) => JSON.parse(R(p));
   ok(SEAT_DEF.operator.levels.includes('optimal') && /document\.getElementById\('opLvl'\)\.value \|\| 'optimal'/.test(PAGE), 'the scripted operator\'s default level is optimal when the HUD has not chosen one');
 }
 
+/* ---- the other seats: controller map, coach and judge (pure node) ------ */
+{
+  const others = SEAT_IDS.filter((i) => i !== SEAT);
+  ok(SEAT_IDS.length === 11 && others.length === 10, `the registry holds ${SEAT_IDS.length} seats: the rigging signal call (driven by the session harness) and ${others.length} others for the seat harness`);
+  const LETTERS = ['W', 'A', 'S', 'D', 'Q', 'E', 'R', 'X', 'C'];
+  let bad = [];
+  for (const id of SEAT_IDS) {
+    const d = seatDef(id), v = seatVerbs(d);
+    const unknown = v.toks.filter((t) => t !== 'Space' && !LETTERS.includes(t));
+    const letters = v.toks.filter((t) => ['R', 'X', 'C'].includes(t));
+    if (unknown.length || letters.length > 1 || (letters.length === 1) !== !!d.xr.grip_key || (letters[0] && d.xr.grip_key !== 'Key' + letters[0]) || (v.space && !/Space/.test(d.xr.trigger))) bad.push(id);
+  }
+  ok(bad.length === 0, 'every seat\'s registry controls are W/A/S/D/Q/E, Space, and at most one of R/X/C - and that one is the seat\'s xr grip_key, Space is its xr trigger', bad.join(','));
+  ok(SEAT_IDS.every((i) => seatDef(i).scenarios.length >= 1 && firstScenario(i) === seatDef(i).scenarios[0].id), 'each seat opens its first registry scenario in the batch run');
+  ok(SEAT_IDS.every((i) => seatDef(i).rubric.length >= 3 && seatDef(i).rubric.every((r) => r.axis)), 'each seat\'s rubric axes (the completion signal) are in the registry');
+  // the page's side: the coach hook, anchored, a pure reader of the reference policy
+  const blk = (PAGE.match(/\/\* XR-SEATS BEGIN[\s\S]*?XR-SEATS END \*\//) || [''])[0];
+  ok((PAGE.match(/XR-SEATS BEGIN/g) || []).length === 1 && (PAGE.match(/XR-SEATS END/g) || []).length === 1 && blk.length > 400, 'the page carries one anchored XR-SEATS block');
+  ok(/window\.__tc3dCoach = \{/.test(blk) && ['begin(', 'next()', 'done()', 'state()', 'end()'].every((m) => blk.includes(m)), 'the block exposes begin, next, done, state and end');
+  ok(!/\bopRun\s*=[^=]/.test(blk.replace(/\/\*[\s\S]*?\*\//g, '')) && !/sim\.action|(^|[^.\w])keys\[|(^|[^.\w])keys\.Key/.test(blk.replace(/\/\*[\s\S]*?\*\//g, '')), 'the coach never attaches the scripted operator run and never presses a key or the seat\'s action itself: it only returns what the policy would press');
+  ok(/OPERATORS\[c\.sim\]\.step\(sim\.gauges\(\), c\)/.test(blk) && /OP_KEYS\.filter/.test(blk) && /rng: opRng\(/.test(blk), 'it runs the same reference policy opStep runs, on the same context shape opAttach builds, and answers only with OP_KEYS');
+  const att = (PAGE.match(/function opAttach\([\s\S]*?\n\}/) || [''])[0];
+  ok(att.includes('P: curScenario?.params ?? {}, L: op.levels[level], m: { phase: 0 }') && blk.includes('P: curScenario?.params ?? {}, L: op.levels[level], m: { phase: 0 }'), 'and the coach context is built from the same fields opAttach builds');
+  ok(SEAT_IDS.every((i) => new RegExp("'?" + i + "'?:\\s*\\{").test((PAGE.match(/const OPERATORS = \{[\s\S]*?\n\};/) || [''])[0])), 'every seat has a reference policy in the page for the coach to read');
+  // the driver in the seat harness restates the stick adapter - checked against it
+  ok(/\(has\('KeyD'\) \? 1 : 0\) - \(has\('KeyA'\) \? 1 : 0\), \(has\('KeyS'\) \? 1 : 0\) - \(has\('KeyW'\) \? 1 : 0\)/.test(SEATH) && /\(has\('KeyE'\) \? 1 : 0\) - \(has\('KeyQ'\) \? 1 : 0\)/.test(SEATH),
+    'the seat harness writes the left stick x from D minus A and y from S minus W, the right stick x from E minus Q - the sign the page\'s want map reads (checked above against the adapter)');
+  ok(/rose\('trig', trig\)/.test(PAGE) && /const press = r\.act && !d\.prevAct/.test(SEATH), 'the Space verb is written as a trigger press edge, never held across two frames, because the page acts on the rising edge only');
+  ok(/m\.button\('right', 1, !!\(d\.grip && has\(d\.grip\)\)\)/.test(SEATH) && /btn\(R, 1\) \|\| btn\(L, 1\)/.test(PAGE), 'the grip key is written to the right squeeze button, which the page reads as the seat\'s secondary key');
+  ok(/beforeFrame/.test(MOCK) && /m\.beforeFrame = /.test(SEATH), 'the mock calls the driver just before it delivers each frame, so the page reads fresh controllers in that frame');
+  ok(SEATH.includes("page.click('#vrBtn')") && !/__tc3dXR\.start\(/.test(SEATH) && /Enter VR once|enter VR once/i.test(SEATH), 'the seat run enters VR once, through the page\'s own button, and never calls the page\'s start hook for it');
+  ok(/window\.__tc3dSim\.start\(i, s\)/.test(SEATH), 'seats after the first are started in-session through the page\'s start hook (the call a hall station makes)');
+
+  // hall order and the batch table
+  const ord = hallOrder(others);
+  ok(ord.length === 10 && new Set(ord).size === 10 && others.every((i) => ord.includes(i)), 'hallOrder returns each seat once', ord.join(','));
+  const inBatches = Object.values(SEAT_BATCHES).flat();
+  ok(new Set(inBatches).size === inBatches.length && inBatches.every((i) => SEAT_IDS.includes(i)), 'no seat sits in two batches and every batch seat is a registry seat');
+  ok(others.every((i) => inBatches.includes(i)), 'the batches together cover the ten seats the rigging session does not');
+  ok(Object.keys(SEAT_EXPECT).every((i) => SEAT_IDS.includes(i)) && Object.values(SEAT_EXPECT).every((x) => x === 'completion' || x === 'key-state'), 'the expectation table names only registry seats and only completion or key-state');
+  ok(Object.values(SEAT_BATCHES).every((b) => b.length >= 1 && b.length <= 6) && SEAT_COACH_SECS >= 8, 'a batch holds one to six seats (the 90 s budget is the limit, the browser half enforces it)');
+
+  // the judge: a perfect observation passes every check; each broken one fails by name
+  const perfect = (id) => {
+    const d = seatDef(id), v = seatVerbs(d);
+    return { seat: id, started: { sim: id, scenario: firstScenario(id) }, gauges0: { a: '0' }, gauges1: { a: '1' }, gaugesMoved: true,
+      sweeps: SWEEPS.map((sw) => ({ label: sw.label, want: sweepWant(d, sw), got: sweepWant(d, sw), heldOk: true, releasedOk: true, after: [] })),
+      trigger: { selects: 1, pagePressed: true }, opAttached: false,
+      coach: { began: true, keysUsed: [...coachAllowed(d)], steps: 100 },
+      panel: { title: d.name, chip: 'Passed', open: true, scripted: false, rows: [...d.rubric.map((r) => ({ axis: r.axis, value: '1', ok: '✓' })), { axis: 'time', value: '3 s', ok: '' }] } };
+  };
+  const failing = (id, o, e = 'completion') => judgeSeat(id, o, e).filter((c) => !c.ok).map((c) => c.name);
+  ok(SEAT_IDS.every((i) => failing(i, perfect(i)).length === 0), 'the judge passes a complete observation for every registry seat (its expectations come from the registry alone)');
+  ok(SEAT_IDS.every((i) => judgeSeat(i, perfect(i)).length >= 8), 'and asks at least eight named questions of each seat');
+  const t1 = SEAT_IDS[0];
+  const mut = (f, e = 'completion') => { const o = perfect(t1); f(o); return failing(t1, o, e); };
+  ok(mut((o) => { o.sweeps[0].got = o.sweeps[0].got.slice(1); }).some((n) => /puts exactly those verbs/.test(n)), 'the judge fails a seat whose sticks left a registry verb out of the page\'s keys');
+  ok(mut((o) => { o.sweeps[1].got = [...o.sweeps[1].got, 'KeyR']; }).some((n) => /puts exactly those verbs/.test(n)), 'and one that held an extra verb');
+  ok(mut((o) => { o.sweeps[1].releasedOk = false; }).some((n) => /puts exactly those verbs/.test(n)), 'and one that kept a verb after release');
+  ok(mut((o) => { o.gaugesMoved = false; }).some((n) => /gauge reading moved/.test(n)), 'and one whose gauges never moved');
+  ok(mut((o) => { o.trigger.selects = 0; }).some((n) => /right trigger/.test(n)), 'and one the trigger never reached');
+  ok(mut((o) => { o.panel = null; }).some((n) => /result panel inside the time cap/.test(n)), 'and one that never reached its result panel');
+  ok(mut((o) => { o.panel.title = 'Another Seat'; }).some((n) => /result panel inside the time cap/.test(n)), 'and one whose panel names another seat');
+  ok(mut((o) => { o.panel.rows.shift(); }).some((n) => /every rubric axis/.test(n)), 'and one whose panel is missing a rubric axis');
+  ok(mut((o) => { o.panel.chip = 'Try again'; }).some((n) => /verdict is Passed/.test(n)), 'and one whose verdict is not a pass');
+  ok(mut((o) => { o.panel.rows[0].ok = '✗'; }).some((n) => /verdict is Passed/.test(n)), 'and one with a graded axis marked failed');
+  ok(mut((o) => { o.opAttached = true; }).some((n) => /controllers' own/.test(n)), 'and one where the scripted operator\'s run was attached');
+  ok(mut((o) => { o.coach.keysUsed.push('KeyZ'); }).some((n) => /every key the coach pressed/.test(n)), 'and one where the coach pressed a key the registry does not name');
+  ok(mut((o) => { o.started.scenario = 'x'; }).some((n) => /started the seat/.test(n)), 'and one that opened the wrong scenario');
+  ok(failing(t1, null).length === 1 && /time slot/.test(failing(t1, null)[0]) && failing(t1, { skipped: 'no time' }).length === 1, 'and one that was never run (a batch that is too big fails by name)');
+  ok(mut((o) => { o.panel = null; o.opAttached = null; }, 'key-state').length === 0, 'a seat expected at key state only is not asked for a result panel');
+  ok(levelOf(seatDef(t1), perfect(t1)) === 'completion (pass)' && levelOf(seatDef(t1), { ...perfect(t1), panel: null }) === 'key state only' && levelOf(seatDef(t1), { ...perfect(t1), panel: null, sweeps: [] }) === 'failed' && levelOf(seatDef(t1), { skipped: 'x' }) === 'not run',
+    'the report classifies a seat as completion, key state only, failed or not run from the observation alone');
+}
+
 /* ---- honesty, in every file this harness ships ----------------------- */
 {
-  for (const [n, s] of [['the mock', MOCK], ['the harness', HARN], ['this suite', SELF]]) {
+  for (const [n, s] of [['the mock', MOCK], ['the harness', HARN], ['the seat harness', SEATH], ['the batch table', BATCHF], ['this suite', SELF]]) {
     ok(/MOCKED/.test(s) && /[Nn]o physical headset/.test(s), `${n} says MOCKED session and no physical headset`);
   }
-  ok(!/headset (run|verified|tested)\b/i.test(MOCK + HARN) && !/(verified|proven) on (a )?(real|physical) (headset|device)/i.test(MOCK + HARN), 'no file claims a headset run');
-  const all = MOCK + HARN;
+  ok(!/headset (run|verified|tested)\b/i.test(MOCK + HARN + SEATH + BATCHF) && !/(verified|proven) on (a )?(real|physical) (headset|device)/i.test(MOCK + HARN + SEATH + BATCHF), 'no file claims a headset run');
+  const all = MOCK + HARN + SEATH + BATCHF;
   ok(!/\/tmp\/|\$SP|\bmemory\/|\bconsole log|rk_[A-Za-z0-9]/.test(all), 'no internal path, scratch reference or key shape in any shipped file');
   ok(!/\b(opus|sonnet|haiku|claude-[0-9a-z-]+)\b/i.test(all.replace(/Claude's own/g, '')), 'and no model identifier');
 }
@@ -149,6 +233,31 @@ if (BROWSER) {
     const mockSrc = process.env.XR_MOCK_PATH ? readFileSync(process.env.XR_MOCK_PATH, 'utf8') : MOCK;
     let res;
     const hard = new Promise((r) => setTimeout(() => r('late'), 88000));
+    const seatArg = (args.find((a) => a.startsWith('--seats=')) || '').slice(8);
+    if (seatArg) {
+      /* ---- the seat batch: one session, the named seats in turn ---------- */
+      const argv = (n, d) => { const a = args.find((x) => x.startsWith('--' + n + '=')); return a ? a.slice(n.length + 3) : d; };
+      const list = SEAT_BATCHES[seatArg] ? SEAT_BATCHES[seatArg] : seatArg === 'all' ? hallOrder(SEAT_IDS.filter((i) => i !== SEAT)) : seatArg.split(',').filter(Boolean);
+      if (!list.length || !list.every((i) => SEAT_IDS.includes(i))) throw new Error('--seats= names an unknown seat: ' + seatArg);
+      const probe = args.some((a) => a === '--probe' || a.startsWith('--probe='));
+      const probeSeats = argv('probe', '') === 'all' ? hallOrder(SEAT_IDS.filter((i) => i !== SEAT)) : null;
+      console.log('seats in this run: ' + list.join(', '));
+      const sink = {};
+      try {
+        res = await Promise.race([runSeats({ sink, browser, base: `http://127.0.0.1:${port}`, mockSrc, seats: list, probe, probeSeats,
+          coachMs: Number(argv('coach-secs', SEAT_COACH_SECS)) * 1000, expectOf: (i) => SEAT_EXPECT[i] || 'completion',
+          onCheck: (c) => ok(c.ok, 'MOCKED session: ' + c.name + (process.env.XR_TRACE ? ` [+${(c.atMs / 1000).toFixed(1)}s]` : ''), c.detail) }), hard]);
+        if (res === 'late') { ok(false, 'the seat batch finished inside its 90 s budget'); res = { measured: sink.measured || { seats: {}, probe: {} } }; }
+      } finally { await browser.close().catch(() => {}); }
+      const m = res.measured;
+      console.log(`MEASURED MOCKED session in headless Chromium (no physical headset), load average ${m.loadBefore} before, ${m.loadAfter} after; boot ${m.bootMs} ms, Enter VR to presenting ${m.enterMs} ms, ${m.totalFrames} session frames, whole run ${((Date.now() - t0) / 1000).toFixed(1)} s`);
+      for (const [id, p] of Object.entries(m.probe || {})) console.log(`PROBE ${id}: ${JSON.stringify(p)}`);
+      for (const id of list) {
+        const o = m.seats[id]; if (!o) { console.log(`SEAT ${id}: not run`); continue; }
+        console.log(`SEAT ${id}: ${levelOf(seatDef(id), o)}; seat ${o.seatSecs} s (start ${o.startMs} ms); coach ${o.coach && o.coach.secs} s at ${o.coach && o.coach.fps} fps, ${o.coach && o.coach.steps} controller frames, ${o.coach && o.coach.acts} trigger presses, phase ${o.coach && o.coach.state ? (o.coach.state.phaseIdx + '/' + o.coach.state.phases + ' ' + o.coach.state.phase) : '-'}; panel ${o.panel ? o.panel.title + ' / ' + o.panel.chip + ' / ' + o.panel.rows.map((r) => r.axis + '=' + r.value).join(' ') : 'none'}; sticks moved gauges ${o.gaugesMoved}${o.error ? '; ERROR ' + o.error : ''}`);
+      }
+      throw new Error('__seats_done__');
+    }
     try { res = await Promise.race([runSession({ browser, base: `http://127.0.0.1:${port}`, mockSrc, onCheck: (c) => ok(c.ok, 'MOCKED session: ' + c.name + (process.env.XR_TRACE ? ` [+${(c.atMs / 1000).toFixed(1)}s]` : ''), c.detail) }), hard]);
       if (res === 'late') { ok(false, 'the browser half finished inside its 90 s budget'); res = null; } }
     finally { await browser.close().catch(() => {}); }
@@ -159,7 +268,7 @@ if (BROWSER) {
     console.log(`MEASURED delivery gap median ${m.gapMs.median} ms, p95 ${m.gapMs.p95} ms, max ${m.gapMs.max} ms over ${m.gapMs.n} gaps, ${m.totalFrames} frames across two sessions. These are the browser's animation-frame cadence handed to the session, NOT a render rate: one framebuffer read-back waited ${m.readbackDrainMs} ms for the software GPU's queue;`);
     console.log(`MEASURED signals to completion ${m.signalSeconds} s; scripted operator to a pass ${m.operatorSeconds} s; whole browser half ${((Date.now() - t0) / 1000).toFixed(1)} s`);
   } catch (e) {
-    ok(false, 'the browser half ran to the end', String(e && e.stack || e).slice(0, 400));
+    if (!(e && e.message === '__seats_done__')) ok(false, 'the browser half ran to the end', String(e && e.stack || e).slice(0, 400));
   } finally { stop(); }
 }
 

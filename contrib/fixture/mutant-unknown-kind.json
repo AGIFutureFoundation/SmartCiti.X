@@ -220,15 +220,36 @@
     "where": "fixture-strand",
     "room": "Fixture Room",
     "dwell_ms": 5250
+   },
+   {
+    "t": "2026-09-26T03:00:08.000Z",
+    "kind": "station",
+    "campus": "treasure-island",
+    "hall": "painters",
+    "where": "fixture-strand",
+    "station": "fixture-station",
+    "station_name": "Fixture Station"
+   },
+   {
+    "t": "2026-09-26T03:00:09.000Z",
+    "kind": "crib",
+    "campus": "treasure-island",
+    "hall": "painters",
+    "where": "tools",
+    "crib": "fixture-crib",
+    "crib_name": "Fixture Crib",
+    "picks": 5
    }
   ],
   "traces_attached": 1,
   "episode_counts_by_kind": {
    "advisor": 1,
    "crew": 1,
+   "crib": 1,
    "joystick": 1,
    "placard": 1,
    "sim": 3,
+   "station": 1,
    "walk": 1
   },
   "sims_covered": [
@@ -286,6 +307,25 @@
     "room",
     "dwell_ms"
    ],
+   "station": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "station",
+    "station_name"
+   ],
+   "crib": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "crib",
+    "crib_name",
+    "picks"
+   ],
    "walkaround": [
     "t",
     "kind",
@@ -322,6 +362,6 @@
  "digest": {
   "alg": "SHA-256",
   "over": "canonical JSON of every top-level field except digest, with contributor.signature forced to null: keys sorted recursively, no whitespace, UTF-8",
-  "hex": "2b1b90511340432c25f02ae8f2f6f16b47d327cd68c8319d5800830d2cf6327d"
+  "hex": "f283b4e33c5f9880d5de1349039cca678e925ddfdaab974226496c089887d66a"
  }
 }

@@ -2,7 +2,7 @@
  "pack": "modules",
  "schema": "tc-modules/1",
  "built": "2026-10-12",
- "source_stamp": "23beadcda2e3078ecc28ec068093e57698e08759ec1345f0d078dd2c28797d3c",
+ "source_stamp": "a0838c476dffef4f5e5291aa5234bb61daa602fe75f489585462f2608baf852c",
  "sources": [
   "lessons/registry/lessons.json",
   "training/registry/training.json",
@@ -243,7 +243,7 @@
     },
     {
      "kind": "station",
-     "records": null,
+     "records": "station",
      "station": "st005",
      "station_name": "Rigging & Material Handling",
      "note": "reads the plan out: weight, radius, hitch, path, and who stands where",
@@ -940,7 +940,7 @@
     },
     {
      "kind": "station",
-     "records": null,
+     "records": "station",
      "station": "st003",
      "station_name": "Scaffold & Fall Protection",
      "note": "inspects, tags the bay, and says out loud who may now stand on it",

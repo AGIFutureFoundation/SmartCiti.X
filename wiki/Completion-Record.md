@@ -49,17 +49,17 @@ ok ids.hall: checked 139, failing 0
 ok ids.step: checked 1136, failing 0
 ok ids.sim: checked 4, failing 0
 ok ids.scenario: checked 2, failing 0
-ok ids.station: checked 1, failing 0
-ok ids.district: checked 0, failing 0
-ok step.recording-evidence: checked 534, failing 0
-ok step.episode-evidence: checked 97, failing 0
+ok ids.station: checked 3, failing 0
+ok ids.district: checked 1, failing 0
+ok step.recording-evidence: checked 568, failing 0
+ok step.episode-evidence: checked 145, failing 0
 ok lesson.complete-all-steps: checked 139, failing 0
 ok sim.threshold: checked 2, failing 0
 ok ladder.prerequisite: checked 40, failing 0
 note sim.threshold: rigging-signals has no scalar threshold in sims.json; passed=true is taken from the record and not re-derived
 note sim.threshold: crane-lift has no scalar threshold in sims.json; passed=true is taken from the record and not re-derived
 signature: unsigned: this device only
-summary: 3 lessons complete, of which 3 fully evidence-backed (every step episode-backed); across them 14 episode-backed steps, 0 device-mark steps (station/crib: a device-local mark, not a recorded episode), 0 self-reported steps counted as done
+summary: 5 lessons complete, of which 5 fully evidence-backed (every step episode-backed); across them 23 episode-backed steps, 0 device-mark steps (none today; a device-local mark, not a recorded episode), 0 self-reported steps counted as done
 this verifies integrity since export and resolution against the bundle; a wallet signature, if any, proves that the holder of a key signed this digest at export - a key, not a person; nothing is written to any chain, nothing is anchored, and this is no accreditation
 ```
 
@@ -76,7 +76,7 @@ Quoted from the registry at build time, never retyped:
 > - that the device was honest: a record can be written by hand and will verify if it is internally consistent
 > - that a walk or placard episode means more than it says: it records that a device saw the walker's position inside a room, or a placard panel left open for its dwell with the walker in that room - not that anyone read, understood or took on what the placard requires, and not that the room exists outside this bundle
 > - that a self-reported step happened at all (no step kind is self-reported today; the rule stays so one that is added cannot carry evidence it does not have)
-> - a station or crib mark is a device-local mark, not a recorded episode
+> - that a station or crib episode means more than it says: it records that a device saw a correct pick on a station quiz, or a crib check finished with every pick right - not that the checklist was read, that the pick was not found by trying every option, that anything was learned or that the learner can name the tools. The marks in tc-progress (the record's `stations` and `tools` blocks) are device-local marks the halls keep for their own HUD; they feed no step
 > - that the seat was passed under supervision, or that any score means anything outside this bundle
 > - any accreditation, ticket, licence or credential; no hall, employer or authority has signed anything
 > - any duration of training, and no price is claimed

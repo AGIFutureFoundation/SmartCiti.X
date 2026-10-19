@@ -140,13 +140,13 @@ ok('every silent kind carries the reason lessons.json gives for writing nothing'
 ok('the recording / silent step counts equal those of lessons.json',
   reg.counts.recording_steps === lessonsReg.counts.recording_steps && reg.counts.silent_steps === lessonsReg.counts.silent_steps);
 const trainingReg0 = read('../training/registry/training.json');
-ok('station and crib are device-mark and not called evidence-backed; walk and placard are episode-backed since wave 20 and no kind is self-reported',
-  reg.evidence_rule.station.class === 'device-mark' && reg.evidence_rule.crib.class === 'device-mark'
-  && reg.evidence_rule.walk.class === 'episode-backed' && reg.evidence_rule.placard.class === 'episode-backed'
-  && JSON.stringify(reg.silent_kinds) === JSON.stringify(['crib', 'station'])
-  && !Object.values(reg.evidence_rule).some((r) => r.class === 'self-reported')
+ok('walk and placard are episode-backed since wave 20, station and crib since wave 21: every kind is episode-backed, none is a device mark or self-reported, and both classes stay declared (inert) so a kind added with only a mark cannot be called evidence-backed',
+  ['walk', 'placard', 'station', 'crib'].every((k) => reg.evidence_rule[k].class === 'episode-backed' && reg.evidence_rule[k].records === k)
+  && reg.silent_kinds.length === 0 && reg.counts.silent_steps === 0 && reg.counts.device_mark_steps === 0
+  && !Object.values(reg.evidence_rule).some((r) => r.class === 'self-reported' || r.class === 'device-mark')
   && /no step kind today/.test(reg.evidence_classes['self-reported'])
-  && /not a recorded episode/.test(reg.evidence_classes['device-mark'])
+  && /no step kind today/.test(reg.evidence_classes['device-mark']) && /not a recorded episode/.test(reg.evidence_classes['device-mark'])
+  && /inert/.test(reg.evidence_classes['device-mark'])
   && /only this class is called evidence-backed/.test(reg.evidence_classes['episode-backed']));
 ok('a walk or placard step is matched on the hall and the step\'s own where (the strand, so one room), read from training.json: both episodes record where and room, and the rule says so',
   ['walk', 'placard'].every((k) => trainingReg0.episode_kinds[k].fields.includes('where') && trainingReg0.episode_kinds[k].fields.includes('room')
@@ -160,8 +160,21 @@ ok('a placard step is held to the declared dwell: at_least.dwell_ms is training.
 ok('every walk and placard step of every lesson carries a where that names a strand, and every one has exactly one name in names_read (the room)',
   Object.values(lessonsReg.lessons).flatMap((L) => L.steps).filter((s) => s.kind === 'walk' || s.kind === 'placard')
     .every((s) => typeof s.where === 'string' && Array.isArray(s.names_read) && s.names_read.length === 1));
-ok('honesty says a station or crib mark is a device-local mark, not a recorded episode',
-  reg.honesty.does_not_prove.includes('a station or crib mark is a device-local mark, not a recorded episode'));
+ok('honesty says what a station or crib episode does not mean, and that the tc-progress marks are device-local and feed no step',
+  reg.honesty.does_not_prove.some((x) => /station or crib episode means more than it says/.test(x) && /not that the checklist was read/.test(x)
+    && /found by trying every option/.test(x) && /feed no step/.test(x)));
+ok('a station step is matched on the hall, the step\'s where (the strand of its bench) and its station id, a crib step on the hall, where (tools) and its district, both read from training.json; names are one of names_read; the crib is floored at the declared picks',
+  trainingReg0.episode_kinds.station.fields.includes('station') && trainingReg0.episode_kinds.crib.fields.includes('crib')
+  && ['station', 'crib'].every((k) => ['hall', 'where', k].every((f) => reg.evidence_rule[k].checkable.includes(f))
+    && reg.evidence_rule[k].not_checkable.length === 0 && reg.evidence_rule[k].evidenceable === true)
+  && reg.evidence_rule.station.names_read_field === 'station_name' && reg.evidence_rule.crib.names_read_field === 'crib_name'
+  && Object.keys(reg.evidence_rule.station.at_least).length === 0
+  && reg.evidence_rule.crib.at_least.picks === trainingReg0.episode_kinds.crib.at_least.picks
+  && trainingReg0.episode_kinds.crib.at_least.picks === read('../tools/registry/toolcribs.json').drill.picks);
+ok('every station and crib step of every lesson carries the ids its episode records and names_read holds the display name its episode records first',
+  Object.values(lessonsReg.lessons).flatMap((L) => L.steps).filter((s) => s.kind === 'station' || s.kind === 'crib')
+    .every((s) => typeof s.where === 'string' && (s.kind === 'station' ? typeof s.station === 'string' : s.where === 'tools' && typeof s.crib === 'string')
+      && Array.isArray(s.names_read) && s.names_read.length >= 2));
 ok('per lesson, the episode-backed, device-mark and self-reported counts sum to the lesson\'s steps',
   Object.entries(reg.lessons).every(([lid, p]) => p.episode_backed_steps + p.device_mark_steps + p.self_reported_steps === p.steps
     && p.recording_steps === p.episode_backed_steps
@@ -271,6 +284,12 @@ ok('the fixture completes a lesson with a walk step and a lesson with a placard 
     const st = lessonsReg.lessons[l.lesson].steps.find((q) => q.n === s.step);
     return s.kind === k && s.done && s.evidence.episode === k && s.evidence.hall === l.hall && s.evidence.where === st.where
       && st.names_read.includes(s.evidence.room) && (k === 'walk' || s.evidence.dwell_ms >= reg.evidence_rule.placard.at_least.dwell_ms);
+  }))));
+ok('the fixture completes a lesson with a station step and a lesson with a crib step, each done with its episode: where, id, the name from names_read, and for a crib every pick right',
+  ['station', 'crib'].every((k) => good.lessons.some((l) => l.complete && l.steps.some((s) => {
+    const st = lessonsReg.lessons[l.lesson].steps.find((q) => q.n === s.step);
+    return s.kind === k && s.done && s.evidence.episode === k && s.evidence.hall === l.hall && s.evidence.where === st.where && s.evidence[k] === st[k]
+      && st.names_read.includes(s.evidence[k + '_name']) && (k === 'station' || s.evidence.picks >= reg.evidence_rule.crib.at_least.picks);
   }))));
 for (const [file, rule] of mutants) {
   const m = read('./' + file);

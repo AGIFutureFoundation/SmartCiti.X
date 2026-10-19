@@ -11,6 +11,10 @@ Links placed:
   - Wilds site panel (web/trade_craft_wilds.html, #panel): one link per world, to that world's module (wilds_page).
   - Robot yard label (web/trade_craft_parishes.html and the Bay page, #robot-yard label): one link to the robot module,
     shown and hidden with the label (robot_yard_js).
+  - Wave 21, the worksite districts (modules family worksite-district, read from each module's places): every work site
+    section of the work sites page (worksite_hrefs), the Bay restoration panels of the sites where a work site stands
+    (MODWS in bay_page), and the campus doors of the parish and Bay pages (campus_door_js, one map per page, only for
+    doors that page carries).
 Link text: i18n keys modlink.practice (Bay) and wilds.practice_module (wilds), all 8 locales; the robot label is English
 like the label it sits beside. Stdlib only.
 """
@@ -24,6 +28,7 @@ COURSES = 'trade_craft_courses.html'
 LOCALES = ('ar', 'de', 'en', 'es', 'fr', 'hi', 'pt', 'zh')
 KEY_BAY = 'modlink.practice'
 KEY_WILDS = 'wilds.practice_module'
+WS_REG_REL = 'worksites/registry/worksites.json'
 
 
 class ModuleLinkError(SystemExit):
@@ -122,25 +127,87 @@ def _js(s):
     return json.dumps(s, ensure_ascii=False).replace('</', '<\\/')
 
 
+def worksite_targets(mods):
+    """(worksite id -> district module id, (place kind, place id) -> district module id) from the worksite-district
+    modules' places. A worksite may sit in one district module only, and a campus or restoration site may carry one
+    district module only; anything else stops the build by name."""
+    by_ws, by_place = {}, {}
+    for m in mods:
+        if m.get('family') != 'worksite-district':
+            continue
+        places = m.get('places')
+        if not isinstance(places, list) or not places:
+            _fail(f'{m.get("id")} names no places')
+        for p in places:
+            ws, kind, pid = p.get('worksite'), p.get('place_kind'), p.get('place')
+            if not isinstance(ws, str) or not ws or not isinstance(pid, str) or not pid:
+                _fail(f'{m.get("id")} has a place without a worksite or place id')
+            if ws in by_ws:
+                _fail(f'worksite {ws} sits in two district modules ({by_ws[ws]}, {m["id"]})')
+            by_ws[ws] = m['id']
+            if kind in ('campus', 'restoration-site'):
+                prev = by_place.get((kind, pid))
+                if prev not in (None, m['id']):
+                    _fail(f'{kind} {pid} carries two district modules ({prev}, {m["id"]})')
+                by_place[(kind, pid)] = m['id']
+    if not by_ws:
+        _fail('no worksite-district places in the registry')
+    return by_ws, by_place
+
+
+def worksite_hrefs(root=ROOT):
+    """worksite id -> Courses-page link of its district module, for every worksite in worksites.json (fail closed)."""
+    mods = registry(root)
+    by_ws, _ = worksite_targets(mods)
+    p = pathlib.Path(root) / WS_REG_REL
+    try:
+        ids = [s['id'] for s in json.loads(p.read_text(encoding='utf-8'))['sites']]
+    except (OSError, ValueError, KeyError, TypeError) as e:
+        _fail(f'{WS_REG_REL} cannot supply the work sites: {e}')
+    missing = [w for w in ids if w not in by_ws]
+    extra = sorted(set(by_ws) - set(ids))
+    if missing or extra:
+        _fail(f'district modules and {WS_REG_REL} disagree: no module for {missing}, module for unknown {extra}')
+    return {w: href(by_ws[w], mods) for w in ids}
+
+
+def worksite_label(root=ROOT):
+    """The English link text on the work sites page (the same modlink.practice key the worlds use)."""
+    return labels(KEY_BAY, root)['en']
+
+
 def bay_page(page, root=ROOT):
     """Bay page: one script (before </body>) that puts the site's link at the end of the restoration site panel and
-    the scenario runner panel, shown while that panel is open on a site that has a module."""
+    the scenario runner panel, shown while that panel is open on a site that has a module. A restoration site where a
+    work site of a district module stands gets a second row (MODWS) to that district module."""
     mods = registry(root)
     targets = restoration_targets(mods)
     rows = {site: href(mid, mods) for site, mid in targets.items()}
+    _, by_place = worksite_targets(mods)
+    wrows = {}
+    for (kind, pid), mid in by_place.items():
+        if kind != 'restoration-site':
+            continue
+        if pid not in targets:
+            _fail(f'restoration site {pid} carries a district module but has no restoration module')
+        wrows[pid] = href(mid, mods)
     lbl = labels(KEY_BAY, root)
     _once(page, '</body>', 'bay_page')
     js = ('(function () {\n'
           f'  const MOD = {json.dumps(rows, sort_keys=True)};\n'
+          f'  const MODWS = {json.dumps(wrows, sort_keys=True)};\n'
           f'  const LBL = {json.dumps(lbl, ensure_ascii=False, sort_keys=True)};\n'
           '  function modSync(p) {\n'
           '    for (const x of p.querySelectorAll(\'[data-module-link]\')) x.remove();\n'
-          '    const h = !p.hidden && Object.hasOwn(MOD, p.dataset.site) ? MOD[p.dataset.site] : null;\n'
-          '    if (!h) return;\n'
+          '    if (p.hidden) return;\n'
           '    const lang = Object.hasOwn(LBL, document.documentElement.lang) ? document.documentElement.lang : \'en\';\n'
-          '    const row = document.createElement(\'p\'), a = document.createElement(\'a\');\n'
-          '    row.dataset.moduleLink = \'\'; a.className = \'module-link-in\'; a.href = h; a.textContent = LBL[lang];\n'
-          '    row.appendChild(a); p.appendChild(row);\n'
+          '    for (const M of [MOD, MODWS]) {\n'
+          '      const h = Object.hasOwn(M, p.dataset.site) ? M[p.dataset.site] : null;\n'
+          '      if (!h) continue;\n'
+          '      const row = document.createElement(\'p\'), a = document.createElement(\'a\');\n'
+          '      row.dataset.moduleLink = \'\'; a.className = \'module-link-in\'; a.href = h; a.textContent = LBL[lang];\n'
+          '      row.appendChild(a); p.appendChild(row);\n'
+          '    }\n'
           '  }\n'
           '  for (const id of [\'resto-site\', \'resto-sims\']) {\n'
           '    const p = document.getElementById(id);\n'
@@ -149,6 +216,36 @@ def bay_page(page, root=ROOT):
           '})();\n')
     block = f'<script id="module-link-kit">{js}</script>\n'
     return page.replace('</body>', block + '</body>', 1)
+
+
+def campus_door_js(door_ids, root=ROOT):
+    """Parish and Bay JS (after the DOOR-LINK block): a campus door on this page (door_ids, the DOOR-LINK ids) whose campus
+    carries a work site of a district module gets a second 'Practice module' link beneath it, shown and hidden with the
+    door. The campus key is the door id 'campus:<key>' (the place id in worksites.json). Fails closed if the page has
+    no such door, so a page never ships an empty map."""
+    mods = registry(root)
+    _, by_place = worksite_targets(mods)
+    on_page = set(door_ids)
+    rows = {f'campus:{pid}': href(mid, mods) for (kind, pid), mid in by_place.items()
+            if kind == 'campus' and f'campus:{pid}' in on_page}
+    if not rows:
+        _fail('no campus door on this page carries a worksite-district module')
+    lbl = labels(KEY_BAY, root)
+    return ('/* MODULE-LINK doors (wave 21): a campus door gets a "Practice module" link beneath it when a work site of a '
+            'district module stands on that campus. */\n'
+            f'const MOD_DOOR = {json.dumps(rows, sort_keys=True)};\n'
+            f'const MOD_DOOR_LBL = {json.dumps(lbl, ensure_ascii=False, sort_keys=True)};\n'
+            'for (let i = 0; i < DL_DOORS.length; i++) {\n'
+            '  const d = DL_DOORS[i];\n'
+            '  if (!Object.hasOwn(MOD_DOOR, d.id)) continue;\n'
+            '  const a = DL.els[i], m = document.createElement(\'a\');\n'
+            '  const lang = Object.hasOwn(MOD_DOOR_LBL, document.documentElement.lang) ? document.documentElement.lang : \'en\';\n'
+            "  m.className = 'door-link module-link-door'; m.href = MOD_DOOR[d.id]; m.textContent = MOD_DOOR_LBL[lang]; m.hidden = true;\n"
+            "  m.dataset.moduleLink = ''; m.style.transform = 'translate(-50%, 0)';\n"
+            "  stage.appendChild(m);\n"
+            "  new MutationObserver(() => { m.hidden = a.hidden; m.style.left = a.style.left; "
+            "m.style.top = (parseFloat(a.style.top) + 6) + 'px'; }).observe(a, { attributes: true, attributeFilter: ['hidden', 'style'] });\n"
+            '}\n')
 
 
 def wilds_page(page, root=ROOT):

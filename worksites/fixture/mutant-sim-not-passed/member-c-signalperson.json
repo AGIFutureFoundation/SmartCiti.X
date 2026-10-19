@@ -94,6 +94,16 @@
     "seat",
     "muster"
    ],
+   "crib": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "crib",
+    "crib_name",
+    "picks"
+   ],
    "placard": [
     "t",
     "kind",
@@ -114,6 +124,15 @@
     "actor",
     "operator",
     "outcome"
+   ],
+   "station": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "station",
+    "station_name"
    ],
    "walk": [
     "t",
@@ -139,7 +158,7 @@
  },
  "digest": {
   "alg": "SHA-256",
-  "hex": "27ea966dfb0e4d619fa72c372c93db3511893082ee62f8afeea6ea3b87d455b2",
+  "hex": "60be2fccd1f96109e608248fa4666a219e1e2b7b7cd5d5a27afa99a9c93b0178",
   "over": "canonical JSON of every top-level field except digest, with contributor.signature forced to null: keys sorted recursively, no whitespace, UTF-8"
  },
  "exported_at": "2026-09-26T00:00:00Z",

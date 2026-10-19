@@ -31,10 +31,15 @@ against agents/ - and an id that does not resolve fails the build by name.
 
 WHAT A STEP RECORDS IS A PROPERTY OF ITS KIND, NOT OF THE STEP. The episode
 kinds exist in `training/registry/training.json`: sim, advisor, crew,
-walkaround and, since wave 20, walk and placard. This pack declares NO new
-episode kind and no new storage key. Six of the eight step kinds write one of
-those episodes; station and crib write none, and say so with an explicit null
-rather than by silence (they leave a device mark in the progress record).
+walkaround and, since wave 20, walk and placard and, since wave 21, station
+and crib. This pack declares NO new
+episode kind and no new storage key. All eight step kinds write one of those
+episodes (six did until wave 21). Station and crib write theirs now: a station
+step writes a `station` episode when its quiz is answered correctly at the
+bench, a crib step a `crib` episode when the check ends with every pick right
+(the device marks they used to leave in the progress record are kept for the
+halls' own HUD and feed nothing here). A kind that wrote nothing would still
+say so with an explicit null rather than by silence; none does now.
 Walking into a room is still not an achievement, and that is why the walk
 episode is deliberately small: one event per lesson-target room, no
 coordinates, no path, no time spent. It records that a device saw the walker
@@ -165,19 +170,22 @@ STEP_KINDS = {
         'reads': 'surfaces/registry/finishes.json',
         'why_no_episode': None,
     },
+    # station and crib record an episode since wave 21 (training/ declares both, the 3D page records them in its
+    # STATION-EPISODE blocks). What each proves is small and stated there: a correct pick on the station's quiz; a crib
+    # check finished with every pick right. Neither says anything about competence.
     'station': {
         'act': 'take a training station at its bench',
-        'records': NOTHING_RECORDED,
+        'records': 'station',
         'stage': 'class',
         'reads': 'stations/registry/stations.json',
-        'why_no_episode': 'a station mark lands in the device-local progress record the halls already keep; the training log holds simulator, advisor, crew, walkaround, walk and placard episodes and this pack adds no kind to it',
+        'why_no_episode': None,
     },
     'crib': {
         'act': 'run the district crib check at the pegboard',
-        'records': NOTHING_RECORDED,
+        'records': 'crib',
         'stage': 'class',
         'reads': 'tools/registry/toolcribs.json',
-        'why_no_episode': 'the crib check is graded deterministically against the crib record and kept with the progress record, not as a training episode',
+        'why_no_episode': None,
     },
     'walkaround': {
         'act': 'walk one pre-shift point of a seat and mark it',
@@ -1322,7 +1330,7 @@ HONESTY = {
     'content': 'unverified general practice. These lessons were written to be argued with, corrected and replaced by journey-level practitioners from the halls they name - the same standing the module pack, the recovered stations and the simulator seats already carry, and for the same reason: nobody who does this work for a living has reviewed a line of it yet.',
     'not_certification': 'no lesson here certifies anybody, qualifies anybody or permits anybody to do anything. Completing every lesson in this registry would leave a learner with exactly the standing they started with. Where a trade has a real ticket, that ticket is issued by a jurisdiction, an employer or a hall, and this bundle is none of those and speaks for none of them.',
     'not_a_gate': 'a lesson unlocks nothing. No step is locked behind another, the ladder is guidance about a sensible order rather than a permission system, and the assessment gate that schools/ declares stays exactly where it is: an unaided verification run that no lesson, station hour or simulator seat substitutes for.',
-    'not_scored': 'finishing a lesson changes no score and is read by no grader. The step kinds that write an episode write it to the existing device-local training log; station and crib write none (they leave a device mark in the progress record), and the registry says which is which rather than leaving it to be discovered. A walk or placard episode proves that a device recorded a position or an open panel, and nothing about competence.',
+    'not_scored': 'finishing a lesson changes no score and is read by no grader. The step kinds that write an episode write it to the existing device-local training log; every kind writes one since wave 21 (station and crib used to leave only a device mark in the progress record), and the registry says which kind writes which rather than leaving it to be discovered. A walk, placard, station or crib episode proves that a device recorded a position, an open panel, a correct quiz pick or a passed crib check, and nothing about competence.',
     'one_truth': 'this pack holds no second copy of anything. Hall names, room labels, station names, seat names, scenario names, advisor names, crew role names and topic wordings are all read at build time from the registries that own them, and the test re-reads them the same way. A step that could not resolve its ids did not become a lesson with a footnote; it failed the build.',
     'no_jurisdiction': 'nothing here cites a standard, a code or an authority, and nothing here speaks for one. Where a step says what a crew would do, that is unverified general practice and not an instruction from anybody with the standing to give one.',
     # {lessons}, {halls} and {seat_bound} are filled in below from the counts
@@ -1337,10 +1345,10 @@ PAGE_CONTRACT = {
     'hud': 'while a lesson is active the hfocus line keeps the room label and finish it already shows, and the hint line shows the lesson title, the current step number out of the step count, and that step\'s computed `do` line - never the note, which is commentary for a reader rather than an instruction for a learner mid-room.',
     'reads': 'the page must READ and never copy: the room label from the strand, the station name from D.stations, the seat name, scenario name and walkaround point from D.sims, the advisor and crew role names and the exact topic wording from D.advisors and D.crews, and the condition line for a placard step from the same condOf()/condLine() pair the hint line already uses. This registry stores ids for all of those on purpose.',
     'steps': 'render the steps in the order given, numbered. A step is marked done by the learner, in this browser only. A step is never enforced: the page must let somebody do step four first, because the building does, and a lesson that could trap a learner in a room would be a gate wearing a lesson\'s clothes.',
-    'records': 'a step whose `records` is a string writes exactly that episode kind through the training recorder that already exists, with no new field and no new storage key. A step whose `records` is null writes nothing - the page must not invent an episode for it. The walk episode is the one declared walk kind: it is written only when the position of the learner (not a probe) enters the named room, never from a probe, and it finishes no lesson by itself.',
+    'records': 'a step whose `records` is a string writes exactly that episode kind through the training recorder that already exists, with no new field and no new storage key. A step whose `records` is null writes nothing - the page must not invent an episode for it (no step kind is null today). The walk episode is the one declared walk kind: it is written only when the position of the learner (not a probe) enters the named room, never from a probe, and it finishes no lesson by itself. A station episode is written only on a correct pick on the quiz of the named station, and a crib episode only when the check of the named district ends with every pick right; a wrong pick, a failed check or a station or crib no lesson of the hall names writes nothing.',
     'ladder': 'render a lesson\'s prerequisites as named links with the edge reason shown. Do not disable a lesson whose prerequisites are unfinished: the ladder is advice about order and the registry says so, and enforcing it in the page would turn it into the gate this pack promises it is not.',
     'limits': 'the `limits` sentence renders with the lesson, not behind a disclosure control, and not only at the end. A learner who is told what a lesson does not mean only after finishing it has already formed the belief the sentence exists to prevent.',
-    'episode': 'nothing about opening, reading or abandoning a lesson is recorded. The only episodes that reach the training log are the six the step kinds declare, written by the recorder that was already writing them.',
+    'episode': 'nothing about opening, reading or abandoning a lesson is recorded. The only episodes that reach the training log are the eight the step kinds declare, written by the recorder that was already writing them.',
 }
 
 # ============================================================== resolution ===

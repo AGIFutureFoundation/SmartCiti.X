@@ -6,7 +6,7 @@
  "sources": [
   {
    "path": "lessons/registry/lessons.json",
-   "sha256": "881eadd1629dc903"
+   "sha256": "75e757b1c322727a"
   },
   {
    "path": "pack/registry/halls.json",
@@ -743,6 +743,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "walk"
      ],
@@ -787,7 +788,7 @@
    "counts": {
     "lessons": 2,
     "steps": 8,
-    "recording_steps": 7,
+    "recording_steps": 8,
     "halls": 1
    },
    "prerequisites_inside": [],
@@ -1133,6 +1134,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "walk",
       "walkaround"
      ],
@@ -1146,7 +1148,7 @@
    "counts": {
     "lessons": 1,
     "steps": 5,
-    "recording_steps": 4,
+    "recording_steps": 5,
     "halls": 1
    },
    "prerequisites_inside": [],
@@ -1237,6 +1239,7 @@
      "records": [
       "advisor",
       "placard",
+      "station",
       "walk"
      ],
      "authoring": "hand",
@@ -1266,6 +1269,7 @@
      "records": [
       "advisor",
       "placard",
+      "station",
       "walk"
      ],
      "authoring": "hand",
@@ -1278,7 +1282,7 @@
    "counts": {
     "lessons": 2,
     "steps": 8,
-    "recording_steps": 6,
+    "recording_steps": 8,
     "halls": 1
    },
    "prerequisites_inside": [
@@ -1372,7 +1376,9 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
+      "station",
       "walk"
      ],
      "authoring": "hand",
@@ -1385,7 +1391,7 @@
    "counts": {
     "lessons": 1,
     "steps": 6,
-    "recording_steps": 4,
+    "recording_steps": 6,
     "halls": 1
    },
    "prerequisites_inside": [],
@@ -1830,6 +1836,7 @@
      ],
      "records": [
       "crew",
+      "crib",
       "placard",
       "sim",
       "walk",
@@ -1845,7 +1852,7 @@
    "counts": {
     "lessons": 1,
     "steps": 6,
-    "recording_steps": 5,
+    "recording_steps": 6,
     "halls": 1
    },
    "prerequisites_inside": [],
@@ -2150,6 +2157,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "walk"
      ],
@@ -2164,7 +2172,7 @@
    "counts": {
     "lessons": 1,
     "steps": 4,
-    "recording_steps": 3,
+    "recording_steps": 4,
     "halls": 1
    },
    "prerequisites_inside": [],
@@ -2442,6 +2450,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "walk"
      ],
@@ -2455,7 +2464,7 @@
    "counts": {
     "lessons": 1,
     "steps": 4,
-    "recording_steps": 3,
+    "recording_steps": 4,
     "halls": 1
    },
    "prerequisites_inside": [],
@@ -3297,6 +3306,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "walk"
      ],
@@ -3340,7 +3350,7 @@
    "counts": {
     "lessons": 2,
     "steps": 9,
-    "recording_steps": 8,
+    "recording_steps": 9,
     "halls": 1
    },
    "prerequisites_inside": [],
@@ -3795,6 +3805,7 @@
      "records": [
       "advisor",
       "placard",
+      "station",
       "walk",
       "walkaround"
      ],
@@ -3839,7 +3850,7 @@
    "counts": {
     "lessons": 2,
     "steps": 10,
-    "recording_steps": 9,
+    "recording_steps": 10,
     "halls": 1
    },
    "prerequisites_inside": [
@@ -3932,6 +3943,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "walk"
      ],
@@ -3976,7 +3988,7 @@
    "counts": {
     "lessons": 2,
     "steps": 9,
-    "recording_steps": 8,
+    "recording_steps": 9,
     "halls": 1
    },
    "prerequisites_inside": [],
@@ -4062,6 +4074,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "walk"
      ],
@@ -4076,7 +4089,7 @@
    "counts": {
     "lessons": 1,
     "steps": 4,
-    "recording_steps": 3,
+    "recording_steps": 4,
     "halls": 1
    },
    "prerequisites_inside": [],
@@ -4262,7 +4275,9 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
+      "station",
       "walk"
      ],
      "authoring": "hand",
@@ -4275,7 +4290,7 @@
    "counts": {
     "lessons": 1,
     "steps": 5,
-    "recording_steps": 3,
+    "recording_steps": 5,
     "halls": 1
    },
    "prerequisites_inside": [],
@@ -5318,6 +5333,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "sim",
       "walk",
@@ -5333,7 +5349,7 @@
    "counts": {
     "lessons": 1,
     "steps": 6,
-    "recording_steps": 5,
+    "recording_steps": 6,
     "halls": 1
    },
    "prerequisites_inside": [],
@@ -5727,6 +5743,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "walk"
      ],
@@ -5741,7 +5758,7 @@
    "counts": {
     "lessons": 1,
     "steps": 4,
-    "recording_steps": 3,
+    "recording_steps": 4,
     "halls": 1
    },
    "prerequisites_inside": [],
@@ -6343,6 +6360,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "walk"
      ],
@@ -6387,7 +6405,7 @@
    "counts": {
     "lessons": 2,
     "steps": 8,
-    "recording_steps": 7,
+    "recording_steps": 8,
     "halls": 1
    },
    "prerequisites_inside": [],
@@ -6994,6 +7012,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "walk"
      ],
@@ -7008,7 +7027,7 @@
    "counts": {
     "lessons": 1,
     "steps": 4,
-    "recording_steps": 3,
+    "recording_steps": 4,
     "halls": 1
    },
    "prerequisites_inside": [],
@@ -7320,6 +7339,8 @@
      ],
      "records": [
       "advisor",
+      "crib",
+      "station",
       "walk"
      ],
      "authoring": "hand",
@@ -7347,6 +7368,7 @@
      ],
      "records": [
       "advisor",
+      "station",
       "walk"
      ],
      "authoring": "hand",
@@ -7359,7 +7381,7 @@
    "counts": {
     "lessons": 2,
     "steps": 7,
-    "recording_steps": 4,
+    "recording_steps": 7,
     "halls": 1
    },
    "prerequisites_inside": [
@@ -7450,6 +7472,7 @@
      ],
      "records": [
       "advisor",
+      "station",
       "walk"
      ],
      "authoring": "hand",
@@ -7462,7 +7485,7 @@
    "counts": {
     "lessons": 1,
     "steps": 3,
-    "recording_steps": 2,
+    "recording_steps": 3,
     "halls": 1
    },
    "prerequisites_inside": [],
@@ -7750,6 +7773,8 @@
      ],
      "records": [
       "advisor",
+      "crib",
+      "station",
       "walk"
      ],
      "authoring": "hand",
@@ -7763,7 +7788,7 @@
    "counts": {
     "lessons": 1,
     "steps": 4,
-    "recording_steps": 2,
+    "recording_steps": 4,
     "halls": 1
    },
    "prerequisites_inside": [],
@@ -7849,6 +7874,8 @@
      ],
      "records": [
       "advisor",
+      "crib",
+      "station",
       "walk"
      ],
      "authoring": "hand",
@@ -7862,7 +7889,7 @@
    "counts": {
     "lessons": 1,
     "steps": 4,
-    "recording_steps": 2,
+    "recording_steps": 4,
     "halls": 1
    },
    "prerequisites_inside": [],
@@ -8051,6 +8078,7 @@
      ],
      "records": [
       "advisor",
+      "station",
       "walk",
       "walkaround"
      ],
@@ -8064,7 +8092,7 @@
    "counts": {
     "lessons": 1,
     "steps": 4,
-    "recording_steps": 3,
+    "recording_steps": 4,
     "halls": 1
    },
    "prerequisites_inside": [],
@@ -8804,6 +8832,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "walk"
      ],
@@ -8818,7 +8847,7 @@
    "counts": {
     "lessons": 1,
     "steps": 4,
-    "recording_steps": 3,
+    "recording_steps": 4,
     "halls": 1
    },
    "prerequisites_inside": [],
@@ -9845,6 +9874,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "walk"
      ],
@@ -9859,7 +9889,7 @@
    "counts": {
     "lessons": 1,
     "steps": 4,
-    "recording_steps": 3,
+    "recording_steps": 4,
     "halls": 1
    },
    "prerequisites_inside": [],
@@ -10425,6 +10455,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "walk"
      ],
@@ -10439,7 +10470,7 @@
    "counts": {
     "lessons": 1,
     "steps": 4,
-    "recording_steps": 3,
+    "recording_steps": 4,
     "halls": 1
    },
    "prerequisites_inside": [],
@@ -11005,6 +11036,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "walk"
      ],
@@ -11019,7 +11051,7 @@
    "counts": {
     "lessons": 1,
     "steps": 4,
-    "recording_steps": 3,
+    "recording_steps": 4,
     "halls": 1
    },
    "prerequisites_inside": [],
@@ -11839,6 +11871,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "walk"
      ],
@@ -11883,7 +11916,7 @@
    "counts": {
     "lessons": 2,
     "steps": 8,
-    "recording_steps": 7,
+    "recording_steps": 8,
     "halls": 1
    },
    "prerequisites_inside": [],
@@ -12234,6 +12267,7 @@
      ],
      "records": [
       "advisor",
+      "station",
       "walk"
      ],
      "authoring": "hand",
@@ -12246,7 +12280,7 @@
    "counts": {
     "lessons": 1,
     "steps": 3,
-    "recording_steps": 2,
+    "recording_steps": 3,
     "halls": 1
    },
    "prerequisites_inside": [],
@@ -12585,6 +12619,7 @@
      "records": [
       "advisor",
       "placard",
+      "station",
       "walk",
       "walkaround"
      ],
@@ -12614,6 +12649,7 @@
      "records": [
       "advisor",
       "placard",
+      "station",
       "walk"
      ],
      "authoring": "hand",
@@ -13805,7 +13841,7 @@
    "counts": {
     "lessons": 42,
     "steps": 177,
-    "recording_steps": 175,
+    "recording_steps": 177,
     "halls": 40
    },
    "prerequisites_inside": [
@@ -14100,6 +14136,8 @@
      ],
      "records": [
       "advisor",
+      "crib",
+      "station",
       "walk"
      ],
      "authoring": "hand",
@@ -14129,7 +14167,9 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
+      "station",
       "walk"
      ],
      "authoring": "hand",
@@ -14189,6 +14229,7 @@
      "records": [
       "advisor",
       "placard",
+      "station",
       "walk"
      ],
      "authoring": "hand",
@@ -14216,6 +14257,8 @@
      ],
      "records": [
       "advisor",
+      "crib",
+      "station",
       "walk"
      ],
      "authoring": "hand",
@@ -14335,6 +14378,7 @@
      ],
      "records": [
       "advisor",
+      "station",
       "walk",
       "walkaround"
      ],
@@ -14441,7 +14485,7 @@
    "counts": {
     "lessons": 12,
     "steps": 55,
-    "recording_steps": 47,
+    "recording_steps": 55,
     "halls": 12
    },
    "prerequisites_inside": [],
@@ -15008,6 +15052,8 @@
      ],
      "records": [
       "advisor",
+      "crib",
+      "station",
       "walk"
      ],
      "authoring": "hand",
@@ -15036,6 +15082,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "walk"
      ],
@@ -15065,6 +15112,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "walk"
      ],
@@ -15094,6 +15142,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "walk"
      ],
@@ -15123,6 +15172,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "walk"
      ],
@@ -15152,6 +15202,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "walk"
      ],
@@ -15181,6 +15232,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "walk"
      ],
@@ -15210,6 +15262,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "walk"
      ],
@@ -15239,6 +15292,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "walk"
      ],
@@ -15268,6 +15322,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "walk"
      ],
@@ -15297,6 +15352,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "walk"
      ],
@@ -15326,6 +15382,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "walk"
      ],
@@ -15356,6 +15413,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "walk",
       "walkaround"
      ],
@@ -15369,7 +15427,7 @@
    "counts": {
     "lessons": 13,
     "steps": 53,
-    "recording_steps": 39,
+    "recording_steps": 53,
     "halls": 13
    },
    "prerequisites_inside": [],
@@ -15533,7 +15591,9 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
+      "station",
       "walk"
      ],
      "authoring": "hand",
@@ -15560,6 +15620,7 @@
      ],
      "records": [
       "advisor",
+      "station",
       "walk"
      ],
      "authoring": "hand",
@@ -15589,6 +15650,7 @@
      ],
      "records": [
       "crew",
+      "crib",
       "placard",
       "sim",
       "walk",
@@ -15621,6 +15683,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "sim",
       "walk",
@@ -15636,7 +15699,7 @@
    "counts": {
     "lessons": 5,
     "steps": 26,
-    "recording_steps": 21,
+    "recording_steps": 26,
     "halls": 5
    },
    "prerequisites_inside": [],
@@ -15801,6 +15864,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "walk"
      ],
@@ -16176,7 +16240,7 @@
    "counts": {
     "lessons": 14,
     "steps": 60,
-    "recording_steps": 59,
+    "recording_steps": 60,
     "halls": 14
    },
    "prerequisites_inside": [
@@ -16341,6 +16405,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "walk"
      ],
@@ -16772,7 +16837,7 @@
    "counts": {
     "lessons": 15,
     "steps": 61,
-    "recording_steps": 60,
+    "recording_steps": 61,
     "halls": 15
    },
    "prerequisites_inside": [],
@@ -16937,6 +17002,7 @@
      ],
      "records": [
       "advisor",
+      "crib",
       "placard",
       "walk"
      ],
@@ -16979,7 +17045,7 @@
    "counts": {
     "lessons": 2,
     "steps": 9,
-    "recording_steps": 8,
+    "recording_steps": 9,
     "halls": 2
    },
    "prerequisites_inside": [],
@@ -17946,6 +18012,7 @@
      ],
      "records": [
       "advisor",
+      "station",
       "walk"
      ],
      "authoring": "hand",
@@ -17987,7 +18054,7 @@
    "counts": {
     "lessons": 13,
     "steps": 40,
-    "recording_steps": 39,
+    "recording_steps": 40,
     "halls": 13
    },
    "prerequisites_inside": [],
@@ -18128,6 +18195,7 @@
      ],
      "records": [
       "advisor",
+      "station",
       "walk"
      ],
      "authoring": "hand",
@@ -18140,7 +18208,7 @@
    "counts": {
     "lessons": 1,
     "steps": 3,
-    "recording_steps": 2,
+    "recording_steps": 3,
     "halls": 1
    },
    "prerequisites_inside": [],

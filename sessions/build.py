@@ -226,8 +226,8 @@ def sessions_of(training, gap_ms):
             cur['advisor_exchanges'] += 1
         elif kind == 'crew':
             cur['crew_exchanges'] += 1
-        elif kind in ('walk', 'placard'):
-            pass   # wave 20: counted in by_kind (and could_advance); nothing about a room entered or a panel opened is tallied further
+        elif kind in ('walk', 'placard', 'station', 'crib'):
+            pass   # wave 20/21: counted in by_kind (and could_advance); nothing about a room entered, a panel opened, a station quiz or a crib check is tallied further
         else:
             raise ValueError(f'episode {i}: unknown kind {kind!r}')
     for s in sessions:
@@ -352,6 +352,10 @@ def build_fixture():
         episode('walk', iso(t0 + 20 * S), campus=FIX_CAMPUS, hall=FIX_HALL, where='fixture-strand', room='Fixture Room'),
         episode('placard', iso(t0 + 40 * S), campus=FIX_CAMPUS, hall=FIX_HALL, where='fixture-strand', room='Fixture Room',
                 dwell_ms=5250),
+        episode('station', iso(t0 + 50 * S), campus=FIX_CAMPUS, hall=FIX_HALL, where='fixture-strand', station='fixture-station',
+                station_name='Fixture Station'),
+        episode('crib', iso(t0 + 60 * S), campus=FIX_CAMPUS, hall=FIX_HALL, where='tools', crib='fixture-crib',
+                crib_name='Fixture Crib', picks=5),
         episode('advisor', iso(t3), campus=FIX_CAMPUS, hall=FIX_HALL, advisor='fixture-advisor', topic='fixture-topic',
                 answer_kind='record'),
         episode('sim', iso(t4), campus=FIX_CAMPUS, hall=FIX_HALL, sim=FIX_SIM, scenario=FIX_SCENARIO['id'],

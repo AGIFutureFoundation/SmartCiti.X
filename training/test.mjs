@@ -35,7 +35,7 @@ const kinds = Object.entries(reg.episode_kinds);
    recorder records. */
 ok('the episode kinds are the declared roster, each explaining itself and '
   + 'its fields',
-  kinds.map(([k]) => k).sort().join(',') === 'advisor,crew,placard,sim,walk,walkaround'
+  kinds.map(([k]) => k).sort().join(',') === 'advisor,crew,crib,placard,sim,station,walk,walkaround'
   && kinds.every(([, k]) => k.what.length > 10 && k.fields.includes('t')
     && k.fields.includes('kind')));
 ok('a crew episode keeps which ROLE answered, not just which crew - a '
@@ -118,7 +118,7 @@ const callKeys = (kk) => {
   const body = page.slice(at0, page.indexOf('});', at0)).replace(/^recordEpisode\(\{/, '');
   return [...body.matchAll(/(?:^|[\s,{])([a-z_]+):\s/g)].map((m) => m[1]).sort();
 };
-for (const kk of ['advisor', 'crew', 'walkaround', 'walk', 'placard']) {
+for (const kk of ['advisor', 'crew', 'walkaround', 'walk', 'placard', 'station', 'crib']) {
   ok(`the page writes exactly the declared fields of a ${kk} episode (the stamp t is added by recordEpisode)`,
     JSON.stringify(callKeys(kk)) === JSON.stringify(reg.episode_kinds[kk].fields.filter((f) => f !== 't').sort()),
     [JSON.stringify(callKeys(kk)), JSON.stringify(reg.episode_kinds[kk].fields)]);
@@ -255,6 +255,96 @@ ok('a probe-driven walker (wkSilent) records no walk episode, and only a lesson-
   kd({ code: 'KeyQ' }); const q = h.state();
   kd({ code: 'KeyE' });
   ok('E in a room with a board opens it (walking, hall view, no panel open); other keys do not', q === null && h.state() !== null && h.state().strand === TARGET);
+}
+
+/* wave 21: station and crib. Each is declared with the fields the page writes, recorded inside balanced anchored
+   STATION-EPISODE blocks, only for a station or crib a lesson step of the hall names, a station only on a correct pick of its
+   quiz and a crib only from a passed check. */
+ok('station and crib episodes declare where (the strand a step carries; tools for the crib), the id the step carries, and the display name the step lists',
+  reg.episode_kinds.station.fields.includes('where') && reg.episode_kinds.station.fields.includes('station') && reg.episode_kinds.station.fields.includes('station_name')
+  && reg.episode_kinds.crib.fields.includes('where') && reg.episode_kinds.crib.fields.includes('crib') && reg.episode_kinds.crib.fields.includes('crib_name')
+  && reg.episode_kinds.station.names_read_field === 'station_name' && reg.episode_kinds.crib.names_read_field === 'crib_name'
+  && ['station', 'crib'].every((k) => reg.episode_kinds[k].fields.includes('hall') && reg.episode_kinds[k].outcome_shape === null));
+const cribsReg = JSON.parse(readFileSync(new URL('../tools/registry/toolcribs.json', import.meta.url)));
+ok('a crib episode records the picks right and is floored at the number of picks tools/ declares for the check (read, not retyped); a station is held to no floor',
+  reg.episode_kinds.crib.fields.includes('picks') && Number.isInteger(reg.episode_kinds.crib.at_least.picks)
+  && reg.episode_kinds.crib.at_least.picks === cribsReg.drill.picks && reg.episode_kinds.station.at_least === undefined);
+ok('the honesty says what a station or crib episode does not prove, and the recording rules name what is recorded for',
+  /found by trying every option/.test(reg.step_episodes.does_not_prove) && /certifies nobody/.test(reg.step_episodes.does_not_prove)
+  && /correct pick on a station quiz/.test(reg.step_episodes.proves) && /every pick right/.test(reg.step_episodes.proves)
+  && /only\s+on a correct pick/.test(reg.step_episodes.station.recorded_for) && /nothing/.test(reg.step_episodes.station.recorded_for)
+  && /only when the check ends with every pick right/.test(reg.step_episodes.crib.recorded_for) && /station id and a crib on its district/.test(reg.step_episodes.dedupe));
+ok('the page records both inside balanced STATION-EPISODE blocks, one literal call each',
+  (page.match(/\/\* STATION-EPISODE BEGIN/g) || []).length >= 3
+  && (page.match(/\/\* STATION-EPISODE BEGIN/g) || []).length === (page.match(/\/\* STATION-EPISODE END/g) || []).length
+  && (page.match(/recordEpisode\(\{ kind: 'station'/g) || []).length === 1 && (page.match(/recordEpisode\(\{ kind: 'crib'/g) || []).length === 1);
+ok('a station is recorded from the correct pick that already writes its device mark, a crib only from a passed check',
+  /doneStations\.add\(curStation\); saveProg\(\);\s*\/\* STATION-EPISODE BEGIN \*\/ stationPicked\(curStation\); \/\* STATION-EPISODE END \*\//.test(page)
+  && /saveProg\(\); renderChrome\(\);\s*\/\* STATION-EPISODE BEGIN \*\/ if \(passed\) cribPassed\(curCrib, drill\.right\); \/\* STATION-EPISODE END \*\//.test(page)
+  && /const passed = drill\.right === tasks\.length;/.test(page));
+ok('a station episode is recorded only for a lesson-target station, once; a crib episode only for a lesson-target crib, once; both only in the hall view',
+  /function stationPicked\(id\) \{\s*if \(view !== 'hall'\) return;[\s\S]*?stationTargets\(\)\.has\(id\)[\s\S]*?stationLogged\(id\)/.test(page)
+  && /function cribPassed\(dk, picks\) \{\s*if \(view !== 'hall'\) return;[\s\S]*?cribTargets\(\)\.has\(dk\)[\s\S]*?cribLogged\(dk\)/.test(page));
+
+/* wave 21: BEHAVIOUR of the STATION-EPISODE recorder. The block is cut out of the built page and run in a vm with stub scene
+   state over the real lessons registry, and driven the way the page drives it. */
+{
+  const lessonsReg = JSON.parse(readFileSync(new URL('../lessons/registry/lessons.json', import.meta.url)));
+  const stationsReg = JSON.parse(readFileSync(new URL('../stations/registry/stations.json', import.meta.url)));
+  const i0 = page.indexOf('/* STATION-EPISODE BEGIN (wave 21)');
+  const blockSrc = page.slice(i0, page.indexOf('/* STATION-EPISODE END */', i0));
+  // a hall with a crib step and a station step and at least one station that no lesson of the hall names
+  const byHall = {};
+  for (const l of Object.values(lessonsReg.lessons)) for (const st of l.steps) {
+    const o = byHall[l.hall] ||= { station: new Set(), crib: new Set() };
+    if (st.kind === 'station') o.station.add(st.station); if (st.kind === 'crib') o.crib.add(st.crib);
+  }
+  const HALL = Object.keys(byHall).find((h) => byHall[h].crib.size && byHall[h].station.size
+    && stationsReg.stations.some((s) => s.hall === h && !byHall[h].station.has(s.station_id)));
+  const T_ST = [...byHall[HALL].station][0], T_CR = [...byHall[HALL].crib][0];
+  const N_ST = stationsReg.stations.find((s) => s.hall === HALL && !byHall[HALL].station.has(s.station_id)).station_id;
+  const N_CR = Object.keys(cribsReg.cribs).find((d) => d !== T_CR);
+  const D_STATIONS = {};
+  for (const s of stationsReg.stations) D_STATIONS[s.station_id] = { name: s.name, strand: s.strand };
+  const D_CRIBS = {};
+  for (const d of Object.keys(cribsReg.cribs)) D_CRIBS[d] = { name: cribsReg.cribs[d].name };
+  const mk = (view = 'hall') => {
+    const src = `
+      let view = ${JSON.stringify(view)};
+      const slug = ${JSON.stringify(HALL)}, campusKey = 'c';
+      const trainingLog = [];
+      const D = { lessons: { lessons: LESSONS }, stations: STATIONS, tools: { cribs: CRIBS }, halls: [{ slug, stations: [], district: 'x' }] };
+      const window = {}; const openStation = () => {}, openCrib = () => {};
+      function recordEpisode(ep) { trainingLog.push({ t: 'T', ...ep }); }
+      ${blockSrc}
+      return { log: trainingLog, st: stationPicked, cr: cribPassed, setView: (v) => { view = v; }, targets: window.__tc3dStationEpisode.targets };`;
+    return new Function('LESSONS', 'STATIONS', 'CRIBS', src)(lessonsReg.lessons, D_STATIONS, D_CRIBS);
+  };
+  let h = mk();
+  h.st(T_ST);
+  ok('a correct pick on a lesson-target station records one station episode: kind, campus, hall, where (the strand of its bench), the id and the name, nothing else',
+    h.log.length === 1 && h.log[0].kind === 'station' && h.log[0].hall === HALL && h.log[0].campus === 'c' && h.log[0].station === T_ST
+    && h.log[0].where === D_STATIONS[T_ST].strand && h.log[0].station_name === D_STATIONS[T_ST].name
+    && JSON.stringify(Object.keys(h.log[0]).sort()) === JSON.stringify(reg.episode_kinds.station.fields.slice().sort()));
+  h.st(T_ST);
+  ok('picking the same station right again adds nothing', h.log.length === 1);
+  h.st(N_ST);
+  ok('a station no lesson of this hall names records nothing, however it is answered', h.log.length === 1);
+  h = mk('campus'); h.st(T_ST); h.cr(T_CR, 5);
+  ok('outside the hall view neither a station nor a crib records anything', h.log.length === 0);
+  h = mk(); h.st('st-not-a-station');
+  ok('an id that is not a station records nothing and throws nothing', h.log.length === 0);
+  h.cr(T_CR, reg.episode_kinds.crib.at_least.picks);
+  ok('a passed check of a lesson-target crib records one crib episode: kind, campus, hall, where tools, the district, its name and the picks right, nothing else',
+    h.log.length === 1 && h.log[0].kind === 'crib' && h.log[0].hall === HALL && h.log[0].where === 'tools' && h.log[0].crib === T_CR
+    && h.log[0].crib_name === D_CRIBS[T_CR].name && h.log[0].picks === reg.episode_kinds.crib.at_least.picks
+    && JSON.stringify(Object.keys(h.log[0]).sort()) === JSON.stringify(reg.episode_kinds.crib.fields.slice().sort()));
+  h.cr(T_CR, reg.episode_kinds.crib.at_least.picks);
+  ok('passing the same crib again adds nothing', h.log.length === 1);
+  h.cr(N_CR, reg.episode_kinds.crib.at_least.picks);
+  ok('a crib no lesson of this hall names records nothing', h.log.length === 1);
+  ok('the harness hook reports exactly the lesson targets of the hall', JSON.stringify(h.targets().station.sort()) === JSON.stringify([...byHall[HALL].station].sort())
+    && JSON.stringify(h.targets().crib) === JSON.stringify([...byHall[HALL].crib]));
 }
 
 /* ------------------------------------------------------------------ TRACE --- */

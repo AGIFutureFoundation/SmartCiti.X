@@ -754,8 +754,10 @@ COMPLETION_EVIDENCE = {
                           'training.json#episode_kinds[k].fields.',
     'kinds_read_from': 'lessons/registry/lessons.json#step_kinds[k].records; a '
                        'kind records when that field is a kind name, and is '
-                       'silent when it is null. station and crib are silent '
-                       'by that field, whatever their name suggests.',
+                       'silent when it is null. No kind is silent today: station and crib '
+                       'were silent by that field until wave 21 and record an '
+                       'episode now; a kind added later with a null field would '
+                       'be silent again, whatever its name suggests.',
     'per_lesson': PER_LESSON,
     'rollup': {
         'lessons': len(PER_LESSON),

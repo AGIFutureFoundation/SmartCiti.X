@@ -563,6 +563,14 @@ const r4 = (x) => Math.round(x * 1e4) / 1e4;
        && !silentK.includes('walk') && !silentK.includes('placard')
        && at(r, 'recording_steps_matchable') === Object.values(lessons).flatMap((l) => at(l, 'steps')).filter((s) => !silentK.includes(s.kind) && !unm.has(s.kind)).length,
        `fully verifiable by episode is recomputed from the steps (${fullByEp.length} of ${Object.keys(lessons).length}); the silent kinds are ${silentK.join(' and ')}, walk and placard are not among them`);
+    // wave 21: station and crib record episodes, so no kind is silent and a lesson holding one is no longer partly verifiable
+    ok(!silentK.includes('station') && !silentK.includes('crib') && silentK.length === 0
+       && at(ce, 'unmatchable_kinds').length === 0
+       && ['station', 'crib'].every((k) => at(at(ce, 'matchability'), k).matchable === true && at(at(ce, 'matchability'), k).unrecorded_references.length === 0
+         && at(at(ce, 'matchability'), k).step_references.includes('where') && at(at(ce, 'matchability'), k).step_references.includes(k))
+       && Object.keys(lessons).filter((id) => at(lessons[id], 'steps').some((s) => s.kind === 'station' || s.kind === 'crib')).every((id) => compl(id) && mine[id].cls === 'full')
+       && at(r, 'fully_verifiable_by_episode') === Object.keys(lessons).length && at(r, 'self_reported_steps') === 0,
+       'station and crib are matchable episode kinds, every lesson holding a station or crib step is completable and fully verifiable by episode, and no kind is silent');
   }
 
   const pu = at(ce, 'per_union');

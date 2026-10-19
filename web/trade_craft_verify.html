@@ -172,7 +172,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-26",
- "source_stamp": "4f4f4547987eb903",
+ "source_stamp": "7fd7f5e54a843d02",
  "provenance": "DERIVED",
  "provenance_note": "every fact here is read from the registry that owns it and re-derivable by build.py; the fixture record is SCRIPTED and labelled as not a learner",
  "honesty": {
@@ -188,7 +188,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "that the device was honest: a record can be written by hand and will verify if it is internally consistent",
    "that a walk or placard episode means more than it says: it records that a device saw the walker's position inside a room, or a placard panel left open for its dwell with the walker in that room - not that anyone read, understood or took on what the placard requires, and not that the room exists outside this bundle",
    "that a self-reported step happened at all (no step kind is self-reported today; the rule stays so one that is added cannot carry evidence it does not have)",
-   "a station or crib mark is a device-local mark, not a recorded episode",
+   "that a station or crib episode means more than it says: it records that a device saw a correct pick on a station quiz, or a crib check finished with every pick right - not that the checklist was read, that the pick was not found by trying every option, that anything was learned or that the learner can name the tools. The marks in tc-progress (the record's `stations` and `tools` blocks) are device-local marks the halls keep for their own HUD; they feed no step",
    "that the seat was passed under supervision, or that any score means anything outside this bundle",
    "any accreditation, ticket, licence or credential; no hall, employer or authority has signed anything",
    "any duration of training, and no price is claimed"
@@ -292,7 +292,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
  },
  "evidence_classes": {
   "episode-backed": "the step kind records a training episode; only this class is called evidence-backed",
-  "device-mark": "station or crib: a mark in the device-local progress record, not a recorded episode",
+  "device-mark": "no step kind today (station and crib were device marks until wave 21 and now write episodes): a mark in the device-local progress record, not a recorded episode. The class and the verifier branch for it stay, inert, so a kind added later that leaves only a mark cannot be called evidence-backed",
   "self-reported": "no step kind today (walk and placard recorded nothing before wave 20 and now write episodes): done would be the learner's word. The class and its rules stay, so a kind added with no record cannot carry evidence it does not have"
  },
  "evidence_rule": {
@@ -363,25 +363,76 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value; room is one of the step's names_read; dwell_ms is a finite number no smaller than the declared dwell"
   },
   "station": {
-   "class": "device-mark",
-   "records": null,
-   "evidence_required_when_done": false,
+   "class": "episode-backed",
+   "records": "station",
+   "evidence_required_when_done": true,
+   "evidenceable": true,
+   "evidenceable_why": "every reference field the step carries is recorded by the episode",
    "evidence_shape": {
-    "station": "station id"
+    "episode": "station",
+    "t": "ISO-8601 string (the page writes new Date().toISOString()); Date.parse must be finite",
+    "hall": "the step's own hall, verbatim",
+    "station": "the step's own station, verbatim",
+    "where": "the step's own where, verbatim",
+    "room": "one of the step's own names_read (the room label as the page draws it)"
    },
-   "from": "tc-progress.stations",
-   "why_no_episode": "a station mark lands in the device-local progress record the halls already keep; the training log holds simulator, advisor, crew, walkaround, walk and placard episodes and this pack adds no kind to it"
+   "episode_fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "station",
+    "station_name"
+   ],
+   "checkable": [
+    "hall",
+    "station",
+    "where"
+   ],
+   "not_checkable": [],
+   "names_read_field": "station_name",
+   "at_least": {},
+   "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
+   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value; room is one of the step's names_read"
   },
   "crib": {
-   "class": "device-mark",
-   "records": null,
-   "evidence_required_when_done": false,
+   "class": "episode-backed",
+   "records": "crib",
+   "evidence_required_when_done": true,
+   "evidenceable": true,
+   "evidenceable_why": "every reference field the step carries is recorded by the episode",
    "evidence_shape": {
-    "crib": "district",
-    "passed": "bool"
+    "episode": "crib",
+    "t": "ISO-8601 string (the page writes new Date().toISOString()); Date.parse must be finite",
+    "crib": "the step's own crib, verbatim",
+    "hall": "the step's own hall, verbatim",
+    "where": "the step's own where, verbatim",
+    "room": "one of the step's own names_read (the room label as the page draws it)",
+    "dwell_ms": "a finite number at least the declared dwell (training.json#episode_kinds.placard.at_least.dwell_ms)"
    },
-   "from": "tc-progress.tools[district].passed",
-   "why_no_episode": "the crib check is graded deterministically against the crib record and kept with the progress record, not as a training episode"
+   "episode_fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "crib",
+    "crib_name",
+    "picks"
+   ],
+   "checkable": [
+    "crib",
+    "hall",
+    "where"
+   ],
+   "not_checkable": [],
+   "names_read_field": "crib_name",
+   "at_least": {
+    "picks": 5
+   },
+   "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
+   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value; room is one of the step's names_read; dwell_ms is a finite number no smaller than the declared dwell"
   },
   "walkaround": {
    "class": "episode-backed",
@@ -534,28 +585,27 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
  "recording_kinds": [
   "advisor",
   "crew",
+  "crib",
   "placard",
   "sim",
+  "station",
   "walk",
   "walkaround"
  ],
- "silent_kinds": [
-  "crib",
-  "station"
- ],
+ "silent_kinds": [],
  "counts": {
   "lessons": 139,
-  "recording_steps": 534,
-  "silent_steps": 34,
-  "episode_backed_steps": 534,
-  "device_mark_steps": 34,
+  "recording_steps": 568,
+  "silent_steps": 0,
+  "episode_backed_steps": 568,
+  "device_mark_steps": 0,
   "self_reported_steps": 0,
   "sims": 11,
   "sims_with_threshold": 0,
   "ladder_edges": 40,
   "lessons_completable": 139,
   "lessons_not_completable": 0,
-  "fixture_mutants": 28
+  "fixture_mutants": 44
  },
  "lessons": {
   "riggers-first-card": {
@@ -683,10 +733,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 5,
-   "recording_steps": 4,
-   "silent_steps": 1,
-   "episode_backed_steps": 4,
-   "device_mark_steps": 1,
+   "recording_steps": 5,
+   "silent_steps": 0,
+   "episode_backed_steps": 5,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": []
   },
@@ -709,10 +759,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 4,
-   "recording_steps": 3,
-   "silent_steps": 1,
-   "episode_backed_steps": 3,
-   "device_mark_steps": 1,
+   "recording_steps": 4,
+   "silent_steps": 0,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": [
     "scaffold-build-in-order"
@@ -723,10 +773,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 4,
-   "recording_steps": 3,
-   "silent_steps": 1,
-   "episode_backed_steps": 3,
-   "device_mark_steps": 1,
+   "recording_steps": 4,
+   "silent_steps": 0,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": []
   },
@@ -735,10 +785,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 4,
-   "recording_steps": 3,
-   "silent_steps": 1,
-   "episode_backed_steps": 3,
-   "device_mark_steps": 1,
+   "recording_steps": 4,
+   "silent_steps": 0,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": [
     "bricklayers-gear-that-stays-on"
@@ -749,10 +799,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 6,
-   "recording_steps": 4,
-   "silent_steps": 2,
-   "episode_backed_steps": 4,
-   "device_mark_steps": 2,
+   "recording_steps": 6,
+   "silent_steps": 0,
+   "episode_backed_steps": 6,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": [
     "bricklayers-gear-that-stays-on"
@@ -763,10 +813,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 3,
-   "recording_steps": 2,
-   "silent_steps": 1,
-   "episode_backed_steps": 2,
-   "device_mark_steps": 1,
+   "recording_steps": 3,
+   "silent_steps": 0,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": [
     "bricklayers-gear-that-stays-on"
@@ -777,10 +827,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 4,
-   "recording_steps": 2,
-   "silent_steps": 2,
-   "episode_backed_steps": 2,
-   "device_mark_steps": 2,
+   "recording_steps": 4,
+   "silent_steps": 0,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": [
     "bricklayers-gear-that-stays-on"
@@ -791,10 +841,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 4,
-   "recording_steps": 2,
-   "silent_steps": 2,
-   "episode_backed_steps": 2,
-   "device_mark_steps": 2,
+   "recording_steps": 4,
+   "silent_steps": 0,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": []
   },
@@ -803,10 +853,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 4,
-   "recording_steps": 2,
-   "silent_steps": 2,
-   "episode_backed_steps": 2,
-   "device_mark_steps": 2,
+   "recording_steps": 4,
+   "silent_steps": 0,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": []
   },
@@ -815,10 +865,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 3,
-   "recording_steps": 2,
-   "silent_steps": 1,
-   "episode_backed_steps": 2,
-   "device_mark_steps": 1,
+   "recording_steps": 3,
+   "silent_steps": 0,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": [
     "restore-point-the-joint"
@@ -829,10 +879,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 5,
-   "recording_steps": 3,
-   "silent_steps": 2,
-   "episode_backed_steps": 3,
-   "device_mark_steps": 2,
+   "recording_steps": 5,
+   "silent_steps": 0,
+   "episode_backed_steps": 5,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": []
   },
@@ -907,10 +957,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 3,
-   "recording_steps": 2,
-   "silent_steps": 1,
-   "episode_backed_steps": 2,
-   "device_mark_steps": 1,
+   "recording_steps": 3,
+   "silent_steps": 0,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": []
   },
@@ -919,10 +969,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 5,
-   "recording_steps": 4,
-   "silent_steps": 1,
-   "episode_backed_steps": 4,
-   "device_mark_steps": 1,
+   "recording_steps": 5,
+   "silent_steps": 0,
+   "episode_backed_steps": 5,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": []
   },
@@ -931,10 +981,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 5,
-   "recording_steps": 4,
-   "silent_steps": 1,
-   "episode_backed_steps": 4,
-   "device_mark_steps": 1,
+   "recording_steps": 5,
+   "silent_steps": 0,
+   "episode_backed_steps": 5,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": []
   },
@@ -943,10 +993,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 4,
-   "recording_steps": 3,
-   "silent_steps": 1,
-   "episode_backed_steps": 3,
-   "device_mark_steps": 1,
+   "recording_steps": 4,
+   "silent_steps": 0,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": []
   },
@@ -967,10 +1017,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 4,
-   "recording_steps": 3,
-   "silent_steps": 1,
-   "episode_backed_steps": 3,
-   "device_mark_steps": 1,
+   "recording_steps": 4,
+   "silent_steps": 0,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": []
   },
@@ -1188,10 +1238,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 6,
-   "recording_steps": 5,
-   "silent_steps": 1,
-   "episode_backed_steps": 5,
-   "device_mark_steps": 1,
+   "recording_steps": 6,
+   "silent_steps": 0,
+   "episode_backed_steps": 6,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": [
     "electricians-clip-in-first"
@@ -1272,10 +1322,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 5,
-   "recording_steps": 4,
-   "silent_steps": 1,
-   "episode_backed_steps": 4,
-   "device_mark_steps": 1,
+   "recording_steps": 5,
+   "silent_steps": 0,
+   "episode_backed_steps": 5,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": [
     "fiber-splicers-keep-the-trace"
@@ -1300,10 +1350,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 6,
-   "recording_steps": 5,
-   "silent_steps": 1,
-   "episode_backed_steps": 5,
-   "device_mark_steps": 1,
+   "recording_steps": 6,
+   "silent_steps": 0,
+   "episode_backed_steps": 6,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": [
     "machinists-move-the-job-without-marking-it"
@@ -1326,10 +1376,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 4,
-   "recording_steps": 3,
-   "silent_steps": 1,
-   "episode_backed_steps": 3,
-   "device_mark_steps": 1,
+   "recording_steps": 4,
+   "silent_steps": 0,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": []
   },
@@ -1398,10 +1448,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 4,
-   "recording_steps": 3,
-   "silent_steps": 1,
-   "episode_backed_steps": 3,
-   "device_mark_steps": 1,
+   "recording_steps": 4,
+   "silent_steps": 0,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": []
   },
@@ -1470,10 +1520,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 4,
-   "recording_steps": 3,
-   "silent_steps": 1,
-   "episode_backed_steps": 3,
-   "device_mark_steps": 1,
+   "recording_steps": 4,
+   "silent_steps": 0,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": []
   },
@@ -1542,10 +1592,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 4,
-   "recording_steps": 3,
-   "silent_steps": 1,
-   "episode_backed_steps": 3,
-   "device_mark_steps": 1,
+   "recording_steps": 4,
+   "silent_steps": 0,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": []
   },
@@ -1614,10 +1664,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 4,
-   "recording_steps": 3,
-   "silent_steps": 1,
-   "episode_backed_steps": 3,
-   "device_mark_steps": 1,
+   "recording_steps": 4,
+   "silent_steps": 0,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": []
   },
@@ -1686,10 +1736,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 4,
-   "recording_steps": 3,
-   "silent_steps": 1,
-   "episode_backed_steps": 3,
-   "device_mark_steps": 1,
+   "recording_steps": 4,
+   "silent_steps": 0,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": []
   },
@@ -1758,10 +1808,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 4,
-   "recording_steps": 3,
-   "silent_steps": 1,
-   "episode_backed_steps": 3,
-   "device_mark_steps": 1,
+   "recording_steps": 4,
+   "silent_steps": 0,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": []
   },
@@ -1830,10 +1880,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 4,
-   "recording_steps": 3,
-   "silent_steps": 1,
-   "episode_backed_steps": 3,
-   "device_mark_steps": 1,
+   "recording_steps": 4,
+   "silent_steps": 0,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": []
   },
@@ -1902,10 +1952,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 4,
-   "recording_steps": 3,
-   "silent_steps": 1,
-   "episode_backed_steps": 3,
-   "device_mark_steps": 1,
+   "recording_steps": 4,
+   "silent_steps": 0,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": []
   },
@@ -1974,10 +2024,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "completable": true,
    "not_completable_why": null,
    "steps": 4,
-   "recording_steps": 3,
-   "silent_steps": 1,
-   "episode_backed_steps": 3,
-   "device_mark_steps": 1,
+   "recording_steps": 4,
+   "silent_steps": 0,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
    "self_reported_steps": 0,
    "needs": []
   },
@@ -2894,6 +2944,22 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "fixture/mutant-placard-done-no-dwell.json": "record.fields",
    "fixture/mutant-placard-done-wrong-hall.json": "step.episode-evidence",
    "fixture/mutant-placard-done-without-evidence.json": "step.recording-evidence",
+   "fixture/mutant-station-done-wrong-station.json": "step.episode-evidence",
+   "fixture/mutant-station-done-wrong-station-name.json": "step.episode-evidence",
+   "fixture/mutant-station-done-wrong-room.json": "step.episode-evidence",
+   "fixture/mutant-station-done-wrong-hall.json": "step.episode-evidence",
+   "fixture/mutant-station-done-as-walk.json": "step.episode-evidence",
+   "fixture/mutant-station-done-no-station.json": "record.fields",
+   "fixture/mutant-station-done-device-mark-only.json": "record.fields",
+   "fixture/mutant-station-done-without-evidence.json": "step.recording-evidence",
+   "fixture/mutant-crib-done-wrong-district.json": "step.episode-evidence",
+   "fixture/mutant-crib-done-wrong-crib-name.json": "step.episode-evidence",
+   "fixture/mutant-crib-done-picks-too-few.json": "step.episode-evidence",
+   "fixture/mutant-crib-done-picks-not-a-number.json": "step.episode-evidence",
+   "fixture/mutant-crib-done-no-picks.json": "record.fields",
+   "fixture/mutant-crib-done-wrong-room.json": "step.episode-evidence",
+   "fixture/mutant-crib-done-device-mark-only.json": "record.fields",
+   "fixture/mutant-crib-done-without-evidence.json": "step.recording-evidence",
    "fixture/mutant-unknown-lesson.json": "ids.lesson",
    "fixture/mutant-unknown-station.json": "ids.station",
    "fixture/mutant-missing-field.json": "record.fields",
@@ -2920,13 +2986,13 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-26",
- "source_stamp": "286e0e6e7aa95b12",
+ "source_stamp": "378b14beafe0d6c9",
  "honesty": {
   "status": "AUTHORED: every sentence in this pack was written here, by us. 56 lessons were written by hand, one hall at a time, step by step; the other 83 are composed by one rule in lessons/build.py from 7 arcs written here - 60 first walks, one per room an advisor stands in, and 23 walks before a WILDS site from one more arc, whose site title and world are read from wilds/registry/wilds.json, where the terrain is AUTHORED, not a surveyed place - so their step order, title and why are marked DERIVED and carry authoring \"rule\" - the rule reads the hall name and focus from the roster and adds no fact of its own. Nothing is fetched and no model runs behind any of it. The word AI-SYNTHESIZED belongs to orbis/ and describes generated video; it would be a false label for a hand-written walk through a building.",
   "content": "unverified general practice. These lessons were written to be argued with, corrected and replaced by journey-level practitioners from the halls they name - the same standing the module pack, the recovered stations and the simulator seats already carry, and for the same reason: nobody who does this work for a living has reviewed a line of it yet.",
   "not_certification": "no lesson here certifies anybody, qualifies anybody or permits anybody to do anything. Completing every lesson in this registry would leave a learner with exactly the standing they started with. Where a trade has a real ticket, that ticket is issued by a jurisdiction, an employer or a hall, and this bundle is none of those and speaks for none of them.",
   "not_a_gate": "a lesson unlocks nothing. No step is locked behind another, the ladder is guidance about a sensible order rather than a permission system, and the assessment gate that schools/ declares stays exactly where it is: an unaided verification run that no lesson, station hour or simulator seat substitutes for.",
-  "not_scored": "finishing a lesson changes no score and is read by no grader. The step kinds that write an episode write it to the existing device-local training log; station and crib write none (they leave a device mark in the progress record), and the registry says which is which rather than leaving it to be discovered. A walk or placard episode proves that a device recorded a position or an open panel, and nothing about competence.",
+  "not_scored": "finishing a lesson changes no score and is read by no grader. The step kinds that write an episode write it to the existing device-local training log; every kind writes one since wave 21 (station and crib used to leave only a device mark in the progress record), and the registry says which kind writes which rather than leaving it to be discovered. A walk, placard, station or crib episode proves that a device recorded a position, an open panel, a correct quiz pick or a passed crib check, and nothing about competence.",
   "one_truth": "this pack holds no second copy of anything. Hall names, room labels, station names, seat names, scenario names, advisor names, crew role names and topic wordings are all read at build time from the registries that own them, and the test re-reads them the same way. A step that could not resolve its ids did not become a lesson with a footnote; it failed the build.",
   "no_jurisdiction": "nothing here cites a standard, a code or an authority, and nothing here speaks for one. Where a step says what a crew would do, that is unverified general practice and not an instruction from anybody with the standing to give one.",
   "scope": "this is a set deliberately spread thin: 139 lessons across 111 of 111 halls, one in every one of the 45 halls a simulator seat is bound to and one composed first walk in every hall without a seat that the rule could walk honestly (0 refused), out of 1,221 rooms. It demonstrates the shape a lesson takes in this bundle. It is not a curriculum, it does not cover a trade, and no hall is finished because one of its rooms now has a lesson standing in it."
@@ -2951,18 +3017,20 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "walk": 141,
    "walkaround": 42
   },
-  "recording_steps": 534,
-  "silent_steps": 34,
+  "recording_steps": 568,
+  "silent_steps": 0,
   "episodes_by_kind": {
    "advisor": 205,
    "crew": 23,
+   "crib": 22,
    "placard": 92,
    "sim": 31,
+   "station": 12,
    "walk": 141,
    "walkaround": 42
   },
-  "episode_kinds_used": 6,
-  "episode_kinds_declared": 6,
+  "episode_kinds_used": 8,
+  "episode_kinds_declared": 8,
   "new_episode_kinds": 0,
   "halls_covered": 111,
   "halls_total": 111,
@@ -3280,17 +3348,17 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   },
   "station": {
    "act": "take a training station at its bench",
-   "records": null,
+   "records": "station",
    "stage": "class",
    "reads": "stations/registry/stations.json",
-   "why_no_episode": "a station mark lands in the device-local progress record the halls already keep; the training log holds simulator, advisor, crew, walkaround, walk and placard episodes and this pack adds no kind to it"
+   "why_no_episode": null
   },
   "crib": {
    "act": "run the district crib check at the pegboard",
-   "records": null,
+   "records": "crib",
    "stage": "class",
    "reads": "tools/registry/toolcribs.json",
-   "why_no_episode": "the crib check is graded deterministically against the crib record and kept with the progress record, not as a training episode"
+   "why_no_episode": null
   },
   "walkaround": {
    "act": "walk one pre-shift point of a seat and mark it",
@@ -4560,7 +4628,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 3,
      "kind": "station",
-     "records": null,
+     "records": "station",
      "stage": "class",
      "reads": "stations/registry/stations.json",
      "note": "Work the bench first; the checklist is the shape of the habit.",
@@ -4610,6 +4678,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "records": [
     "advisor",
     "placard",
+    "station",
     "walk",
     "walkaround"
    ],
@@ -4801,7 +4870,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 2,
      "kind": "station",
-     "records": null,
+     "records": "station",
      "stage": "class",
      "reads": "stations/registry/stations.json",
      "note": "Work the bench and read the doctrine line twice; it is the compressed version of the lesson.",
@@ -4850,6 +4919,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    ],
    "records": [
     "advisor",
+    "station",
     "walk",
     "walkaround"
    ],
@@ -4922,7 +4992,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 3,
      "kind": "station",
-     "records": null,
+     "records": "station",
      "stage": "class",
      "reads": "stations/registry/stations.json",
      "note": "Work through the bench, including the quiz you think you already know.",
@@ -4956,6 +5026,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "records": [
     "advisor",
     "placard",
+    "station",
     "walk"
    ],
    "stages": [
@@ -5027,7 +5098,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 3,
      "kind": "station",
-     "records": null,
+     "records": "station",
      "stage": "class",
      "reads": "stations/registry/stations.json",
      "note": "Work the bench; the checklist is the order the work actually has to happen in.",
@@ -5061,6 +5132,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "records": [
     "advisor",
     "placard",
+    "station",
     "walk"
    ],
    "stages": [
@@ -5135,7 +5207,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 3,
      "kind": "station",
-     "records": null,
+     "records": "station",
      "stage": "class",
      "reads": "stations/registry/stations.json",
      "note": "Work the bench, then read the doctrine line as the thing to remember on a hot afternoon.",
@@ -5150,7 +5222,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "The pegboard check is five picks against the crib record, and it is deliberately unforgiving about near-misses.",
@@ -5197,7 +5269,9 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
+    "station",
     "walk"
    ],
    "stages": [
@@ -5258,7 +5332,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 2,
      "kind": "station",
-     "records": null,
+     "records": "station",
      "stage": "class",
      "reads": "stations/registry/stations.json",
      "note": "Work the bench and pay attention to the fixing rather than the face.",
@@ -5291,6 +5365,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    ],
    "records": [
     "advisor",
+    "station",
     "walk"
    ],
    "stages": [
@@ -5346,7 +5421,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 2,
      "kind": "station",
-     "records": null,
+     "records": "station",
      "stage": "class",
      "reads": "stations/registry/stations.json",
      "note": "Work the bench and treat the preparation steps as the lesson rather than the preamble.",
@@ -5361,7 +5436,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 3,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Five picks against the district record; the point is naming the tool, not recognising a picture of it.",
@@ -5395,6 +5470,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    ],
    "records": [
     "advisor",
+    "crib",
+    "station",
     "walk"
    ],
    "stages": [
@@ -5452,7 +5529,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 2,
      "kind": "station",
-     "records": null,
+     "records": "station",
      "stage": "class",
      "reads": "stations/registry/stations.json",
      "note": "Work the bench; the checklist is mostly about what the next trade will need from you.",
@@ -5467,7 +5544,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 3,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Run the pegboard check and notice which tools you could name only by sight.",
@@ -5501,6 +5578,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    ],
    "records": [
     "advisor",
+    "crib",
+    "station",
     "walk"
    ],
    "stages": [
@@ -5557,7 +5636,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 2,
      "kind": "station",
-     "records": null,
+     "records": "station",
      "stage": "class",
      "reads": "stations/registry/stations.json",
      "note": "Work the bench and treat joint finish as an outcome of the tool rather than a decoration.",
@@ -5590,7 +5669,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Five picks, graded against the crib record, with the option order fixed by arithmetic rather than chance.",
@@ -5606,6 +5685,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    ],
    "records": [
     "advisor",
+    "crib",
+    "station",
     "walk"
    ],
    "stages": [
@@ -5661,7 +5742,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 2,
      "kind": "station",
-     "records": null,
+     "records": "station",
      "stage": "class",
      "reads": "stations/registry/stations.json",
      "note": "Work the bench and notice how much of the standard is about restraint rather than technique.",
@@ -5694,6 +5775,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    ],
    "records": [
     "advisor",
+    "station",
     "walk"
    ],
    "stages": [
@@ -5762,7 +5844,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 3,
      "kind": "station",
-     "records": null,
+     "records": "station",
      "stage": "class",
      "reads": "stations/registry/stations.json",
      "note": "Work the bench and read the doctrine line as the thing you will be tempted to ignore.",
@@ -5777,7 +5859,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Five picks against the district record; industry kit is unforgiving about improvisation.",
@@ -5811,7 +5893,9 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
+    "station",
     "walk"
    ],
    "stages": [
@@ -6456,7 +6540,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 2,
      "kind": "station",
-     "records": null,
+     "records": "station",
      "stage": "class",
      "reads": "stations/registry/stations.json",
      "note": "Work the bench and treat the doctrine line as the sentence you will have to say in front of people.",
@@ -6489,6 +6573,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    ],
    "records": [
     "advisor",
+    "station",
     "walk"
    ],
    "stages": [
@@ -6594,7 +6679,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 5,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Five picks against the district record, which is a fair test of whether you know the kit by name.",
@@ -6610,6 +6695,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "walk"
    ],
@@ -6683,7 +6769,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 3,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Five picks against the district record; diagnosis starts with knowing what you are holding.",
@@ -6730,6 +6816,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "walk"
    ],
@@ -6824,7 +6911,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Five picks against the district record; the kit is half the argument in this trade.",
@@ -6840,6 +6927,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "walk"
    ],
@@ -7020,7 +7108,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Five picks against the district record, scored deterministically and with nothing narrative able to change it.",
@@ -7036,6 +7124,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "walk"
    ],
@@ -9049,7 +9138,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 3,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Five picks against the district record, and the point is naming the kit rather than recognising it.",
@@ -9119,6 +9208,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    ],
    "records": [
     "crew",
+    "crib",
     "placard",
     "sim",
     "walk",
@@ -9795,7 +9885,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 3,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Five picks against the district record, graded deterministically and unforgiving about near-misses.",
@@ -9844,6 +9934,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    ],
    "records": [
     "advisor",
+    "crib",
     "walk",
     "walkaround"
    ],
@@ -10023,7 +10114,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 3,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Five picks against the district record; industry kit is unforgiving about improvisation.",
@@ -10090,6 +10181,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "sim",
     "walk",
@@ -10296,7 +10388,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Pick from the board by what the record says, not by what looks familiar from another trade.",
@@ -10312,6 +10404,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "walk"
    ],
@@ -10908,7 +11001,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Pick from the board by what the record says, not by what looks familiar from another trade.",
@@ -10924,6 +11017,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "walk"
    ],
@@ -11518,7 +11612,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Pick from the board by what the record says, not by what looks familiar from another trade.",
@@ -11534,6 +11628,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "walk"
    ],
@@ -12128,7 +12223,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Pick from the board by what the record says, not by what looks familiar from another trade.",
@@ -12144,6 +12239,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "walk"
    ],
@@ -12738,7 +12834,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Pick from the board by what the record says, not by what looks familiar from another trade.",
@@ -12754,6 +12850,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "walk"
    ],
@@ -13348,7 +13445,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Pick from the board by what the record says, not by what looks familiar from another trade.",
@@ -13364,6 +13461,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "walk"
    ],
@@ -13958,7 +14056,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Pick from the board by what the record says, not by what looks familiar from another trade.",
@@ -13974,6 +14072,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "walk"
    ],
@@ -14568,7 +14667,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Pick from the board by what the record says, not by what looks familiar from another trade.",
@@ -14584,6 +14683,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "walk"
    ],
@@ -15178,7 +15278,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Pick from the board by what the record says, not by what looks familiar from another trade.",
@@ -15194,6 +15294,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "walk"
    ],
@@ -15788,7 +15889,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Pick from the board by what the record says, not by what looks familiar from another trade.",
@@ -15804,6 +15905,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "walk"
    ],
@@ -19871,10 +19973,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   "hud": "while a lesson is active the hfocus line keeps the room label and finish it already shows, and the hint line shows the lesson title, the current step number out of the step count, and that step's computed `do` line - never the note, which is commentary for a reader rather than an instruction for a learner mid-room.",
   "reads": "the page must READ and never copy: the room label from the strand, the station name from D.stations, the seat name, scenario name and walkaround point from D.sims, the advisor and crew role names and the exact topic wording from D.advisors and D.crews, and the condition line for a placard step from the same condOf()/condLine() pair the hint line already uses. This registry stores ids for all of those on purpose.",
   "steps": "render the steps in the order given, numbered. A step is marked done by the learner, in this browser only. A step is never enforced: the page must let somebody do step four first, because the building does, and a lesson that could trap a learner in a room would be a gate wearing a lesson's clothes.",
-  "records": "a step whose `records` is a string writes exactly that episode kind through the training recorder that already exists, with no new field and no new storage key. A step whose `records` is null writes nothing - the page must not invent an episode for it. The walk episode is the one declared walk kind: it is written only when the position of the learner (not a probe) enters the named room, never from a probe, and it finishes no lesson by itself.",
+  "records": "a step whose `records` is a string writes exactly that episode kind through the training recorder that already exists, with no new field and no new storage key. A step whose `records` is null writes nothing - the page must not invent an episode for it (no step kind is null today). The walk episode is the one declared walk kind: it is written only when the position of the learner (not a probe) enters the named room, never from a probe, and it finishes no lesson by itself. A station episode is written only on a correct pick on the quiz of the named station, and a crib episode only when the check of the named district ends with every pick right; a wrong pick, a failed check or a station or crib no lesson of the hall names writes nothing.",
   "ladder": "render a lesson's prerequisites as named links with the edge reason shown. Do not disable a lesson whose prerequisites are unfinished: the ladder is advice about order and the registry says so, and enforcing it in the page would turn it into the gate this pack promises it is not.",
   "limits": "the `limits` sentence renders with the lesson, not behind a disclosure control, and not only at the end. A learner who is told what a lesson does not mean only after finishing it has already formed the belief the sentence exists to prevent.",
-  "episode": "nothing about opening, reading or abandoning a lesson is recorded. The only episodes that reach the training log are the six the step kinds declare, written by the recorder that was already writing them."
+  "episode": "nothing about opening, reading or abandoning a lesson is recorded. The only episodes that reach the training log are the eight the step kinds declare, written by the recorder that was already writing them."
  },
  "reads": [
   "agents/registry/advisors.json",
@@ -27033,7 +27135,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-26",
- "source_stamp": "d1282db9df77044a",
+ "source_stamp": "c457bdbd846feee9",
  "provenance": "DERIVED",
  "provenance_note": "every fact here is read from the registry that owns it and re-derivable by build.py; the episode shapes are training/registry/training.json#episode_kinds verbatim; the fixture package is SCRIPTED and labelled as not a learner",
  "honesty": {
@@ -27119,8 +27221,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "kinds": [
     "advisor",
     "crew",
+    "crib",
     "placard",
     "sim",
+    "station",
     "walk",
     "walkaround"
    ],
@@ -27131,8 +27235,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "kinds": [
     "advisor",
     "crew",
+    "crib",
     "placard",
     "sim",
+    "station",
     "walk",
     "walkaround",
     "world-teleop"
@@ -27809,6 +27915,33 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "conditional_fields": {},
    "what": "one door placard panel opened and left open for its dwell"
   },
+  "station": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "station",
+    "station_name"
+   ],
+   "conditional_fields": {},
+   "what": "one training station quiz answered correctly at its bench"
+  },
+  "crib": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "crib",
+    "crib_name",
+    "picks"
+   ],
+   "conditional_fields": {},
+   "what": "one district crib check passed"
+  },
   "walkaround": {
    "fields": [
     "t",
@@ -27877,9 +28010,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     "operator",
     "where",
     "room",
-    "dwell_ms"
+    "dwell_ms",
+    "station",
+    "station_name",
+    "crib",
+    "crib_name",
+    "picks"
    ],
-   "why": "this verifier resolves the ids that name a PLACE or a SEAT (sim, scenario, hall, campus). An advisor, a crew role, a topic, a walkaround point, a control scheme, or the room (where, room) and dwell of a walk or placard episode is carried verbatim and its shape is held to the episode field list; whether it names a real registry entry is not checked here and the verifier says so"
+   "why": "this verifier resolves the ids that name a PLACE or a SEAT (sim, scenario, hall, campus). An advisor, a crew role, a topic, a walkaround point, a control scheme, or the room (where, room) and dwell of a walk or placard episode, or the station or crib (station, crib, their names) and the picks of a station or crib episode, is carried verbatim and its shape is held to the episode field list; whether it names a real registry entry is not checked here and the verifier says so"
   }
  },
  "digest": {
@@ -28041,8 +28179,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   "episodes": {
    "advisor": 1,
    "crew": 1,
+   "crib": 1,
    "placard": 1,
    "sim": 3,
+   "station": 1,
    "walk": 1,
    "walkaround": 1
   },
@@ -28116,15 +28256,17 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   "episodes": {
    "advisor": 1,
    "crew": 1,
+   "crib": 1,
    "placard": 1,
    "sim": 3,
+   "station": 1,
    "walk": 1,
    "walkaround": 1,
    "world-teleop": 2
   }
  },
  "counts": {
-  "episode_kinds": 6,
+  "episode_kinds": 8,
   "scopes": 2,
   "rules": 21,
   "mutants": 21,
@@ -28139,7 +28281,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-11",
- "source_stamp": "92dc6d4fcbfceb5f",
+ "source_stamp": "f25008fff3d1fa98",
  "honesty": {
   "schematic": "every episode comes from SCHEMATIC physics and deterministic rubrics, not a real robot or a real machine: useful for exercising a training pipeline's plumbing and export format, not for training a controller that will run on real equipment.",
   "anonymous": "no name, no email, no biometric or device-identifying data is ever recorded - an episode carries only a scenario id, the control scheme the registry already declares, and the measured outcome.",
@@ -28241,6 +28383,40 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "granularity": "one event: the placard panel of one room stayed open for at least the declared dwell while the walker stood in that room. `dwell_ms` is the measured open time, floored at the declared minimum by construction",
    "what": "one door placard panel opened and left open for its dwell"
   },
+  "station": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "station",
+    "station_name"
+   ],
+   "names_read_field": "station_name",
+   "outcome_shape": null,
+   "granularity": "one event: the quiz of one training station, opened at its bench, was answered with the correct option. Nothing about the other options picked first, the time taken or the checklist is kept: a correct pick is all it states",
+   "what": "one training station quiz answered correctly at its bench"
+  },
+  "crib": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "crib",
+    "crib_name",
+    "picks"
+   ],
+   "names_read_field": "crib_name",
+   "at_least": {
+    "picks": 5
+   },
+   "outcome_shape": null,
+   "granularity": "one event: the district crib check was finished with every one of its picks right. A failed run records nothing; `picks` is the number right, floored at the declared number of picks by construction",
+   "what": "one district crib check passed"
+  },
   "walkaround": {
    "fields": [
     "t",
@@ -28265,10 +28441,18 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   "walk": {
    "recorded_for": "a room that a lesson step of kind walk names, in the hall the learner stands in - never for every room, so the rolling cap is not spent on footsteps"
   },
-  "dedupe": "one episode per (kind, hall, where) while an earlier one is still in the log: re-entering a room or re-opening a placard adds nothing, so a learner cannot pad the log and the log cannot crowd out the simulator episodes it exists to keep",
+  "station": {
+   "recorded_for": "a station that a lesson step of kind station names, in the hall the learner stands in, and only on a correct pick of its quiz: a wrong pick, a station no lesson names, or a station of another hall records nothing",
+   "recorded_with": "the station id and name as stations/ spells them, and the strand of the room its bench stands in"
+  },
+  "crib": {
+   "recorded_for": "the district crib that a lesson step of kind crib names, in the hall the learner stands in, and only when the check ends with every pick right: a failed run, or a crib no lesson of this hall names, records nothing",
+   "picks_from": "tools/registry/toolcribs.json#drill.picks (read, not retyped); the episode records the picks right and is floored at that number"
+  },
+  "dedupe": "one episode per (kind, hall, where) while an earlier one is still in the log: re-entering a room or re-opening a placard adds nothing, so a learner cannot pad the log and the log cannot crowd out the simulator episodes it exists to keep. A station is deduped on its station id and a crib on its district, for the same reason",
   "headless": "a scripted probe stepping the walker (wkSilent) records no walk or placard episode: only a walker the learner is driving does",
-  "proves": "that this device recorded the event it names: a walker's position inside a room's rectangle, or a panel open for a dwell with the walker in the room",
-  "does_not_prove": "competence, attention, comprehension, that anybody read the sign, that the learner is the person named in an export, or that any real room or placard exists - the halls are SCHEMATIC. A lesson stays unverified general practice and certifies nobody"
+  "proves": "that this device recorded the event it names: a walker's position inside a room's rectangle, a panel open for a dwell with the walker in the room, a correct pick on a station quiz, or a crib check finished with every pick right",
+  "does_not_prove": "competence, attention, comprehension, that anybody read the sign or the checklist, that a station pick was not found by trying every option, that a crib pick was not guessed or learned by repetition, that the learner is the person named in an export, or that any real room or placard exists - the halls are SCHEMATIC. A lesson stays unverified general practice and certifies nobody"
  },
  "storage": {
   "key": "tc-training",

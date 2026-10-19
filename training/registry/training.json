@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-11",
- "source_stamp": "92dc6d4fcbfceb5f",
+ "source_stamp": "f25008fff3d1fa98",
  "honesty": {
   "schematic": "every episode comes from SCHEMATIC physics and deterministic rubrics, not a real robot or a real machine: useful for exercising a training pipeline's plumbing and export format, not for training a controller that will run on real equipment.",
   "anonymous": "no name, no email, no biometric or device-identifying data is ever recorded - an episode carries only a scenario id, the control scheme the registry already declares, and the measured outcome.",
@@ -105,6 +105,40 @@
    "granularity": "one event: the placard panel of one room stayed open for at least the declared dwell while the walker stood in that room. `dwell_ms` is the measured open time, floored at the declared minimum by construction",
    "what": "one door placard panel opened and left open for its dwell"
   },
+  "station": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "station",
+    "station_name"
+   ],
+   "names_read_field": "station_name",
+   "outcome_shape": null,
+   "granularity": "one event: the quiz of one training station, opened at its bench, was answered with the correct option. Nothing about the other options picked first, the time taken or the checklist is kept: a correct pick is all it states",
+   "what": "one training station quiz answered correctly at its bench"
+  },
+  "crib": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "crib",
+    "crib_name",
+    "picks"
+   ],
+   "names_read_field": "crib_name",
+   "at_least": {
+    "picks": 5
+   },
+   "outcome_shape": null,
+   "granularity": "one event: the district crib check was finished with every one of its picks right. A failed run records nothing; `picks` is the number right, floored at the declared number of picks by construction",
+   "what": "one district crib check passed"
+  },
   "walkaround": {
    "fields": [
     "t",
@@ -129,10 +163,18 @@
   "walk": {
    "recorded_for": "a room that a lesson step of kind walk names, in the hall the learner stands in - never for every room, so the rolling cap is not spent on footsteps"
   },
-  "dedupe": "one episode per (kind, hall, where) while an earlier one is still in the log: re-entering a room or re-opening a placard adds nothing, so a learner cannot pad the log and the log cannot crowd out the simulator episodes it exists to keep",
+  "station": {
+   "recorded_for": "a station that a lesson step of kind station names, in the hall the learner stands in, and only on a correct pick of its quiz: a wrong pick, a station no lesson names, or a station of another hall records nothing",
+   "recorded_with": "the station id and name as stations/ spells them, and the strand of the room its bench stands in"
+  },
+  "crib": {
+   "recorded_for": "the district crib that a lesson step of kind crib names, in the hall the learner stands in, and only when the check ends with every pick right: a failed run, or a crib no lesson of this hall names, records nothing",
+   "picks_from": "tools/registry/toolcribs.json#drill.picks (read, not retyped); the episode records the picks right and is floored at that number"
+  },
+  "dedupe": "one episode per (kind, hall, where) while an earlier one is still in the log: re-entering a room or re-opening a placard adds nothing, so a learner cannot pad the log and the log cannot crowd out the simulator episodes it exists to keep. A station is deduped on its station id and a crib on its district, for the same reason",
   "headless": "a scripted probe stepping the walker (wkSilent) records no walk or placard episode: only a walker the learner is driving does",
-  "proves": "that this device recorded the event it names: a walker's position inside a room's rectangle, or a panel open for a dwell with the walker in the room",
-  "does_not_prove": "competence, attention, comprehension, that anybody read the sign, that the learner is the person named in an export, or that any real room or placard exists - the halls are SCHEMATIC. A lesson stays unverified general practice and certifies nobody"
+  "proves": "that this device recorded the event it names: a walker's position inside a room's rectangle, a panel open for a dwell with the walker in the room, a correct pick on a station quiz, or a crib check finished with every pick right",
+  "does_not_prove": "competence, attention, comprehension, that anybody read the sign or the checklist, that a station pick was not found by trying every option, that a crib pick was not guessed or learned by repetition, that the learner is the person named in an export, or that any real room or placard exists - the halls are SCHEMATIC. A lesson stays unverified general practice and certifies nobody"
  },
  "storage": {
   "key": "tc-training",

@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-26",
- "source_stamp": "d1282db9df77044a",
+ "source_stamp": "c457bdbd846feee9",
  "provenance": "DERIVED",
  "provenance_note": "every fact here is read from the registry that owns it and re-derivable by build.py; the episode shapes are training/registry/training.json#episode_kinds verbatim; the fixture package is SCRIPTED and labelled as not a learner",
  "honesty": {
@@ -89,8 +89,10 @@
    "kinds": [
     "advisor",
     "crew",
+    "crib",
     "placard",
     "sim",
+    "station",
     "walk",
     "walkaround"
    ],
@@ -101,8 +103,10 @@
    "kinds": [
     "advisor",
     "crew",
+    "crib",
     "placard",
     "sim",
+    "station",
     "walk",
     "walkaround",
     "world-teleop"
@@ -779,6 +783,33 @@
    "conditional_fields": {},
    "what": "one door placard panel opened and left open for its dwell"
   },
+  "station": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "station",
+    "station_name"
+   ],
+   "conditional_fields": {},
+   "what": "one training station quiz answered correctly at its bench"
+  },
+  "crib": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "crib",
+    "crib_name",
+    "picks"
+   ],
+   "conditional_fields": {},
+   "what": "one district crib check passed"
+  },
   "walkaround": {
    "fields": [
     "t",
@@ -847,9 +878,14 @@
     "operator",
     "where",
     "room",
-    "dwell_ms"
+    "dwell_ms",
+    "station",
+    "station_name",
+    "crib",
+    "crib_name",
+    "picks"
    ],
-   "why": "this verifier resolves the ids that name a PLACE or a SEAT (sim, scenario, hall, campus). An advisor, a crew role, a topic, a walkaround point, a control scheme, or the room (where, room) and dwell of a walk or placard episode is carried verbatim and its shape is held to the episode field list; whether it names a real registry entry is not checked here and the verifier says so"
+   "why": "this verifier resolves the ids that name a PLACE or a SEAT (sim, scenario, hall, campus). An advisor, a crew role, a topic, a walkaround point, a control scheme, or the room (where, room) and dwell of a walk or placard episode, or the station or crib (station, crib, their names) and the picks of a station or crib episode, is carried verbatim and its shape is held to the episode field list; whether it names a real registry entry is not checked here and the verifier says so"
   }
  },
  "digest": {
@@ -1011,8 +1047,10 @@
   "episodes": {
    "advisor": 1,
    "crew": 1,
+   "crib": 1,
    "placard": 1,
    "sim": 3,
+   "station": 1,
    "walk": 1,
    "walkaround": 1
   },
@@ -1086,15 +1124,17 @@
   "episodes": {
    "advisor": 1,
    "crew": 1,
+   "crib": 1,
    "placard": 1,
    "sim": 3,
+   "station": 1,
    "walk": 1,
    "walkaround": 1,
    "world-teleop": 2
   }
  },
  "counts": {
-  "episode_kinds": 6,
+  "episode_kinds": 8,
   "scopes": 2,
   "rules": 21,
   "mutants": 21,

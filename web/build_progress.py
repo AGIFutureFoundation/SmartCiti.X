@@ -1823,8 +1823,8 @@ async function paintCompletion() {
     ['of which evidence-backed', S.evidence_backed, 'evidence-backed'],
     ['steps with a recorded episode kind (' + S.episode_kinds.join(', ') + '), done only where '
       + KEYS.progress + ' or ' + KEYS.training + ' holds that mark', S.episode_steps_done + ' of ' + S.episode_steps, 'episode-steps'],
-    ['steps with a device mark only (' + S.device_mark_kinds.join(', ') + ')',
-      S.device_mark_steps_done + ' of ' + S.device_mark_steps, 'device-mark-steps'],
+    ...(S.device_mark_kinds.length ? [['steps with a device mark only (' + S.device_mark_kinds.join(', ') + ')',
+      S.device_mark_steps_done + ' of ' + S.device_mark_steps, 'device-mark-steps']] : []),
     ...(S.self_reported_kinds.length ? [['self-reported / unrecorded steps (' + S.self_reported_kinds.join(', ') + ')',
       S.self_reported_steps_done + ' of ' + S.self_reported_steps, 'self-reported-steps']] : []),
   ];
@@ -1963,12 +1963,15 @@ COMPLETION_JS = r"""
    its evidence; nothing is marked done from nothing, and no number is
    invented for a field the record does not hold. */
 const COMPLETION_RECORD = 'tc-completion/1';
-/* the kinds whose evidence tc-progress can hold, and where it holds it */
-const EVIDENCED_KINDS = ['sim', 'station', 'crib'];
+/* the kinds whose evidence tc-progress can hold, and where it holds it. Station and crib were here until wave 21: they
+   write a training episode now (REF_FIELDS below) and tc-progress's station and tool marks feed no step. A kind that
+   leaves only a mark in tc-progress would be listed here again and counted as a device mark, never as an episode. */
+const EVIDENCED_KINDS = ['sim'];
 /* the reference a step of an episode kind carries, as lessons.json spells it;
    a training episode must equal every one of these AND the lesson's hall */
 const REF_FIELDS = { walkaround: ['sim', 'point'], advisor: ['advisor', 'topic', 'answer_kind'],
-  crew: ['crew', 'role', 'topic', 'answer_kind', 'seat', 'muster'], walk: ['where'], placard: ['where'] };
+  crew: ['crew', 'role', 'topic', 'answer_kind', 'seat', 'muster'], walk: ['where'], placard: ['where'],
+  station: ['where', 'station'], crib: ['where', 'crib'] };
 /* wave 20: an episode kind may also declare (training.json#episode_kinds[k]) a names_read_field - the episode field
    whose value must be one of the step's own names_read - and at_least, a floor on a numeric field (a placard's
    dwell_ms). Both are read from the registry that declares them, never retyped here. */
@@ -2060,8 +2063,6 @@ function canonicalJSON(v) {
 function stepEvidence(step, prog, hall, training, meta, skipped) {
   if (step.kind in REF_FIELDS) return episodeEvidence(step, hall, training, meta, skipped);
   const sims = (prog && typeof prog.sims === 'object' && prog.sims) ? prog.sims : {};
-  const tools = (prog && typeof prog.tools === 'object' && prog.tools) ? prog.tools : {};
-  const stations = (prog && Array.isArray(prog.stations)) ? prog.stations : [];
   if (step.kind === 'sim') {
     const rec = Object.prototype.hasOwnProperty.call(sims, step.sim) ? sims[step.sim] : null;
     if (!rec || typeof rec !== 'object') return null;
@@ -2076,14 +2077,6 @@ function stepEvidence(step, prog, hall, training, meta, skipped) {
     if (src.passed !== true) return null;
     return { sim: step.sim, scenario: step.scenario,
       score: typeof src.score === 'number' ? src.score : null, passed: true };
-  }
-  if (step.kind === 'station') {
-    return stations.includes(step.station) ? { station: step.station } : null;
-  }
-  if (step.kind === 'crib') {
-    const rec = Object.prototype.hasOwnProperty.call(tools, step.crib) ? tools[step.crib] : null;
-    if (!rec || typeof rec !== 'object' || rec.passed !== true) return null;
-    return { crib: step.crib, passed: true };
   }
   /* every other kind writes nothing this function reads: the episode kinds are
      matched from the training log above, which is not the record this is
@@ -2157,7 +2150,7 @@ async function buildCompletionRecord(prog, lessons, ladder, meta, now, training)
     sims, tools, stations,
     honesty: {
       proves: [
-        'a step of kind sim, station or crib is marked done only where this device\'s progress record holds a pass for that seat, that station or that district crib; no step is marked done from nothing',
+        'a step of kind sim is marked done only where this device\'s progress record holds a pass for that seat; a station or crib step only where the training log holds a station or crib episode of that hall for that station or district (the marks in the progress record feed nothing); no step is marked done from nothing',
         'a lesson is complete only when every one of its steps is done',
         'the digest is SHA-256 over the canonical JSON of every other top-level field (identity.signature forced to null, because a signature is made over the digest), so an edit to any of them is detectable',
         ...(wallet === null ? [] : ['identity.signature, when filled, is an EIP-191 personal_sign by the wallet ' + wallet + ' over this digest: the holder of that key signed this digest at export - the identity of a key, not of a person']),
@@ -2190,9 +2183,10 @@ async function buildCompletionRecord(prog, lessons, ladder, meta, now, training)
 
 /* the on-page figures, computed from a record and never typed. Three counts,
    named by what stands behind each step: an episode kind (step_kinds.records
-   != null: sim, advisor, crew, walkaround, walk, placard) counts only where
-   tc-progress or the training log actually holds that mark; a device mark
-   only (station done, crib passed); self-reported or unrecorded (no kind
+   != null: sim, advisor, crew, walkaround, walk, placard, station, crib) counts only where
+   tc-progress or the training log actually holds that mark (station and
+   crib, a correct quiz pick and a passed check, since wave 21); a device mark
+   only (no kind today); self-reported or unrecorded (no kind
    today), which nothing writes anywhere. */
 function summarizeRecord(record, stepKinds, episodeKinds) {
   const unmatchable = unmatchableKinds(episodeKinds);

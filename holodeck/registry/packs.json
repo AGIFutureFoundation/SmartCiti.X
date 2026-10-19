@@ -58,7 +58,7 @@
     },
     {
      "path": "lessons/registry/lessons.json",
-     "sha256": "881eadd1629dc903"
+     "sha256": "75e757b1c322727a"
     }
    ],
    "status": "SHIPPING",
@@ -96,7 +96,7 @@
     },
     {
      "path": "lessons/registry/lessons.json",
-     "sha256": "881eadd1629dc903"
+     "sha256": "75e757b1c322727a"
     }
    ],
    "status": "SHIPPING",
@@ -134,7 +134,7 @@
     },
     {
      "path": "lessons/registry/lessons.json",
-     "sha256": "881eadd1629dc903"
+     "sha256": "75e757b1c322727a"
     }
    ],
    "status": "SHIPPING",
@@ -172,7 +172,7 @@
     },
     {
      "path": "lessons/registry/lessons.json",
-     "sha256": "881eadd1629dc903"
+     "sha256": "75e757b1c322727a"
     }
    ],
    "status": "SHIPPING",
@@ -210,7 +210,7 @@
     },
     {
      "path": "lessons/registry/lessons.json",
-     "sha256": "881eadd1629dc903"
+     "sha256": "75e757b1c322727a"
     }
    ],
    "status": "SHIPPING",
@@ -248,7 +248,7 @@
     },
     {
      "path": "lessons/registry/lessons.json",
-     "sha256": "881eadd1629dc903"
+     "sha256": "75e757b1c322727a"
     }
    ],
    "status": "SHIPPING",
@@ -286,7 +286,7 @@
     },
     {
      "path": "lessons/registry/lessons.json",
-     "sha256": "881eadd1629dc903"
+     "sha256": "75e757b1c322727a"
     }
    ],
    "status": "SHIPPING",
@@ -324,7 +324,7 @@
     },
     {
      "path": "lessons/registry/lessons.json",
-     "sha256": "881eadd1629dc903"
+     "sha256": "75e757b1c322727a"
     }
    ],
    "status": "SHIPPING",
@@ -362,7 +362,7 @@
     },
     {
      "path": "lessons/registry/lessons.json",
-     "sha256": "881eadd1629dc903"
+     "sha256": "75e757b1c322727a"
     }
    ],
    "status": "SHIPPING",
@@ -400,7 +400,7 @@
     },
     {
      "path": "lessons/registry/lessons.json",
-     "sha256": "881eadd1629dc903"
+     "sha256": "75e757b1c322727a"
     }
    ],
    "status": "SHIPPING",
@@ -426,7 +426,7 @@
     },
     {
      "path": "lessons/registry/lessons.json",
-     "sha256": "881eadd1629dc903"
+     "sha256": "75e757b1c322727a"
     },
     {
      "path": "layers/registry/layers.json",
@@ -806,7 +806,7 @@
   },
   {
    "contents": {
-    "episode_kinds": 7,
+    "episode_kinds": 9,
     "practices": 13,
     "refusal_reasons": 7
    },
@@ -820,7 +820,7 @@
    "sources": [
     {
      "path": "datashare/registry/datashare.json",
-     "sha256": "abb4e33afcc3c867"
+     "sha256": "5ec9e41f65677574"
     }
    ],
    "status": "SHIPPING",

@@ -3,13 +3,13 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-26",
- "source_stamp": "286e0e6e7aa95b12",
+ "source_stamp": "378b14beafe0d6c9",
  "honesty": {
   "status": "AUTHORED: every sentence in this pack was written here, by us. 56 lessons were written by hand, one hall at a time, step by step; the other 83 are composed by one rule in lessons/build.py from 7 arcs written here - 60 first walks, one per room an advisor stands in, and 23 walks before a WILDS site from one more arc, whose site title and world are read from wilds/registry/wilds.json, where the terrain is AUTHORED, not a surveyed place - so their step order, title and why are marked DERIVED and carry authoring \"rule\" - the rule reads the hall name and focus from the roster and adds no fact of its own. Nothing is fetched and no model runs behind any of it. The word AI-SYNTHESIZED belongs to orbis/ and describes generated video; it would be a false label for a hand-written walk through a building.",
   "content": "unverified general practice. These lessons were written to be argued with, corrected and replaced by journey-level practitioners from the halls they name - the same standing the module pack, the recovered stations and the simulator seats already carry, and for the same reason: nobody who does this work for a living has reviewed a line of it yet.",
   "not_certification": "no lesson here certifies anybody, qualifies anybody or permits anybody to do anything. Completing every lesson in this registry would leave a learner with exactly the standing they started with. Where a trade has a real ticket, that ticket is issued by a jurisdiction, an employer or a hall, and this bundle is none of those and speaks for none of them.",
   "not_a_gate": "a lesson unlocks nothing. No step is locked behind another, the ladder is guidance about a sensible order rather than a permission system, and the assessment gate that schools/ declares stays exactly where it is: an unaided verification run that no lesson, station hour or simulator seat substitutes for.",
-  "not_scored": "finishing a lesson changes no score and is read by no grader. The step kinds that write an episode write it to the existing device-local training log; station and crib write none (they leave a device mark in the progress record), and the registry says which is which rather than leaving it to be discovered. A walk or placard episode proves that a device recorded a position or an open panel, and nothing about competence.",
+  "not_scored": "finishing a lesson changes no score and is read by no grader. The step kinds that write an episode write it to the existing device-local training log; every kind writes one since wave 21 (station and crib used to leave only a device mark in the progress record), and the registry says which kind writes which rather than leaving it to be discovered. A walk, placard, station or crib episode proves that a device recorded a position, an open panel, a correct quiz pick or a passed crib check, and nothing about competence.",
   "one_truth": "this pack holds no second copy of anything. Hall names, room labels, station names, seat names, scenario names, advisor names, crew role names and topic wordings are all read at build time from the registries that own them, and the test re-reads them the same way. A step that could not resolve its ids did not become a lesson with a footnote; it failed the build.",
   "no_jurisdiction": "nothing here cites a standard, a code or an authority, and nothing here speaks for one. Where a step says what a crew would do, that is unverified general practice and not an instruction from anybody with the standing to give one.",
   "scope": "this is a set deliberately spread thin: 139 lessons across 111 of 111 halls, one in every one of the 45 halls a simulator seat is bound to and one composed first walk in every hall without a seat that the rule could walk honestly (0 refused), out of 1,221 rooms. It demonstrates the shape a lesson takes in this bundle. It is not a curriculum, it does not cover a trade, and no hall is finished because one of its rooms now has a lesson standing in it."
@@ -34,18 +34,20 @@
    "walk": 141,
    "walkaround": 42
   },
-  "recording_steps": 534,
-  "silent_steps": 34,
+  "recording_steps": 568,
+  "silent_steps": 0,
   "episodes_by_kind": {
    "advisor": 205,
    "crew": 23,
+   "crib": 22,
    "placard": 92,
    "sim": 31,
+   "station": 12,
    "walk": 141,
    "walkaround": 42
   },
-  "episode_kinds_used": 6,
-  "episode_kinds_declared": 6,
+  "episode_kinds_used": 8,
+  "episode_kinds_declared": 8,
   "new_episode_kinds": 0,
   "halls_covered": 111,
   "halls_total": 111,
@@ -363,17 +365,17 @@
   },
   "station": {
    "act": "take a training station at its bench",
-   "records": null,
+   "records": "station",
    "stage": "class",
    "reads": "stations/registry/stations.json",
-   "why_no_episode": "a station mark lands in the device-local progress record the halls already keep; the training log holds simulator, advisor, crew, walkaround, walk and placard episodes and this pack adds no kind to it"
+   "why_no_episode": null
   },
   "crib": {
    "act": "run the district crib check at the pegboard",
-   "records": null,
+   "records": "crib",
    "stage": "class",
    "reads": "tools/registry/toolcribs.json",
-   "why_no_episode": "the crib check is graded deterministically against the crib record and kept with the progress record, not as a training episode"
+   "why_no_episode": null
   },
   "walkaround": {
    "act": "walk one pre-shift point of a seat and mark it",
@@ -1643,7 +1645,7 @@
     {
      "n": 3,
      "kind": "station",
-     "records": null,
+     "records": "station",
      "stage": "class",
      "reads": "stations/registry/stations.json",
      "note": "Work the bench first; the checklist is the shape of the habit.",
@@ -1693,6 +1695,7 @@
    "records": [
     "advisor",
     "placard",
+    "station",
     "walk",
     "walkaround"
    ],
@@ -1884,7 +1887,7 @@
     {
      "n": 2,
      "kind": "station",
-     "records": null,
+     "records": "station",
      "stage": "class",
      "reads": "stations/registry/stations.json",
      "note": "Work the bench and read the doctrine line twice; it is the compressed version of the lesson.",
@@ -1933,6 +1936,7 @@
    ],
    "records": [
     "advisor",
+    "station",
     "walk",
     "walkaround"
    ],
@@ -2005,7 +2009,7 @@
     {
      "n": 3,
      "kind": "station",
-     "records": null,
+     "records": "station",
      "stage": "class",
      "reads": "stations/registry/stations.json",
      "note": "Work through the bench, including the quiz you think you already know.",
@@ -2039,6 +2043,7 @@
    "records": [
     "advisor",
     "placard",
+    "station",
     "walk"
    ],
    "stages": [
@@ -2110,7 +2115,7 @@
     {
      "n": 3,
      "kind": "station",
-     "records": null,
+     "records": "station",
      "stage": "class",
      "reads": "stations/registry/stations.json",
      "note": "Work the bench; the checklist is the order the work actually has to happen in.",
@@ -2144,6 +2149,7 @@
    "records": [
     "advisor",
     "placard",
+    "station",
     "walk"
    ],
    "stages": [
@@ -2218,7 +2224,7 @@
     {
      "n": 3,
      "kind": "station",
-     "records": null,
+     "records": "station",
      "stage": "class",
      "reads": "stations/registry/stations.json",
      "note": "Work the bench, then read the doctrine line as the thing to remember on a hot afternoon.",
@@ -2233,7 +2239,7 @@
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "The pegboard check is five picks against the crib record, and it is deliberately unforgiving about near-misses.",
@@ -2280,7 +2286,9 @@
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
+    "station",
     "walk"
    ],
    "stages": [
@@ -2341,7 +2349,7 @@
     {
      "n": 2,
      "kind": "station",
-     "records": null,
+     "records": "station",
      "stage": "class",
      "reads": "stations/registry/stations.json",
      "note": "Work the bench and pay attention to the fixing rather than the face.",
@@ -2374,6 +2382,7 @@
    ],
    "records": [
     "advisor",
+    "station",
     "walk"
    ],
    "stages": [
@@ -2429,7 +2438,7 @@
     {
      "n": 2,
      "kind": "station",
-     "records": null,
+     "records": "station",
      "stage": "class",
      "reads": "stations/registry/stations.json",
      "note": "Work the bench and treat the preparation steps as the lesson rather than the preamble.",
@@ -2444,7 +2453,7 @@
     {
      "n": 3,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Five picks against the district record; the point is naming the tool, not recognising a picture of it.",
@@ -2478,6 +2487,8 @@
    ],
    "records": [
     "advisor",
+    "crib",
+    "station",
     "walk"
    ],
    "stages": [
@@ -2535,7 +2546,7 @@
     {
      "n": 2,
      "kind": "station",
-     "records": null,
+     "records": "station",
      "stage": "class",
      "reads": "stations/registry/stations.json",
      "note": "Work the bench; the checklist is mostly about what the next trade will need from you.",
@@ -2550,7 +2561,7 @@
     {
      "n": 3,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Run the pegboard check and notice which tools you could name only by sight.",
@@ -2584,6 +2595,8 @@
    ],
    "records": [
     "advisor",
+    "crib",
+    "station",
     "walk"
    ],
    "stages": [
@@ -2640,7 +2653,7 @@
     {
      "n": 2,
      "kind": "station",
-     "records": null,
+     "records": "station",
      "stage": "class",
      "reads": "stations/registry/stations.json",
      "note": "Work the bench and treat joint finish as an outcome of the tool rather than a decoration.",
@@ -2673,7 +2686,7 @@
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Five picks, graded against the crib record, with the option order fixed by arithmetic rather than chance.",
@@ -2689,6 +2702,8 @@
    ],
    "records": [
     "advisor",
+    "crib",
+    "station",
     "walk"
    ],
    "stages": [
@@ -2744,7 +2759,7 @@
     {
      "n": 2,
      "kind": "station",
-     "records": null,
+     "records": "station",
      "stage": "class",
      "reads": "stations/registry/stations.json",
      "note": "Work the bench and notice how much of the standard is about restraint rather than technique.",
@@ -2777,6 +2792,7 @@
    ],
    "records": [
     "advisor",
+    "station",
     "walk"
    ],
    "stages": [
@@ -2845,7 +2861,7 @@
     {
      "n": 3,
      "kind": "station",
-     "records": null,
+     "records": "station",
      "stage": "class",
      "reads": "stations/registry/stations.json",
      "note": "Work the bench and read the doctrine line as the thing you will be tempted to ignore.",
@@ -2860,7 +2876,7 @@
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Five picks against the district record; industry kit is unforgiving about improvisation.",
@@ -2894,7 +2910,9 @@
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
+    "station",
     "walk"
    ],
    "stages": [
@@ -3539,7 +3557,7 @@
     {
      "n": 2,
      "kind": "station",
-     "records": null,
+     "records": "station",
      "stage": "class",
      "reads": "stations/registry/stations.json",
      "note": "Work the bench and treat the doctrine line as the sentence you will have to say in front of people.",
@@ -3572,6 +3590,7 @@
    ],
    "records": [
     "advisor",
+    "station",
     "walk"
    ],
    "stages": [
@@ -3677,7 +3696,7 @@
     {
      "n": 5,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Five picks against the district record, which is a fair test of whether you know the kit by name.",
@@ -3693,6 +3712,7 @@
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "walk"
    ],
@@ -3766,7 +3786,7 @@
     {
      "n": 3,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Five picks against the district record; diagnosis starts with knowing what you are holding.",
@@ -3813,6 +3833,7 @@
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "walk"
    ],
@@ -3907,7 +3928,7 @@
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Five picks against the district record; the kit is half the argument in this trade.",
@@ -3923,6 +3944,7 @@
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "walk"
    ],
@@ -4103,7 +4125,7 @@
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Five picks against the district record, scored deterministically and with nothing narrative able to change it.",
@@ -4119,6 +4141,7 @@
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "walk"
    ],
@@ -6132,7 +6155,7 @@
     {
      "n": 3,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Five picks against the district record, and the point is naming the kit rather than recognising it.",
@@ -6202,6 +6225,7 @@
    ],
    "records": [
     "crew",
+    "crib",
     "placard",
     "sim",
     "walk",
@@ -6878,7 +6902,7 @@
     {
      "n": 3,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Five picks against the district record, graded deterministically and unforgiving about near-misses.",
@@ -6927,6 +6951,7 @@
    ],
    "records": [
     "advisor",
+    "crib",
     "walk",
     "walkaround"
    ],
@@ -7106,7 +7131,7 @@
     {
      "n": 3,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Five picks against the district record; industry kit is unforgiving about improvisation.",
@@ -7173,6 +7198,7 @@
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "sim",
     "walk",
@@ -7379,7 +7405,7 @@
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Pick from the board by what the record says, not by what looks familiar from another trade.",
@@ -7395,6 +7421,7 @@
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "walk"
    ],
@@ -7991,7 +8018,7 @@
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Pick from the board by what the record says, not by what looks familiar from another trade.",
@@ -8007,6 +8034,7 @@
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "walk"
    ],
@@ -8601,7 +8629,7 @@
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Pick from the board by what the record says, not by what looks familiar from another trade.",
@@ -8617,6 +8645,7 @@
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "walk"
    ],
@@ -9211,7 +9240,7 @@
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Pick from the board by what the record says, not by what looks familiar from another trade.",
@@ -9227,6 +9256,7 @@
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "walk"
    ],
@@ -9821,7 +9851,7 @@
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Pick from the board by what the record says, not by what looks familiar from another trade.",
@@ -9837,6 +9867,7 @@
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "walk"
    ],
@@ -10431,7 +10462,7 @@
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Pick from the board by what the record says, not by what looks familiar from another trade.",
@@ -10447,6 +10478,7 @@
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "walk"
    ],
@@ -11041,7 +11073,7 @@
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Pick from the board by what the record says, not by what looks familiar from another trade.",
@@ -11057,6 +11089,7 @@
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "walk"
    ],
@@ -11651,7 +11684,7 @@
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Pick from the board by what the record says, not by what looks familiar from another trade.",
@@ -11667,6 +11700,7 @@
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "walk"
    ],
@@ -12261,7 +12295,7 @@
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Pick from the board by what the record says, not by what looks familiar from another trade.",
@@ -12277,6 +12311,7 @@
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "walk"
    ],
@@ -12871,7 +12906,7 @@
     {
      "n": 4,
      "kind": "crib",
-     "records": null,
+     "records": "crib",
      "stage": "class",
      "reads": "tools/registry/toolcribs.json",
      "note": "Pick from the board by what the record says, not by what looks familiar from another trade.",
@@ -12887,6 +12922,7 @@
    ],
    "records": [
     "advisor",
+    "crib",
     "placard",
     "walk"
    ],
@@ -16954,10 +16990,10 @@
   "hud": "while a lesson is active the hfocus line keeps the room label and finish it already shows, and the hint line shows the lesson title, the current step number out of the step count, and that step's computed `do` line - never the note, which is commentary for a reader rather than an instruction for a learner mid-room.",
   "reads": "the page must READ and never copy: the room label from the strand, the station name from D.stations, the seat name, scenario name and walkaround point from D.sims, the advisor and crew role names and the exact topic wording from D.advisors and D.crews, and the condition line for a placard step from the same condOf()/condLine() pair the hint line already uses. This registry stores ids for all of those on purpose.",
   "steps": "render the steps in the order given, numbered. A step is marked done by the learner, in this browser only. A step is never enforced: the page must let somebody do step four first, because the building does, and a lesson that could trap a learner in a room would be a gate wearing a lesson's clothes.",
-  "records": "a step whose `records` is a string writes exactly that episode kind through the training recorder that already exists, with no new field and no new storage key. A step whose `records` is null writes nothing - the page must not invent an episode for it. The walk episode is the one declared walk kind: it is written only when the position of the learner (not a probe) enters the named room, never from a probe, and it finishes no lesson by itself.",
+  "records": "a step whose `records` is a string writes exactly that episode kind through the training recorder that already exists, with no new field and no new storage key. A step whose `records` is null writes nothing - the page must not invent an episode for it (no step kind is null today). The walk episode is the one declared walk kind: it is written only when the position of the learner (not a probe) enters the named room, never from a probe, and it finishes no lesson by itself. A station episode is written only on a correct pick on the quiz of the named station, and a crib episode only when the check of the named district ends with every pick right; a wrong pick, a failed check or a station or crib no lesson of the hall names writes nothing.",
   "ladder": "render a lesson's prerequisites as named links with the edge reason shown. Do not disable a lesson whose prerequisites are unfinished: the ladder is advice about order and the registry says so, and enforcing it in the page would turn it into the gate this pack promises it is not.",
   "limits": "the `limits` sentence renders with the lesson, not behind a disclosure control, and not only at the end. A learner who is told what a lesson does not mean only after finishing it has already formed the belief the sentence exists to prevent.",
-  "episode": "nothing about opening, reading or abandoning a lesson is recorded. The only episodes that reach the training log are the six the step kinds declare, written by the recorder that was already writing them."
+  "episode": "nothing about opening, reading or abandoning a lesson is recorded. The only episodes that reach the training log are the eight the step kinds declare, written by the recorder that was already writing them."
  },
  "reads": [
   "agents/registry/advisors.json",

@@ -168,6 +168,12 @@ def ev_text(e):
     return f'station <code>{esc(e["station"])}</code> ({esc(e["station_name"])}) done'
 
 
+# MODULE-LINK BEGIN (wave 21, LINKS2): every work site links to the module of its district (the Courses page card);
+# the targets are read from modules/registry/modules.json by web/modulelinks.py, fail closed.
+import modulelinks  # noqa: E402
+WS_MOD = modulelinks.worksite_hrefs(ROOT)
+WS_MOD_LABEL = modulelinks.worksite_label(ROOT)
+# MODULE-LINK END
 def site_section(s):
     d = s['derived']
     roles = ''.join(
@@ -197,7 +203,7 @@ def site_section(s):
 <h2>{esc(s["title"])} <span class="status">authored scenario</span></h2>
 <p class="purpose">{esc(s["job"])}</p>
 <p class="serves">Place: <b data-place-kind="{esc(s["place"]["kind"])}">{esc(s["place"]["kind"])}</b> <code>{esc(s["place"]["id"])}</code>{place_link} · Crew: <b data-crew="{esc(s["crew"]["id"])}">{esc(s["crew"]["name"])}</b> on seat <code>{esc(s["crew"]["seat"])}</code>
- · <span data-crew-page="none">no crew page exists in this bundle</span> · <a href="{LESSONS_HREF}" data-lessons>lessons</a></p>
+ · <span data-crew-page="none">no crew page exists in this bundle</span> · <a href="{LESSONS_HREF}" data-lessons>lessons</a> · <a class="module-link-in" href="{esc(WS_MOD[s["id"]])}" data-module-link>{esc(WS_MOD_LABEL)}</a></p>
 <div class="figs">
  <div class="fig"><b data-site-fig="roles">{d["roles"]}</b><span>roles</span></div>
  <div class="fig"><b data-site-fig="unions">{len(d["unions"])}</b><span>unions</span></div>

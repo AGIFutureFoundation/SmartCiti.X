@@ -218,6 +218,25 @@
     "dwell_ms": 5250
    },
    {
+    "t": "2026-09-26T03:00:08.000Z",
+    "kind": "station",
+    "campus": "treasure-island",
+    "hall": "painters",
+    "where": "fixture-strand",
+    "station": "fixture-station",
+    "station_name": "Fixture Station"
+   },
+   {
+    "t": "2026-09-26T03:00:09.000Z",
+    "kind": "crib",
+    "campus": "treasure-island",
+    "hall": "painters",
+    "where": "tools",
+    "crib": "fixture-crib",
+    "crib_name": "Fixture Crib",
+    "picks": 5
+   },
+   {
     "t": "2026-09-26T03:01:00.000Z",
     "kind": "world-teleop",
     "v": 1,
@@ -444,8 +463,10 @@
   "episode_counts_by_kind": {
    "advisor": 1,
    "crew": 1,
+   "crib": 1,
    "placard": 1,
    "sim": 3,
+   "station": 1,
    "walk": 1,
    "walkaround": 1,
    "world-teleop": 2
@@ -505,6 +526,25 @@
     "room",
     "dwell_ms"
    ],
+   "station": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "station",
+    "station_name"
+   ],
+   "crib": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "crib",
+    "crib_name",
+    "picks"
+   ],
    "walkaround": [
     "t",
     "kind",
@@ -556,6 +596,6 @@
  "digest": {
   "alg": "SHA-256",
   "over": "canonical JSON of every top-level field except digest, with contributor.signature forced to null: keys sorted recursively, no whitespace, UTF-8",
-  "hex": "cf658e36404ed510f92a12c11073d9b282976824cd2e5d18755de21ff10ae08e"
+  "hex": "5b120e18a71a7bc3687581bbe77e8e6fad11e057ec9425e7a8ffebf3b7818487"
  }
 }

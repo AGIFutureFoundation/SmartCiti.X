@@ -15,7 +15,7 @@ That fork already exists in `meta/registry/metaverse.json`, RECORDED and
 cross-checked on every build. This pack cites it; it does not claim it.
 not a native Unity ML-Agents .demo (protobuf) file - this bundle has never produced or tested one, and does not claim to. exporting this file trains nothing by itself: no agent exists in this bundle and none is claimed to, until one is actually trained against this data outside it
 
-## 6 episode kinds
+## 8 episode kinds
 
 | Kind | What it is | Fields | Granularity |
 |---|---|---|---|
@@ -24,6 +24,8 @@ not a native Unity ML-Agents .demo (protobuf) file - this bundle has never produ
 | **crew** | one crew role asked one question while its seat was running | t, kind, campus, hall, crew, role, topic, answer_kind, seat, muster | one exchange with one role of one crew: which crew was standing, which role was asked, which fixed topic, which seat and muster strand that crew is bound to in the crews registry, and whether the answer was read from a record or written in the crews registry |
 | **walk** | one lesson-target room entered on foot | t, kind, campus, hall, where, room | one event: the walker's position entered the rectangle of one room of one hall that a lesson names as a walk target. No coordinates, no path, no dwell: arriving is all it states |
 | **placard** | one door placard panel opened and left open for its dwell | t, kind, campus, hall, where, room, dwell_ms | one event: the placard panel of one room stayed open for at least the declared dwell while the walker stood in that room. `dwell_ms` is the measured open time, floored at the declared minimum by construction |
+| **station** | one training station quiz answered correctly at its bench | t, kind, campus, hall, where, station, station_name | one event: the quiz of one training station, opened at its bench, was answered with the correct option. Nothing about the other options picked first, the time taken or the checklist is kept: a correct pick is all it states |
+| **crib** | one district crib check passed | t, kind, campus, hall, where, crib, crib_name, picks | one event: the district crib check was finished with every one of its picks right. A failed run records nothing; `picks` is the number right, floored at the declared number of picks by construction |
 | **walkaround** | one pre-shift walkaround point checked | t, kind, campus, hall, sim, point | one point marked - not a score, the same habit the sim registry already declares is not a gate |
 
 ## Walk and placard episodes: a position and a panel, nothing more
@@ -36,10 +38,10 @@ room's placard panel stayed open, with the walker still in the room, for at leas
 **5000 ms** — a placard is a short board - the PPE a room lists, read one item to a line. Five seconds with the panel open and the walker in the room is long enough to read a board of that length and short enough that a learner who means to read it is never kept waiting. It is a floor on open time, not a measure of reading: nothing here can tell reading from looking away.
 Opened by clicking or tapping the door placard in the room, or pressing E while standing in a room that has one and within the label registry's declared read distance of it.
 
-- **De-duplicated.** one episode per (kind, hall, where) while an earlier one is still in the log: re-entering a room or re-opening a placard adds nothing, so a learner cannot pad the log and the log cannot crowd out the simulator episodes it exists to keep
+- **De-duplicated.** one episode per (kind, hall, where) while an earlier one is still in the log: re-entering a room or re-opening a placard adds nothing, so a learner cannot pad the log and the log cannot crowd out the simulator episodes it exists to keep. A station is deduped on its station id and a crib on its district, for the same reason
 - **Probes record nothing.** a scripted probe stepping the walker (wkSilent) records no walk or placard episode: only a walker the learner is driving does
-- **Proves.** that this device recorded the event it names: a walker's position inside a room's rectangle, or a panel open for a dwell with the walker in the room.
-- **Does not prove.** competence, attention, comprehension, that anybody read the sign, that the learner is the person named in an export, or that any real room or placard exists - the halls are SCHEMATIC. A lesson stays unverified general practice and certifies nobody.
+- **Proves.** that this device recorded the event it names: a walker's position inside a room's rectangle, a panel open for a dwell with the walker in the room, a correct pick on a station quiz, or a crib check finished with every pick right.
+- **Does not prove.** competence, attention, comprehension, that anybody read the sign or the checklist, that a station pick was not found by trying every option, that a crib pick was not guessed or learned by repetition, that the learner is the person named in an export, or that any real room or placard exists - the halls are SCHEMATIC. A lesson stays unverified general practice and certifies nobody.
 
 ## Who drove the seat: `actor`, and the SCRIPTED tier
 

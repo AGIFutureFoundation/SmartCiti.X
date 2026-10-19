@@ -7705,7 +7705,57 @@ window.__tc3dXR = {
     head: camera.position.toArray().map((v) => Math.round(v * 1000) / 1000),
     eye: eyePos().toArray().map((v) => Math.round(v * 1000) / 1000),
     input: xrStat.lastInput }),
-};"""
+};
+/* XR-SEATS BEGIN
+   A read-and-advise hook for the MOCKED session harness (xr/session_harness.mjs,
+   --seats): it lets the harness put the other ten seats through the controller
+   map. `begin` builds a SCRIPTED coach for the seat now running - the same
+   reference policy and the same context the A button watches (opAttach) - but
+   it is never attached as opRun: `next` only RETURNS the keys and the Space
+   verb the policy would press for the seat's current gauges, and the harness
+   writes them onto the mocked controllers' thumbsticks, grip and trigger. The
+   seat then sees ordinary controller input through xrInput, so a result is a
+   run the controllers made, recorded as a human run on this device; the policy
+   behind the sticks is SCRIPTED, not a person. It adds no input the HUD's watch
+   button does not already have, and no physical headset has run any of it. */
+const xrCoach = { c: null, t: 0 };
+window.__tc3dCoach = {
+  begin(level = 'optimal', seed = 1) {
+    const def = D.sims.sims[curSimId], op = OPERATORS[curSimId];
+    if (!sim || !op || !def.operator.levels.includes(level)) return null;
+    const proc = def.operator.procedure, scenario = curScenario?.id ?? null;
+    // a fresh result panel: the last seat's must not read as this one's
+    document.getElementById('pbody').innerHTML = '';
+    document.body.classList.remove('open');
+    xrCoach.t = performance.now();
+    xrCoach.c = { sim: curSimId, level, seed, scenario, sweep: false, def, fixedDt: null,
+      P: curScenario?.params ?? {}, L: op.levels[level], m: { phase: 0 },
+      step: 0, dt: 1 / 60, result: null,
+      rng: opRng(curSimId + ':' + scenario + ':' + level + ':' + seed),
+      next() { this.m.phase++; },
+      goto(pid) { this.m.phase = proc.findIndex((p) => p.id === pid); },
+      get id() { return proc[this.m.phase]?.id ?? null; } };
+    return { sim: curSimId, scenario, level, phases: proc.length };
+  },
+  next() {
+    const c = xrCoach.c; if (!c || !sim) return null;
+    const now = performance.now(); c.dt = (now - xrCoach.t) / 1000; xrCoach.t = now;
+    const out = OPERATORS[c.sim].step(sim.gauges(), c) ?? {};
+    c.step++;
+    return { keys: OP_KEYS.filter((k) => out.keys && out.keys[k]), act: !!out.act, phase: c.id };
+  },
+  // the seat's own result panel is open and names this seat
+  done() {
+    const h = document.getElementById('pbody').querySelector('h2');
+    return !!sim && document.body.classList.contains('open') && !!h && h.textContent === D.sims.sims[curSimId].name;
+  },
+  state() {
+    const c = xrCoach.c;
+    return c ? { sim: c.sim, phase: c.id, phaseIdx: c.m.phase, phases: c.def.operator.procedure.length, step: c.step } : null;
+  },
+  end() { xrCoach.c = null; },
+};
+/* XR-SEATS END */"""
 
 page = '''<!doctype html>
 <html lang="en">
@@ -15559,6 +15609,62 @@ window.__tc3dStepEpisode = {
 };
 /* STEP-EPISODE END */
 
+/* STATION-EPISODE BEGIN (wave 21): the station and crib episodes.
+   A lesson's station and crib steps left only a mark in the device-local progress record (tc-progress.stations and
+   tc-progress.tools), which is a mark and not an episode, so a lesson that held one could not be verified by episode.
+   Two small events fix that, written at the moment the page already writes that mark and with no new storage key,
+   toggle or cap:
+     station - the quiz of a training station, opened at its bench, is answered with its correct option;
+     crib    - the district crib check ends with every pick right.
+   Which stations and cribs count is READ from D.lessons for this hall - no other is recorded, so the rolling cap is not
+   spent on stations nobody's lesson asks for. A wrong pick or a failed check records nothing, and an episode already in
+   the log for the same station (or the same hall's crib) is not added again. An episode proves a device recorded a
+   correct pick or a passed check; it does not prove anyone read the checklist, understood it, or did not find the
+   answer by trying every option (D.training.step_episodes.does_not_prove). */
+function stationTargets() {
+  const out = new Set();
+  for (const L of Object.values(D.lessons.lessons))
+    if (L.hall === slug) for (const st of L.steps) if (st.kind === 'station') out.add(st.station);
+  return out;
+}
+function cribTargets() {
+  const out = new Set();
+  for (const L of Object.values(D.lessons.lessons))
+    if (L.hall === slug) for (const st of L.steps) if (st.kind === 'crib') out.add(st.crib);
+  return out;
+}
+function stationLogged(id) {
+  return trainingLog.some((e) => e && e.kind === 'station' && e.hall === slug && e.station === id);
+}
+function cribLogged(dk) {
+  return trainingLog.some((e) => e && e.kind === 'crib' && e.hall === slug && e.crib === dk);
+}
+function stationPicked(id) {
+  if (view !== 'hall') return;
+  const s = D.stations[id];
+  if (!s || !stationTargets().has(id) || stationLogged(id)) return;
+  recordEpisode({ kind: 'station', campus: campusKey, hall: slug,
+    where: s.strand, station: id, station_name: s.name });
+}
+function cribPassed(dk, picks) {
+  if (view !== 'hall') return;
+  const c = D.tools.cribs[dk];
+  if (!c || !cribTargets().has(dk) || cribLogged(dk)) return;
+  recordEpisode({ kind: 'crib', campus: campusKey, hall: slug,
+    where: 'tools', crib: dk, crib_name: c.name, picks: picks });
+}
+/* a harness hook, like __tc3dStepEpisode: open a station's panel or a crib's panel through the page's own openers (the
+   quiz and the drill are then answered by real clicks), and read what the recorder holds. It records nothing itself. */
+window.__tc3dStationEpisode = {
+  targets: () => ({ station: [...stationTargets()], crib: [...cribTargets()] }),
+  openStation: (id) => openStation(id),
+  openCrib: (dk) => openCrib(dk),
+  stationsHere: () => D.halls.find((x) => x.slug === slug).stations.slice(),
+  district: () => D.halls.find((x) => x.slug === slug).district,
+  log: () => trainingLog.map((e) => ({ ...e })),
+};
+/* STATION-EPISODE END */
+
 /* ---------------------------------------------- Orbis synthetic-training
    prompts. Text only, built locally from the union registry this page
    already ships - no key, no fetch, no socket, ever. A clip made from one
@@ -16532,6 +16638,7 @@ function drillEnd() {
   rec.runs = (rec.runs ?? 0) + 1;
   if (passed) { rec.passed = true; rec.best = Math.min(rec.best ?? Infinity, secs); }
   prog.tools[curCrib] = rec; saveProg(); renderChrome();
+  /* STATION-EPISODE BEGIN */ if (passed) cribPassed(curCrib, drill.right); /* STATION-EPISODE END */
   if (view === 'hall') document.getElementById('hname').textContent =
     D.halls.find((x) => x.slug === slug).name + scoreChip();
   chime(passed); buzz(passed ? 160 : 80, .5);
@@ -16817,6 +16924,7 @@ document.addEventListener('click', (e) => {
       o.classList.toggle('ok', o.dataset.ok === '1'));
     if (opt.dataset.ok !== '1') opt.classList.add('bad');
     else if (curStation) { doneStations.add(curStation); saveProg();
+      /* STATION-EPISODE BEGIN */ stationPicked(curStation); /* STATION-EPISODE END */
       const el = document.getElementById('hname');
       const h = D.halls.find(x => x.slug === slug);
       if (view === 'hall') el.textContent = h.name + scoreChip(); } }

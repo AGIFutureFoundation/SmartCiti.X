@@ -66,6 +66,16 @@
     "seat",
     "muster"
    ],
+   "crib": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "crib",
+    "crib_name",
+    "picks"
+   ],
    "placard": [
     "t",
     "kind",
@@ -86,6 +96,15 @@
     "actor",
     "operator",
     "outcome"
+   ],
+   "station": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "station",
+    "station_name"
    ],
    "walk": [
     "t",

@@ -381,7 +381,7 @@ function report(result) {
   lines.push({ err: false, text: `signature: ${signature.line}` });
   lines.push({ err: false, text: `summary: ${summary.nComplete} lessons complete, of which ${summary.nFullyBacked} fully evidence-backed `
     + `(every step episode-backed); across them ${summary.nEpisode} episode-backed steps, `
-    + `${summary.nDeviceMark} device-mark steps (station/crib: a device-local mark, not a recorded episode), `
+    + `${summary.nDeviceMark} device-mark steps (none today; a device-local mark, not a recorded episode), `
     + `${summary.nSelfReported} self-reported steps counted as done` });
   lines.push({ err: false, text: LAST_LINE });
   return lines;
