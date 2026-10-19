@@ -2,7 +2,7 @@
  "pack": "smartcitix-robotics-claw",
  "name": "Omega Claw",
  "schema": "claw/1",
- "source_stamp": "ba4f0cdedfaf8def",
+ "source_stamp": "ee64e9d865ec0ef3",
  "source_stamps": {
   "robotics/claw/authored/claw.json": "21179e68af6646dd",
   "robotics/registry/robotics.json": "404c0eaf05ee733d",
@@ -12,7 +12,7 @@
   "hive/registry/hive.json": "8ea7563bca70a5f9",
   "tasks/registry/tasks.json": "627d484b5f0b6eb3",
   "lessons/registry/lessons.json": "e905659b0a718ab6",
-  "stations/registry/stations.json": "8e6e5c419ff25e7e",
+  "stations/registry/stations.json": "022ee047b40292a0",
   "restoration/registry/scenarios.json": "cde5368260c2d61f",
   "robotics/claw/core.mjs": "253ed458f2ae11e5",
   "robotics/claw/node.mjs": "a2e5f1cd0dbe0f79",

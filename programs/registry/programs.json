@@ -1,7 +1,7 @@
 {
  "pack": "smartcitix-programs",
  "schema": "programs/1",
- "source_stamp": "b46f6f0e4539391f",
+ "source_stamp": "3489aca63798d8c8",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "sources": [
   {
@@ -18,7 +18,7 @@
   },
   {
    "path": "courses/registry/courses.json",
-   "sha256": "f715960ce8d25c67547d3122bce4ad5e09dfdbbed7b31d85dd460db31f4945bf"
+   "sha256": "fb45246055b5c7d700c1db8d26253b2914b12142611421d05b0fe65e1a006fb4"
   },
   {
    "path": "lessons/registry/lessons.json",

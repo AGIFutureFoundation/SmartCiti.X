@@ -6,7 +6,7 @@ Gamified training to enhance robotic and human integrations.
 The Adaptive Stack: the packs implementing the ACP protocol suite (v3.2) —
 counted, like everything else here, by the table below rather than by a
 number that can drift from it.
-**7,201 checks, all passing from inside this bundle**, with no model credentials
+**7,388 checks, all passing from inside this bundle**, with no model credentials
 
 required.
 
