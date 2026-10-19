@@ -29,16 +29,18 @@ check('[cull] the built set is snapshotted once, at the end of refillFabric, and
 check('[cull] the eval\'s counts are the BUILT instances: stats instances, kit, kitUse and the elevation audit read the snapshot, never the culled mesh count',
   main.includes('block: blocks.visible ? fabBuilt(houses) + fabBuilt(blocks) : 0, tree: trees.visible ? fabBuilt(trees) : 0, lamp: lamps.visible ? fabBuilt(lamps) : 0')
   && main.includes('[k, m.visible ? fabBuilt(m) : 0]') && main.includes('i < fabBuilt(m); i++) c[Math.floor(a[i] + 0.01)]++')
-  && main.includes('i < fabBuilt(m) && drawn.length < n; i++) { const f = fabFam(m);') && main.includes('drawn: { ...FAB.drawn }'));
+  && main.includes('i < fabBuilt(m) && drawn.length < n; i++) { const f = fabFam(m);') && main.includes('drawn: { ...FAB.drawn, npc: FABG.drawn }'));
 check('[cull] no ceiling, target or eval threshold is in the block (a cull that only removes what cannot be seen)',
   !/MS_HEADROOM|CALL_HEADROOM|TRI_HEADROOM|FABRIC_FLOOR|BASE\[/.test(blk) && blk.includes('DIAG.noCull') && /< -r\)/.test(blk));
 
+check('[cull] the guides\' copy step runs once per frame, after perfCull has set the guides\' visibility and right before the draw',
+  (main.match(/fabNpc\(over\);/g) || []).length === 1 && /perfCull\(over\);[\s\S]*?\n  fabNpc\(over\);   \/\/ FABRIC-CULL \(after perfCull\)\n  const t0 = performance\.now\(\); if \(!DIAG\.noRender && ovNeedsRender\(now\)\) renderer\.render\(scene, camera\);/.test(main));
 // [behaviour] the real block on the real three.js (without the block there is nothing to run)
 if (!blk) { console.log(`test_rendercull: ${fails} FAIL, ${oks} ok (no FABRIC-CULL block in the parish page)`); process.exit(1); }
 const N = 900;
 function rig() {
   const cam = new THREE.PerspectiveCamera(62, 1.6, 0.3, 60000);
-  const DIAG = {};
+  const DIAG = {}, scene = new THREE.Scene();
   const mk = (name, kit) => {
     const g = new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0);
     if (kit) g.setAttribute('kitUse', new THREE.InstancedBufferAttribute(new Float32Array(N), 1));
@@ -56,9 +58,9 @@ function rig() {
       if (m.geometry.attributes.kitUse) m.geometry.attributes.kitUse.array[i] = i % 3;
     }
   }
-  const api = new Function('THREE', 'houses', 'blocks', 'trees', 'lamps', 'camera', 'DIAG', blk + '\nreturn { FAB, fabSnapshot, fabCull, fabBuilt, fabFam };')(THREE, houses, blocks, trees, lamps, cam, DIAG);
+  const api = new Function('THREE', 'houses', 'blocks', 'trees', 'lamps', 'camera', 'DIAG', 'scene', blk + '\nreturn { FAB, FABG, fabSnapshot, fabCull, fabNpc, fabBuilt, fabFam };')(THREE, houses, blocks, trees, lamps, cam, DIAG, scene);
   const look = (x, y, z, yaw, pitch = 0) => { cam.position.set(x, y, z); cam.rotation.set(pitch, yaw, 0, 'YXZ'); cam.updateMatrixWorld(); cam.matrixWorldInverse.copy(cam.matrixWorld).invert(); };
-  return { cam, DIAG, houses, blocks, trees, lamps, api, look };
+  return { cam, DIAG, scene, houses, blocks, trees, lamps, api, look };
 }
 const idxOf = (m, j) => Math.round(m.instanceColor.array[j * 3] * N);   // the red channel is the built index (Float32: exact to 1e-7)
 {
@@ -136,6 +138,49 @@ const idxOf = (m, j) => Math.round(m.instanceColor.array[j * 3] * N);   // the r
   const R = rig(); R.api.fabSnapshot(); R.look(0, 1.7, 0, 0, Math.PI / 2 - 0.01);   // straight up: nothing of a flat lot grid at ground level is in view
   R.api.fabCull(false);
   check('[cull] looking at the sky draws (almost) nothing while the built counts stay', R.houses.count < N * 0.1 && R.api.fabBuilt(R.houses) === N, `${R.houses.count}`);
+}
+
+// the guides' copy meshes
+{
+  const R = rig(), G = 200, parts = [];
+  const M = new THREE.Matrix4(), V = new THREE.Vector3(), S = new THREE.Vector3(), Q = new THREE.Quaternion(), C = new THREE.Color();
+  for (const [pi, name] of ['torso', 'legs', 'head', 'hat', 'vest'].entries()) {
+    const m = new THREE.InstancedMesh(new THREE.BoxGeometry(0.4, 0.6, 0.3), new THREE.MeshStandardMaterial(), G); m.userData.npcPart = name; m.count = G;
+    for (let i = 0; i < G; i++) {
+      const ang = i * 2.399, rad = 30 + (i * 37) % 900;
+      M.compose(V.set(Math.cos(ang) * rad, 1.2, Math.sin(ang) * rad), Q.identity(), S.set(1, 1, 1).multiplyScalar(pi === 3 && i % 2 ? 0 : 1)); m.setMatrixAt(i, M); m.setColorAt(i, C.setRGB(i / G, pi / 5, 0.2));
+    }
+    R.scene.add(m); parts.push(m);
+  }
+  // a hive avatar part (named) must be left alone
+  const hive = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshStandardMaterial(), 4); hive.userData.npcPart = 'hair'; hive.name = 'agent-avatar:hair'; R.scene.add(hive);
+  R.api.fabSnapshot(); R.look(0, 1.7, 0, 0.5); R.api.fabCull(false); parts.forEach((m) => { m.visible = true; }); R.api.fabNpc(false);
+  const ghosts = R.scene.children.filter((c) => c.name === 'npc-view');
+  const fr = new THREE.Frustum().setFromProjectionMatrix(new THREE.Matrix4().multiplyMatrices(R.cam.projectionMatrix, R.cam.matrixWorldInverse));
+  let miss = 0, extra = 0, inside = 0;
+  parts.forEach((m, pi) => {
+    const g = ghosts[pi], drawn = new Set(); for (let j = 0; j < g.count; j++) drawn.add(Math.round(g.instanceColor.array[j * 3] * G));
+    m.geometry.computeBoundingSphere();
+    for (let i = 0; i < G; i++) {
+      const Mx = new THREE.Matrix4().fromArray(m.instanceMatrix.array, i * 16), sp = new THREE.Sphere().copy(m.geometry.boundingSphere).applyMatrix4(Mx), flat = Math.hypot(sp.center.x, sp.center.z);
+      const zero = Mx.elements[0] === 0; const should = !zero && fr.intersectsSphere(sp) && flat < 600 - 1;
+      if (should) { inside++; if (!drawn.has(i)) miss++; }
+      let loose = 0; for (const pl of fr.planes) loose = Math.max(loose, -pl.distanceToPoint(sp.center) - sp.radius);
+      if (drawn.has(i) && (zero || flat > 600 + 5 || loose > 4 + 0.025 * Math.hypot(sp.center.x, sp.center.y, sp.center.z) + 0.5)) extra++;
+    }
+  });
+  check('[cull] guides: five copy meshes replace the five part meshes (same call count); the sources are hidden while the copies draw, the hive avatar part is left alone',
+    ghosts.length === 5 && parts.every((m) => m.visible === false) && ghosts.every((g) => g.visible) && hive.visible && R.scene.children.filter((c) => c.name === 'npc-view').length === 5);
+  check('[cull] guides: every guide part touching the frustum within 600 m is drawn, none beyond 600 m or without a part (zero scale) is, and far fewer are drawn than built',
+    inside > 20 && miss === 0 && extra === 0 && R.api.FABG.drawn < 5 * G * 0.5 && R.api.FABG.drawn === ghosts.reduce((a, g) => a + g.count, 0), `${miss} missing of ${inside}, ${extra} extra, drawn ${R.api.FABG.drawn}`);
+  R.api.fabNpc(false);
+  check('[cull] guides: a second frame hides the sources again (perfCull sets them visible each frame)', parts.every((m) => m.visible === false));
+  parts.forEach((m) => { m.visible = true; }); R.DIAG.noCull = true; R.api.fabNpc(false);
+  check('[cull] guides: DIAG.noCull draws the guides\' own meshes and hides the copies', parts.every((m) => m.visible) && ghosts.every((g) => !g.visible));
+  R.DIAG.noCull = false; parts.forEach((m) => { m.visible = false; }); R.api.fabNpc(true);
+  check('[cull] guides: in the overview (sources hidden by perfCull) the copies are hidden too', ghosts.every((g) => !g.visible));
+  for (const m of parts) R.scene.remove(m); R.api.fabNpc(false);
+  check('[cull] guides: when the guides are disposed their copies are removed from the scene (no orphan draw)', R.scene.children.filter((c) => c.name === 'npc-view').length === 0 && R.api.FABG.src.length === 0);
 }
 console.log(fails ? `test_rendercull: ${fails} FAIL, ${oks} ok` : `test_rendercull: ${oks} ok`);
 process.exit(fails ? 1 : 0);

@@ -617,6 +617,10 @@ for _k in RECORDING_KINDS:
     _ep = need(need(_EP_KINDS, _KINDS[_k]['records'], 'training.json#episode_kinds'), 'fields',
                'training.json#episode_kinds[%s]' % _KINDS[_k]['records'])
     _refs = sorted(_STEP_REFS.get(_k, set()) | {'hall'})
+    # wave 20: an episode that records `where` (walk, placard) makes the step's own `where` a reference too, exactly as
+    # completion/build.py derives it, so a step is matchable only if the episode also records the room it names
+    if 'where' in _ep:
+        _refs = sorted(set(_refs) | {'where'})
     MATCHABILITY[_k] = {'episode': _KINDS[_k]['records'],
                         'step_references': _refs,
                         'episode_fields': list(_ep),

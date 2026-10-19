@@ -290,6 +290,20 @@ function verify(record, sha256hex, recoverAddress) {
             const got = need(ev, f, `${lid} step ${n} evidence`);
             check('step.episode-evidence', got === want, `${lid} step ${n}: episode ${f} ${JSON.stringify(got)} is not the step's ${JSON.stringify(want)}`);
           }
+          // wave 20: the room label a walk or placard episode records must be one the step itself names, and a numeric the
+          // episode records (a placard's dwell_ms) must meet the minimum the registry declares. Both are read from the
+          // evidence rule, fail closed (need), and are no more than equality plus a floor: nothing above is loosened.
+          const nrf = need(rule, 'names_read_field', `evidence_rule.${kind}`);
+          if (nrf !== null) {
+            const gotName = need(ev, nrf, `${lid} step ${n} evidence`);
+            check('step.episode-evidence', Array.isArray(known_step.names_read) && known_step.names_read.includes(gotName),
+              `${lid} step ${n}: episode ${nrf} ${JSON.stringify(gotName)} is not one of the step's names_read ${JSON.stringify(known_step.names_read)}`);
+          }
+          for (const [f, floor] of Object.entries(need(rule, 'at_least', `evidence_rule.${kind}`))) {
+            const gotNum = need(ev, f, `${lid} step ${n} evidence`);
+            check('step.episode-evidence', typeof gotNum === 'number' && Number.isFinite(gotNum) && gotNum >= floor,
+              `${lid} step ${n}: episode ${f} ${JSON.stringify(gotNum)} is not a finite number of at least the declared ${floor}`);
+          }
         }
       } else if (rule.class === 'device-mark' && done === true && ev !== null) {
         dmHere++;

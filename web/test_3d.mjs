@@ -2530,9 +2530,10 @@ ok('the wrist panel is cleared when the session ends, and the framebuffer scale 
 ok('a missing environmentBlendMode is closed by the mode asked for: alpha-blend for immersive-ar, opaque otherwise - never opaque over a passthrough room',
   /xrBlend = session\.environmentBlendMode \?\? \(mode === 'immersive-ar' \? 'alpha-blend' : 'opaque'\);/.test(fnCode('xrStart'))
   && !/environmentBlendMode \?\? 'opaque'/.test(code));
-ok('one truth on the XR layer, in the page\'s own words: joints read for gestures proven on synthetic positions, hands not rendered, every contract held at the source, no session mocked or real driven, a harness the next step and NOT claimed',
-  /No session - mocked or real - has been driven in this tree/.test(src)
-  && /mocked WebXR session harness[\s\S]{0,160}is the next step and is NOT claimed/.test(src)
+ok('one truth on the XR layer, in the page\'s own words: joints read for gestures proven on synthetic positions, hands not rendered, every contract held at the source, one seat driven in a MOCKED session in headless Chromium, no session on a physical headset driven',
+  /No session on a physical headset has been driven in this tree/.test(src)
+  && /MOCKED WebXR session in headless Chromium/.test(src)
+  && /Mocked half met, headset half not met/.test(src)
   && /hand joints are read, hands are not\s+rendered/.test(src)
   && !/proves the layer against a mocked/.test(src)
   && !/proven against a mocked/.test(src));

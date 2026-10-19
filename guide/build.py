@@ -65,16 +65,17 @@ HANDS, DECLARED AND UNVERIFIED. The page's own XR note says what the XR
 layer has and what it does not: hand JOINTS are read for four gestures
 proven against synthetic joint positions only, hands are not rendered, and
 no run on a physical headset - every XR contract is held at the source by
-regex, and no session, mocked or real, has been driven in this tree. This
-pack does not pretend otherwise.
+regex and, for one seat's controllers, by a MOCKED session in headless
+Chromium that supplies no hand input source; no session on a physical headset
+has been driven in this tree. This pack does not pretend otherwise.
 It declares the gestures a recogniser should implement - the joints, the
 distance measured, the threshold that fires it and the separate distance
 that releases it, so the thing that gets built is a declared gesture
 rather than an invented one - and it labels every distance in the table
 AUTHORED and the whole feature UNVERIFIED-ON-HARDWARE, because no headset
 has been available to this build, synthetic joint positions prove
-arithmetic and nothing about a real hand, and a mocked-session harness is
-the next step and is not claimed.
+arithmetic and nothing about a real hand, and the mocked session that now
+exists drives controllers, not hands.
 
 WHAT THE GUIDE IS NOT. Not an instructor, not a certification, not a code
 ruling, not a search box and not a chat: it cannot be asked an open
@@ -999,16 +1000,20 @@ HAND_HONESTY = {
               'this build, so not one of these gestures has been made by a '
               'real hand in a real session. The recogniser is proven '
               'against synthetic joint positions only; every XR contract '
-              'is held at the source by regex; no session, mocked or real, '
-              'has been driven in this tree, and a mocked-session harness '
-              'is not claimed.',
+              'is held at the source by regex; a MOCKED session in headless '
+              'Chromium drives one seat through its controllers but supplies '
+              'no hand input source, so no gesture has been driven in any '
+              'session, and no session on a physical headset has been '
+              'driven in this tree.',
     'mocked_only': 'synthetic joint positions fed through the recogniser '
                    'report whatever the test hands it, which proves the '
                    'arithmetic - the distances, the hysteresis, the hold '
                    'timers - and proves nothing whatever about tracking '
                    'quality, occlusion, latency, or whether a person can '
                    'comfortably hold the shape. No session, mocked or real, '
-                   'stands behind that arithmetic.',
+                   'stands behind that arithmetic: the mocked session in '
+                   'xr/test_session.mjs supplies controllers and no hand '
+                   'input source.',
     'declared_not_built': 'this table is a contract for the page to '
                           'implement, not a description of what the page '
                           'does today: its own XR note lists hand tracking '
@@ -1065,9 +1070,10 @@ HONESTY = {
     'hands': 'the hand gestures are declared, not proved: no headset has '
              'been available to this build; the recogniser is proven '
              'against synthetic joint positions only, every XR contract is '
-             'held at the source by regex, no session, mocked or real, has '
-             'been driven in this tree, and a mocked-session harness is '
-             'the next step and is not claimed.',
+             'held at the source by regex, a MOCKED session in headless '
+             'Chromium drives controllers only (no hand input source), and '
+             'no session on a physical headset has been driven in this '
+             'tree.',
 }
 
 PAGE_CONTRACT = {
@@ -1308,16 +1314,16 @@ assert sum(1 for g in GESTURES.values() if 'open this guide' in g['does']) == 1,
 
 # -- the hand claim is grounded in the page's own admission rather than in
 # -- this pack's good intentions
-assert 'No session - mocked or real - has been driven in this tree' in PAGE_SRC \
-    and 'is the next step and is NOT claimed' in PAGE_SRC, \
-    'the page no longer says no session, mocked or real, has been driven ' \
-    'and that a mocked-session harness is NOT claimed'
+assert 'No session on a physical headset has been driven in this tree' in PAGE_SRC \
+    and 'MOCKED WebXR session in headless Chromium' in PAGE_SRC, \
+    'the page no longer says that no session on a physical headset has been ' \
+    'driven and that the mocked session is a MOCKED one in headless Chromium'
 assert 'UNVERIFIED-ON-HARDWARE' in HAND_HONESTY['status'], \
     'the hand table must carry its unverified status in the status line'
 assert 'synthetic joint positions only' in HAND_HONESTY['status'] \
     and 'held at the source by regex' in HAND_HONESTY['status'] \
-    and 'no session, mocked or real, has been driven' in HAND_HONESTY['status'] \
-    and 'mocked-session harness is not claimed' in HAND_HONESTY['status'], \
+    and 'no session on a physical headset has been driven' in HAND_HONESTY['status'] \
+    and 'supplies no hand input source' in HAND_HONESTY['status'], \
     'the hand table must say what it WAS tested against and what is not claimed'
 for _blob in (HAND_HONESTY['status'], HAND_HONESTY['mocked_only'], HONESTY['hands']):
     assert not re.search(r'verified against a mocked|MOCKED WebXR session only|'

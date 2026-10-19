@@ -9,7 +9,7 @@
   "signature": {
    "scheme": "eip712-typed-data",
    "address": "0x0000000000000000000000000000000000000000",
-   "message": "I am naming this Ethereum account as the owner of the Trade Craft Academy training record kept in this browser. This signature does not log me in, does not reach any server, and protects nothing: this bundle has no backend.\ndigest: e236696f56257a37378e18a02d918f11c48058574dbd2851fc5dea049d59ea33\nexported_at: 2026-09-26T00:00:00Z",
+   "message": "I am naming this Ethereum account as the owner of the Trade Craft Academy training record kept in this browser. This signature does not log me in, does not reach any server, and protects nothing: this bundle has no backend.\ndigest: f0649fb61450ce412af3e31eda1e2bb33fd8bd66927eee9d775683ee04aea720\nexported_at: 2026-09-26T00:00:00Z",
    "sig": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
   }
  },
@@ -23,7 +23,13 @@
      "step": 1,
      "kind": "walk",
      "done": true,
-     "evidence": null
+     "evidence": {
+      "episode": "walk",
+      "t": "2026-09-26T03:00:01.000Z",
+      "hall": "riggers",
+      "where": "coordination",
+      "room": "Briefing Room"
+     }
     },
     {
      "step": 2,
@@ -72,7 +78,13 @@
      "step": 1,
      "kind": "walk",
      "done": true,
-     "evidence": null
+     "evidence": {
+      "episode": "walk",
+      "t": "2026-09-26T03:00:01.000Z",
+      "hall": "riggers",
+      "where": "machines",
+      "room": "Equipment Bay"
+     }
     },
     {
      "step": 2,
@@ -236,13 +248,26 @@
      "step": 1,
      "kind": "walk",
      "done": true,
-     "evidence": null
+     "evidence": {
+      "episode": "walk",
+      "t": "2026-09-26T03:00:01.000Z",
+      "hall": "welders",
+      "where": "safety",
+      "room": "Induction & PPE"
+     }
     },
     {
      "step": 2,
      "kind": "placard",
      "done": true,
-     "evidence": null
+     "evidence": {
+      "episode": "placard",
+      "t": "2026-09-26T03:00:02.000Z",
+      "hall": "welders",
+      "where": "safety",
+      "room": "Induction & PPE",
+      "dwell_ms": 5250
+     }
     },
     {
      "step": 3,
@@ -401,13 +426,26 @@
      "step": 1,
      "kind": "walk",
      "done": true,
-     "evidence": null
+     "evidence": {
+      "episode": "walk",
+      "t": "2026-09-26T03:00:01.000Z",
+      "hall": "scaffold",
+      "where": "safety",
+      "room": "Induction & PPE"
+     }
     },
     {
      "step": 2,
      "kind": "placard",
      "done": true,
-     "evidence": null
+     "evidence": {
+      "episode": "placard",
+      "t": "2026-09-26T03:00:02.000Z",
+      "hall": "scaffold",
+      "where": "safety",
+      "room": "Induction & PPE",
+      "dwell_ms": 5250
+     }
     },
     {
      "step": 3,
@@ -4490,7 +4528,8 @@
    "who the learner is: identity.claimed is typed by the person, attested by this device only, and nothing checks it - unless a wallet signed, in which case it is the identity of a key, not of a person; a stolen key signs just as well",
    "anything on any blockchain: a wallet signature is computed in the browser and carried in the file; nothing is written to any chain, nothing is anchored, and no one can look it up",
    "that the device was honest: a record can be written by hand and will verify if it is internally consistent",
-   "that a self-reported step (walk, placard) happened at all",
+   "that a walk or placard episode means more than it says: it records that a device saw the walker's position inside a room, or a placard panel left open for its dwell with the walker in that room - not that anyone read, understood or took on what the placard requires, and not that the room exists outside this bundle",
+   "that a self-reported step happened at all (no step kind is self-reported today; the rule stays so one that is added cannot carry evidence it does not have)",
    "a station or crib mark is a device-local mark, not a recorded episode",
    "that the seat was passed under supervision, or that any score means anything outside this bundle",
    "any accreditation, ticket, licence or credential; no hall, employer or authority has signed anything",
@@ -4500,6 +4539,6 @@
  "digest": {
   "alg": "SHA-256",
   "over": "canonical JSON of every top-level field except digest, with identity.signature forced to null: keys sorted recursively, no whitespace, UTF-8",
-  "hex": "e236696f56257a37378e18a02d918f11c48058574dbd2851fc5dea049d59ea33"
+  "hex": "f0649fb61450ce412af3e31eda1e2bb33fd8bd66927eee9d775683ee04aea720"
  }
 }

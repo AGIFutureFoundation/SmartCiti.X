@@ -226,6 +226,8 @@ def sessions_of(training, gap_ms):
             cur['advisor_exchanges'] += 1
         elif kind == 'crew':
             cur['crew_exchanges'] += 1
+        elif kind in ('walk', 'placard'):
+            pass   # wave 20: counted in by_kind (and could_advance); nothing about a room entered or a panel opened is tallied further
         else:
             raise ValueError(f'episode {i}: unknown kind {kind!r}')
     for s in sessions:
@@ -347,6 +349,9 @@ def build_fixture():
                 controls=FIX_CONTROLS, actor=HUMAN_ACTOR,
                 outcome={'passed': True, 'rows': rows_for(FIX_SIM, True, 61.5),
                          'trace': [{'t': i * 1000, 'gauges': synthetic_gauges(i)} for i in range(4)]}),
+        episode('walk', iso(t0 + 20 * S), campus=FIX_CAMPUS, hall=FIX_HALL, where='fixture-strand', room='Fixture Room'),
+        episode('placard', iso(t0 + 40 * S), campus=FIX_CAMPUS, hall=FIX_HALL, where='fixture-strand', room='Fixture Room',
+                dwell_ms=5250),
         episode('advisor', iso(t3), campus=FIX_CAMPUS, hall=FIX_HALL, advisor='fixture-advisor', topic='fixture-topic',
                 answer_kind='record'),
         episode('sim', iso(t4), campus=FIX_CAMPUS, hall=FIX_HALL, sim=FIX_SIM, scenario=FIX_SCENARIO['id'],

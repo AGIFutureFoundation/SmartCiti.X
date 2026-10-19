@@ -14,8 +14,10 @@ bundle's own registries require of a hall and its rooms beside what a
 3. **Read each hall the record touches**: its hazards, every room's required
    protective equipment and placard, the record's lessons step by step, the
    seats, and the hall's sign-off status.
-4. **Read the class on every line** - `episode-backed`, `device-mark`, `self-reported`. A walk or placard step is the
-   learner's word and is reported as such.
+4. **Read the class on every line** - `episode-backed`, `device-mark`, `self-reported`. A walk or placard step is
+   evidenced only as a device event - a walker's position in the room, or a
+   placard panel left open for its dwell with the walker in the room - and the
+   report never says the placard was read or its requirements met.
 5. **Read the totals line and the last line.** The ledger names no
    jurisdiction; a real deployment brings its own.
 
@@ -33,7 +35,7 @@ On the completion pack's own fixture record:
 
 ```text
 $ node compliance/verify.mjs completion/fixture/good.json
-compliance report: 3 halls touched by this record (of 111); ledger built 2026-09-26, stamp 8a4ceed33db622e1
+compliance report: 3 halls touched by this record (of 111); ledger built 2026-09-26, stamp 9c72ddb44180716e
 
 hall riggers (Riggers & Signalpersons) — lesson riggers-first-card, lesson riggers-carry-under-control, seat rigging-signals passed, seat crane-lift passed
   hazards: suspended-load; hazard rooms: materials
@@ -46,12 +48,12 @@ hall riggers (Riggers & Signalpersons) — lesson riggers-first-card, lesson rig
   room inspection [no hazard] PPE: safety glasses — placard hung — not-evidenced (a room requirement is the bundle's fact; no record field carries it)
   room troubleshooting [no hazard] PPE: safety boots, safety glasses — placard hung — not-evidenced (a room requirement is the bundle's fact; no record field carries it)
   lesson riggers-first-card: complete in the record; placard step in every hazard room: no; hazard rooms not walked: materials
-    step 1 walk @coordination: self-reported (done is the learner's word)
+    step 1 walk @coordination: evidenced
     step 2 advisor @coordination: evidenced
     step 3 walkaround @yard: evidenced
     step 4 sim @yard: evidenced
   lesson riggers-carry-under-control: complete in the record; placard step in every hazard room: no; hazard rooms not walked: materials
-    step 1 walk @machines: self-reported (done is the learner's word)
+    step 1 walk @machines: evidenced
     step 2 walkaround @yard: evidenced
     step 3 crew @yard: evidenced
     step 4 sim @yard: evidenced
@@ -78,8 +80,8 @@ hall welders (Welding Trades) — lesson welders-the-watch
   room inspection [no hazard] PPE: safety glasses — placard hung — not-evidenced (a room requirement is the bundle's fact; no record field carries it)
   room troubleshooting [no hazard] PPE: safety boots, safety glasses — placard hung — not-evidenced (a room requirement is the bundle's fact; no record field carries it)
   lesson welders-the-watch: complete in the record; placard step in every hazard room: no; hazard rooms not walked: procedure
-    step 1 walk @safety: self-reported (done is the learner's word)
-    step 2 placard @safety: self-reported (done is the learner's word)
+    step 1 walk @safety: evidenced
+    step 2 placard @safety: evidenced
     step 3 advisor @safety: evidenced
     step 4 walkaround @yard: evidenced
     step 5 crew @yard: evidenced
@@ -97,8 +99,8 @@ hall scaffold (Scaffold Erectors) — lesson scaffold-read-the-tag
   room inspection [no hazard] PPE: safety glasses — placard hung — not-evidenced (a room requirement is the bundle's fact; no record field carries it)
   room troubleshooting [no hazard] PPE: safety boots, safety glasses — placard hung — not-evidenced (a room requirement is the bundle's fact; no record field carries it)
   lesson scaffold-read-the-tag: in progress in the record; placard step in every hazard room: no; hazard rooms not walked: procedure
-    step 1 walk @safety: self-reported (done is the learner's word)
-    step 2 placard @safety: self-reported (done is the learner's word)
+    step 1 walk @safety: evidenced
+    step 2 placard @safety: evidenced
     step 3 station @safety: not done
     step 4 walkaround @yard: not done
     step 5 advisor @safety: not done
@@ -111,7 +113,7 @@ hall scaffold (Scaffold Erectors) — lesson scaffold-read-the-tag
   seat scaffold-bay: not passed in this record
   sign-off: UNSIGNED — this hall's content is unverified general practice (content_status absent: inherits the global caveat) (0 of 111 halls signed off today, read through pack/hall_signoff.mjs) — not-evidenced (a hall's fact, not the record's)
 
-totals: 12 evidenced, 6 self-reported, 27 not-evidenced items across the halls touched
+totals: 18 evidenced, 0 self-reported, 27 not-evidenced items across the halls touched
 signature: unsigned: this device only
 this report is against the bundle's own rules, not any jurisdiction's; a signed record attests a key, not a person; nothing here is a certification or an inspection
 ```
@@ -144,7 +146,7 @@ Quoted from the registry at build time, never retyped:
 
 `compliance/registry/compliance.json#honesty.self_reported`:
 
-> a walk or placard step is the learner's word: it cannot be evidenced by any record
+> no step kind is self-reported today: walk and placard write episodes now. A walk or placard episode records that a device saw the walker in a room, or a placard panel left open for its dwell; it never says the placard was read or that anything it requires was met, and the room requirement itself stays not-evidenced
 
 ---
 

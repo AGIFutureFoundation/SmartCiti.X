@@ -79,11 +79,14 @@ DOC = {
                      'schematic controllers, and any run on a physical '
                      'headset. How this is held: every XR contract is held '
                      'at the source by regex (web/test_3d.mjs, '
-                     'meta/test.mjs); no session - mocked or real - has been '
-                     'driven in this tree. A mocked WebXR session harness '
-                     '(three.js\'s WebXRManager under a fake session, frame '
-                     'and input sources) is the next step and is NOT '
-                     'claimed.'},
+                     'meta/test.mjs) and, for one seat against its section 24 '
+                     'package, by a MOCKED WebXR session in headless '
+                     'Chromium (xr/test_session.mjs: three.js\'s '
+                     'WebXRManager under a fake session, frame and input '
+                     'sources). No session on a physical headset has been '
+                     'driven in this tree, and no physical headset has run '
+                     'any of it: the criterion stays mocked half met, '
+                     'headset half not met.'},
             {'id': 'geojson-wgs84', 'body': 'IETF RFC 7946',
              'role': 'the geo registry interchange (campuses.geojson, '
                      'network.geojson) that the geomap and any '
@@ -353,8 +356,8 @@ for token in ("const xrRig = new THREE.Group()", 'function seatPose(',
     assert token in page_src, f'WebXR role claims {token!r} but the page lacks it'
 _xr_role = next(s for s in DOC['baseline']['standards'] if s['id'] == 'webxr')['role']
 assert 'held at the source by regex' in _xr_role and 'physical' in _xr_role \
-    and 'no session - mocked or real - has been driven' in _xr_role \
-    and 'is NOT claimed' in _xr_role, \
+    and 'MOCKED WebXR session in headless Chromium' in _xr_role \
+    and 'No session on a physical headset has been driven' in _xr_role, \
     'the WebXR role must say how it is held, and what has not been run'
 for fname in ('gltf/GLTFExporter.js', 'gltf/GLTFLoader.js',
               'utils/TextureUtils.js', 'utils/BufferGeometryUtils.js'):

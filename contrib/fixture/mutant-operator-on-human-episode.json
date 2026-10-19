@@ -210,13 +210,32 @@
     "answer_kind": "registry",
     "seat": "fixture-seat",
     "muster": "fixture-muster"
+   },
+   {
+    "t": "2026-09-26T03:00:06.000Z",
+    "kind": "walk",
+    "campus": "treasure-island",
+    "hall": "painters",
+    "where": "fixture-strand",
+    "room": "Fixture Room"
+   },
+   {
+    "t": "2026-09-26T03:00:07.000Z",
+    "kind": "placard",
+    "campus": "treasure-island",
+    "hall": "painters",
+    "where": "fixture-strand",
+    "room": "Fixture Room",
+    "dwell_ms": 5250
    }
   ],
   "traces_attached": 1,
   "episode_counts_by_kind": {
    "advisor": 1,
    "crew": 1,
+   "placard": 1,
    "sim": 3,
+   "walk": 1,
    "walkaround": 1
   },
   "sims_covered": [
@@ -257,6 +276,23 @@
     "seat",
     "muster"
    ],
+   "walk": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "room"
+   ],
+   "placard": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "room",
+    "dwell_ms"
+   ],
    "walkaround": [
     "t",
     "kind",
@@ -293,6 +329,6 @@
  "digest": {
   "alg": "SHA-256",
   "over": "canonical JSON of every top-level field except digest, with contributor.signature forced to null: keys sorted recursively, no whitespace, UTF-8",
-  "hex": "a4d92b05bb64f49605ac09ef0c829c73005a6d87f66b5f5522090be646a01a3f"
+  "hex": "a4826e0b74a46e0264a7af33ca01cceb1b8d5ed51f034f68382e49b2a623c17b"
  }
 }

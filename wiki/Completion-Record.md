@@ -51,15 +51,15 @@ ok ids.sim: checked 4, failing 0
 ok ids.scenario: checked 2, failing 0
 ok ids.station: checked 1, failing 0
 ok ids.district: checked 0, failing 0
-ok step.recording-evidence: checked 301, failing 0
-ok step.episode-evidence: checked 59, failing 0
+ok step.recording-evidence: checked 534, failing 0
+ok step.episode-evidence: checked 97, failing 0
 ok lesson.complete-all-steps: checked 139, failing 0
 ok sim.threshold: checked 2, failing 0
 ok ladder.prerequisite: checked 40, failing 0
 note sim.threshold: rigging-signals has no scalar threshold in sims.json; passed=true is taken from the record and not re-derived
 note sim.threshold: crane-lift has no scalar threshold in sims.json; passed=true is taken from the record and not re-derived
 signature: unsigned: this device only
-summary: 3 lessons complete, of which 0 fully evidence-backed (every step episode-backed); across them 10 episode-backed steps, 0 device-mark steps (station/crib: a device-local mark, not a recorded episode), 4 self-reported steps counted as done
+summary: 3 lessons complete, of which 3 fully evidence-backed (every step episode-backed); across them 14 episode-backed steps, 0 device-mark steps (station/crib: a device-local mark, not a recorded episode), 0 self-reported steps counted as done
 this verifies integrity since export and resolution against the bundle; a wallet signature, if any, proves that the holder of a key signed this digest at export - a key, not a person; nothing is written to any chain, nothing is anchored, and this is no accreditation
 ```
 
@@ -74,7 +74,8 @@ Quoted from the registry at build time, never retyped:
 > - who the learner is: identity.claimed is typed by the person, attested by this device only, and nothing checks it - unless a wallet signed, in which case it is the identity of a key, not of a person; a stolen key signs just as well
 > - anything on any blockchain: a wallet signature is computed in the browser and carried in the file; nothing is written to any chain, nothing is anchored, and no one can look it up
 > - that the device was honest: a record can be written by hand and will verify if it is internally consistent
-> - that a self-reported step (walk, placard) happened at all
+> - that a walk or placard episode means more than it says: it records that a device saw the walker's position inside a room, or a placard panel left open for its dwell with the walker in that room - not that anyone read, understood or took on what the placard requires, and not that the room exists outside this bundle
+> - that a self-reported step happened at all (no step kind is self-reported today; the rule stays so one that is added cannot carry evidence it does not have)
 > - a station or crib mark is a device-local mark, not a recorded episode
 > - that the seat was passed under supervision, or that any score means anything outside this bundle
 > - any accreditation, ticket, licence or credential; no hall, employer or authority has signed anything

@@ -139,11 +139,27 @@ ok('every silent kind carries the reason lessons.json gives for writing nothing'
   reg.silent_kinds.every((k) => reg.evidence_rule[k].why_no_episode === lessonsReg.step_kinds[k].why_no_episode));
 ok('the recording / silent step counts equal those of lessons.json',
   reg.counts.recording_steps === lessonsReg.counts.recording_steps && reg.counts.silent_steps === lessonsReg.counts.silent_steps);
-ok('station and crib are device-mark, walk and placard self-reported, and neither is called evidence-backed',
+const trainingReg0 = read('../training/registry/training.json');
+ok('station and crib are device-mark and not called evidence-backed; walk and placard are episode-backed since wave 20 and no kind is self-reported',
   reg.evidence_rule.station.class === 'device-mark' && reg.evidence_rule.crib.class === 'device-mark'
-  && reg.evidence_rule.walk.class === 'self-reported' && reg.evidence_rule.placard.class === 'self-reported'
+  && reg.evidence_rule.walk.class === 'episode-backed' && reg.evidence_rule.placard.class === 'episode-backed'
+  && JSON.stringify(reg.silent_kinds) === JSON.stringify(['crib', 'station'])
+  && !Object.values(reg.evidence_rule).some((r) => r.class === 'self-reported')
+  && /no step kind today/.test(reg.evidence_classes['self-reported'])
   && /not a recorded episode/.test(reg.evidence_classes['device-mark'])
   && /only this class is called evidence-backed/.test(reg.evidence_classes['episode-backed']));
+ok('a walk or placard step is matched on the hall and the step\'s own where (the strand, so one room), read from training.json: both episodes record where and room, and the rule says so',
+  ['walk', 'placard'].every((k) => trainingReg0.episode_kinds[k].fields.includes('where') && trainingReg0.episode_kinds[k].fields.includes('room')
+    && reg.evidence_rule[k].checkable.includes('where') && reg.evidence_rule[k].checkable.includes('hall')
+    && reg.evidence_rule[k].names_read_field === 'room' && reg.evidence_rule[k].not_checkable.length === 0 && reg.evidence_rule[k].evidenceable === true)
+  && /room is one of the step's names_read/.test(reg.evidence_rule.walk.rule));
+ok('a placard step is held to the declared dwell: at_least.dwell_ms is training.json#episode_kinds.placard.at_least.dwell_ms, the one truth step_episodes also reads (read, not typed) and walk is held to no floor',
+  reg.evidence_rule.placard.at_least.dwell_ms === trainingReg0.episode_kinds.placard.at_least.dwell_ms && trainingReg0.episode_kinds.placard.at_least.dwell_ms === trainingReg0.step_episodes.placard.dwell_ms && trainingReg0.step_episodes.placard.dwell_ms > 0
+  && Object.keys(reg.evidence_rule.walk.at_least).length === 0
+  && ['advisor', 'crew', 'sim', 'walkaround'].every((k) => reg.evidence_rule[k].names_read_field === null && Object.keys(reg.evidence_rule[k].at_least).length === 0));
+ok('every walk and placard step of every lesson carries a where that names a strand, and every one has exactly one name in names_read (the room)',
+  Object.values(lessonsReg.lessons).flatMap((L) => L.steps).filter((s) => s.kind === 'walk' || s.kind === 'placard')
+    .every((s) => typeof s.where === 'string' && Array.isArray(s.names_read) && s.names_read.length === 1));
 ok('honesty says a station or crib mark is a device-local mark, not a recorded episode',
   reg.honesty.does_not_prove.includes('a station or crib mark is a device-local mark, not a recorded episode'));
 ok('per lesson, the episode-backed, device-mark and self-reported counts sum to the lesson\'s steps',
@@ -202,6 +218,11 @@ ok('the required mutations are among them, including episode-wrong-kind and epis
   REQUIRED.every((r) => mutants.some(([, rule]) => rule === r))
   && ['fixture/mutant-episode-wrong-kind.json', 'fixture/mutant-episode-wrong-point.json', 'fixture/mutant-crew-done-wrong-seat.json', 'fixture/mutant-crew-done-wrong-muster.json', 'fixture/mutant-episode-t-unparseable.json'].every((f) => reg.fixture.mutants[f] === 'step.episode-evidence')
   && ['fixture/mutant-crew-done-no-seat.json', 'fixture/mutant-crew-done-no-muster.json'].every((f) => reg.fixture.mutants[f] === 'record.fields'));
+ok('the walk and placard mutants are among them, each naming the rule it must fail',
+  ['walk-done-wrong-room', 'walk-done-wrong-room-label', 'walk-done-as-placard', 'placard-done-dwell-too-short', 'placard-done-dwell-not-a-number', 'placard-done-wrong-hall']
+    .every((n) => reg.fixture.mutants[`fixture/mutant-${n}.json`] === 'step.episode-evidence')
+  && ['walk-done-no-where', 'placard-done-no-dwell'].every((n) => reg.fixture.mutants[`fixture/mutant-${n}.json`] === 'record.fields')
+  && reg.fixture.mutants['fixture/mutant-placard-done-without-evidence.json'] === 'step.recording-evidence');
 const trainingReg = read('../training/registry/training.json');
 ok('per recording kind, checkable and not-checkable step references are read from training.json episode fields',
   reg.recording_kinds.every((k) => {
@@ -245,6 +266,12 @@ ok('the fixture has a walkaround step done with a matching episode (kind, ISO-86
   good.lessons.some((l) => l.steps.some((s) => s.kind === 'walkaround' && s.done && s.evidence.episode === 'walkaround'
     && typeof s.evidence.t === 'string' && Number.isFinite(Date.parse(s.evidence.t)) && s.evidence.hall === l.hall
     && s.evidence.point === lessonsReg.lessons[l.lesson].steps.find((k) => k.n === s.step).point)));
+ok('the fixture completes a lesson with a walk step and a lesson with a placard step, each done with its episode: where, room from names_read, and for a placard a dwell at the floor or above',
+  ['walk', 'placard'].every((k) => good.lessons.some((l) => l.complete && l.steps.some((s) => {
+    const st = lessonsReg.lessons[l.lesson].steps.find((q) => q.n === s.step);
+    return s.kind === k && s.done && s.evidence.episode === k && s.evidence.hall === l.hall && s.evidence.where === st.where
+      && st.names_read.includes(s.evidence.room) && (k === 'walk' || s.evidence.dwell_ms >= reg.evidence_rule.placard.at_least.dwell_ms);
+  }))));
 for (const [file, rule] of mutants) {
   const m = read('./' + file);
   let failedRules;

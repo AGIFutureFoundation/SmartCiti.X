@@ -1870,10 +1870,12 @@ doc = {
               'two face buttons land in the same key state a keyboard '
               'fills, so a seat cannot tell the two apart and no rubric '
               'changes in a headset. The mapping is held at the source by '
-              'regex (web/test_3d.mjs, meta/test.mjs); no session, mocked or '
-              'real, has been driven in this tree, no physical headset has '
-              'run these seats in this build, and a mocked-session harness '
-              'is the next step and is not claimed.',
+              'regex (web/test_3d.mjs, meta/test.mjs); one of the eleven seats '
+              '(the rigging signal call) is also driven end to end in a '
+              'MOCKED WebXR session in headless Chromium '
+              '(xr/test_session.mjs --browser) and the other ten are not; no '
+              'session on a physical headset has been driven in this tree, '
+              'and no physical headset has run these seats in this build.',
     },
     'operator_levels': OPERATOR_LEVELS,
     # the gates the current seat cannot fail, and the seat change that would

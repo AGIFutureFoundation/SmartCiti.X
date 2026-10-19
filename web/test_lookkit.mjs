@@ -123,13 +123,18 @@ for (const W of [{ id: 'parishes', file: 'trade_craft_parishes.html', flat: true
 // wave 20: PER-VIEW EXPOSURE - the network view is metered up, the campus and hall frames keep the page's number
 {
   const page = read('trade_craft_3d.html'), K = lift(kitOf(page)), py = read('lookkit.py');
-  const ve = K.LOOK.view_exposure, pyVal = Number((/VIEW_EXPOSURE = \{'region': ([0-9.]+)\}/.exec(py) || [])[1]);
-  check('campus3d: the page names exactly one view with its own exposure, region, equal to the Python kit, above the page exposure and within (0, 4]',
-    Object.keys(ve).join() === 'region' && ve.region === pyVal && ve.region > K.LOOK.exposure && ve.region <= 4, JSON.stringify(ve));
+  const ve = K.LOOK.view_exposure, pyM = /VIEW_EXPOSURE = \{'region': ([0-9.]+), 'campus': ([0-9.]+)\}/.exec(py) || [];
+  check('campus3d: the page names exactly two views with their own exposure, region and campus, equal to the Python kit, above the page exposure and within (0, 4]',
+    Object.keys(ve).sort().join() === 'campus,region' && ve.region === Number(pyM[1]) && ve.campus === Number(pyM[2])
+    && ve.region > K.LOOK.exposure && ve.campus > K.LOOK.exposure && ve.region <= 4 && ve.campus <= 4, JSON.stringify(ve));
+  check('campus3d: the campus view is metered up by a stated number measured against the [40, 215] band (luma 36.2 at 1.12 -> 50.1 at 2.1), below the network view\'s',
+    ve.campus === 2.1 && ve.campus < ve.region && /42\.1 at 1\.5, 46\.2 at\n# 1\.8, 50\.1 at 2\.1, 53\.7 at 2\.4/.test(py));
   const r = {}; K.lookRenderer(r);
   const at = (v) => { K.lookView(v); return r.toneMappingExposure; };
-  check('campus3d: lookView sets the region exposure for the network view and the page exposure (1.12) for campus, hall, avatar, sim, restoration and an unknown view',
-    at('region') === ve.region && ['campus', 'hall', 'avatar', 'sim', 'restoration', 'nonsense', 'toString'].every((v) => at('region') === ve.region && at(v) === 1.12));
+  check('campus3d: lookView sets the region and campus exposures for those views and the page exposure (1.12) for hall, avatar, sim, restoration and an unknown view',
+    at('region') === ve.region && at('campus') === ve.campus && ['hall', 'avatar', 'sim', 'restoration', 'nonsense', 'toString'].every((v) => at('region') === ve.region && at(v) === 1.12 && at('campus') === ve.campus));
+  check('campus3d: the hall frame is unchanged by the campus number (hall exposure stays the page exposure after the campus view was drawn)',
+    (at('campus'), at('hall') === K.LOOK.exposure && at('region') === ve.region && at('hall') === 1.12));
   const wk = lift(kitOf(read('trade_craft_parishes.html')));
   check('parishes, Bay and wilds: no view has its own exposure (the worlds keep 0.95 everywhere)',
     ['trade_craft_parishes.html', 'trade_craft_bay.html', 'trade_craft_wilds.html'].every((f) => Object.keys(lift(kitOf(read(f))).LOOK.view_exposure).length === 0) && wk.LOOK.exposure === 0.95);

@@ -527,6 +527,8 @@ const r4 = (x) => Math.round(x * 1e4) / 1e4;
     const missingOf = {};
     for (const k of recKinds) {
       const ep = at(T, `episode_kinds.${at(kinds[k], 'records')}.fields`);
+      // wave 20: an episode that records `where` makes the step's own where a reference (walk, placard)
+      if (ep.includes('where')) refs[k].add('where');
       missingOf[k] = [...refs[k]].filter((f) => !ep.includes(f)).sort();
       if (missingOf[k].length) unm.add(k);
     }
@@ -552,6 +554,15 @@ const r4 = (x) => Math.round(x * 1e4) / 1e4;
     ok(at(r, 'completable') === at(CMP, 'counts.lessons_completable') && at(r, 'not_completable') === at(CMP, 'counts.lessons_not_completable')
        && Object.keys(lessons).every((id) => at(pl[id], 'completable') === at(CMP, `lessons.${id}.completable`)),
        'the completable count and every lesson\'s completable flag equal the completion contract\'s own derivation, which reads the same two registries by a separate path');
+    // wave 20: fully verifiable by episode is MEASURED, never typed: a lesson with no step whose kind records nothing
+    // (lessons.json step_kinds[k].records === null) and every step matchable. Recomputed here straight from the steps.
+    const silentK = Object.keys(kinds).filter((k) => at(kinds[k], 'records') === null).sort();
+    const fullByEp = Object.keys(lessons).filter((id) => compl(id) && !at(lessons[id], 'steps').some((s) => silentK.includes(s.kind)));
+    ok(at(r, 'fully_verifiable_by_episode') === fullByEp.length && at(r, 'fully_verifiable_by_episode') === at(r, 'fully_verifiable')
+       && JSON.stringify(at(ce, 'silent_kinds')) === JSON.stringify(silentK)
+       && !silentK.includes('walk') && !silentK.includes('placard')
+       && at(r, 'recording_steps_matchable') === Object.values(lessons).flatMap((l) => at(l, 'steps')).filter((s) => !silentK.includes(s.kind) && !unm.has(s.kind)).length,
+       `fully verifiable by episode is recomputed from the steps (${fullByEp.length} of ${Object.keys(lessons).length}); the silent kinds are ${silentK.join(' and ')}, walk and placard are not among them`);
   }
 
   const pu = at(ce, 'per_union');

@@ -29,6 +29,16 @@ in this bundle. One kind of episode per interaction:
                 never the words themselves, which the advisor registry
                 already owns.
   * walkaround - which point, on which seat.
+  * walk      - (wave 20) the learner's own position entered one room of one
+                hall that a lesson names as a walk target: which hall, which
+                strand, which room label. One event per (hall, room); no
+                coordinates, no path, no time spent. It proves a device saw
+                the walker inside that room's rectangle, nothing more.
+  * placard   - (wave 20) the door placard of one room was opened in the page's
+                placard panel and left open, with the learner still standing
+                in that room, for the declared dwell (STEP_EPISODES below).
+                It proves a panel stayed open for that long, not that anyone
+                read it, understood it or put anything on.
 
 TRACE. The finer-grained recorder, scoped to exactly what it is rather
 than promoted past it. While TRACE is on (its own
@@ -187,6 +197,39 @@ EPISODE_KINDS = {
                        'written in the crews registry',
         'what': 'one crew role asked one question while its seat was running',
     },
+    # WALK / PLACARD (wave 20). A lesson's walk and placard steps used to
+    # record nothing, so no lesson could be completed from evidence alone.
+    # These two kinds are recorded by the 3D page's STEP-EPISODE blocks.
+    # `where` is the strand id: the same word a lesson step carries in its own
+    # `where`, so the completion contract can match step to episode by the one
+    # name. A hall has exactly one room per strand, so (hall, where) names one
+    # room. `room` is that room's label as the page draws it, kept so the
+    # verifier can also check it against the step's own names_read.
+    'walk': {
+        'fields': ['t', 'kind', 'campus', 'hall', 'where', 'room'],
+        # the verifier and every page that matches a step to an episode read this: the episode's `room` must be one of
+        # the step's own names_read (the room label), on top of equality on hall and where
+        'names_read_field': 'room',
+        'outcome_shape': None,
+        'granularity': 'one event: the walker\'s position entered the rectangle '
+                       'of one room of one hall that a lesson names as a walk '
+                       'target. No coordinates, no path, no dwell: arriving is '
+                       'all it states',
+        'what': 'one lesson-target room entered on foot',
+    },
+    'placard': {
+        'fields': ['t', 'kind', 'campus', 'hall', 'where', 'room', 'dwell_ms'],
+        'names_read_field': 'room',
+        # the declared floor on a numeric this episode records: a placard episode with a dwell_ms below it matches no step.
+        # Read by completion/ (and its verifier) and by every page matcher from here, never retyped
+        'at_least': {'dwell_ms': 5000},
+        'outcome_shape': None,
+        'granularity': 'one event: the placard panel of one room stayed open '
+                       'for at least the declared dwell while the walker stood '
+                       'in that room. `dwell_ms` is the measured open time, '
+                       'floored at the declared minimum by construction',
+        'what': 'one door placard panel opened and left open for its dwell',
+    },
     'walkaround': {
         'fields': ['t', 'kind', 'campus', 'hall', 'sim', 'point'],
         'outcome_shape': None,
@@ -194,6 +237,36 @@ EPISODE_KINDS = {
                        'the sim registry already declares is not a gate',
         'what': 'one pre-shift walkaround point checked',
     },
+}
+
+# STEP_EPISODES (wave 20): the two declared numbers and the honesty of the walk/placard kinds. The page READS
+# these from the embedded registry (never retypes them); completion/ reads `placard.dwell_ms` into its evidence rule
+# and the verifier refuses a placard episode whose dwell_ms is below it.
+STEP_EPISODES = {
+    'placard': {
+        'dwell_ms': EPISODE_KINDS['placard']['at_least']['dwell_ms'],   # one truth: the episode kind's own floor
+        'dwell_why': 'a placard is a short board - the PPE a room lists, read one item to a line. Five seconds with '
+                     'the panel open and the walker in the room is long enough to read a board of that length and '
+                     'short enough that a learner who means to read it is never kept waiting. It is a floor on '
+                     'open time, not a measure of reading: nothing here can tell reading from looking away.',
+        'opened_by': 'clicking or tapping the door placard in the room, or pressing E while standing in a room '
+                     'that has one and within the label registry\'s declared read distance of it',
+        'range_m_from': 'labels/registry/labels.json#kinds.placard.hide_beyond_m (read, not retyped)',
+    },
+    'walk': {
+        'recorded_for': 'a room that a lesson step of kind walk names, in the hall the learner stands in - never for '
+                        'every room, so the rolling cap is not spent on footsteps',
+    },
+    'dedupe': 'one episode per (kind, hall, where) while an earlier one is still in the log: re-entering a room or '
+              're-opening a placard adds nothing, so a learner cannot pad the log and the log cannot crowd out the '
+              'simulator episodes it exists to keep',
+    'headless': 'a scripted probe stepping the walker (wkSilent) records no walk or placard episode: only a walker '
+                'the learner is driving does',
+    'proves': 'that this device recorded the event it names: a walker\'s position inside a room\'s rectangle, or a '
+              'panel open for a dwell with the walker in the room',
+    'does_not_prove': 'competence, attention, comprehension, that anybody read the sign, that the learner is the '
+                      'person named in an export, or that any real room or placard exists - the halls are '
+                      'SCHEMATIC. A lesson stays unverified general practice and certifies nobody',
 }
 
 # ROBOLAB (wave 11): WORLD episode kinds - teleop demonstrations of an AUTHORED robot embodiment in a world
@@ -415,6 +488,16 @@ if not BOOTSTRAP:
     # pack promises, not more integration points quietly grown elsewhere
     assert page.count('recordEpisode({') == len(EPISODE_KINDS), \
         'recordEpisode is called somewhere other than the declared kinds'
+    # wave 20: the walk and placard episodes are recorded inside anchored STEP-EPISODE blocks of the page, the dwell
+    # is READ from the embedded registry, a probe-driven walker records nothing, and each kind is one literal call
+    assert page.count('/* STEP-EPISODE BEGIN') >= 4 and page.count('/* STEP-EPISODE BEGIN') == page.count('/* STEP-EPISODE END'), \
+        'the walk and placard recorders must sit inside balanced STEP-EPISODE blocks'
+    assert 'D.training.step_episodes.placard.dwell_ms' in page, \
+        "the page's placard dwell must be read from the embedded registry"
+    assert f'"dwell_ms":{STEP_EPISODES["placard"]["dwell_ms"]}' in page, \
+        'the page embeds a placard dwell other than the declared one'
+    assert "if (wkSilent) return;" in page.split('function stepWalkEntered(')[1][:400], \
+        'a probe-driven walker must record no walk episode'
     # the sample rate and cap the page enforces are READ from this registry
     # as embedded in the page - one truth, not a second hand-typed pair - so
     # the check is that the page reads them, and that what it reads is ours
@@ -513,6 +596,7 @@ doc = {
     'honesty': HONESTY,
     'actors': ACTORS,
     'episode_kinds': EPISODE_KINDS,
+    'step_episodes': STEP_EPISODES,
     'storage': STORAGE,
     'trace': TRACE,
     'export_format': EXPORT_FORMAT,

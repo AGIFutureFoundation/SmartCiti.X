@@ -16,8 +16,8 @@ timeline
     v3.3 : Native-reviewed translations : Localized surfaces : Reviewed trade-name translations
     v3.4 : Practitioner-authored content pilot : Local-standards mapping : Live telemetry calibration
     v3.5 (2026-09-26) : Completion record : Contribution package : Robot-readiness eval
-    v3.6 (2026-10-12, now) : Courses and the Omega Hive : Furnished halls and street kit : Union paths and programs : Bay restoration scenes : Robot arena and Omega Claw : World modules, look kit and doors
-    v3.7 (in progress, wave 20) : Mocked WebXR session : Crew lessons complete : Parish frame cost and 3D luminance : Module links in the worlds
+    v3.6 (2026-10-12) : Courses and the Omega Hive : Furnished halls and street kit : Union paths and programs : Bay restoration scenes : Robot arena and Omega Claw : World modules, look kit and doors
+    v3.7 (2026-10-19, now, in part) : Mocked WebXR session : Crew lessons complete : Walk and placard evidence : Parish view cull and 3D luminance : Module links in the worlds
     v4.0 : Staged hall rollout : Security launch checklist closed : Tenancy GA
 ```
 
@@ -378,10 +378,12 @@ gates doing their job on real halls.
    the session — so every seat, the campus, the halls and the restoration
    walks run in-session against the interiors/§24 environment packages.
    **What is honestly not done:** every XR contract is held at the source
-   by regex (`web/test_3d.mjs`, `meta/test.mjs`); no session — mocked or
-   real — has been driven in this tree, and a mocked-session harness
-   (three.js's `WebXRManager` under a fake session, frame and input sources)
-   is the next step and is NOT claimed. No physical headset has run it. Hand
+   by regex (`web/test_3d.mjs`, `meta/test.mjs`), and one seat (the rigging
+   signal call) is now also driven end to end in a MOCKED WebXR session in
+   headless Chromium (`xr/test_session.mjs --browser`: three.js's
+   `WebXRManager` over a fake session, frame and input sources); no session
+   on a physical headset has been driven in this tree. No physical headset
+   has run it. Hand
    JOINTS are read for four gestures (pinch, point, open palm, palm up),
    proven against synthetic joint positions only; hands are not rendered.
    three.js r160 cannot resize the XR framebuffer mid-session, so the
@@ -420,10 +422,12 @@ gates doing their job on real halls.
   "Accepted by" column is empty because this pass names no owner.
 - One VR sim module running against a §24 environment package end to end.
   *Status:* every sim module is wired to run in a WebXR session against the
-  interiors/§24 environment packages, held at the source by regex only; no
-  session — mocked or real — has been driven in this tree. A mocked-session
-  harness is the next step and is NOT claimed; verification on a physical
-  headset the step after, so this criterion is **not yet met**.
+  interiors/§24 environment packages, held at the source by regex, and one
+  seat (the rigging signal call) has since been driven end to end in a MOCKED
+  WebXR session in headless Chromium against its §24 yard surface
+  (`xr/test_session.mjs --browser`); no session on a physical headset has been
+  driven. Mocked half met, headset half not met, so this criterion is **not
+  yet met**.
 
 ---
 
@@ -451,13 +455,15 @@ registries' own; none is typed here from memory.
 - The eight lessons that hold a crew step cannot complete until the crew
   episode records `seat` and `muster` (`training/`), or the lesson step stops
   carrying them (`lessons/`). Not a verifier problem. (At the 2026-09-26 pass; carried to
-  v3.7, workstream 2: 23 of 139 lessons today.)
+  v3.7, workstream 2: 23 of 139 lessons then, 0 since `d8094b8`.)
 - No page links to the spaces or contribute pages yet.
 - The map layers' labels on two surfaces are registry field paths, and the
   XR HUD's 15 new keys are machine-drafted in seven locales, as those catalogs
   already declare.
 - A mocked WebXR session harness driving `renderer.xr` in headless Chromium
-  does not exist; every XR contract is held at the source by regex. (Carried to v3.7,
+  now exists for one seat (`xr/test_session.mjs --browser`, run in the browser
+  round, not `verify_all.sh`); the other ten seats are held at the source by
+  regex and no physical headset has run any of it. (Carried to v3.7,
   workstream 1.)
 - The jurisdiction overlay stays deliberately not started (see v3.4). The
   compliance ledger this pass adds is the bundle's own rules, not a code
@@ -512,9 +518,9 @@ commit's message, none typed here from memory.
 - **No LLM trained.** The one trained model is a 468-weight cloned policy on
   SCRIPTED episodes; it scores 0.423 against the reference's 0.592 on held-out
   seeds and never learned grip timing. Omega Hive and Omega Claw are SCRIPTED.
-- **No headset session, mocked or real.** Every WebXR contract is still held
-  at the source by regex. Hand joints are proven against synthetic positions
-  only.
+- **No session on a physical headset has been driven.** One seat is driven in a MOCKED session
+  in headless Chromium; every other WebXR contract is still held at the source
+  by regex. Hand joints are proven against synthetic positions only.
 - **Partners are PROPOSED.** Districts, programmes and organisations on the
   Programs page, and every union on the directory, are named without an
   agreement; the UN path is PROPOSED and not affiliated; nothing is accredited.
@@ -533,7 +539,7 @@ commit's message, none typed here from memory.
 
 ---
 
-## v3.7 — deep worlds (in progress, wave 20; planning target November 2026)
+## v3.7 — deep worlds (wave 20, 2026-10-19: shipped in part; the rest planned for November 2026)
 
 **Theme:** close the gaps the v3.6 list names, each with a check a harness can
 run, and add nothing that needs a person, a cohort or a headset. This release
@@ -541,29 +547,37 @@ reaches only the rungs this tree can honestly reach: a *mocked* XR session is
 not a headset session, and a lesson that *can* complete is not a lesson a
 learner completed.
 
-Status key: **in progress (wave 20)** means work is under way and nothing
-below is claimed shipped. The landing commit is added to each row when it
-lands; until then the row names the check that will prove it.
+Status key: **shipped** names the landing commit; **partly met** says exactly
+which half landed and which did not; **planned** rows have not started. Work
+that landed in the wave 20 landing after `d8094b8` is named as such, because a
+commit cannot name its own sha.
 
 ### Workstreams
 
-1. **Mocked WebXR session harness** — *in progress (wave 20).* Drive the 3D
+1. **Mocked WebXR session harness** — *shipped for one seat, `d8094b8`.* Drive the 3D
    page's `renderer.xr` in headless Chromium under a fake `XRSession` (frame
    loop, input sources, reference spaces), so the XR contracts stop being held
-   by regex alone. *Landing commit:* pending.
-2. **Crew episodes record seat and muster** — *in progress (wave 20).* The
+   by regex alone. *Landing commit:* `d8094b8`: the rigging signal call seat is
+   driven from Enter VR to completion and back in a MOCKED session; the other
+   ten seats are not driven, and no physical headset has run any of it.
+2. **Crew episodes record seat and muster** — *shipped, `d8094b8`.* The
    crew episode in `training/` records the two fields the completion verifier
    asks for, so the 23 lessons with a crew step can complete. The lessons are
    not weakened: the crew step still records an episode. *Landing commit:*
-   pending.
-3. **Parish frame cost and 3D-view luminance** — *in progress (wave 20).*
+   `d8094b8`: lessons not completable 23 -> 0 of 139, the verifier unchanged.
+3. **Parish frame cost and 3D-view luminance** — *partly met.*
    Reduce the cost behind the parish 22051 border frame row and lift the 3D
    network view's mean luminance into its band, both with draw calls and
    triangles unchanged and no ceiling or band edge moved. *Landing commit:*
-   pending.
-4. **Module links inside the worlds** — *in progress (wave 20).* Each of the
+   `d8094b8` (fabric view cull) and the landing after it (guide cull; per-view
+   exposure for the network and campus views). The 22051 border row passes at
+   load 3-4 and fails at load 5 and above; the 22103 rows fail at load 3-4 as
+   they did at `83db20b`. No ceiling was moved.
+4. **Module links inside the worlds** — *partly met, `d8094b8`.* Each of the
    16 world modules is reachable from the world it teaches (keyboard and
-   pointer), extending the doors of v3.6. *Landing commit:* pending.
+   pointer), extending the doors of v3.6. *Landing commit:* `d8094b8`: 13 of the
+   16 (8 Bay restoration sites, 4 wilds worlds, the robot yard); the 3
+   worksite-district modules are not yet linked from a place.
 5. **A learned policy that bins something** — *planned, not started.* The
    cloned policy never learned grip timing, so it bins nothing in litter sort.
    A second carded policy is measured on the same held-out seeds with its
@@ -574,6 +588,13 @@ lands; until then the row names the check that will prove it.
 7. **Relief on, honestly** — *planned, not started.* Replace the flat-ground
    rule's reason to keep relief off with a measured relief-aware rule, added
    beside the old one rather than in place of it.
+8. **Walk and placard steps record episodes** — *shipped, the landing after
+   `d8094b8`.* A walk episode when the walker enters a room a lesson names, a
+   placard episode when its panel stays open for its dwell; both matched by
+   the completion contract with no rule loosened. Lessons fully verifiable by
+   episode: 0 -> 110 of 139 (the other 29 hold a station or crib step, which
+   is still a device mark). A recorded position proves a device was there,
+   not that anyone read or learned anything.
 
 ### Exit criteria
 
@@ -582,11 +603,11 @@ the suite or eval that proves it; a name marked *proposed* is fixed at landing.
 
 | # | Exit criterion | Proved by | State |
 | --- | --- | --- | --- |
-| 1 | A fake `XRSession` enters and leaves on the 3D page in headless Chromium: the rig moves and the camera does not, `local-floor` falls back to `local`, snap turn and the controller map reach every one of the 11 seats' key state, the wrist panel reads the dash's gauges, ending the session restores the camera and the sky | a mocked-session browser suite (*proposed:* `web/test_xr_session.mjs`), plus `meta/test.mjs` changing its "no session driven" claim to "mocked session driven, no headset", with a mutation that breaks each contract failing by name | in progress (wave 20) |
-| 2 | `lessons_not_completable` is 0 of 139 (23 today) while every crew step still records an episode, and an episode missing seat or muster still fails the verifier | `node completion/test.mjs`, `node training/test.mjs`, `node lessons/test.mjs`, and `evals/registry/evals.json#completion_evidence` | in progress (wave 20) |
-| 3a | `eval_parishes` part 1 reports 0 rows over a declared limit on 22051, 22071 and 22103, with the load average printed beside every frame row, and the `BASE` table and the three headroom constants in the eval byte-equal to `83db20b` | `node web/eval_parishes.mjs --part=1` (a browser eval; frame rows), and a check pinning the `BASE` table and the headroom constants (*proposed*, added with the change; `web/test_evalparts.mjs` does not pin them today) | in progress (wave 20) |
-| 3b | Mean frame luminance of the 3D network view is inside [40, 215] with the clipped and crushed shares no worse than at `83db20b`, and draw calls and triangles equal (204 and 5,254) | a committed browser luminance eval over the four 3D pages (*proposed:* `web/eval_look.mjs`), `web/test_lookkit.mjs` | in progress (wave 20) |
-| 4 | Every one of the 16 modules is linked from a place inside its world, every link resolves to a registry id, and each is reachable by keyboard | `node web/test_worldmodules.mjs`, `node web/test_access.mjs` (counts raised, never lowered), `node modules/test.mjs` | in progress (wave 20) |
+| 1 | A fake `XRSession` enters and leaves on the 3D page in headless Chromium: the rig moves and the camera does not, `local-floor` falls back to `local`, snap turn and the controller map reach every one of the 11 seats' key state, the wrist panel reads the dash's gauges, ending the session restores the camera and the sky | a mocked-session browser suite (`xr/test_session.mjs --browser`; its browser half is not in `verify_all.sh`), plus `meta/test.mjs` changing its "no session driven" claim to "mocked session driven, no headset", with a mutation that breaks each contract failing by name | partly met, `d8094b8`: one seat driven in a MOCKED session (68 checks with `--browser`); the other ten seats not driven |
+| 2 | `lessons_not_completable` is 0 of 139 (23 today) while every crew step still records an episode, and an episode missing seat or muster still fails the verifier | `node completion/test.mjs`, `node training/test.mjs`, `node lessons/test.mjs`, and `evals/registry/evals.json#completion_evidence` | shipped, `d8094b8`: 0 of 139 not completable |
+| 3a | `eval_parishes` part 1 reports 0 rows over a declared limit on 22051, 22071 and 22103, with the load average printed beside every frame row, and the `BASE` table and the three headroom constants in the eval byte-equal to `83db20b` | `node web/eval_parishes.mjs --part=1` (a browser eval; frame rows), and a check pinning the `BASE` table and the headroom constants (*proposed*, added with the change; `web/test_evalparts.mjs` does not pin them today) | not met: 22051 border passes at load 3-4 and fails at 5+; 22103 rows fail at load 3-4, as at `83db20b`; no ceiling moved |
+| 3b | Mean frame luminance of the 3D network view is inside [40, 215] with the clipped and crushed shares no worse than at `83db20b`, and draw calls and triangles equal (204 and 5,254) | a committed browser luminance eval over the four 3D pages (*proposed:* `web/eval_look.mjs`), `web/test_lookkit.mjs` | met by measured runs (network 28.2 -> 52.2, campus 36.2 -> 50.1, draw calls and triangles equal); the proposed luminance eval is not committed |
+| 4 | Every one of the 16 modules is linked from a place inside its world, every link resolves to a registry id, and each is reachable by keyboard | `node web/test_worldmodules.mjs`, `node web/test_access.mjs` (counts raised, never lowered), `node modules/test.mjs` | partly met, `d8094b8`: 13 of 16 modules linked |
 | 5 | A second carded policy has a held-out interval on seeds 11 to 20 in `robotics/arena/registry`, `trained_models` equals the models registry's count, every honesty line still says no language model is trained | `node robotics/arena/test.mjs`, `node web/test_arena.mjs`, `node robotics/test.mjs` | planned |
 | 6 | The six spaces load in the 3D page and a walker reaches each one's rooms, and the home or map page links both pages | `node web/test_spaces.mjs` (a walkability check added to it), `node web/test_nav.mjs` | planned |
 | 7 | `eval_relief` passes both off and on with 0 rows failing, no existing flat-ground row edited, and the Bay overview triangle rows inside their ceilings | `node web/eval_relief.mjs` for the parish and Bay pages | planned |

@@ -45,14 +45,14 @@ ok consent.statement: checked 1, failing 0
 ok consent.scope: checked 4, failing 0
 ok consent.license: checked 1, failing 0
 ok consent.granted_at: checked 1, failing 0
-ok episode.kind: checked 6, failing 0
-ok episode.fields: checked 111, failing 0
-ok episode.t: checked 6, failing 0
+ok episode.kind: checked 8, failing 0
+ok episode.fields: checked 139, failing 0
+ok episode.t: checked 8, failing 0
 ok trace: checked 5, failing 0
 ok ids.sim: checked 4, failing 0
 ok ids.scenario: checked 3, failing 0
-ok ids.hall: checked 6, failing 0
-ok ids.campus: checked 6, failing 0
+ok ids.hall: checked 8, failing 0
+ok ids.campus: checked 8, failing 0
 ok dataset.counts: checked 3, failing 0
 ok origin.classroom: checked 0, failing 0
 ok privacy: checked 0, failing 0
@@ -61,7 +61,7 @@ ok world.samples: checked 0, failing 0
 ok world.outcome: checked 0, failing 0
 note trace: training.json enumerates no gauge field names (gauges() is described, not listed), so each trace is held to its sample count and sample keys only; nothing inside gauges is checked
 signature: unsigned: this device only
-summary: 6 episodes (advisor 1, crew 1, sim 3, walkaround 1), 1 trace(s) attached holding 4 samples, 2 sim(s) covered (airless-sprayer, boom-lift)
+summary: 8 episodes (advisor 1, crew 1, placard 1, sim 3, walk 1, walkaround 1), 1 trace(s) attached holding 4 samples, 2 sim(s) covered (airless-sprayer, boom-lift)
 a contribution proves what a device recorded and, if signed, which key vouched for it - not who, and not that any agent or robot learned from it; nothing is sent anywhere by this bundle
 ```
 

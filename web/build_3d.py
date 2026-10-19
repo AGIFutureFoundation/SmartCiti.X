@@ -1364,6 +1364,10 @@ DATA = json.dumps({
                  'trace': {'toggle_key': training_reg['trace']['toggle_key'],
                            'sample_hz': training_reg['trace']['sample_hz'],
                            'max_samples': training_reg['trace']['max_samples']},
+                 # wave 20: the walk/placard dwell and what those episodes do and do not prove
+                 'step_episodes': {'placard': {'dwell_ms': training_reg['step_episodes']['placard']['dwell_ms']},
+                                   'proves': training_reg['step_episodes']['proves'],
+                                   'does_not_prove': training_reg['step_episodes']['does_not_prove']},
                  'export_format': trim(training_reg['export_format'],
                      'consumer', 'not_a_demo_file', 'no_agent_trained'),
                  'kinds': trim(training_reg['episode_kinds'],
@@ -7112,10 +7116,16 @@ XR_JS = r"""/* ------------------------------------------------------------- Web
    the SOURCE by regex (web/test_3d.mjs, meta/test.mjs), and the gesture
    recogniser is proven against synthetic joint positions fed straight
    through it (__tc3dHandProbe) - hand joints are read, hands are not
-   rendered. No session - mocked or real - has been driven in this tree; a
-   mocked WebXR session harness (three.js's WebXRManager under a fake
-   session, frame and input sources) is the next step and is NOT claimed.
-   Nobody has held a real hand up to these distances. */
+   rendered. */
+/* XR-SESSION BEGIN
+   One seat (the rigging signal call) is also driven end to end in a
+   MOCKED WebXR session in headless Chromium, by xr/test_session.mjs
+   --browser: three.js's WebXRManager over a fake session, frame and input
+   sources; controllers only, no hand input source.
+   No session on a physical headset has been driven in this tree.
+   Mocked half met, headset half not met.
+   Nobody has held a real hand up to these distances.
+   XR-SESSION END */
 let xrMode = null, vrSupported = false, arSupported = false, xrProbeNote = null;
 let xrBlend = 'opaque', xrFloor = true, xrWalk = false, xrWalkKey = null;
 const XR_LOCAL_EYE = 1.6;              // rig lift in a plain `local` space
@@ -7310,8 +7320,8 @@ const xrPad = { l: [0, 0], r: [0, 0], trig: false, lTrig: false, grip: false,
    Four gestures, read off WebXR Hand Input joints. Every distance, every
    release distance and every hold below is the guide registry's - AUTHORED,
    and stated there as authored: nobody has held a real headset up to these
-   numbers, and no session - mocked or real - has driven this layer in this
-   tree; the contracts are held at the source. What IS proven here is the shape: a gesture
+   numbers, and no session on a physical headset has driven this layer in
+   this tree; the contracts are held at the source. What IS proven here is the shape: a gesture
    fires on its threshold and releases on a separate, looser one, because a
    single threshold on a stop gesture chatters at the boundary and a stop
    that chatters is worse than no stop at all.
@@ -7674,8 +7684,8 @@ function xrQDrop(fps) {
     + (xrScaleIdx ? ' ' + t('xr.perfNextSession') : '');
   xrSay(xrQNote);
 }
-// what a harness could read and drive - no harness, mocked or real, has
-// driven this layer yet; this is the surface one would read
+// what a harness reads and drives: the MOCKED session harness (xr/session_harness.mjs)
+// reads this surface; no harness has run it on a physical headset
 window.__tc3dXR = {
   start: xrStart,
   end: () => renderer.xr.getSession()?.end(),
@@ -11082,6 +11092,9 @@ const PROPS = {
 
 /* ---------------------------------------------------------- the hall ---- */
 let hallGroup = null, beacons = [], floors = [], roomRects = [], curRoom = null;
+/* STEP-EPISODE BEGIN: the door placards of the hall being walked, and the placard panel that is open */
+let placardBoards = [], placardOpen = null;
+/* STEP-EPISODE END */
 // The hall's own solid fabric: shell walls and partition segments, as
 // axis-aligned rectangles in the hall's frame (a hall is not turned). Built
 // from the SAME runs that are drawn, so there is no opening you can see and
@@ -11721,6 +11734,7 @@ function buildHall(sg) {
   if (tqSt) { tqSt.dispose(); tqSt = null; tqAt = null; }   // its panel goes with the hall it stood in
   if (hallGroup) { scene.remove(hallGroup); disposeOf(hallGroup); }
   hallGroup = new THREE.Group(); beacons = []; floors = []; roomRects = []; curRoom = null;
+  /* STEP-EPISODE BEGIN */ placardBoards = []; placardOpen = null; /* STEP-EPISODE END */
   hallSolids = [];
   // Every material this hall builds for itself - wall faces, wainscots,
   // floors, luminaires - is deliberately left UNMARKED, because
@@ -12277,6 +12291,9 @@ function buildHall(sg) {
                      rx + rw / 2 - bw / 2 - .1);
       plac.position.set(bx2, BOARD_HEAD_M - bh2 / 2, rz + rd / 2 + .09);
       hallGroup.add(plac);
+      /* STEP-EPISODE BEGIN: the board knows which room it hangs in, so a click on it can open its panel */
+      plac.userData.placardStrand = r.strand; placardBoards.push(plac);
+      /* STEP-EPISODE END */
     }
 
     /* The hazard notice, where the room's OWN record names a hazard.
@@ -15257,11 +15274,12 @@ function walkStep(dt) {
       curRoom = room;
       markActiveLesson(room ? room.strand : null);
       if (room) {
+        /* STEP-EPISODE BEGIN */ stepWalkEntered(room); /* STEP-EPISODE END */
         const fin = D.finCat[D.finishes[slug][room.strand].surface];
         document.getElementById('hfocus').textContent =
           room.label + ' \u2014 ' + fin.name;
         document.getElementById('hint').textContent =
-          condLine(condOf(slug, room.strand));
+          condLine(condOf(slug, room.strand)) + stepPlacardHint(room.strand);
       } else {
         document.getElementById('hfocus').textContent = hallRec.focus;
         document.getElementById('hint').textContent = t('hint.walk');
@@ -15444,6 +15462,102 @@ function exportTraining() {
   return JSON.stringify({ pack: 'smartcitix-trade-craft-academy-training-data',
     exported: new Date().toISOString(), episodes: trainingLog });
 }
+
+/* STEP-EPISODE BEGIN (wave 20): the walk and placard episodes.
+   A lesson's walk and placard steps recorded nothing, so no lesson could be
+   completed from evidence. Two small events fix that without a new
+   storage key, toggle or cap:
+     walk    - the walker's own position enters the rectangle of a room that
+               a lesson step of kind walk names, in the hall being walked;
+     placard - that room's placard panel is opened (a click on the board, or
+               E in the room) and stays open, with the walker still in the
+               room, for D.training.step_episodes.placard.dwell_ms.
+   Which rooms count is READ from D.lessons for this hall - no other room is
+   recorded, so the rolling cap is not spent on footsteps. A probe stepping
+   the walker (wkSilent) records nothing, and an episode already in the log
+   for the same (kind, hall, room) is not added again. An episode proves a
+   device saw a position or an open panel; it does not prove anyone read or
+   understood anything (D.training.step_episodes.does_not_prove). */
+const PLACARD_DWELL_MS = D.training.step_episodes.placard.dwell_ms;
+function stepTargetStrands(kind) {
+  const out = new Set();
+  for (const L of Object.values(D.lessons.lessons))
+    if (L.hall === slug) for (const st of L.steps) if (st.kind === kind) out.add(st.where);
+  return out;
+}
+function stepLogged(kind, strand) {
+  return trainingLog.some((e) => e && e.kind === kind && e.hall === slug && e.where === strand);
+}
+function stepWalkEntered(room) {
+  if (wkSilent) return;
+  if (!stepTargetStrands('walk').has(room.strand) || stepLogged('walk', room.strand)) return;
+  recordEpisode({ kind: 'walk', campus: campusKey, hall: slug,
+    where: room.strand, room: room.label });
+}
+function stepPlacardHint(strand) {
+  return placardBoards.some((b) => b.userData.placardStrand === strand) ? ' \u00b7 E: placard' : '';
+}
+function openPlacard(strand) {
+  if (view !== 'hall' || !curRoom || curRoom.strand !== strand) return false;
+  const board = placardBoards.find((b) => b.userData.placardStrand === strand);
+  if (!board) return false;
+  board.getWorldPosition(_wp);
+  const rp = xrRig.position;
+  if (Math.hypot(_wp.x - rp.x, _wp.z - rp.z) > LKIND.placard.hide_beyond_m) return false;
+  const c = condOf(slug, strand), i = D.i18n[loc];
+  const esc = (x) => String(x).replace(/[&<>]/g,
+    (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[ch]));
+  document.getElementById('pbody').innerHTML = '<div data-placard="' + strand + '">'
+    + '<h2>' + esc(curRoom.label) + ' \u2014 door placard</h2>'
+    + '<span class="chip">' + esc(i.strands[strand]) + '</span>'
+    + '<h3>What this room is held to</h3><ul>'
+    + c.ppe.map((x) => '<li>' + esc(x) + '</li>').join('') + '</ul>'
+    + '<p style="color:var(--muted);font-size:13px">' + esc(condLine(c)) + '</p>'
+    + '<p class="src">conditions: DERIVED \u00b7 geometry: SCHEMATIC</p>'
+    + '<p class="src">' + esc(D.training.step_episodes.proves) + '</p>'
+    + '<p class="src">' + esc(D.training.step_episodes.does_not_prove) + '</p></div>';
+  placardOpen = { strand, ms: 0, done: false };
+  if (walkActive && plc.isLocked) plc.unlock();
+  document.body.classList.add('open');
+  return true;
+}
+function stepEpisodeTick(dt) {
+  if (!placardOpen) return;
+  const still = document.body.classList.contains('open') && view === 'hall'
+    && curRoom && curRoom.strand === placardOpen.strand
+    && document.querySelector('#pbody [data-placard="' + placardOpen.strand + '"]');
+  if (!still) { placardOpen = null; return; }
+  // a stalled frame or a hidden tab is not reading time: one frame counts at most a second (a device slow enough to
+  // render under one frame a second still accrues its dwell, because every frame it does render counts in full)
+  placardOpen.ms += Math.min(dt, 1) * 1000;
+  if (!placardOpen.done && placardOpen.ms >= PLACARD_DWELL_MS) {
+    placardOpen.done = true;
+    const strand = placardOpen.strand;
+    if (stepTargetStrands('placard').has(strand) && !stepLogged('placard', strand))
+      recordEpisode({ kind: 'placard', campus: campusKey, hall: slug,
+        where: strand, room: curRoom.label, dwell_ms: Math.round(placardOpen.ms) });
+  }
+}
+document.addEventListener('keydown', (e) => {
+  if (e.code === 'KeyE' && walkActive && view === 'hall' && curRoom && !sim
+      && !document.body.classList.contains('open')) openPlacard(curRoom.strand);
+});
+/* a harness hook, like __tc3dRooms: stand the walker in a room's middle and let the page's own room-entry step run, open a
+   room's placard through the page's own opener, and read what the recorder holds. It records nothing itself. */
+window.__tc3dStepEpisode = {
+  place: (strand) => {
+    const r = roomRects.find((q) => q.strand === strand);
+    if (!r) return null;
+    xrRig.position.x = (r.x0 + r.x1) / 2; xrRig.position.z = (r.z0 + r.z1) / 2;
+    walkStep(1 / 60);
+    return curRoom ? curRoom.strand : null;
+  },
+  open: (strand) => openPlacard(strand),
+  targets: () => ({ walk: [...stepTargetStrands('walk')], placard: [...stepTargetStrands('placard')] }),
+  boards: () => placardBoards.map((b) => b.userData.placardStrand),
+  log: () => trainingLog.map((e) => ({ ...e })),
+};
+/* STEP-EPISODE END */
 
 /* ---------------------------------------------- Orbis synthetic-training
    prompts. Text only, built locally from the union registry this page
@@ -16484,6 +16598,12 @@ function pickWith(ray) {
     if (wh?.object.userData.wapt !== undefined)
       return openWa(wh.object.userData.wapt);
   }
+  /* STEP-EPISODE BEGIN: a door placard answers a click, but only from a walker standing in its room */
+  if (view === 'hall' && placardBoards.length) {
+    const pbh = ray.intersectObjects(placardBoards, false)[0];
+    if (pbh && openPlacard(pbh.object.userData.placardStrand)) return;
+  }
+  /* STEP-EPISODE END */
   const ahit = ray.intersectObjects(advisorMeshes, true)[0];
   if (ahit) {
     let o = ahit.object;
@@ -17309,6 +17429,7 @@ renderer.setAnimationLoop(() => {
     }
     traceStep(dt);
   }
+  /* STEP-EPISODE BEGIN */ stepEpisodeTick(dt); /* STEP-EPISODE END */
   stepEmote(dt);
   if (view === 'avatar' && !emo) idleBreath(avatarMesh, clock.elapsedTime, dt);
   if (!reduced) for (const b of fogBanks) {

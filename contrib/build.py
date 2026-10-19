@@ -234,9 +234,9 @@ ID_SOURCES = {
     'hall': {'registry': HALLS_PATH + '#halls[].slug', 'keys': 'hall slugs', 'count': len(HALL_SLUGS)},
     'campus': {'registry': CAMPUSES_PATH + '#campuses', 'keys': 'campus ids', 'count': len(CAMPUS_IDS)},
     'not_resolved': {
-        'fields': ['advisor', 'crew', 'role', 'topic', 'answer_kind', 'point', 'controls', 'operator'],
+        'fields': ['advisor', 'crew', 'role', 'topic', 'answer_kind', 'point', 'controls', 'operator', 'where', 'room', 'dwell_ms'],
         'why': 'this verifier resolves the ids that name a PLACE or a SEAT (sim, scenario, hall, campus). An advisor, '
-               'a crew role, a topic, a walkaround point or a control scheme is carried verbatim and its shape is '
+               'a crew role, a topic, a walkaround point, a control scheme, or the room (where, room) and dwell of a walk or placard episode is carried verbatim and its shape is '
                'held to the episode field list; whether it names a real registry entry is not checked here and the '
                'verifier says so',
     },
@@ -500,6 +500,9 @@ def build_fixture():
         episode('crew', T(5), campus=FIX_CAMPUS, hall=FIX_HALL, crew='fixture-crew', role='fixture-role',
                 topic='fixture-topic', answer_kind='registry',
                 seat='fixture-seat', muster='fixture-muster'),
+        episode('walk', T(6), campus=FIX_CAMPUS, hall=FIX_HALL, where='fixture-strand', room='Fixture Room'),
+        episode('placard', T(7), campus=FIX_CAMPUS, hall=FIX_HALL, where='fixture-strand', room='Fixture Room',
+                dwell_ms=5250),
     ]
     c = counts_of(episodes)
     rec = {

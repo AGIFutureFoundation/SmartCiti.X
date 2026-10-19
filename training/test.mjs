@@ -35,7 +35,7 @@ const kinds = Object.entries(reg.episode_kinds);
    recorder records. */
 ok('the episode kinds are the declared roster, each explaining itself and '
   + 'its fields',
-  kinds.map(([k]) => k).sort().join(',') === 'advisor,crew,sim,walkaround'
+  kinds.map(([k]) => k).sort().join(',') === 'advisor,crew,placard,sim,walk,walkaround'
   && kinds.every(([, k]) => k.what.length > 10 && k.fields.includes('t')
     && k.fields.includes('kind')));
 ok('a crew episode keeps which ROLE answered, not just which crew - a '
@@ -118,7 +118,7 @@ const callKeys = (kk) => {
   const body = page.slice(at0, page.indexOf('});', at0)).replace(/^recordEpisode\(\{/, '');
   return [...body.matchAll(/(?:^|[\s,{])([a-z_]+):\s/g)].map((m) => m[1]).sort();
 };
-for (const kk of ['advisor', 'crew', 'walkaround']) {
+for (const kk of ['advisor', 'crew', 'walkaround', 'walk', 'placard']) {
   ok(`the page writes exactly the declared fields of a ${kk} episode (the stamp t is added by recordEpisode)`,
     JSON.stringify(callKeys(kk)) === JSON.stringify(reg.episode_kinds[kk].fields.filter((f) => f !== 't').sort()),
     [JSON.stringify(callKeys(kk)), JSON.stringify(reg.episode_kinds[kk].fields)]);
@@ -127,6 +127,135 @@ ok('a crew episode records the crew\'s own seat and muster, copied from the crew
   reg.episode_kinds.crew.fields.includes('seat') && reg.episode_kinds.crew.fields.includes('muster')
   && /CREW-EPISODE BEGIN[\s\S]*?seat: crew\.seat, muster: crew\.muster[\s\S]*?CREW-EPISODE END/.test(page)
   && /const crew = a\.inCrew \? CREW_TABLE\[a\.inCrew\] : null;/.test(page));
+
+/* wave 20: walk and placard. Each is declared with the fields the page writes, recorded inside balanced anchored
+   STEP-EPISODE blocks, the dwell is read from the embedded registry, and a probe-driven walker records nothing. */
+ok('walk and placard episodes declare where (the strand id a lesson step carries) and room, and a placard also its measured dwell_ms',
+  ['walk', 'placard'].every((k) => reg.episode_kinds[k].fields.includes('where') && reg.episode_kinds[k].fields.includes('room')
+    && reg.episode_kinds[k].fields.includes('hall') && reg.episode_kinds[k].outcome_shape === null)
+  && reg.episode_kinds.placard.fields.includes('dwell_ms') && !reg.episode_kinds.walk.fields.includes('dwell_ms'));
+ok('the declared dwell is a real number, with its reason, and the honesty says what a walk or placard episode does not prove',
+  Number.isInteger(reg.step_episodes.placard.dwell_ms) && reg.step_episodes.placard.dwell_ms >= 1000
+  && reg.step_episodes.placard.dwell_ms === reg.episode_kinds.placard.at_least.dwell_ms && reg.episode_kinds.walk.at_least === undefined
+  && /floor on\s+open time, not a measure of reading/.test(reg.step_episodes.placard.dwell_why)
+  && /competence, attention, comprehension/.test(reg.step_episodes.does_not_prove) && /certifies nobody/.test(reg.step_episodes.does_not_prove)
+  && /never for\s+every room/.test(reg.step_episodes.walk.recorded_for) && /one episode per \(kind, hall, where\)/.test(reg.step_episodes.dedupe));
+ok('the page records both inside balanced STEP-EPISODE blocks and reads the dwell from the embedded registry, never retyped',
+  (page.match(/\/\* STEP-EPISODE BEGIN/g) || []).length >= 4
+  && (page.match(/\/\* STEP-EPISODE BEGIN/g) || []).length === (page.match(/\/\* STEP-EPISODE END/g) || []).length
+  && page.includes('D.training.step_episodes.placard.dwell_ms') && page.includes(`"dwell_ms":${reg.step_episodes.placard.dwell_ms}`)
+  && !/PLACARD_DWELL_MS\s*=\s*\d/.test(page));
+ok('a probe-driven walker (wkSilent) records no walk episode, and only a lesson-target room is recorded, never twice',
+  /function stepWalkEntered\(room\) \{\s*if \(wkSilent\) return;[\s\S]*?stepTargetStrands\('walk'\)\.has\(room\.strand\)[\s\S]*?stepLogged\('walk', room\.strand\)/.test(page));
+
+/* wave 20: BEHAVIOUR of the page's STEP-EPISODE recorder, not just its text. The block is cut out of the built page and run
+   in a vm with stub scene state, over the real lessons registry, and driven the way the page drives it. */
+{
+  const lessonsReg = JSON.parse(readFileSync(new URL('../lessons/registry/lessons.json', import.meta.url)));
+  const i0 = page.indexOf('/* STEP-EPISODE BEGIN (wave 20)');
+  const blockSrc = page.slice(i0, page.indexOf('/* STEP-EPISODE END */', i0));
+  const L0 = Object.values(lessonsReg.lessons).find((l) => l.steps.some((st) => st.kind === 'walk') && l.steps.some((st) => st.kind === 'placard'));
+  const HALL = L0.hall;
+  const walkS = new Set(), placS = new Set();
+  for (const l of Object.values(lessonsReg.lessons)) if (l.hall === HALL) for (const st of l.steps) {
+    if (st.kind === 'walk') walkS.add(st.where); if (st.kind === 'placard') placS.add(st.where);
+  }
+  const TARGET = [...placS].find((x) => walkS.has(x));
+  const OTHER = ['safety', 'procedure', 'machines', 'tools', 'layout', 'inspection', 'materials', 'documentation', 'coordination', 'troubleshooting', 'leadership']
+    .find((x) => !walkS.has(x) && !placS.has(x));
+  const DWELL = reg.step_episodes.placard.dwell_ms, RANGE = 20;
+  const mk = () => {
+    const src = `
+      let wkSilent = false, view = 'hall', curRoom = null, placardBoards = [], placardOpen = null, walkActive = false, sim = null;
+      const slug = ${JSON.stringify(HALL)}, campusKey = 'c', loc = 'en';
+      const trainingLog = [];
+      const D = { lessons: { lessons: LESSONS }, training: { step_episodes: { placard: { dwell_ms: ${DWELL} }, proves: 'P.', does_not_prove: 'N.' } },
+        i18n: { en: { strands: new Proxy({}, { get: (t, k) => String(k) }) } } };
+      const LKIND = { placard: { hide_beyond_m: ${RANGE} } };
+      const xrRig = { position: { x: 0, z: 0 } }, _wp = { x: 0, z: 0 };
+      const plc = { isLocked: false, unlock() {} };
+      const window = {}; let roomRects = []; function walkStep() {}   // the harness hook at the end of the block needs these names
+      const condOf = () => ({ ppe: ['hi-vis', 'boots'] }), condLine = () => 'cond';
+      function recordEpisode(ep) { trainingLog.push({ t: 'T', ...ep }); }
+      ${blockSrc}
+      return { log: trainingLog, listeners, setRoom: (r) => { curRoom = r; }, setSilent: (v) => { wkSilent = v; }, setView: (v) => { view = v; },
+        addBoard: (b) => placardBoards.push(b), clearBoards: () => { placardBoards = []; }, setWalk: (v) => { walkActive = v; },
+        entered: stepWalkEntered, open: openPlacard, tick: stepEpisodeTick, hint: stepPlacardHint, state: () => placardOpen, rig: xrRig };`;
+    const pb = { innerHTML: '' }, cls = new Set(), listeners = [];
+    const document = {
+      getElementById: () => pb,
+      querySelector: (q) => { const m = q.match(/data-placard="([^"]+)"/); return m && pb.innerHTML.includes('data-placard="' + m[1] + '"') ? {} : null; },
+      body: { classList: { contains: (x) => cls.has(x), add: (x) => cls.add(x), remove: (x) => cls.delete(x) } },
+      addEventListener: (t, f) => listeners.push([t, f]),
+    };
+    const h = new Function('LESSONS', 'document', 'listeners', src)(lessonsReg.lessons, document, listeners);
+    return { ...h, pb, cls, document };
+  };
+  const room = (strand) => ({ strand, label: 'Room ' + strand });
+  const board = (strand, x) => ({ userData: { placardStrand: strand }, getWorldPosition: (v) => { v.x = x; v.z = 0; } });
+  const run = (h, secs, dt = 0.1) => { for (let i = 0; i < Math.round(secs / dt); i++) h.tick(dt); };
+
+  let h = mk();
+  h.entered(room(TARGET));
+  ok('a walk episode is recorded when the walker enters a room a lesson names as a walk target: kind, campus, hall, where (the strand) and the room label, nothing else',
+    h.log.length === 1 && JSON.stringify(Object.keys(h.log[0]).sort()) === JSON.stringify(['campus', 'hall', 'kind', 'room', 't', 'where'])
+    && h.log[0].kind === 'walk' && h.log[0].hall === HALL && h.log[0].where === TARGET && h.log[0].room === 'Room ' + TARGET);
+  h.entered(room(TARGET));
+  ok('entering the same room again adds nothing while the first is in the log', h.log.length === 1);
+  h.entered(room(OTHER));
+  ok('a room no lesson names as a walk target records nothing', h.log.length === 1 && OTHER !== undefined);
+  h = mk(); h.setSilent(true); h.entered(room(TARGET));
+  ok('a probe-driven walker (wkSilent) records no walk episode', h.log.length === 0);
+
+  // placard
+  h = mk(); h.addBoard(board(TARGET, 5)); h.setRoom(room(OTHER));
+  ok('a placard cannot be opened from outside its room', h.open(TARGET) === false && h.state() === null && !h.cls.has('open'));
+  h.setRoom(room(TARGET)); h.rig.position.x = 5 + RANGE + 1;
+  ok('a placard cannot be opened from beyond the label registry\'s read distance, read from the registry', h.open(TARGET) === false);
+  h.rig.position.x = 3;
+  ok('opened from inside its room and in range, the panel shows the room\'s own placard and opens the panel', h.open(TARGET) === true && h.cls.has('open') && /data-placard/.test(h.pb.innerHTML) && h.state().strand === TARGET);
+  run(h, DWELL / 1000 - 0.3);
+  ok('nothing is recorded before the declared dwell has passed', h.log.length === 0 && h.state() !== null);
+  run(h, 0.6);
+  const pe = h.log[0];
+  ok('after the dwell a placard episode is recorded: kind, campus, hall, where, room and the measured dwell_ms, at or above the declared floor',
+    h.log.length === 1 && pe.kind === 'placard' && pe.hall === HALL && pe.where === TARGET && pe.room === 'Room ' + TARGET && pe.dwell_ms >= DWELL
+    && JSON.stringify(Object.keys(pe).sort()) === JSON.stringify(['campus', 'dwell_ms', 'hall', 'kind', 'room', 't', 'where']));
+  run(h, 5);
+  ok('one panel, one episode: staying longer adds nothing, and re-opening while it is in the log adds nothing', h.log.length === 1 && (h.open(TARGET), run(h, DWELL / 1000 + 1), h.log.length === 1));
+
+  h = mk(); h.addBoard(board(TARGET, 5)); h.setRoom(room(TARGET)); h.open(TARGET); run(h, 3);
+  h.setRoom(room(OTHER)); run(h, 0.1);
+  ok('walking out of the room resets the dwell: the panel is no longer a placard being read', h.state() === null);
+  h.setRoom(room(TARGET)); run(h, DWELL / 1000 - 0.5);
+  ok('and nothing carries over: the time before leaving does not count towards a later open', h.log.length === 0);
+
+  h = mk(); h.addBoard(board(TARGET, 5)); h.setRoom(room(TARGET)); h.open(TARGET); run(h, 2);
+  h.pb.innerHTML = '<h2>another panel</h2>'; run(h, 0.1);
+  ok('another panel replacing the placard resets the dwell', h.state() === null);
+  h = mk(); h.addBoard(board(TARGET, 5)); h.setRoom(room(TARGET)); h.open(TARGET); run(h, 2);
+  h.cls.delete('open'); run(h, 0.1);
+  ok('closing the panel resets the dwell', h.state() === null);
+  h = mk(); h.addBoard(board(TARGET, 5)); h.setRoom(room(TARGET)); h.open(TARGET); for (let i = 0; i < 40; i++) h.tick(30);
+  ok('a stalled frame or hidden tab is not reading time: a 30 s frame counts one second at most, so a few of them never reach the dwell and the recorded dwell never exceeds one second per frame',
+    h.log.length === 0 || h.log[0].dwell_ms <= 40 * 1000 + 1);
+  h = mk(); h.addBoard(board(TARGET, 5)); h.setRoom(room(TARGET)); h.open(TARGET); for (let i = 0; i < Math.floor(DWELL / 1000) - 1; i++) h.tick(30);
+  ok('three 30 s frames (under the dwell once clamped) record nothing: stalls are not reading time', h.log.length === 0);
+  h = mk(); h.addBoard(board(TARGET, 5)); h.setRoom(room(TARGET)); h.open(TARGET); for (let i = 0; i < Math.ceil(DWELL / 1000) + 1; i++) h.tick(1);
+  ok('a device rendering one frame a second still accrues the dwell: every frame it does render counts in full', h.log.length === 1 && h.log[0].dwell_ms >= DWELL);
+  h = mk(); h.addBoard(board(TARGET, 5)); h.setRoom(room(TARGET)); h.open(TARGET); h.tick(100);
+  ok('a single 100 s frame advances the dwell by one second only', Math.abs(h.state().ms - 1000) < 1e-6);
+  h = mk(); h.addBoard(board(OTHER, 5)); h.setRoom(room(OTHER)); h.open(OTHER); run(h, DWELL / 1000 + 1);
+  ok('a placard of a room no lesson names records nothing, however long it is open', h.log.length === 0);
+  h = mk(); h.addBoard(board(TARGET, 5)); h.setRoom(room(TARGET)); h.setView('campus');
+  ok('a placard cannot be opened outside the hall view', h.open(TARGET) === false);
+  ok('the board hint is shown only for a room that has a board', mk().hint(TARGET) === '' && (() => { const g = mk(); g.addBoard(board(TARGET, 1)); return g.hint(TARGET) !== '' && g.hint(OTHER) === ''; })());
+  h = mk(); h.addBoard(board(TARGET, 5)); h.setRoom(room(TARGET)); h.setWalk(true);
+  const kd = h.listeners.find(([t]) => t === 'keydown')[1];
+  kd({ code: 'KeyQ' }); const q = h.state();
+  kd({ code: 'KeyE' });
+  ok('E in a room with a board opens it (walking, hall view, no panel open); other keys do not', q === null && h.state() !== null && h.state().strand === TARGET);
+}
 
 /* ------------------------------------------------------------------ TRACE --- */
 ok('TRACE has its own toggle key, separate from the base recorder\'s, off by default',

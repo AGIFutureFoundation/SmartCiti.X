@@ -2751,6 +2751,15 @@ function fabSnapshot() {
 }
 const fabFam = (m) => FAB.fam.find((f) => f.m === m) || null;
 const fabBuilt = (m) => { const f = fabFam(m); return f ? f.n : m.count; };
+function fabPlanes() {
+  FAB_PM.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
+  const q = FAB_PM.elements, F = FAB_FR;   // Gribb-Hartmann planes, normalised
+  const rows = [[3, 0, 1], [3, 0, -1], [3, 1, 1], [3, 1, -1], [3, 2, 1], [3, 2, -1]];
+  for (let k = 0; k < 6; k++) {
+    const [, r, s] = rows[k]; const a = q[3] + s * q[r], b = q[7] + s * q[r + 4], c = q[11] + s * q[r + 8], d = q[15] + s * q[r + 12];
+    const L = Math.hypot(a, b, c) || 1; F[k * 4] = a / L; F[k * 4 + 1] = b / L; F[k * 4 + 2] = c / L; F[k * 4 + 3] = d / L;
+  }
+}
 function fabCull(over) {
   if (over || !FAB.fam.length) return;
   const e = camera.matrixWorld.elements, p = camera.projectionMatrix.elements;
@@ -2760,14 +2769,7 @@ function fabCull(over) {
   if (key === FAB.key) return;
   FAB.key = key; const t0 = performance.now();
   if (DIAG.noCull) { for (const f of FAB.fam) fabFill(f, null); FAB.culls++; FAB.ms = performance.now() - t0; return; }
-  FAB_PM.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
-  const q = FAB_PM.elements, F = FAB_FR;   // Gribb-Hartmann planes, normalised
-  const rows = [[3, 0, 1], [3, 0, -1], [3, 1, 1], [3, 1, -1], [3, 2, 1], [3, 2, -1]];
-  for (let k = 0; k < 6; k++) {
-    const [, r, s] = rows[k]; let a = q[3] + s * q[r], b = q[7] + s * q[r + 4], c = q[11] + s * q[r + 8], d = q[15] + s * q[r + 12];
-    const L = Math.hypot(a, b, c) || 1; F[k * 4] = a / L; F[k * 4 + 1] = b / L; F[k * 4 + 2] = c / L; F[k * 4 + 3] = d / L;
-  }
-  const cx = e[12], cy = e[13], cz = e[14];
+  fabPlanes(); const F = FAB_FR, cx = e[12], cy = e[13], cz = e[14];
   for (const f of FAB.fam) {
     const keep = new Uint32Array(f.n); let k = 0; const sp = f.sp;
     for (let i = 0; i < f.n; i++) {
@@ -2779,6 +2781,43 @@ function fabCull(over) {
     fabFill(f, keep.subarray(0, k));
   }
   FAB.culls++; FAB.ms = performance.now() - t0;
+}
+/* the NPC guides (npckit: 168 guides over all 13 parishes, 5 part meshes of boxes, 10,080 triangles always drawn): drawn through a
+   per-frame copy of the part meshes holding only the guides inside the frustum and within NPC_FAR_M (a 1.8 m figure is ~2 px at
+   600 m, and the fog starts at 700 m); the guides' own meshes stay the source of truth (hidden while the copy draws) */
+const NPC_FAR_M = 600, FABG = { src: [], ghosts: [], drawn: 0 };
+function fabNpc(over) {
+  if (over) { for (const g of FABG.ghosts) g.visible = false; return; }
+  fabPlanes();
+  if (FABG.src.some((m) => !m.parent)) { for (const g of FABG.ghosts) scene.remove(g); FABG.src = []; FABG.ghosts = []; }
+  if (!FABG.src.length) {
+    for (const c of scene.children) if (c.userData.npcPart && c.isInstancedMesh && !c.name) FABG.src.push(c);
+    for (const s of FABG.src) {
+      const g = new THREE.InstancedMesh(s.geometry, s.material, s.instanceMatrix.count); g.setColorAt(0, new THREE.Color(1, 1, 1));
+      g.name = 'npc-view'; g.frustumCulled = false; g.count = 0; g.visible = false; scene.add(g); FABG.ghosts.push(g);
+      if (!s.geometry.boundingSphere) s.geometry.computeBoundingSphere();
+    }
+  }
+  const F = FAB_FR, e = camera.matrixWorld.elements, cx = e[12], cy = e[13], cz = e[14], far2 = NPC_FAR_M * NPC_FAR_M; let drawn = 0;
+  FABG.src.forEach((s, gi) => {
+    const g = FABG.ghosts[gi], on = s.visible && !DIAG.noCull;
+    g.visible = on; if (on) s.visible = false;   // perfCull set the source's visibility for this view; the copy takes it over
+    if (!on) return;
+    const sm = s.instanceMatrix.array, sc = s.instanceColor ? s.instanceColor.array : null, gm = g.instanceMatrix.array, gc = g.instanceColor.array, bs = s.geometry.boundingSphere;
+    let k = 0;
+    for (let i = 0; i < s.count; i++) {
+      const o = i * 16, sx = Math.hypot(sm[o], sm[o + 1], sm[o + 2]), sy = Math.hypot(sm[o + 4], sm[o + 5], sm[o + 6]), sz = Math.hypot(sm[o + 8], sm[o + 9], sm[o + 10]), r = bs.radius * Math.max(sx, sy, sz);
+      if (r < 1e-6) continue;   // a part this guide does not wear (zero scale)
+      const x = sm[o] * bs.center.x + sm[o + 4] * bs.center.y + sm[o + 8] * bs.center.z + sm[o + 12], y = sm[o + 1] * bs.center.x + sm[o + 5] * bs.center.y + sm[o + 9] * bs.center.z + sm[o + 13], z = sm[o + 2] * bs.center.x + sm[o + 6] * bs.center.y + sm[o + 10] * bs.center.z + sm[o + 14];
+      const dx = x - cx, dz = z - cz; if (dx * dx + dz * dz > far2) continue;
+      const rr = r + 4 + 0.025 * Math.hypot(dx, y - cy, dz); let out = false;
+      for (let j = 0; j < 24; j += 4) if (F[j] * x + F[j + 1] * y + F[j + 2] * z + F[j + 3] < -rr) { out = true; break; }
+      if (out) continue;
+      gm.set(sm.subarray(o, o + 16), k * 16); if (sc) gc.set(sc.subarray(i * 3, i * 3 + 3), k * 3); k++;
+    }
+    g.count = k; drawn += k; g.instanceMatrix.needsUpdate = true; g.instanceColor.needsUpdate = true;
+  });
+  FABG.drawn = drawn;
 }
 function fabFill(f, idx) {
   const m = f.m, k = idx ? idx.length : f.n, A = m.instanceMatrix, C = m.instanceColor;
@@ -2798,13 +2837,16 @@ _FC_ANCHORS = [
     ('  blocks.instanceMatrix.needsUpdate = true; trees.instanceMatrix.needsUpdate = true; lamps.instanceMatrix.needsUpdate = true; dirty = false; markPhys();\n',
      '  blocks.instanceMatrix.needsUpdate = true; trees.instanceMatrix.needsUpdate = true; lamps.instanceMatrix.needsUpdate = true; dirty = false; markPhys(); fabSnapshot();   // FABRIC-CULL\n'),
     # frame(): after the camera is placed
+    # the guides' copy meshes take over after perfCull has set the guides' visibility, right before the draw
+    ('  const t0 = performance.now(); if (!DIAG.noRender && ovNeedsRender(now)) renderer.render(scene, camera); frameMs',
+     '  fabNpc(over);   // FABRIC-CULL (after perfCull)\n  const t0 = performance.now(); if (!DIAG.noRender && ovNeedsRender(now)) renderer.render(scene, camera); frameMs'),
     # the fabric cull runs at the top of perfCull (which frame() calls once, right after placeCamera)
     ('function perfCull(over) {\n',
      'function perfCull(over) {\n  camera.updateMatrixWorld(); camera.matrixWorldInverse.copy(camera.matrixWorld).invert(); fabCull(over);   // FABRIC-CULL (the camera is placed)\n'),
     # the eval's counts are the BUILT instances, not the drawn ones
     ('    instances: { block: blocks.visible ? houses.count + blocks.count : 0, tree: trees.visible ? trees.count : 0, lamp: lamps.visible ? lamps.count : 0, marker: markers.count,\n',
      '    instances: { block: blocks.visible ? fabBuilt(houses) + fabBuilt(blocks) : 0, tree: trees.visible ? fabBuilt(trees) : 0, lamp: lamps.visible ? fabBuilt(lamps) : 0, marker: markers.count,\n'
-     '      drawn: { ...FAB.drawn }, cullMs: +FAB.ms.toFixed(2), culls: FAB.culls,   // FABRIC-CULL: what the frustum cut left in the draw (built counts above)\n'),
+     '      drawn: { ...FAB.drawn, npc: FABG.drawn }, cullMs: +FAB.ms.toFixed(2), culls: FAB.culls,   // FABRIC-CULL: what the frustum cut left in the draw (built counts above)\n'),
     ('    kit: Object.fromEntries(Object.entries(KIT).map(([k, m]) => [k, m.visible ? m.count : 0])),\n',
      '    kit: Object.fromEntries(Object.entries(KIT).map(([k, m]) => [k, m.visible ? fabBuilt(m) : 0])),\n'),
     ('const a = m.geometry.attributes.kitUse.array, c = [0, 0, 0]; for (let i = 0; i < m.count; i++) c[Math.floor(a[i] + 0.01)]++;',

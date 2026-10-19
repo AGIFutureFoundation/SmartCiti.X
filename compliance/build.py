@@ -196,9 +196,13 @@ LESSON_MAP = need(LESSONS, 'lessons', 'lessons')
 LEDGER_CLASSES = {
     'evidenceable': 'a tc-completion/1 record carries a mark the verifier checks against the registries: '
                     'a sim step\'s episode (sim, scenario, score, passed) and record.sims[id].passed; a walkaround or '
-                    'advisor episode; a station id in record.stations; a crib district in record.tools with passed',
-    'self-reported': 'a walk or placard step: the record carries done and no evidence; completion.json says done is the '
-                     'learner\'s word, so this ledger cannot treat it as evidenced',
+                    'advisor episode; a walk episode (which room the walker entered) or a placard episode (which room, '
+                    'and a panel left open for its declared dwell); a station id in record.stations; a crib district in '
+                    'record.tools with passed',
+    'self-reported': 'a step kind completion.json says records nothing at all: the record carries done and no evidence, '
+                     'and done is the learner\'s word, so this ledger cannot treat it as evidenced. No step kind is '
+                     'self-reported today (walk and placard write episodes now); the class and its rule stay '
+                     'so a kind added with no record cannot carry evidence it does not have',
     'not-recordable': 'the item is a fact of the bundle (a room\'s required PPE, a hung placard, a hall\'s sign-off '
                       'status, a rubric axis) or a step kind completion.json says it cannot evidence; no field of a '
                       'tc-completion/1 record carries it',
@@ -286,7 +290,9 @@ for slug in HALL_ORDER:
             'placard': plac,
             'evidence': {'ledger_class': 'not-recordable',
                          'why': 'the required PPE and the hung placard are facts of the bundle; a placard step in a lesson '
-                                'is self-reported (' + STEP_KIND_EVIDENCE['placard']['why'] + ')'},
+                                'is evidenced only as a placard panel left open for its declared dwell with the walker in '
+                                'this room (' + STEP_KIND_EVIDENCE['placard']['why'] + '): the record carries that and '
+                                'nothing that says the placard was read or its requirements met'},
         }
         ITEM_TALLY['not-recordable'] += 1
     hazard_rooms = [s for s in ROOM_STRANDS if rooms[s]['hazard_room']]
@@ -408,10 +414,13 @@ def node_digest(record):
 
 GOOD = json.load(open(ROOT / PATHS['completion_fixture']))
 mut = copy.deepcopy(GOOD)
+# wave 20: a placard step is evidenced as an episode for ITS room, so the old mutant (a placard step carrying evidence when
+# placards were self-reported) is replaced by a placard step carrying the episode of ANOTHER room: this report inherits
+# completion's own rule and refuses it. The self-reported rule stays in verify.mjs and is mutation-proved in test.mjs.
 plac = next((lesson, st) for lesson in mut['lessons'] for st in lesson['steps'] if st['kind'] == 'placard' and st['done'])
-plac[1]['evidence'] = {'episode': 'placard', 't': BUILT + 'T03:00:00.000Z', 'hall': plac[0]['hall']}
+plac[1]['evidence']['where'] = 'not-the-room' if plac[1]['evidence']['where'] != 'not-the-room' else 'safety'
 mut['digest']['hex'] = node_digest(mut)
-MUTANTS = {'placard-claimed-evidenced': ('evidence.self-reported-carries-none', mut)}
+MUTANTS = {'placard-evidence-for-another-room': ('completion step.episode-evidence', mut)}
 
 REGISTRY = {
     'pack': 'smartcitix-trade-craft-academy-compliance',
@@ -438,7 +447,7 @@ REGISTRY = {
         'is_not': ['a code reference', 'a jurisdiction overlay', 'a certification', 'an inspection', 'an accreditation'],
         'signoff': 'no hall\'s content is signed off by a practitioner today (read through pack/hall_signoff.mjs); every hall inherits the global caveat',
         'signature': 'a signed record attests a key, not a person (completion.json#signature)',
-        'self_reported': 'a walk or placard step is the learner\'s word: it cannot be evidenced by any record',
+        'self_reported': 'no step kind is self-reported today: walk and placard write episodes now. A walk or placard episode records that a device saw the walker in a room, or a placard panel left open for its dwell; it never says the placard was read or that anything it requires was met, and the room requirement itself stays not-evidenced',
     },
     'placard_rule': PLACARD_STRUCTURE,
     'ledger_classes': LEDGER_CLASSES,

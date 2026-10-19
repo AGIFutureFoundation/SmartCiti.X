@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-22",
- "source_stamp": "5e942500dea821d6",
+ "source_stamp": "315e04416a1e2e1e",
  "contract": "this pack states no fact of its own. Every value in it is read out of another file at build time and carries the path and the locator it was read with, so a reader can resolve any entry back to its source and disagree with it there rather than here. Three questions are answered: what has been measured, what is declared and unbuilt, and where the known gaps are - plus the budgets those measurements govern, the suites that hold the assurance, and the questions this bundle records as open.",
  "honesty": {
   "status": "DERIVED: nothing in this registry was authored as a fact about the bundle. Every number is read from a named file through a named locator, and the suite re-resolves every pointer against the live file rather than trusting the value stored here.",
@@ -39,7 +39,7 @@
   "budget_currencies": 2,
   "budget_agreements": 7,
   "suites_run": 149,
-  "suite_checks_declared": 7304,
+  "suite_checks_declared": 7370,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
@@ -2327,7 +2327,8 @@
    "builders": [
     "lessons/build.py",
     "spaces/build.py",
-    "surfaces/build.py"
+    "surfaces/build.py",
+    "training/build.py"
    ],
    "suites": [
     "lessons/test.mjs",
@@ -2469,6 +2470,7 @@
     "schools/test.mjs",
     "sessions/test.mjs",
     "tasks/test.mjs",
+    "training/test.mjs",
     "unionpaths/test.mjs",
     "web/test_3d.mjs",
     "web/test_geomap.mjs",
@@ -5089,7 +5091,7 @@
    {
     "suite": "training/test.mjs",
     "pack": "training",
-    "readme_checks": 56,
+    "readme_checks": 84,
     "declared": true,
     "in_readme_table": true
    },
@@ -5250,7 +5252,7 @@
    {
     "suite": "evals/test.mjs",
     "pack": "evals",
-    "readme_checks": 78,
+    "readme_checks": 79,
     "declared": true,
     "in_readme_table": true
    },
@@ -5264,7 +5266,7 @@
    {
     "suite": "completion/test.mjs",
     "pack": "completion",
-    "readme_checks": 81,
+    "readme_checks": 95,
     "declared": true,
     "in_readme_table": true
    },
@@ -5278,7 +5280,7 @@
    {
     "suite": "compliance/test.mjs",
     "pack": "compliance",
-    "readme_checks": 65,
+    "readme_checks": 66,
     "declared": true,
     "in_readme_table": true
    },
@@ -5369,7 +5371,7 @@
    {
     "suite": "web/test_verify.mjs",
     "pack": "web",
-    "readme_checks": 68,
+    "readme_checks": 77,
     "declared": true,
     "in_readme_table": true
    },
@@ -5390,7 +5392,7 @@
    {
     "suite": "web/test_progress.mjs",
     "pack": "web",
-    "readme_checks": 50,
+    "readme_checks": 52,
     "declared": true,
     "in_readme_table": true
    },
@@ -5418,7 +5420,7 @@
    {
     "suite": "quests/test.mjs",
     "pack": "quests",
-    "readme_checks": 38,
+    "readme_checks": 40,
     "declared": true,
     "in_readme_table": true
    },
@@ -5894,7 +5896,7 @@
    {
     "suite": "web/test_lookkit.mjs",
     "pack": "web",
-    "readme_checks": 72,
+    "readme_checks": 74,
     "declared": true,
     "in_readme_table": true
    },
@@ -5922,7 +5924,7 @@
    {
     "suite": "web/test_rendercull.mjs",
     "pack": "web",
-    "readme_checks": 14,
+    "readme_checks": 21,
     "declared": true,
     "in_readme_table": true
    }
@@ -5933,8 +5935,8 @@
    "control/soak.mjs",
    "restoration/test_scenarios.mjs"
   ],
-  "declared_total": 7304,
-  "readme_headline": 7339,
+  "declared_total": 7370,
+  "readme_headline": 7405,
   "unaccounted_for": 35,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
@@ -6118,13 +6120,13 @@
   {
    "id": "xr.no-headset-has-ever-run-this",
    "kind": "unproved",
-   "asks": "four hand gestures, 25 joints and every hysteresis band are declared and proven against synthetic joint positions only; every XR contract is held at the source by regex, no session, mocked or real, has been driven in this tree, and a mocked-session harness is not claimed. Do they work on hardware?",
+   "asks": "four hand gestures, 25 joints and every hysteresis band are declared and proven against synthetic joint positions only; every XR contract is held at the source by regex, one seat is driven in a MOCKED session in headless Chromium that supplies controllers and no hand input source, and no session on a physical headset has been driven in this tree. Do they work on hardware?",
    "file": "guide/registry/guide.json",
    "anchors": {
     "from": "UNVERIFIED-ON-HARDWARE",
-    "to": "a mocked-session harness is not claimed."
+    "to": "so no gesture has been driven in any session, and no session on a physical headset has been driven in this tree."
    },
-   "quote": "UNVERIFIED-ON-HARDWARE: no headset has been available to this build, so not one of these gestures has been made by a real hand in a real session. The recogniser is proven against synthetic joint positions only; every XR contract is held at the source by regex; no session, mocked or real, has been driven in this tree, and a mocked-session harness is not claimed.",
+   "quote": "UNVERIFIED-ON-HARDWARE: no headset has been available to this build, so not one of these gestures has been made by a real hand in a real session. The recogniser is proven against synthetic joint positions only; every XR contract is held at the source by regex; a MOCKED session in headless Chromium drives one seat through its controllers but supplies no hand input source, so no gesture has been driven in any session, and no session on a physical headset has been driven in this tree.",
    "why_it_matters": "the largest unproved claim in the bundle, and the pack that makes it says so in its own status line rather than in a footnote. No amount of passing checks can close this one."
   },
   {

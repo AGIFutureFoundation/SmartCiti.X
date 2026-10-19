@@ -49,13 +49,14 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const median = (a) => { const s = [...a].sort((x, y) => x - y); return s.length ? s[s.length >> 1] : NaN; };
 const pct = (a, p) => { const s = [...a].sort((x, y) => x - y); return s.length ? s[Math.min(s.length - 1, Math.floor(s.length * p))] : NaN; };
 
-export async function runSession({ browser, base, mockSrc, fast = false, cfg = {}, budgetMs = 80000, onCheck = null, phases = null }) {
+export async function runSession({ browser, base, mockSrc, fast = false, cfg = {}, budgetMs = 80000, onCheck = null, phases = null, stopAfterPlay = false }) {
   const has = (p) => !phases || phases.includes(p);
   const checks = [], measured = {};
   const deadline = Date.now() + budgetMs;
   const ck = (name, ok, detail = '') => { const c = { name, ok: !!ok, detail: String(detail), atMs: Date.now() - (deadline - budgetMs) }; checks.push(c); if (onCheck) onCheck(c); };
   // every wait is capped by what is left of the browser budget (never below 0.8 s), so a stalled
   // phase fails by name instead of eating the run
+  const Tb = (ms) => Math.max(800, Math.min(ms, deadline - Date.now()));   // boot waits are never shortened by `fast`
   const T = (ms) => Math.max(800, Math.min(fast ? 6000 : ms, deadline - Date.now()));
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 } });
   const page = await ctx.newPage();
@@ -91,8 +92,8 @@ export async function runSession({ browser, base, mockSrc, fast = false, cfg = {
   await page.goto(url, { waitUntil: 'load' });
   let booted = true;
   try {
-    await page.waitForFunction(() => window.__tc3d && window.__tc3dXR && window.__tc3dSim, null, { timeout: T(60000) });
-    await page.waitForFunction(() => window.__tc3d().sim, null, { timeout: T(20000) });
+    await page.waitForFunction(() => window.__tc3d && window.__tc3dXR && window.__tc3dSim, null, { timeout: Tb(60000) });
+    await page.waitForFunction(() => window.__tc3d().sim, null, { timeout: Tb(20000) });
   } catch (e) { booted = false; }
   measured.bootMs = Date.now() - t0;
   ck('the page booted with the mock in place and opened the seat', booted && (await ev(() => window.__tc3d().sim)) === SEAT,
@@ -101,7 +102,7 @@ export async function runSession({ browser, base, mockSrc, fast = false, cfg = {
   const m0 = await mock();
   ck('the mock was installed while the document was still loading, before any page script', m0.readyStateAtInstall === 'loading', m0.readyStateAtInstall);
   let vrShown = false;
-  try { await page.waitForFunction(() => document.getElementById('vrBtn').style.display !== 'none', null, { timeout: T(15000) }); vrShown = true; } catch { /* named below */ }
+  try { await page.waitForFunction(() => document.getElementById('vrBtn').style.display !== 'none', null, { timeout: Tb(15000) }); vrShown = true; } catch { /* named below */ }
   const m1 = await mock();
   if (!vrShown && !fast) { /* every later phase needs the button: say so by name and stop */ }
   const arShown = await ev(() => document.getElementById('arBtn').style.display !== 'none');
@@ -261,11 +262,17 @@ export async function runSession({ browser, base, mockSrc, fast = false, cfg = {
     moved > .2 && Math.abs(Math.abs(walked.yaw - y0) - Math.PI / 6) < .01, `moved=${moved.toFixed(2)} m yawDelta=${(walked.yaw - y0).toFixed(3)}`);
 
   }   // has('play')
+  if (stopAfterPlay) return done();
   /* ---- 8. end the session (the B button in the hall) and check the non-XR view is back */
   const fBeforeEnd = await frames();
   await ev(() => window.__xrMock.button('right', 5, true)); await waitFrames(2, 4000); await ev(() => window.__xrMock.button('right', 5, false));
   let ended = false;
-  try { await page.waitForFunction(() => !window.__tc3dXR.presenting(), null, { timeout: T(10000) }); ended = true; } catch { /* named below */ }
+  try { await page.waitForFunction(() => !window.__tc3dXR.presenting(), null, { timeout: T(has('play') ? 10000 : 3000) }); ended = true; } catch { /* named below */ }
+  if (!ended && !has('play')) {
+    // a run that skipped the seat's play phase is still in the seat: that first B left the seat, the next one ends the session
+    await ev(() => window.__xrMock.button('right', 5, true)); await waitFrames(2, 4000); await ev(() => window.__xrMock.button('right', 5, false));
+    try { await page.waitForFunction(() => !window.__tc3dXR.presenting(), null, { timeout: T(10000) }); ended = true; } catch { /* named below */ }
+  }
   const m5 = await mock();
   const pr0 = await ev(() => window.__pageRaf);
   let rafBack = true;

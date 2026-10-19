@@ -161,7 +161,10 @@ ok('mutant bad-digest is refused by the digest rule before anything else is beli
 {
   const r = spawnSync(process.execPath, [fileURLToPath(url('./verify.mjs')), fileURLToPath(url('./fixture/good.json'))], { encoding: 'utf8' });
   ok('the CLI on the fixture exits 0, prints counts (episodes by kind, traces, samples, sims covered) and the honest last line',
-    r.status === 0 && /^summary: 6 episodes \(advisor 1, crew 1, sim 3, walkaround 1\), 1 trace\(s\) attached holding 4 samples, 2 sim\(s\) covered/m.test(r.stdout)
+    r.status === 0 && (() => { const eps = JSON.parse(readFileSync(fileURLToPath(url('./fixture/good.json')), 'utf8')).dataset.episodes, by = {};
+      for (const e of eps) by[e.kind] = (e.kind in by ? by[e.kind] : 0) + 1;
+      const kinds = Object.keys(by).sort().map((k) => k + ' ' + by[k]).join(', ');
+      return r.stdout.includes('summary: ' + eps.length + ' episodes (' + kinds + '), 1 trace(s) attached holding 4 samples, 2 sim(s) covered'); })()
     && r.stdout.trim().split('\n').pop() === LAST_LINE, [r.stdout.split('\n').slice(-3).join(' | ')]);
 }
 

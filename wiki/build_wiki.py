@@ -1234,6 +1234,21 @@ cross-checked on every build. This pack cites it; it does not claim it.
 |---|---|---|---|
 {krows}
 
+## Walk and placard episodes: a position and a panel, nothing more
+
+Two kinds exist so a lesson's walk and placard steps can be matched to something a
+device recorded instead of the learner's word. A `walk` episode is one event: the
+walker's own position entered the rectangle of a room a lesson names as a walk target
+({training['step_episodes']['walk']['recorded_for']}). A `placard` episode is one event: that
+room's placard panel stayed open, with the walker still in the room, for at least
+**{training['step_episodes']['placard']['dwell_ms']} ms** — {training['step_episodes']['placard']['dwell_why']}
+Opened by {training['step_episodes']['placard']['opened_by']}.
+
+- **De-duplicated.** {training['step_episodes']['dedupe']}
+- **Probes record nothing.** {training['step_episodes']['headless']}
+- **Proves.** {training['step_episodes']['proves']}.
+- **Does not prove.** {training['step_episodes']['does_not_prove']}.
+
 ## Who drove the seat: `actor`, and the SCRIPTED tier
 
 A `sim` episode names its actor. `human` is a learner at the keys — every
@@ -4107,8 +4122,10 @@ bundle's own registries require of a hall and its rooms beside what a
 3. **Read each hall the record touches**: its hazards, every room's required
    protective equipment and placard, the record's lessons step by step, the
    seats, and the hall's sign-off status.
-4. **Read the class on every line** - {cls}. A walk or placard step is the
-   learner's word and is reported as such.
+4. **Read the class on every line** - {cls}. A walk or placard step is
+   evidenced only as a device event - a walker's position in the room, or a
+   placard panel left open for its dwell with the walker in the room - and the
+   report never says the placard was read or its requirements met.
 5. **Read the totals line and the last line.** The ledger names no
    jurisdiction; a real deployment brings its own.
 

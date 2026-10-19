@@ -82,6 +82,15 @@
     "seat",
     "muster"
    ],
+   "placard": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "room",
+    "dwell_ms"
+   ],
    "sim": [
     "t",
     "kind",
@@ -93,6 +102,14 @@
     "actor",
     "operator",
     "outcome"
+   ],
+   "walk": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "room"
    ],
    "walkaround": [
     "t",
@@ -110,7 +127,7 @@
  },
  "digest": {
   "alg": "SHA-256",
-  "hex": "9da41cffa46a9b066248bb1bf5616a009cb29485d00f4058ef365987a38368a7",
+  "hex": "697c30e8ec93fb83e0963cde8525d3b028db1b20e218122679d125429752085d",
   "over": "canonical JSON of every top-level field except digest, with contributor.signature forced to null: keys sorted recursively, no whitespace, UTF-8"
  },
  "exported_at": "2026-09-26T00:00:00Z",

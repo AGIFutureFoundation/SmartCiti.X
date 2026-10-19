@@ -17,8 +17,8 @@ Everything here is AUTHORED by rule - a stated choice, not a measurement of any 
    Kelvin to RGB is the Tanner Helland fit (sRGB, 0-255). The worlds pages apply the rule to their one sun and one
    hemisphere at load. The 3D campus page does NOT: its hour and weather registry (sky/) already sets the sun and sky
    per phase, and that registry stays the rule there (the kit records which rule a page uses: 'kit' or 'registry').
-   The network view (the page's opening board of dark water) alone is metered up by VIEW_EXPOSURE; every other view
-   keeps the page's 1.12.
+   The network view (the page's opening board of dark water) and the campus view are metered up by VIEW_EXPOSURE;
+   every other view (hall, avatar, sim, restoration) keeps the page's 1.12.
 3. Surface classes (CLASSES): roughness / metalness / environment-light share for glass, metal, masonry,
    paving (asphalt and concrete), foliage and water. A page names which of its materials belong to which class; a
    material the page does not name keeps its own numbers. Only uniforms change, so draw calls and triangles do not.
@@ -41,10 +41,14 @@ TONE = {'tone_mapping': 'ACESFilmic', 'output_color_space': 'srgb'}
 EXPOSURE = {'campus3d': 1.12, 'worlds': 0.95}
 # A per-view exposure on the 3D campus page (AUTHORED): the opening network view is a top-down board of dark water with
 # small plates, and at the page's 1.12 its frame meaned luma 28.2 of 255 (absolute band [40, 215]). A view that is
-# mostly dark water is metered up, not the page: the campus and hall views keep 1.12 and so do their frames. Measured
-# (SwiftShader, 1280x800, noon, same view): region mean luma 28.2 at 1.12, 40.4 at 2.2, 47.5 at 3.0, 52.2 at 3.6, 55.1 at 4.0;
-# 3.6 is the stated choice (clipped >= 250 share unchanged at 0.01 %, crushed <= 5 share 15.2 % -> 0.0 %).
-VIEW_EXPOSURE = {'region': 3.6}
+# mostly dark water is metered up, not the page. Measured (SwiftShader, 1280x800, noon, same view): region mean luma
+# 28.2 at 1.12, 40.4 at 2.2, 47.5 at 3.0, 52.2 at 3.6, 55.1 at 4.0; 3.6 is the stated choice (clipped >= 250 share
+# unchanged at 0.01 %, crushed <= 5 share 15.2 % -> 0.0 %).
+# The campus view (a block of buildings seen from above on dark ground) meaned 36.2 at 1.12, just under the band. Measured
+# the same way (same view, calls 243 and triangles 57,240 unchanged at every number): 36.2 at 1.12, 42.1 at 1.5, 46.2 at
+# 1.8, 50.1 at 2.1, 53.7 at 2.4; clipped share 0.01 % and crushed share 0.0 % at every number. 2.1 is the stated choice
+# (luma 50.1, the same level the network view settles at). The hall view keeps 1.12 (48.1) and so does its frame.
+VIEW_EXPOSURE = {'region': 3.6, 'campus': 2.1}
 SUN_RULE = {'cct_low_k': 2000.0, 'cct_span_k': 3800.0, 'cct_e_deg': 12.0,
             'sun_zenith_i': 2.6, 'meinel_t': 0.7, 'meinel_p': 0.678,
             'sky_i': 1.1, 'sky_base': 0.45, 'sky_slope': 0.55, 'sky_k': 8000.0}
@@ -59,7 +63,7 @@ CLASSES = {
 }
 # per page: the material -> class map (names as the page's own JS knows them) and which sun rule applies
 PAGES = {
-    'campus3d': {'exposure': 'campus3d', 'sun': 'registry', 'views': ['region'],
+    'campus3d': {'exposure': 'campus3d', 'sun': 'registry', 'views': ['region', 'campus'],
                  'map': {'win': 'glass', 'metal': 'metal', 'brick': 'masonry', 'block': 'masonry',
                          'slab': 'masonry', 'land': 'paving', 'road': 'paving', 'drive': 'paving',
                          'walkway': 'paving', 'veg': 'foliage', 'grass': 'foliage', 'water': 'water'}},

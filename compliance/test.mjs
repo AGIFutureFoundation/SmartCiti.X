@@ -80,7 +80,12 @@ for (const [k, r] of Object.entries(comp.evidence_rule)) {
   const exp = r.class === 'self-reported' ? 'self-reported' : r.class === 'device-mark' ? 'evidenceable' : (r.evidenceable ? 'evidenceable' : 'not-recordable');
   ok(`step kind ${k}: completion class ${r.class} -> ledger ${exp}`, e.completion_class === r.class && e.ledger_class === exp);
 }
-ok('walk and placard are self-reported; the registry says they cannot be evidenced', REG.step_kind_evidence.walk.ledger_class === 'self-reported' && REG.step_kind_evidence.placard.ledger_class === 'self-reported' && REG.honesty.self_reported.includes('cannot be evidenced'));
+ok('walk and placard are evidenceable since wave 20 (episode-backed), no step kind is self-reported, and the registry says a walk or placard episode never says the placard was read',
+  REG.step_kind_evidence.walk.ledger_class === 'evidenceable' && REG.step_kind_evidence.placard.ledger_class === 'evidenceable'
+  && REG.step_kind_evidence.walk.completion_class === 'episode-backed' && REG.step_kind_evidence.placard.completion_class === 'episode-backed'
+  && !Object.values(REG.step_kind_evidence).some((v) => v.ledger_class === 'self-reported')
+  && /no step kind is self-reported today/.test(REG.honesty.self_reported) && /never says the placard was read/.test(REG.honesty.self_reported)
+  && Object.values(REG.halls).every((h) => Object.values(h.rooms).every((r) => /nothing that says the placard was read/.test(r.evidence.why))));
 
 // seats: every axis carries sims.json's rule; gating axes counted
 const sims = readJ(PATHS.sims).sims;
@@ -111,7 +116,7 @@ for (const f of ['compliance/build.py', 'compliance/verify.mjs']) {
 }
 
 // no typed count: the ledger's own totals never appear as literals in the builder or verifier
-const counts = [...new Set(Object.values(REG.rollups).filter((v) => typeof v === 'number' && v > 1).concat(Object.values(c)))];
+const counts = [...new Set(Object.values(REG.rollups).filter((v) => typeof v === 'number' && v > 1).concat(Object.values(c).filter((v) => typeof v === 'number' && v > 1)))];  // a zero count (no self-reported item now) is not a typed figure: 0 and 1 are excluded for every count alike
 for (const f of ['compliance/build.py', 'compliance/verify.mjs']) {
   const src = readFileSync(join(ROOT, f), 'utf8').replace(/#.*|\/\/.*|\/\*[\s\S]*?\*\/|"""[\s\S]*?"""/g, '');
   const typed = counts.filter((v) => new RegExp(`(?<![\\w.])${v}(?![\\w.])`).test(src));
@@ -132,6 +137,15 @@ for (const [file, rule] of Object.entries(REG.fixture.mutants)) {
   ok(`mutant ${file} fails ${rule}`, r.fails.some((f) => f.startsWith(rule + ':')) && r.lines.length === 0);
 }
 
+// the self-reported rule is kept strict even though no kind is self-reported now: declare one in memory (walk, which the
+// fixture completes with an episode) and the rule must bite. REG is restored at once.
+{
+  const keep = REG.step_kind_evidence.walk.ledger_class;
+  REG.step_kind_evidence.walk.ledger_class = 'self-reported';
+  let r;
+  try { r = report(good); } finally { REG.step_kind_evidence.walk.ledger_class = keep; }
+  ok('evidence.self-reported-carries-none still bites: a kind declared self-reported that carries evidence fails by that rule', r.fails.some((f) => f.startsWith('evidence.self-reported-carries-none:')) && r.lines.length === 0);
+}
 // registry mutants: each fails the named rule through checkLedger
 const mut = {};
 let m = clone(REG);

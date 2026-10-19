@@ -97,10 +97,31 @@ for (const s of lesson.steps) {
   if (s.kind === 'sim') progSeed.sims[s.sim] = { passed: true, runs: 1 };
   if (s.kind === 'station') progSeed.stations.push(s.station);
   if (s.kind === 'crib') progSeed.tools[s.crib] = { passed: true };
-  if (s.kind in Q.REF_FIELDS) { const ep = { kind: s.kind, hall: lesson.hall, t, actor: 'human' }; for (const f of Q.REF_FIELDS[s.kind]) ep[f] = s[f]; trainSeed.push(ep); }
+  if (s.kind in Q.REF_FIELDS) {
+    const ep = { kind: s.kind, hall: lesson.hall, t, actor: 'human' }; for (const f of Q.REF_FIELDS[s.kind]) ep[f] = s[f];
+    // wave 20: a walk or placard episode also records the room label (one of the step's names_read) and a placard its dwell
+    const ek = training[s.kind];
+    if (ek.names_read_field) ep[ek.names_read_field] = s.names_read[0];
+    if (ek.at_least) for (const f of Object.keys(ek.at_least)) ep[f] = ek.at_least[f];
+    trainSeed.push(ep);
+  }
 }
 ok('a device holding every recordable step of a lesson counts it done', Q.questLessonsDone(progSeed, trainSeed, D).has('crane-ops-read-the-chart'));
-const half = { ...progSeed, sims: {} };
+
+// wave 20: the quest engine matches a walk or placard step exactly as the progress page does: the room, the label, the dwell floor
+{
+  const ekP = training.placard, floor = ekP.at_least.dwell_ms;
+  const metaQ = D.meta, T0 = new Date(0).toISOString();
+  const stepW = { n: 1, kind: 'walk', where: 'safety', names_read: ['Induction Room'] }, stepP = { n: 2, kind: 'placard', where: 'safety', names_read: ['Induction Room'] };
+  const epW = { kind: 'walk', hall: 'x', where: 'safety', room: 'Induction Room', t: T0 }, epP = { kind: 'placard', hall: 'x', where: 'safety', room: 'Induction Room', dwell_ms: floor, t: T0 };
+  const ev = (st, eps) => Q.stepEvidence(st, {}, 'x', eps, metaQ, null);
+  ok('the quest engine marks a walk and a placard step done on the episode of their own room, with the room and the dwell in the evidence',
+    ev(stepW, [epW]) !== null && ev(stepW, [epW]).room === 'Induction Room' && ev(stepP, [epP]) !== null && ev(stepP, [epP]).dwell_ms === floor);
+  ok('and on nothing else: another room, hall or label, a dwell under the floor or not a number, the other kind, a scripted actor and no log all mark nothing',
+    [[stepW, { ...epW, where: 'tools' }], [stepW, { ...epW, hall: 'y' }], [stepW, { ...epW, room: 'Elsewhere' }], [stepP, { ...epP, dwell_ms: floor - 1 }],
+      [stepP, { ...epP, dwell_ms: String(floor + 1) }], [stepP, { ...epP, kind: 'walk' }], [stepW, { ...epW, actor: 'scripted-reference' }]]
+      .every(([st, e]) => ev(st, [e]) === null) && ev(stepW, []) === null && ev(stepW, null) === null);
+}const half = { ...progSeed, sims: {} };
 ok('a device missing the seat pass does not', !Q.questLessonsDone(half, trainSeed, D).has('crane-ops-read-the-chart'));
 
 // check / record

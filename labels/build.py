@@ -650,9 +650,10 @@ HONESTY = {
                 '(or hang ahead of the rig without one) at a fixed size and '
                 'full opacity - they are on the hand, not in the world, so '
                 'the view-direction scoring above does not apply to them. '
-                'Held at the source by regex; no session, mocked or real, '
-                'has been driven in this tree, never a physical headset, '
-                'and a mocked-session harness is not claimed.',
+                'Held at the source by regex; a MOCKED session in headless '
+                'Chromium (xr/test_session.mjs) reads these signs on one '
+                'seat\'s wrist panel, and no session on a physical headset '
+                'has been driven in this tree.',
 }
 
 # ---------------------------------------------------------------- checks ---

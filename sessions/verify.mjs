@@ -152,6 +152,8 @@ function sessionsOf(training, gapMs, humanActor, stepRecords, bestAxis) {
       cur.advisor_exchanges += 1;
     } else if (kind === 'crew') {
       cur.crew_exchanges += 1;
+    } else if (kind === 'walk' || kind === 'placard') {
+      // wave 20: counted in by_kind (and could_advance); nothing about a room entered or a panel opened is tallied further
     } else {
       throw new Error('sessions: episode ' + i + ' is of a kind this reading does not know: ' + JSON.stringify(kind));
     }

@@ -1825,8 +1825,8 @@ async function paintCompletion() {
       + KEYS.progress + ' or ' + KEYS.training + ' holds that mark', S.episode_steps_done + ' of ' + S.episode_steps, 'episode-steps'],
     ['steps with a device mark only (' + S.device_mark_kinds.join(', ') + ')',
       S.device_mark_steps_done + ' of ' + S.device_mark_steps, 'device-mark-steps'],
-    ['self-reported / unrecorded steps (' + S.self_reported_kinds.join(', ') + ')',
-      S.self_reported_steps_done + ' of ' + S.self_reported_steps, 'self-reported-steps'],
+    ...(S.self_reported_kinds.length ? [['self-reported / unrecorded steps (' + S.self_reported_kinds.join(', ') + ')',
+      S.self_reported_steps_done + ' of ' + S.self_reported_steps, 'self-reported-steps']] : []),
   ];
   const tb = elem('table'); const body = elem('tbody');
   for (const [k, v, key] of figs) {
@@ -1836,11 +1836,11 @@ async function paintCompletion() {
   }
   tb.appendChild(body); box.appendChild(tb);
   box.appendChild(elem('p', { text: (training === null
-    ? 'The training log under ' + KEYS.training + ' is ' + rec.training.state + ', so no advisor, crew or walkaround step is done here. '
+    ? 'The training log under ' + KEYS.training + ' is ' + rec.training.state + ', so no ' + S.episode_kinds.filter((k) => k !== 'sim').join(', ') + ' step is done here. '
     : '') + (S.episode_kinds_unmarked_here.length
     ? 'A ' + S.episode_kinds_unmarked_here.map((k) => k + ' step can never be matched: the 3D page records no ' + S.episode_kinds_missing_fields[k].join(', ') + ' in that episode').join('; ') + '. '
-    : '') + 'Nothing records ' + S.self_reported_kinds.join(', ') + ' steps at all; none of those is ever marked '
-    + 'done here and a lesson holding one cannot be complete. A device mark is a mark this device wrote, '
+    : '') + (S.self_reported_kinds.length ? 'Nothing records ' + S.self_reported_kinds.join(', ') + ' steps at all; none of those is ever marked '
+    + 'done here and a lesson holding one cannot be complete. ' : '') + 'A device mark is a mark this device wrote, '
     + 'not evidence. Identity: '
     + (record.identity.claimed === null ? 'no label on this device' : record.identity.claimed)
     + ' — attested by this device only, unsigned. Digest ' + record.digest.hex.slice(0, 16) + '…' }));
@@ -1968,7 +1968,10 @@ const EVIDENCED_KINDS = ['sim', 'station', 'crib'];
 /* the reference a step of an episode kind carries, as lessons.json spells it;
    a training episode must equal every one of these AND the lesson's hall */
 const REF_FIELDS = { walkaround: ['sim', 'point'], advisor: ['advisor', 'topic', 'answer_kind'],
-  crew: ['crew', 'role', 'topic', 'answer_kind', 'seat', 'muster'] };
+  crew: ['crew', 'role', 'topic', 'answer_kind', 'seat', 'muster'], walk: ['where'], placard: ['where'] };
+/* wave 20: an episode kind may also declare (training.json#episode_kinds[k]) a names_read_field - the episode field
+   whose value must be one of the step's own names_read - and at_least, a floor on a numeric field (a placard's
+   dwell_ms). Both are read from the registry that declares them, never retyped here. */
 /* an episode kind whose recorded fields do not cover the step's reference can
    never mark a step done; the missing fields are named, not skipped */
 function unmatchableKinds(episodeKinds) {
@@ -1977,6 +1980,9 @@ function unmatchableKinds(episodeKinds) {
     const fields = episodeKinds && episodeKinds[k] && Array.isArray(episodeKinds[k].fields) ? episodeKinds[k].fields : [];
     const missing = REF_FIELDS[k].filter((f) => !fields.includes(f));
     if (!fields.includes('hall')) missing.push('hall');
+    const ek = episodeKinds && episodeKinds[k] ? episodeKinds[k] : null;
+    if (ek && ek.names_read_field && !fields.includes(ek.names_read_field)) missing.push(ek.names_read_field);
+    if (ek && ek.at_least) for (const f of Object.keys(ek.at_least)) if (!fields.includes(f)) missing.push(f);
     if (missing.length) out[k] = missing;
   }
   return out;
@@ -1992,8 +1998,13 @@ function episodeEvidence(step, hall, training, meta, skipped) {
     if (!episodeTimeOk(ep)) { if (skipped) skipped.add(ep); continue; }
     if (ep.actor !== undefined && ep.actor !== meta.human_actor) continue;
     if (!REF_FIELDS[step.kind].every((f) => step[f] !== undefined && ep[f] === step[f])) continue;
+    const ek = meta.episode_kinds[step.kind];
+    if (ek.names_read_field && !(Array.isArray(step.names_read) && step.names_read.includes(ep[ek.names_read_field]))) continue;
+    if (ek.at_least && Object.keys(ek.at_least).some((f) => typeof ep[f] !== 'number' || !isFinite(ep[f]) || ep[f] < ek.at_least[f])) continue;
     const ev = { episode: step.kind, t: ep.t, hall };
     for (const f of REF_FIELDS[step.kind]) ev[f] = step[f];
+    if (ek.names_read_field) ev[ek.names_read_field] = ep[ek.names_read_field];
+    if (ek.at_least) for (const f of Object.keys(ek.at_least)) ev[f] = ep[f];
     return ev;
   }
   return null;
@@ -2074,9 +2085,9 @@ function stepEvidence(step, prog, hall, training, meta, skipped) {
     if (!rec || typeof rec !== 'object' || rec.passed !== true) return null;
     return { crib: step.crib, passed: true };
   }
-  /* walk and placard record nothing anywhere; walkaround, advisor and crew
-     write episodes to the training log, which is not the record this is
-     built from, and the seat-level walkaround tally names no point */
+  /* every other kind writes nothing this function reads: the episode kinds are
+     matched from the training log above, which is not the record this is
+     built from */
   return null;
 }
 
@@ -2097,7 +2108,7 @@ async function buildCompletionRecord(prog, lessons, ladder, meta, now, training)
     if (!(e.lesson in lessons) || !(e.needs in lessons))
       throw new Error('completion: the ladder names a lesson that is not defined: ' + e.lesson + ' needs ' + e.needs);
   }
-  const silent = Object.keys(meta.step_kinds).filter((k) => meta.step_kinds[k].records === null);
+  const silent = Object.keys(meta.step_kinds).filter((k) => meta.step_kinds[k].records === null && !EVIDENCED_KINDS.includes(k));
   const fromTraining = Object.keys(REF_FIELDS).filter((k) => !(k in unmatchable));
 
   const out = [];
@@ -2156,7 +2167,8 @@ async function buildCompletionRecord(prog, lessons, ladder, meta, now, training)
           ? 'who did the work: the identity is a label this device stores and nobody has verified it, the signature is null, and anyone holding the device can edit the record it was built from'
           : 'who did the work: a wallet signature names a key, not a person - a key is held, lent and stolen - and anyone holding the device can edit the record it was built from',
         'anything on any blockchain: nothing is written to any chain, nothing is anchored, no transaction exists; a signature, if any, is computed in the browser and carried in this file',
-        'silent steps (' + silent.join(', ') + ') are recorded by nothing in this bundle, so they are never done here and no lesson that has one can be complete',
+        ...(silent.length ? ['silent steps (' + silent.join(', ') + ') are recorded by nothing in this bundle, so they are never done here and no lesson that has one can be complete'] : []),
+        'a walk or placard step is done only on the episode a device recorded: a walker\'s position in the room, or a placard panel left open for its dwell with the walker in the room. That is a device event, not proof that anyone read, understood or took on what the placard requires',
         training === null
           ? 'the training log was ' + meta.training_state + ' on this device, so no ' + Object.keys(REF_FIELDS).join(', ') + ' step is done here'
           : 'a ' + fromTraining.join(', ') + ' step is done only where the training log holds an episode of that kind in the lesson\'s hall whose reference fields equal the step\'s own (' + fromTraining.map((k) => k + ': hall, ' + REF_FIELDS[k].join(', ')).join('; ') + '); a hall alone matches nothing',
@@ -2178,9 +2190,10 @@ async function buildCompletionRecord(prog, lessons, ladder, meta, now, training)
 
 /* the on-page figures, computed from a record and never typed. Three counts,
    named by what stands behind each step: an episode kind (step_kinds.records
-   != null: sim, advisor, crew, walkaround) counts only where tc-progress
-   actually holds that mark; a device mark only (station done, crib passed);
-   self-reported or unrecorded (walk, placard), which nothing writes anywhere. */
+   != null: sim, advisor, crew, walkaround, walk, placard) counts only where
+   tc-progress or the training log actually holds that mark; a device mark
+   only (station done, crib passed); self-reported or unrecorded (no kind
+   today), which nothing writes anywhere. */
 function summarizeRecord(record, stepKinds, episodeKinds) {
   const unmatchable = unmatchableKinds(episodeKinds);
   const epKinds = Object.keys(stepKinds).filter((k) => stepKinds[k].records !== null);

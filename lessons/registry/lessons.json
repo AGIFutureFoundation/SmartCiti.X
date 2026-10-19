@@ -3,13 +3,13 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-26",
- "source_stamp": "68794dad4d6967a8",
+ "source_stamp": "286e0e6e7aa95b12",
  "honesty": {
   "status": "AUTHORED: every sentence in this pack was written here, by us. 56 lessons were written by hand, one hall at a time, step by step; the other 83 are composed by one rule in lessons/build.py from 7 arcs written here - 60 first walks, one per room an advisor stands in, and 23 walks before a WILDS site from one more arc, whose site title and world are read from wilds/registry/wilds.json, where the terrain is AUTHORED, not a surveyed place - so their step order, title and why are marked DERIVED and carry authoring \"rule\" - the rule reads the hall name and focus from the roster and adds no fact of its own. Nothing is fetched and no model runs behind any of it. The word AI-SYNTHESIZED belongs to orbis/ and describes generated video; it would be a false label for a hand-written walk through a building.",
   "content": "unverified general practice. These lessons were written to be argued with, corrected and replaced by journey-level practitioners from the halls they name - the same standing the module pack, the recovered stations and the simulator seats already carry, and for the same reason: nobody who does this work for a living has reviewed a line of it yet.",
   "not_certification": "no lesson here certifies anybody, qualifies anybody or permits anybody to do anything. Completing every lesson in this registry would leave a learner with exactly the standing they started with. Where a trade has a real ticket, that ticket is issued by a jurisdiction, an employer or a hall, and this bundle is none of those and speaks for none of them.",
   "not_a_gate": "a lesson unlocks nothing. No step is locked behind another, the ladder is guidance about a sensible order rather than a permission system, and the assessment gate that schools/ declares stays exactly where it is: an unaided verification run that no lesson, station hour or simulator seat substitutes for.",
-  "not_scored": "finishing a lesson changes no score and is read by no grader. Four of the eight step kinds write an episode to the existing device-local training log; the other four write nothing at all, and the registry says which is which rather than leaving it to be discovered.",
+  "not_scored": "finishing a lesson changes no score and is read by no grader. The step kinds that write an episode write it to the existing device-local training log; station and crib write none (they leave a device mark in the progress record), and the registry says which is which rather than leaving it to be discovered. A walk or placard episode proves that a device recorded a position or an open panel, and nothing about competence.",
   "one_truth": "this pack holds no second copy of anything. Hall names, room labels, station names, seat names, scenario names, advisor names, crew role names and topic wordings are all read at build time from the registries that own them, and the test re-reads them the same way. A step that could not resolve its ids did not become a lesson with a footnote; it failed the build.",
   "no_jurisdiction": "nothing here cites a standard, a code or an authority, and nothing here speaks for one. Where a step says what a crew would do, that is unverified general practice and not an instruction from anybody with the standing to give one.",
   "scope": "this is a set deliberately spread thin: 139 lessons across 111 of 111 halls, one in every one of the 45 halls a simulator seat is bound to and one composed first walk in every hall without a seat that the rule could walk honestly (0 refused), out of 1,221 rooms. It demonstrates the shape a lesson takes in this bundle. It is not a curriculum, it does not cover a trade, and no hall is finished because one of its rooms now has a lesson standing in it."
@@ -34,16 +34,18 @@
    "walk": 141,
    "walkaround": 42
   },
-  "recording_steps": 301,
-  "silent_steps": 267,
+  "recording_steps": 534,
+  "silent_steps": 34,
   "episodes_by_kind": {
    "advisor": 205,
    "crew": 23,
+   "placard": 92,
    "sim": 31,
+   "walk": 141,
    "walkaround": 42
   },
-  "episode_kinds_used": 4,
-  "episode_kinds_declared": 4,
+  "episode_kinds_used": 6,
+  "episode_kinds_declared": 6,
   "new_episode_kinds": 0,
   "halls_covered": 111,
   "halls_total": 111,
@@ -347,24 +349,24 @@
  "step_kinds": {
   "walk": {
    "act": "walk to a room of this hall",
-   "records": null,
+   "records": "walk",
    "stage": "class",
    "reads": "web/interiors.py",
-   "why_no_episode": "arriving somewhere is not an achievement, and a bundle that logged footsteps would be counting attendance while claiming to teach"
+   "why_no_episode": null
   },
   "placard": {
    "act": "read the door placard of a room and take on what it requires",
-   "records": null,
+   "records": "placard",
    "stage": "class",
    "reads": "surfaces/registry/finishes.json",
-   "why_no_episode": "the placard states the room condition record; reading a record changes nothing and is nobody's score"
+   "why_no_episode": null
   },
   "station": {
    "act": "take a training station at its bench",
    "records": null,
    "stage": "class",
    "reads": "stations/registry/stations.json",
-   "why_no_episode": "a station mark lands in the device-local progress record the halls already keep; the training log holds simulator, advisor, crew and walkaround episodes and this pack adds no fifth kind to it"
+   "why_no_episode": "a station mark lands in the device-local progress record the halls already keep; the training log holds simulator, advisor, crew, walkaround, walk and placard episodes and this pack adds no kind to it"
   },
   "crib": {
    "act": "run the district crib check at the pegboard",
@@ -523,7 +525,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Start where the shift starts, at the table the plan gets read out at rather than the place the load hangs.",
@@ -588,6 +590,7 @@
    "records": [
     "advisor",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -630,7 +633,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "The plant is checked out to a training area here, which is the only reason you are allowed near it.",
@@ -716,6 +719,7 @@
     "advisor",
     "crew",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -759,7 +763,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Stand where the plant lives, because a chart read at a desk is a different habit from a chart read at the machine.",
@@ -823,6 +827,7 @@
    "records": [
     "advisor",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -865,7 +870,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Hand-offs happen here, which is why the exchange is staged here and not at the hook.",
@@ -934,6 +939,7 @@
    "records": [
     "advisor",
     "crew",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -977,7 +983,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "The bay is where plant is checked out to a training area, so this is where the move starts.",
@@ -990,7 +996,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the bay is held to before the load moves; the sign at the door is the room condition record.",
@@ -1055,7 +1061,9 @@
    ],
    "records": [
     "advisor",
+    "placard",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -1104,7 +1112,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Gowning, permits and the atmospheric check all live in one room, which is the point of the room.",
@@ -1117,7 +1125,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign says before you cross the line, not after somebody notices.",
@@ -1187,6 +1195,8 @@
    "records": [
     "advisor",
     "crew",
+    "placard",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -1233,7 +1243,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "This is the floor the trade is actually learned on, so the rehearsal belongs here.",
@@ -1246,7 +1256,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the floor is held to before anybody goes near the hole; the door sign binds the entrant too.",
@@ -1316,6 +1326,8 @@
    "records": [
     "advisor",
     "crew",
+    "placard",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -1365,7 +1377,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Setting out and control points live here, and so does the habit of trusting a mark only as far as it was proved.",
@@ -1452,6 +1464,7 @@
     "advisor",
     "crew",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -1495,7 +1508,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Induction is where the day starts and where the refusal gets rehearsed.",
@@ -1508,7 +1521,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "The sign at the door is the record, not a suggestion posted near one.",
@@ -1556,6 +1569,8 @@
    ],
    "records": [
     "advisor",
+    "placard",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -1601,7 +1616,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Start at induction, because the tag is a safety instrument before it is a piece of paperwork.",
@@ -1614,7 +1629,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read the line at the door before the bench; the room record is the first tag you believe or do not.",
@@ -1677,6 +1692,8 @@
    ],
    "records": [
     "advisor",
+    "placard",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -1725,7 +1742,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Stock, offcuts and consumables live here, and a bay is built from what is staged before it is built from skill.",
@@ -1738,7 +1755,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the store is held to; a material room has conditions like any other.",
@@ -1806,7 +1823,9 @@
    ],
    "records": [
     "crew",
+    "placard",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -1852,7 +1871,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "The practice floor is where the detail gets built badly a few times first.",
@@ -1914,6 +1933,7 @@
    ],
    "records": [
     "advisor",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -1958,7 +1978,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "The first room of any hall is the one that decides whether you are allowed into the others.",
@@ -1971,7 +1991,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read the line at the door and add what the task needs on top of it.",
@@ -2017,7 +2037,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -2061,7 +2083,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Practice bays are where the mistake is cheap, which is the only reason to make it here.",
@@ -2074,7 +2096,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the floor is held to before the first course goes down; the sign is the record, not a suggestion.",
@@ -2120,7 +2142,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -2167,7 +2191,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "The store is where the protection gets staged, and unstaged protection does not get used.",
@@ -2180,7 +2204,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read the room record; conditions matter more here than almost anywhere.",
@@ -2225,7 +2249,7 @@
     {
      "n": 5,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Take the pour to where it gets accepted, because curing is judged by somebody who was not there for it.",
@@ -2255,7 +2279,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -2302,7 +2328,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Stone gets staged before it gets set, and how it is staged decides how it is handled.",
@@ -2347,7 +2373,8 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "walk"
    ],
    "stages": [
     "class"
@@ -2389,7 +2416,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "The practice floor is where you find out that flat is a measurement and not an opinion.",
@@ -2450,7 +2477,8 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "walk"
    ],
    "stages": [
     "class"
@@ -2494,7 +2522,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "The practice floor is where the spacing habit gets built, one wrong stud at a time.",
@@ -2555,7 +2583,8 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "walk"
    ],
    "stages": [
     "class"
@@ -2598,7 +2627,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Issue, calibration and return all happen in one place, and the discipline is the lesson.",
@@ -2659,7 +2688,8 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "walk"
    ],
    "stages": [
     "class"
@@ -2701,7 +2731,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Permits, certificates and as-builts live together for a reason.",
@@ -2746,7 +2776,8 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "walk"
    ],
    "stages": [
     "class"
@@ -2787,7 +2818,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "The practice floor is where the mock-up stands, which is the only place to learn this cheaply.",
@@ -2800,7 +2831,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the floor is held to before the mock-up is lit; heat changes what the room requires of you.",
@@ -2862,7 +2893,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -2911,7 +2944,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Induction is where containment stops being somebody else problem.",
@@ -2924,7 +2957,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what is in force in the room before you argue about what the job needs.",
@@ -2989,7 +3022,9 @@
    ],
    "records": [
     "advisor",
+    "placard",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -3035,7 +3070,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "The practice floor is where overlap becomes a habit instead of an intention.",
@@ -3048,7 +3083,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the floor is held to before the gun is even primed; atomised coating changes what the room requires.",
@@ -3094,7 +3129,9 @@
     }
    ],
    "records": [
+    "placard",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -3141,7 +3178,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Gowning and the atmospheric check happen here, in that order, for a reason.",
@@ -3154,7 +3191,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read the room record, then read it again for what it does not cover.",
@@ -3219,7 +3256,9 @@
    ],
    "records": [
     "advisor",
+    "placard",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -3265,7 +3304,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "The bay is where a machine gets checked out to a training area rather than borrowed.",
@@ -3333,6 +3372,7 @@
    "records": [
     "crew",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -3375,7 +3415,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Acceptance criteria and sign-off live here, and an observer is an acceptance job.",
@@ -3388,7 +3428,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read the room record before you start deciding what good looks like.",
@@ -3439,6 +3479,8 @@
    ],
    "records": [
     "crew",
+    "placard",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -3484,7 +3526,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Level tests and the instructor track live here, which is where culture gets taught or not.",
@@ -3529,7 +3571,8 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "walk"
    ],
    "stages": [
     "class"
@@ -3571,7 +3614,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Setting out lives here, which makes this the right room to be pedantic in.",
@@ -3584,7 +3627,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read the room record; light matters to this work more than people expect.",
@@ -3649,7 +3692,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -3694,7 +3739,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Fault-finding against live rigs has its own room because it needs a different head to the practice floor.",
@@ -3707,7 +3752,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the room is held to before you start pulling at anything.",
@@ -3737,7 +3782,7 @@
     {
      "n": 4,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Walk the finding to where acceptance is decided, because a diagnosis nobody accepts is a rumour.",
@@ -3767,7 +3812,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -3815,7 +3862,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Acceptance criteria live here, and commissioning is acceptance with instruments attached.",
@@ -3828,7 +3875,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read the room record, including the part about noise.",
@@ -3875,7 +3922,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -3920,7 +3969,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "As-builts live here, and an as-built is the only proof a buried route ever gets.",
@@ -3968,7 +4017,8 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "walk"
    ],
    "stages": [
     "class"
@@ -4008,7 +4058,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Issue, calibration and return are one loop and this room is the whole loop.",
@@ -4021,7 +4071,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the room is held to; calibration cares about conditions.",
@@ -4068,7 +4118,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -4112,7 +4164,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "The floor is where the piece is landed badly a few times before it is landed once on its holes.",
@@ -4199,6 +4251,7 @@
     "advisor",
     "crew",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -4243,7 +4296,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Plant is checked out to a training area here, so the first look at the machine is taken in this bay.",
@@ -4327,6 +4380,7 @@
    "records": [
     "crew",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -4369,7 +4423,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "The floor is where the bundle lands, so the floor is where the lesson starts and ends.",
@@ -4382,7 +4436,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what this floor is held to before you decide what you are wearing is enough for it.",
@@ -4447,7 +4501,9 @@
    ],
    "records": [
     "advisor",
+    "placard",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -4496,7 +4552,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Gowning, the atmospheric check and the permit board share a room because the order between them matters.",
@@ -4509,7 +4565,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign says before you cross the line, not after somebody points at it.",
@@ -4596,7 +4652,9 @@
    "records": [
     "advisor",
     "crew",
+    "placard",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -4643,7 +4701,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "The bay is where plant is checked out to a training area, and the ground under it is the first check.",
@@ -4656,7 +4714,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what this bay is held to; the conditions on the door are the conditions you work in.",
@@ -4724,7 +4782,9 @@
    ],
    "records": [
     "crew",
+    "placard",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -4772,7 +4832,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Setting out lives here, and so does the discipline of proving a mark before trusting it.",
@@ -4859,6 +4919,7 @@
     "advisor",
     "crew",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -4902,7 +4963,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Induction is the room that decides whether you are allowed near the others, so start there.",
@@ -4915,7 +4976,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read the door and add what the task needs on top of it, not instead of it.",
@@ -4985,6 +5046,8 @@
    "records": [
     "advisor",
     "crew",
+    "placard",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -5031,7 +5094,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Plant checked out to a training area is the only plant you are near, which is why the check is taught here.",
@@ -5044,7 +5107,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the bay is held to before you climb on anything parked in it.",
@@ -5108,7 +5171,9 @@
    ],
    "records": [
     "advisor",
+    "placard",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -5156,7 +5221,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Fault-finding has its own bench because it needs a different head to the practice floor.",
@@ -5220,6 +5285,7 @@
    "records": [
     "advisor",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -5262,7 +5328,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Shift start and hand-offs happen here, so the briefing is staged here and not on the quay.",
@@ -5327,6 +5393,7 @@
    "records": [
     "advisor",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -5369,7 +5436,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "The floor is where the seam is fitted badly a few times, which is the only cheap place to do that.",
@@ -5382,7 +5449,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the floor is held to before the hood comes down and you stop being able to read anything.",
@@ -5450,7 +5517,9 @@
    ],
    "records": [
     "crew",
+    "placard",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -5498,7 +5567,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Setting out and marking live here, and the habit of checking a line before trusting it lives with them.",
@@ -5581,6 +5650,7 @@
    "records": [
     "advisor",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -5624,7 +5694,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Acceptance criteria live here, and a permit closed properly is an acceptance step like any other.",
@@ -5637,7 +5707,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the bench is held to before you start deciding what a pass looks like.",
@@ -5705,7 +5775,9 @@
    ],
    "records": [
     "crew",
+    "placard",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -5751,7 +5823,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "The floor is where the compartment is rehearsed, which is the only cheap place to rehearse it.",
@@ -5764,7 +5836,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the floor is held to before the hatch is even a thought.",
@@ -5832,7 +5904,9 @@
    ],
    "records": [
     "crew",
+    "placard",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -5880,7 +5954,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Induction is where the edge and the opening both get named out loud before anybody goes up.",
@@ -5893,7 +5967,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read the line on the door and add the fall protection the task needs on top of it.",
@@ -5980,7 +6054,9 @@
    "records": [
     "advisor",
     "crew",
+    "placard",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -6029,7 +6105,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Stock and consumables are staged here, and what is staged badly is what gets reached for badly.",
@@ -6042,7 +6118,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the store is held to; a material room has conditions like any other.",
@@ -6126,7 +6202,9 @@
    ],
    "records": [
     "crew",
+    "placard",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -6174,7 +6252,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "The floor is where the platform gets built wrong a few times first, which is why the lesson stands here.",
@@ -6261,6 +6339,7 @@
     "advisor",
     "crew",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -6305,7 +6384,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Permits, certificates and as-builts live together here, and a seal record is an as-built in miniature.",
@@ -6374,6 +6453,7 @@
    "records": [
     "advisor",
     "crew",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -6417,7 +6497,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Acceptance criteria and sign-off live here, and a plank is accepted before it is stood on.",
@@ -6482,6 +6562,7 @@
    "records": [
     "advisor",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -6524,7 +6605,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Hand-offs are made here, and the sequence of a panel run is a hand-off written down in advance.",
@@ -6611,6 +6692,7 @@
     "advisor",
     "crew",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -6654,7 +6736,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "The bay is where a machine gets checked out to a training area rather than borrowed, so the run starts here.",
@@ -6722,6 +6804,7 @@
    "records": [
     "crew",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -6764,7 +6847,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Issue, calibration and return are one loop, and this room is the whole loop.",
@@ -6844,6 +6927,7 @@
    ],
    "records": [
     "advisor",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -6887,7 +6971,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Acceptance lives here, and a part that arrives marked has already failed it.",
@@ -6952,6 +7036,7 @@
    "records": [
     "advisor",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -6994,7 +7079,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Sand, stock and consumables are staged here, and how they are staged decides what is in the way later.",
@@ -7007,7 +7092,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the store is held to; conditions matter here more than almost anywhere in the hall.",
@@ -7088,7 +7173,9 @@
    ],
    "records": [
     "advisor",
+    "placard",
     "sim",
+    "walk",
     "walkaround"
    ],
    "stages": [
@@ -7139,7 +7226,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Start in the room where the rules for the rest of the hall are posted, before you are anywhere near the work.",
@@ -7152,7 +7239,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks before you cross the threshold, and notice what it asks you to put on.",
@@ -7201,7 +7288,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -7245,7 +7334,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Stand where things are issued and returned, since the kit a trade relies on is kept and counted here.",
@@ -7258,7 +7347,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the room is held to before you reach for anything hanging on the wall.",
@@ -7305,7 +7394,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -7350,7 +7441,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Setting out starts here, and so does the habit of checking a mark before building on it.",
@@ -7363,7 +7454,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the floor is held to before you kneel on it with a tape and a pencil.",
@@ -7412,7 +7503,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -7456,7 +7549,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Acceptance is decided at this bench, so the conversation about judging work belongs here.",
@@ -7469,7 +7562,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the bench is held to; judging work in bad light is its own kind of mistake.",
@@ -7518,7 +7611,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -7562,7 +7657,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Shift starts and hand-offs happen in this room, which is why the exchange is staged here.",
@@ -7609,7 +7704,8 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "walk"
    ],
    "stages": [
     "class"
@@ -7650,7 +7746,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Permits and as-builts are kept here, so this is where to learn what a record is and what it is not.",
@@ -7698,7 +7794,8 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "walk"
    ],
    "stages": [
     "class"
@@ -7739,7 +7836,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Start in the room where the rules for the rest of the hall are posted, before you are anywhere near the work.",
@@ -7752,7 +7849,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks before you cross the threshold, and notice what it asks you to put on.",
@@ -7801,7 +7898,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -7847,7 +7946,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Stand where things are issued and returned, since the kit a trade relies on is kept and counted here.",
@@ -7860,7 +7959,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the room is held to before you reach for anything hanging on the wall.",
@@ -7907,7 +8006,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -7952,7 +8053,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Setting out starts here, and so does the habit of checking a mark before building on it.",
@@ -7965,7 +8066,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the floor is held to before you kneel on it with a tape and a pencil.",
@@ -8014,7 +8115,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -8058,7 +8161,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Acceptance is decided at this bench, so the conversation about judging work belongs here.",
@@ -8071,7 +8174,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the bench is held to; judging work in bad light is its own kind of mistake.",
@@ -8120,7 +8223,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -8164,7 +8269,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Shift starts and hand-offs happen in this room, which is why the exchange is staged here.",
@@ -8211,7 +8316,8 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "walk"
    ],
    "stages": [
     "class"
@@ -8252,7 +8358,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Permits and as-builts are kept here, so this is where to learn what a record is and what it is not.",
@@ -8300,7 +8406,8 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "walk"
    ],
    "stages": [
     "class"
@@ -8341,7 +8448,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Start in the room where the rules for the rest of the hall are posted, before you are anywhere near the work.",
@@ -8354,7 +8461,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks before you cross the threshold, and notice what it asks you to put on.",
@@ -8403,7 +8510,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -8447,7 +8556,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Stand where things are issued and returned, since the kit a trade relies on is kept and counted here.",
@@ -8460,7 +8569,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the room is held to before you reach for anything hanging on the wall.",
@@ -8507,7 +8616,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -8552,7 +8663,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Setting out starts here, and so does the habit of checking a mark before building on it.",
@@ -8565,7 +8676,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the floor is held to before you kneel on it with a tape and a pencil.",
@@ -8614,7 +8725,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -8658,7 +8771,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Acceptance is decided at this bench, so the conversation about judging work belongs here.",
@@ -8671,7 +8784,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the bench is held to; judging work in bad light is its own kind of mistake.",
@@ -8720,7 +8833,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -8764,7 +8879,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Shift starts and hand-offs happen in this room, which is why the exchange is staged here.",
@@ -8811,7 +8926,8 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "walk"
    ],
    "stages": [
     "class"
@@ -8852,7 +8968,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Permits and as-builts are kept here, so this is where to learn what a record is and what it is not.",
@@ -8900,7 +9016,8 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "walk"
    ],
    "stages": [
     "class"
@@ -8941,7 +9058,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Start in the room where the rules for the rest of the hall are posted, before you are anywhere near the work.",
@@ -8954,7 +9071,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks before you cross the threshold, and notice what it asks you to put on.",
@@ -9003,7 +9120,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -9047,7 +9166,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Stand where things are issued and returned, since the kit a trade relies on is kept and counted here.",
@@ -9060,7 +9179,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the room is held to before you reach for anything hanging on the wall.",
@@ -9107,7 +9226,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -9152,7 +9273,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Setting out starts here, and so does the habit of checking a mark before building on it.",
@@ -9165,7 +9286,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the floor is held to before you kneel on it with a tape and a pencil.",
@@ -9214,7 +9335,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -9258,7 +9381,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Acceptance is decided at this bench, so the conversation about judging work belongs here.",
@@ -9271,7 +9394,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the bench is held to; judging work in bad light is its own kind of mistake.",
@@ -9320,7 +9443,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -9364,7 +9489,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Shift starts and hand-offs happen in this room, which is why the exchange is staged here.",
@@ -9411,7 +9536,8 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "walk"
    ],
    "stages": [
     "class"
@@ -9452,7 +9578,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Permits and as-builts are kept here, so this is where to learn what a record is and what it is not.",
@@ -9500,7 +9626,8 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "walk"
    ],
    "stages": [
     "class"
@@ -9541,7 +9668,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Start in the room where the rules for the rest of the hall are posted, before you are anywhere near the work.",
@@ -9554,7 +9681,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks before you cross the threshold, and notice what it asks you to put on.",
@@ -9603,7 +9730,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -9647,7 +9776,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Stand where things are issued and returned, since the kit a trade relies on is kept and counted here.",
@@ -9660,7 +9789,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the room is held to before you reach for anything hanging on the wall.",
@@ -9707,7 +9836,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -9752,7 +9883,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Setting out starts here, and so does the habit of checking a mark before building on it.",
@@ -9765,7 +9896,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the floor is held to before you kneel on it with a tape and a pencil.",
@@ -9814,7 +9945,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -9858,7 +9991,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Acceptance is decided at this bench, so the conversation about judging work belongs here.",
@@ -9871,7 +10004,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the bench is held to; judging work in bad light is its own kind of mistake.",
@@ -9920,7 +10053,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -9964,7 +10099,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Shift starts and hand-offs happen in this room, which is why the exchange is staged here.",
@@ -10011,7 +10146,8 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "walk"
    ],
    "stages": [
     "class"
@@ -10052,7 +10188,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Permits and as-builts are kept here, so this is where to learn what a record is and what it is not.",
@@ -10100,7 +10236,8 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "walk"
    ],
    "stages": [
     "class"
@@ -10141,7 +10278,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Start in the room where the rules for the rest of the hall are posted, before you are anywhere near the work.",
@@ -10154,7 +10291,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks before you cross the threshold, and notice what it asks you to put on.",
@@ -10203,7 +10340,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -10247,7 +10386,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Stand where things are issued and returned, since the kit a trade relies on is kept and counted here.",
@@ -10260,7 +10399,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the room is held to before you reach for anything hanging on the wall.",
@@ -10307,7 +10446,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -10352,7 +10493,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Setting out starts here, and so does the habit of checking a mark before building on it.",
@@ -10365,7 +10506,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the floor is held to before you kneel on it with a tape and a pencil.",
@@ -10414,7 +10555,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -10458,7 +10601,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Acceptance is decided at this bench, so the conversation about judging work belongs here.",
@@ -10471,7 +10614,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the bench is held to; judging work in bad light is its own kind of mistake.",
@@ -10520,7 +10663,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -10564,7 +10709,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Shift starts and hand-offs happen in this room, which is why the exchange is staged here.",
@@ -10611,7 +10756,8 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "walk"
    ],
    "stages": [
     "class"
@@ -10652,7 +10798,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Permits and as-builts are kept here, so this is where to learn what a record is and what it is not.",
@@ -10700,7 +10846,8 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "walk"
    ],
    "stages": [
     "class"
@@ -10741,7 +10888,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Start in the room where the rules for the rest of the hall are posted, before you are anywhere near the work.",
@@ -10754,7 +10901,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks before you cross the threshold, and notice what it asks you to put on.",
@@ -10803,7 +10950,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -10847,7 +10996,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Stand where things are issued and returned, since the kit a trade relies on is kept and counted here.",
@@ -10860,7 +11009,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the room is held to before you reach for anything hanging on the wall.",
@@ -10907,7 +11056,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -10952,7 +11103,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Setting out starts here, and so does the habit of checking a mark before building on it.",
@@ -10965,7 +11116,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the floor is held to before you kneel on it with a tape and a pencil.",
@@ -11014,7 +11165,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -11058,7 +11211,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Acceptance is decided at this bench, so the conversation about judging work belongs here.",
@@ -11071,7 +11224,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the bench is held to; judging work in bad light is its own kind of mistake.",
@@ -11120,7 +11273,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -11164,7 +11319,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Shift starts and hand-offs happen in this room, which is why the exchange is staged here.",
@@ -11211,7 +11366,8 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "walk"
    ],
    "stages": [
     "class"
@@ -11252,7 +11408,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Permits and as-builts are kept here, so this is where to learn what a record is and what it is not.",
@@ -11300,7 +11456,8 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "walk"
    ],
    "stages": [
     "class"
@@ -11341,7 +11498,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Start in the room where the rules for the rest of the hall are posted, before you are anywhere near the work.",
@@ -11354,7 +11511,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks before you cross the threshold, and notice what it asks you to put on.",
@@ -11403,7 +11560,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -11447,7 +11606,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Stand where things are issued and returned, since the kit a trade relies on is kept and counted here.",
@@ -11460,7 +11619,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the room is held to before you reach for anything hanging on the wall.",
@@ -11507,7 +11666,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -11552,7 +11713,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Setting out starts here, and so does the habit of checking a mark before building on it.",
@@ -11565,7 +11726,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the floor is held to before you kneel on it with a tape and a pencil.",
@@ -11614,7 +11775,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -11658,7 +11821,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Acceptance is decided at this bench, so the conversation about judging work belongs here.",
@@ -11671,7 +11834,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the bench is held to; judging work in bad light is its own kind of mistake.",
@@ -11720,7 +11883,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -11764,7 +11929,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Shift starts and hand-offs happen in this room, which is why the exchange is staged here.",
@@ -11811,7 +11976,8 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "walk"
    ],
    "stages": [
     "class"
@@ -11852,7 +12018,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Permits and as-builts are kept here, so this is where to learn what a record is and what it is not.",
@@ -11900,7 +12066,8 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "walk"
    ],
    "stages": [
     "class"
@@ -11941,7 +12108,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Start in the room where the rules for the rest of the hall are posted, before you are anywhere near the work.",
@@ -11954,7 +12121,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks before you cross the threshold, and notice what it asks you to put on.",
@@ -12003,7 +12170,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -12047,7 +12216,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Stand where things are issued and returned, since the kit a trade relies on is kept and counted here.",
@@ -12060,7 +12229,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the room is held to before you reach for anything hanging on the wall.",
@@ -12107,7 +12276,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -12152,7 +12323,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Setting out starts here, and so does the habit of checking a mark before building on it.",
@@ -12165,7 +12336,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the floor is held to before you kneel on it with a tape and a pencil.",
@@ -12214,7 +12385,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -12258,7 +12431,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Acceptance is decided at this bench, so the conversation about judging work belongs here.",
@@ -12271,7 +12444,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the bench is held to; judging work in bad light is its own kind of mistake.",
@@ -12320,7 +12493,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -12364,7 +12539,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Shift starts and hand-offs happen in this room, which is why the exchange is staged here.",
@@ -12411,7 +12586,8 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "walk"
    ],
    "stages": [
     "class"
@@ -12452,7 +12628,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Permits and as-builts are kept here, so this is where to learn what a record is and what it is not.",
@@ -12500,7 +12676,8 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "walk"
    ],
    "stages": [
     "class"
@@ -12541,7 +12718,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Start in the room where the rules for the rest of the hall are posted, before you are anywhere near the work.",
@@ -12554,7 +12731,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks before you cross the threshold, and notice what it asks you to put on.",
@@ -12603,7 +12780,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -12647,7 +12826,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Stand where things are issued and returned, since the kit a trade relies on is kept and counted here.",
@@ -12660,7 +12839,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the room is held to before you reach for anything hanging on the wall.",
@@ -12707,7 +12886,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -12752,7 +12933,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Setting out starts here, and so does the habit of checking a mark before building on it.",
@@ -12765,7 +12946,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the floor is held to before you kneel on it with a tape and a pencil.",
@@ -12814,7 +12995,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -12858,7 +13041,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Acceptance is decided at this bench, so the conversation about judging work belongs here.",
@@ -12871,7 +13054,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Read what the bench is held to; judging work in bad light is its own kind of mistake.",
@@ -12920,7 +13103,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -12964,7 +13149,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Shift starts and hand-offs happen in this room, which is why the exchange is staged here.",
@@ -13011,7 +13196,8 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "walk"
    ],
    "stages": [
     "class"
@@ -13052,7 +13238,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Permits and as-builts are kept here, so this is where to learn what a record is and what it is not.",
@@ -13100,7 +13286,8 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "walk"
    ],
    "stages": [
     "class"
@@ -13141,7 +13328,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -13154,7 +13341,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -13203,7 +13390,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -13254,7 +13443,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -13267,7 +13456,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -13316,7 +13505,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -13367,7 +13558,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -13380,7 +13571,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -13429,7 +13620,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -13482,7 +13675,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -13495,7 +13688,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -13544,7 +13737,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -13595,7 +13790,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -13608,7 +13803,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -13657,7 +13852,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -13710,7 +13907,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -13723,7 +13920,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -13772,7 +13969,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -13823,7 +14022,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -13836,7 +14035,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -13885,7 +14084,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -13936,7 +14137,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -13949,7 +14150,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -13998,7 +14199,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -14049,7 +14252,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -14062,7 +14265,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -14111,7 +14314,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -14162,7 +14367,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -14175,7 +14380,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -14224,7 +14429,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -14275,7 +14482,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -14288,7 +14495,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -14337,7 +14544,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -14388,7 +14597,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -14401,7 +14610,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -14450,7 +14659,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -14501,7 +14712,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -14514,7 +14725,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -14563,7 +14774,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -14614,7 +14827,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -14627,7 +14840,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -14676,7 +14889,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -14727,7 +14942,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -14740,7 +14955,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -14789,7 +15004,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -14840,7 +15057,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -14853,7 +15070,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -14902,7 +15119,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -14953,7 +15172,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -14966,7 +15185,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -15015,7 +15234,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -15066,7 +15287,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -15079,7 +15300,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -15128,7 +15349,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -15179,7 +15402,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -15192,7 +15415,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -15241,7 +15464,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -15292,7 +15517,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -15305,7 +15530,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -15354,7 +15579,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -15405,7 +15632,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -15418,7 +15645,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -15467,7 +15694,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -15518,7 +15747,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -15531,7 +15760,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -15580,7 +15809,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -15631,7 +15862,7 @@
     {
      "n": 1,
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -15644,7 +15875,7 @@
     {
      "n": 2,
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -15693,7 +15924,9 @@
     }
    ],
    "records": [
-    "advisor"
+    "advisor",
+    "placard",
+    "walk"
    ],
    "stages": [
     "class"
@@ -16717,14 +16950,14 @@
  "page_contract": {
   "data": "ship this registry to the page as D.lessons, the same way D.guide and D.crews already arrive: the whole document, indexed by lesson id, with no per-lesson preprocessing. The page adds no field to it at boot.",
   "hall": "in the hall view, a hall that any lesson names gets one chip per lesson on the hall roster, reading the lesson title and the room label of its strand. The chip is a way in, not a gate: it grants nothing and hides nothing.",
-  "room": "inside the hall the page already tracks curRoom and knows curRoom.strand. When the strand of the room the learner has walked into matches a lesson standing in that hall, the lesson becomes the active one; when they walk out, it stops being active. No other state is kept.",
+  "room": "inside the hall the page already tracks curRoom and knows curRoom.strand. When the strand of the room the learner has walked into matches a lesson standing in that hall, the lesson becomes the active one; when they walk out, it stops being active. Entering a room a lesson names as a walk target also records one walk episode (training/ declares it), and nothing else about the walk is kept.",
   "hud": "while a lesson is active the hfocus line keeps the room label and finish it already shows, and the hint line shows the lesson title, the current step number out of the step count, and that step's computed `do` line - never the note, which is commentary for a reader rather than an instruction for a learner mid-room.",
   "reads": "the page must READ and never copy: the room label from the strand, the station name from D.stations, the seat name, scenario name and walkaround point from D.sims, the advisor and crew role names and the exact topic wording from D.advisors and D.crews, and the condition line for a placard step from the same condOf()/condLine() pair the hint line already uses. This registry stores ids for all of those on purpose.",
   "steps": "render the steps in the order given, numbered. A step is marked done by the learner, in this browser only. A step is never enforced: the page must let somebody do step four first, because the building does, and a lesson that could trap a learner in a room would be a gate wearing a lesson's clothes.",
-  "records": "a step whose `records` is a string writes exactly that episode kind through the training recorder that already exists, with no new field and no new storage key. A step whose `records` is null writes nothing - the page must not invent an episode for it, and must not mark the lesson as recorded because a learner walked somewhere.",
+  "records": "a step whose `records` is a string writes exactly that episode kind through the training recorder that already exists, with no new field and no new storage key. A step whose `records` is null writes nothing - the page must not invent an episode for it. The walk episode is the one declared walk kind: it is written only when the position of the learner (not a probe) enters the named room, never from a probe, and it finishes no lesson by itself.",
   "ladder": "render a lesson's prerequisites as named links with the edge reason shown. Do not disable a lesson whose prerequisites are unfinished: the ladder is advice about order and the registry says so, and enforcing it in the page would turn it into the gate this pack promises it is not.",
   "limits": "the `limits` sentence renders with the lesson, not behind a disclosure control, and not only at the end. A learner who is told what a lesson does not mean only after finishing it has already formed the belief the sentence exists to prevent.",
-  "episode": "nothing about opening, reading or abandoning a lesson is recorded. The only episodes that reach the training log are the four the step kinds already declare, written by the recorder that was already writing them."
+  "episode": "nothing about opening, reading or abandoning a lesson is recorded. The only episodes that reach the training log are the six the step kinds declare, written by the recorder that was already writing them."
  },
  "reads": [
   "agents/registry/advisors.json",

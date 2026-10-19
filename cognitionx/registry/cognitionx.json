@@ -3,11 +3,11 @@
  "product": "COGX·Cognition.X K-12 in SmartCiti.X",
  "source_stamp": "61719d8f4ba4147b",
  "sources": {
-  "layers/registry/layers.json": "674421440ae397e3",
-  "layers/registry/paths.json": "118d4b3708e97692",
+  "layers/registry/layers.json": "edf4b6d304349ad8",
+  "layers/registry/paths.json": "9c9ee07cf9f2a6b5",
   "wilds/registry/wilds.json": "52696e6eab718377",
-  "sims/registry/sims.json": "987a9d4812b4c73b",
-  "lessons/registry/lessons.json": "e905659b0a718ab6",
+  "sims/registry/sims.json": "1af48d2eed34ccb2",
+  "lessons/registry/lessons.json": "881eadd1629dc903",
   "schools/registry/schools.json": "f16f95c0a1c639c5",
   "parishes/registry/parishes.json": "de34075e54a82b8f"
  },

@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-26",
- "source_stamp": "a0f6a3710441ef77",
+ "source_stamp": "d1282db9df77044a",
  "provenance": "DERIVED",
  "provenance_note": "every fact here is read from the registry that owns it and re-derivable by build.py; the episode shapes are training/registry/training.json#episode_kinds verbatim; the fixture package is SCRIPTED and labelled as not a learner",
  "honesty": {
@@ -89,7 +89,9 @@
    "kinds": [
     "advisor",
     "crew",
+    "placard",
     "sim",
+    "walk",
     "walkaround"
    ],
    "fields_by_kind": "episode_kinds",
@@ -99,7 +101,9 @@
    "kinds": [
     "advisor",
     "crew",
+    "placard",
     "sim",
+    "walk",
     "walkaround",
     "world-teleop"
    ],
@@ -750,6 +754,31 @@
    "conditional_fields": {},
    "what": "one crew role asked one question while its seat was running"
   },
+  "walk": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "room"
+   ],
+   "conditional_fields": {},
+   "what": "one lesson-target room entered on foot"
+  },
+  "placard": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "room",
+    "dwell_ms"
+   ],
+   "conditional_fields": {},
+   "what": "one door placard panel opened and left open for its dwell"
+  },
   "walkaround": {
    "fields": [
     "t",
@@ -815,9 +844,12 @@
     "answer_kind",
     "point",
     "controls",
-    "operator"
+    "operator",
+    "where",
+    "room",
+    "dwell_ms"
    ],
-   "why": "this verifier resolves the ids that name a PLACE or a SEAT (sim, scenario, hall, campus). An advisor, a crew role, a topic, a walkaround point or a control scheme is carried verbatim and its shape is held to the episode field list; whether it names a real registry entry is not checked here and the verifier says so"
+   "why": "this verifier resolves the ids that name a PLACE or a SEAT (sim, scenario, hall, campus). An advisor, a crew role, a topic, a walkaround point, a control scheme, or the room (where, room) and dwell of a walk or placard episode is carried verbatim and its shape is held to the episode field list; whether it names a real registry entry is not checked here and the verifier says so"
   }
  },
  "digest": {
@@ -979,7 +1011,9 @@
   "episodes": {
    "advisor": 1,
    "crew": 1,
+   "placard": 1,
    "sim": 3,
+   "walk": 1,
    "walkaround": 1
   },
   "traces_attached": 1,
@@ -1052,13 +1086,15 @@
   "episodes": {
    "advisor": 1,
    "crew": 1,
+   "placard": 1,
    "sim": 3,
+   "walk": 1,
    "walkaround": 1,
    "world-teleop": 2
   }
  },
  "counts": {
-  "episode_kinds": 4,
+  "episode_kinds": 6,
   "scopes": 2,
   "rules": 21,
   "mutants": 21,

@@ -141,8 +141,25 @@
    }
   },
   {
-   "t": "2026-09-26T03:04:00.000Z",
+   "t": "2026-09-26T03:00:20.000Z",
    "kind": "joystick",
+   "campus": "treasure-island",
+   "hall": "painters",
+   "where": "fixture-strand",
+   "room": "Fixture Room"
+  },
+  {
+   "t": "2026-09-26T03:00:40.000Z",
+   "kind": "placard",
+   "campus": "treasure-island",
+   "hall": "painters",
+   "where": "fixture-strand",
+   "room": "Fixture Room",
+   "dwell_ms": 5250
+  },
+  {
+   "t": "2026-09-26T03:04:00.000Z",
+   "kind": "advisor",
    "campus": "treasure-island",
    "hall": "painters",
    "advisor": "fixture-advisor",
@@ -338,9 +355,11 @@
     "start": "2026-09-26T03:00:00.000Z",
     "end": "2026-09-26T03:04:00.000Z",
     "wall_ms": 240000,
-    "episodes": 4,
+    "episodes": 6,
     "by_kind": {
      "walkaround": 1,
+     "walk": 1,
+     "placard": 1,
      "sim": 2,
      "advisor": 1
     },
@@ -371,6 +390,8 @@
     "traces": 1,
     "samples": 4,
     "could_advance": {
+     "walk": true,
+     "placard": true,
      "walkaround": true,
      "sim": true,
      "advisor": true,
@@ -414,6 +435,8 @@
     "traces": 0,
     "samples": 0,
     "could_advance": {
+     "walk": false,
+     "placard": false,
      "walkaround": false,
      "sim": true,
      "advisor": false,
@@ -456,6 +479,8 @@
     "traces": 0,
     "samples": 0,
     "could_advance": {
+     "walk": false,
+     "placard": false,
      "walkaround": false,
      "sim": true,
      "advisor": false,
@@ -465,9 +490,11 @@
   ],
   "rollups": {
    "sessions": 3,
-   "episodes": 9,
+   "episodes": 11,
    "by_kind": {
     "walkaround": 1,
+    "walk": 1,
+    "placard": 1,
     "sim": 6,
     "advisor": 1,
     "crew": 1

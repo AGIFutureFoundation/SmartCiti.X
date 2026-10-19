@@ -153,7 +153,7 @@ for (const [name, m] of Object.entries(reg.fixture.mutants)) {
 {
   const r = spawnSync(process.execPath, [fileURLToPath(url('./verify.mjs')), fileURLToPath(url('./' + reg.fixture.good))], { encoding: 'utf8' });
   ok('the CLI on the fixture exits 0, prints the sessions table (one row per session), the roll-ups, the seat-time line and the honest last line',
-    r.status === 0 && (r.stdout.match(/^ +\d+  \d{4}-/mg) || []).length === 3 && /^rollups: 3 session\(s\), 9 episode\(s\)/m.test(r.stdout)
+    r.status === 0 && (r.stdout.match(/^ +\d+  \d{4}-/mg) || []).length === 3 && new RegExp('^rollups: ' + reg.counts.fixture_sessions + ' session\\(s\\), ' + reg.counts.fixture_episodes + ' episode\\(s\\)', 'm').test(r.stdout)
     && /^seat time: not recordable/m.test(r.stdout) && r.stdout.trim().split('\n').pop() === LAST_LINE, [r.stdout.split('\n').slice(-3).join(' | ')]);
   const b = spawnSync(process.execPath, [fileURLToPath(url('./verify.mjs')), fileURLToPath(url('./fixture/mutant-t-unparseable.json'))], { encoding: 'utf8' });
   ok('the CLI on a mutant exits 1 and prints FAIL with the rule name', b.status === 1 && /^FAIL episode\.t:/m.test(b.stderr));

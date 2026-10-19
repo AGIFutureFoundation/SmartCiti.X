@@ -342,9 +342,9 @@ const crewWrong = stepsOf('crew').filter(([lid, L, s]) =>
   || !L.steps.some((x) => 'sim' in x && x.sim === crews[s.crew].seat)).map(([lid, , s]) => `${lid} step ${s.n}`);
 ok('a crew step stands only in a hall its crew reaches, in a lesson that goes to that crew\'s seat'
   + (crewWrong.length ? ` — ${crewWrong.join(', ')}` : ''), crewWrong.length === 0);
-ok('every step records exactly what its kind records: null for walk, placard, station and crib; a training/ episode kind for the rest',
-  ['walk', 'placard', 'station', 'crib'].every((k) => reg.step_kinds[k].records === null)
-  && ['walkaround', 'sim', 'advisor', 'crew'].every((k) => reg.step_kinds[k].records in training.episode_kinds)
+ok('every step records exactly what its kind records: null for station and crib only; a training/ episode kind of its own name for the rest, walk and placard included',
+  ['station', 'crib'].every((k) => reg.step_kinds[k].records === null && typeof reg.step_kinds[k].why_no_episode === 'string')
+  && ['walk', 'placard', 'walkaround', 'sim', 'advisor', 'crew'].every((k) => reg.step_kinds[k].records === k && reg.step_kinds[k].records in training.episode_kinds && reg.step_kinds[k].why_no_episode === null)
   && steps.every(([, , s]) => s.records === reg.step_kinds[s.kind].records));
 
 /* ----------------------------------------------------------- the ladder --- */

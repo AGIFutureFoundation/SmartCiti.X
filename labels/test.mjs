@@ -118,14 +118,13 @@ ok('focus is presentation: no label is a score and none gates anything',
 ok('no grader anywhere reads which sign a learner faced',
   page.split(/function (?:score|grade)/).slice(1)
     .every((c) => !/labelFocus/.test(c.slice(0, 2500))));
-ok('the wrist panel in a headset reuses the readout kind honestly: same label(), same gauges, fixed size on the hand, not view-scored, held at the source by regex with no session (mocked or real) driven and no harness claimed',
+ok('the wrist panel in a headset reuses the readout kind honestly: same label(), same gauges, fixed size on the hand, not view-scored, held at the source by regex, read in one MOCKED session, and no session on a physical headset driven',
   /readout kind is reused for the\s+wrist panel/.test(reg.honesty.xr_panel)
   && /same gauges\(\) values/.test(reg.honesty.xr_panel)
   && /view-direction scoring above does not apply/.test(reg.honesty.xr_panel)
   && /Held at the source by regex/.test(reg.honesty.xr_panel)
-  && /no session, mocked or real,\s+has been driven in this tree/.test(reg.honesty.xr_panel)
-  && /never a physical headset/.test(reg.honesty.xr_panel)
-  && /mocked-session harness is not claimed/.test(reg.honesty.xr_panel)
+  && /no session on a physical headset\s+has been driven in this tree/.test(reg.honesty.xr_panel)
+  && /a MOCKED session in headless\s+Chromium/.test(reg.honesty.xr_panel)
   && !/verified against a mocked/i.test(reg.honesty.xr_panel)
   && !/MOCKED WebXR session only/i.test(reg.honesty.xr_panel)
   && /kind: 'readout', accent: warn \? LPAL\.crit/.test(page)

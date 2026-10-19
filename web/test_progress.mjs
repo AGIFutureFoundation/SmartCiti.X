@@ -908,7 +908,7 @@ if (!WANT_BROWSER) {
       + 'not done, and the passed seat, the done station and the passed crib are the only evidence',
       allSteps.every((s) => s.done === (s.evidence !== null))
       && allSteps.filter((s) => s.kind === 'sim' && s.evidence && s.evidence.sim === secondSim.sim).length === 0
-      && allSteps.filter((s) => ['walk', 'placard'].includes(s.kind)).every((s) => !s.done && s.evidence === null)
+      && allSteps.filter((s) => ['walk', 'placard'].includes(s.kind)).every((s) => !s.done && s.evidence === null)   // no training log here, so no walk or placard episode exists
       && simDone.length > 0 && simDone.every((s) => s.evidence.sim === firstSim.sim && s.evidence.passed === true && s.evidence.score === null)
       && allSteps.filter((s) => s.kind === 'station' && s.done).every((s) => s.evidence.station === firstStation.station)
       && allSteps.filter((s) => s.kind === 'crib' && s.done).every((s) => s.evidence.crib === firstCrib.crib && s.evidence.passed === true),
@@ -946,22 +946,56 @@ if (!WANT_BROWSER) {
     ok('[shipped] the summary is computed from the record and keeps three counts apart by what '
       + 'stands behind a step: recorded-episode kinds (' + recKinds.join(', ') + ') done only where the '
       + 'mark exists, device-mark-only kinds (station, crib), and self-reported/unrecorded kinds '
-      + '(walk, placard) - a station mark is never counted as an episode',
+      + '(none today: walk and placard record episodes) - a station mark is never counted as an episode',
       S.complete === 1 && S.evidence_backed === 1 && S.steps_done === 6 && S.lessons === 3 && S.steps === 8
-      && S.episode_steps_done === 2 && S.episode_steps === 3
+      && S.episode_steps_done === 2 && S.episode_steps === 4
       && S.device_mark_steps_done === 4 && S.device_mark_steps === 4
-      && S.self_reported_steps_done === 0 && S.self_reported_steps === 1
+      && S.self_reported_steps_done === 0 && S.self_reported_steps === 0
       && S.episode_kinds.join() === recKinds.join()
-      && S.device_mark_kinds.join() === 'station,crib' && S.self_reported_kinds.join() === 'walk,placard'
+      && S.device_mark_kinds.join() === 'station,crib' && S.self_reported_kinds.length === 0
       && S.episode_kinds_unmarked_here.join() === ''
       && R.lessons === Object.keys(L).length && R.steps_done === allSteps.filter((s) => s.done).length
       && R.episode_steps_done === allSteps.filter((s) => recKinds.includes(s.kind) && s.done).length && R.episode_steps_done > allSteps.filter((s) => s.kind === 'sim' && s.done).length
       && R.episode_steps === allSteps.filter((s) => recKinds.includes(s.kind)).length
       && R.device_mark_steps_done === allSteps.filter((s) => ['station', 'crib'].includes(s.kind) && s.done).length
-      && R.self_reported_steps === allSteps.filter((s) => ['walk', 'placard'].includes(s.kind)).length
+      && R.self_reported_steps === 0
       && R.self_reported_steps_done === 0
       && R.episode_steps_done + R.device_mark_steps_done + R.self_reported_steps_done === R.steps_done,
       [JSON.stringify(S), JSON.stringify(R)]);
+    /* wave 20: a walk or placard step is done only on the episode a device recorded for ITS room: hall and where equal the
+       step's own, the room label is one of the step's names_read, and a placard's dwell_ms meets the declared floor. The
+       floor and the names_read field are read from the embedded episode kinds, never typed here. */
+    {
+      const ekW = data.episode_kinds.walk, ekP = data.episode_kinds.placard;
+      const floor = ekP.at_least.dwell_ms;
+      const synthW = { 'w-room': { id: 'w-room', hall: 'x', steps: [
+        { n: 1, kind: 'walk', where: 'safety', names_read: ['Induction Room'] },
+        { n: 2, kind: 'placard', where: 'safety', names_read: ['Induction Room'] }] } };
+      const T = NOW.toISOString();
+      const walkEp = { kind: 'walk', hall: 'x', where: 'safety', room: 'Induction Room', t: T };
+      const placEp = { kind: 'placard', hall: 'x', where: 'safety', room: 'Induction Room', dwell_ms: floor, t: T };
+      const doneOf = async (eps) => (await C.buildCompletionRecord(prog, synthW, { edges: [] }, meta, NOW, eps)).lessons[0];
+      const good = await doneOf([walkEp, placEp]);
+      const evW = good.steps[0].evidence, evP = good.steps[1].evidence;
+      ok('[shipped] a walk and a placard step are done on the episode of their own room: both done, the lesson complete, the evidence carrying hall, where, the room label and, for a placard, the dwell',
+        ekW.names_read_field === 'room' && ekP.names_read_field === 'room' && Number.isInteger(floor) && floor > 0
+        && good.complete === true && evW.episode === 'walk' && evW.where === 'safety' && evW.room === 'Induction Room' && evW.hall === 'x'
+        && evP.episode === 'placard' && evP.where === 'safety' && evP.room === 'Induction Room' && evP.dwell_ms === floor,
+        [JSON.stringify(good)]);
+      const notDone = async (eps, idx) => (await doneOf(eps)).steps[idx].done === false;
+      ok('[shipped] a walk or placard episode of another room, another hall, another label, a dwell under the floor, a dwell that is not a number, or of the other kind marks nothing',
+        await notDone([{ ...walkEp, where: 'tools' }], 0)
+        && await notDone([{ ...walkEp, hall: 'y' }], 0)
+        && await notDone([{ ...walkEp, room: 'Somewhere Else' }], 0)
+        && await notDone([{ ...placEp, dwell_ms: floor - 1 }], 1)
+        && await notDone([{ ...placEp, dwell_ms: String(floor + 1) }], 1)
+        && await notDone([{ ...placEp, dwell_ms: Infinity }], 1)
+        && await notDone([{ ...placEp, kind: 'walk' }], 1)
+        && await notDone([{ ...walkEp, kind: 'placard' }], 0)
+        && await notDone([{ ...walkEp, t: 'yesterday' }], 0)
+        && await notDone([{ ...walkEp, actor: 'scripted-reference' }], 0)
+        && await notDone([], 0) && await notDone(null, 0));
+    }
     const { digest, ...rest } = rec;
     const want = createHash('sha256').update(Buffer.from(C.canonicalJSON(rest), 'utf8')).digest('hex');
     const tampered = JSON.parse(JSON.stringify(rest)); tampered.lessons[0].steps[0].done = true;
@@ -1230,9 +1264,9 @@ if (!WANT_BROWSER) {
     ok('[shipped] continuePoint over an EMPTY record points nowhere (null): no lesson is invented as "started"',
       empty.pt === null, [`got ${JSON.stringify(empty.pt)}`]);
     ok('[shipped] continuePoint names the first STARTED lesson in course order (ladder layer, then registry order) and, '
-      + 'in it, the first step a record could still mark - never a walk or placard step, which nothing records',
+      + 'in it, the first step a record could still mark - a walk or placard step included, now that both record an episode, and no kind left unrecorded',
       one.pt !== null && one.pt.lesson === wantOne && one.pt.step === firstOpen(wantOne, [simOf(late).sim]).n
-      && !unrec.includes(one.pt.kind) && unrec.includes('walk')
+      && unrec.length === 0
       && both.pt !== null && both.pt.lesson === wantBoth
       && courseOrder.indexOf(both.pt.lesson) <= courseOrder.indexOf(one.pt.lesson),
       [`one=${JSON.stringify(one.pt)} want ${wantOne}`, `both=${JSON.stringify(both.pt)} want ${wantBoth}`, `unrecorded=${unrec}`]);
