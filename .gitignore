@@ -7,3 +7,7 @@ config/runtime.json
 **/.dev.vars
 .env
 .env.*
+loop/state/
+loop/media
+/desk*.png
+/phone*.png
