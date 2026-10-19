@@ -1,0 +1,36 @@
+ESA WorldCover 10 m 2021 v200 - attribution, licence and citation, copied verbatim from the source.
+
+From the GeoTIFF metadata of every tile used (items "copyright" and "license"):
+copyright: ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium
+license: CC-BY 4.0 - https://creativecommons.org/licenses/by/4.0/
+
+From WorldCover_PUM_V2.0.pdf (https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/docs/WorldCover_PUM_V2.0.pdf), sections 5.1-5.2:
+5.1 License
+The WorldCover product is provided free of charge, without restriction of use. For the full license
+information see the Creative Commons Attribution 4.0 International License
+Publications, models and data products that make use of these datasets must include proper
+acknowledgement, including citing the datasets and the journal article as in the following citation.
+5.2 Citation
+A reference publication on the product is in preparation
+If you are using the data as a layer in a published map, please include the following attribution text:
+'© ESA WorldCover project [year] / Contains modified Copernicus Sentinel data ([year]) processed by
+ESA WorldCover consortium’
+With year either 2020 or 2021 for the WorldCover 2020 and 2021 map, respectively
+To cite these maps as data source in your publication, please add:
+    • WorldCover 2020
+         Zanaga, D., Van De Kerchove, R., De Keersmaecker, W., Souverijns, N., Brockmann, C., Quast,
+         R., Wevers, J., Grosu, A., Paccini, A., Vergnaud, S., Cartus, O., Santoro, M., Fritz, S., Georgieva,
+         I., Lesiv, M., Carter, S., Herold, M., Li, Linlin, Tsendbazar, N.E., Ramoino, F., Arino, O., 2021.
+         ESA WorldCover 10 m 2020 v100. doi:10.5281/zenodo.5571936.
+    • WorldCover 2021
+         Zanaga, D., Van De Kerchove, R., Daems, D., De Keersmaecker, W., Brockmann, C., Kirches, G.,
+         Wevers, J., Cartus, O., Santoro, M., Fritz, S., Lesiv, M., Herold, M., Tsendbazar, N.E., Xu, P.,
+         Ramoino, F., Arino, O., 2022. ESA WorldCover 10 m 2021 v200. doi:10.5281/zenodo.7254221.
+
+Map attribution used by this bundle (the 2021 form of the text above):
+© ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium
+
+Modifications made by this bundle (CC BY 4.0 section 3(a)(1)(B)): majority class of the 10 m pixels per
+3 arc-second cell, cells under half classified set to 0 (nodata), clipped to the union of the
+registry bounding boxes of the 13 parishes and the 9 Bay counties (landcover/fetch_landcover.py).
+ESA and the WorldCover consortium have not endorsed this bundle.

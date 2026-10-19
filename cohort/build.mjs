@@ -149,7 +149,7 @@ ${learnerRows}
 
 export function buildPage() {
   const log = parseLog(readFileSync(at('./fixtures/session_log.jsonl'), 'utf8'));
-  const d = computeDashboard(log, { courses: readJson('../courses/registry/courses.json'),
+  const d = computeDashboard(log, { courses: readJson('../courses_roadmap/registry/courses.json'),
     skills: readJson('../pack/registry/skills.json') });
   return { dashboard: d, html: renderPage(d, { packVersion: readJson('../pack/manifest.json').pack_version }) };
 }

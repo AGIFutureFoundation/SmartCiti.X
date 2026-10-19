@@ -1,0 +1,146 @@
+{
+ "id": "flipped-classroom",
+ "title": "Flipped classroom",
+ "purpose": "Six desks in two rows facing a lectern, an easel and a progress board, so the reading is done before the room and the room is spent on the questions.",
+ "unions": [
+  "carpenters",
+  "electricians"
+ ],
+ "strand": "leadership",
+ "footprint_m": {
+  "w": 11.0,
+  "d": 5.5
+ },
+ "floor": "porcelain-tile",
+ "wall": "whiteboard-panel",
+ "items": [
+  {
+   "kind": "prop",
+   "id": "instructor-lectern",
+   "x": 5.5,
+   "y": 5.0,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "exam-desk",
+   "x": 2.0,
+   "y": 3.2,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "exam-desk",
+   "x": 5.5,
+   "y": 3.2,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "exam-desk",
+   "x": 9.0,
+   "y": 3.2,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "exam-desk",
+   "x": 2.0,
+   "y": 1.4,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "exam-desk",
+   "x": 5.5,
+   "y": 1.4,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "exam-desk",
+   "x": 9.0,
+   "y": 1.4,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "classroom-stool",
+   "x": 2.0,
+   "y": 2.4,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "classroom-stool",
+   "x": 5.5,
+   "y": 2.4,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "classroom-stool",
+   "x": 9.0,
+   "y": 2.4,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "classroom-stool",
+   "x": 2.0,
+   "y": 0.6,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "classroom-stool",
+   "x": 5.5,
+   "y": 0.6,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "classroom-stool",
+   "x": 9.0,
+   "y": 0.6,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "progress-board",
+   "x": 1.0,
+   "y": 5.4,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "reference-shelf",
+   "x": 10.0,
+   "y": 5.3,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "drawing-easel",
+   "x": 8.5,
+   "y": 5.0,
+   "rotation": 0
+  },
+  {
+   "kind": "sign",
+   "id": "room",
+   "x": 0.3,
+   "y": 5.2,
+   "rotation": 0
+  },
+  {
+   "kind": "sign",
+   "id": "placard",
+   "x": 0.3,
+   "y": 0.3,
+   "rotation": 0
+  }
+ ],
+ "provenance": "AUTHORED",
+ "note": "declared, not yet walkable: a proposal composed from this bundle's own assets, not a measurement of any venue"
+}

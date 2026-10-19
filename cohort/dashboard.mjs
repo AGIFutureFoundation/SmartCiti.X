@@ -12,7 +12,7 @@
  *     verb, payload). Deduped on event_id - transport is at-least-once.
  *   - audit rows: safety_gate.allow / safety_gate.deny rows in the
  *     bus/audit.mjs AuditLog shape (learner, skill = the simulator target).
- *   - courses: courses/registry/courses.json; skills: pack/registry/skills.json.
+ *   - courses: courses_roadmap/registry/courses.json; skills: pack/registry/skills.json.
  *
  * Privacy (security/privacy.mjs): every row is filtered through NEVER_EXPORT
  * and NEVER_STORE key checks before use, so an affect field in a log can never

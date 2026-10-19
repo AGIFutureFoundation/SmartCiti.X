@@ -35,6 +35,20 @@ const advisors = R('../agents/registry/advisors.json');
 const tools = R('../tools/registry/toolcribs.json');
 const world = R('../world/registry/world.json');
 const page = readFileSync(new URL('../web/build_3d.py', import.meta.url), 'utf8');
+const terrain = R('../terrain/registry/terrain.json');
+const parcels = R('../parcels/registry/parcels.json');
+// The BUILT entry page is the measurement every door is held against: the
+// URL parameters it reads, the rosters it validates them with, and the
+// data payload those rosters come from. Read as a file, never opened in a
+// browser (this suite is browser-free), and never retyped.
+const page3d = readFileSync(new URL('../web/trade_craft_3d.html', import.meta.url), 'utf8');
+const dataBlock = page3d.match(/<script id="data" type="application\/json">([\s\S]*?)<\/script>/);
+const D3 = dataBlock ? JSON.parse(dataBlock[1]) : null;
+const ROSTER = D3 ? {
+  hall: new Set(D3.halls.map((h) => h.slug)),
+  sim: new Set(Object.keys(D3.sims.sims)),
+  campus: new Set(Object.keys(D3.campuses)),
+} : null;
 
 const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const PRODUCT = 'SmartCiti.X : Trade Craft Academy (powered by AGI Corp)';
@@ -96,7 +110,7 @@ ok('every campus pose equals the geo registry to the digit, at its own provenanc
 ok('every anchor pose equals the geo registry to the digit, at its own provenance, with its km and bearing carried',
   byKind('anchor').every((p) => {
     const [ck, nm] = p.subject.id.split('/');
-    const a = (geo.anchors[ck] || []).find((x) => slug(x.name) === nm);
+    const a = Array.isArray(geo.anchors[ck]) && geo.anchors[ck].find((x) => slug(x.name) === nm);
     return a && p.subject.campus === ck
       && p.geopose.position.lat === a.lat && p.geopose.position.lon === a.lng
       && p.provenance.position_horizontal === a.provenance
@@ -171,11 +185,11 @@ ok('every hall door is anchored at the campus that homes that hall, and the page
   fab.anchored_content.filter((c) => c.export === 'hall-glb').every((c) =>
     refs.has(c.anchored_at) && campuses[c.anchored_at.replace('campus:', '')].halls.includes(c.hall))
   && /tc-avatar\.glb/.test(page) && /'tc-hall-' \+ slug \+ '\.glb'/.test(page));
-ok('every service runs in-page with no network, is anchored at a resolving pose, and names its own registry file',
+ok('every service runs in-page with no network, is anchored at a resolving pose, says where else it stands (also_at, a list on every one), and names its own registry file',
   fab.services.length > 0 && fab.services.every((s) =>
     s.transport === 'in-page, no network' && refs.has(s.anchored_at)
     && existsSync(new URL('../' + s.registry, import.meta.url))
-    && (s.also_at ?? []).every((r) => refs.has(r))));
+    && Array.isArray(s.also_at) && s.also_at.every((r) => refs.has(r))));
 ok('every simulator the registry ships (eleven now) is a service resolving to sims/, with the operator levels and the scripted reference carried',
   Object.keys(sims.sims).every((sk) => {
     const s = fab.services.find((x) => x.id === `sim:${sk}`);
@@ -194,10 +208,14 @@ ok('the advisors, Schools panel, eight toolroom cribs, restoration panels and tr
   && fab.services.some((s) => s.id === 'training-recorder'));
 
 /* ------------------------------------------------------- external origins --- */
-ok('every external origin is served_by_this_fabric: false, and every one of its poses resolves',
-  fab.external_origins.length > 0 && fab.external_origins.every((e) =>
-    e.served_by_this_fabric === false && e.origin === 'external'
-    && e.geoposes.every((r) => refs.has(r))));
+const badOrigins = fab.external_origins
+  .filter((e) => e.served_by_this_fabric !== false || e.origin !== 'external'
+    || typeof e.operator !== 'string' || !e.operator.trim())
+  .map((e) => `${JSON.stringify(e.operator)} served_by_this_fabric=${e.served_by_this_fabric}`);
+ok('every external origin is served_by_this_fabric: false under a named operator, and every one of its poses resolves'
+  + (badOrigins.length ? ` - OFFENDING: ${badOrigins.join('; ')}` : ''),
+  fab.external_origins.length > 0 && badOrigins.length === 0
+  && fab.external_origins.every((e) => e.geoposes.every((r) => refs.has(r))));
 ok('every restoration site\'s own organization and every AUTHORED institution anchor is an external origin',
   resto.sites.every((s) => fab.external_origins.some((e) => e.operator === s.org))
   && Object.values(geo.anchors).flat().filter((a) => a.provenance === 'AUTHORED')
@@ -216,24 +234,115 @@ ok('the Navy / DTSC / CDPH origin at Former Naval Station Treasure Island is its
 
 /* ------------------------------------------------------------------- SOM --- */
 const [mine, ...ext] = som.root.branches;
+const kindsOf = (rs) => [...new Set(rs.map((r) => refs.get(r).subject.kind))].sort();
+const mineRefs = [...new Set(mine.children.filter((k) => k.geopose !== null).map((k) => k.geopose))];
+const extRefs = [...new Set(ext.flatMap((b) => b.children).filter((k) => k.geopose !== null).map((k) => k.geopose))];
+const sharedRefs = mineRefs.filter((r) => extRefs.includes(r));
+const sitePanels = fab.services.find((s) => s.id === 'restoration-panel').site_panels;
+ok('ownership, recounted: every leaf under this fabric\'s branch stands on a campus pose, every external leaf on an anchor or restoration-site pose, no pose is shared, and som.json#ownership states those counts - external origins served 0, without an operator 0'
+  + (sharedRefs.length ? ` - SHARED: ${sharedRefs.join(', ')}` : ''),
+  JSON.stringify(kindsOf(mineRefs)) === '["campus"]'
+  && kindsOf(extRefs).every((k) => ['anchor', 'restoration-site'].includes(k))
+  && sharedRefs.length === 0
+  && JSON.stringify(som.ownership.this_fabric_pose_kinds) === JSON.stringify(kindsOf(mineRefs))
+  && JSON.stringify(som.ownership.external_pose_kinds) === JSON.stringify(kindsOf(extRefs))
+  && som.ownership.poses_shared_between_this_fabric_and_an_external_branch === sharedRefs.length
+  && som.ownership.fabric_leaves_on_an_external_pose === sharedRefs.length
+  && som.ownership.external_origins === fab.external_origins.length
+  && som.ownership.external_origins_served_by_this_fabric === fab.external_origins.filter((e) => e.served_by_this_fabric).length
+  && som.ownership.external_origins_served_by_this_fabric === 0
+  && som.ownership.external_origins_without_a_named_operator === 0
+  && som.ownership.site_panels_anchored_at_external_poses === sitePanels.filter((sp) => sp.anchored_at !== null).length
+  && sitePanels.filter((sp) => sp.anchored_at !== null).every((sp) => extRefs.includes(sp.anchored_at)));
 ok('the SOM has one branch per origin: this fabric first, then one per external operator',
   mine.origin === 'this fabric' && mine.owner === PRODUCT && mine.served_by_this_fabric === true
   && ext.length === fab.external_origins.length
   && ext.every((b) => b.origin === 'external' && b.served_by_this_fabric === false)
   && new Set(som.root.branches.map((b) => b.id)).size === som.root.branches.length);
-ok('per-branch ownership holds: no external branch carries a place, content or service, or any node this fabric serves',
+ok('per-branch ownership holds: no external branch carries a place, content, service or export door, or any node this fabric serves',
   ext.every((b) => b.children.every((k) =>
-    k.served_by_this_fabric === false && !['place', 'content', 'service'].includes(k.kind))));
-ok('and everything this fabric serves sits under its own branch - places, content and services, each at a resolving pose',
+    k.served_by_this_fabric === false && !['place', 'content', 'service', 'export'].includes(k.kind))));
+ok('and everything this fabric serves sits under its own branch - places, content, services and the one export door, each at a resolving pose or honestly unanchored',
   mine.children.every((k) => k.served_by_this_fabric === true
     && (k.geopose === null || refs.has(k.geopose)))
   && mine.children.filter((k) => k.kind === 'place').length === fab.places.length
   && mine.children.filter((k) => k.kind === 'content').length === fab.anchored_content.length
-  && mine.children.filter((k) => k.kind === 'service').length === fab.services.length);
-ok('every branch records the set of provenance tiers it mixes, from the four words this bundle uses',
+  && mine.children.filter((k) => k.kind === 'service').length === fab.services.length
+  && mine.children.filter((k) => k.kind === 'export').length === 1);
+ok('every branch records the set of provenance tiers it mixes, from the five words this bundle uses, and this fabric\'s branch mixes SCHEMATIC and SCRIPTED - never AI-SYNTHESIZED',
   som.root.branches.every((b) => b.provenance_tiers.length > 0
-    && b.provenance_tiers.every((t) => ['RECORDED', 'DERIVED', 'AUTHORED', 'SCHEMATIC'].includes(t)))
-  && mine.provenance_tiers.includes('SCHEMATIC'));
+    && b.provenance_tiers.every((t) => ['RECORDED', 'DERIVED', 'AUTHORED', 'SCHEMATIC', 'SCRIPTED'].includes(t)))
+  && mine.provenance_tiers.includes('SCHEMATIC') && mine.provenance_tiers.includes('SCRIPTED'));
+ok('the export door is one SCRIPTED leaf of this fabric\'s branch: unanchored, carrying the page\'s own exportGlb transport and exactly the meta/ export ids, and the built page still has the .glb button',
+  (() => {
+    const x = mine.children.find((k) => k.kind === 'export');
+    return x && x.geopose === null && x.provenance === 'SCRIPTED'
+      && x.transport === fab.export_door.transport && /GLTFExporter/.test(x.transport)
+      && JSON.stringify(x.exports) === JSON.stringify(meta.exports.map((e) => e.id))
+      && fab.export_door.anchored_at === null && fab.export_door.served_by_this_fabric === true
+      && page3d.includes('id="glbBtn"') && page3d.includes('async function exportGlb(root, name)');
+  })());
+
+/* ---------------------------------------------------------------- doors --- */
+// A door is the deep link a browser would open for a leaf: the entry page
+// plus the one URL parameter that page validates against its own roster.
+// The roster is read from the BUILT page's data payload above, so a door
+// resolves only when the page really opens it; a door to nothing is named.
+const ENTRY = 'web/trade_craft_3d.html';
+const doorOpens = (d) => {
+  if (!d || d.page !== ENTRY) return false;
+  if (d.param === null) return d.value === null && d.href === ENTRY
+    && existsSync(new URL('../' + ENTRY, import.meta.url));
+  return ['hall', 'sim', 'campus'].includes(d.param) && ROSTER[d.param].has(d.value)
+    && d.href === `${ENTRY}?${d.param}=${d.value}`;
+};
+ok('the built 3D page reads ?hall=, ?sim= and ?campus= and validates each against its own roster - D.halls[].slug, the D.sims.sims keys, the D.campuses keys - from a data payload this suite can parse',
+  D3 !== null && ROSTER.hall.size > 0 && ROSTER.sim.size > 0 && ROSTER.campus.size > 0
+  && page3d.includes("D.halls.some(h => h.slug === params.get('hall'))")
+  && page3d.includes("Object.keys(D.sims.sims).includes(params.get('sim'))")
+  && page3d.includes("D.campuses[params.get('campus')]"));
+const fabricDoors = [
+  ...fab.places.map((p) => [p.id, p.door]),
+  ...fab.anchored_content.map((c) => [c.scene, c.door]),
+  ...fab.services.map((s) => [s.id, s.door]),
+  [fab.export_door.id, fab.export_door.door],
+];
+const dead = fabricDoors.filter(([, d]) => !doorOpens(d) || d.resolves !== true).map(([id, d]) => `${id} -> ${d && d.href}`);
+ok('every door this fabric declares opens onto the built page\'s own roster - ?hall= in D.halls, ?sim= in D.sims.sims, ?campus= in D.campuses, the entry page for the two bar doors - and each records resolves: true'
+  + (dead.length ? ` - DEAD DOORS: ${dead.join('; ')}` : ''),
+  fabricDoors.length > 0 && dead.length === 0);
+const leaves = som.root.branches.flatMap((b) => b.children);
+const withDoor = leaves.filter((k) => k.door !== null);
+const resolving = withDoor.filter((k) => doorOpens(k.door) && k.door.resolves === true);
+const namedOnly = leaves.filter((k) => k.door === null);
+const byParam = {};
+for (const k of withDoor) {
+  const p = k.door.param === null ? 'entry-page' : k.door.param;
+  byParam[p] = p in byParam ? byParam[p] + 1 : 1;
+}
+ok(`the door counts are recounted from the scene graph's leaves and match: ${withDoor.length} with a door, ${resolving.length} whose door resolves, ${namedOnly.length} that can only be named - and the unit says leaves, not root branches`,
+  som.doors.leaves === leaves.length
+  && som.doors.branches_with_a_door === withDoor.length
+  && som.doors.branches_whose_door_resolves === resolving.length
+  && som.doors.branches_that_can_only_be_named === namedOnly.length
+  && withDoor.length + namedOnly.length === leaves.length
+  && withDoor.length === resolving.length
+  && withDoor.length === mine.children.length
+  && namedOnly.length === ext.reduce((a, b) => a + b.children.length, 0)
+  && som.doors.page === ENTRY && /leaves/.test(som.doors.unit)
+  && JSON.stringify(som.doors.roster_sizes) === JSON.stringify({ hall: ROSTER.hall.size, sim: ROSTER.sim.size, campus: ROSTER.campus.size })
+  && JSON.stringify(Object.entries(som.doors.doors_by_parameter).sort()) === JSON.stringify(Object.entries(byParam).sort())
+  && fab.fabric.doors === 'spatial/registry/som.json#doors');
+ok('every leaf this fabric serves carries the same door its fabric.json record does, and every external leaf has door: null, named_only: true, with the reason',
+  mine.children.every((k) => {
+    const rec = k.kind === 'place' ? fab.places.find((p) => p.id === k.place)
+      : k.kind === 'content' ? fab.anchored_content.find((c) => c.scene === k.name)
+        : k.kind === 'service' ? fab.services.find((s) => s.id === k.name)
+          : k.kind === 'export' ? fab.export_door : null;
+    return rec && k.door !== null && JSON.stringify(k.door) === JSON.stringify(rec.door);
+  })
+  && ext.every((b) => b.children.every((k) => k.door === null && k.named_only === true
+    && typeof k.why_no_door === 'string' && k.why_no_door.length > 40)));
 
 /* -------------------------------------------------------------- meta/ --- */
 ok('meta/ claims geopose-1.0 under standards, OGC 21-056r11, with only defensible consumers',
@@ -246,19 +355,88 @@ ok('meta/ lists ombi-spatial-fabric, ombi-som and rmap under not_claimed, each w
 
 /* -------------------------------------------------------------- honesty --- */
 const H = gp.honesty;
-ok('the honesty block covers all six lines, and each says what it must',
+ok('the honesty block covers all six lines and the reachability probe, and each says what it must',
   /claimed outright/.test(H.geopose_claimed)
   && /never a measurement/.test(H.no_heights_or_headings)
   && /not validated against a specification/.test(H.ombi_not_claimed)
   && /No RMAP endpoint, no\s+server/.test(H.static_files_only_no_rmap)
   && /separate origin/.test(H.external_origins)
   && /Sneeze,\s+Artemis/.test(H.not_loaded_in_any_browser)
+  && typeof H.reachability_probe === 'object' && Array.isArray(H.reachability_probe.tried)
   && JSON.stringify(fab.honesty) === JSON.stringify(H) && JSON.stringify(som.honesty) === JSON.stringify(H));
 ok('the sources cite the deck as user-supplied and the Sneeze press (Apache 2.0, June 15 2026) as public, none of it fetched by the build',
   fab.sources.some((s) => /deck, Q3 2026/.test(s.what) && /user-supplied/.test(s.how))
   && fab.sources.some((s) => /Sneeze/.test(s.what) && /Apache 2\.0/.test(s.what) && /June 15 2026/.test(s.what)
     && /metaverse-standards\.org/.test(s.url))
   && fab.sources.every((s) => /AUTHORED|claimed/.test(s.provenance)));
+
+/* ------------------------------------------------------------- coverage --- */
+// What the poses carry, recounted here from the sidecars: a pose has a height
+// or a heading only when its sidecar says something other than UNKNOWN. A
+// zero in the encoding is never read as a value. The lead's gap register
+// reads these counts, so each is held against its own recount.
+const H_UNKNOWN = 'UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement';
+const O_UNKNOWN = 'UNKNOWN - no heading is recorded; 0 is a placeholder';
+const nH = gp.poses.filter((p) => p.provenance.h_provenance !== H_UNKNOWN).length;
+const nO = gp.poses.filter((p) => p.provenance.orientation_provenance !== O_UNKNOWN).length;
+ok(`coverage is recounted from the sidecars: ${gp.coverage.poses_with_height} of ${gp.coverage.poses} poses carry a height, ${gp.coverage.poses_with_heading} of ${gp.coverage.poses} a heading, all ${gp.coverage.poses} a horizontal position - and today both are zero`,
+  gp.coverage.poses === gp.poses.length
+  && gp.coverage.poses_with_height === nH && nH === 0
+  && gp.coverage.poses_with_heading === nO && nO === 0
+  && gp.coverage.poses_with_horizontal_position === gp.poses.length
+  && /DERIVED/.test(gp.coverage.provenance));
+ok('the coverage block says why in structure: terrain/ is a Natural Earth water mask at its own cell size with its own no-elevation line, and USGS 3DEP is the parcels/ endpoint that runs only in the learner\'s browser - never verified from the build, never stored here',
+  (() => {
+    const w = gp.coverage.why;
+    return w.terrain.registry === 'terrain/registry/terrain.json'
+      && w.terrain.source === terrain.source
+      && w.terrain.cell_m === terrain.counts.cell_m
+      && w.terrain.no_elevation === terrain.honesty.no_elevation
+      && /mask/.test(w.terrain.holds) && /no elevation/.test(w.terrain.holds)
+      && w.usgs.registry === 'parcels/registry/parcels.json#elevation'
+      && w.usgs.id === parcels.elevation.id && w.usgs.name === parcels.elevation.name
+      && w.usgs.scope === parcels.elevation.scope
+      && w.usgs.verified_from_build === parcels.elevation.verified_from_build
+      && w.usgs.verified_from_build === false
+      && w.usgs.stored_by_this_bundle === false
+      && /browser/.test(w.usgs.runs_in);
+  })());
+
+/* ---------------------------------------------------- reachability probe --- */
+// The honesty block records a MEASUREMENT, not an assertion: one curl per
+// URL, its code carried as data. None may be 2xx - the day one is, the
+// normative text is readable and the not-claimed shape label is stale, so
+// this fails by URL and the pack must be revisited.
+const probe = H.reachability_probe;
+const twoxx = probe.tried.filter((t) => /^2/.test(t.http_code)).map((t) => `${t.url} -> ${t.http_code}`);
+ok('every probed URL carries a three-digit code, a curl exit, what was sought and what the code meant, dated, and the probe fetched nothing at build time'
+  + (twoxx.length ? ` - REVISIT THE PACK, a text answered: ${twoxx.join('; ')}` : ''),
+  probe.tried.length > 0 && probe.tried.every((t) =>
+    /^https:\/\//.test(t.url) && /^[0-9]{3}$/.test(t.http_code)
+    && Number.isInteger(t.curl_exit) && t.sought.length > 10 && t.meaning.length > 20)
+  && new Set(probe.tried.map((t) => t.url)).size === probe.tried.length
+  && /^\d{4}-\d{2}-\d{2}$/.test(probe.date) && probe.dates.includes(probe.date)
+  && /curl/.test(probe.how) && /RECORDED/.test(probe.provenance)
+  && twoxx.length === 0 && probe.answered_2xx === twoxx.length
+  && probe.tried.some((t) => /metaverse-standards\.org/.test(t.url))
+  && probe.tried.some((t) => /docs\.ogc\.org/.test(t.url)));
+
+/* ------------------------------------------------------------- flagship --- */
+// WHICH campus the bundle-wide services stand at is the campus registry's
+// decision (flagship: true on exactly one campus), recomputed here - never
+// a slug typed in this suite or in the builder.
+const claimants = Object.keys(campuses).filter((k) => campuses[k].flagship === true);
+ok(`the fabric's flagship is the campus registry's own: exactly one campus flags itself (${claimants.join(', ')}), fabric.json names it, and every page-wide service is anchored and doored there`,
+  claimants.length === 1 && fab.fabric.flagship.campus === claimants[0]
+  && fab.fabric.flagship.claimants === 1
+  && fab.fabric.flagship.decided_by === `unions/registry/campuses.json#campuses.${claimants[0]}.flagship`
+  && fab.fabric.flagship.anchors_services.length > 0
+  && fab.fabric.flagship.anchors_services.every((id) => {
+    const s = fab.services.find((x) => x.id === id);
+    return s && s.anchored_at === `campus:${claimants[0]}` && s.door.param === 'campus' && s.door.value === claimants[0];
+  })
+  && ['advisors', 'schools-panel', 'restoration-panel', 'training-recorder'].every((id) => fab.fabric.flagship.anchors_services.includes(id))
+  && !fab.fabric.flagship.anchors_services.some((id) => id.startsWith('sim:')));
 
 /* ------------------------------------------------------- dashboard + wiki --- */
 const dash = readFileSync(new URL('../web/trade_craft_dashboard.html', import.meta.url), 'utf8');
@@ -297,9 +475,11 @@ ok('the geomap legend states the GeoPose pose count and the claimed / not-claime
   && geomap.includes(`${nClaimed} claimed standard / ${nNotClaimed} not-claimed`));
 ok('the geomap carries the exact height/heading honesty line, unabridged, not softened',
   geomap.includes(H.no_heights_or_headings));
+// a null match is a count of zero occurrences - a measurement, not a default
+const occurrences = (re) => { const m = geomap.match(re); return m === null ? 0 : m.length; };
 ok('every campus and anchor feature on the geomap carries its own GeoPose ref, joined at build time - not retyped',
-  (geomap.match(/"geopose":\{"ref":"campus:/g) || []).length === gp.counts.campuses
-  && (geomap.match(/"geopose":\{"ref":"anchor:/g) || []).length === gp.counts.anchors);
+  occurrences(/"geopose":\{"ref":"campus:/g) === gp.counts.campuses
+  && occurrences(/"geopose":\{"ref":"anchor:/g) === gp.counts.anchors);
 ok('a marker\'s popup renders its own pose line on click, position provenance included',
   geomap.includes('function geoposeLine(pose)') && geomap.includes('pose.position_provenance'));
 ok('the geomap offers the shared on-request elevation/aerial lookup at a campus, anchor and restoration marker - never invented for a route or a city frame',
@@ -312,4 +492,7 @@ ok('all three registries were built from the current builder source (stamp check
 
 console.log(`spatial/test: ${n} checks passed — ${gp.counts.total} GeoPoses `
   + `(${gp.counts.campuses}/${gp.counts.anchors}/${gp.counts.restoration_sites}), `
-  + `${som.root.branches.length} SOM branches, GeoPose claimed, OMBI not`);
+  + `${som.root.branches.length} SOM branches / ${som.doors.leaves} leaves `
+  + `(${som.doors.branches_with_a_door} doored, ${som.doors.branches_whose_door_resolves} resolving, `
+  + `${som.doors.branches_that_can_only_be_named} named only), heights ${gp.coverage.poses_with_height}/${gp.coverage.poses}, `
+  + `GeoPose claimed, OMBI not`);

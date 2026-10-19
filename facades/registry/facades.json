@@ -1,0 +1,2384 @@
+{
+ "pack": "facades",
+ "pack_version": "3.2.0",
+ "contract": "FACADE v1",
+ "source_stamp": "67cb1fce9773f267",
+ "source_stamp_sha256": "67cb1fce9773f267db9cf24fa3368fddcaceb0457b560e07dad01a0a6c4bf2a1",
+ "inputs": [
+  {
+   "path": "facades/build.py",
+   "sha256_16": "00e0bfcfc0a753f4"
+  },
+  {
+   "path": "economy/registry/economy.json",
+   "sha256_16": "864da3d800ae0f9c"
+  }
+ ],
+ "provenance_tiers": [
+  "RECORDED",
+  "DERIVED",
+  "SCHEMATIC",
+  "AUTHORED",
+  "SCRIPTED"
+ ],
+ "units": "m",
+ "honesty": {
+  "styles": "Style families are AUTHORED game-scale recipes of generic detail components; a place name is general geography only; no replica of a real building; dimensions are not survey, code or standard values.",
+  "signs": "Signs are play: AUTHORED names from word lists on AUTHORED economy game lots - never a real business, name or address.",
+  "denylist": "PARTIAL list of well-known national chains and brands, written by hand for this pack; not exhaustive. A sign name must not equal or contain any entry (case-insensitive, whole words).",
+  "colours": "Colour categories are AUTHORED flat fallbacks (name + hex + use); no paint brand, trademarked colour name or official standard value."
+ },
+ "colour_categories": {
+  "trim-light": {
+   "hex": "#EEEAE0",
+   "use": "window/door trims, cornices, gallery posts on painted timber"
+  },
+  "trim-dark": {
+   "hex": "#3A3F44",
+   "use": "trims on light render, storefront frames"
+  },
+  "shutter-green": {
+   "hex": "#2F5D4A",
+   "use": "louvred shutters on cottages and shotguns"
+  },
+  "shutter-blue": {
+   "hex": "#35577A",
+   "use": "louvred shutters, alternate"
+  },
+  "ironwork": {
+   "hex": "#24262A",
+   "use": "railings, brackets, blade-sign arms"
+  },
+  "brick-red": {
+   "hex": "#8E4A3A",
+   "use": "parapets and piers on brick fronts"
+  },
+  "stone-pale": {
+   "hex": "#CFC6B4",
+   "use": "civic cornices, stoops, sills"
+  },
+  "timber-brown": {
+   "hex": "#6B4E36",
+   "use": "Craftsman brackets, porch beams"
+  },
+  "awning-canvas": {
+   "hex": "#9C3B36",
+   "use": "fabric awnings"
+  },
+  "metal-grey": {
+   "hex": "#8C949A",
+   "use": "downpipes, rooftop units, metal canopies"
+  },
+  "glass-tint": {
+   "hex": "#3E5C6B",
+   "use": "storefront glazing and curtain-wall panels"
+  },
+  "roof-dark": {
+   "hex": "#4A4A4E",
+   "use": "parapet caps and roof edges"
+  }
+ },
+ "pattern_map": {
+  "trim-light": "creole.lime_wash",
+  "trim-dark": "civic.slate_trim",
+  "shutter-green": "creole.shutter_green",
+  "shutter-blue": "coastal.harbour_blue",
+  "ironwork": "industrial.iron_black",
+  "brick-red": "civic.civic_brick",
+  "stone-pale": "civic.limestone",
+  "timber-brown": "midcentury.teak",
+  "awning-canvas": "creole.bougainvillea",
+  "metal-grey": "industrial.galvanised",
+  "glass-tint": null,
+  "roof-dark": "midcentury.charcoal_roof"
+ },
+ "pattern_families": [
+  "civic",
+  "coastal",
+  "creole",
+  "industrial",
+  "midcentury"
+ ],
+ "patterns": {
+  "plain": "flat colour",
+  "louvre": "horizontal slats (shutters)",
+  "stripe": "vertical awning stripes",
+  "brick-running": "running-bond brick",
+  "mullion-grid": "glazing bars",
+  "ribbed-metal": "ribbed metal cladding",
+  "dentil": "small repeated blocks under a cornice"
+ },
+ "styles": {
+  "creole-cottage": {
+   "label": "Creole cottage",
+   "geography": "a general cottage type common in the Gulf South",
+   "components": [
+    {
+     "id": "eave-fascia",
+     "component": "cornice",
+     "layout": "band",
+     "y_ref": "eave",
+     "y_m": -0.35,
+     "h_m": 0.3,
+     "depth_m": 0.25,
+     "out_m": 0.0,
+     "colour_category": "trim-light",
+     "pattern_id": "plain"
+    },
+    {
+     "id": "shutters",
+     "component": "shutters",
+     "layout": "pair",
+     "y_ref": "ground",
+     "y_m": 0.9,
+     "h_m": 2.2,
+     "depth_m": 0.06,
+     "out_m": 0.03,
+     "colour_category": "shutter-green",
+     "pattern_id": "louvre",
+     "width_m": 0.55,
+     "spacing_m": 3.1
+    },
+    {
+     "id": "door-trim",
+     "component": "door_trim",
+     "layout": "single",
+     "y_ref": "ground",
+     "y_m": 0.0,
+     "h_m": 2.6,
+     "depth_m": 0.08,
+     "out_m": 0.02,
+     "colour_category": "trim-light",
+     "pattern_id": "plain",
+     "width_m": 1.3,
+     "x_m": 0.0
+    },
+    {
+     "id": "stoop",
+     "component": "stoop",
+     "layout": "single",
+     "y_ref": "ground",
+     "y_m": 0.0,
+     "h_m": 0.45,
+     "depth_m": 1.1,
+     "out_m": 0.0,
+     "colour_category": "stone-pale",
+     "pattern_id": "plain",
+     "width_m": 1.8,
+     "x_m": 0.0
+    },
+    {
+     "id": "downpipe",
+     "component": "downpipe",
+     "layout": "repeat",
+     "y_ref": "ground",
+     "y_m": 0.0,
+     "h_m": -0.3,
+     "depth_m": 0.1,
+     "out_m": 0.05,
+     "colour_category": "metal-grey",
+     "pattern_id": "plain",
+     "width_m": 0.1,
+     "spacing_m": 99.0
+    }
+   ],
+   "provenance": "AUTHORED"
+  },
+  "shotgun-gallery": {
+   "label": "Shotgun house with front gallery",
+   "geography": "a general narrow-house type common in the Gulf South",
+   "components": [
+    {
+     "id": "gallery-posts",
+     "component": "gallery_post",
+     "layout": "repeat",
+     "y_ref": "ground",
+     "y_m": 0.0,
+     "h_m": 3.0,
+     "depth_m": 0.14,
+     "out_m": 1.9,
+     "colour_category": "trim-light",
+     "pattern_id": "plain",
+     "width_m": 0.14,
+     "spacing_m": 2.4
+    },
+    {
+     "id": "gallery-rail",
+     "component": "railing",
+     "layout": "band",
+     "y_ref": "ground",
+     "y_m": 0.5,
+     "h_m": 0.9,
+     "depth_m": 0.05,
+     "out_m": 1.9,
+     "colour_category": "trim-light",
+     "pattern_id": "plain"
+    },
+    {
+     "id": "gallery-beam",
+     "component": "cornice",
+     "layout": "band",
+     "y_ref": "ground",
+     "y_m": 3.0,
+     "h_m": 0.3,
+     "depth_m": 2.1,
+     "out_m": 0.0,
+     "colour_category": "trim-light",
+     "pattern_id": "dentil"
+    },
+    {
+     "id": "brackets",
+     "component": "bracket",
+     "layout": "repeat",
+     "y_ref": "ground",
+     "y_m": 2.6,
+     "h_m": 0.4,
+     "depth_m": 0.35,
+     "out_m": 1.75,
+     "colour_category": "trim-light",
+     "pattern_id": "plain",
+     "width_m": 0.1,
+     "spacing_m": 2.4
+    },
+    {
+     "id": "shutters",
+     "component": "shutters",
+     "layout": "pair",
+     "y_ref": "ground",
+     "y_m": 0.9,
+     "h_m": 2.3,
+     "depth_m": 0.06,
+     "out_m": 0.03,
+     "colour_category": "shutter-blue",
+     "pattern_id": "louvre",
+     "width_m": 0.55,
+     "spacing_m": 3.2
+    },
+    {
+     "id": "steps",
+     "component": "stoop",
+     "layout": "single",
+     "y_ref": "ground",
+     "y_m": 0.0,
+     "h_m": 0.5,
+     "depth_m": 1.0,
+     "out_m": 2.3,
+     "colour_category": "stone-pale",
+     "pattern_id": "plain",
+     "width_m": 1.6,
+     "x_m": 0.0
+    }
+   ],
+   "provenance": "AUTHORED"
+  },
+  "craftsman-bungalow": {
+   "label": "Craftsman bungalow",
+   "geography": "a general early-20th-century house type found across North America",
+   "components": [
+    {
+     "id": "porch-piers",
+     "component": "gallery_post",
+     "layout": "repeat",
+     "y_ref": "ground",
+     "y_m": 0.0,
+     "h_m": 2.7,
+     "depth_m": 0.45,
+     "out_m": 1.8,
+     "colour_category": "stone-pale",
+     "pattern_id": "plain",
+     "width_m": 0.45,
+     "spacing_m": 4.5
+    },
+    {
+     "id": "porch-beam",
+     "component": "cornice",
+     "layout": "band",
+     "y_ref": "ground",
+     "y_m": 2.7,
+     "h_m": 0.35,
+     "depth_m": 0.3,
+     "out_m": 1.8,
+     "colour_category": "timber-brown",
+     "pattern_id": "plain"
+    },
+    {
+     "id": "eave-brackets",
+     "component": "bracket",
+     "layout": "repeat",
+     "y_ref": "eave",
+     "y_m": -0.45,
+     "h_m": 0.4,
+     "depth_m": 0.5,
+     "out_m": 0.25,
+     "colour_category": "timber-brown",
+     "pattern_id": "plain",
+     "width_m": 0.12,
+     "spacing_m": 1.8
+    },
+    {
+     "id": "window-trim",
+     "component": "window_trim",
+     "layout": "repeat",
+     "y_ref": "ground",
+     "y_m": 0.85,
+     "h_m": 1.7,
+     "depth_m": 0.06,
+     "out_m": 0.02,
+     "colour_category": "trim-light",
+     "pattern_id": "plain",
+     "width_m": 1.4,
+     "spacing_m": 3.4
+    },
+    {
+     "id": "steps",
+     "component": "stoop",
+     "layout": "single",
+     "y_ref": "ground",
+     "y_m": 0.0,
+     "h_m": 0.55,
+     "depth_m": 1.2,
+     "out_m": 2.4,
+     "colour_category": "stone-pale",
+     "pattern_id": "plain",
+     "width_m": 2.0,
+     "x_m": 0.0
+    }
+   ],
+   "provenance": "AUTHORED"
+  },
+  "italianate-row": {
+   "label": "Italianate / Victorian row front",
+   "geography": "a general 19th-century commercial-row type found in many older downtowns",
+   "components": [
+    {
+     "id": "cornice",
+     "component": "cornice",
+     "layout": "band",
+     "y_ref": "eave",
+     "y_m": -0.6,
+     "h_m": 0.6,
+     "depth_m": 0.55,
+     "out_m": 0.0,
+     "colour_category": "trim-light",
+     "pattern_id": "dentil"
+    },
+    {
+     "id": "cornice-brackets",
+     "component": "bracket",
+     "layout": "repeat",
+     "y_ref": "eave",
+     "y_m": -1.05,
+     "h_m": 0.45,
+     "depth_m": 0.45,
+     "out_m": 0.05,
+     "colour_category": "trim-light",
+     "pattern_id": "plain",
+     "width_m": 0.18,
+     "spacing_m": 1.6
+    },
+    {
+     "id": "window-hoods",
+     "component": "window_trim",
+     "layout": "repeat",
+     "y_ref": "ground",
+     "y_m": 5.6,
+     "h_m": 0.25,
+     "depth_m": 0.18,
+     "out_m": 0.05,
+     "colour_category": "trim-light",
+     "pattern_id": "plain",
+     "width_m": 1.3,
+     "spacing_m": 3.1
+    },
+    {
+     "id": "balcony",
+     "component": "balcony",
+     "layout": "band",
+     "y_ref": "ground",
+     "y_m": 3.6,
+     "h_m": 0.12,
+     "depth_m": 1.2,
+     "out_m": 0.0,
+     "colour_category": "ironwork",
+     "pattern_id": "plain"
+    },
+    {
+     "id": "balcony-rail",
+     "component": "railing",
+     "layout": "band",
+     "y_ref": "ground",
+     "y_m": 3.72,
+     "h_m": 1.0,
+     "depth_m": 0.04,
+     "out_m": 1.16,
+     "colour_category": "ironwork",
+     "pattern_id": "plain"
+    },
+    {
+     "id": "storefront",
+     "component": "storefront_glazing",
+     "layout": "band",
+     "y_ref": "ground",
+     "y_m": 0.5,
+     "h_m": 2.7,
+     "depth_m": 0.04,
+     "out_m": 0.02,
+     "colour_category": "glass-tint",
+     "pattern_id": "mullion-grid"
+    },
+    {
+     "id": "downpipe",
+     "component": "downpipe",
+     "layout": "repeat",
+     "y_ref": "ground",
+     "y_m": 0.0,
+     "h_m": -0.4,
+     "depth_m": 0.12,
+     "out_m": 0.06,
+     "colour_category": "metal-grey",
+     "pattern_id": "plain",
+     "width_m": 0.12,
+     "spacing_m": 99.0
+    }
+   ],
+   "provenance": "AUTHORED"
+  },
+  "midcentury-commercial": {
+   "label": "Mid-century commercial",
+   "geography": "a general mid-20th-century storefront type",
+   "components": [
+    {
+     "id": "parapet",
+     "component": "parapet",
+     "layout": "band",
+     "y_ref": "eave",
+     "y_m": 0.0,
+     "h_m": 0.9,
+     "depth_m": 0.3,
+     "out_m": 0.0,
+     "colour_category": "roof-dark",
+     "pattern_id": "plain"
+    },
+    {
+     "id": "fascia-band",
+     "component": "cornice",
+     "layout": "band",
+     "y_ref": "ground",
+     "y_m": 3.2,
+     "h_m": 0.7,
+     "depth_m": 0.2,
+     "out_m": 0.05,
+     "colour_category": "trim-dark",
+     "pattern_id": "plain"
+    },
+    {
+     "id": "flat-canopy",
+     "component": "awning",
+     "layout": "band",
+     "y_ref": "ground",
+     "y_m": 3.0,
+     "h_m": 0.18,
+     "depth_m": 1.6,
+     "out_m": 0.0,
+     "colour_category": "metal-grey",
+     "pattern_id": "plain"
+    },
+    {
+     "id": "storefront",
+     "component": "storefront_glazing",
+     "layout": "band",
+     "y_ref": "ground",
+     "y_m": 0.4,
+     "h_m": 2.5,
+     "depth_m": 0.04,
+     "out_m": 0.02,
+     "colour_category": "glass-tint",
+     "pattern_id": "mullion-grid"
+    },
+    {
+     "id": "rooftop-unit",
+     "component": "rooftop_unit",
+     "layout": "roof",
+     "y_ref": "eave",
+     "y_m": 0.0,
+     "h_m": 1.2,
+     "depth_m": 1.8,
+     "out_m": 3.5,
+     "colour_category": "metal-grey",
+     "pattern_id": "ribbed-metal",
+     "width_m": 2.2,
+     "x_m": 0.0
+    }
+   ],
+   "provenance": "AUTHORED"
+  },
+  "brick-warehouse": {
+   "label": "Brick warehouse",
+   "geography": "a general industrial-loft type found in many port and rail districts",
+   "components": [
+    {
+     "id": "stepped-parapet",
+     "component": "parapet",
+     "layout": "band",
+     "y_ref": "eave",
+     "y_m": 0.0,
+     "h_m": 1.1,
+     "depth_m": 0.45,
+     "out_m": 0.0,
+     "colour_category": "brick-red",
+     "pattern_id": "brick-running"
+    },
+    {
+     "id": "pilasters",
+     "component": "pilaster",
+     "layout": "repeat",
+     "y_ref": "ground",
+     "y_m": 0.0,
+     "h_m": -0.2,
+     "depth_m": 0.35,
+     "out_m": 0.12,
+     "colour_category": "brick-red",
+     "pattern_id": "brick-running",
+     "width_m": 0.6,
+     "spacing_m": 4.0
+    },
+    {
+     "id": "loading-canopy",
+     "component": "awning",
+     "layout": "single",
+     "y_ref": "ground",
+     "y_m": 4.4,
+     "h_m": 0.2,
+     "depth_m": 2.2,
+     "out_m": 0.0,
+     "colour_category": "metal-grey",
+     "pattern_id": "ribbed-metal",
+     "width_m": 6.0,
+     "x_m": 0.0
+    },
+    {
+     "id": "loading-dock",
+     "component": "stoop",
+     "layout": "single",
+     "y_ref": "ground",
+     "y_m": 0.0,
+     "h_m": 1.1,
+     "depth_m": 2.4,
+     "out_m": 0.0,
+     "colour_category": "stone-pale",
+     "pattern_id": "plain",
+     "width_m": 6.0,
+     "x_m": 0.0
+    },
+    {
+     "id": "downpipes",
+     "component": "downpipe",
+     "layout": "repeat",
+     "y_ref": "ground",
+     "y_m": 0.0,
+     "h_m": -0.3,
+     "depth_m": 0.16,
+     "out_m": 0.08,
+     "colour_category": "metal-grey",
+     "pattern_id": "plain",
+     "width_m": 0.16,
+     "spacing_m": 12.0
+    },
+    {
+     "id": "rooftop-vent",
+     "component": "rooftop_unit",
+     "layout": "roof",
+     "y_ref": "eave",
+     "y_m": 0.0,
+     "h_m": 1.4,
+     "depth_m": 1.6,
+     "out_m": 4.0,
+     "colour_category": "metal-grey",
+     "pattern_id": "ribbed-metal",
+     "width_m": 1.6,
+     "x_m": -3.0
+    }
+   ],
+   "provenance": "AUTHORED"
+  },
+  "modern-glass": {
+   "label": "Modern glass and metal",
+   "geography": "a general late-20th / 21st-century office type",
+   "components": [
+    {
+     "id": "roof-crown",
+     "component": "parapet",
+     "layout": "band",
+     "y_ref": "eave",
+     "y_m": 0.0,
+     "h_m": 1.4,
+     "depth_m": 0.2,
+     "out_m": 0.05,
+     "colour_category": "metal-grey",
+     "pattern_id": "ribbed-metal"
+    },
+    {
+     "id": "fins",
+     "component": "pilaster",
+     "layout": "repeat",
+     "y_ref": "ground",
+     "y_m": 4.0,
+     "h_m": -1.5,
+     "depth_m": 0.45,
+     "out_m": 0.22,
+     "colour_category": "metal-grey",
+     "pattern_id": "plain",
+     "width_m": 0.12,
+     "spacing_m": 3.1
+    },
+    {
+     "id": "entry-canopy",
+     "component": "awning",
+     "layout": "single",
+     "y_ref": "ground",
+     "y_m": 3.6,
+     "h_m": 0.25,
+     "depth_m": 3.0,
+     "out_m": 0.0,
+     "colour_category": "metal-grey",
+     "pattern_id": "plain",
+     "width_m": 7.0,
+     "x_m": 0.0
+    },
+    {
+     "id": "lobby-glazing",
+     "component": "storefront_glazing",
+     "layout": "band",
+     "y_ref": "ground",
+     "y_m": 0.2,
+     "h_m": 3.6,
+     "depth_m": 0.05,
+     "out_m": 0.03,
+     "colour_category": "glass-tint",
+     "pattern_id": "mullion-grid"
+    },
+    {
+     "id": "rooftop-unit",
+     "component": "rooftop_unit",
+     "layout": "roof",
+     "y_ref": "eave",
+     "y_m": 0.0,
+     "h_m": 2.0,
+     "depth_m": 3.0,
+     "out_m": 4.5,
+     "colour_category": "metal-grey",
+     "pattern_id": "ribbed-metal",
+     "width_m": 4.0,
+     "x_m": 1.5
+    }
+   ],
+   "provenance": "AUTHORED"
+  },
+  "civic": {
+   "label": "Civic hall",
+   "geography": "a general civic or union-hall type",
+   "components": [
+    {
+     "id": "cornice",
+     "component": "cornice",
+     "layout": "band",
+     "y_ref": "eave",
+     "y_m": -0.7,
+     "h_m": 0.7,
+     "depth_m": 0.6,
+     "out_m": 0.0,
+     "colour_category": "stone-pale",
+     "pattern_id": "dentil"
+    },
+    {
+     "id": "piers",
+     "component": "pilaster",
+     "layout": "repeat",
+     "y_ref": "ground",
+     "y_m": 0.0,
+     "h_m": -0.7,
+     "depth_m": 0.4,
+     "out_m": 0.15,
+     "colour_category": "stone-pale",
+     "pattern_id": "plain",
+     "width_m": 0.9,
+     "spacing_m": 6.0
+    },
+    {
+     "id": "entry-steps",
+     "component": "stoop",
+     "layout": "single",
+     "y_ref": "ground",
+     "y_m": 0.0,
+     "h_m": 0.6,
+     "depth_m": 2.4,
+     "out_m": 0.0,
+     "colour_category": "stone-pale",
+     "pattern_id": "plain",
+     "width_m": 8.0,
+     "x_m": 0.0
+    },
+    {
+     "id": "door-surround",
+     "component": "door_trim",
+     "layout": "single",
+     "y_ref": "ground",
+     "y_m": 0.0,
+     "h_m": 4.2,
+     "depth_m": 0.25,
+     "out_m": 0.1,
+     "colour_category": "stone-pale",
+     "pattern_id": "plain",
+     "width_m": 4.6,
+     "x_m": 0.0
+    },
+    {
+     "id": "downpipes",
+     "component": "downpipe",
+     "layout": "repeat",
+     "y_ref": "ground",
+     "y_m": 0.0,
+     "h_m": -0.5,
+     "depth_m": 0.16,
+     "out_m": 0.08,
+     "colour_category": "metal-grey",
+     "pattern_id": "plain",
+     "width_m": 0.16,
+     "spacing_m": 18.0
+    }
+   ],
+   "provenance": "AUTHORED"
+  }
+ },
+ "rules": [
+  {
+   "world": "parishes",
+   "family": "house",
+   "use": "residential",
+   "variant": 0,
+   "h_max": 6.0,
+   "style": "creole-cottage"
+  },
+  {
+   "world": "parishes",
+   "family": "house",
+   "use": "residential",
+   "variant": 0,
+   "h_max": 99.0,
+   "style": "shotgun-gallery"
+  },
+  {
+   "world": "parishes",
+   "family": "house",
+   "use": "residential",
+   "variant": 1,
+   "h_max": 99.0,
+   "style": "craftsman-bungalow"
+  },
+  {
+   "world": "bay",
+   "family": "house",
+   "use": "residential",
+   "variant": 0,
+   "h_max": 99.0,
+   "style": "craftsman-bungalow"
+  },
+  {
+   "world": "bay",
+   "family": "house",
+   "use": "residential",
+   "variant": 1,
+   "h_max": 99.0,
+   "style": "italianate-row"
+  },
+  {
+   "world": "*",
+   "family": "midrise",
+   "use": "commercial",
+   "variant": 0,
+   "h_max": 16.0,
+   "style": "italianate-row"
+  },
+  {
+   "world": "*",
+   "family": "midrise",
+   "use": "commercial",
+   "variant": 1,
+   "h_max": 16.0,
+   "style": "midcentury-commercial"
+  },
+  {
+   "world": "*",
+   "family": "midrise",
+   "use": "commercial",
+   "variant": "*",
+   "h_max": 999.0,
+   "style": "modern-glass"
+  },
+  {
+   "world": "*",
+   "family": "midrise",
+   "use": "residential",
+   "variant": "*",
+   "h_max": 999.0,
+   "style": "italianate-row"
+  },
+  {
+   "world": "*",
+   "family": "midrise",
+   "use": "industrial",
+   "variant": "*",
+   "h_max": 999.0,
+   "style": "brick-warehouse"
+  },
+  {
+   "world": "*",
+   "family": "hall",
+   "use": "civic",
+   "variant": "*",
+   "h_max": 999.0,
+   "style": "civic"
+  }
+ ],
+ "sign_rules": {
+  "placements": [
+   "fascia",
+   "blade",
+   "window",
+   "monument"
+  ],
+  "palettes": [
+   [
+    "#1F3A4D",
+    "#F4F1E8"
+   ],
+   [
+    "#6E2B25",
+    "#FBF3E4"
+   ],
+   [
+    "#2E4A36",
+    "#F2F0E6"
+   ],
+   [
+    "#F2EBD9",
+    "#2A2A2A"
+   ],
+   [
+    "#3B3355",
+    "#F5F2EC"
+   ],
+   [
+    "#0F4C5C",
+    "#FFFFFF"
+   ]
+  ],
+  "place_words": [
+   "Levee",
+   "Bayou",
+   "Cypress",
+   "Harbor",
+   "Magnolia",
+   "Riverside",
+   "Crescent",
+   "Oak Row",
+   "Oxbow",
+   "Marsh",
+   "Canal",
+   "Pelican",
+   "Live Oak",
+   "Gallery",
+   "Wharf",
+   "Sugarcane",
+   "Tidewater",
+   "Parish Line",
+   "Front Street",
+   "Old Mill"
+  ],
+  "type_words": {
+   "electrical-shop": [
+    "Electric",
+    "Wiring Co."
+   ],
+   "plumbing-shop": [
+    "Plumbing",
+    "Pipe & Valve"
+   ],
+   "carpentry-shop": [
+    "Carpentry",
+    "Cabinet Works"
+   ],
+   "welding-shop": [
+    "Welding",
+    "Fabrication"
+   ],
+   "hvac-service": [
+    "Heating & Air",
+    "Cooling Service"
+   ],
+   "landscape-yard": [
+    "Landscaping",
+    "Garden Yard"
+   ],
+   "paint-shop": [
+    "Painting",
+    "Paint & Finish"
+   ],
+   "machine-shop": [
+    "Machine Shop",
+    "Machine Works"
+   ],
+   "diesel-garage": [
+    "Diesel Repair",
+    "Diesel Garage"
+   ],
+   "glass-shop": [
+    "Glass",
+    "Glass & Glazing"
+   ],
+   "bakery": [
+    "Bakery",
+    "Bread Oven"
+   ],
+   "boat-repair": [
+    "Boat Repair",
+    "Marine Service"
+   ],
+   "tool-rental": [
+    "Tool Rental",
+    "Tool Library"
+   ],
+   "corner-grocery": [
+    "Corner Grocery",
+    "Market"
+   ]
+  },
+  "icons": {
+   "electrical-shop": "bolt",
+   "plumbing-shop": "drop",
+   "carpentry-shop": "saw",
+   "welding-shop": "spark",
+   "hvac-service": "fan",
+   "landscape-yard": "leaf",
+   "paint-shop": "brush",
+   "machine-shop": "gear",
+   "diesel-garage": "wrench",
+   "glass-shop": "pane",
+   "bakery": "loaf",
+   "boat-repair": "anchor",
+   "tool-rental": "hammer",
+   "corner-grocery": "basket"
+  }
+ },
+ "denylist": {
+  "note": "PARTIAL list of well-known national chains and brands, written by hand for this pack; not exhaustive. A sign name must not equal or contain any entry (case-insensitive, whole words).",
+  "partial": true,
+  "names": [
+   "7-Eleven",
+   "Ace Hardware",
+   "Aldi",
+   "Amazon",
+   "Apple",
+   "AutoZone",
+   "Bass Pro Shops",
+   "Behr",
+   "Benjamin Moore",
+   "Best Buy",
+   "Burger King",
+   "CVS",
+   "Cabela's",
+   "Carrier",
+   "Chevron",
+   "Chick-fil-A",
+   "Circle K",
+   "Costco",
+   "Craftsman",
+   "DeWalt",
+   "Dollar General",
+   "Dollar Tree",
+   "Domino's",
+   "Dunkin",
+   "Dunkin'",
+   "Exxon",
+   "Family Dollar",
+   "Fastenal",
+   "FedEx",
+   "Firestone",
+   "Goodyear",
+   "Google",
+   "Grainger",
+   "Harbor Freight",
+   "Home Depot",
+   "IKEA",
+   "Jiffy Lube",
+   "KFC",
+   "Krispy Kreme",
+   "Kroger",
+   "Lennox",
+   "Lowe's",
+   "Lowes",
+   "Marathon",
+   "McDonald's",
+   "McDonalds",
+   "Menards",
+   "Midas",
+   "Milwaukee",
+   "Mr. Rooter",
+   "NAPA",
+   "Nike",
+   "Northern Tool",
+   "O'Reilly",
+   "Panera",
+   "Pep Boys",
+   "Piggly Wiggly",
+   "Pizza Hut",
+   "Popeyes",
+   "Publix",
+   "Rite Aid",
+   "Roto-Rooter",
+   "Safelite",
+   "Safeway",
+   "Shell",
+   "Sherwin-Williams",
+   "Snap-on",
+   "Stanley",
+   "Starbucks",
+   "Subway",
+   "Sunbelt Rentals",
+   "Sunoco",
+   "Taco Bell",
+   "Target",
+   "Tesla",
+   "Tractor Supply",
+   "Trader Joe's",
+   "Trane",
+   "True Value",
+   "UPS",
+   "United Rentals",
+   "Valero",
+   "Walgreens",
+   "Walmart",
+   "Wendy's",
+   "West Marine",
+   "Whole Foods",
+   "Winn-Dixie"
+  ]
+ },
+ "signs": [
+  {
+   "lot_id": "lot-22005-c01",
+   "parish": "22005",
+   "x": -2200,
+   "z": 1600,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "electrical-shop",
+   "name": "Gallery Wiring Co.",
+   "icon": "bolt",
+   "placement": "monument",
+   "palette": [
+    "#F2EBD9",
+    "#2A2A2A"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22005-c02",
+   "parish": "22005",
+   "x": -4000,
+   "z": 1200,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "corner-grocery",
+   "name": "Riverside Corner Grocery",
+   "icon": "basket",
+   "placement": "monument",
+   "palette": [
+    "#F2EBD9",
+    "#2A2A2A"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22005-c03",
+   "parish": "22005",
+   "x": -2000,
+   "z": -5200,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "bakery",
+   "name": "Pelican Bakery",
+   "icon": "loaf",
+   "placement": "blade",
+   "palette": [
+    "#2E4A36",
+    "#F2F0E6"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22005-c04",
+   "parish": "22005",
+   "x": 3600,
+   "z": -4800,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "electrical-shop",
+   "name": "Wharf Wiring Co.",
+   "icon": "bolt",
+   "placement": "window",
+   "palette": [
+    "#3B3355",
+    "#F5F2EC"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22005-c05",
+   "parish": "22005",
+   "x": 2400,
+   "z": -5800,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "diesel-garage",
+   "name": "Levee Diesel Garage",
+   "icon": "wrench",
+   "placement": "monument",
+   "palette": [
+    "#1F3A4D",
+    "#F4F1E8"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22051-c01",
+   "parish": "22051",
+   "x": 600,
+   "z": 0,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "plumbing-shop",
+   "name": "Harbor Plumbing",
+   "icon": "drop",
+   "placement": "fascia",
+   "palette": [
+    "#3B3355",
+    "#F5F2EC"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22051-c02",
+   "parish": "22051",
+   "x": 600,
+   "z": -400,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "welding-shop",
+   "name": "Harbor Fabrication",
+   "icon": "spark",
+   "placement": "blade",
+   "palette": [
+    "#F2EBD9",
+    "#2A2A2A"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22051-c03",
+   "parish": "22051",
+   "x": 1000,
+   "z": 1200,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "welding-shop",
+   "name": "Riverside Fabrication",
+   "icon": "spark",
+   "placement": "monument",
+   "palette": [
+    "#0F4C5C",
+    "#FFFFFF"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22051-c04",
+   "parish": "22051",
+   "x": 1200,
+   "z": 1400,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "diesel-garage",
+   "name": "Crescent Diesel Garage",
+   "icon": "wrench",
+   "placement": "monument",
+   "palette": [
+    "#0F4C5C",
+    "#FFFFFF"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22051-c05",
+   "parish": "22051",
+   "x": -1400,
+   "z": 1600,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "bakery",
+   "name": "Old Mill Bread Oven",
+   "icon": "loaf",
+   "placement": "window",
+   "palette": [
+    "#6E2B25",
+    "#FBF3E4"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22057-c01",
+   "parish": "22057",
+   "x": -1600,
+   "z": 0,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "plumbing-shop",
+   "name": "Bayou Plumbing",
+   "icon": "drop",
+   "placement": "fascia",
+   "palette": [
+    "#0F4C5C",
+    "#FFFFFF"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22057-c02",
+   "parish": "22057",
+   "x": -1800,
+   "z": 200,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "tool-rental",
+   "name": "Oak Row Tool Library",
+   "icon": "hammer",
+   "placement": "window",
+   "palette": [
+    "#6E2B25",
+    "#FBF3E4"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22057-c03",
+   "parish": "22057",
+   "x": -2000,
+   "z": -600,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "corner-grocery",
+   "name": "Oxbow Market",
+   "icon": "basket",
+   "placement": "monument",
+   "palette": [
+    "#3B3355",
+    "#F5F2EC"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22057-c04",
+   "parish": "22057",
+   "x": -2800,
+   "z": 0,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "welding-shop",
+   "name": "Old Mill Fabrication",
+   "icon": "spark",
+   "placement": "blade",
+   "palette": [
+    "#0F4C5C",
+    "#FFFFFF"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22057-c05",
+   "parish": "22057",
+   "x": -2400,
+   "z": 1600,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "hvac-service",
+   "name": "Cypress Heating & Air",
+   "icon": "fan",
+   "placement": "monument",
+   "palette": [
+    "#3B3355",
+    "#F5F2EC"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22063-c01",
+   "parish": "22063",
+   "x": 1000,
+   "z": -1200,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "landscape-yard",
+   "name": "Parish Line Landscaping",
+   "icon": "leaf",
+   "placement": "blade",
+   "palette": [
+    "#3B3355",
+    "#F5F2EC"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22063-c02",
+   "parish": "22063",
+   "x": 4000,
+   "z": 2400,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "bakery",
+   "name": "Oak Row Bakery",
+   "icon": "loaf",
+   "placement": "monument",
+   "palette": [
+    "#F2EBD9",
+    "#2A2A2A"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22063-c03",
+   "parish": "22063",
+   "x": -6000,
+   "z": -4200,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "electrical-shop",
+   "name": "Pelican Wiring Co.",
+   "icon": "bolt",
+   "placement": "window",
+   "palette": [
+    "#3B3355",
+    "#F5F2EC"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22063-c04",
+   "parish": "22063",
+   "x": -6800,
+   "z": -2800,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "bakery",
+   "name": "Oxbow Bread Oven",
+   "icon": "loaf",
+   "placement": "blade",
+   "palette": [
+    "#F2EBD9",
+    "#2A2A2A"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22063-c05",
+   "parish": "22063",
+   "x": -3600,
+   "z": 6600,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "tool-rental",
+   "name": "Front Street Tool Library",
+   "icon": "hammer",
+   "placement": "window",
+   "palette": [
+    "#6E2B25",
+    "#FBF3E4"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22071-c01",
+   "parish": "22071",
+   "x": 2800,
+   "z": -1200,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "landscape-yard",
+   "name": "Riverside Garden Yard",
+   "icon": "leaf",
+   "placement": "fascia",
+   "palette": [
+    "#3B3355",
+    "#F5F2EC"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22071-c02",
+   "parish": "22071",
+   "x": 3000,
+   "z": -2000,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "landscape-yard",
+   "name": "Front Street Landscaping",
+   "icon": "leaf",
+   "placement": "monument",
+   "palette": [
+    "#3B3355",
+    "#F5F2EC"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22071-c03",
+   "parish": "22071",
+   "x": -3800,
+   "z": -4000,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "landscape-yard",
+   "name": "Oxbow Landscaping",
+   "icon": "leaf",
+   "placement": "window",
+   "palette": [
+    "#6E2B25",
+    "#FBF3E4"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22071-c04",
+   "parish": "22071",
+   "x": -4200,
+   "z": -4600,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "glass-shop",
+   "name": "Wharf Glass",
+   "icon": "pane",
+   "placement": "fascia",
+   "palette": [
+    "#0F4C5C",
+    "#FFFFFF"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22071-c05",
+   "parish": "22071",
+   "x": -8400,
+   "z": 600,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "diesel-garage",
+   "name": "Bayou Diesel Garage",
+   "icon": "wrench",
+   "placement": "window",
+   "palette": [
+    "#0F4C5C",
+    "#FFFFFF"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22075-c01",
+   "parish": "22075",
+   "x": -3000,
+   "z": 3600,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "hvac-service",
+   "name": "Live Oak Heating & Air",
+   "icon": "fan",
+   "placement": "blade",
+   "palette": [
+    "#F2EBD9",
+    "#2A2A2A"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22075-c02",
+   "parish": "22075",
+   "x": -17000,
+   "z": 3600,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "corner-grocery",
+   "name": "Oak Row Corner Grocery",
+   "icon": "basket",
+   "placement": "fascia",
+   "palette": [
+    "#1F3A4D",
+    "#F4F1E8"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22075-c03",
+   "parish": "22075",
+   "x": -19600,
+   "z": 0,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "welding-shop",
+   "name": "Cypress Fabrication",
+   "icon": "spark",
+   "placement": "window",
+   "palette": [
+    "#6E2B25",
+    "#FBF3E4"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22075-c04",
+   "parish": "22075",
+   "x": -19200,
+   "z": 4000,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "welding-shop",
+   "name": "Wharf Fabrication",
+   "icon": "spark",
+   "placement": "monument",
+   "palette": [
+    "#1F3A4D",
+    "#F4F1E8"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22075-c05",
+   "parish": "22075",
+   "x": -21200,
+   "z": -18000,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "corner-grocery",
+   "name": "Cypress Corner Grocery",
+   "icon": "basket",
+   "placement": "fascia",
+   "palette": [
+    "#2E4A36",
+    "#F2F0E6"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22087-c01",
+   "parish": "22087",
+   "x": -1400,
+   "z": 6800,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "boat-repair",
+   "name": "Marsh Marine Service",
+   "icon": "anchor",
+   "placement": "window",
+   "palette": [
+    "#F2EBD9",
+    "#2A2A2A"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22087-c02",
+   "parish": "22087",
+   "x": -7600,
+   "z": 2200,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "bakery",
+   "name": "Harbor Bakery",
+   "icon": "loaf",
+   "placement": "window",
+   "palette": [
+    "#0F4C5C",
+    "#FFFFFF"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22087-c03",
+   "parish": "22087",
+   "x": -8800,
+   "z": 1400,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "tool-rental",
+   "name": "Live Oak Tool Rental",
+   "icon": "hammer",
+   "placement": "blade",
+   "palette": [
+    "#F2EBD9",
+    "#2A2A2A"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22087-c04",
+   "parish": "22087",
+   "x": -6600,
+   "z": 6800,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "paint-shop",
+   "name": "Old Mill Paint & Finish",
+   "icon": "brush",
+   "placement": "blade",
+   "palette": [
+    "#0F4C5C",
+    "#FFFFFF"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22087-c05",
+   "parish": "22087",
+   "x": -9000,
+   "z": 3000,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "glass-shop",
+   "name": "Levee Glass & Glazing",
+   "icon": "pane",
+   "placement": "monument",
+   "palette": [
+    "#0F4C5C",
+    "#FFFFFF"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22089-c01",
+   "parish": "22089",
+   "x": -1200,
+   "z": 800,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "landscape-yard",
+   "name": "Sugarcane Landscaping",
+   "icon": "leaf",
+   "placement": "fascia",
+   "palette": [
+    "#F2EBD9",
+    "#2A2A2A"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22089-c02",
+   "parish": "22089",
+   "x": -4000,
+   "z": -1000,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "diesel-garage",
+   "name": "Front Street Diesel Repair",
+   "icon": "wrench",
+   "placement": "blade",
+   "palette": [
+    "#2E4A36",
+    "#F2F0E6"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22089-c03",
+   "parish": "22089",
+   "x": -4400,
+   "z": -1800,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "paint-shop",
+   "name": "Tidewater Painting",
+   "icon": "brush",
+   "placement": "window",
+   "palette": [
+    "#1F3A4D",
+    "#F4F1E8"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22089-c04",
+   "parish": "22089",
+   "x": -2000,
+   "z": 4400,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "tool-rental",
+   "name": "Parish Line Tool Library",
+   "icon": "hammer",
+   "placement": "fascia",
+   "palette": [
+    "#F2EBD9",
+    "#2A2A2A"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22089-c05",
+   "parish": "22089",
+   "x": -4800,
+   "z": -800,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "landscape-yard",
+   "name": "Magnolia Garden Yard",
+   "icon": "leaf",
+   "placement": "window",
+   "palette": [
+    "#2E4A36",
+    "#F2F0E6"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22093-c01",
+   "parish": "22093",
+   "x": 0,
+   "z": -400,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "diesel-garage",
+   "name": "Riverside Diesel Repair",
+   "icon": "wrench",
+   "placement": "monument",
+   "palette": [
+    "#6E2B25",
+    "#FBF3E4"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22093-c02",
+   "parish": "22093",
+   "x": 200,
+   "z": -600,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "glass-shop",
+   "name": "Cypress Glass",
+   "icon": "pane",
+   "placement": "window",
+   "palette": [
+    "#2E4A36",
+    "#F2F0E6"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22093-c03",
+   "parish": "22093",
+   "x": -1000,
+   "z": 1800,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "glass-shop",
+   "name": "Marsh Glass",
+   "icon": "pane",
+   "placement": "monument",
+   "palette": [
+    "#0F4C5C",
+    "#FFFFFF"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22093-c04",
+   "parish": "22093",
+   "x": -2000,
+   "z": -600,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "paint-shop",
+   "name": "Oxbow Paint & Finish",
+   "icon": "brush",
+   "placement": "monument",
+   "palette": [
+    "#2E4A36",
+    "#F2F0E6"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22093-c05",
+   "parish": "22093",
+   "x": -1400,
+   "z": -1600,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "electrical-shop",
+   "name": "Pelican Electric",
+   "icon": "bolt",
+   "placement": "fascia",
+   "palette": [
+    "#2E4A36",
+    "#F2F0E6"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22095-c01",
+   "parish": "22095",
+   "x": -1400,
+   "z": 3800,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "diesel-garage",
+   "name": "Cypress Diesel Garage",
+   "icon": "wrench",
+   "placement": "window",
+   "palette": [
+    "#F2EBD9",
+    "#2A2A2A"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22095-c02",
+   "parish": "22095",
+   "x": 2400,
+   "z": 3600,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "diesel-garage",
+   "name": "Bayou Diesel Repair",
+   "icon": "wrench",
+   "placement": "window",
+   "palette": [
+    "#0F4C5C",
+    "#FFFFFF"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22095-c03",
+   "parish": "22095",
+   "x": 4200,
+   "z": 3600,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "glass-shop",
+   "name": "Bayou Glass & Glazing",
+   "icon": "pane",
+   "placement": "window",
+   "palette": [
+    "#0F4C5C",
+    "#FFFFFF"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22095-c04",
+   "parish": "22095",
+   "x": 3800,
+   "z": 4200,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "diesel-garage",
+   "name": "Levee Diesel Repair",
+   "icon": "wrench",
+   "placement": "window",
+   "palette": [
+    "#0F4C5C",
+    "#FFFFFF"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22095-c05",
+   "parish": "22095",
+   "x": -1200,
+   "z": 6400,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "glass-shop",
+   "name": "Levee Glass",
+   "icon": "pane",
+   "placement": "window",
+   "palette": [
+    "#0F4C5C",
+    "#FFFFFF"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22103-c01",
+   "parish": "22103",
+   "x": -6200,
+   "z": -400,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "diesel-garage",
+   "name": "Wharf Diesel Repair",
+   "icon": "wrench",
+   "placement": "fascia",
+   "palette": [
+    "#3B3355",
+    "#F5F2EC"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22103-c02",
+   "parish": "22103",
+   "x": -5600,
+   "z": -4600,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "hvac-service",
+   "name": "Levee Cooling Service",
+   "icon": "fan",
+   "placement": "monument",
+   "palette": [
+    "#3B3355",
+    "#F5F2EC"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22103-c03",
+   "parish": "22103",
+   "x": -5800,
+   "z": -5400,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "plumbing-shop",
+   "name": "Magnolia Plumbing",
+   "icon": "drop",
+   "placement": "fascia",
+   "palette": [
+    "#0F4C5C",
+    "#FFFFFF"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22103-c04",
+   "parish": "22103",
+   "x": 0,
+   "z": 8200,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "hvac-service",
+   "name": "Wharf Heating & Air",
+   "icon": "fan",
+   "placement": "fascia",
+   "palette": [
+    "#0F4C5C",
+    "#FFFFFF"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22103-c05",
+   "parish": "22103",
+   "x": 600,
+   "z": 8200,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "machine-shop",
+   "name": "Wharf Machine Works",
+   "icon": "gear",
+   "placement": "fascia",
+   "palette": [
+    "#2E4A36",
+    "#F2F0E6"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22105-c01",
+   "parish": "22105",
+   "x": 5400,
+   "z": 4000,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "machine-shop",
+   "name": "Tidewater Machine Works",
+   "icon": "gear",
+   "placement": "window",
+   "palette": [
+    "#2E4A36",
+    "#F2F0E6"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22105-c02",
+   "parish": "22105",
+   "x": 600,
+   "z": 6800,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "diesel-garage",
+   "name": "Canal Diesel Repair",
+   "icon": "wrench",
+   "placement": "blade",
+   "palette": [
+    "#F2EBD9",
+    "#2A2A2A"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22105-c03",
+   "parish": "22105",
+   "x": 6600,
+   "z": 2200,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "glass-shop",
+   "name": "Harbor Glass",
+   "icon": "pane",
+   "placement": "fascia",
+   "palette": [
+    "#1F3A4D",
+    "#F4F1E8"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22105-c04",
+   "parish": "22105",
+   "x": -7200,
+   "z": 600,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "electrical-shop",
+   "name": "Harbor Wiring Co.",
+   "icon": "bolt",
+   "placement": "window",
+   "palette": [
+    "#3B3355",
+    "#F5F2EC"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22105-c05",
+   "parish": "22105",
+   "x": -7000,
+   "z": 1800,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "welding-shop",
+   "name": "Pelican Welding",
+   "icon": "spark",
+   "placement": "fascia",
+   "palette": [
+    "#3B3355",
+    "#F5F2EC"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22109-c01",
+   "parish": "22109",
+   "x": 6600,
+   "z": -400,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "corner-grocery",
+   "name": "Tidewater Corner Grocery",
+   "icon": "basket",
+   "placement": "window",
+   "palette": [
+    "#6E2B25",
+    "#FBF3E4"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22109-c02",
+   "parish": "22109",
+   "x": -7000,
+   "z": 800,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "tool-rental",
+   "name": "Canal Tool Library",
+   "icon": "hammer",
+   "placement": "window",
+   "palette": [
+    "#F2EBD9",
+    "#2A2A2A"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22109-c03",
+   "parish": "22109",
+   "x": 9800,
+   "z": -2000,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "landscape-yard",
+   "name": "Bayou Landscaping",
+   "icon": "leaf",
+   "placement": "monument",
+   "palette": [
+    "#0F4C5C",
+    "#FFFFFF"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22109-c04",
+   "parish": "22109",
+   "x": -10600,
+   "z": 600,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "plumbing-shop",
+   "name": "Pelican Pipe & Valve",
+   "icon": "drop",
+   "placement": "blade",
+   "palette": [
+    "#1F3A4D",
+    "#F4F1E8"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  },
+  {
+   "lot_id": "lot-22109-c05",
+   "parish": "22109",
+   "x": -10600,
+   "z": 2000,
+   "lot_size_m": [
+    24,
+    30
+   ],
+   "business_type": "carpentry-shop",
+   "name": "Old Mill Cabinet Works",
+   "icon": "saw",
+   "placement": "fascia",
+   "palette": [
+    "#3B3355",
+    "#F5F2EC"
+   ],
+   "provenance": "AUTHORED",
+   "label": "AUTHORED play sign on an AUTHORED game lot - not a real business, name or address"
+  }
+ ],
+ "counts": {
+  "styles": 8,
+  "components": 44,
+  "colour_categories": 12,
+  "patterns": 7,
+  "rules": 11,
+  "signs": 65,
+  "denylist": 88,
+  "placements": {
+   "fascia": 16,
+   "blade": 11,
+   "window": 22,
+   "monument": 16
+  }
+ }
+}

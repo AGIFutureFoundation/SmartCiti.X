@@ -1,0 +1,153 @@
+{
+ "bucket": "https://esa-worldcover.s3.eu-central-1.amazonaws.com/",
+ "cell_arcsec": 3,
+ "classes": {
+  "10": "tree cover",
+  "100": "moss and lichen",
+  "20": "shrubland",
+  "30": "grassland",
+  "40": "cropland",
+  "50": "built-up",
+  "60": "bare / sparse vegetation",
+  "70": "snow and ice",
+  "80": "permanent water bodies",
+  "90": "herbaceous wetland",
+  "95": "mangroves"
+ },
+ "encoding": {
+  "cell_value": "majority WorldCover class code of the 10 m pixels in the cell (ties -> lower code); 0 when fewer than half the pixels carry a class",
+  "compression": "gzip (mtime 0)",
+  "dtype": "uint8",
+  "nodata_value": 0,
+  "order": "row-major, rows north->south, cols west->east"
+ },
+ "files": {
+  "LICENSE_CC-BY-4.0.txt": {
+   "bytes": 17023,
+   "region": null,
+   "sha256": "d557539df68e771cc1eedcc91d13f70fca930e508d11eedcafa4b15db49e3744"
+  },
+  "WORLDCOVER_ATTRIBUTION.txt": {
+   "bytes": 2648,
+   "region": null,
+   "sha256": "f7a092cee9ad1b3c639b04f840ab444bc401317a32b233280ed8af72b993811a"
+  },
+  "bayarea.u8.gz": {
+   "bytes": 607031,
+   "region": "bayarea",
+   "sha256": "5024923876b501f8361fe162c6aeebcbb817cc80dcb8c1b7e14f1667428d8d99"
+  },
+  "parishes.u8.gz": {
+   "bytes": 594510,
+   "region": "parishes",
+   "sha256": "a9d37b8ca93b45393093114df1e7b8a9478ed5241866f10775c491fa5d27f0da"
+  }
+ },
+ "licence": "CC-BY-4.0",
+ "licence_text_from": "https://registry.npmjs.org/spdx-license-list/-/spdx-license-list-6.12.0.tgz (spdx-license-list 6.12.0, CC0-1.0; tarball sha256 54cc8d13086187333ca1457c8edaa06d9a412144f076aa7f7c1b59c4f3b0a1ef)",
+ "provenance": "RECORDED",
+ "pum": {
+  "sha256": "4301a3d95260d88bd4315f43ccf2a12ef74ad391109b9f36e22b6e51d8490107",
+  "url": "https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/docs/WorldCover_PUM_V2.0.pdf"
+ },
+ "regions": {
+  "bayarea": {
+   "bounds_from": "bayarea/registry/bayarea.json#counties[*].bbox_wgs84 (union, snapped outward)",
+   "cell_arcsec": 3,
+   "cols": 2792,
+   "e_arcsec": -436350,
+   "file": "bayarea.u8.gz",
+   "members": 9,
+   "n_arcsec": 139914,
+   "rows": 2362,
+   "s_arcsec": 132828,
+   "tiles": [
+    {
+     "bytes": 4056438,
+     "copyright": "ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium",
+     "license": "CC-BY 4.0 - https://creativecommons.org/licenses/by/4.0/",
+     "product_version": "V2.0.0",
+     "sha256": "2a1968b0678ca09d193a63d9b1c0c3b716e60272eb583271496abfd210056288",
+     "tile": "N36W126",
+     "time_end": "2021-12-31T23:59:59Z",
+     "time_start": "2021-01-01T00:00:00Z",
+     "url": "https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_N36W126_Map.tif"
+    },
+    {
+     "bytes": 87597650,
+     "copyright": "ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium",
+     "license": "CC-BY 4.0 - https://creativecommons.org/licenses/by/4.0/",
+     "product_version": "V2.0.0",
+     "sha256": "cd255268fb81c7073bf10e5325e1d11c601dde5dc5ccd9c1f0b40a8bcb8a9b29",
+     "tile": "N36W123",
+     "time_end": "2021-12-31T23:59:59Z",
+     "time_start": "2021-01-01T00:00:00Z",
+     "url": "https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_N36W123_Map.tif"
+    }
+   ],
+   "w_arcsec": -444726,
+   "what": "the 9 San Francisco Bay Area counties of the Bay world, California"
+  },
+  "parishes": {
+   "bounds_from": "parishes/registry/parishes.json#parishes[*].bbox_wgs84 (union, snapped outward)",
+   "cell_arcsec": 3,
+   "cols": 3025,
+   "e_arcsec": -319734,
+   "file": "parishes.u8.gz",
+   "members": 13,
+   "n_arcsec": 111600,
+   "rows": 2485,
+   "s_arcsec": 104145,
+   "tiles": [
+    {
+     "bytes": 19495138,
+     "copyright": "ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium",
+     "license": "CC-BY 4.0 - https://creativecommons.org/licenses/by/4.0/",
+     "product_version": "V2.0.0",
+     "sha256": "df9796b4d5812632b24c7c9111a4710f00daeca74abc226ebfea31a28d3e1c4f",
+     "tile": "N27W093",
+     "time_end": "2021-12-31T23:59:59Z",
+     "time_start": "2021-01-01T00:00:00Z",
+     "url": "https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_N27W093_Map.tif"
+    },
+    {
+     "bytes": 6260773,
+     "copyright": "ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium",
+     "license": "CC-BY 4.0 - https://creativecommons.org/licenses/by/4.0/",
+     "product_version": "V2.0.0",
+     "sha256": "d141ab20c2c5757016b5161f782fbad3ebf0c12a405c1a52c8dc6f6010649c11",
+     "tile": "N27W090",
+     "time_end": "2021-12-31T23:59:59Z",
+     "time_start": "2021-01-01T00:00:00Z",
+     "url": "https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_N27W090_Map.tif"
+    },
+    {
+     "bytes": 74817887,
+     "copyright": "ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium",
+     "license": "CC-BY 4.0 - https://creativecommons.org/licenses/by/4.0/",
+     "product_version": "V2.0.0",
+     "sha256": "13c627b7b2032425d36bff1dde6bb4ecebd73a6fc017e28748feecd5b1c74cbf",
+     "tile": "N30W093",
+     "time_end": "2021-12-31T23:59:59Z",
+     "time_start": "2021-01-01T00:00:00Z",
+     "url": "https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_N30W093_Map.tif"
+    },
+    {
+     "bytes": 63066696,
+     "copyright": "ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium",
+     "license": "CC-BY 4.0 - https://creativecommons.org/licenses/by/4.0/",
+     "product_version": "V2.0.0",
+     "sha256": "99c5e7a401bb5c0da1d4d48e1b5e41502819f923ea4fc5ddc30075d45d89cf25",
+     "tile": "N30W090",
+     "time_end": "2021-12-31T23:59:59Z",
+     "time_start": "2021-01-01T00:00:00Z",
+     "url": "https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_N30W090_Map.tif"
+    }
+   ],
+   "w_arcsec": -328809,
+   "what": "the 13 parishes of the parish worlds, Louisiana"
+  }
+ },
+ "source": "ESA WorldCover 10 m 2021 v200",
+ "src_px_per_deg": 12000
+}

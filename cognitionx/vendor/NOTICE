@@ -1,0 +1,12 @@
+Cognition.X by AGI Future Foundation - https://github.com/AGIFutureFoundation/cognition.x
+Commit 1f45df64c0355804d4811bc0f7491c5501475346. Content licensed CC BY 4.0 (LICENSE-CONTENT in this folder,
+https://creativecommons.org/licenses/by/4.0/); Cognition.X code is Apache-2.0 and none of it is vendored here.
+
+Vendored subset (read by cognitionx/build.py --vendored; sha256 pinned in PIN_VENDOR):
+  blocks_subset.csv          every row of 9 packs from data/blocks.csv, all 10 columns unchanged
+  louisiana_parishes.json    fields name, region, seat, world, districts of the 64 parish records embedded in
+                             apps/louisiana/index.html, values unchanged
+  manifest_subset.json       the data/manifest.json entries of those 9 packs, unchanged
+  LICENSE-CONTENT            byte-identical copy of the upstream LICENSE-CONTENT
+Changes made in SmartCiti.X: selection only; grade bands are derived (data/schema.md level mapping) and world places
+are matched by a stated title-word rule in cognitionx/registry/cognitionx.json. Not accredited; not verified by SmartCiti.X.

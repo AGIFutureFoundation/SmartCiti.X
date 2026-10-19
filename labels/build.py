@@ -119,6 +119,38 @@ SHAPES = {
     'notice': {'draws': 'a plate banded top and bottom with diagonal hatching '
                         'in the accent colour', 'radius': 5, 'tail': False,
                'reads_as': 'a condition in force in this space, not a name'},
+
+    # A BOARD. Every shape above is a name-plate or a mark: one line of
+    # words, as wide as those words happen to be. That is the wrong shape
+    # for the one sign in this registry that carries a LIST, and it was
+    # wrong in a way you could measure. The PPE placard was a `plate`, and
+    # a room that requires seven things wore a sign twenty-two times wider
+    # than it was tall: measured in a browser at 1280x800, standing at eye
+    # level in a hall - (0, 1.7, 14), looking down the aisle - the two
+    # widest ran 670 and 678 px across a 1280 px screen and took six of
+    # that view's ten overlapping sign pairs with them.
+    #
+    # The cause was the aspect ratio and nothing else. `screen.min_frac`
+    # and `screen.max_frac` fix what a sign's HEIGHT is allowed to be on
+    # screen; its width then follows from the bitmap, so a sign laid out
+    # end to end is a banner at every distance and no threshold in the
+    # declutter block can make it not one.
+    #
+    # A list of requirements is read DOWN, one item to a line, which is
+    # both the shape of the real thing on a real door and the shape whose
+    # width is its widest single item rather than all of them joined. The
+    # accent runs across the head rather than down the left edge, because
+    # a stripe down the side of a portrait plate reads as a margin.
+    #
+    # `head_px` is a drawn dimension two places must agree on - the page
+    # fills the band and lays the caption under it - so it is declared
+    # once, here, and the page fails closed without it.
+    'board': {'draws': 'a portrait board with an accent band across its head, '
+                       'a caption under the band and its items stacked one '
+                       'to a line', 'radius': 5, 'tail': False,
+              'head_px': 12,
+              'reads_as': 'a list of requirements posted at a door, read '
+                          'down rather than across'},
 }
 
 # ------------------------------------------------------------ ornaments ---
@@ -134,7 +166,11 @@ ORNAMENTS = {
 }
 
 # ------------------------------------------------------------- the palette ---
-PALETTE = {
+# AUTHORED, chosen by eye. A colour here may be re-authored only where a
+# contrast rule below fails, and only through ADJUSTED, which records the
+# change beside its ratios; the suite parses this table out of the source
+# and refuses a registry palette that differs from it without an entry.
+PALETTE_AUTHORED = {
     'ink': '#E8EDEC',
     'muted': '#93A3A6',
     'plate': 'rgba(12,17,19,.84)',
@@ -147,6 +183,37 @@ PALETTE = {
     'derived': '#41C4D4',
     'schematic': '#93A3A6',       # provenance: muted, drawn dashed
 }
+# Re-authored colours: {role, from, to, why, ratio_before, ratio_after}.
+# Empty means every text-on-plate pair measured at or above 4.5:1 and no
+# colour needed moving. The ratios are recomputed below and an entry whose
+# numbers disagree with the measurement fails the build.
+ADJUSTED = []
+PALETTE = dict(PALETTE_AUTHORED)
+for _a in ADJUSTED:
+    assert PALETTE[_a['role']] == _a['from'], f"adjusted {_a['role']}: from is not the authored colour"
+    PALETTE[_a['role']] = _a['to']
+
+# What each palette key is FOR, so a pack measuring legibility against this
+# palette (surfaces reads this) can tell a text colour from a plate colour
+# from an accent without typing the palette. Closed over the whole palette.
+PALETTE_ROLES = {
+    'text': ['ink', 'muted'],
+    'plate': ['plate', 'plate_focus'],
+    'accent': ['mark', 'steel', 'good', 'crit', 'recorded', 'derived',
+               'schematic'],
+}
+assert sorted(k for v in PALETTE_ROLES.values() for k in v) == sorted(PALETTE), \
+    'palette_roles must name every palette key exactly once'
+
+# What the page PAINTS, per shape: the role the title, the sub line and the
+# plate take. This is the drawing contract the suite holds the page to (it
+# greps the fill statements), and it is what the legibility block below
+# measures. 'accent' means the kind's own accent; 'none' means no plate at
+# all (text sits on whatever finish is behind it); 'page' means the plate
+# colour is a literal the page owns, read off the page rather than typed.
+PAINT = {sk: {'title': 'ink', 'sub': 'muted', 'plate': 'plate'} for sk in SHAPES}
+PAINT['ghost'] = {'title': 'ink', 'sub': 'ink', 'plate': 'none'}
+PAINT['readout'] = {'title': 'accent', 'sub': 'muted', 'plate': 'page'}
 
 # ----------------------------------------------------------- the type scale ---
 TYPE = {
@@ -217,9 +284,64 @@ KINDS = {
     # what it expects them to be wearing. It reads in `crit` because it is
     # the one sign in this world that is a REQUIREMENT rather than a name,
     # and it sits low, at the door, where it would actually be hung.
-    'placard': {'shape': 'plate', 'accent': 'crit', 'face': 'body',
+    # It is a BOARD and not a plate. See SHAPES['board'] above for the
+    # measurement that moved it: a plate holds one line however long the
+    # list, and this is the one kind in the registry whose content is a
+    # list, so a seven-item room wore a 670 px banner across an eye-level
+    # view and took six overlapping pairs with it. Stacked, its width is
+    # its widest single item - the longest word in the PPE vocabulary is
+    # 24 characters - and it can never run away again.
+    # WHERE IT HANGS, and the one tie that decision leaves behind.
+    #
+    # A board hangs on the partition beside the room's own doorway, on the
+    # jamb NEARER THE HALL'S CENTRE LINE - the jamb somebody walking up the
+    # middle of the shed meets first. The rule it replaces asked which jamb
+    # had more wall behind it, and for a doorway centred on a room its
+    # neighbour fully overlaps those two widths are the same quantity
+    # reached by two roundings: replayed over the shipped payload, 393 of
+    # the 795 boards that hang beside a jamb in this world - 49%, in all 111
+    # halls - compared two EXACTLY equal numbers, which `>` answers
+    # "false", which sent every one of them to the +x jamb. Not a scatter
+    # somebody would have noticed: a uniform lean that reads as a decision.
+    #
+    # 393 of 795 CORRECTS an earlier 479 of 881, which is in the commit
+    # message of 91d27e0 and cannot be rewritten. That count took every
+    # room with a cut in its back wall as a board; 86 of them require no
+    # PPE and hang nothing. Where the two disagree, this is the right one.
+    #
+    # And the rule has a stated limit rather than being absolute: 31 of
+    # the 795 are carried outside their own room by the board's width and
+    # are clamped back inside it, so for those the placement is "inside
+    # the room" and not "beside the doorway".
+    #
+    # The centre-line rule compares two distances that differ unless the
+    # doorway sits exactly on the hall axis. 47 of those 795 boards are that
+    # case, so it is real and it is named here rather than left to an
+    # operator - the same mistake one layer down. The side is '-x'.
+    #
+    # WHY '-x', honestly: not because that side is better, because it is
+    # not. Because ONE side has to be written down so that every hall and
+    # every locale takes the same one, and because +x is the side the
+    # broken rule silently leant on - so choosing -x makes the fix
+    # OBSERVABLE. After this, a board on the +x jamb of a doorway centred
+    # on the hall axis is evidence the old rule survived somewhere, rather
+    # than being indistinguishable from the new one working.
+    'placard': {'shape': 'board', 'accent': 'crit', 'face': 'body',
                 'min_focus': .18, 'hide_beyond_m': 20,
                 'provenance': 'DERIVED',
+                'hangs': 'on the partition beside the room\'s own doorway, '
+                         'on the jamb nearer the hall\'s centre line, with '
+                         'its head at reading height',
+                'jamb_on_centre': '-x',
+                'jamb_on_centre_why': 'a doorway that sits exactly on the '
+                    'hall\'s centre line has two jambs the same distance '
+                    'from it - 47 of the 795 boards that hang beside a '
+                    'jamb are that case. The side is named here so that '
+                    'every hall '
+                    'takes the same one, and it is -x because +x is the '
+                    'side the rule this replaced silently leant on: a '
+                    'board still on +x in a centred doorway is evidence '
+                    'that rule survived somewhere.',
                 'what': 'what a room requires of you, read at its door'},
 
     # ---- wayfinding ------------------------------------------------------
@@ -230,8 +352,17 @@ KINDS = {
     # only sign in this registry that is an INSTRUCTION about movement, so it
     # is the only one whose plate has a direction: it points, and a sign that
     # points cannot be mistaken for a sign that names.
+    # It hides at 30 m, and that is not a cost saving. Every OTHER kind in
+    # this registry that never hides is a place NAME - a campus, a
+    # district, a hall, a recorded anchor - something you are meant to read
+    # from across a green. A way-out sign is read from inside the room it
+    # serves, like the placard (20 m), the door number (14 m), the machine
+    # tag (18 m) and the hazard notice (22 m) beside it. Hung at 0 it stood
+    # legible from 55 m outside the building, where it competed with the
+    # hall's own name plate and was read as one - which is what happened
+    # the first time three of them were hung.
     'egress': {'shape': 'chevron', 'accent': 'good', 'face': 'display',
-               'min_focus': .3, 'hide_beyond_m': 0, 'provenance': 'DERIVED',
+               'min_focus': .3, 'hide_beyond_m': 30, 'provenance': 'DERIVED',
                'what': 'the way out of a hall, read off the floor plan the '
                        'bundle drew and pointing along it'},
     # Where a floor goes when it empties. A drill that ends nowhere is a
@@ -240,8 +371,10 @@ KINDS = {
     # it. It wears the same green as the chevron because it is the other end
     # of the same movement, and a different shape because standing still at
     # a point is not the same instruction as walking along a route.
+    # 36 m, a little further than the chevron: the beacon marks a point on
+    # the apron OUTSIDE the building, and the walk to it starts inside.
     'muster': {'shape': 'beacon', 'accent': 'good', 'face': 'display',
-               'min_focus': .28, 'hide_beyond_m': 0, 'provenance': 'DERIVED',
+               'min_focus': .28, 'hide_beyond_m': 36, 'provenance': 'DERIVED',
                'what': 'where a hall gathers when it empties, off the same '
                        'plan the route is read from'},
     # A door number. Rooms have names, and a name is what you call a place
@@ -316,6 +449,91 @@ FOCUS = {
                   'cursor - which is what makes this work in a headset, '
                   'where there is no cursor to have.',
 }
+
+# ------------------------------------------- when two signs land together ---
+# The focus rule above scores every sign ON ITS OWN. It can tell you how
+# centred a sign is and how far off it stands; it cannot tell you that two
+# signs have landed on the same pixels, because it never compares a pair.
+#
+# They do land on the same pixels, and it was not a near miss. Measured in
+# a browser at 1280x800 through the page's own rectangle hook, the default
+# hall view put twenty-two signs on screen and fifteen PAIRS of them
+# overlapped, five of those covering more than half of the smaller plate:
+# the Classroom plate, three training-ladder plates and seven advisor
+# bubbles piled into stacks you could not read a word of. The region board
+# was worse - a hundred and twenty-five signs and four hundred and
+# eighty-eight overlapping pairs.
+#
+# The cause is arithmetic, not carelessness. `screen.min_frac` promises
+# that a sign never shrinks below a readable band of the viewport, so at a
+# distance EVERY sign is drawn at the same minimum height. Signs a metre
+# apart in the world are then a few pixels apart on screen while each is
+# tens of pixels tall, and they cover each other however carefully they
+# were placed.
+#
+# So a sign that is covered steps back, and this declares WHICH ONE steps
+# back. The order is not "whichever scored higher this frame" - that is a
+# coin toss between a room plate and the advisor standing in the middle of
+# it, and it would flip as the view turned. It is a fixed precedence,
+# read from the top: the marquee over a place outranks the name of a room
+# inside it, a room outranks the person standing in it, and a measured
+# distance yields to all of them. Where you ARE beats who is there beats
+# what it is called beats what was measured.
+#
+# Nothing is deleted and nothing is dropped from the scene. A covered sign
+# fades, on the same easing as the focus score, and comes back the moment
+# the view moves enough to uncover it - which is why the two thresholds
+# differ: a sign hides when it is covered past `cover_hide` and does not
+# return until coverage falls under `cover_show`, so a sign sitting exactly
+# on the line cannot flicker.
+#
+# `cover_hide` is set where it is because of what a plate CONTAINS, not by
+# eye. A plate is a title with a second line under it, and that second line
+# is the lower third or so of the plate: a cover of a third of the plate's
+# area can therefore swallow the whole of it, which is what "Materials
+# Store / Materials" losing its strand name looked like. A cover of a
+# seventh is a corner or a rule's worth of one end - the plate still reads.
+# Measured at 1280x800 in the default hall, moving the threshold from a
+# third to a seventh took the surviving overlaps from four pairs (worst
+# 21%) to two (worst 11%), and the region board from 39 pairs to 12 with
+# nothing over 15%.
+PRECEDENCE = [
+    'brand', 'campus', 'district', 'hall',      # where you are
+    'egress', 'muster', 'hazard', 'placard',    # what you must do about it
+    'room', 'station', 'crib', 'door',          # what this is called
+    'advisor', 'anchor', 'schematic',           # who and what is out there
+    'asset', 'route', 'readout', 'fixture',     # what was measured
+]
+DECLUTTER = {
+    'precedence': PRECEDENCE,
+    'cover_hide': .15,
+    'cover_show': .07,
+    'min_op': .05,
+    'rule': 'two signs are compared as the rectangles they actually occupy '
+            'on screen. Taken in precedence order, a sign that is covered '
+            'by more than cover_hide of the smaller of the two plates by a '
+            'sign ahead of it steps back; it returns when coverage falls '
+            'under cover_show. Coverage is eased on the focus easing, so a '
+            'sign fades rather than blinks.',
+    'honest': 'a sign that steps back is not deleted, not disposed and not '
+              'dropped from the label set or from its group; it is still '
+              'scored every frame and it comes back as soon as the view '
+              'moves enough to uncover it. What changes is its opacity, '
+              'and a sign faded to min_op is switched off, so while it is '
+              'covered it is NOT drawn and NOT on screen. That is the '
+              'honest cost of the rule and a harness counting on-screen '
+              'signs will not count it. The visible-MESH count cannot see '
+              'this either way - a sign is a sprite and a sprite was never '
+              'one of those meshes - so it is the SIGN floor in '
+              'web/eval_scene.mjs, and not the mesh floor, that stops this '
+              'rule being turned into a way of emptying a building.',
+    'measured': 'the count this exists to hold down is overlapping PAIRS of '
+                'on-screen sign rectangles, measured in a browser by '
+                'web/eval_scene.mjs through the page\'s own '
+                '__tc3dLabelRects() hook, against a ceiling declared there '
+                'per view.',
+}
+
 
 # ------------------------------------------------ what a sign may not say ---
 # A sign that wears a standards body's initials, a standard's designation or
@@ -407,6 +625,17 @@ HONESTY = {
                       'set in mono because an identifier is a value a '
                       'machine assigned, which is the rank this type scale '
                       'already gives such things.',
+    'boards': 'the PPE placard is a board: its items are stacked one to a '
+              'line, it hangs on the partition beside the room\'s own '
+              'doorway with its head at reading height, and its width is '
+              'its widest single item. What it cannot do is beat the '
+              'on-screen clamp: a sign may never take more than '
+              'focus.screen.max_frac of the viewport height, so the one '
+              'room in the network that requires eleven things draws '
+              'eleven lines inside that band and is a shape you read as '
+              '"a long list" rather than eleven words you can read. The '
+              'full list is text in the room panel, which is where it can '
+              'be read; the board is signage.',
     'notices': 'a hazard notice states the condition the room\'s own '
                'conditions record holds. It does not classify, rate or '
                'permit anything, it cites nobody, and a space with no '
@@ -421,8 +650,9 @@ HONESTY = {
                 '(or hang ahead of the rig without one) at a fixed size and '
                 'full opacity - they are on the hand, not in the world, so '
                 'the view-direction scoring above does not apply to them. '
-                'Verified against a mocked WebXR session only, never a '
-                'physical headset.',
+                'Held at the source by regex; no session, mocked or real, '
+                'has been driven in this tree, never a physical headset, '
+                'and a mocked-session harness is not claimed.',
 }
 
 # ---------------------------------------------------------------- checks ---
@@ -487,7 +717,41 @@ for kk in ('egress', 'muster', 'door', 'asset', 'hazard'):
     assert KINDS[kk].get('provenance') == 'DERIVED', \
         f'{kk} is read off a plan or a record, so it must say DERIVED'
 
+# The one tie the placard's hanging rule leaves: a doorway on the hall
+# axis. It is a POLICY, so it is named and it carries its reason; a side
+# with no reason beside it is a coin flip somebody wrote down.
+assert KINDS['placard']['jamb_on_centre'] in ('-x', '+x'), \
+    'placard.jamb_on_centre must name a side: a doorway centred on the ' \
+    'hall axis has two jambs the same distance from it, and the page ' \
+    'must not be left to resolve that with a comparison operator'
+assert len(KINDS['placard']['jamb_on_centre_why']) > 80, \
+    'placard.jamb_on_centre names a side with no reason beside it'
+assert KINDS['placard']['hangs'], 'a placard that does not say where it hangs'
+
 assert FOCUS['floor'] < 1 and FOCUS['cone_deg'] > 10, 'the cone must be a cone'
+
+# The precedence is a TOTAL order over the kinds: every kind names its place
+# exactly once. A kind missing from it would have no declared answer to
+# "what do you yield to?", and the page fails closed on one rather than
+# guessing, so the guess must not be possible here either.
+assert sorted(PRECEDENCE) == sorted(KINDS), (
+    'declutter.precedence must rank every kind exactly once - missing '
+    f'{sorted(set(KINDS) - set(PRECEDENCE))}, unknown '
+    f'{sorted(set(PRECEDENCE) - set(KINDS))}, '
+    f'{len(PRECEDENCE)} entries against {len(KINDS)} kinds')
+assert len(set(PRECEDENCE)) == len(PRECEDENCE), \
+    'declutter.precedence ranks a kind twice'
+assert 0 < DECLUTTER['cover_show'] < DECLUTTER['cover_hide'] < 1, (
+    'a sign must have to be covered MORE to hide than to stay hidden, or it '
+    'flickers on the threshold')
+assert 0 < DECLUTTER['min_op'] < FOCUS['floor'], (
+    'the opacity a stepped-back sign fades to must be under the floor a lit '
+    'sign is held above, or nothing ever reads as hidden')
+for _k, _v in DECLUTTER.items():
+    if isinstance(_v, str):
+        assert not borrowed_marks(_v), \
+            f'declutter.{_k} borrows {borrowed_marks(_v)}'
+
 assert 0 < FOCUS['screen']['min_frac'] < FOCUS['screen']['max_frac'] < .5, \
     'the on-screen clamp must be a sane band of the viewport'
 assert FOCUS['fade_from_rel'] < FOCUS['fade_to_rel'], 'fade runs outward'
@@ -507,7 +771,22 @@ assert FOCUS['fade_from_rel'] > 1, \
 # which is not named here fails the build, and a kind named here whose shape
 # the page HAS learned to draw fails it too, so the branch landing is what
 # forces the name off this list. Nothing silently stays pending.
-PENDING_PAGE = ['asset', 'door', 'egress', 'hazard', 'muster']
+# ...and this list is now EMPTY, which is what it was for.
+#
+# All five landed together: web/build_3d.py grew a `case` for the chevron,
+# the beacon, the stencil, the tag and the notice, and the hall hangs all
+# five - a chevron in each back corner pointing at the one open face, a
+# beacon on the apron, a stencilled number on every way in, a tag on every
+# machine, and a hatched notice in every room whose own record names a
+# hazard. Until they landed, a kind on this list fell through that switch
+# and drew NO PLATE: bare text with a shadow, which is what a campus name
+# looks like from across a green, and which is exactly how the first three
+# hung were read when somebody looked at the hall.
+#
+# The gate stays. It fails closed in both directions, so the next kind
+# declared here without a drawing branch fails this build, and this list
+# going empty is the only way to say the registry has no unpaid promises.
+PENDING_PAGE = []
 
 BOOTSTRAP = '--bootstrap' in __import__('sys').argv
 if BOOTSTRAP:
@@ -542,6 +821,190 @@ else:
 
 stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest()[:16]
 
+# ------------------------------------------------------------- legibility ---
+# Nothing above measures whether a word on a sign can be READ against the
+# plate it sits on, or whether the plate can be seen against the wall it
+# hangs on. This does, with WCAG 2.x relative luminance and contrast, in the
+# stdlib, against every finish the surfaces pack can put behind a sign -
+# read from that pack's registry, never typed here, and stamped so a stale
+# read fails the suite. A translucent plate is composited over the finish
+# (source-over) before anything is measured, because that is the colour the
+# eye gets. Every number below is computed; the one rule with teeth is that
+# a kind's title and sub line each reach 4.5:1 on its own plate over EVERY
+# finish, or the build refuses and names the kind.
+import re
+
+
+def _rgba(c):
+    c = c.strip()
+    if c.startswith('#') and len(c) == 7:
+        return (int(c[1:3], 16), int(c[3:5], 16), int(c[5:7], 16), 1.0)
+    m = re.fullmatch(r'rgba\((\d+),(\d+),(\d+),(\d*\.?\d+)\)', c)
+    assert m, f'unreadable colour {c!r}'
+    return (int(m[1]), int(m[2]), int(m[3]), float(m[4]))
+
+
+def _lin(v8):
+    v = v8 / 255.0
+    return v / 12.92 if v <= 0.04045 else ((v + 0.055) / 1.055) ** 2.4
+
+
+def _lum(c):
+    return 0.2126 * _lin(c[0]) + 0.7152 * _lin(c[1]) + 0.0722 * _lin(c[2])
+
+
+def _ratio(a, b):
+    la, lb = _lum(a), _lum(b)
+    return (max(la, lb) + 0.05) / (min(la, lb) + 0.05)
+
+
+def _over(fg, bg):
+    a = fg[3]
+    return tuple(fg[i] * a + bg[i] * (1 - a) for i in range(3)) + (1.0,)
+
+
+def _tinted_lum(c, tint):
+    # the focus tint: three.js multiplies the sprite by material.color in
+    # LINEAR light, so the tinted luminance is the channel product there
+    return (0.2126 * _lin(c[0]) * _lin(tint[0]) + 0.7152 * _lin(c[1]) * _lin(tint[1])
+            + 0.0722 * _lin(c[2]) * _lin(tint[2]))
+
+
+def _tinted_ratio(a, b, tint):
+    la, lb = _tinted_lum(a, tint), _tinted_lum(b, tint)
+    return (max(la, lb) + 0.05) / (min(la, lb) + 0.05)
+
+
+def _r3(x):
+    return round(x, 3)
+
+
+surf_reg = json.load(open(ROOT / 'surfaces/registry/finishes.json'))
+FINISHES = {
+    'floor': {fid: f['color'] for fid, f in surf_reg['catalogue'].items()},
+    'wall': {wid: w['color'] for wid, w in surf_reg['wall_catalogue'].items()},
+    'wainscot': {wid: w['wainscot'] for wid, w in surf_reg['wall_catalogue'].items()
+                 if w['wainscot_m'] > 0},
+}
+catalogue_sha = hashlib.sha256(json.dumps(FINISHES, sort_keys=True).encode()).hexdigest()[:16]
+if BOOTSTRAP:
+    # no page to read: the readout box takes the palette plate, and the real
+    # run below reads the literal the page actually fills
+    READOUT_BOX = PALETTE['plate']
+else:
+    _m = re.search(r"case 'readout':\s*g\.fillStyle = '(rgba\([^)]*\))';", page)
+    assert _m, 'the page no longer fills the readout box with a literal this build can read'
+    READOUT_BOX = _m[1]
+
+THRESHOLDS = {'normal_text': 4.5, 'large_text': 3.0, 'non_text': 3.0,
+              'focus_tint_floor': 3.0,
+              'why_focus_floor': 'the focused sign is the single nearest-centre '
+                                 'sign, grown by focus.grow and tinted for the '
+                                 'moment it is looked at; its lines are held to '
+                                 'the large-text floor under the tint and to '
+                                 'the normal-text floor untinted'}
+MARK = _rgba(PALETTE['mark'])
+
+
+def _plate_of(kind_id, kind):
+    role = PAINT[kind['shape']]['plate']
+    if role == 'none':
+        return None
+    if role == 'page':
+        return _rgba(READOUT_BOX)
+    return _rgba(PALETTE[role])
+
+
+def _text_of(role, kind):
+    if role == 'accent':
+        # the district hue is hsl(h 58% 62%); measured at the palette mark
+        # when a kind takes the district, since the page falls back to it
+        return _rgba(PALETTE['mark' if kind['accent'] == 'district' else kind['accent']])
+    return _rgba(PALETTE[role])
+
+
+def _worst(fn):
+    best = None
+    for fam, cols in FINISHES.items():
+        for fid, col in cols.items():
+            r = fn(_rgba(col))
+            if best is None or r < best[0]:
+                best = (r, fam, fid)
+    return {'ratio': _r3(best[0]), 'family': best[1], 'finish': best[2]}
+
+
+roles_out = {}
+refused = []
+for kk, k in KINDS.items():
+    paint = PAINT[k['shape']]
+    plate = _plate_of(kk, k)
+    title = _text_of(paint['title'], k)
+    sub = _text_of(paint['sub'], k)
+    entry = {'shape': k['shape'], 'title': paint['title'], 'sub': paint['sub'],
+             'plate': paint['plate']}
+    if plate is None:
+        # no plate: the words sit on the finish itself, with a shadow the
+        # measurement does not credit. Reported, and not held to the rule,
+        # because the rule is about a sign's OWN plate.
+        entry['title_on_finish'] = _worst(lambda bg: _ratio(title, bg))
+        entry['sub_on_finish'] = _worst(lambda bg: _ratio(sub, bg))
+        entry['below_4_5_finishes'] = sum(
+            1 for cols in FINISHES.values() for col in cols.values()
+            if _ratio(title, _rgba(col)) < THRESHOLDS['normal_text'])
+    else:
+        entry['title_on_plate'] = _worst(lambda bg: _ratio(title, _over(plate, bg)))
+        entry['sub_on_plate'] = _worst(lambda bg: _ratio(sub, _over(plate, bg)))
+        entry['plate_on_finish'] = _worst(lambda bg: _ratio(_over(plate, bg), bg))
+        entry['plate_below_3_finishes'] = sum(
+            1 for cols in FINISHES.values() for col in cols.values()
+            if _ratio(_over(plate, _rgba(col)), _rgba(col)) < THRESHOLDS['non_text'])
+        entry['focus_tint'] = {
+            'title_on_plate': _worst(lambda bg: _tinted_ratio(title, _over(plate, bg), MARK)),
+            'sub_on_plate': _worst(lambda bg: _tinted_ratio(sub, _over(plate, bg), MARK)),
+        }
+        for line in ('title_on_plate', 'sub_on_plate'):
+            if entry[line]['ratio'] < THRESHOLDS['normal_text']:
+                refused.append(f"{kk}: {line} {entry[line]['ratio']}:1 over "
+                               f"{entry[line]['family']} {entry[line]['finish']}")
+            if entry['focus_tint'][line]['ratio'] < THRESHOLDS['focus_tint_floor']:
+                refused.append(f"{kk}: focus-tinted {line} "
+                               f"{entry['focus_tint'][line]['ratio']}:1")
+    roles_out[kk] = entry
+assert not refused, 'text a reader cannot make out on its own plate: ' + '; '.join(refused)
+
+# every recorded adjustment carries the numbers it claims, recomputed
+for _a in ADJUSTED:
+    assert _a['to'] == PALETTE[_a['role']]
+    assert _a['ratio_after'] >= THRESHOLDS['normal_text'], _a
+    assert len(_a['why']) > 20, _a
+
+text_on_plate_pairs = sorted({(p['title'], p['plate']) for p in PAINT.values()}
+                             | {(p['sub'], p['plate']) for p in PAINT.values()})
+LEGIBILITY = {
+    'method': 'WCAG 2.x relative luminance (sRGB, D65 coefficients .2126/.7152/'
+              '.0722) and contrast (L1+.05)/(L2+.05); a translucent plate is '
+              'composited source-over onto the finish before measuring; the '
+              'focus tint is a per-channel product in linear light, as '
+              'three.js multiplies a sprite by material.color',
+    'surfaces_stamp': surf_reg['source_stamp'],
+    'catalogue_sha': catalogue_sha,
+    'finishes_measured': {fam: len(cols) for fam, cols in FINISHES.items()},
+    'thresholds': THRESHOLDS,
+    'readout_box': {'color': READOUT_BOX,
+                    'source': 'palette plate (bootstrap)' if BOOTSTRAP
+                    else 'web/trade_craft_3d.html, the readout case of labelShape()'},
+    'rule': 'every kind\'s title and sub line reach 4.5:1 on its own plate '
+            'over every finish, and 3:1 under the focus tint, or the build '
+            'refuses and names the kind and the line',
+    'roles': roles_out,
+    'worst_title_on_plate': min(
+        (e['title_on_plate']['ratio'] for e in roles_out.values() if 'title_on_plate' in e)),
+    'worst_sub_on_plate': min(
+        (e['sub_on_plate']['ratio'] for e in roles_out.values() if 'sub_on_plate' in e)),
+    'text_on_plate_pairs': [{'text': t, 'plate': pl} for t, pl in text_on_plate_pairs],
+    'adjusted': ADJUSTED,
+}
+
 doc = {
     'pack': 'smartcitix-trade-craft-academy-labels',
     'product': 'SmartCiti.X : Trade Craft Academy (powered by AGI Corp)',
@@ -557,9 +1020,13 @@ doc = {
     'shapes': SHAPES,
     'ornaments': ORNAMENTS,
     'palette': PALETTE,
+    'palette_roles': PALETTE_ROLES,
+    'paint': PAINT,
+    'legibility': LEGIBILITY,
     'type': TYPE,
     'kinds': KINDS,
     'focus': FOCUS,
+    'declutter': DECLUTTER,
 }
 
 OUT = HERE / 'registry'
@@ -567,4 +1034,8 @@ OUT.mkdir(exist_ok=True)
 (OUT / 'labels.json').write_text(json.dumps(doc, indent=1) + '\n')
 print(f"labels: {len(KINDS)} kinds over {len(SHAPES)} shapes "
       f"({len(pending)} awaiting a drawing branch), "
-      f"{FOCUS['cone_deg']}-degree focus cone (source stamp {stamp})")
+      f"{FOCUS['cone_deg']}-degree focus cone; worst title on plate "
+      f"{LEGIBILITY['worst_title_on_plate']}:1, worst sub "
+      f"{LEGIBILITY['worst_sub_on_plate']}:1 over "
+      f"{sum(LEGIBILITY['finishes_measured'].values())} finishes, "
+      f"{len(ADJUSTED)} colours re-authored (source stamp {stamp})")

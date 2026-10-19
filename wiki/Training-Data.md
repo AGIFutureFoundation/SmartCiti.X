@@ -15,7 +15,7 @@ That fork already exists in `meta/registry/metaverse.json`, RECORDED and
 cross-checked on every build. This pack cites it; it does not claim it.
 not a native Unity ML-Agents .demo (protobuf) file - this bundle has never produced or tested one, and does not claim to. exporting this file trains nothing by itself: no agent exists in this bundle and none is claimed to, until one is actually trained against this data outside it
 
-## Three episode kinds
+## 4 episode kinds
 
 | Kind | What it is | Fields | Granularity |
 |---|---|---|---|

@@ -8,7 +8,7 @@
    "bom-ref": "smartcitix-trade-craft-academy",
    "name": "SmartCiti.X : Trade Craft Academy",
    "version": "3.2.0",
-   "description": "the implementation bundle; every pack outside web/vendor is first-party with zero runtime dependencies"
+   "description": "the implementation bundle; every pack outside web/vendor, parishes/vendor, elevation/vendor, landcover/vendor is first-party with zero runtime dependencies"
   },
   "tools": {
    "components": [
@@ -22,15 +22,15 @@
   "properties": [
    {
     "name": "smartcitix:source_stamp",
-    "value": "12cbf883d874f15e"
+    "value": "b6df441f9373329a"
    },
    {
     "name": "smartcitix:scope",
-    "value": "every file under web/vendor/, and nothing else \u2014 the test walks the tree and holds the list to it"
+    "value": "every file under web/vendor/, parishes/vendor/, elevation/vendor/, landcover/vendor/, and nothing else \u2014 the test walks the tree and holds the list to it"
    },
    {
     "name": "smartcitix:first_party",
-    "value": "everything outside web/vendor/ is original to the bundle; orbis/runner-*/ carry their own LICENSE files and are first-party"
+    "value": "everything outside web/vendor/, parishes/vendor/, elevation/vendor/, landcover/vendor/ is original to the bundle; orbis/runner-*/ carry their own LICENSE files and are first-party. One exception, and it is measurement rather than code: the packs named in smartcitix:measurement_sources publish figures DERIVED from somebody else's licensed work while redistributing no part of that work"
    },
    {
     "name": "smartcitix:ci_scanning",
@@ -39,6 +39,18 @@
    {
     "name": "smartcitix:reproducible",
     "value": "no timestamp and no serial number on purpose: the same tree builds the same document"
+   },
+   {
+    "name": "smartcitix:measurement_sources",
+    "value": "Cognition.X blocks dataset (data/blocks.csv) by AGI Future Foundation, CC-BY-4.0, https://github.com/AGIFutureFoundation/cognition.x (licence deed https://creativecommons.org/licenses/by/4.0/). MEASURED, NOT REDISTRIBUTED: no geometry, no texture and no part of the file is in this bundle, and no component listed here comes from it. The measurements published from it, and the licence's four attribution fields, are in cognitionx/registry/cognitionx.json; THIRD_PARTY.md credits it for a human reader."
+   },
+   {
+    "name": "smartcitix:measurement_sources",
+    "value": "Cognition.X blocks dataset (data/blocks.csv) by AGI Future Foundation, CC-BY-4.0, https://github.com/AGIFutureFoundation/cognition.x (licence deed https://creativecommons.org/licenses/by/4.0/). MEASURED, NOT REDISTRIBUTED: no geometry, no texture and no part of the file is in this bundle, and no component listed here comes from it. The measurements published from it, and the licence's four attribution fields, are in programs/registry/programs.json; THIRD_PARTY.md credits it for a human reader."
+   },
+   {
+    "name": "smartcitix:measurement_sources",
+    "value": "R+5_Salons Rive Gauche_Maison de la Mutualit\u00e9 by GL events Paris Venues, CC-BY-4.0, https://sketchfab.com/3d-models/r5-salons-rive-gauche-maison-de-la-mutualite-e9e40a09c82e42e8a145afa679ffac28 (licence deed http://creativecommons.org/licenses/by/4.0/). MEASURED, NOT REDISTRIBUTED: no geometry, no texture and no part of the file is in this bundle, and no component listed here comes from it. The measurements published from it, and the licence's four attribution fields, are in venue/registry/venue.json; THIRD_PARTY.md credits it for a human reader."
    }
   ]
  },
@@ -2155,21 +2167,1449 @@
   },
   {
    "type": "library",
-   "bom-ref": "web/vendor/maplibre/maplibre-gl.css",
-   "name": "maplibre-gl",
-   "version": "4.7.1",
-   "purl": "pkg:npm/maplibre-gl@4.7.1#dist/maplibre-gl.css",
+   "bom-ref": "web/vendor/icons/LICENSE",
+   "name": "lucide-static",
+   "version": "1.48.0",
+   "purl": "pkg:npm/lucide-static@1.48.0#LICENSE",
    "hashes": [
     {
      "alg": "SHA-256",
-     "content": "576b085fdd9487a65a19215328c1e086c07ce5bf6da09b666b3806d3d008dae9"
+     "content": "b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/lucide-icons/lucide"
+    },
+    {
+     "type": "website",
+     "url": "https://lucide.dev/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/icons/LICENSE"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/icons/LICENSE"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "no version string in this file; version attributed from the lucide-static file vendored beside it that carries one (see THIRD_PARTY.md)"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no licence banner in this file; it IS the full ISC licence text of the lucide-static package, taken from the same verified tarball"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/icons/arrow-right.svg",
+   "name": "lucide-static",
+   "version": "1.48.0",
+   "purl": "pkg:npm/lucide-static@1.48.0#icons/arrow-right.svg",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "0a3d3733645e158219bf0d3478895a53d70ab2572075bb4cb54d5f229cba5210"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/lucide-icons/lucide"
+    },
+    {
+     "type": "website",
+     "url": "https://lucide.dev/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/icons/arrow-right.svg"
+     }
+    ],
+    "copyright": [
+     {
+      "text": "<!-- @license lucide-static v1.48.0 - ISC -->"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/icons/arrow-right.svg"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "lucide-static v1.48.0"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/icons/building-2.svg",
+   "name": "lucide-static",
+   "version": "1.48.0",
+   "purl": "pkg:npm/lucide-static@1.48.0#icons/building-2.svg",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "d80787bfe10ab08d521a485715252bab47c0f540df085f384fe4315faad497d7"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/lucide-icons/lucide"
+    },
+    {
+     "type": "website",
+     "url": "https://lucide.dev/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/icons/building-2.svg"
+     }
+    ],
+    "copyright": [
+     {
+      "text": "<!-- @license lucide-static v1.48.0 - ISC -->"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/icons/building-2.svg"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "lucide-static v1.48.0"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/icons/check.svg",
+   "name": "lucide-static",
+   "version": "1.48.0",
+   "purl": "pkg:npm/lucide-static@1.48.0#icons/check.svg",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "e4bab3ed87dca8961e94a4e72ce23c17a674bebcb72bbbbe5eff4ef41532aa83"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/lucide-icons/lucide"
+    },
+    {
+     "type": "website",
+     "url": "https://lucide.dev/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/icons/check.svg"
+     }
+    ],
+    "copyright": [
+     {
+      "text": "<!-- @license lucide-static v1.48.0 - ISC -->"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/icons/check.svg"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "lucide-static v1.48.0"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/icons/chevron-right.svg",
+   "name": "lucide-static",
+   "version": "1.48.0",
+   "purl": "pkg:npm/lucide-static@1.48.0#icons/chevron-right.svg",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "62013d75bcc86b1fe6cece9251245488e9004efb239ea1ea15ce51a5534d7706"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/lucide-icons/lucide"
+    },
+    {
+     "type": "website",
+     "url": "https://lucide.dev/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/icons/chevron-right.svg"
+     }
+    ],
+    "copyright": [
+     {
+      "text": "<!-- @license lucide-static v1.48.0 - ISC -->"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/icons/chevron-right.svg"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "lucide-static v1.48.0"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/icons/circle-alert.svg",
+   "name": "lucide-static",
+   "version": "1.48.0",
+   "purl": "pkg:npm/lucide-static@1.48.0#icons/circle-alert.svg",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "ce9ed8492ca96c8ec007c56263a5fbea7b668aaa82e1aa5576c3cd11ea704c16"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/lucide-icons/lucide"
+    },
+    {
+     "type": "website",
+     "url": "https://lucide.dev/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/icons/circle-alert.svg"
+     }
+    ],
+    "copyright": [
+     {
+      "text": "<!-- @license lucide-static v1.48.0 - ISC -->"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/icons/circle-alert.svg"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "lucide-static v1.48.0"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/icons/clipboard-check.svg",
+   "name": "lucide-static",
+   "version": "1.48.0",
+   "purl": "pkg:npm/lucide-static@1.48.0#icons/clipboard-check.svg",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "f44b5d4a7a6035e44a78bd3e6e5f3fd458559c6697ed512147c66091e8892bd4"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/lucide-icons/lucide"
+    },
+    {
+     "type": "website",
+     "url": "https://lucide.dev/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/icons/clipboard-check.svg"
+     }
+    ],
+    "copyright": [
+     {
+      "text": "<!-- @license lucide-static v1.48.0 - ISC -->"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/icons/clipboard-check.svg"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "lucide-static v1.48.0"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/icons/gamepad-2.svg",
+   "name": "lucide-static",
+   "version": "1.48.0",
+   "purl": "pkg:npm/lucide-static@1.48.0#icons/gamepad-2.svg",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "a7ee3d0f49d304c3915287fabfeccced6caf1437d8927d4553d6fa57d6cabbf7"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/lucide-icons/lucide"
+    },
+    {
+     "type": "website",
+     "url": "https://lucide.dev/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/icons/gamepad-2.svg"
+     }
+    ],
+    "copyright": [
+     {
+      "text": "<!-- @license lucide-static v1.48.0 - ISC -->"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/icons/gamepad-2.svg"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "lucide-static v1.48.0"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/icons/globe.svg",
+   "name": "lucide-static",
+   "version": "1.48.0",
+   "purl": "pkg:npm/lucide-static@1.48.0#icons/globe.svg",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "897bddddae3e96090a90ef5f68bfc634f8e8c6c5d4a4999d1587420e3252034f"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/lucide-icons/lucide"
+    },
+    {
+     "type": "website",
+     "url": "https://lucide.dev/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/icons/globe.svg"
+     }
+    ],
+    "copyright": [
+     {
+      "text": "<!-- @license lucide-static v1.48.0 - ISC -->"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/icons/globe.svg"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "lucide-static v1.48.0"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/icons/graduation-cap.svg",
+   "name": "lucide-static",
+   "version": "1.48.0",
+   "purl": "pkg:npm/lucide-static@1.48.0#icons/graduation-cap.svg",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "a9ae1601c3f87dc1e1727a80c78d5616d2132ad8f24212fde7d8836b273bac5a"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/lucide-icons/lucide"
+    },
+    {
+     "type": "website",
+     "url": "https://lucide.dev/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/icons/graduation-cap.svg"
+     }
+    ],
+    "copyright": [
+     {
+      "text": "<!-- @license lucide-static v1.48.0 - ISC -->"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/icons/graduation-cap.svg"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "lucide-static v1.48.0"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/icons/hard-hat.svg",
+   "name": "lucide-static",
+   "version": "1.48.0",
+   "purl": "pkg:npm/lucide-static@1.48.0#icons/hard-hat.svg",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "f9f760bc154e12093af0f9426039823ee1f37eb3c713c5c0e8412f067e4045d6"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/lucide-icons/lucide"
+    },
+    {
+     "type": "website",
+     "url": "https://lucide.dev/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/icons/hard-hat.svg"
+     }
+    ],
+    "copyright": [
+     {
+      "text": "<!-- @license lucide-static v1.48.0 - ISC -->"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/icons/hard-hat.svg"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "lucide-static v1.48.0"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/icons/house.svg",
+   "name": "lucide-static",
+   "version": "1.48.0",
+   "purl": "pkg:npm/lucide-static@1.48.0#icons/house.svg",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "67dc27a57a07b1cb9f2adff2a926c500248dad533896ebd05674a1268078f445"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/lucide-icons/lucide"
+    },
+    {
+     "type": "website",
+     "url": "https://lucide.dev/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/icons/house.svg"
+     }
+    ],
+    "copyright": [
+     {
+      "text": "<!-- @license lucide-static v1.48.0 - ISC -->"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/icons/house.svg"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "lucide-static v1.48.0"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/icons/info.svg",
+   "name": "lucide-static",
+   "version": "1.48.0",
+   "purl": "pkg:npm/lucide-static@1.48.0#icons/info.svg",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "af880f5f1040830c149e539600fa62aee9d78ea231b03f9fb2eef78eaddb1d74"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/lucide-icons/lucide"
+    },
+    {
+     "type": "website",
+     "url": "https://lucide.dev/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/icons/info.svg"
+     }
+    ],
+    "copyright": [
+     {
+      "text": "<!-- @license lucide-static v1.48.0 - ISC -->"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/icons/info.svg"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "lucide-static v1.48.0"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/icons/layers.svg",
+   "name": "lucide-static",
+   "version": "1.48.0",
+   "purl": "pkg:npm/lucide-static@1.48.0#icons/layers.svg",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "473868ad15d0e74599dc5c562639355b8ddb6c7ad957ae43d579d9217c35f041"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/lucide-icons/lucide"
+    },
+    {
+     "type": "website",
+     "url": "https://lucide.dev/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/icons/layers.svg"
+     }
+    ],
+    "copyright": [
+     {
+      "text": "<!-- @license lucide-static v1.48.0 - ISC -->"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/icons/layers.svg"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "lucide-static v1.48.0"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  },
+  {
+   "type": "file",
+   "bom-ref": "web/vendor/icons/manifest.json",
+   "name": "smartcitix/icons/manifest.json",
+   "version": "3.2.0",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "5c1f21d4e084c42b9c98e91239f95f7fcdff3db117a8ec8071decc97479b087d"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/icons/manifest.json"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/icons/manifest.json"
+    },
+    {
+     "name": "smartcitix:first_party",
+     "value": "generated by media/fetch_icons.py; it records where each vendored icon came from and its hash rather than being one"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/icons/map.svg",
+   "name": "lucide-static",
+   "version": "1.48.0",
+   "purl": "pkg:npm/lucide-static@1.48.0#icons/map.svg",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "6c71a62e17f42cc8ef2d5c3d4a1b8edb8e8a0b7f76a66deb5dd15315b5867d9e"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/lucide-icons/lucide"
+    },
+    {
+     "type": "website",
+     "url": "https://lucide.dev/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/icons/map.svg"
+     }
+    ],
+    "copyright": [
+     {
+      "text": "<!-- @license lucide-static v1.48.0 - ISC -->"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/icons/map.svg"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "lucide-static v1.48.0"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/icons/pause.svg",
+   "name": "lucide-static",
+   "version": "1.48.0",
+   "purl": "pkg:npm/lucide-static@1.48.0#icons/pause.svg",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "51e2a1dc0be52d6c682b0d149d07c1863357f203e2a9b054e74c8597d5498fdd"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/lucide-icons/lucide"
+    },
+    {
+     "type": "website",
+     "url": "https://lucide.dev/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/icons/pause.svg"
+     }
+    ],
+    "copyright": [
+     {
+      "text": "<!-- @license lucide-static v1.48.0 - ISC -->"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/icons/pause.svg"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "lucide-static v1.48.0"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/icons/play.svg",
+   "name": "lucide-static",
+   "version": "1.48.0",
+   "purl": "pkg:npm/lucide-static@1.48.0#icons/play.svg",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "5525570680b5b5706c045815a49ead15114cb4939a8bce77170cccf534c1f9a9"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/lucide-icons/lucide"
+    },
+    {
+     "type": "website",
+     "url": "https://lucide.dev/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/icons/play.svg"
+     }
+    ],
+    "copyright": [
+     {
+      "text": "<!-- @license lucide-static v1.48.0 - ISC -->"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/icons/play.svg"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "lucide-static v1.48.0"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/icons/route.svg",
+   "name": "lucide-static",
+   "version": "1.48.0",
+   "purl": "pkg:npm/lucide-static@1.48.0#icons/route.svg",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "001a83f065730db84c941f23c5ffabc3f8a7647c61bb89f92d162cd141dc0e39"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/lucide-icons/lucide"
+    },
+    {
+     "type": "website",
+     "url": "https://lucide.dev/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/icons/route.svg"
+     }
+    ],
+    "copyright": [
+     {
+      "text": "<!-- @license lucide-static v1.48.0 - ISC -->"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/icons/route.svg"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "lucide-static v1.48.0"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/icons/search.svg",
+   "name": "lucide-static",
+   "version": "1.48.0",
+   "purl": "pkg:npm/lucide-static@1.48.0#icons/search.svg",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "4c9a79296cd8835fd7ec8a33083f9f8f3166b27754ef65a9edbbc0eaa4e2d76a"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/lucide-icons/lucide"
+    },
+    {
+     "type": "website",
+     "url": "https://lucide.dev/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/icons/search.svg"
+     }
+    ],
+    "copyright": [
+     {
+      "text": "<!-- @license lucide-static v1.48.0 - ISC -->"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/icons/search.svg"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "lucide-static v1.48.0"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/icons/shield-check.svg",
+   "name": "lucide-static",
+   "version": "1.48.0",
+   "purl": "pkg:npm/lucide-static@1.48.0#icons/shield-check.svg",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "99825a1716dbd3d0ade2d31749b46fccae12439c19ecddeac0077b6bf22f636c"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/lucide-icons/lucide"
+    },
+    {
+     "type": "website",
+     "url": "https://lucide.dev/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/icons/shield-check.svg"
+     }
+    ],
+    "copyright": [
+     {
+      "text": "<!-- @license lucide-static v1.48.0 - ISC -->"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/icons/shield-check.svg"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "lucide-static v1.48.0"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/icons/users.svg",
+   "name": "lucide-static",
+   "version": "1.48.0",
+   "purl": "pkg:npm/lucide-static@1.48.0#icons/users.svg",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "cf785e62ec5611032358a1d9cace803efccd160169f6c911623d5cfbe63d1f54"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/lucide-icons/lucide"
+    },
+    {
+     "type": "website",
+     "url": "https://lucide.dev/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/icons/users.svg"
+     }
+    ],
+    "copyright": [
+     {
+      "text": "<!-- @license lucide-static v1.48.0 - ISC -->"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/icons/users.svg"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "lucide-static v1.48.0"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/icons/video.svg",
+   "name": "lucide-static",
+   "version": "1.48.0",
+   "purl": "pkg:npm/lucide-static@1.48.0#icons/video.svg",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "200c2539ab02bf22514b98dc8fc2c0fd70bf94b52ef6d1d9d7ce9ff9643e75af"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/lucide-icons/lucide"
+    },
+    {
+     "type": "website",
+     "url": "https://lucide.dev/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/icons/video.svg"
+     }
+    ],
+    "copyright": [
+     {
+      "text": "<!-- @license lucide-static v1.48.0 - ISC -->"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/icons/video.svg"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "lucide-static v1.48.0"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/icons/wrench.svg",
+   "name": "lucide-static",
+   "version": "1.48.0",
+   "purl": "pkg:npm/lucide-static@1.48.0#icons/wrench.svg",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "82203e2b522ea48381facffbb4b6168769d840581a9143019326b45b5aece000"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/lucide-icons/lucide"
+    },
+    {
+     "type": "website",
+     "url": "https://lucide.dev/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/icons/wrench.svg"
+     }
+    ],
+    "copyright": [
+     {
+      "text": "<!-- @license lucide-static v1.48.0 - ISC -->"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/icons/wrench.svg"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "lucide-static v1.48.0"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/maplibre/maplibre-gl.css",
+   "name": "maplibre-gl",
+   "version": "5.24.0",
+   "purl": "pkg:npm/maplibre-gl@5.24.0#dist/maplibre-gl.css",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "ab1e70d59ec40465bae7e7030da2f3ccf28133fd502e62bd598eefbadfd7a732"
     }
    ],
    "licenses": [
     {
      "license": {
       "id": "BSD-3-Clause",
-      "url": "https://github.com/maplibre/maplibre-gl-js/blob/v4.7.1/LICENSE.txt"
+      "url": "https://github.com/maplibre/maplibre-gl-js/blob/v5.24.0/LICENSE.txt"
      }
     }
    ],
@@ -2184,7 +3624,7 @@
     },
     {
      "type": "license",
-     "url": "https://github.com/maplibre/maplibre-gl-js/blob/v4.7.1/LICENSE.txt"
+     "url": "https://github.com/maplibre/maplibre-gl-js/blob/v5.24.0/LICENSE.txt"
     }
    ],
    "evidence": {
@@ -2218,19 +3658,19 @@
    "type": "library",
    "bom-ref": "web/vendor/maplibre/maplibre-gl.js",
    "name": "maplibre-gl",
-   "version": "4.7.1",
-   "purl": "pkg:npm/maplibre-gl@4.7.1#dist/maplibre-gl.js",
+   "version": "5.24.0",
+   "purl": "pkg:npm/maplibre-gl@5.24.0#dist/maplibre-gl.js",
    "hashes": [
     {
      "alg": "SHA-256",
-     "content": "be9633c4d870e26fb37f1cfe5c5a77181667114003ea16207ac7850d8da8add1"
+     "content": "45a9b07a9189ce56054c620a947ccf41e291e58c95e9b61533b740aaa65ee5cb"
     }
    ],
    "licenses": [
     {
      "license": {
       "id": "BSD-3-Clause",
-      "url": "https://github.com/maplibre/maplibre-gl-js/blob/v4.7.1/LICENSE.txt"
+      "url": "https://github.com/maplibre/maplibre-gl-js/blob/v5.24.0/LICENSE.txt"
      }
     }
    ],
@@ -2245,7 +3685,7 @@
     },
     {
      "type": "license",
-     "url": "https://github.com/maplibre/maplibre-gl-js/blob/v4.7.1/LICENSE.txt"
+     "url": "https://github.com/maplibre/maplibre-gl-js/blob/v5.24.0/LICENSE.txt"
     }
    ],
    "evidence": {
@@ -2256,7 +3696,7 @@
     ],
     "copyright": [
      {
-      "text": "/**\n * MapLibre GL JS\n * @license 3-Clause BSD. Full text of license: https://github.com/maplibre/maplibre-gl-js/blob/v4.7.1/LICENSE.txt\n */"
+      "text": "/**\n * MapLibre GL JS\n * @license 3-Clause BSD. Full text of license: https://github.com/maplibre/maplibre-gl-js/blob/v5.24.0/LICENSE.txt\n */"
      }
     ]
    },
@@ -2267,7 +3707,7 @@
     },
     {
      "name": "smartcitix:version_evidence",
-     "value": "var i=\"4.7.1\";"
+     "value": "var i=\"5.24.0\";"
     },
     {
      "name": "smartcitix:licence_evidence",
@@ -2276,6 +3716,379 @@
     {
      "name": "smartcitix:licence_text",
      "value": "not vendored and not fetched (no network at build); the banner names the licence and the URL of its full text"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/reactor/LICENSE",
+   "name": "@reactor-team/js-sdk",
+   "version": "3.0.2",
+   "purl": "pkg:npm/%40reactor-team/js-sdk@3.0.2#LICENSE",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "fba93b1ccb169c2944a9b289f6b520bd9c28b72eb2d8ea5b72a4b482b2449cf3"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "Apache-2.0",
+      "url": "https://github.com/reactor-team/reactor-client-sdks/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/reactor-team/reactor-client-sdks"
+    },
+    {
+     "type": "website",
+     "url": "https://www.npmjs.com/package/@reactor-team/js-sdk"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/reactor-team/reactor-client-sdks/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/reactor/LICENSE"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/reactor/LICENSE"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "no version string in this file; version attributed from the @reactor-team/js-sdk file vendored beside it that carries one (see THIRD_PARTY.md)"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no licence banner in this file; it is the stylesheet of the same maplibre-gl dist as maplibre-gl.js, whose banner names 3-Clause BSD"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/reactor/index.js",
+   "name": "@reactor-team/js-sdk",
+   "version": "3.0.2",
+   "purl": "pkg:npm/%40reactor-team/js-sdk@3.0.2#dist/index.js",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "f937f895b26d0fa6d8e2590da77200a311c4c64889fe6ebcd8f7b10a3c2a6f8a"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "Apache-2.0",
+      "url": "https://github.com/reactor-team/reactor-client-sdks/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/reactor-team/reactor-client-sdks"
+    },
+    {
+     "type": "website",
+     "url": "https://www.npmjs.com/package/@reactor-team/js-sdk"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/reactor-team/reactor-client-sdks/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/reactor/index.js"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/reactor/index.js"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "name: \"@reactor-team/js-sdk\",\n  version: \"3.0.2\""
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no licence banner in this file; it is the stylesheet of the same maplibre-gl dist as maplibre-gl.js, whose banner names 3-Clause BSD"
+    }
+   ]
+  },
+  {
+   "type": "file",
+   "bom-ref": "web/vendor/reactor/manifest.json",
+   "name": "smartcitix/reactor/manifest.json",
+   "version": "3.2.0",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "b91807e9d4f4ffe69985a8c0f751fc485597c0d93e0a0b3dd0ef5c7029bf1402"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/reactor/manifest.json"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/reactor/manifest.json"
+    },
+    {
+     "name": "smartcitix:first_party",
+     "value": "generated by web/fetch_fonts.py; it describes the vendored font files rather than being one"
+    }
+   ]
+  },
+  {
+   "type": "file",
+   "bom-ref": "web/vendor/reactor/shims/awaitqueue.js",
+   "name": "smartcitix/reactor/shims/awaitqueue.js",
+   "version": "3.2.0",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "5b6b0b78636c90d74b25f5170515f8c1ae5c1a2860c4a3c600db60dde8aa7f81"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/reactor/shims/awaitqueue.js"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/reactor/shims/awaitqueue.js"
+    },
+    {
+     "name": "smartcitix:first_party",
+     "value": "generated by web/fetch_fonts.py; it describes the vendored font files rather than being one"
+    }
+   ]
+  },
+  {
+   "type": "file",
+   "bom-ref": "web/vendor/reactor/shims/react-jsx-runtime.js",
+   "name": "smartcitix/reactor/shims/react-jsx-runtime.js",
+   "version": "3.2.0",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "203e3b85947ce8a4bc2e39897d73fe33e63cedf232cbd5f68ca621e78717d5ba"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/reactor/shims/react-jsx-runtime.js"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/reactor/shims/react-jsx-runtime.js"
+    },
+    {
+     "name": "smartcitix:first_party",
+     "value": "generated by web/fetch_fonts.py; it describes the vendored font files rather than being one"
+    }
+   ]
+  },
+  {
+   "type": "file",
+   "bom-ref": "web/vendor/reactor/shims/react.js",
+   "name": "smartcitix/reactor/shims/react.js",
+   "version": "3.2.0",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "8f71244c98425dcaeebf506786cfaf4088ed3b9bd73f134ff8acc76bb90bcc76"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/reactor/shims/react.js"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/reactor/shims/react.js"
+    },
+    {
+     "name": "smartcitix:first_party",
+     "value": "generated by web/fetch_fonts.py; it describes the vendored font files rather than being one"
+    }
+   ]
+  },
+  {
+   "type": "file",
+   "bom-ref": "web/vendor/reactor/shims/unavailable.js",
+   "name": "smartcitix/reactor/shims/unavailable.js",
+   "version": "3.2.0",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "20df92d116fe5a03657066565d6068131576de090dd08280fa64ecda1dd31c6b"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/reactor/shims/unavailable.js"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/reactor/shims/unavailable.js"
+    },
+    {
+     "name": "smartcitix:first_party",
+     "value": "generated by web/fetch_fonts.py; it describes the vendored font files rather than being one"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/reactor/wasm/reactor_wasm.js",
+   "name": "@reactor-team/js-sdk",
+   "version": "3.0.2",
+   "purl": "pkg:npm/%40reactor-team/js-sdk@3.0.2#dist/wasm/reactor_wasm.js",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "f1e323781cf86126c8dca5c3ae48b4b514b293fb51978ca431b97c7ae73a2d5a"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "Apache-2.0",
+      "url": "https://github.com/reactor-team/reactor-client-sdks/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/reactor-team/reactor-client-sdks"
+    },
+    {
+     "type": "website",
+     "url": "https://www.npmjs.com/package/@reactor-team/js-sdk"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/reactor-team/reactor-client-sdks/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/reactor/wasm/reactor_wasm.js"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/reactor/wasm/reactor_wasm.js"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "no version string in this file; version attributed from the @reactor-team/js-sdk file vendored beside it that carries one (see THIRD_PARTY.md)"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no licence banner in this file; it is the stylesheet of the same maplibre-gl dist as maplibre-gl.js, whose banner names 3-Clause BSD"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/reactor/wasm/reactor_wasm_bg.wasm",
+   "name": "@reactor-team/js-sdk",
+   "version": "3.0.2",
+   "purl": "pkg:npm/%40reactor-team/js-sdk@3.0.2#dist/wasm/reactor_wasm_bg.wasm",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "cc0d3fc29dc0ef96a1d13807fdae834bf7ef467628d54e390ba6871abbc274af"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "Apache-2.0",
+      "url": "https://github.com/reactor-team/reactor-client-sdks/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/reactor-team/reactor-client-sdks"
+    },
+    {
+     "type": "website",
+     "url": "https://www.npmjs.com/package/@reactor-team/js-sdk"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/reactor-team/reactor-client-sdks/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/reactor/wasm/reactor_wasm_bg.wasm"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/reactor/wasm/reactor_wasm_bg.wasm"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "no version string in this file; version attributed from the @reactor-team/js-sdk file vendored beside it that carries one (see THIRD_PARTY.md)"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no licence banner in this file; it is the stylesheet of the same maplibre-gl dist as maplibre-gl.js, whose banner names 3-Clause BSD"
     }
    ]
   },
@@ -2337,6 +4150,651 @@
     {
      "name": "smartcitix:licence_evidence",
      "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "parishes/vendor/us-atlas/LICENSE",
+   "name": "us-atlas",
+   "version": "3.0.1",
+   "purl": "pkg:npm/us-atlas@3.0.1#LICENSE",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "8048290dfdb6e83fbed17e8985c8cfc4ce9da9b842642f3d3e497280790cfa31"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/topojson/us-atlas/blob/master/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/topojson/us-atlas"
+    },
+    {
+     "type": "website",
+     "url": "https://www.npmjs.com/package/us-atlas"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/topojson/us-atlas/blob/master/LICENSE"
+    },
+    {
+     "type": "distribution",
+     "url": "https://registry.npmjs.org/us-atlas/-/us-atlas-3.0.1.tgz"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "parishes/vendor/us-atlas/LICENSE"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "parishes/vendor/us-atlas/LICENSE"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "no version string in this file; version attributed from parishes/vendor/us-atlas/manifest.json, which parishes/fetch_usatlas.py wrote after the tarball sha512 matched the npm registry dist.integrity (sha512-wEIZCq0ImPvGblTd8gZMqNNCPkQshugMUG/8nkSWXb02+XqNFREg9atHOKP9w6prLZTpqcLhSvdBW81MkV3/0Q==)"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no licence banner in this file; it IS the full ISC licence text of the us-atlas package, taken from the same verified tarball"
+    },
+    {
+     "name": "smartcitix:data_origin",
+     "value": "U.S. Census Bureau cartographic boundary files, 2017, 1:10,000,000 (public domain, work of the U.S. federal government), as packaged by us-atlas"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "parishes/vendor/us-atlas/counties-10m.json",
+   "name": "us-atlas",
+   "version": "3.0.1",
+   "purl": "pkg:npm/us-atlas@3.0.1#counties-10m.json",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "145aaf5d1433352a6a1d8e86b5f149c7c653f9171baf14aaf75ee66575def1b0"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/topojson/us-atlas/blob/master/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/topojson/us-atlas"
+    },
+    {
+     "type": "website",
+     "url": "https://www.npmjs.com/package/us-atlas"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/topojson/us-atlas/blob/master/LICENSE"
+    },
+    {
+     "type": "distribution",
+     "url": "https://registry.npmjs.org/us-atlas/-/us-atlas-3.0.1.tgz"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "parishes/vendor/us-atlas/counties-10m.json"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "parishes/vendor/us-atlas/counties-10m.json"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "no version string in this file; version attributed from parishes/vendor/us-atlas/manifest.json, which parishes/fetch_usatlas.py wrote after the tarball sha512 matched the npm registry dist.integrity (sha512-wEIZCq0ImPvGblTd8gZMqNNCPkQshugMUG/8nkSWXb02+XqNFREg9atHOKP9w6prLZTpqcLhSvdBW81MkV3/0Q==)"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no licence banner in this file; the full ISC text of the us-atlas package is committed beside it at parishes/vendor/us-atlas/LICENSE; the Census outlines it packages are public domain"
+    },
+    {
+     "name": "smartcitix:data_origin",
+     "value": "U.S. Census Bureau cartographic boundary files, 2017, 1:10,000,000 (public domain, work of the U.S. federal government), as packaged by us-atlas"
+    }
+   ]
+  },
+  {
+   "type": "file",
+   "bom-ref": "parishes/vendor/us-atlas/manifest.json",
+   "name": "smartcitix/parishes/vendor/us-atlas/manifest.json",
+   "version": "3.2.0",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "2e8668797d26507e5adc7e89b0be5549358fb31a1f37d1ff9b5aa2a0059e1534"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "parishes/vendor/us-atlas/manifest.json"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "parishes/vendor/us-atlas/manifest.json"
+    },
+    {
+     "name": "smartcitix:first_party",
+     "value": "generated by parishes/fetch_usatlas.py; it records where each vendored us-atlas file came from, the verified tarball integrity and each hash"
+    }
+   ]
+  },
+  {
+   "type": "data",
+   "bom-ref": "elevation/vendor/USGS_3DEP_USE_CONSTRAINTS.txt",
+   "name": "usgs-3dep-1-arc-second",
+   "version": "current",
+   "purl": "pkg:generic/usgs-3dep-1-arc-second@current#USGS_3DEP_USE_CONSTRAINTS.txt",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "c1ed4dba6bc013e9ff9c6d594936d234279332467b7b22c2734e0c7af2ba9919"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "name": "LicenseRef-US-Government-Public-Domain"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "distribution",
+     "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/"
+    },
+    {
+     "type": "website",
+     "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "elevation/vendor/USGS_3DEP_USE_CONSTRAINTS.txt"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "elevation/vendor/USGS_3DEP_USE_CONSTRAINTS.txt"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "no version string in this file; USGS stages the 1 arc-second DEM under https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/ (no release number), and elevation/vendor/manifest.json records each source tile's title, pubdate and sha256 under regions[*].tiles"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no licence banner in this file; it IS the licence text for this data (U.S. public domain (work of the U.S. federal government, 17 U.S.C. 105); use constraints from the USGS tile metadata vendored verbatim in USGS_3DEP_USE_CONSTRAINTS.txt)"
+    },
+    {
+     "name": "smartcitix:data_origin",
+     "value": "USGS 3D Elevation Program (3DEP), 1 arc-second DEM, staged GeoTIFF tiles (RECORDED); derived by elevation/fetch_dem.py"
+    }
+   ]
+  },
+  {
+   "type": "data",
+   "bom-ref": "elevation/vendor/bayarea.u16.gz",
+   "name": "usgs-3dep-1-arc-second",
+   "version": "current",
+   "purl": "pkg:generic/usgs-3dep-1-arc-second@current#bayarea.u16.gz",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "ecd3673bff2e555c2f1905c047f0912f795be965da0f68025e889a1024a8935d"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "name": "LicenseRef-US-Government-Public-Domain"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "distribution",
+     "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/"
+    },
+    {
+     "type": "website",
+     "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "elevation/vendor/bayarea.u16.gz"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "elevation/vendor/bayarea.u16.gz"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "no version string in this file; USGS stages the 1 arc-second DEM under https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/ (no release number), and elevation/vendor/manifest.json records each source tile's title, pubdate and sha256 under regions[*].tiles"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no licence banner in this file; binary grid, no banner; licence per elevation/vendor/manifest.json (U.S. public domain (work of the U.S. federal government, 17 U.S.C. 105); use constraints from the USGS tile metadata vendored verbatim in USGS_3DEP_USE_CONSTRAINTS.txt), its text committed beside it at elevation/vendor/USGS_3DEP_USE_CONSTRAINTS.txt"
+    },
+    {
+     "name": "smartcitix:data_origin",
+     "value": "USGS 3D Elevation Program (3DEP), 1 arc-second DEM, staged GeoTIFF tiles (RECORDED); derived by elevation/fetch_dem.py"
+    }
+   ]
+  },
+  {
+   "type": "file",
+   "bom-ref": "elevation/vendor/manifest.json",
+   "name": "smartcitix/elevation/vendor/manifest.json",
+   "version": "3.2.0",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "5cf6de8f8d3a0514869fa0ec227acff0c225003b31c1313a728754208ac398f4"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "elevation/vendor/manifest.json"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "elevation/vendor/manifest.json"
+    },
+    {
+     "name": "smartcitix:first_party",
+     "value": "generated by elevation/fetch_dem.py; it records where each vendored file came from and its sha256 rather than being one"
+    }
+   ]
+  },
+  {
+   "type": "data",
+   "bom-ref": "elevation/vendor/parishes.u16.gz",
+   "name": "usgs-3dep-1-arc-second",
+   "version": "current",
+   "purl": "pkg:generic/usgs-3dep-1-arc-second@current#parishes.u16.gz",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "1e256dd888337f7a0b714e244348d825a6ffa41a8e7ebeb1dc643b75e6db0b8c"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "name": "LicenseRef-US-Government-Public-Domain"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "distribution",
+     "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/"
+    },
+    {
+     "type": "website",
+     "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "elevation/vendor/parishes.u16.gz"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "elevation/vendor/parishes.u16.gz"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "no version string in this file; USGS stages the 1 arc-second DEM under https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/ (no release number), and elevation/vendor/manifest.json records each source tile's title, pubdate and sha256 under regions[*].tiles"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no licence banner in this file; binary grid, no banner; licence per elevation/vendor/manifest.json (U.S. public domain (work of the U.S. federal government, 17 U.S.C. 105); use constraints from the USGS tile metadata vendored verbatim in USGS_3DEP_USE_CONSTRAINTS.txt), its text committed beside it at elevation/vendor/USGS_3DEP_USE_CONSTRAINTS.txt"
+    },
+    {
+     "name": "smartcitix:data_origin",
+     "value": "USGS 3D Elevation Program (3DEP), 1 arc-second DEM, staged GeoTIFF tiles (RECORDED); derived by elevation/fetch_dem.py"
+    }
+   ]
+  },
+  {
+   "type": "data",
+   "bom-ref": "landcover/vendor/LICENSE_CC-BY-4.0.txt",
+   "name": "esa-worldcover",
+   "version": "v200",
+   "purl": "pkg:generic/esa-worldcover@v200#LICENSE_CC-BY-4.0.txt",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "d557539df68e771cc1eedcc91d13f70fca930e508d11eedcafa4b15db49e3744"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "CC-BY-4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "distribution",
+     "url": "https://esa-worldcover.s3.eu-central-1.amazonaws.com/"
+    },
+    {
+     "type": "website",
+     "url": "https://doi.org/10.5281/zenodo.7254221"
+    },
+    {
+     "type": "license",
+     "url": "https://creativecommons.org/licenses/by/4.0/"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "landcover/vendor/LICENSE_CC-BY-4.0.txt"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "landcover/vendor/LICENSE_CC-BY-4.0.txt"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "no version string in this file; version read from landcover/vendor/manifest.json source \"ESA WorldCover 10 m 2021 v200\", written by landcover/fetch_landcover.py"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no licence banner in this file; it IS the licence text for this data (CC-BY-4.0)"
+    },
+    {
+     "name": "smartcitix:data_origin",
+     "value": "ESA WorldCover 10 m 2021 v200 (RECORDED); derived by landcover/fetch_landcover.py"
+    },
+    {
+     "name": "smartcitix:attribution",
+     "value": "author: Zanaga, D., Van De Kerchove, R., Daems, D., De Keersmaecker, W., Brockmann, C., Kirches, G., Wevers, J., Cartus, O., Santoro, M., Fritz, S., Lesiv, M., Herold, M., Tsendbazar, N.E., Xu, P., Ramoino, F., Arino, O. | title: ESA WorldCover 10 m 2021 v200 | source_url: https://doi.org/10.5281/zenodo.7254221 | license_id: CC-BY-4.0 | license_url: https://creativecommons.org/licenses/by/4.0/ | text: \u00a9 ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium | REDISTRIBUTED (modified: majority class per 3 arc-second cell (9 x 9 source pixels), under-half-classified cells set to nodata, clipped to the parish and Bay registry bounds (landcover/fetch_landcover.py)); credited in THIRD_PARTY.md"
+    }
+   ]
+  },
+  {
+   "type": "data",
+   "bom-ref": "landcover/vendor/WORLDCOVER_ATTRIBUTION.txt",
+   "name": "esa-worldcover",
+   "version": "v200",
+   "purl": "pkg:generic/esa-worldcover@v200#WORLDCOVER_ATTRIBUTION.txt",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "f7a092cee9ad1b3c639b04f840ab444bc401317a32b233280ed8af72b993811a"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "CC-BY-4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "distribution",
+     "url": "https://esa-worldcover.s3.eu-central-1.amazonaws.com/"
+    },
+    {
+     "type": "website",
+     "url": "https://doi.org/10.5281/zenodo.7254221"
+    },
+    {
+     "type": "license",
+     "url": "https://creativecommons.org/licenses/by/4.0/"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "landcover/vendor/WORLDCOVER_ATTRIBUTION.txt"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "landcover/vendor/WORLDCOVER_ATTRIBUTION.txt"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "no version string in this file; version read from landcover/vendor/manifest.json source \"ESA WorldCover 10 m 2021 v200\", written by landcover/fetch_landcover.py"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no licence banner in this file; it IS the attribution, licence and citation text, copied verbatim from the source"
+    },
+    {
+     "name": "smartcitix:data_origin",
+     "value": "ESA WorldCover 10 m 2021 v200 (RECORDED); derived by landcover/fetch_landcover.py"
+    },
+    {
+     "name": "smartcitix:attribution",
+     "value": "author: Zanaga, D., Van De Kerchove, R., Daems, D., De Keersmaecker, W., Brockmann, C., Kirches, G., Wevers, J., Cartus, O., Santoro, M., Fritz, S., Lesiv, M., Herold, M., Tsendbazar, N.E., Xu, P., Ramoino, F., Arino, O. | title: ESA WorldCover 10 m 2021 v200 | source_url: https://doi.org/10.5281/zenodo.7254221 | license_id: CC-BY-4.0 | license_url: https://creativecommons.org/licenses/by/4.0/ | text: \u00a9 ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium | REDISTRIBUTED (modified: majority class per 3 arc-second cell (9 x 9 source pixels), under-half-classified cells set to nodata, clipped to the parish and Bay registry bounds (landcover/fetch_landcover.py)); credited in THIRD_PARTY.md"
+    }
+   ]
+  },
+  {
+   "type": "data",
+   "bom-ref": "landcover/vendor/bayarea.u8.gz",
+   "name": "esa-worldcover",
+   "version": "v200",
+   "purl": "pkg:generic/esa-worldcover@v200#bayarea.u8.gz",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "5024923876b501f8361fe162c6aeebcbb817cc80dcb8c1b7e14f1667428d8d99"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "CC-BY-4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "distribution",
+     "url": "https://esa-worldcover.s3.eu-central-1.amazonaws.com/"
+    },
+    {
+     "type": "website",
+     "url": "https://doi.org/10.5281/zenodo.7254221"
+    },
+    {
+     "type": "license",
+     "url": "https://creativecommons.org/licenses/by/4.0/"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "landcover/vendor/bayarea.u8.gz"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "landcover/vendor/bayarea.u8.gz"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "no version string in this file; version read from landcover/vendor/manifest.json source \"ESA WorldCover 10 m 2021 v200\", written by landcover/fetch_landcover.py"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no licence banner in this file; binary grid, no banner; licence per landcover/vendor/manifest.json (CC-BY-4.0), its text committed beside it at landcover/vendor/LICENSE_CC-BY-4.0.txt"
+    },
+    {
+     "name": "smartcitix:data_origin",
+     "value": "ESA WorldCover 10 m 2021 v200 (RECORDED); derived by landcover/fetch_landcover.py"
+    },
+    {
+     "name": "smartcitix:attribution",
+     "value": "author: Zanaga, D., Van De Kerchove, R., Daems, D., De Keersmaecker, W., Brockmann, C., Kirches, G., Wevers, J., Cartus, O., Santoro, M., Fritz, S., Lesiv, M., Herold, M., Tsendbazar, N.E., Xu, P., Ramoino, F., Arino, O. | title: ESA WorldCover 10 m 2021 v200 | source_url: https://doi.org/10.5281/zenodo.7254221 | license_id: CC-BY-4.0 | license_url: https://creativecommons.org/licenses/by/4.0/ | text: \u00a9 ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium | REDISTRIBUTED (modified: majority class per 3 arc-second cell (9 x 9 source pixels), under-half-classified cells set to nodata, clipped to the parish and Bay registry bounds (landcover/fetch_landcover.py)); credited in THIRD_PARTY.md"
+    }
+   ]
+  },
+  {
+   "type": "file",
+   "bom-ref": "landcover/vendor/manifest.json",
+   "name": "smartcitix/landcover/vendor/manifest.json",
+   "version": "3.2.0",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "2db656335f1e677ca8943a0963bde7679345624d7d3910aba78667cf2922cb06"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "landcover/vendor/manifest.json"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "landcover/vendor/manifest.json"
+    },
+    {
+     "name": "smartcitix:first_party",
+     "value": "generated by landcover/fetch_landcover.py; it records where each vendored file came from and its sha256 rather than being one"
+    }
+   ]
+  },
+  {
+   "type": "data",
+   "bom-ref": "landcover/vendor/parishes.u8.gz",
+   "name": "esa-worldcover",
+   "version": "v200",
+   "purl": "pkg:generic/esa-worldcover@v200#parishes.u8.gz",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "a9d37b8ca93b45393093114df1e7b8a9478ed5241866f10775c491fa5d27f0da"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "CC-BY-4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "distribution",
+     "url": "https://esa-worldcover.s3.eu-central-1.amazonaws.com/"
+    },
+    {
+     "type": "website",
+     "url": "https://doi.org/10.5281/zenodo.7254221"
+    },
+    {
+     "type": "license",
+     "url": "https://creativecommons.org/licenses/by/4.0/"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "landcover/vendor/parishes.u8.gz"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "landcover/vendor/parishes.u8.gz"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "no version string in this file; version read from landcover/vendor/manifest.json source \"ESA WorldCover 10 m 2021 v200\", written by landcover/fetch_landcover.py"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no licence banner in this file; binary grid, no banner; licence per landcover/vendor/manifest.json (CC-BY-4.0), its text committed beside it at landcover/vendor/LICENSE_CC-BY-4.0.txt"
+    },
+    {
+     "name": "smartcitix:data_origin",
+     "value": "ESA WorldCover 10 m 2021 v200 (RECORDED); derived by landcover/fetch_landcover.py"
+    },
+    {
+     "name": "smartcitix:attribution",
+     "value": "author: Zanaga, D., Van De Kerchove, R., Daems, D., De Keersmaecker, W., Brockmann, C., Kirches, G., Wevers, J., Cartus, O., Santoro, M., Fritz, S., Lesiv, M., Herold, M., Tsendbazar, N.E., Xu, P., Ramoino, F., Arino, O. | title: ESA WorldCover 10 m 2021 v200 | source_url: https://doi.org/10.5281/zenodo.7254221 | license_id: CC-BY-4.0 | license_url: https://creativecommons.org/licenses/by/4.0/ | text: \u00a9 ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium | REDISTRIBUTED (modified: majority class per 3 arc-second cell (9 x 9 source pixels), under-half-classified cells set to nodata, clipped to the parish and Bay registry bounds (landcover/fetch_landcover.py)); credited in THIRD_PARTY.md"
     }
    ]
   }

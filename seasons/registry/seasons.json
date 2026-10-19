@@ -1,0 +1,2497 @@
+{
+ "pack": "seasons",
+ "pack_version": "3.2.0",
+ "source_stamp": "1792200847c050f3",
+ "source_stamp_sha256": "1792200847c050f35d9cef73c05b26759562504e7f235b0c0ca4d557e5cac612",
+ "inputs": [
+  "seasons/build.py",
+  "economy/registry/economy.json",
+  "bayarea/registry/bayarea.json",
+  "parishes/registry/parishes.json",
+  "pack/manifest.json"
+ ],
+ "provenance_tiers": [
+  "RECORDED",
+  "DERIVED",
+  "SCHEMATIC",
+  "AUTHORED",
+  "SCRIPTED"
+ ],
+ "honesty": {
+  "play": "Every harvest, badge and log entry here is PLAY: kept on this device only, never a completion record, never money.",
+  "calendar": "Months are an approximate, game calendar - AUTHORED for play, not a planting guide.",
+  "facts": "Facts are general and name the kind of source; no yields, dates, prices or quotas are stated.",
+  "plots": "Plots are AUTHORED game plots on AUTHORED land use - not real farms, orchards, vineyards or addresses.",
+  "rules": "Real activity follows state rules - check the state wildlife agency (Louisiana Department of Wildlife and Fisheries; California Department of Fish and Wildlife) and your state agricultural extension service.",
+  "safety": "Safety notes are general guidance, not professional advice."
+ },
+ "placement": {
+  "louisiana": "economy/registry/economy.json residential lots (land use DERIVED from the PARISH AUTHORED tint), first 3 by id",
+  "bay": "bayarea/registry/bayarea.json AUTHORED park districts nearest the county local origin first, topped up with residential districts where a county has too few parks",
+  "check": "every plot point inside the RECORDED coarse outline (point in polygon, LOCAL metres)",
+  "frame": "parish/county LOCAL metres; x = east_m, z = -north_m (scene convention)"
+ },
+ "game_clock": {
+  "days_per_month": 10,
+  "start_month": 3,
+  "speeds": [
+   {
+    "id": "pause",
+    "s_per_day": 0
+   },
+   {
+    "id": "1x",
+    "s_per_day": 12
+   },
+   {
+    "id": "4x",
+    "s_per_day": 3
+   },
+   {
+    "id": "16x",
+    "s_per_day": 0.75
+   }
+  ],
+  "provenance": "AUTHORED",
+  "note": "game time only; a game day is seconds of play, not a real day"
+ },
+ "regions": {
+  "louisiana": {
+   "label": "Louisiana parishes",
+   "world": "parishes",
+   "page": "web/trade_craft_parishes.html",
+   "quest_world": "parish"
+  },
+  "bay": {
+   "label": "Bay Area counties",
+   "world": "bay",
+   "page": "web/trade_craft_bay.html",
+   "quest_world": "bay"
+  }
+ },
+ "safety": {
+  "heat": "Hot days: drink water often, rest in shade and wear a hat - heat illness is serious (general public-health guidance).",
+  "sun": "Sun: wear sunscreen and long sleeves outdoors in the middle of the day (general public-health guidance).",
+  "water": "Flooded fields, ditches and shorelines: never wade in moving water, wear boots, and keep well back from snakes and alligators - never approach or feed wildlife.",
+  "tools": "Tools: wear gloves, carry blades pointed down, and let a trained adult handle knives, saws and machinery.",
+  "ladder": "Ladders: have a partner steady the ladder and never over-reach from it.",
+  "sharps": "Sharp litter: never pick up glass, needles or hooks by hand - leave them and tell an adult.",
+  "storm": "Storms: follow instructions from local emergency management; a drill is practice, not a forecast.",
+  "crowd": "Crowds: agree a meeting spot, stay with your group and keep water with you."
+ },
+ "tasks": [
+  {
+   "id": "rice",
+   "region": "louisiana",
+   "kind": "crop",
+   "label": "Rice field",
+   "plot": true,
+   "months": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "stages": [
+    {
+     "id": "field-prep",
+     "label": "Prepare the field (level it, fix the levees)",
+     "phase": "prepare",
+     "window_days": [
+      0,
+      2
+     ]
+    },
+    {
+     "id": "flooding",
+     "label": "Flood the field",
+     "phase": "prepare",
+     "window_days": [
+      1,
+      3
+     ]
+    },
+    {
+     "id": "planting",
+     "label": "Plant the seed",
+     "phase": "plant",
+     "window_days": [
+      1,
+      3
+     ]
+    },
+    {
+     "id": "growth",
+     "label": "Tend the growing rice (check water depth)",
+     "phase": "tend",
+     "window_days": [
+      3,
+      6
+     ]
+    },
+    {
+     "id": "draining",
+     "label": "Drain the field before harvest",
+     "phase": "tend",
+     "window_days": [
+      3,
+      6
+     ]
+    },
+    {
+     "id": "harvest",
+     "label": "Harvest with the combine",
+     "phase": "harvest",
+     "window_days": [
+      2,
+      4
+     ]
+    }
+   ],
+   "fact": "Rice is grown in flooded, levee-edged fields in parts of Louisiana; after harvest many fields are re-flooded to raise crawfish (source kind: state agricultural extension service).",
+   "safety": [
+    "heat",
+    "water",
+    "tools"
+   ],
+   "rotation": "rice-crawfish-rotation",
+   "band": "6-8",
+   "provenance": "AUTHORED",
+   "calendar": "approximate, game calendar"
+  },
+  {
+   "id": "sugarcane-harvest",
+   "region": "louisiana",
+   "kind": "crop",
+   "label": "Sugarcane harvest",
+   "plot": true,
+   "months": [
+    10,
+    11,
+    12
+   ],
+   "stages": [
+    {
+     "id": "check-rows",
+     "label": "Walk the rows and check the cane",
+     "phase": "prepare",
+     "window_days": [
+      0,
+      2
+     ]
+    },
+    {
+     "id": "cut",
+     "label": "Cut the cane (machine harvester)",
+     "phase": "harvest",
+     "window_days": [
+      1,
+      3
+     ]
+    },
+    {
+     "id": "load",
+     "label": "Load the wagons",
+     "phase": "tend",
+     "window_days": [
+      0,
+      2
+     ]
+    },
+    {
+     "id": "haul",
+     "label": "Haul the cane to the mill",
+     "phase": "harvest",
+     "window_days": [
+      1,
+      3
+     ]
+    }
+   ],
+   "fact": "Sugarcane is a major Louisiana crop harvested in the cooler months and milled soon after cutting (source kind: state agricultural extension service).",
+   "safety": [
+    "tools",
+    "heat"
+   ],
+   "band": "6-8",
+   "provenance": "AUTHORED",
+   "calendar": "approximate, game calendar"
+  },
+  {
+   "id": "strawberry-picking",
+   "region": "louisiana",
+   "kind": "crop",
+   "label": "Strawberry picking",
+   "plot": true,
+   "months": [
+    2,
+    3,
+    4,
+    5
+   ],
+   "stages": [
+    {
+     "id": "beds",
+     "label": "Shape the raised beds",
+     "phase": "prepare",
+     "window_days": [
+      0,
+      2
+     ]
+    },
+    {
+     "id": "plant",
+     "label": "Set the plants",
+     "phase": "plant",
+     "window_days": [
+      1,
+      3
+     ]
+    },
+    {
+     "id": "tend",
+     "label": "Weed and water the rows",
+     "phase": "tend",
+     "window_days": [
+      2,
+      5
+     ]
+    },
+    {
+     "id": "pick",
+     "label": "Pick the ripe berries (red all over)",
+     "phase": "harvest",
+     "window_days": [
+      2,
+      5
+     ]
+    }
+   ],
+   "fact": "Strawberries are grown in parts of south-east Louisiana and picked by hand when fully red (source kind: state agricultural extension service).",
+   "safety": [
+    "sun",
+    "heat"
+   ],
+   "band": "K-5",
+   "provenance": "AUTHORED",
+   "calendar": "approximate, game calendar"
+  },
+  {
+   "id": "citrus-harvest",
+   "region": "louisiana",
+   "kind": "crop",
+   "label": "Satsuma-style citrus harvest",
+   "plot": true,
+   "months": [
+    10,
+    11,
+    12
+   ],
+   "stages": [
+    {
+     "id": "check-trees",
+     "label": "Check the trees for ripe fruit",
+     "phase": "prepare",
+     "window_days": [
+      0,
+      2
+     ]
+    },
+    {
+     "id": "clip",
+     "label": "Clip the fruit from the branch",
+     "phase": "harvest",
+     "window_days": [
+      1,
+      3
+     ]
+    },
+    {
+     "id": "sort",
+     "label": "Sort and pack the fruit",
+     "phase": "tend",
+     "window_days": [
+      0,
+      2
+     ]
+    }
+   ],
+   "fact": "Satsuma-type mandarins grow in south Louisiana and are clipped rather than pulled so the peel is not torn (source kind: state agricultural extension service).",
+   "safety": [
+    "ladder",
+    "tools"
+   ],
+   "band": "K-5",
+   "provenance": "AUTHORED",
+   "calendar": "approximate, game calendar"
+  },
+  {
+   "id": "pecan-gathering",
+   "region": "louisiana",
+   "kind": "crop",
+   "label": "Pecan gathering",
+   "plot": true,
+   "months": [
+    10,
+    11
+   ],
+   "stages": [
+    {
+     "id": "clear",
+     "label": "Clear the ground under the trees",
+     "phase": "prepare",
+     "window_days": [
+      0,
+      2
+     ]
+    },
+    {
+     "id": "gather",
+     "label": "Gather the fallen nuts",
+     "phase": "harvest",
+     "window_days": [
+      1,
+      4
+     ]
+    },
+    {
+     "id": "dry",
+     "label": "Dry the nuts in the shade",
+     "phase": "tend",
+     "window_days": [
+      1,
+      3
+     ]
+    }
+   ],
+   "fact": "Pecan trees are native to the region; the nuts fall in autumn and are gathered from the ground (source kind: state agricultural extension service).",
+   "safety": [
+    "sun",
+    "tools"
+   ],
+   "band": "K-5",
+   "provenance": "AUTHORED",
+   "calendar": "approximate, game calendar"
+  },
+  {
+   "id": "garden-plot",
+   "region": "louisiana",
+   "kind": "crop",
+   "label": "Garden plot",
+   "plot": true,
+   "months": [
+    2,
+    3,
+    4,
+    9,
+    10,
+    11
+   ],
+   "stages": [
+    {
+     "id": "prepare",
+     "label": "Prepare the soil",
+     "phase": "prepare",
+     "window_days": [
+      0,
+      2
+     ]
+    },
+    {
+     "id": "plant",
+     "label": "Plant seeds or seedlings",
+     "phase": "plant",
+     "window_days": [
+      1,
+      3
+     ]
+    },
+    {
+     "id": "tend",
+     "label": "Water and weed",
+     "phase": "tend",
+     "window_days": [
+      2,
+      5
+     ]
+    },
+    {
+     "id": "harvest",
+     "label": "Harvest the vegetables",
+     "phase": "harvest",
+     "window_days": [
+      3,
+      6
+     ]
+    }
+   ],
+   "fact": "The Gulf Coast has two main vegetable-garden seasons, spring and autumn, with hot summers in between (source kind: state agricultural extension service).",
+   "safety": [
+    "heat",
+    "tools"
+   ],
+   "band": "K-5",
+   "provenance": "AUTHORED",
+   "calendar": "approximate, game calendar"
+  },
+  {
+   "id": "orchard",
+   "region": "bay",
+   "kind": "crop",
+   "label": "Orchard harvest",
+   "plot": true,
+   "months": [
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "stages": [
+    {
+     "id": "prune",
+     "label": "Check the pruned trees",
+     "phase": "prepare",
+     "window_days": [
+      0,
+      2
+     ]
+    },
+    {
+     "id": "thin",
+     "label": "Thin the young fruit",
+     "phase": "tend",
+     "window_days": [
+      1,
+      4
+     ]
+    },
+    {
+     "id": "pick",
+     "label": "Pick the ripe fruit",
+     "phase": "harvest",
+     "window_days": [
+      2,
+      5
+     ]
+    }
+   ],
+   "fact": "Orchards of stone fruit and apples are part of the farmland around the Bay Area; fruit is picked by hand as it ripens (source kind: state agricultural extension service).",
+   "safety": [
+    "ladder",
+    "sun"
+   ],
+   "band": "K-5",
+   "provenance": "AUTHORED",
+   "calendar": "approximate, game calendar"
+  },
+  {
+   "id": "vineyard-harvest",
+   "region": "bay",
+   "kind": "crop",
+   "label": "Vineyard-style harvest",
+   "plot": true,
+   "months": [
+    8,
+    9,
+    10
+   ],
+   "stages": [
+    {
+     "id": "check-rows",
+     "label": "Walk the rows and taste-test (game) the grapes",
+     "phase": "prepare",
+     "window_days": [
+      0,
+      2
+     ]
+    },
+    {
+     "id": "pick",
+     "label": "Pick the bunches into bins",
+     "phase": "harvest",
+     "window_days": [
+      1,
+      3
+     ]
+    },
+    {
+     "id": "haul",
+     "label": "Haul the bins to the press",
+     "phase": "tend",
+     "window_days": [
+      0,
+      2
+     ]
+    }
+   ],
+   "fact": "Grapes are grown in the valleys north of the Bay and picked in late summer and autumn (source kind: state agricultural extension service).",
+   "safety": [
+    "tools",
+    "heat"
+   ],
+   "band": "9-10",
+   "provenance": "AUTHORED",
+   "calendar": "approximate, game calendar"
+  },
+  {
+   "id": "community-garden",
+   "region": "bay",
+   "kind": "crop",
+   "label": "Community garden",
+   "plot": true,
+   "months": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "stages": [
+    {
+     "id": "prepare",
+     "label": "Prepare the shared bed",
+     "phase": "prepare",
+     "window_days": [
+      0,
+      2
+     ]
+    },
+    {
+     "id": "plant",
+     "label": "Plant seedlings",
+     "phase": "plant",
+     "window_days": [
+      1,
+      3
+     ]
+    },
+    {
+     "id": "tend",
+     "label": "Water and weed on your rota day",
+     "phase": "tend",
+     "window_days": [
+      2,
+      5
+     ]
+    },
+    {
+     "id": "harvest",
+     "label": "Harvest and share",
+     "phase": "harvest",
+     "window_days": [
+      3,
+      6
+     ]
+    }
+   ],
+   "fact": "The Bay Area has a mild climate, so community gardens can grow something in most months (source kind: state agricultural extension service).",
+   "safety": [
+    "sun",
+    "tools"
+   ],
+   "band": "K-5",
+   "provenance": "AUTHORED",
+   "calendar": "approximate, game calendar"
+  },
+  {
+   "id": "shoreline-cleanup",
+   "region": "bay",
+   "kind": "experience",
+   "label": "Shoreline cleanup day",
+   "plot": true,
+   "months": [
+    4,
+    9
+   ],
+   "stages": [
+    {
+     "id": "sign-in",
+     "label": "Sign in and get gloves and a bag",
+     "phase": "prepare",
+     "window_days": [
+      0,
+      1
+     ]
+    },
+    {
+     "id": "collect",
+     "label": "Collect litter above the tide line",
+     "phase": "tend",
+     "window_days": [
+      0,
+      2
+     ]
+    },
+    {
+     "id": "sort",
+     "label": "Sort and tally what you found",
+     "phase": "harvest",
+     "window_days": [
+      0,
+      2
+     ]
+    }
+   ],
+   "fact": "Volunteer shoreline cleanups keep litter out of the Bay and record what they find (source kind: state coastal agency).",
+   "safety": [
+    "sharps",
+    "water",
+    "sun"
+   ],
+   "band": "6-8",
+   "provenance": "AUTHORED",
+   "calendar": "approximate, game calendar"
+  },
+  {
+   "id": "parade-season",
+   "region": "louisiana",
+   "kind": "event",
+   "label": "Parade season",
+   "plot": false,
+   "months": [
+    1,
+    2
+   ],
+   "stages": [
+    {
+     "id": "plan",
+     "label": "Pick a safe viewing spot",
+     "phase": "prepare",
+     "window_days": [
+      0,
+      2
+     ]
+    },
+    {
+     "id": "go",
+     "label": "Watch the parade with your group",
+     "phase": "harvest",
+     "window_days": [
+      0,
+      3
+     ]
+    }
+   ],
+   "fact": "Winter parade season is a long community tradition in south Louisiana towns (source kind: local tourism office).",
+   "safety": [
+    "crowd"
+   ],
+   "band": "K-5",
+   "provenance": "AUTHORED",
+   "calendar": "approximate, game calendar"
+  },
+  {
+   "id": "festival-day",
+   "region": "louisiana",
+   "kind": "event",
+   "label": "Festival day",
+   "plot": false,
+   "months": [
+    4,
+    10
+   ],
+   "stages": [
+    {
+     "id": "plan",
+     "label": "Plan the day and pack water",
+     "phase": "prepare",
+     "window_days": [
+      0,
+      2
+     ]
+    },
+    {
+     "id": "go",
+     "label": "Visit the food and music stalls",
+     "phase": "harvest",
+     "window_days": [
+      0,
+      3
+     ]
+    }
+   ],
+   "fact": "Many Louisiana towns hold food and music festivals in the mild spring and autumn months (source kind: local tourism office).",
+   "safety": [
+    "crowd",
+    "heat"
+   ],
+   "band": "K-5",
+   "provenance": "AUTHORED",
+   "calendar": "approximate, game calendar"
+  },
+  {
+   "id": "storm-drill",
+   "region": "louisiana",
+   "kind": "event",
+   "label": "Hurricane-preparedness drill",
+   "plot": false,
+   "months": [
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+   ],
+   "stages": [
+    {
+     "id": "kit",
+     "label": "Pack a go-bag checklist (water, torch, radio, medicines)",
+     "phase": "prepare",
+     "window_days": [
+      0,
+      2
+     ]
+    },
+    {
+     "id": "route",
+     "label": "Learn your evacuation route",
+     "phase": "tend",
+     "window_days": [
+      0,
+      2
+     ]
+    },
+    {
+     "id": "neighbours",
+     "label": "Plan to check on neighbours",
+     "phase": "harvest",
+     "window_days": [
+      0,
+      2
+     ]
+    }
+   ],
+   "fact": "The Gulf Coast plans for hurricanes every summer and autumn; official seasons and alerts come from the national weather service and local emergency management (source kind: national weather service).",
+   "safety": [
+    "storm"
+   ],
+   "band": "6-8",
+   "provenance": "AUTHORED",
+   "calendar": "approximate, game calendar"
+  },
+  {
+   "id": "back-to-school",
+   "region": "louisiana",
+   "kind": "event",
+   "label": "Back-to-school week",
+   "plot": false,
+   "months": [
+    8
+   ],
+   "stages": [
+    {
+     "id": "supplies",
+     "label": "Gather supplies",
+     "phase": "prepare",
+     "window_days": [
+      0,
+      2
+     ]
+    },
+    {
+     "id": "route",
+     "label": "Walk the safe route to school",
+     "phase": "harvest",
+     "window_days": [
+      0,
+      2
+     ]
+    }
+   ],
+   "fact": "In the southern states school usually starts in late summer, in the heat (source kind: local school district calendar).",
+   "safety": [
+    "heat"
+   ],
+   "band": "K-5",
+   "provenance": "AUTHORED",
+   "calendar": "approximate, game calendar"
+  },
+  {
+   "id": "festival-day-bay",
+   "region": "bay",
+   "kind": "event",
+   "label": "Festival day",
+   "plot": false,
+   "months": [
+    5,
+    9
+   ],
+   "stages": [
+    {
+     "id": "plan",
+     "label": "Plan the day and pack water",
+     "phase": "prepare",
+     "window_days": [
+      0,
+      2
+     ]
+    },
+    {
+     "id": "go",
+     "label": "Visit the food and music stalls",
+     "phase": "harvest",
+     "window_days": [
+      0,
+      3
+     ]
+    }
+   ],
+   "fact": "Bay Area towns hold street fairs and harvest festivals through the dry months (source kind: local tourism office).",
+   "safety": [
+    "crowd",
+    "sun"
+   ],
+   "band": "K-5",
+   "provenance": "AUTHORED",
+   "calendar": "approximate, game calendar"
+  },
+  {
+   "id": "quake-drill",
+   "region": "bay",
+   "kind": "event",
+   "label": "Earthquake-preparedness drill",
+   "plot": false,
+   "months": [
+    4,
+    10
+   ],
+   "stages": [
+    {
+     "id": "drop",
+     "label": "Practise drop, cover and hold on",
+     "phase": "prepare",
+     "window_days": [
+      0,
+      1
+     ]
+    },
+    {
+     "id": "kit",
+     "label": "Check the emergency kit checklist",
+     "phase": "tend",
+     "window_days": [
+      0,
+      2
+     ]
+    },
+    {
+     "id": "meet",
+     "label": "Agree a family meeting place",
+     "phase": "harvest",
+     "window_days": [
+      0,
+      2
+     ]
+    }
+   ],
+   "fact": "The Bay Area lies near active faults, so schools and families practise drop, cover and hold on (source kind: state emergency services office).",
+   "safety": [
+    "storm"
+   ],
+   "band": "K-5",
+   "provenance": "AUTHORED",
+   "calendar": "approximate, game calendar"
+  },
+  {
+   "id": "back-to-school-bay",
+   "region": "bay",
+   "kind": "event",
+   "label": "Back-to-school week",
+   "plot": false,
+   "months": [
+    8
+   ],
+   "stages": [
+    {
+     "id": "supplies",
+     "label": "Gather supplies",
+     "phase": "prepare",
+     "window_days": [
+      0,
+      2
+     ]
+    },
+    {
+     "id": "route",
+     "label": "Walk the safe route to school",
+     "phase": "harvest",
+     "window_days": [
+      0,
+      2
+     ]
+    }
+   ],
+   "fact": "Many California schools start in August (source kind: local school district calendar).",
+   "safety": [
+    "sun"
+   ],
+   "band": "K-5",
+   "provenance": "AUTHORED",
+   "calendar": "approximate, game calendar"
+  }
+ ],
+ "rotations": [
+  {
+   "id": "rice-crawfish-rotation",
+   "region": "louisiana",
+   "label": "Rice-crawfish rotation",
+   "crop": "rice",
+   "rice_months": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "crawfish_months": [
+    11,
+    12,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "text": "In general terms: rice is harvested in late summer, the field is re-flooded in autumn, crawfish grow in the flooded stubble through winter and spring and are trapped, then the field is drained and the cycle starts again. Months here are an approximate game calendar.",
+   "crawfish_trapping": "FISH (outdoors/ pack, web/fishkit.py) owns crawfish trapping; link here by this id.",
+   "source_kind": "state agricultural extension service",
+   "provenance": "AUTHORED"
+  }
+ ],
+ "calendar": {
+  "louisiana": {
+   "label": "approximate, game calendar",
+   "months": [
+    {
+     "month": 1,
+     "in_season": [
+      "parade-season"
+     ]
+    },
+    {
+     "month": 2,
+     "in_season": [
+      "strawberry-picking",
+      "garden-plot",
+      "parade-season"
+     ]
+    },
+    {
+     "month": 3,
+     "in_season": [
+      "rice",
+      "strawberry-picking",
+      "garden-plot"
+     ]
+    },
+    {
+     "month": 4,
+     "in_season": [
+      "rice",
+      "strawberry-picking",
+      "garden-plot",
+      "festival-day"
+     ]
+    },
+    {
+     "month": 5,
+     "in_season": [
+      "rice",
+      "strawberry-picking"
+     ]
+    },
+    {
+     "month": 6,
+     "in_season": [
+      "rice",
+      "storm-drill"
+     ]
+    },
+    {
+     "month": 7,
+     "in_season": [
+      "rice",
+      "storm-drill"
+     ]
+    },
+    {
+     "month": 8,
+     "in_season": [
+      "rice",
+      "storm-drill",
+      "back-to-school"
+     ]
+    },
+    {
+     "month": 9,
+     "in_season": [
+      "garden-plot",
+      "storm-drill"
+     ]
+    },
+    {
+     "month": 10,
+     "in_season": [
+      "sugarcane-harvest",
+      "citrus-harvest",
+      "pecan-gathering",
+      "garden-plot",
+      "festival-day",
+      "storm-drill"
+     ]
+    },
+    {
+     "month": 11,
+     "in_season": [
+      "sugarcane-harvest",
+      "citrus-harvest",
+      "pecan-gathering",
+      "garden-plot",
+      "storm-drill"
+     ]
+    },
+    {
+     "month": 12,
+     "in_season": [
+      "sugarcane-harvest",
+      "citrus-harvest"
+     ]
+    }
+   ]
+  },
+  "bay": {
+   "label": "approximate, game calendar",
+   "months": [
+    {
+     "month": 1,
+     "in_season": [
+      "community-garden"
+     ]
+    },
+    {
+     "month": 2,
+     "in_season": [
+      "community-garden"
+     ]
+    },
+    {
+     "month": 3,
+     "in_season": [
+      "community-garden"
+     ]
+    },
+    {
+     "month": 4,
+     "in_season": [
+      "community-garden",
+      "shoreline-cleanup",
+      "quake-drill"
+     ]
+    },
+    {
+     "month": 5,
+     "in_season": [
+      "community-garden",
+      "festival-day-bay"
+     ]
+    },
+    {
+     "month": 6,
+     "in_season": [
+      "orchard",
+      "community-garden"
+     ]
+    },
+    {
+     "month": 7,
+     "in_season": [
+      "orchard",
+      "community-garden"
+     ]
+    },
+    {
+     "month": 8,
+     "in_season": [
+      "orchard",
+      "vineyard-harvest",
+      "community-garden",
+      "back-to-school-bay"
+     ]
+    },
+    {
+     "month": 9,
+     "in_season": [
+      "orchard",
+      "vineyard-harvest",
+      "community-garden",
+      "shoreline-cleanup",
+      "festival-day-bay"
+     ]
+    },
+    {
+     "month": 10,
+     "in_season": [
+      "orchard",
+      "vineyard-harvest",
+      "community-garden",
+      "quake-drill"
+     ]
+    },
+    {
+     "month": 11,
+     "in_season": [
+      "community-garden"
+     ]
+    },
+    {
+     "month": 12,
+     "in_season": [
+      "community-garden"
+     ]
+    }
+   ]
+  }
+ },
+ "plots": {
+  "22005": {
+   "region": "louisiana",
+   "name": "Ascension",
+   "plots": [
+    {
+     "id": "plot-22005-1",
+     "fips": "22005",
+     "local_m": [
+      200,
+      0
+     ],
+     "x": 200,
+     "z": 0,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22005-r01",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-22005-2",
+     "fips": "22005",
+     "local_m": [
+      -200,
+      400
+     ],
+     "x": -200,
+     "z": -400,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22005-r02",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-22005-3",
+     "fips": "22005",
+     "local_m": [
+      400,
+      200
+     ],
+     "x": 400,
+     "z": -200,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22005-r03",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    }
+   ]
+  },
+  "22051": {
+   "region": "louisiana",
+   "name": "Jefferson",
+   "plots": [
+    {
+     "id": "plot-22051-1",
+     "fips": "22051",
+     "local_m": [
+      1000,
+      1800
+     ],
+     "x": 1000,
+     "z": -1800,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22051-r01",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-22051-2",
+     "fips": "22051",
+     "local_m": [
+      1600,
+      1800
+     ],
+     "x": 1600,
+     "z": -1800,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22051-r02",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-22051-3",
+     "fips": "22051",
+     "local_m": [
+      1400,
+      2000
+     ],
+     "x": 1400,
+     "z": -2000,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22051-r03",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    }
+   ]
+  },
+  "22057": {
+   "region": "louisiana",
+   "name": "Lafourche",
+   "plots": [
+    {
+     "id": "plot-22057-1",
+     "fips": "22057",
+     "local_m": [
+      -400,
+      800
+     ],
+     "x": -400,
+     "z": -800,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22057-r01",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-22057-2",
+     "fips": "22057",
+     "local_m": [
+      800,
+      800
+     ],
+     "x": 800,
+     "z": -800,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22057-r02",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-22057-3",
+     "fips": "22057",
+     "local_m": [
+      -400,
+      1200
+     ],
+     "x": -400,
+     "z": -1200,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22057-r03",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    }
+   ]
+  },
+  "22063": {
+   "region": "louisiana",
+   "name": "Livingston",
+   "plots": [
+    {
+     "id": "plot-22063-1",
+     "fips": "22063",
+     "local_m": [
+      200,
+      -400
+     ],
+     "x": 200,
+     "z": 400,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22063-r01",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-22063-2",
+     "fips": "22063",
+     "local_m": [
+      400,
+      -1000
+     ],
+     "x": 400,
+     "z": 1000,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22063-r02",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-22063-3",
+     "fips": "22063",
+     "local_m": [
+      0,
+      -1400
+     ],
+     "x": 0,
+     "z": 1400,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22063-r03",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    }
+   ]
+  },
+  "22071": {
+   "region": "louisiana",
+   "name": "Orleans",
+   "plots": [
+    {
+     "id": "plot-22071-1",
+     "fips": "22071",
+     "local_m": [
+      600,
+      0
+     ],
+     "x": 600,
+     "z": 0,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22071-r01",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-22071-2",
+     "fips": "22071",
+     "local_m": [
+      600,
+      -400
+     ],
+     "x": 600,
+     "z": 400,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22071-r02",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-22071-3",
+     "fips": "22071",
+     "local_m": [
+      600,
+      400
+     ],
+     "x": 600,
+     "z": -400,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22071-r03",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    }
+   ]
+  },
+  "22075": {
+   "region": "louisiana",
+   "name": "Plaquemines",
+   "plots": [
+    {
+     "id": "plot-22075-1",
+     "fips": "22075",
+     "local_m": [
+      0,
+      0
+     ],
+     "x": 0,
+     "z": 0,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22075-r01",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-22075-2",
+     "fips": "22075",
+     "local_m": [
+      -600,
+      0
+     ],
+     "x": -600,
+     "z": 0,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22075-r02",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-22075-3",
+     "fips": "22075",
+     "local_m": [
+      600,
+      0
+     ],
+     "x": 600,
+     "z": 0,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22075-r03",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    }
+   ]
+  },
+  "22087": {
+   "region": "louisiana",
+   "name": "St. Bernard",
+   "plots": [
+    {
+     "id": "plot-22087-1",
+     "fips": "22087",
+     "local_m": [
+      -200,
+      -200
+     ],
+     "x": -200,
+     "z": 200,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22087-r01",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-22087-2",
+     "fips": "22087",
+     "local_m": [
+      -200,
+      200
+     ],
+     "x": -200,
+     "z": -200,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22087-r02",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-22087-3",
+     "fips": "22087",
+     "local_m": [
+      200,
+      200
+     ],
+     "x": 200,
+     "z": -200,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22087-r03",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    }
+   ]
+  },
+  "22089": {
+   "region": "louisiana",
+   "name": "St. Charles",
+   "plots": [
+    {
+     "id": "plot-22089-1",
+     "fips": "22089",
+     "local_m": [
+      -600,
+      -400
+     ],
+     "x": -600,
+     "z": 400,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22089-r01",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-22089-2",
+     "fips": "22089",
+     "local_m": [
+      -600,
+      400
+     ],
+     "x": -600,
+     "z": -400,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22089-r02",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-22089-3",
+     "fips": "22089",
+     "local_m": [
+      -800,
+      -600
+     ],
+     "x": -800,
+     "z": 600,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22089-r03",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    }
+   ]
+  },
+  "22093": {
+   "region": "louisiana",
+   "name": "St. James",
+   "plots": [
+    {
+     "id": "plot-22093-1",
+     "fips": "22093",
+     "local_m": [
+      200,
+      200
+     ],
+     "x": 200,
+     "z": -200,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22093-r01",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-22093-2",
+     "fips": "22093",
+     "local_m": [
+      600,
+      200
+     ],
+     "x": 600,
+     "z": -200,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22093-r02",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-22093-3",
+     "fips": "22093",
+     "local_m": [
+      0,
+      800
+     ],
+     "x": 0,
+     "z": -800,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22093-r03",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    }
+   ]
+  },
+  "22095": {
+   "region": "louisiana",
+   "name": "St. John the Baptist",
+   "plots": [
+    {
+     "id": "plot-22095-1",
+     "fips": "22095",
+     "local_m": [
+      -1000,
+      0
+     ],
+     "x": -1000,
+     "z": 0,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22095-r01",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-22095-2",
+     "fips": "22095",
+     "local_m": [
+      0,
+      -1000
+     ],
+     "x": 0,
+     "z": 1000,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22095-r02",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-22095-3",
+     "fips": "22095",
+     "local_m": [
+      -1000,
+      600
+     ],
+     "x": -1000,
+     "z": -600,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22095-r03",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    }
+   ]
+  },
+  "22103": {
+   "region": "louisiana",
+   "name": "St. Tammany",
+   "plots": [
+    {
+     "id": "plot-22103-1",
+     "fips": "22103",
+     "local_m": [
+      -200,
+      0
+     ],
+     "x": -200,
+     "z": 0,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22103-r01",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-22103-2",
+     "fips": "22103",
+     "local_m": [
+      0,
+      200
+     ],
+     "x": 0,
+     "z": -200,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22103-r02",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-22103-3",
+     "fips": "22103",
+     "local_m": [
+      600,
+      0
+     ],
+     "x": 600,
+     "z": 0,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22103-r03",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    }
+   ]
+  },
+  "22105": {
+   "region": "louisiana",
+   "name": "Tangipahoa",
+   "plots": [
+    {
+     "id": "plot-22105-1",
+     "fips": "22105",
+     "local_m": [
+      -200,
+      -200
+     ],
+     "x": -200,
+     "z": 200,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22105-r01",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-22105-2",
+     "fips": "22105",
+     "local_m": [
+      -200,
+      -600
+     ],
+     "x": -200,
+     "z": 600,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22105-r02",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-22105-3",
+     "fips": "22105",
+     "local_m": [
+      -600,
+      400
+     ],
+     "x": -600,
+     "z": -400,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22105-r03",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    }
+   ]
+  },
+  "22109": {
+   "region": "louisiana",
+   "name": "Terrebonne",
+   "plots": [
+    {
+     "id": "plot-22109-1",
+     "fips": "22109",
+     "local_m": [
+      -400,
+      -200
+     ],
+     "x": -400,
+     "z": 200,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22109-r01",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-22109-2",
+     "fips": "22109",
+     "local_m": [
+      0,
+      600
+     ],
+     "x": 0,
+     "z": -600,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22109-r02",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-22109-3",
+     "fips": "22109",
+     "local_m": [
+      600,
+      -400
+     ],
+     "x": 600,
+     "z": 400,
+     "size_m": [
+      18,
+      30
+     ],
+     "on": "lot-22109-r03",
+     "land_use": "residential",
+     "land_use_provenance": "DERIVED",
+     "provenance": "AUTHORED"
+    }
+   ]
+  },
+  "06001": {
+   "region": "bay",
+   "name": "Alameda",
+   "plots": [
+    {
+     "id": "plot-06001-1",
+     "fips": "06001",
+     "local_m": [
+      6030,
+      1798
+     ],
+     "x": 6030,
+     "z": -1798,
+     "size_m": [
+      30,
+      30
+     ],
+     "on": "06001-D086",
+     "land_use": "park",
+     "land_use_provenance": "AUTHORED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-06001-2",
+     "fips": "06001",
+     "local_m": [
+      7058,
+      5144
+     ],
+     "x": 7058,
+     "z": -5144,
+     "size_m": [
+      30,
+      30
+     ],
+     "on": "06001-D087",
+     "land_use": "park",
+     "land_use_provenance": "AUTHORED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-06001-3",
+     "fips": "06001",
+     "local_m": [
+      9873,
+      2464
+     ],
+     "x": 9873,
+     "z": -2464,
+     "size_m": [
+      30,
+      30
+     ],
+     "on": "06001-D094",
+     "land_use": "park",
+     "land_use_provenance": "AUTHORED",
+     "provenance": "AUTHORED"
+    }
+   ]
+  },
+  "06013": {
+   "region": "bay",
+   "name": "Contra Costa",
+   "plots": [
+    {
+     "id": "plot-06013-1",
+     "fips": "06013",
+     "local_m": [
+      -1414,
+      1361
+     ],
+     "x": -1414,
+     "z": -1361,
+     "size_m": [
+      30,
+      30
+     ],
+     "on": "06013-D067",
+     "land_use": "park",
+     "land_use_provenance": "AUTHORED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-06013-2",
+     "fips": "06013",
+     "local_m": [
+      -402,
+      -6038
+     ],
+     "x": -402,
+     "z": 6038,
+     "size_m": [
+      30,
+      30
+     ],
+     "on": "06013-D065",
+     "land_use": "park",
+     "land_use_provenance": "AUTHORED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-06013-3",
+     "fips": "06013",
+     "local_m": [
+      -4209,
+      -9428
+     ],
+     "x": -4209,
+     "z": 9428,
+     "size_m": [
+      30,
+      30
+     ],
+     "on": "06013-D054",
+     "land_use": "park",
+     "land_use_provenance": "AUTHORED",
+     "provenance": "AUTHORED"
+    }
+   ]
+  },
+  "06041": {
+   "region": "bay",
+   "name": "Marin",
+   "plots": [
+    {
+     "id": "plot-06041-1",
+     "fips": "06041",
+     "local_m": [
+      -4826,
+      -5134
+     ],
+     "x": -4826,
+     "z": 5134,
+     "size_m": [
+      30,
+      30
+     ],
+     "on": "06041-D073",
+     "land_use": "park",
+     "land_use_provenance": "AUTHORED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-06041-2",
+     "fips": "06041",
+     "local_m": [
+      6446,
+      -5290
+     ],
+     "x": 6446,
+     "z": 5290,
+     "size_m": [
+      30,
+      30
+     ],
+     "on": "06041-D123",
+     "land_use": "park",
+     "land_use_provenance": "AUTHORED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-06041-3",
+     "fips": "06041",
+     "local_m": [
+      -9874,
+      4362
+     ],
+     "x": -9874,
+     "z": -4362,
+     "size_m": [
+      30,
+      30
+     ],
+     "on": "06041-D052",
+     "land_use": "park",
+     "land_use_provenance": "AUTHORED",
+     "provenance": "AUTHORED"
+    }
+   ]
+  },
+  "06055": {
+   "region": "bay",
+   "name": "Napa",
+   "plots": [
+    {
+     "id": "plot-06055-1",
+     "fips": "06055",
+     "local_m": [
+      4017,
+      404
+     ],
+     "x": 4017,
+     "z": -404,
+     "size_m": [
+      30,
+      30
+     ],
+     "on": "06055-D094",
+     "land_use": "park",
+     "land_use_provenance": "AUTHORED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-06055-2",
+     "fips": "06055",
+     "local_m": [
+      1853,
+      -7262
+     ],
+     "x": 1853,
+     "z": 7262,
+     "size_m": [
+      30,
+      30
+     ],
+     "on": "06055-D072",
+     "land_use": "park",
+     "land_use_provenance": "AUTHORED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-06055-3",
+     "fips": "06055",
+     "local_m": [
+      719,
+      -11654
+     ],
+     "x": 719,
+     "z": 11654,
+     "size_m": [
+      30,
+      30
+     ],
+     "on": "06055-D071",
+     "land_use": "park",
+     "land_use_provenance": "AUTHORED",
+     "provenance": "AUTHORED"
+    }
+   ]
+  },
+  "06075": {
+   "region": "bay",
+   "name": "San Francisco",
+   "plots": [
+    {
+     "id": "plot-06075-1",
+     "fips": "06075",
+     "local_m": [
+      -368,
+      -3824
+     ],
+     "x": -368,
+     "z": 3824,
+     "size_m": [
+      30,
+      30
+     ],
+     "on": "06075-D009",
+     "land_use": "park",
+     "land_use_provenance": "AUTHORED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-06075-2",
+     "fips": "06075",
+     "local_m": [
+      -2578,
+      -4159
+     ],
+     "x": -2578,
+     "z": 4159,
+     "size_m": [
+      30,
+      30
+     ],
+     "on": "06075-D005",
+     "land_use": "park",
+     "land_use_provenance": "AUTHORED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-06075-3",
+     "fips": "06075",
+     "local_m": [
+      -592,
+      -1002
+     ],
+     "x": -592,
+     "z": 1002,
+     "size_m": [
+      30,
+      30
+     ],
+     "on": "06075-D010",
+     "land_use": "residential",
+     "land_use_provenance": "AUTHORED",
+     "provenance": "AUTHORED"
+    }
+   ]
+  },
+  "06081": {
+   "region": "bay",
+   "name": "San Mateo",
+   "plots": [
+    {
+     "id": "plot-06081-1",
+     "fips": "06081",
+     "local_m": [
+      -2858,
+      -1146
+     ],
+     "x": -2858,
+     "z": 1146,
+     "size_m": [
+      30,
+      30
+     ],
+     "on": "06081-D049",
+     "land_use": "park",
+     "land_use_provenance": "AUTHORED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-06081-2",
+     "fips": "06081",
+     "local_m": [
+      3660,
+      -2384
+     ],
+     "x": 3660,
+     "z": 2384,
+     "size_m": [
+      30,
+      30
+     ],
+     "on": "06081-D079",
+     "land_use": "park",
+     "land_use_provenance": "AUTHORED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-06081-3",
+     "fips": "06081",
+     "local_m": [
+      731,
+      -8036
+     ],
+     "x": 731,
+     "z": 8036,
+     "size_m": [
+      30,
+      30
+     ],
+     "on": "06081-D064",
+     "land_use": "park",
+     "land_use_provenance": "AUTHORED",
+     "provenance": "AUTHORED"
+    }
+   ]
+  },
+  "06085": {
+   "region": "bay",
+   "name": "Santa Clara",
+   "plots": [
+    {
+     "id": "plot-06085-1",
+     "fips": "06085",
+     "local_m": [
+      16086,
+      -230
+     ],
+     "x": 16086,
+     "z": 230,
+     "size_m": [
+      30,
+      30
+     ],
+     "on": "06085-D145",
+     "land_use": "park",
+     "land_use_provenance": "AUTHORED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-06085-2",
+     "fips": "06085",
+     "local_m": [
+      2,
+      16413
+     ],
+     "x": 2,
+     "z": -16413,
+     "size_m": [
+      30,
+      30
+     ],
+     "on": "06085-D091",
+     "land_use": "park",
+     "land_use_provenance": "AUTHORED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-06085-3",
+     "fips": "06085",
+     "local_m": [
+      16656,
+      2291
+     ],
+     "x": 16656,
+     "z": -2291,
+     "size_m": [
+      30,
+      30
+     ],
+     "on": "06085-D146",
+     "land_use": "park",
+     "land_use_provenance": "AUTHORED",
+     "provenance": "AUTHORED"
+    }
+   ]
+  },
+  "06095": {
+   "region": "bay",
+   "name": "Solano",
+   "plots": [
+    {
+     "id": "plot-06095-1",
+     "fips": "06095",
+     "local_m": [
+      8488,
+      -1829
+     ],
+     "x": 8488,
+     "z": 1829,
+     "size_m": [
+      30,
+      30
+     ],
+     "on": "06095-D133",
+     "land_use": "park",
+     "land_use_provenance": "AUTHORED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-06095-2",
+     "fips": "06095",
+     "local_m": [
+      -2605,
+      -11536
+     ],
+     "x": -2605,
+     "z": 11536,
+     "size_m": [
+      30,
+      30
+     ],
+     "on": "06095-D084",
+     "land_use": "park",
+     "land_use_provenance": "AUTHORED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-06095-3",
+     "fips": "06095",
+     "local_m": [
+      -8228,
+      -10391
+     ],
+     "x": -8228,
+     "z": 10391,
+     "size_m": [
+      30,
+      30
+     ],
+     "on": "06095-D055",
+     "land_use": "park",
+     "land_use_provenance": "AUTHORED",
+     "provenance": "AUTHORED"
+    }
+   ]
+  },
+  "06097": {
+   "region": "bay",
+   "name": "Sonoma",
+   "plots": [
+    {
+     "id": "plot-06097-1",
+     "fips": "06097",
+     "local_m": [
+      -60,
+      4680
+     ],
+     "x": -60,
+     "z": -4680,
+     "size_m": [
+      30,
+      30
+     ],
+     "on": "06097-D087",
+     "land_use": "park",
+     "land_use_provenance": "AUTHORED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-06097-2",
+     "fips": "06097",
+     "local_m": [
+      -4919,
+      4680
+     ],
+     "x": -4919,
+     "z": -4680,
+     "size_m": [
+      30,
+      30
+     ],
+     "on": "06097-D074",
+     "land_use": "park",
+     "land_use_provenance": "AUTHORED",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "plot-06097-3",
+     "fips": "06097",
+     "local_m": [
+      -4373,
+      14552
+     ],
+     "x": -4373,
+     "z": -14552,
+     "size_m": [
+      30,
+      30
+     ],
+     "on": "06097-D076",
+     "land_use": "park",
+     "land_use_provenance": "AUTHORED",
+     "provenance": "AUTHORED"
+    }
+   ]
+  }
+ },
+ "counts": {
+  "regions": 2,
+  "tasks": 17,
+  "crops": 9,
+  "events": 7,
+  "worlds": 22,
+  "plots": 66
+ }
+}

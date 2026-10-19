@@ -17,9 +17,10 @@ for t in control/test.mjs control/test_graph.mjs control/test_hints.mjs \
          geo/test.mjs sims/test.mjs tools/test.mjs schools/test.mjs \
          avatars/test.mjs parcels/test.mjs meta/test.mjs \
          agents/test.mjs world/test.mjs labels/test.mjs training/test.mjs \
-         roadmap/test.mjs orbis/test.mjs restoration/test.mjs guide/test.mjs sky/test.mjs lessons/test.mjs \
-         kit/test.mjs props/test.mjs courses/test.mjs courses/test_lesson_plans.mjs loop/test.mjs fabric/test_mentor_scope.mjs safety_gate/test.mjs cohort/test.mjs \
-         spatial/test.mjs web/test_3d.mjs web/test_rtl.mjs; do
+         roadmap/test.mjs orbis/test.mjs restoration/test.mjs guide/test.mjs sky/test.mjs lessons/test.mjs courses/test.mjs web/test_courses.mjs \
+         kit/test.mjs props/test.mjs terrain/test.mjs rnd/test.mjs xr/test.mjs ei/test.mjs respond/test.mjs \
+         courses_roadmap/test.mjs courses_roadmap/test_lesson_plans.mjs loop/test.mjs fabric/test_mentor_scope.mjs safety_gate/test.mjs cohort/test.mjs \
+         web/test_seo.mjs wilds/test.mjs web/test_wilds.mjs web/test_schools.mjs spatial/test.mjs auth/test.mjs venue/test.mjs evals/test.mjs bundles/test.mjs completion/test.mjs sessions/test.mjs compliance/test.mjs contrib/test.mjs web/test_contribute.mjs protocols/test.mjs spaces/test.mjs web/test_spaces.mjs worksites/test.mjs web/test_worksites.mjs web/test_interactive.mjs web/test_geomap.mjs web/test_map.mjs web/test_home.mjs web/test_nav.mjs web/test_verify.mjs web/test_fabric.mjs web/test_gltf.mjs web/test_progress.mjs web/test_ladder.mjs web/test_3d.mjs web/test_rtl.mjs quests/test.mjs web/test_quests.mjs media/test.mjs web/test_design.mjs tasks/test.mjs geo3d/test.mjs parishes/test.mjs fleet/test.mjs web/test_fleet.mjs npcs/test.mjs layers/test.mjs payments/test.mjs cloudflare/test.mjs web/test_plans.mjs web/test_parishes.mjs economy/test.mjs ambient/test.mjs physics/test.mjs holodeck/test.mjs web/test_packs.mjs campusplan/test.mjs web/test_tqkit.mjs cognitionx/test.mjs classroom/test.mjs web/test_classroom.mjs reactor/test.mjs bayarea/test.mjs web/test_bayworld.mjs restoration/test_scenarios.mjs web/test_restokit.mjs underwater/test.mjs web/test_hudkit.mjs web/test_patternkit.mjs facades/test.mjs web/test_facadekit.mjs robotics/test.mjs web/test_robotics.mjs datashare/test.mjs seasons/test.mjs web/test_fieldkit.mjs outdoors/test.mjs web/test_fishkit.mjs wildlife/test.mjs web/test_wildkit.mjs smiles/test.mjs web/test_smiles.mjs web/test_smileskit.mjs elevation/test.mjs landcover/test.mjs web/test_terrainkit.mjs flora/test.mjs web/test_florakit.mjs hive/test.mjs web/test_hive.mjs web/test_evalparts.mjs web/test_builddress.mjs web/test_scenes.mjs unionpaths/test.mjs programs/test.mjs web/test_restoscene.mjs web/test_whitepaper.mjs web/test_unions.mjs web/test_programs.mjs robotics/arena/test.mjs web/test_arena.mjs robotics/claw/test.mjs modules/test.mjs web/test_access.mjs web/test_lookkit.mjs web/test_worldmodules.mjs; do
   out=$(node "$t" 2>&1); rc=$?
   n=$(printf '%s\n' "$out" | grep -c '^  ok ')
   total=$((total + n))
@@ -41,10 +42,21 @@ python3 web/build_interactive_map.py --check || fail=$((fail + 1))
 python3 web/build_map.py --check || fail=$((fail + 1))
 python3 web/build_geomap.py --check || fail=$((fail + 1))
 python3 web/build_languages.py --check || fail=$((fail + 1))
+python3 web/build_lessons.py --check || fail=$((fail + 1))
 python3 web/build_landing.py --check || fail=$((fail + 1))
 python3 web/build_3d.py --check || fail=$((fail + 1))
 python3 web/build_home.py --check || fail=$((fail + 1))
+python3 web/build_seo.py --check || fail=$((fail + 1))
+python3 web/build_auth.py --check || fail=$((fail + 1))
+python3 web/build_ladder.py --check || fail=$((fail + 1))
+python3 web/build_progress.py --check || fail=$((fail + 1))
+python3 quests/build.py --check || fail=$((fail + 1))
+python3 web/build_quests.py --check || fail=$((fail + 1))
 python3 web/fetch_fonts.py --check || fail=$((fail + 1))
+python3 media/fetch_icons.py --check || fail=$((fail + 1))
+python3 media/build.py --check || fail=$((fail + 1))
+python3 web/build_design.py --check || fail=$((fail + 1))
+python3 terrain/fetch_terrain.py --check || fail=$((fail + 1))
 iout=$(python3 web/test_interiors.py 2>&1) || fail=$((fail + 1))
 printf '%s\n' "$iout" | tail -1
 total=$((total + $(printf '%s\n' "$iout" | grep -c '^  ok ')))
@@ -52,10 +64,58 @@ node brand/lint.mjs . || fail=$((fail + 1))
 node brand/figures.mjs . || fail=$((fail + 1))
 node i18n/lint_hardcoded.mjs || fail=$((fail + 1))
 node web/lint_external.mjs || fail=$((fail + 1))
+node web/lint_pages.mjs || fail=$((fail + 1))
+python3 parishes/fetch_usatlas.py --check || fail=$((fail + 1))
+python3 ambient/build.py --check || fail=$((fail + 1))
+python3 physics/build.py --check || fail=$((fail + 1))
+python3 cognitionx/build.py --vendored --check || fail=$((fail + 1))
+python3 classroom/build.py --check || fail=$((fail + 1))
+python3 web/build_classroom.py --check || fail=$((fail + 1))
+python3 reactor/fetch_reactor.py --check || fail=$((fail + 1))
+python3 restoration/scenarios.py --check || fail=$((fail + 1))
+python3 parishes/build_atlas.py --check || fail=$((fail + 1))
+python3 smiles/build.py --check || fail=$((fail + 1))
+python3 web/build_smiles.py --check || fail=$((fail + 1))
+python3 elevation/fetch_dem.py --check || fail=$((fail + 1))
+python3 elevation/build.py --check || fail=$((fail + 1))
+python3 elevation/hillshade.py --check || fail=$((fail + 1))
+python3 hive/build.py --check >/dev/null || fail=$((fail + 1))
+python3 web/build_hive.py --check >/dev/null || fail=$((fail + 1))
+python3 unionpaths/build.py --check >/dev/null || fail=$((fail + 1))
+python3 programs/build.py --check >/dev/null || fail=$((fail + 1))
+python3 web/build_whitepaper.py --check >/dev/null || fail=$((fail + 1))
+python3 web/build_unions.py --check >/dev/null || fail=$((fail + 1))
+python3 web/build_programs.py --check >/dev/null || fail=$((fail + 1))
+python3 robotics/claw/build.py --check >/dev/null || fail=$((fail + 1))
+python3 modules/build.py --check >/dev/null || fail=$((fail + 1))
+python3 landcover/fetch_landcover.py --check || fail=$((fail + 1))
+python3 landcover/build.py --check || fail=$((fail + 1))
+python3 flora/build.py --check || fail=$((fail + 1))
 headline=$(sed -nE 's/^\*\*([0-9,]+) checks, all passing.*/\1/p' README.md | tr -d ,)
 if [ "$headline" != "$total" ]; then
   fail=$((fail + 1)); echo "DRIFT README.md headline says $headline checks, this run counted $total"
 fi
+echo "----"
+# What this run did NOT check, said out loud.
+#
+# This is here because of a real escape. A terrain commit added a water
+# plane, a merged landmass and two line sets to the campus view and took
+# it to 344 draw calls against a 341 ceiling - over budget - and it
+# SHIPPED, because this script passed 2,002 checks without measuring a
+# single draw call. The ceilings live in web/eval_scene.mjs, which needs a
+# browser and a served page, and this script is deliberately browser-free
+# and network-free so it runs anywhere. That trade is still the right one.
+# What was wrong was that the gap was silent: a green run read as "the
+# scene is within budget" when nothing had asked.
+#
+# So the omission travels with the answer now. This does not fail the run
+# and must not - it is a statement about what was not measured, not a
+# measurement.
+echo "NOT CHECKED HERE: draw-call and triangle ceilings per view. This"
+echo "  script is browser-free by design and cannot measure them. Run"
+echo "  'node web/eval_scene.mjs' against a served copy before shipping a"
+echo "  change to the 3D scene - a view can be over its ceiling while"
+echo "  every check above passes, and once was."
 echo "----"
 echo "$total checks, $fail failing suites"
 [ $fail -eq 0 ] || exit 1

@@ -1,0 +1,66 @@
+{
+ "provenance": "AUTHORED - every trait, speaking style and voice setting in this file is written by hand for the Omega Hive. A personality is a description of how a scripted figure's quoted lines are delivered; it adds no line, no fact and no ability. No figure here represents a real person.",
+ "voice_rule": "pitch and rate are the AUTHORED base for each figure; a guide in the NPC roster gets a DERIVED offset of sha256('<agent id>:voice')[:8] mod 9 minus 4, times 0.01, on each, so two guides of one role do not sound identical. Both are clamped to the bounds below. Volume is fixed. The text is spoken in English because every line is quoted as its registry writes it.",
+ "bounds": {"pitch": [0.8, 1.25], "rate": [0.85, 1.1], "volume": 1.0, "k12_volume": 0.8, "k12_rate_max": 1.0},
+ "k12": {
+  "rule": "In classroom / K-12 mode the roster shows only the play-safe figures listed here, every line containing a word on the hold list is withheld (not reworded), and the voice starts muted until the class turns it on.",
+  "advisors": ["guide", "crib-keeper", "layout-hand", "inspector", "records-clerk", "dispatcher"],
+  "npc_roles": ["k12-guide", "teacher", "host", "ranger", "pilot"],
+  "crew_roles": [],
+  "hold_words": ["casualty", "casualties", "fatality", "fatalities", "death", "dead", "die", "dies", "died", "killed", "kill", "injury", "injuries", "injured", "dialysis", "drown", "drowned", "drowning", "electrocution", "suicide", "violence", "weapon", "weapons", "blood", "explosion", "explosive", "crushed", "crush"]
+ },
+ "advisors": {
+  "guide": {"traits": ["welcoming", "orderly", "patient"], "style": "Speaks in short, level sentences and always ends by pointing to the next place to go.", "voice": {"pitch": 1.05, "rate": 1.0}},
+  "safety-steward": {"traits": ["watchful", "exact", "unhurried"], "style": "Names the condition first and the reason second, and does not soften either.", "voice": {"pitch": 0.95, "rate": 0.92}},
+  "crib-keeper": {"traits": ["tidy", "dry", "dependable"], "style": "Talks about tools the way a librarian talks about books: what goes out, what comes back, in what state.", "voice": {"pitch": 0.9, "rate": 0.97}},
+  "layout-hand": {"traits": ["precise", "quiet", "methodical"], "style": "Measures words like distances, one reference point at a time.", "voice": {"pitch": 1.0, "rate": 0.94}},
+  "inspector": {"traits": ["fair", "firm", "plain-spoken"], "style": "Says what the work was held to, then whether it met it, with no adjectives in between.", "voice": {"pitch": 0.92, "rate": 0.95}},
+  "foreman": {"traits": ["decisive", "steady", "practical"], "style": "Gives the plan in order, once, and expects the hand-offs to be said back.", "voice": {"pitch": 0.86, "rate": 1.02}},
+  "records-clerk": {"traits": ["careful", "courteous", "thorough"], "style": "Speaks in the vocabulary of documents: who signed it, when, and where it is kept.", "voice": {"pitch": 1.1, "rate": 0.96}},
+  "operator": {"traits": ["calm", "hands-on", "focused"], "style": "Explains the seat from the seat: controls, gauges, then the walkaround.", "voice": {"pitch": 0.88, "rate": 0.98}},
+  "dispatcher": {"traits": ["brisk", "friendly", "organised"], "style": "Answers with a destination, then the reason for it.", "voice": {"pitch": 1.08, "rate": 1.06}}
+ },
+ "crew_roles": {
+  "crane-lift-crew:lift-director": {"traits": ["deliberate", "authoritative", "clear"], "style": "Reads the plan aloud and treats every change as a new plan.", "voice": {"pitch": 0.87, "rate": 0.95}},
+  "crane-lift-crew:crane-operator": {"traits": ["steady", "literal", "patient"], "style": "Speaks only about what the controls and the signals tell it to do.", "voice": {"pitch": 0.85, "rate": 0.93}},
+  "crane-lift-crew:signalperson": {"traits": ["alert", "concise", "visible"], "style": "Short, rhythmic sentences, the way a signal is given: one move at a time.", "voice": {"pitch": 1.04, "rate": 1.05}},
+  "crane-lift-crew:rigger": {"traits": ["practical", "skeptical", "careful"], "style": "Starts from the weight and the hitch, and will not guess either.", "voice": {"pitch": 0.91, "rate": 0.98}},
+  "hot-work-crew:permit-holder": {"traits": ["formal", "boundary-minded", "calm"], "style": "Talks in edges: where the permit starts, where it stops, and who is inside it.", "voice": {"pitch": 0.94, "rate": 0.95}},
+  "hot-work-crew:welder": {"traits": ["absorbed", "candid", "steady"], "style": "Admits plainly what it cannot see while the arc is struck.", "voice": {"pitch": 0.89, "rate": 0.99}},
+  "hot-work-crew:fire-watch": {"traits": ["vigilant", "patient", "plain"], "style": "Speaks about where sparks land and how long it stays after the arc stops.", "voice": {"pitch": 1.0, "rate": 0.92}},
+  "confined-space-crew:entry-supervisor": {"traits": ["rigorous", "composed", "accountable"], "style": "Ties every answer to a tested condition and the permit that records it.", "voice": {"pitch": 0.9, "rate": 0.93}},
+  "confined-space-crew:attendant": {"traits": ["steadfast", "attentive", "disciplined"], "style": "Counts, keeps contact and repeats the one rule it never breaks.", "voice": {"pitch": 1.02, "rate": 0.94}},
+  "confined-space-crew:entrant": {"traits": ["cooperative", "aware", "ready"], "style": "Answers in terms of the signal to leave and how fast it acts on it.", "voice": {"pitch": 1.06, "rate": 1.0}},
+  "scaffold-crew:scaffold-competent-person": {"traits": ["exacting", "fair", "unhurried"], "style": "Explains the tag before the bay, and the inspection before the tag.", "voice": {"pitch": 0.92, "rate": 0.94}},
+  "scaffold-crew:erector": {"traits": ["sequential", "sturdy", "practical"], "style": "Lists the order of parts and does not skip one to save time.", "voice": {"pitch": 0.88, "rate": 1.0}},
+  "scaffold-crew:ground-tender": {"traits": ["orderly", "helpful", "watchful"], "style": "Speaks about the drop zone and the order material goes up in.", "voice": {"pitch": 1.07, "rate": 1.02}},
+  "trench-crew:excavator-operator": {"traits": ["careful", "responsive", "even"], "style": "Says what makes it stop, and stops talking at that point.", "voice": {"pitch": 0.86, "rate": 0.96}},
+  "trench-crew:trench-competent-person": {"traits": ["observant", "grounded", "firm"], "style": "Describes the soil and the cut before it describes the dig.", "voice": {"pitch": 0.91, "rate": 0.93}},
+  "trench-crew:spotter": {"traits": ["alert", "direct", "positional"], "style": "Answers with where it stands and what it can see that the cab cannot.", "voice": {"pitch": 1.03, "rate": 1.04}},
+  "trench-crew:locator": {"traits": ["meticulous", "patient", "unflashy"], "style": "Talks about marks: who made them, when, and what to do when they are gone.", "voice": {"pitch": 0.98, "rate": 0.95}},
+  "aerial-lift-crew:basket-operator": {"traits": ["focused", "secured", "measured"], "style": "Speaks from the platform about the clip, the controls and the overhead.", "voice": {"pitch": 0.97, "rate": 0.97}},
+  "aerial-lift-crew:ground-attendant": {"traits": ["dependable", "ready", "calm"], "style": "Explains the ground controls as the way down when the basket cannot help itself.", "voice": {"pitch": 0.93, "rate": 0.96}},
+  "aerial-lift-crew:line-observer": {"traits": ["single-minded", "precise", "quiet"], "style": "Speaks about one thing only, the clearance to the line.", "voice": {"pitch": 1.0, "rate": 0.9}}
+ },
+ "npc_roles": {
+  "mentor": {"traits": ["experienced", "encouraging", "frank"], "style": "Talks about the trade from the bench outward and points at the next lesson.", "voice": {"pitch": 0.93, "rate": 0.97}},
+  "k12-guide": {"traits": ["cheerful", "clear", "gentle"], "style": "Uses short sentences and says what a student can try next in class.", "voice": {"pitch": 1.15, "rate": 0.94}},
+  "host": {"traits": ["hospitable", "informative", "relaxed"], "style": "Describes the place first and the task second.", "voice": {"pitch": 1.05, "rate": 1.0}},
+  "teacher": {"traits": ["structured", "kind", "patient"], "style": "Explains the order of the loop: explore, build, then verify unaided.", "voice": {"pitch": 1.08, "rate": 0.93}},
+  "responder": {"traits": ["composed", "procedural", "direct"], "style": "Answers in the order of a response: safety, size-up, then the task.", "voice": {"pitch": 0.9, "rate": 1.0}},
+  "relief-coordinator": {"traits": ["organised", "humane", "practical"], "style": "Speaks about who is in the plan and who has been left out of it.", "voice": {"pitch": 0.98, "rate": 0.96}},
+  "humanitarian-trainer": {"traits": ["thoughtful", "inclusive", "grounded"], "style": "Frames each line around the people the effort serves.", "voice": {"pitch": 1.0, "rate": 0.94}},
+  "ranger": {"traits": ["outdoorsy", "observant", "unhurried"], "style": "Talks about the ground, the water and the wildlife as things to watch, not to rush.", "voice": {"pitch": 0.95, "rate": 0.92}},
+  "pilot": {"traits": ["precise", "checklist-minded", "calm"], "style": "Speaks like a checklist: item, state, next item.", "voice": {"pitch": 0.97, "rate": 1.03}}
+ },
+ "families": {
+  "structural": "steady at height",
+  "envelope": "weather-minded",
+  "systems": "diagram-minded",
+  "energy": "isolation-minded",
+  "earthworks": "ground-minded",
+  "industry": "process-minded",
+  "transport": "route-minded",
+  "control": "signal-minded"
+ }
+}

@@ -1,0 +1,17 @@
+{
+ "what": "the reachability probe: one curl per host, run by hand ONCE on the date below from the build container through its egress proxy, and copied here as data. protocols/build.py READS this file and fetches nothing, so a rebuild is byte-identical; the date is the date of the measurement, not the date of the build.",
+ "date": "2026-09-26",
+ "how": "curl -sS -o /dev/null -w '%{http_code}' --max-time 10 <url>, once per host, no retry, TLS verification on, HTTPS_PROXY as configured, no proxy bypass; the body was discarded (-o /dev/null), so even a 2xx here would mean 'the host answered', never 'the spec was read'",
+ "meaning_of_000_56": "no HTTP response from the host at all: curl exited 56 with 'CONNECT tunnel failed, response 403', so %{http_code} printed 000 - the egress proxy refused the CONNECT (organization policy denial); nothing came from the host itself",
+ "provenance": "RECORDED - each code and exit is what curl printed on the date given",
+ "tried": [
+  {"host": "virtuals.io", "url": "https://virtuals.io/", "http_code": "000", "curl_exit": 56},
+  {"host": "singularitynet.io", "url": "https://singularitynet.io/", "http_code": "000", "curl_exit": 56},
+  {"host": "fetch.ai", "url": "https://fetch.ai/", "http_code": "000", "curl_exit": 56},
+  {"host": "superintelligence.io", "url": "https://superintelligence.io/", "http_code": "000", "curl_exit": 56},
+  {"host": "olas.network", "url": "https://olas.network/", "http_code": "000", "curl_exit": 56},
+  {"host": "bittensor.com", "url": "https://bittensor.com/", "http_code": "000", "curl_exit": 56},
+  {"host": "oceanprotocol.com", "url": "https://oceanprotocol.com/", "http_code": "000", "curl_exit": 56},
+  {"host": "developers.cloudflare.com", "url": "https://developers.cloudflare.com/web3/", "http_code": "000", "curl_exit": 56}
+ ]
+}

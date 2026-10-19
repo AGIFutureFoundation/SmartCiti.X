@@ -1,0 +1,34 @@
+{
+ "id": "ti-welding-bay-hot-work",
+ "title": "Deck seam under permit, welding bay",
+ "job": "Run one deck seam under a hot-work permit that names this bay only, with a fire watch posted where the sparks land and held through the post-work period.",
+ "place": {"kind": "space", "id": "welding-bay"},
+ "crew": "hot-work-crew",
+ "roles": {
+  "permit-holder": {"union": "boilermakers"},
+  "welder": {"union": "welders"},
+  "fire-watch": {"union": "fabricators"}
+ },
+ "handoffs": [
+  {"by": "permit-holder", "to": "welder",
+   "from_evidence": {"kind": "crew", "crew": "hot-work-crew", "role": "permit-holder", "topic": "covers"},
+   "to_evidence": {"kind": "walkaround", "sim": "weld-bead", "point": "screens"}},
+  {"by": "welder", "to": "fire-watch",
+   "from_evidence": {"kind": "walkaround", "sim": "weld-bead", "point": "screens"},
+   "to_evidence": {"kind": "walkaround", "sim": "weld-bead", "point": "firewatch"}},
+  {"by": "fire-watch", "to": "welder",
+   "from_evidence": {"kind": "walkaround", "sim": "weld-bead", "point": "firewatch"},
+   "to_evidence": {"kind": "sim", "sim": "weld-bead", "scenario": "bay-deck-seam"}},
+  {"by": "welder", "to": "fire-watch",
+   "from_evidence": {"kind": "sim", "sim": "weld-bead", "scenario": "bay-deck-seam"},
+   "to_evidence": {"kind": "crew", "crew": "hot-work-crew", "role": "fire-watch", "topic": "after"}},
+  {"by": "fire-watch", "to": "permit-holder",
+   "from_evidence": {"kind": "crew", "crew": "hot-work-crew", "role": "fire-watch", "topic": "after"},
+   "to_evidence": {"kind": "crew", "crew": "hot-work-crew", "role": "permit-holder", "topic": "close"}}
+ ],
+ "stop_work": "The fire watch stops this job without asking anyone, and the permit holder stops it the moment the work leaves the area the permit describes.",
+ "gates": {
+  "walkaround_before_first_move": [{"sim": "weld-bead", "point": "leads"}, {"sim": "weld-bead", "point": "gas"}],
+  "ppe": "derived"
+ }
+}

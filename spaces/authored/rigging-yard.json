@@ -1,0 +1,125 @@
+{
+ "id": "rigging-yard",
+ "title": "Rigging yard",
+ "purpose": "A lay-down table, sling and hoist inspection rails and a trial flange beam, with the two rigging seats standing in the open floor between them.",
+ "unions": [
+  "riggers",
+  "ironworkers"
+ ],
+ "strand": "materials",
+ "footprint_m": {
+  "w": 12.0,
+  "d": 5.5
+ },
+ "floor": "steel-plate",
+ "wall": "mesh-guard",
+ "items": [
+  {
+   "kind": "furniture",
+   "id": "shackle-table",
+   "x": 2.0,
+   "y": 1.2,
+   "rotation": 0
+  },
+  {
+   "kind": "furniture",
+   "id": "wire-sling-rail",
+   "x": 2.0,
+   "y": 5.2,
+   "rotation": 0
+  },
+  {
+   "kind": "furniture",
+   "id": "wire-sling-tree",
+   "x": 4.0,
+   "y": 5.0,
+   "rotation": 0
+  },
+  {
+   "kind": "furniture",
+   "id": "lever-hoist-frame",
+   "x": 6.0,
+   "y": 5.2,
+   "rotation": 0
+  },
+  {
+   "kind": "furniture",
+   "id": "lever-hoist-rack",
+   "x": 8.0,
+   "y": 5.15,
+   "rotation": 0
+  },
+  {
+   "kind": "furniture",
+   "id": "beam-clamp-beam",
+   "x": 5.0,
+   "y": 1.2,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "stock-rack",
+   "x": 10.5,
+   "y": 5.0,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "bar-stock-cradle",
+   "x": 8.0,
+   "y": 1.2,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "ppe-station",
+   "x": 11.5,
+   "y": 2.5,
+   "rotation": 90
+  },
+  {
+   "kind": "seat",
+   "id": "rigging-signals",
+   "x": 5.0,
+   "y": 3.0,
+   "rotation": 0
+  },
+  {
+   "kind": "seat",
+   "id": "load-chart",
+   "x": 9.0,
+   "y": 3.0,
+   "rotation": 0
+  },
+  {
+   "kind": "crib",
+   "id": "structural",
+   "x": 11.3,
+   "y": 0.6,
+   "rotation": 0
+  },
+  {
+   "kind": "station",
+   "id": "st005",
+   "x": 0.6,
+   "y": 1.2,
+   "rotation": 0
+  },
+  {
+   "kind": "sign",
+   "id": "placard",
+   "x": 0.3,
+   "y": 3.0,
+   "rotation": 0
+  },
+  {
+   "kind": "sign",
+   "id": "hazard",
+   "x": 0.3,
+   "y": 4.5,
+   "rotation": 0
+  }
+ ],
+ "provenance": "AUTHORED",
+ "note": "declared, not yet walkable: a proposal composed from this bundle's own assets, not a measurement of any venue"
+}

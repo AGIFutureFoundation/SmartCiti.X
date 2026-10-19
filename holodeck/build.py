@@ -1,0 +1,427 @@
+#!/usr/bin/env python3
+"""holodeck/ - the "SmartCiti.X Powered by AGI Corp" series of holodeck packs.
+
+A holodeck pack is one separate module a user can pick up: a union package, the
+Cognition.X K-12 pack, one of the seven paths, city life, the parish worlds, the
+fleet, the living world, physics. This builder NAMES the packs; it never writes
+what they contain. Every figure in registry/packs.json is COUNTED at build time
+from the registry the pack names in `sources` (with that file's sha256[:16]).
+
+Fail closed. A registry that already ships in this repo (bundles/, pack/, unions/,
+sims/, lessons/, schools/, layers/, parishes/, fleet/) must be there and must carry
+every field read here, or the build stops by name - there is no `.get` default and
+no fallback. A registry that is new this wave (economy/, ambient/, physics/, the
+paths in layers/) may be absent: its pack is then PROPOSED with every count 0,
+never estimated. A pack is SHIPPING only when its content exists in the repo.
+
+No prices, no accreditation, no partner claims: a pack is a module of play and
+practice. Nothing here certifies anybody; K-12 districts stay PROPOSED partners.
+"""
+import hashlib
+import json
+import pathlib
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+OUT = ROOT / 'holodeck/registry/packs.json'
+SERIES = 'SmartCiti.X Powered by AGI Corp'
+KINDS = ['union', 'k12', 'path', 'world', 'system']
+PATHS = ['trades', 'k12', 'responders', 'un', 'relief', 'teachers', 'roam']
+
+
+class HolodeckError(Exception):
+    pass
+
+
+def need(obj, key, where):
+    if not isinstance(obj, dict) or key not in obj:
+        raise HolodeckError(f'holodeck: {where} has no {key!r}')
+    return obj[key]
+
+
+def sha(rel):
+    return hashlib.sha256((ROOT / rel).read_bytes()).hexdigest()[:16]
+
+
+def load(rel):
+    """A registry that already ships: missing -> the build stops."""
+    p = ROOT / rel
+    if not p.is_file():
+        raise HolodeckError(f'holodeck: required registry {rel} is missing')
+    return json.loads(p.read_text(encoding='utf-8'))
+
+
+def load_new(rel):
+    """A registry new this wave: absent -> None (its pack is PROPOSED with 0)."""
+    p = ROOT / rel
+    return json.loads(p.read_text(encoding='utf-8')) if p.is_file() else None
+
+
+def src(rel):
+    return {'path': rel, 'sha256': sha(rel)}
+
+
+def status_of(contents):
+    return 'SHIPPING' if any(v > 0 for v in contents.values()) else 'PROPOSED'
+
+
+# ------------------------------------------------------------- registries --
+R_BUNDLES = 'bundles/registry/bundles.json'
+R_HALLS = 'pack/registry/halls.json'
+R_UNIONS = 'unions/registry/unions.json'
+R_SIMS = 'sims/registry/sims.json'
+R_LESSONS = 'lessons/registry/lessons.json'
+R_SCHOOLS = 'schools/registry/schools.json'
+R_LAYERS = 'layers/registry/layers.json'
+R_PARISHES = 'parishes/registry/parishes.json'
+R_FLEET = 'fleet/registry/fleet.json'
+R_ECON = 'economy/registry/economy.json'
+R_AMBIENT = 'ambient/registry/ambient.json'
+R_PHYSICS = 'physics/registry/physics.json'
+
+B = load(R_BUNDLES)
+HALLS = {need(h, 'slug', R_HALLS) for h in need(load(R_HALLS), 'halls', R_HALLS)}
+UNIONS = {need(u, 'slug', R_UNIONS) for u in need(load(R_UNIONS), 'unions', R_UNIONS)}
+SIMS = set(need(load(R_SIMS), 'sims', R_SIMS))
+LES = need(load(R_LESSONS), 'lessons', R_LESSONS)
+SCH = load(R_SCHOOLS)
+LAY = load(R_LAYERS)
+PAR = load(R_PARISHES)
+FLEET = load(R_FLEET)
+
+# page targets a pack may deep-link to: (page, the kit name that page must embed, or None).
+# A link is emitted only for a SHIPPING pack whose page exists and embeds that kit; otherwise
+# `open` is null - the catalogue never points at a world that does not carry the pack yet.
+OPEN = {
+    'campus': ('web/trade_craft_3d.html', None),
+    'schools': ('web/trade_craft_schools.html', None),
+    'parishes': ('web/trade_craft_parishes.html', None),
+    'fleet': ('web/trade_craft_fleet.html', None),
+    'paths': ('web/trade_craft_parishes.html', 'pathkit'),
+    'econ': ('web/trade_craft_parishes.html', 'econkit'),
+    'ambient': ('web/trade_craft_parishes.html', 'ambientkit'),
+    'physics': ('web/trade_craft_parishes.html', 'physkit'),
+}
+
+
+def open_link(key, status):
+    rel, kit = OPEN[key]
+    if status != 'SHIPPING':
+        return None
+    if not (ROOT / rel).is_file():
+        raise HolodeckError(f'holodeck: deep link target {rel} does not exist')
+    if kit is not None and kit not in (ROOT / rel).read_text(encoding='utf-8'):
+        return None
+    return rel
+
+
+packs = []
+
+# ------------------------------------------------ union packages (bundles/) --
+for pid, p in need(B, 'packages', R_BUNDLES).items():
+    c = need(p, 'contents', f'{R_BUNDLES} packages.{pid}')
+    trades = need(c, 'trades', f'packages.{pid}.contents')
+    for t in trades:
+        if t not in HALLS:
+            raise HolodeckError(f'holodeck: package {pid} names trade {t!r} not in {R_HALLS}')
+        if t not in UNIONS:
+            raise HolodeckError(f'holodeck: package {pid} names trade {t!r} not in {R_UNIONS}')
+    seats = need(c, 'seats', f'packages.{pid}.contents')
+    for s in seats:
+        if s not in SIMS:
+            raise HolodeckError(f'holodeck: package {pid} names seat {s!r} not in {R_SIMS}')
+    lessons = need(c, 'lessons', f'packages.{pid}.contents')
+    for ls in lessons:
+        if ls not in LES:
+            raise HolodeckError(f'holodeck: package {pid} names lesson {ls!r} not in {R_LESSONS}')
+    cells = need(c, 'ladder_cells', f'packages.{pid}.contents')
+    contents = {'trades': len(trades), 'ladder_cells': len(cells), 'seats': len(seats), 'lessons': len(lessons)}
+    st = status_of(contents)
+    packs.append({'id': 'union-' + pid, 'kind': 'union', 'title': need(p, 'name', f'packages.{pid}'),
+                  'title_from': f'{R_BUNDLES}#packages.{pid}.name', 'status': st, 'contents': contents,
+                  'requires': [], 'sources': [src(R_BUNDLES), src(R_HALLS), src(R_UNIONS), src(R_SIMS), src(R_LESSONS)],
+                  'open': open_link('campus', st)})
+
+# ------------------------------------------------ Cognition.X K-12 ---------
+k12_label = need(need(need(LAY, 'layers', R_LAYERS), 'k12-unit', 'layers'), 'label', 'layers.k12-unit')
+if k12_label != 'Cognition.X K-12':
+    raise HolodeckError(f'holodeck: layers.k12-unit.label is {k12_label!r}, expected "Cognition.X K-12"')
+units = need(SCH, 'units', R_SCHOOLS)
+unit_halls = {need(u, 'hall', 'schools unit') for u in units}
+stations = [s for par in need(LAY, 'parishes', R_LAYERS) for s in need(par, 'stations', 'layers parish')]
+k12_st = [s for s in stations if need(s, 'layer', 'station') == 'k12-unit']
+k12_lessons = [lid for lid, l in LES.items() if need(l, 'hall', f'lesson {lid}') in unit_halls]
+contents = {'units': len(units), 'bands': len(need(SCH, 'bands', R_SCHOOLS)),
+            'stations': len(k12_st), 'lessons': len(k12_lessons)}
+st = status_of(contents)
+packs.append({'id': 'cognition-x-k12', 'kind': 'k12', 'title': k12_label,
+              'title_from': f'{R_LAYERS}#layers.k12-unit.label', 'status': st, 'contents': contents,
+              'requires': [], 'sources': [src(R_SCHOOLS), src(R_LESSONS), src(R_LAYERS)],
+              'open': open_link('schools', st)})
+
+# ------------------------------------------------ the seven paths ----------
+# layers/registry/paths.json (STORY, $SP/PATHS_CONTRACT.md v1). Absent -> every path is
+# PROPOSED with 0: a path is never shipped by guessing which stations fit it.
+R_PATHS = 'layers/registry/paths.json'
+PTH = load_new(R_PATHS)
+if PTH is not None:
+    if need(PTH, 'path_ids', R_PATHS) != PATHS:
+        raise HolodeckError(f'holodeck: {R_PATHS} path_ids differ from {PATHS}')
+    if need(PTH, 'series', R_PATHS) != 'SmartCiti.X Powered by AGI Corp':
+        raise HolodeckError(f'holodeck: {R_PATHS} series is not the holodeck series')
+for pth in PATHS:
+    if PTH is None:
+        contents, sources, reg_status, label = {'parishes': 0, 'steps': 0, 'stories': 0}, [], 'PROPOSED', None
+    else:
+        entries, stories = [], 0
+        for par in need(PTH, 'parishes', R_PATHS):
+            fips = need(par, 'fips', 'paths parish')
+            mine = [x for x in need(par, 'paths', f'paths parish {fips}') if need(x, 'id', 'path') == pth]
+            if len(mine) != 1:
+                raise HolodeckError(f'holodeck: parish {fips} carries {len(mine)} entries for path {pth!r}')
+            entries.append(mine[0])
+            stories += sum(1 for x in need(par, 'stories', f'paths parish {fips}') if need(x, 'path', 'story') == pth)
+        statuses = {need(x, 'status', f'path {pth}') for x in entries}
+        labels = {need(x, 'label', f'path {pth}') for x in entries}
+        if len(statuses) != 1 or len(labels) != 1:
+            raise HolodeckError(f'holodeck: path {pth} has mixed status {statuses} or label {labels} across parishes')
+        reg_status, label = statuses.pop(), labels.pop()
+        if reg_status not in ('AVAILABLE', 'PROPOSED'):
+            raise HolodeckError(f'holodeck: path {pth} has unknown status {reg_status!r}')
+        contents = {'parishes': len(entries), 'steps': sum(len(need(x, 'steps', f'path {pth}')) for x in entries),
+                    'stories': stories}
+        sources = [src(R_PATHS)]
+    # the registry's own PROPOSED (the UN training module) stays PROPOSED whatever it quotes
+    st = status_of(contents) if reg_status == 'AVAILABLE' else 'PROPOSED'
+    packs.append({'id': 'path-' + pth, 'kind': 'path', 'title_key': f'packs.path.{pth}', 'title': label,
+                  'title_from': f'{R_PATHS}#parishes[].paths[{pth}].label' if label else None, 'status': st,
+                  'contents': contents, 'requires': ['parish-worlds'], 'sources': sources,
+                  'open': open_link('paths', st)})
+
+# ------------------------------------------------ worlds -------------------
+parishes = need(PAR, 'parishes', R_PARISHES)
+landmarks = sum(len(need(p, 'landmarks', f'parish {f}')) for f, p in parishes.items())
+maps = sum(1 for f, p in parishes.items() if need(p, 'map', f'parish {f}'))
+contents = {'parishes': len(parishes), 'landmarks': landmarks, 'maps': maps, 'stations': len(stations)}
+st = status_of(contents)
+packs.append({'id': 'parish-worlds', 'kind': 'world', 'title_key': 'packs.pack.parish-worlds', 'status': st,
+              'contents': contents, 'requires': [], 'sources': [src(R_PARISHES), src(R_LAYERS)],
+              'open': open_link('parishes', st)})
+
+ECON = load_new(R_ECON)
+if ECON is None:
+    contents, sources = {'lots': 0, 'business_types': 0, 'rentals': 0}, []
+else:
+    lots = sum(len(need(p, 'lots', f'economy parish {f}')) for f, p in need(ECON, 'parishes', R_ECON).items())
+    contents = {'lots': lots, 'business_types': len(need(ECON, 'business_types', R_ECON)),
+                'rentals': len(need(ECON, 'rentals', R_ECON))}
+    sources = [src(R_ECON)]
+st = status_of(contents)
+packs.append({'id': 'city-life', 'kind': 'world', 'title_key': 'packs.pack.city-life', 'status': st,
+              'contents': contents, 'requires': ['parish-worlds'], 'sources': sources,
+              'open': open_link('econ', st)})
+
+# ------------------------------------------------ systems ------------------
+fl = need(FLEET, 'fleet', R_FLEET)
+media = [need(v, 'medium', 'fleet vehicle') for v in fl]
+contents = {'vehicles': len(fl), 'land': media.count('land'), 'water': media.count('water'),
+            'families': len({need(v, 'family', 'fleet vehicle') for v in fl})}
+st = status_of(contents)
+packs.append({'id': 'fleet', 'kind': 'system', 'title_key': 'packs.pack.fleet', 'status': st,
+              'contents': contents, 'requires': [], 'sources': [src(R_FLEET)], 'open': open_link('fleet', st)})
+
+AMB = load_new(R_AMBIENT)
+if AMB is None:
+    contents, sources = {'species': 0, 'land_uses': 0, 'vegetation': 0, 'litter': 0}, []
+else:
+    contents = {'species': len(need(AMB, 'species', R_AMBIENT)), 'land_uses': len(need(AMB, 'land_uses', R_AMBIENT)),
+                'vegetation': len(need(AMB, 'vegetation', R_AMBIENT)), 'litter': len(need(AMB, 'litter', R_AMBIENT))}
+    sources = [src(R_AMBIENT)]
+st = status_of(contents)
+packs.append({'id': 'living-world', 'kind': 'system', 'title_key': 'packs.pack.living-world', 'status': st,
+              'contents': contents, 'requires': ['parish-worlds'], 'sources': sources,
+              'open': open_link('ambient', st)})
+
+PHY = load_new(R_PHYSICS)
+if PHY is None:
+    contents, sources = {'coefficients': 0, 'pedestrian_classes': 0}, []
+else:
+    contents = {'coefficients': sum(len(g) for g in need(PHY, 'coeffs', R_PHYSICS).values()),
+                'pedestrian_classes': len(need(PHY, 'pedestrian_classes', R_PHYSICS))}
+    sources = [src(R_PHYSICS)]
+st = status_of(contents)
+packs.append({'id': 'physics', 'kind': 'system', 'title_key': 'packs.pack.physics', 'status': st,
+              'contents': contents, 'requires': [], 'sources': sources, 'open': open_link('physics', st)})
+
+# ------------------------------------------------ wave 11: shared modules (TQ) --
+# A module that is new in wave 11 is emitted ONLY when its registry exists when this build runs:
+# an absent registry means no module at all (no placeholder, no PROPOSED stub with zeros). When the
+# registry exists it must carry every field read here, or the build stops by name.
+# wave-11 pages may not be built yet: a missing page (or one without the kit) gives no link, never an error
+OPEN_W11 = {
+    'tqkit': ('web/trade_craft_3d.html', 'TQ_KIT:BEGIN'),
+    'facadekit': ('web/trade_craft_parishes.html', '__facades'),  # the facade mount's runtime hook
+    'patternkit': ('web/trade_craft_design.html', 'patternkit'),
+    'robotics': ('web/trade_craft_robotics.html', 'robokit'),
+    'contribute': ('web/trade_craft_contribute.html', 'datashare'),
+    'drive': ('web/trade_craft_wilds.html', 'fleetDriveMount'),
+    # POLISH w16 BEGIN - wave-16 pages: the courses page's supplement renderer, the Omega Hive's SCRIPTED core
+    'courses': ('web/trade_craft_courses.html', 'SUP_RENDER:BEGIN'),
+    'hive': ('web/trade_craft_hive.html', 'HiveCore'),
+    # POLISH w16 END
+}
+
+
+def open_w11(key, status):
+    rel, kit = OPEN_W11[key]
+    if status != 'SHIPPING' or not (ROOT / rel).is_file() or kit not in (ROOT / rel).read_text(encoding='utf-8'):
+        return None
+    return rel
+
+
+def module(mid, kind, contents, sources, open_key, requires=(), wave=11):
+    st = status_of(contents)
+    packs.append({'id': mid, 'kind': kind, 'title_key': f'packs.pack.{mid}', 'status': st, 'contents': contents,
+                  'requires': list(requires), 'sources': sources, 'open': open_w11(open_key, st), 'wave': wave})
+
+
+# TradesQuest field-job stations (BRIDGE_CONTRACT v1): web/tqkit.py ports four TradesQuest 3D scenes
+# from game-world-focus @3ea15f0; its TQKIT_HALLS names the union halls that host them.
+R_TQKIT = 'web/tqkit.py'
+if (ROOT / R_TQKIT).is_file():
+    import importlib.util
+    import sys
+    sys.dont_write_bytecode = True  # counting reads the kit; it writes nothing next to it
+    _spec = importlib.util.spec_from_file_location('tqkit_counted', ROOT / R_TQKIT)
+    _tq = importlib.util.module_from_spec(_spec)
+    _spec.loader.exec_module(_tq)
+    for name in ('TQKIT_KINDS', 'TQKIT_HALLS'):
+        if not hasattr(_tq, name):
+            raise HolodeckError(f'holodeck: {R_TQKIT} has no {name}')
+    host = []
+    for kd in _tq.TQKIT_KINDS:
+        for h in need(need(_tq.TQKIT_HALLS, kd, f'{R_TQKIT} TQKIT_HALLS'), 'primary', f'TQKIT_HALLS.{kd}'):
+            if h not in UNIONS:
+                raise HolodeckError(f'holodeck: {R_TQKIT} station {kd} names hall {h!r} not in {R_UNIONS}')
+            host.append(h)
+    module('tradesquest-stations', 'system', {'station_kinds': len(_tq.TQKIT_KINDS), 'host_halls': len(set(host))},
+           [src(R_TQKIT), src(R_UNIONS)], 'tqkit')
+
+# Materials & colour (PATTERN_CONTRACT v1): surfaces/registry/exterior.json - AUTHORED pattern recipes and
+# colour categories (each category's AA + colour-vision checks are held by surfaces/, not re-claimed here).
+R_EXTERIOR = 'surfaces/registry/exterior.json'
+EXT = load_new(R_EXTERIOR)
+if EXT is not None:
+    fams = need(EXT, 'colour_families', R_EXTERIOR)
+    module('materials-colour', 'system', {'pattern_recipes': len(need(EXT, 'recipes', R_EXTERIOR)),
+                                          'colour_categories': len(fams),
+                                          'colours': sum(len(need(f, 'colours', f'{R_EXTERIOR} colour_families.{k}'))
+                                                         for k, f in fams.items())},
+           [src(R_EXTERIOR)], 'patternkit')
+
+# Exteriors & signs (FACADE v1): facades/registry/facades.json - AUTHORED style recipes and play signs.
+R_FACADES = 'facades/registry/facades.json'
+FAC = load_new(R_FACADES)
+if FAC is not None:
+    styles = need(FAC, 'styles', R_FACADES)
+    comps = sum(len(need(v, 'components', f'{R_FACADES} styles.{k}')) for k, v in styles.items())
+    module('exteriors-signs', 'world', {'styles': len(styles), 'components': comps,
+                                        'signs': len(need(FAC, 'signs', R_FACADES))},
+           [src(R_FACADES)], 'facadekit', requires=['parish-worlds'])
+
+# Robotics lab (ROBOTICS_CONTRACT v1): robotics/registry/robotics.json - AUTHORED/DERIVED env specs, SCRIPTED
+# reference policies; no model is trained on any of it, so the module counts specs, never "trained" anything.
+R_ROBOTICS = 'robotics/registry/robotics.json'
+ROB = load_new(R_ROBOTICS)
+if ROB is not None:
+    envs = need(ROB, 'envs', R_ROBOTICS)
+    runners = [need(e, 'runner', f'{R_ROBOTICS} envs.{k}') for k, e in envs.items()]
+    for r in runners:
+        if r not in ('robokit', 'sim-seat'):
+            raise HolodeckError(f'holodeck: {R_ROBOTICS} env runner {r!r} is not robokit or sim-seat')
+    module('robotics-lab', 'system', {'embodiments': len(need(ROB, 'embodiments', R_ROBOTICS)),
+                                      'world_envs': runners.count('robokit'), 'sim_seat_envs': runners.count('sim-seat')},
+           [src(R_ROBOTICS)], 'robotics')
+
+# Data commons (DATASHARE, on ROBOTICS_CONTRACT v1): datashare/registry/datashare.json - the dataset format for
+# opt-in shared episodes. Counts what the registry defines (kinds, enforced practices, refusal reasons); the
+# intake route is written, off by default and not deployed, and nothing is trained - so nothing here counts either.
+R_DATASHARE = 'datashare/registry/datashare.json'
+DSH = load_new(R_DATASHARE)
+if DSH is not None:
+    module('data-commons', 'system', {'episode_kinds': len(need(DSH, 'fields_by_kind', R_DATASHARE)),
+                                      'practices': len(need(DSH, 'best_practices', R_DATASHARE)),
+                                      'refusal_reasons': len(need(DSH, 'refusals', R_DATASHARE))},
+           [src(R_DATASHARE)], 'contribute', requires=['robotics-lab'] if ROB is not None else [])
+
+# POLISH w16 BEGIN ------------------------------------- wave 16: courses + Omega Hive --
+# Same rule as wave 11: a module exists only when its registry exists, and every count is recounted here from the
+# registry's own lists, then held against that registry's counts block (a disagreement stops the build by name).
+R_COURSES = 'courses/registry/courses.json'
+CRS = load_new(R_COURSES)
+if CRS is not None:
+    _courses = need(CRS, 'courses', R_COURSES)
+    _sups = need(CRS, 'supplements', R_COURSES)
+    _lessons = {l for k, c in _courses.items() for l in need(c, 'lessons', f'{R_COURSES} courses.{k}')}
+    _cc, _sc = need(CRS, 'counts', R_COURSES), need(CRS, 'supplement_counts', R_COURSES)
+    for got, key, blk in ((len(_courses), 'courses', _cc), (len(_lessons), 'lessons', _cc), (len(_sups), 'supplements', _sc)):
+        if got != need(blk, key, f'{R_COURSES} counts'):
+            raise HolodeckError(f'holodeck: {R_COURSES} {key}: recounted {got}, its counts block says {blk[key]}')
+    module('courses', 'system', {'courses': len(_courses), 'lessons': len(_lessons), 'supplements': len(_sups)},
+           [src(R_COURSES)], 'courses', wave=16)
+
+R_HIVE = 'hive/registry/hive.json'
+HIV = load_new(R_HIVE)
+if HIV is not None:
+    _agents = need(HIV, 'agents', R_HIVE)
+    _kinds = [need(a, 'kind', f'{R_HIVE} agents[{i}]') for i, a in enumerate(_agents)]
+    _lines = [ln for i, a in enumerate(_agents) for ln in need(a, 'lines', f'{R_HIVE} agents[{i}]')]
+    for i, ln in enumerate(_lines):
+        if not str(need(ln, 'source', f'{R_HIVE} line {i}')).strip():
+            raise HolodeckError(f'holodeck: {R_HIVE} line {i} has an empty source; every line must be quoted from a registry')
+    _hc = need(HIV, 'counts', R_HIVE)
+    if need(_hc, 'models', f'{R_HIVE} counts') != 0:
+        raise HolodeckError(f'holodeck: {R_HIVE} counts.models is not 0; the Omega Hive runs no model')
+    _hive = {'agents': len(_agents), 'advisors': _kinds.count('advisor'), 'crew_roles': _kinds.count('crew-role'),
+             'quoted_lines': len(_lines)}
+    for key, rkey in (('agents', 'agents'), ('advisors', 'advisors'), ('crew_roles', 'crew_roles'), ('quoted_lines', 'lines')):
+        if _hive[key] != need(_hc, rkey, f'{R_HIVE} counts'):
+            raise HolodeckError(f'holodeck: {R_HIVE} {rkey}: recounted {_hive[key]}, its counts block says {_hc[rkey]}')
+    module('omega-hive', 'system', _hive, [src(R_HIVE)], 'hive', wave=16)
+# POLISH w16 END
+
+# ------------------------------------------------ checks + write -----------
+ids = [p['id'] for p in packs]
+if len(set(ids)) != len(ids):
+    raise HolodeckError('holodeck: duplicate pack id')
+for p in packs:
+    p['series'] = SERIES
+    if p['kind'] not in KINDS:
+        raise HolodeckError(f'holodeck: {p["id"]} has unknown kind {p["kind"]!r}')
+    for r in p['requires']:
+        if r not in ids:
+            raise HolodeckError(f'holodeck: {p["id"]} requires unknown pack {r!r}')
+    if p['status'] == 'SHIPPING' and not p['sources']:
+        raise HolodeckError(f'holodeck: {p["id"]} is SHIPPING with no source registry')
+
+payload = {
+    'pack': 'smartcitix-holodeck-packs',
+    'series': SERIES,
+    'source_stamp': hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest()[:16],
+    'kinds': KINDS,
+    'paths': PATHS,
+    'honesty': {
+        'contents': 'every figure is counted at build time from the registry named in sources; nothing is estimated',
+        'status': 'SHIPPING only when the content exists in this repo; otherwise PROPOSED with every count 0',
+        'price': 'no pack carries a price; plans stay set by the operator and payments are not live',
+        'certification': 'no pack certifies, qualifies or licenses anybody; lessons stay unverified general practice',
+        'partners': 'no pack names a partner; K-12 districts stay PROPOSED partners with no agreement',
+    },
+    'counts': {'packs': len(packs), 'shipping': sum(p['status'] == 'SHIPPING' for p in packs),
+               'proposed': sum(p['status'] == 'PROPOSED' for p in packs),
+               'by_kind': {k: sum(p['kind'] == k for p in packs) for k in KINDS}},
+    'packs': packs,
+}
+OUT.parent.mkdir(parents=True, exist_ok=True)
+OUT.write_text(json.dumps(payload, indent=1, sort_keys=True, ensure_ascii=False) + '\n', encoding='utf-8')
+print(f'holodeck: {len(packs)} packs | {payload["counts"]["shipping"]} SHIPPING | '
+      f'{payload["counts"]["proposed"]} PROPOSED -> {OUT.relative_to(ROOT)}')

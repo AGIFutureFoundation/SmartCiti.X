@@ -63,6 +63,7 @@ const schools = JSON.parse(readFileSync(url('../schools/registry/schools.json'))
 const finishes = JSON.parse(readFileSync(url('../surfaces/registry/finishes.json')));
 const advisors = JSON.parse(readFileSync(url('../agents/registry/advisors.json'))).advisors;
 const crews = JSON.parse(readFileSync(url('../agents/registry/crews.json'))).crews;
+const wilds = JSON.parse(readFileSync(url('../wilds/registry/wilds.json')));
 const cribs = JSON.parse(readFileSync(url('../tools/registry/toolcribs.json')));
 const labels = JSON.parse(readFileSync(url('../labels/registry/labels.json')));
 const campuses = JSON.parse(readFileSync(url('../unions/registry/campuses.json'))).campuses;
@@ -84,7 +85,8 @@ const HALL_STRANDS = {};
 const SKILL_IDS = new Set();
 for (const s of skills) {
   SKILL_IDS.add(s.skill_id);
-  (HALL_STRANDS[s.union] ??= new Set()).add(s.strand);
+  if (!(s.union in HALL_STRANDS)) HALL_STRANDS[s.union] = new Set();
+  HALL_STRANDS[s.union].add(s.strand);
 }
 const HALL_CAMPUS = {};
 for (const [k, c] of Object.entries(campuses)) for (const h of c.halls) HALL_CAMPUS[h] = k;
@@ -254,12 +256,96 @@ ok('the spread is over the trades, not down one: every strand is stood in and no
 ok('the top hall\'s share is computed from the set, not typed, and is under the declared ceiling',
   (() => {
     const per = {};
-    for (const [, L] of lessons) per[L.hall] = (per[L.hall] ?? 0) + 1;
+    for (const [, L] of lessons) per[L.hall] = (L.hall in per ? per[L.hall] : 0) + 1;
     const top = Math.max(...Object.values(per));
     return top === reg.counts.max_lessons_in_one_hall
       && Math.abs(reg.spread.max_hall_share - top / lessons.length) < 1e-9
       && reg.spread.max_hall_share <= reg.spread.max_hall_share_ceiling;
   })());
+
+/* ------------------------------------------------- the seat-bound halls --- */
+/* sims/registry/sims.json#hall_bindings is the list of halls with an operable
+   seat. Re-read here, and every one of them must have a lesson standing in it:
+   the registry's own list and count are held to that reading, not trusted. */
+const SEAT_BOUND = Object.keys(sims.hall_bindings).sort();
+const HALLS_WITH_LESSON = new Set(lessons.map(([, L]) => L.hall));
+const seatBoundWithout = SEAT_BOUND.filter((h) => !HALLS_WITH_LESSON.has(h));
+ok('every seat-bound hall (recomputed from sims.json#hall_bindings) has a lesson'
+  + (seatBoundWithout.length ? ` — none in: ${seatBoundWithout.join(', ')}` : ''),
+  SEAT_BOUND.length > 0 && seatBoundWithout.length === 0
+  && JSON.stringify(reg.spread.seat_bound_halls) === JSON.stringify(SEAT_BOUND)
+  && reg.counts.seat_bound_halls === SEAT_BOUND.length
+  && reg.counts.seat_bound_halls_with_a_lesson === SEAT_BOUND.length
+  && SEAT_BOUND.every((h) => h in HALL_NAME));
+
+/* --------------------------------------- hazard rooms and their placards --- */
+/* compliance/build.py derives a hall's hazard rooms from
+   surfaces/registry/finishes.json - a room whose condition record names a
+   governing hazard - and counts a room as walked when any step's `where` is
+   that room (a bench, the pegboard, an advisor's post included). The same
+   reading, done again here: a hazard room a lesson walks carries a placard
+   step in that lesson, and the registry's per-lesson lists say so. */
+const hazardRoomsOf = (hall) => Object.keys(finishes.halls[hall].conditions)
+  .filter((s) => finishes.halls[hall].conditions[s].hazards.length > 0).sort();
+const placardGaps = [];
+let hazardWalked = 0;
+for (const [lid, L] of lessons) {
+  const walked = [...new Set(L.steps.filter((s) => !(s.where in reg.off_room_places))
+    .map((s) => s.where))].sort();
+  const placarded = [...new Set(L.steps.filter((s) => s.kind === 'placard').map((s) => s.where))].sort();
+  const hz = hazardRoomsOf(L.hall).filter((s) => walked.includes(s));
+  hazardWalked += hz.length;
+  for (const s of hz) if (!placarded.includes(s)) placardGaps.push(`${lid}: ${s}`);
+  if (JSON.stringify(L.rooms_walked) !== JSON.stringify(walked)
+    || JSON.stringify(L.placard_steps_in) !== JSON.stringify(placarded)
+    || JSON.stringify(L.hazard_rooms_walked) !== JSON.stringify(hz)) placardGaps.push(`${lid}: lists drifted`);
+}
+ok('every hazard room a lesson walks (recomputed from surfaces the way compliance does) has a placard step in that lesson'
+  + (placardGaps.length ? ` — ${placardGaps.join(', ')}` : ''),
+  placardGaps.length === 0 && reg.counts.hazard_room_placard_gaps === 0
+  && reg.counts.hazard_rooms_walked === hazardWalked && hazardWalked > 0
+  && reg.counts.placard_steps === stepsOf('placard').length);
+ok('the placard step a hazard room gets is the sign the 3D builder hangs: a `placard` label kind, on a room whose merged PPE list is non-empty',
+  lessons.every(([, L]) => L.steps.filter((s) => s.kind === 'placard').every((s) =>
+    s.label_kind === 'placard' && finishes.halls[L.hall].conditions[s.where].ppe.length > 0)));
+
+/* -------------------------------------- every id resolves, said by name --- */
+const unresolved = [];
+for (const [lid, L] of lessons) for (const s of L.steps) {
+  const who = `${lid} step ${s.n}`;
+  if (!(s.where in ROOM_LABEL) && !(s.where in reg.off_room_places)) unresolved.push(`${who}: where=${s.where}`);
+  if (s.where in ROOM_LABEL && !(s.where in finishes.halls[L.hall].rooms)) unresolved.push(`${who}: ${L.hall} has no ${s.where} room`);
+  if ('station' in s && !(s.station in STATION)) unresolved.push(`${who}: station ${s.station}`);
+  if ('sim' in s && !(s.sim in sims.sims)) unresolved.push(`${who}: sim ${s.sim}`);
+  if ('sim' in s && s.sim in sims.sims && !sims.sims[s.sim].halls.includes(L.hall)) unresolved.push(`${who}: ${L.hall} does not train on ${s.sim}`);
+  if ('point' in s && !(sims.sims[s.sim].walkaround.some((p) => p.id === s.point))) unresolved.push(`${who}: point ${s.point}`);
+  if ('scenario' in s && !(sims.sims[s.sim].scenarios.some((x) => x.id === s.scenario))) unresolved.push(`${who}: scenario ${s.scenario}`);
+  if ('advisor' in s && !(s.advisor in advisors)) unresolved.push(`${who}: advisor ${s.advisor}`);
+  if ('advisor' in s && s.advisor in advisors && !advisors[s.advisor].topics.some((t) => t.id === s.topic)) unresolved.push(`${who}: topic ${s.topic}`);
+  if ('crew' in s && !(s.crew in crews)) unresolved.push(`${who}: crew ${s.crew}`);
+  if ('crew' in s && s.crew in crews && !(s.role in crews[s.crew].roles)) unresolved.push(`${who}: role ${s.role}`);
+  if ('crew' in s && s.crew in crews && s.role in crews[s.crew].roles
+    && !crews[s.crew].roles[s.role].topics.some((t) => t.id === s.topic)) unresolved.push(`${who}: crew topic ${s.topic}`);
+  if ('crib' in s && !(s.crib in cribs.cribs)) unresolved.push(`${who}: crib ${s.crib}`);
+}
+ok('no lesson step names an id that does not resolve in the registry that owns it'
+  + (unresolved.length ? ` — ${unresolved.slice(0, 4).join('; ')}` : ''), unresolved.length === 0);
+
+/* ------------------------------------------- the recording rule, honestly --- */
+/* A crew stands only for the halls its registry entry names and only while
+   its own seat runs; a crew step anywhere else would record a crew episode
+   for a conversation that cannot happen. And a step records what its kind
+   records: the four silent kinds are null, the four episode kinds are the
+   training/ kind, with no lesson reclassifying either. */
+const crewWrong = stepsOf('crew').filter(([lid, L, s]) =>
+  !(s.crew in crews) || !crews[s.crew].halls.includes(L.hall)
+  || !L.steps.some((x) => 'sim' in x && x.sim === crews[s.crew].seat)).map(([lid, , s]) => `${lid} step ${s.n}`);
+ok('a crew step stands only in a hall its crew reaches, in a lesson that goes to that crew\'s seat'
+  + (crewWrong.length ? ` — ${crewWrong.join(', ')}` : ''), crewWrong.length === 0);
+ok('every step records exactly what its kind records: null for walk, placard, station and crib; a training/ episode kind for the rest',
+  ['walk', 'placard', 'station', 'crib'].every((k) => reg.step_kinds[k].records === null)
+  && ['walkaround', 'sim', 'advisor', 'crew'].every((k) => reg.step_kinds[k].records in training.episode_kinds)
+  && steps.every(([, , s]) => s.records === reg.step_kinds[s.kind].records));
 
 /* ----------------------------------------------------------- the ladder --- */
 ok('every prerequisite names a lesson that exists, and nothing is its own prerequisite',
@@ -300,11 +386,14 @@ ok('the graph is acyclic, walked here rather than taken on trust',
 ok('the roots, depths and layers are re-derived from the edges, not published from memory',
   (() => {
     const pre = reg.ladder.prerequisites, d = {};
-    const depth = (x) => d[x] ??= 1 + Math.max(0, ...pre[x].map((e) => depth(e.needs)));
+    const depth = (x) => {
+      if (!(x in d)) d[x] = 1 + Math.max(0, ...pre[x].map((e) => depth(e.needs)));
+      return d[x];
+    };
     for (const k of Object.keys(pre)) depth(k);
     const roots = Object.keys(pre).filter((k) => pre[k].length === 0).sort();
     const layers = {};
-    for (const [k, v] of Object.entries(d)) (layers[v] ??= []).push(k);
+    for (const [k, v] of Object.entries(d)) { if (!(v in layers)) layers[v] = []; layers[v].push(k); }
     for (const k of Object.keys(layers)) layers[k].sort();
     return JSON.stringify(roots) === JSON.stringify(reg.ladder.roots)
       && JSON.stringify(d) === JSON.stringify(reg.ladder.depth)
@@ -362,15 +451,280 @@ ok('the page contract names every piece of wiring this pack needs and nothing it
   ['data', 'hall', 'room', 'hud', 'reads', 'steps', 'records', 'ladder', 'limits', 'episode']
     .every((k) => typeof reg.page_contract[k] === 'string' && reg.page_contract[k].length > 60)
   && Object.keys(reg.page_contract).length === 10);
-ok('the contract is grounded in what the page actually does today, not in what it might do',
+/* The 3D page as it actually ships, and the payload it hands the browser.
+   This is read rather than the generator's source on purpose: the builder
+   quotes `D.lessons` in its own notes, so a check over the source would
+   pass on a comment about the wiring instead of the wiring. */
+const hallPage = readFileSync(url('../web/trade_craft_3d.html'), 'utf8');
+const hallWire = JSON.parse(hallPage.match(
+  /<script id="data" type="application\/json">([\s\S]*?)<\/script>/)[1]);
+
+/* THIS CHECK USED TO ASSERT THE ABSENCE. It read `!page.includes('D.lessons')`
+   and it was right to: the contract described a return path that nothing
+   had built, and a contract grounded in a wish is not grounded. The link
+   ran one way - every lesson on web/trade_craft_lessons.html carries the
+   learner to trade_craft_3d.html?hall=<slug> - and a learner standing in
+   the hall had no way of seeing which lessons are taught there. Now the
+   registry reaches the scene whole, exactly as page_contract.data asks
+   (indexed by lesson id, no per-lesson preprocessing), so the assertion
+   flips: the wiring must be THERE, on the wire, in the bytes that ship. */
+ok('the contract is grounded in what the page actually does today, and the '
+  + 'return path it describes is wired: the 3D page ships D.lessons - the '
+  + 'whole registry, indexed by lesson id, byte for byte what this file '
+  + 'reads - so a learner standing in a hall can see which lessons are '
+  + 'taught there, instead of the link running one way only',
   ['curRoom', 'hfocus', 'hint', "view = 'hall'", 'condLine', 'condOf']
     .every((t) => page.includes(t))
-  && !page.includes('D.lessons'));
+  && page.includes('D.lessons')
+  && JSON.stringify(hallWire.lessons) === JSON.stringify(reg));
+
 ok('the contract tells the page to READ the names and to record nothing for opening a lesson',
   /READ and never copy/.test(reg.page_contract.reads)
   && /stores ids for all of those on purpose/.test(reg.page_contract.reads)
   && /nothing about opening, reading or abandoning a lesson is recorded/i.test(reg.page_contract.episode)
   && /must not invent an episode/.test(reg.page_contract.records));
+
+/* --------------------------------- the page a learner actually opens --- */
+/* This pack sat in `rnd/registry/rnd.json` as declared-and-unbuilt for one
+   computed reason: no page generator under web/ named its path, so nothing
+   a learner could open read a line of it. The wiki described it; nothing
+   drew it. These checks hold the page that closes that to the same standard
+   as the registry: what is on the page must be what the registry holds, all
+   of it, in its order, with the limit beside the capability - because the
+   way this gap opened in the first place was checks that validated data
+   while nothing ever opened a page. */
+const generator = readFileSync(url('../web/build_lessons.py'), 'utf8');
+const PAGE_FILE = fileURLToPath(url('../web/trade_craft_lessons.html'));
+const learnerPage = existsSync(PAGE_FILE) ? readFileSync(PAGE_FILE, 'utf8') : '';
+/* Python's html.escape, which is how every string below reached the page.
+   An encoding, not a second copy of a fact. */
+const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;').replace(/'/g, '&#x27;');
+/* each lesson's own slice of the page, keyed by id */
+const SECTION = (() => {
+  const out = {};
+  const parts = learnerPage.split('<article class="lesson" id="lesson-');
+  for (const p of parts.slice(1)) out[p.slice(0, p.indexOf('"'))] = p;
+  return out;
+})();
+const missingSections = lessons.map(([lid]) => lid).filter((lid) => !(lid in SECTION));
+
+/* The other end of the same link, held at the ELEMENT rather than at the
+   prose: the roster the hall draws is an anchor per lesson carrying that
+   lesson's id, and its href is the section web/build_lessons.py actually
+   publishes for that lesson. Matching a sentence here would fire on the
+   page's own honest explanation of what a chip is. */
+ok((() => {
+  const bad = [];
+  if (!hallPage.includes('<a class="lchip" data-lesson="'))
+    bad.push('the hall draws no lesson chip');
+  if (!hallPage.includes('href="trade_craft_lessons.html#lesson-'))
+    bad.push('a chip carries the learner nowhere');
+  const orphans = lessons.map(([lid]) => lid)
+    .filter((lid) => !learnerPage.includes(`<article class="lesson" id="lesson-${lid}"`));
+  if (orphans.length)
+    bad.push(`${orphans.length} chip target(s) land on no section: `
+      + orphans.slice(0, 3).join(', '));
+  return 'the hall roster and the lessons page reach each other from a '
+    + "learner's side: the hall draws one anchor per lesson standing in it, "
+    + 'and each one lands on that lesson\'s own section of '
+    + 'trade_craft_lessons.html'
+    + (bad.length ? ` \u2014 ${bad.join('; ')}` : '');
+})(),
+  hallPage.includes('<a class="lchip" data-lesson="')
+  && hallPage.includes('href="trade_craft_lessons.html#lesson-')
+  && lessons.every(([lid]) =>
+    learnerPage.includes(`<article class="lesson" id="lesson-${lid}"`)));
+
+ok((() => {
+  const bad = [];
+  if (!generator.includes('lessons/registry/lessons.json'))
+    bad.push('web/build_lessons.py does not name lessons/registry/lessons.json');
+  if (!generator.includes('trade_craft_lessons.html'))
+    bad.push('web/build_lessons.py does not write trade_craft_lessons.html');
+  if (!learnerPage.length) bad.push('web/trade_craft_lessons.html is missing or empty');
+  if (missingSections.length)
+    bad.push(`no section on the page for ${missingSections.slice(0, 3).join(', ')}`);
+  if (Object.keys(SECTION).length !== reg.counts.lessons)
+    bad.push(`${Object.keys(SECTION).length} lesson sections on the page, `
+      + `${reg.counts.lessons} lessons in the registry`);
+  return 'the registry is opened by a page generator under web/, and that page is built'
+    + (bad.length ? ` — ${bad.join('; ')}` : '');
+})(),
+  generator.includes('lessons/registry/lessons.json')
+  && generator.includes('trade_craft_lessons.html')
+  && learnerPage.length > 0 && missingSections.length === 0
+  && Object.keys(SECTION).length === reg.counts.lessons);
+
+ok((() => {
+  const bad = [];
+  for (const [lid, L] of lessons) {
+    const blocks = (SECTION[lid] || '').split('<li class="step"').slice(1);
+    if (blocks.length !== L.steps.length) {
+      bad.push(`${lid}: registry holds ${L.steps.length} steps, the page renders ${blocks.length}`);
+      continue;
+    }
+    L.steps.forEach((s, i) => {
+      if (!blocks[i].includes(esc(s.do)))
+        bad.push(`${lid} step ${s.n} is not the ${i + 1}${'st'} block on the page: ${s.do.slice(0, 48)}…`);
+    });
+  }
+  return `the page renders every one of the ${reg.counts.steps} steps, each in its own lesson's `
+    + 'section and in the registry\'s order, with none silently dropped'
+    + (bad.length ? ` — ${bad.length} wrong: ${bad.slice(0, 3).join(' | ')}` : '');
+})(), (() => {
+  for (const [lid, L] of lessons) {
+    const blocks = (SECTION[lid] || '').split('<li class="step"').slice(1);
+    if (blocks.length !== L.steps.length) return false;
+    if (!L.steps.every((s, i) => blocks[i].includes(esc(s.do)))) return false;
+  }
+  return true;
+})());
+
+ok((() => {
+  const bad = lessons.filter(([lid, L]) => {
+    const sec = SECTION[lid] || '';
+    return !(sec.includes(esc(L.title)) && sec.includes(esc(L.hall_name))
+      && sec.includes(esc(L.room_label)) && sec.includes(esc(L.why))
+      && sec.includes(esc(L.skill_id)));
+  }).map(([lid]) => lid);
+  return 'every lesson renders its own title, hall name, room label, reason and skill id'
+    + (bad.length ? ` — ${bad.length} incomplete: ${bad.slice(0, 3).join(', ')}` : '');
+})(), lessons.every(([lid, L]) => {
+  const sec = SECTION[lid] || '';
+  return sec.includes(esc(L.title)) && sec.includes(esc(L.hall_name))
+    && sec.includes(esc(L.room_label)) && sec.includes(esc(L.why))
+    && sec.includes(esc(L.skill_id));
+}));
+
+const limitPlaced = ([lid, L]) => {
+  const sec = SECTION[lid] || '';
+  const lim = sec.indexOf(esc(L.limits));
+  const sign = sec.indexOf(esc(reg.honesty.content));
+  const firstStep = sec.indexOf('<li class="step"');
+  return lim !== -1 && sign !== -1 && firstStep !== -1 && lim < firstStep && sign < firstStep;
+};
+ok((() => {
+  const bad = lessons.filter((e) => !limitPlaced(e)).map(([lid]) => lid);
+  return 'every lesson states its limit and its missing practitioner sign-off above its first '
+    + 'step, where the learner reads them, not in a footnote'
+    + (bad.length ? ` — ${bad.length} misplaced or absent: ${bad.slice(0, 3).join(', ')}` : '');
+})(), lessons.every(limitPlaced));
+
+ok((() => {
+  const bad = [];
+  for (const [lid, L] of lessons) {
+    const blocks = (SECTION[lid] || '').split('<li class="step"').slice(1);
+    L.steps.forEach((s, i) => {
+      const b = blocks[i];
+      if (b === undefined) { bad.push(`${lid} step ${s.n}: no block`); return; }
+      const want = s.records === null
+        ? esc(reg.step_kinds[s.kind].why_no_episode)
+        : `writes one ${esc(s.records)} episode`;
+      if (!b.includes(want)) bad.push(`${lid} step ${s.n} (${s.kind}) does not disclose: ${want.slice(0, 44)}…`);
+    });
+  }
+  return 'every step on the page discloses the episode it writes, or the registry\'s own reason '
+    + 'it writes none' + (bad.length ? ` — ${bad.length} silent: ${bad.slice(0, 3).join(' | ')}` : '');
+})(), (() => {
+  for (const [lid, L] of lessons) {
+    const blocks = (SECTION[lid] || '').split('<li class="step"').slice(1);
+    for (let i = 0; i < L.steps.length; i++) {
+      const s = L.steps[i];
+      const want = s.records === null
+        ? esc(reg.step_kinds[s.kind].why_no_episode)
+        : `writes one ${esc(s.records)} episode`;
+      if (blocks[i] === undefined || !blocks[i].includes(want)) return false;
+    }
+  }
+  return true;
+})());
+
+ok((() => {
+  const bad = edges.filter((e) => {
+    const sec = SECTION[e.lesson] || '';
+    return !(sec.includes(`href="#lesson-${e.needs}"`)
+      && sec.includes(esc(reg.lessons[e.needs].title))
+      && sec.includes(esc(reg.ladder.reasons[e.because])));
+  }).map((e) => `${e.lesson} → ${e.needs}`);
+  return `all ${edges.length} ladder edges render as named links to the prerequisite lesson with `
+    + 'the reason shown, and the page disables nothing'
+    + (bad.length ? ` — ${bad.length} unrendered: ${bad.slice(0, 3).join(', ')}` : '');
+})(), edges.every((e) => {
+  const sec = SECTION[e.lesson] || '';
+  return sec.includes(`href="#lesson-${e.needs}"`)
+    && sec.includes(esc(reg.lessons[e.needs].title))
+    && sec.includes(esc(reg.ladder.reasons[e.because]));
+}) && learnerPage.includes(esc(reg.ladder.enforcement))
+  && !/\bdisabled\b/.test(learnerPage) && !/aria-disabled/.test(learnerPage));
+
+ok((() => {
+  const bad = lessons.filter(([lid, L]) =>
+    !(SECTION[lid] || '').includes(`href="trade_craft_3d.html?hall=${L.hall}"`))
+    .map(([lid]) => lid);
+  return 'every lesson links through to the hall it stands in, by that hall\'s own slug'
+    + (bad.length ? ` — ${bad.length} with no way in: ${bad.slice(0, 3).join(', ')}` : '');
+})(), lessons.every(([lid, L]) =>
+  (SECTION[lid] || '').includes(`href="trade_craft_3d.html?hall=${L.hall}"`)));
+
+const STRAY_TIERS = (() => {
+  /* Narrow on purpose. An earlier version of this check read every
+     all-capitals word on the page and fired on two things that are not
+     defects: the registry's own sentence saying AI-SYNTHESIZED belongs to
+     orbis/ and not here, and the trade acronym HVAC. That is the trap
+     web/test_3d.mjs has been bitten by repeatedly - a check that matches
+     the prose QUOTING a string instead of the place the string would do
+     harm - and the answer is to look where a tier is actually rendered AS
+     a tier, not to keep an exception list. The generator emits a tier in
+     exactly one slot: the `data-tier` of a `.prov` chip. Every value in
+     that slot must be one of the five, so AI-SYNTHESIZED in a tier slot,
+     or a misspelled tier, fails while honest prose about either is left
+     alone. `names` is not a tier and has a slot of its own. */
+  const TIERS = ['RECORDED', 'DERIVED', 'SCHEMATIC', 'AUTHORED', 'SCRIPTED'];
+  const slots = [...learnerPage.matchAll(/data-tier="([^"]*)"/g)].map((m) => m[1]);
+  const sources = [...learnerPage.matchAll(/data-source="([^"]*)"/g)].map((m) => m[1]);
+  const bad = [...new Set(slots)].filter((v) => !TIERS.includes(v))
+    .map((v) => `tier slot holds ${v}`);
+  for (const v of new Set(sources)) if (v !== 'READ') bad.push(`names slot holds ${v}`);
+  /* and the slots exist at all: a check that scans nothing passes forever */
+  const wantTiers = lessons.reduce((a, [, L]) =>
+    a + Object.keys(L.provenance).filter((k) => k !== 'names').length, 0);
+  if (slots.length !== wantTiers)
+    bad.push(`${slots.length} tier slots on the page, ${wantTiers} in the registry`);
+  if (sources.length !== lessons.length)
+    bad.push(`${sources.length} names slots on the page, ${lessons.length} lessons`);
+  return bad;
+})();
+ok('every provenance tier rendered as a tier is one of the five, and the names slot says READ'
+  + (STRAY_TIERS.length ? ` — ${STRAY_TIERS.slice(0, 4).join('; ')}` : ''),
+  STRAY_TIERS.length === 0);
+
+const TYPED = (() => {
+  /* Every number a reader can see on the page, against every number the
+     registry holds or that follows from it. A typed count is the defect
+     this bundle lints 238 files for; the page must not be the 239th. */
+  /* entities are encoding, not figures: `&#x27;` is an apostrophe, and a
+     scan that read the 27 out of it was passing only while some count in
+     the registry happened to be 27 */
+  const text = learnerPage.replace(/<script[\s\S]*?<\/script>/g, ' ')
+    .replace(/<style[\s\S]*?<\/style>/g, ' ').replace(/<[^>]*>/g, ' ')
+    .replace(/&#x[0-9a-f]+;|&#[0-9]+;|&[a-z]+;/gi, ' ');
+  const shown = [...new Set([...text.matchAll(/[0-9][0-9,]*/g)].map((m) => m[0].replace(/,/g, '')))];
+  const allowed = new Set([...readFileSync(url('./registry/lessons.json'), 'utf8')
+    .matchAll(/[0-9][0-9,]*/g)].map((m) => m[0].replace(/,/g, '')));
+  for (const ids of Object.values(reg.ladder.layers)) allowed.add(String(ids.length));
+  for (const [, L] of lessons) allowed.add(String(L.steps.length));
+  /* a COURSE on the page is the lessons of one hall in ladder order, with
+     its steps numbered straight through: the course total and every index
+     up to it follow from the registry */
+  const courseSteps = {};
+  for (const [, L] of lessons) courseSteps[L.hall] = (L.hall in courseSteps ? courseSteps[L.hall] : 0) + L.steps.length;
+  for (const total of Object.values(courseSteps)) for (let i = 1; i <= total; i++) allowed.add(String(i));
+  allowed.add(String(Object.keys(courseSteps).length));
+  return shown.filter((x) => !allowed.has(x));
+})();
+ok('every number a reader can see on the page is one the registry holds or one derived from it'
+  + (TYPED.length ? ` — typed: ${TYPED.slice(0, 6).join(', ')}` : ''), TYPED.length === 0);
 
 /* -------------------------------------------------------------- the counts --- */
 ok('the counts the registry publishes are the counts it actually holds',
@@ -386,13 +740,16 @@ ok('the counts the registry publishes are the counts it actually holds',
   && reg.counts.silent_steps === steps.filter(([, , s]) => s.records === null).length
   && reg.counts.recording_steps + reg.counts.silent_steps === reg.counts.steps
   && reg.counts.episode_kinds_declared === Object.keys(training.episode_kinds).length
-  && reg.counts.files_read === reg.reads.length);
+  && reg.counts.files_read === reg.reads.length
+  && reg.counts.seat_bound_halls === Object.keys(sims.hall_bindings).length
+  && reg.counts.placard_steps === steps.filter(([, , s]) => s.kind === 'placard').length
+  && reg.counts.hazard_room_placard_gaps === 0);
 ok('the per-kind tallies are re-derived from the steps themselves, not typed beside them',
   (() => {
     const byKind = {}, byEp = {};
     for (const [, , s] of steps) {
-      byKind[s.kind] = (byKind[s.kind] ?? 0) + 1;
-      if (s.records !== null) byEp[s.records] = (byEp[s.records] ?? 0) + 1;
+      byKind[s.kind] = (s.kind in byKind ? byKind[s.kind] : 0) + 1;
+      if (s.records !== null) byEp[s.records] = (s.records in byEp ? byEp[s.records] : 0) + 1;
     }
     const sorted = (o) => Object.fromEntries(Object.entries(o).sort(([a], [b]) => a < b ? -1 : 1));
     return JSON.stringify(reg.counts.steps_by_kind) === JSON.stringify(sorted(byKind))
@@ -428,6 +785,198 @@ const src = readFileSync(url('./build.py'));
 ok('the registry was built from the current builder source (stamp check)',
   reg.source_stamp === createHash('sha256').update(src).digest('hex').slice(0, 16));
 
+/* ------------------------------------------ the flow through the page --- */
+/* Added with the lesson-flow pass. Each reads the SHIPPED page's elements and
+   attributes, never its prose, and recomputes what they should say from this
+   registry. */
+const COURSE_ORDER = (() => {
+  const layerOf = {};
+  for (const [d, ids] of Object.entries(reg.ladder.layers)) for (const id of ids) layerOf[id] = Number(d);
+  const keys = Object.keys(reg.lessons);
+  const by = {};
+  for (const id of keys) (by[reg.lessons[id].hall] ||= []).push(id);
+  for (const h of Object.keys(by)) by[h].sort((a, b) => (layerOf[a] - layerOf[b]) || (keys.indexOf(a) - keys.indexOf(b)));
+  return by;
+})();
+ok((() => {
+  const bad = [];
+  for (const [lid, L] of lessons) {
+    const sec = SECTION[lid] || '';
+    const foot = sec.slice(sec.indexOf('<footer class="lfoot">'));
+    const acts = foot.match(/<a class="nextact" href="([^"]*)"/g) || [];
+    const ids = COURSE_ORDER[L.hall];
+    const i = ids.indexOf(lid);
+    const want = i + 1 < ids.length ? `#lesson-${ids[i + 1]}` : `trade_craft_progress.html?hall=${L.hall}`;
+    if (acts.length !== 1 || !acts[0].includes(`href="${esc(want)}"`)) bad.push(`${lid}: wants ${want}, has ${acts.length} [${acts.join(' ')}]`);
+  }
+  return 'after every lesson there is ONE next action, and it is the next lesson in that hall\'s '
+    + 'course order (ladder layer, then registry order) or, after the last, that hall\'s progress page'
+    + (bad.length ? ` — ${bad.length} wrong: ${bad.slice(0, 3).join(' | ')}` : '');
+})(), lessons.every(([lid, L]) => {
+  const sec = SECTION[lid] || '';
+  const foot = sec.slice(sec.indexOf('<footer class="lfoot">'));
+  const acts = foot.match(/<a class="nextact" href="([^"]*)"/g) || [];
+  const ids = COURSE_ORDER[L.hall];
+  const i = ids.indexOf(lid);
+  const want = i + 1 < ids.length ? `#lesson-${ids[i + 1]}` : `trade_craft_progress.html?hall=${L.hall}`;
+  return sec.includes('<footer class="lfoot">') && acts.length === 1 && acts[0].includes(`href="${esc(want)}"`);
+}));
+
+ok('every lesson carries a step navigator (step n of m, previous, next) whose m is the registry\'s own '
+  + 'step count, shipped hidden so a scripting-off reader meets no dead control',
+  lessons.every(([lid, L]) => {
+    const sec = SECTION[lid] || '';
+    const m = sec.match(/<div class="stepnav" hidden data-steps="(\d+)">([\s\S]*?)<\/div>/);
+    return m !== null && Number(m[1]) === L.steps.length
+      && m[2].includes('class="sprev"') && m[2].includes('class="snext"')
+      && m[2].includes(`<b class="sat">1</b> of ${L.steps.length}`);
+  }));
+
+
+/* Carve-out (lead ruling, wave 3). MEDIA's site-wide style switcher remembers
+   one DISPLAY preference - which of the five colour styles the reader picked -
+   under localStorage['tc-style']. It is not learner data: it holds no course,
+   lesson, step, progress, identity or record, only a style name. So the two
+   style scripts (by id) may read and write exactly that key, each access inside
+   try/catch; nothing else on the page may touch any browser storage. */
+const STYLE_SCRIPTS = /<script id="style-(?:head-)?js">[\s\S]*?<\/script>/g;
+const styleStorageWrong = (html) => {
+  const bad = [];
+  for (const [s] of html.matchAll(STYLE_SCRIPTS)) {
+    if (/sessionStorage|indexedDB|document\.cookie|removeItem|localStorage\.clear|localStorage\[|localStorage\.key\(/.test(s)) bad.push('a storage API other than localStorage get/set');
+    const calls = [...s.matchAll(/localStorage\.(getItem|setItem)\(([^,)]+)/g)];
+    for (const c of calls) {
+      const k = c[2].trim();
+      if (k !== "'tc-style'" && !(k === 'K' && /var K='tc-style'[,;]/.test(s))) bad.push(`storage key ${k} is not 'tc-style'`);
+    }
+    const guarded = (s.match(/try\{(?:var \w+=|\w+=)?localStorage\.(?:getItem|setItem)\(/g) || []).length;
+    if (guarded !== calls.length) bad.push(`${calls.length - guarded} storage access(es) outside try/catch`);
+  }
+  return bad;
+};
+{
+  const js = (learnerPage.match(/<script>([\s\S]*?)<\/script>\s*<\/body>/) || [, ''])[1];
+  ok('the learner\'s place (course, filter, lesson, step) is kept in the ADDRESS - ?hall, ?q, ?step and '
+    + '#lesson-<id> written with replaceState and read back at load - and the page still stores nothing',
+    /u\.set\('hall'/.test(js) && /u\.set\('q'/.test(js) && /u\.set\('step'/.test(js)
+    && /history\.replaceState\(/.test(js) && /params\.get\('q'\)/.test(js) && /params\.get\('step'\)/.test(js)
+    && /'#' \+ place\.a\.id/.test(js)
+    && !/localStorage|sessionStorage|indexedDB|document\.cookie/.test(learnerPage.replace(STYLE_SCRIPTS, '')));
+  const sw = styleStorageWrong(learnerPage);
+  ok('the only browser storage on the lessons page is the style switcher\'s display preference: its scripts read and '
+    + 'write localStorage[\'tc-style\'] and no other key or storage API, every access inside try/catch'
+    + (sw.length ? ' - ' + sw.join('; ') : ''), sw.length === 0);
+}
+
+ok('no table on the lessons page stands outside a horizontal-scroll box, so a 390px screen never scrolls sideways',
+  (() => {
+    const tables = (learnerPage.match(/<table>/g) || []).length;
+    const wrapped = (learnerPage.match(/<div class="tscroll"><table>/g) || []).length;
+    return tables > 0 && tables === wrapped && /\.tscroll\{overflow-x:auto/.test(learnerPage);
+  })());
+
+/* ------------------------------------------------ the composed lessons ---
+   The set grew past the seats by ONE RULE in lessons/build.py: a hall with no
+   hand-written lesson gets one arc of walk / placard / crib / advisor steps.
+   Everything the rule claims is recomputed here from the roster and the
+   registries, never read back from the fields the rule itself wrote. */
+const SEAT_HALLS = new Set(Object.keys(sims.hall_bindings));
+const handHalls = new Set(lessons.filter(([, L]) => L.authoring === 'hand').map(([, L]) => L.hall));
+const ruled = lessons.filter(([, L]) => L.authoring === 'rule');
+const firsts = ruled.filter(([, L]) => L.arc !== 'site');
+const sited = ruled.filter(([, L]) => L.arc === 'site');
+ok('every lesson says how it was authored - by hand or by the rule - and the counts are the lessons counted again',
+  lessons.every(([, L]) => L.authoring === 'hand' || L.authoring === 'rule')
+  && reg.counts.lessons_by_hand === lessons.length - ruled.length
+  && reg.counts.lessons_by_rule === ruled.length
+  && reg.counts.lessons_by_hand + reg.counts.lessons_by_rule === reg.counts.lessons);
+ok('a composed lesson marks its order, title and why DERIVED and its notes and limits AUTHORED; a hand lesson is AUTHORED throughout',
+  lessons.every(([, L]) => {
+    const p = L.provenance;
+    if (L.authoring === 'hand') return ['steps', 'order', 'title', 'why', 'limits'].every((k) => p[k] === 'AUTHORED');
+    return p.steps === 'AUTHORED' && p.limits === 'AUTHORED' && p.order === 'DERIVED'
+      && p.title === 'DERIVED' && p.why === 'DERIVED' && p.names === 'READ';
+  }));
+ok('the honesty status says how many lessons the rule composed, and says DERIVED, instead of claiming every lesson was hand-written',
+  reg.honesty.status.includes(`${reg.counts.lessons_by_hand} lessons were written by hand`)
+  && reg.honesty.status.includes(`the other ${reg.counts.lessons_by_rule} are composed by one rule`)
+  && /DERIVED/.test(reg.honesty.status) && !/Nothing is generated/.test(reg.honesty.status));
+ok('every one of the halls on the roster has a lesson, or the rule names why it refused that hall under every arc',
+  halls.every((h) => lessons.some(([, L]) => L.hall === h.slug)
+    || (h.slug in reg.spread.refused_by_rule
+        && reg.spread.refused_by_rule[h.slug].length === Object.keys(reg.composition.arcs).length))
+  && reg.counts.halls_refused_by_rule === Object.keys(reg.spread.refused_by_rule).length);
+ok('a composed lesson stands only in a hall with no hand-written lesson and no seat, one per hall',
+  firsts.every(([, L]) => !handHalls.has(L.hall) && !SEAT_HALLS.has(L.hall)
+    && firsts.filter(([, M]) => M.hall === L.hall).length === 1)
+  && JSON.stringify(firsts.map(([, L]) => L.hall).sort()) === JSON.stringify(reg.spread.composed_halls));
+ok('a composed lesson uses only walk, placard, crib and advisor - the kinds a hall with no seat, station or crew can support',
+  firsts.every(([, L]) => L.steps.every((s) => ['walk', 'placard', 'crib', 'advisor'].includes(s.kind))
+    && L.steps.some((s) => s.kind === 'advisor')));
+ok('a composed lesson is a fundamentals first walk that stands in its arc\'s own room, and its id says so',
+  firsts.every(([lid, L]) => L.tier === 'fundamentals' && L.strand === L.arc
+    && lid === `${L.hall}-${L.arc}-first-walk` && L.arc in reg.composition.arcs));
+ok('a composed lesson reads a placard exactly where the room\'s own record asks for PPE (recomputed from surfaces)',
+  ruled.every(([, L]) => {
+    const conds = finishes.halls[L.hall].conditions;
+    const wanted = new Set(L.steps.filter((s) => s.kind === 'walk' || s.kind === 'advisor' || s.kind === 'crib')
+      .map((s) => s.where).filter((w) => w in conds && conds[w].ppe.length));
+    const read = new Set(L.steps.filter((s) => s.kind === 'placard').map((s) => s.where));
+    return [...wanted].every((w) => read.has(w)) && [...read].every((w) => conds[w].ppe.length > 0);
+  }));
+ok('a composed title opens with the hall\'s own name and its why carries the hall\'s own focus, both read from the roster',
+  firsts.every(([, L]) => {
+    const h = halls.find((x) => x.slug === L.hall);
+    return L.title.startsWith(`${h.name}: `) && L.why.toLowerCase().includes(h.focus.toLowerCase());
+  }));
+ok('the rule spreads the composed lessons across every arc rather than piling them in one room',
+  (() => {
+    const per = {};
+    for (const [, L] of firsts) per[L.arc] = (per[L.arc] || 0) + 1;
+    const v = Object.values(per);
+    return firsts.length === 0 || (Object.keys(per).length === Object.keys(reg.composition.arcs).length
+      && Math.max(...v) - Math.min(...v) <= Math.ceil(firsts.length / v.length));
+  })());
+
+/* the site walks: one per WILDS site, recomputed from wilds.json here */
+const SITES = wilds.worlds.flatMap((w) => w.sites.map((x) => ({ w, x })));
+ok('every WILDS site has a site walk or a named refusal, and the counts are the site walks counted again',
+  SITES.every(({ x }) => sited.some(([, L]) => L.site.id === x.id) || x.id in reg.spread.sites_refused_by_rule)
+  && reg.counts.lessons_at_sites === sited.length
+  && Object.keys(reg.spread.site_walks).length === sited.length
+  && reg.counts.sites_refused_by_rule === Object.keys(reg.spread.sites_refused_by_rule).length);
+ok('a site walk stands in a hall its site names, reads its site id, title and world from wilds.json, and its id says so',
+  sited.every(([lid, L]) => {
+    const hit = SITES.find(({ x }) => x.id === L.site.id);
+    return hit && hit.w.id === L.site.world && hit.w.name === L.site.world_name && hit.x.title === L.site.title
+      && hit.x.halls.some((h) => h.id === L.hall) && lid === `${hit.x.id}-site-walk`
+      && reg.spread.site_walks[hit.x.id] === lid;
+  }));
+ok('a site walk is a fundamentals safety walk of walk, placard and advisor steps only, recording at least one advisor answer',
+  sited.every(([, L]) => L.tier === 'fundamentals' && L.strand === 'safety' && L.steps[0].kind === 'walk'
+    && L.steps.every((s) => ['walk', 'placard', 'advisor'].includes(s.kind))
+    && L.steps.some((s) => s.kind === 'advisor')));
+ok('a site walk says its terrain is AUTHORED and not a surveyed place, and its title names the site as wilds.json does',
+  sited.every(([, L]) => /AUTHORED/.test(L.why) && L.limits.includes('not a surveyed place')
+    && L.title.toLowerCase().endsWith(L.site.title.toLowerCase())
+    && L.title.startsWith(`${halls.find((h) => h.slug === L.hall).name}: before the `)));
+ok('no two site walks share a hall while their site names an unused one (the rule spreads them)',
+  sited.every(([, L], i) => {
+    const hit = SITES.find(({ x }) => x.id === L.site.id);
+    const earlier = new Set(sited.slice(0, i).map(([, M]) => M.hall));
+    return !earlier.has(L.hall);
+  }));
+ok('the honesty status counts the site walks and says their terrain is AUTHORED',
+  reg.honesty.status.includes(`and ${sited.length} walks before a WILDS site`)
+  && reg.honesty.status.includes(`${firsts.length} first walks`));
+
+ok('every lesson on the learner page says on its face whether it was written by hand or composed by rule, as the registry says',
+  lessons.every(([lid, L]) => {
+    const i = learnerPage.indexOf(`id="lesson-${lid}"`);
+    const head = i < 0 ? '' : learnerPage.slice(i, learnerPage.indexOf('</header>', i));
+    return head.includes(`data-authoring="${L.authoring}">${L.authoring === 'rule' ? 'composed by rule' : 'written by hand'}<`);
+  }));
+
 console.log(`lessons/test: ${n} checks passed — ${reg.counts.lessons} walkable lessons, `
   + `${reg.counts.steps} steps in ${reg.counts.step_kinds} kinds, standing in `
   + `${reg.counts.rooms_stood_in} rooms across ${reg.counts.halls_covered} of `
@@ -438,4 +987,8 @@ console.log(`lessons/test: ${n} checks passed — ${reg.counts.lessons} walkable
   + `${reg.counts.episode_kinds_declared} episode kinds training/ already has, `
   + `${reg.counts.silent_steps} write nothing and say why; ladder `
   + `${reg.counts.prerequisite_edges} edges over ${reg.counts.ladder_roots} roots, `
-  + `depth ${reg.counts.ladder_depth}, acyclic; certifies nobody`);
+  + `depth ${reg.counts.ladder_depth}, acyclic; every one of the `
+  + `${reg.counts.seat_bound_halls} seat-bound halls has a lesson, `
+  + `${reg.counts.hazard_rooms_walked} hazard rooms walked and `
+  + `${reg.counts.hazard_room_placard_gaps} without a placard step; ${reg.counts.lessons_by_hand} by hand, `
+  + `${reg.counts.lessons_by_rule} composed by rule; certifies nobody`);

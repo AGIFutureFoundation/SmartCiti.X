@@ -22,7 +22,7 @@ What the generator asserts about itself:
   * learners are pseudonyms L01..L24 - no name, email, device or biometric;
   * no affect field or value is ever written (security/privacy.mjs
     NEVER_EXPORT), and no raw stream (NEVER_STORE);
-  * courses, modules and stages come from courses/registry/courses.json, the
+  * courses, modules and stages come from courses_roadmap/registry/courses.json, the
     stage order from its stage_map, simulator targets from each course's
     floor_sims (sims/registry/sims.json ids);
   * skill_ids are '<hall>.<strand>.<tier>' from pack/registry/skills.json, for
@@ -75,7 +75,7 @@ def iso(dt):
 
 
 def build():
-    courses_reg = load('courses/registry/courses.json')
+    courses_reg = load('courses_roadmap/registry/courses.json')
     skills = {s['skill_id'] for s in load('pack/registry/skills.json')['skills']}
     sims = set(load('sims/registry/sims.json')['sims'])
     pack_version = load('pack/manifest.json')['pack_version']

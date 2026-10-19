@@ -268,9 +268,20 @@ ok('it states the limit with the capability: nothing here is a construction deta
   /nobody should\s+build anything from it/.test(reg.honesty.not_a_construction_detail)
   && /no fixing centres/.test(reg.honesty.not_a_construction_detail)
   && /no loads/.test(reg.honesty.not_a_construction_detail));
-ok('the whole-campus arithmetic admits it is a PREDICTION, and names the one campus it was measured against',
+/* The second clause of this check used to require the sentence "Nothing
+   here has been drawn yet". It is drawn now, so that clause was asserting
+   something false and had to go. The first and third clauses did not: the
+   whole-campus figure is STILL a prediction of what the placement rules
+   would cost, and it must still name the campus it was reckoned against.
+   What replaces the stale clause is the thing that makes the prediction
+   answerable — the page's own probe, which reports what was really built
+   beside what was predicted here. */
+ok('the whole-campus arithmetic admits it is a PREDICTION, names the one '
+  + 'campus it was reckoned against, and names the probe that can now '
+  + 'check it against the drawing',
   /PREDICTION, not a measurement/.test(reg.honesty.budget_limit)
-  && /Nothing here has been drawn\s+yet/.test(reg.honesty.budget_limit)
+  && /__tc3dKit\(\)/.test(reg.honesty.budget_limit)
+  && /kitDress\(\)/.test(reg.honesty.budget_limit)
   && reg.honesty.budget_limit.includes(reg.budget.budgeted_campus));
 ok('the reference figures admit they were measured elsewhere, on files this repo does not contain',
   reg.reference.provenance === 'MEASURED-ELSEWHERE'
@@ -374,6 +385,25 @@ ok('the campus counts are the campus budget, and the rule counts are the rules',
 const src = readFileSync(url('./build.py'));
 ok('the registry was built from the current builder source (stamp check)',
   reg.source_stamp === createHash('sha256').update(src).digest('hex').slice(0, 16));
+
+
+/* -------------------------------------------- the reference count -------- */
+// This pack quoted "five downloaded reference models" while
+// assets/REFERENCE.md, which is the record of the measurement, tables SIX.
+// The five came from the brief that commissioned the pack, not from the
+// measurement, and it sat in the registry as a provenance claim - the one
+// kind of string that must not be approximately right. A number about where
+// evidence came from is checked against the evidence.
+{
+  const NUM = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6,
+               seven: 7, eight: 8, nine: 9, ten: 10 };
+  const note = readFileSync(new URL('../assets/REFERENCE.md', import.meta.url), 'utf8');
+  const rows = [...note.matchAll(/^\| `[^`]+\.glb` \|/gm)].length;
+  const said = reg.reference.how.match(/\b(one|two|three|four|five|six|seven|eight|nine|ten)\s+(?:downloaded\s+)?reference/i);
+  ok('the number of reference models this pack names is the number '
+    + `assets/REFERENCE.md actually tables (${rows})`,
+    rows > 0 && said !== null && NUM[said[1].toLowerCase()] === rows);
+}
 
 console.log(`kit/test: ${n} checks passed — ${pieces.length} pieces over `
   + `${reg.counts.families} families (${reg.counts.boxes} boxes, `

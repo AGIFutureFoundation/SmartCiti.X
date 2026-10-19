@@ -23,7 +23,7 @@ const json = (p) => JSON.parse(read(p));
 
 const logText = read('./fixtures/session_log.jsonl');
 const pageText = read('./dashboard.html');
-const coursesReg = json('../courses/registry/courses.json');
+const coursesReg = json('../courses_roadmap/registry/courses.json');
 const skillsReg = json('../pack/registry/skills.json');
 const sims = json('../sims/registry/sims.json');
 const manifest = json('../pack/manifest.json');
@@ -221,7 +221,7 @@ ok('rebuilding the page is byte-identical to cohort/dashboard.html', rebuilt ===
 const codes = new Set(coursesReg.courses.map((c) => c.code));
 const skillSet = new Set(skillsReg.skills.map((s) => s.skill_id));
 const halls = new Set(skillsReg.skills.map((s) => s.skill_id.split('.')[0]));
-ok(`every course code in the log resolves in courses/registry/courses.json, and all ${codes.size} courses are covered`,
+ok(`every course code in the log resolves in courses_roadmap/registry/courses.json, and all ${codes.size} courses are covered`,
   events.every((e) => codes.has(e.payload.course)) && new Set(events.map((e) => e.payload.course)).size === codes.size);
 ok(`every skill id in the log and on the dashboard (${Object.keys(D.skill_map.cells).length}) resolves in pack/registry/skills.json`,
   events.every((e) => e.context.skill_ids.every((s) => skillSet.has(s)))

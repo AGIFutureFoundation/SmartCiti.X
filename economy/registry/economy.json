@@ -1,0 +1,3417 @@
+{
+ "pack": "economy",
+ "pack_version": "3.2.0",
+ "source_stamp": "ba9afe7413198ea1",
+ "source_stamp_sha256": "ba9afe7413198ea18030770fb124fce020a7b72456208b12c56f194e6168cd57",
+ "inputs": [
+  "economy/build.py",
+  "parishes/registry/parishes.json",
+  "unions/registry/unions.json",
+  "parishes/render.py#USE",
+  "parishes/maps/tiles/*.webp (read)"
+ ],
+ "provenance_tiers": [
+  "DERIVED",
+  "AUTHORED"
+ ],
+ "honesty": {
+  "coins": "Play coins - not money: never exchangeable, never bought, never linked to payments.",
+  "lots": "Lots, shops and rentals are AUTHORED game lots on the AUTHORED map fabric - not real properties, addresses, listings or businesses.",
+  "state": "State stays in this browser (localStorage); no account, no server, no network.",
+  "games": "City life is play: it never enters a completion record and certifies nothing."
+ },
+ "placement": {
+  "rule": "grid 200 m around each parish LOCAL origin (nearest first, within 32000 m), inside the RECORDED outline, outside the water keep-out, min gap 240 m, up to 5 lots per zone",
+  "landuse_method": "DERIVED: 9x9 pixel window of PARISH AUTHORED ground tile matched to parishes/render.py USE tints (tol 4, margin 3); >= 15% one zone and the other zone <= 1/5 of it",
+  "water_keepout": {
+   "radius_m": 12000.0,
+   "around": [
+    "Lake Pontchartrain",
+    "Lake Maurepas"
+   ],
+   "provenance": "AUTHORED",
+   "note": "approximate; inland water is not cut out of the outlines, this is not a shoreline"
+  },
+  "frame": "parish LOCAL metres (PARISH contract); x = east_m, z = -north_m"
+ },
+ "coin_rules": {
+  "unit": "coins",
+  "note": "play coins - not money",
+  "start_balance": 500,
+  "day_ms": 60000,
+  "overdraft": false,
+  "eviction_after_unpaid_days": 3,
+  "practice_days": 1,
+  "provenance": "AUTHORED",
+  "what": "AUTHORED game-balance values for play; never exchangeable, never bought, never linked to payments."
+ },
+ "rentals": {
+  "home": {
+   "zone": "residential",
+   "rent_coins_per_day": 12,
+   "buy_coins": 360,
+   "provenance": "AUTHORED"
+  },
+  "shop": {
+   "zone": "commercial",
+   "rent_coins_per_day": 25,
+   "buy_coins": 750,
+   "provenance": "AUTHORED"
+  }
+ },
+ "business_types": [
+  {
+   "id": "electrical-shop",
+   "label": "Electrical contractor shop",
+   "trade_id": "electricians",
+   "zone": "commercial",
+   "generic": false,
+   "provenance": "AUTHORED",
+   "setup_coins": 150,
+   "income_coins_per_day_skilled": 60,
+   "income_coins_per_day_unskilled": 30,
+   "staff_bonus_coins_per_day": 20,
+   "staff_wage_coins_per_day": 12,
+   "max_staff": 3
+  },
+  {
+   "id": "plumbing-shop",
+   "label": "Plumbing and pipefitting shop",
+   "trade_id": "pipefitters",
+   "zone": "commercial",
+   "generic": false,
+   "provenance": "AUTHORED",
+   "setup_coins": 150,
+   "income_coins_per_day_skilled": 60,
+   "income_coins_per_day_unskilled": 30,
+   "staff_bonus_coins_per_day": 20,
+   "staff_wage_coins_per_day": 12,
+   "max_staff": 3
+  },
+  {
+   "id": "carpentry-shop",
+   "label": "Carpentry and cabinet shop",
+   "trade_id": "carpenters",
+   "zone": "commercial",
+   "generic": false,
+   "provenance": "AUTHORED",
+   "setup_coins": 150,
+   "income_coins_per_day_skilled": 60,
+   "income_coins_per_day_unskilled": 30,
+   "staff_bonus_coins_per_day": 20,
+   "staff_wage_coins_per_day": 12,
+   "max_staff": 3
+  },
+  {
+   "id": "welding-shop",
+   "label": "Welding and fabrication shop",
+   "trade_id": "welders",
+   "zone": "commercial",
+   "generic": false,
+   "provenance": "AUTHORED",
+   "setup_coins": 150,
+   "income_coins_per_day_skilled": 60,
+   "income_coins_per_day_unskilled": 30,
+   "staff_bonus_coins_per_day": 20,
+   "staff_wage_coins_per_day": 12,
+   "max_staff": 3
+  },
+  {
+   "id": "hvac-service",
+   "label": "Heating and cooling service",
+   "trade_id": "hvacr",
+   "zone": "commercial",
+   "generic": false,
+   "provenance": "AUTHORED",
+   "setup_coins": 150,
+   "income_coins_per_day_skilled": 60,
+   "income_coins_per_day_unskilled": 30,
+   "staff_bonus_coins_per_day": 20,
+   "staff_wage_coins_per_day": 12,
+   "max_staff": 3
+  },
+  {
+   "id": "landscape-yard",
+   "label": "Landscaping yard",
+   "trade_id": "grounds",
+   "zone": "commercial",
+   "generic": false,
+   "provenance": "AUTHORED",
+   "setup_coins": 150,
+   "income_coins_per_day_skilled": 60,
+   "income_coins_per_day_unskilled": 30,
+   "staff_bonus_coins_per_day": 20,
+   "staff_wage_coins_per_day": 12,
+   "max_staff": 3
+  },
+  {
+   "id": "paint-shop",
+   "label": "Painting contractor shop",
+   "trade_id": "painters",
+   "zone": "commercial",
+   "generic": false,
+   "provenance": "AUTHORED",
+   "setup_coins": 150,
+   "income_coins_per_day_skilled": 60,
+   "income_coins_per_day_unskilled": 30,
+   "staff_bonus_coins_per_day": 20,
+   "staff_wage_coins_per_day": 12,
+   "max_staff": 3
+  },
+  {
+   "id": "machine-shop",
+   "label": "Machine shop",
+   "trade_id": "machinists",
+   "zone": "commercial",
+   "generic": false,
+   "provenance": "AUTHORED",
+   "setup_coins": 150,
+   "income_coins_per_day_skilled": 60,
+   "income_coins_per_day_unskilled": 30,
+   "staff_bonus_coins_per_day": 20,
+   "staff_wage_coins_per_day": 12,
+   "max_staff": 3
+  },
+  {
+   "id": "diesel-garage",
+   "label": "Diesel repair garage",
+   "trade_id": "fleet-diesel",
+   "zone": "commercial",
+   "generic": false,
+   "provenance": "AUTHORED",
+   "setup_coins": 150,
+   "income_coins_per_day_skilled": 60,
+   "income_coins_per_day_unskilled": 30,
+   "staff_bonus_coins_per_day": 20,
+   "staff_wage_coins_per_day": 12,
+   "max_staff": 3
+  },
+  {
+   "id": "glass-shop",
+   "label": "Glass and glazing shop",
+   "trade_id": "glaziers",
+   "zone": "commercial",
+   "generic": false,
+   "provenance": "AUTHORED",
+   "setup_coins": 150,
+   "income_coins_per_day_skilled": 60,
+   "income_coins_per_day_unskilled": 30,
+   "staff_bonus_coins_per_day": 20,
+   "staff_wage_coins_per_day": 12,
+   "max_staff": 3
+  },
+  {
+   "id": "bakery",
+   "label": "Bakery",
+   "trade_id": null,
+   "zone": "commercial",
+   "generic": true,
+   "provenance": "AUTHORED",
+   "setup_coins": 120,
+   "income_coins_per_day_skilled": 40,
+   "income_coins_per_day_unskilled": 40,
+   "staff_bonus_coins_per_day": 18,
+   "staff_wage_coins_per_day": 12,
+   "max_staff": 3
+  },
+  {
+   "id": "boat-repair",
+   "label": "Boat repair",
+   "trade_id": null,
+   "zone": "commercial",
+   "generic": true,
+   "provenance": "AUTHORED",
+   "setup_coins": 120,
+   "income_coins_per_day_skilled": 40,
+   "income_coins_per_day_unskilled": 40,
+   "staff_bonus_coins_per_day": 18,
+   "staff_wage_coins_per_day": 12,
+   "max_staff": 3
+  },
+  {
+   "id": "tool-rental",
+   "label": "Tool rental",
+   "trade_id": null,
+   "zone": "commercial",
+   "generic": true,
+   "provenance": "AUTHORED",
+   "setup_coins": 120,
+   "income_coins_per_day_skilled": 40,
+   "income_coins_per_day_unskilled": 40,
+   "staff_bonus_coins_per_day": 18,
+   "staff_wage_coins_per_day": 12,
+   "max_staff": 3
+  },
+  {
+   "id": "corner-grocery",
+   "label": "Corner grocery",
+   "trade_id": null,
+   "zone": "commercial",
+   "generic": true,
+   "provenance": "AUTHORED",
+   "setup_coins": 120,
+   "income_coins_per_day_skilled": 40,
+   "income_coins_per_day_unskilled": 40,
+   "staff_bonus_coins_per_day": 18,
+   "staff_wage_coins_per_day": 12,
+   "max_staff": 3
+  }
+ ],
+ "counts": {
+  "parishes": 13,
+  "lots": 130,
+  "commercial": 65,
+  "residential": 65,
+  "tiles_read": 47,
+  "business_types": 14,
+  "trade_linked": 10
+ },
+ "parishes": {
+  "22005": {
+   "name": "Ascension",
+   "lots": [
+    {
+     "id": "lot-22005-r01",
+     "parish": "22005",
+     "zone": "residential",
+     "local_m": [
+      200,
+      0
+     ],
+     "x": 200,
+     "z": 0,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22005-r02",
+     "parish": "22005",
+     "zone": "residential",
+     "local_m": [
+      -200,
+      400
+     ],
+     "x": -200,
+     "z": -400,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22005-r03",
+     "parish": "22005",
+     "zone": "residential",
+     "local_m": [
+      400,
+      200
+     ],
+     "x": 400,
+     "z": -200,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22005-r04",
+     "parish": "22005",
+     "zone": "residential",
+     "local_m": [
+      200,
+      -600
+     ],
+     "x": 200,
+     "z": 600,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22005-r05",
+     "parish": "22005",
+     "zone": "residential",
+     "local_m": [
+      200,
+      600
+     ],
+     "x": 200,
+     "z": -600,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22005-c01",
+     "parish": "22005",
+     "zone": "commercial",
+     "local_m": [
+      -2200,
+      -1600
+     ],
+     "x": -2200,
+     "z": 1600,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22005-c02",
+     "parish": "22005",
+     "zone": "commercial",
+     "local_m": [
+      -4000,
+      -1200
+     ],
+     "x": -4000,
+     "z": 1200,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22005-c03",
+     "parish": "22005",
+     "zone": "commercial",
+     "local_m": [
+      -2000,
+      5200
+     ],
+     "x": -2000,
+     "z": -5200,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22005-c04",
+     "parish": "22005",
+     "zone": "commercial",
+     "local_m": [
+      3600,
+      4800
+     ],
+     "x": 3600,
+     "z": -4800,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22005-c05",
+     "parish": "22005",
+     "zone": "commercial",
+     "local_m": [
+      2400,
+      5800
+     ],
+     "x": 2400,
+     "z": -5800,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    }
+   ],
+   "counts": {
+    "lots": 10,
+    "commercial": 5,
+    "residential": 5,
+    "shop_rentals": 5,
+    "home_rentals": 5
+   }
+  },
+  "22051": {
+   "name": "Jefferson",
+   "lots": [
+    {
+     "id": "lot-22051-c01",
+     "parish": "22051",
+     "zone": "commercial",
+     "local_m": [
+      600,
+      0
+     ],
+     "x": 600,
+     "z": 0,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22051-c02",
+     "parish": "22051",
+     "zone": "commercial",
+     "local_m": [
+      600,
+      400
+     ],
+     "x": 600,
+     "z": -400,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22051-c03",
+     "parish": "22051",
+     "zone": "commercial",
+     "local_m": [
+      1000,
+      -1200
+     ],
+     "x": 1000,
+     "z": 1200,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22051-c04",
+     "parish": "22051",
+     "zone": "commercial",
+     "local_m": [
+      1200,
+      -1400
+     ],
+     "x": 1200,
+     "z": 1400,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22051-r01",
+     "parish": "22051",
+     "zone": "residential",
+     "local_m": [
+      1000,
+      1800
+     ],
+     "x": 1000,
+     "z": -1800,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22051-c05",
+     "parish": "22051",
+     "zone": "commercial",
+     "local_m": [
+      -1400,
+      -1600
+     ],
+     "x": -1400,
+     "z": 1600,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22051-r02",
+     "parish": "22051",
+     "zone": "residential",
+     "local_m": [
+      1600,
+      1800
+     ],
+     "x": 1600,
+     "z": -1800,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22051-r03",
+     "parish": "22051",
+     "zone": "residential",
+     "local_m": [
+      1400,
+      2000
+     ],
+     "x": 1400,
+     "z": -2000,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22051-r04",
+     "parish": "22051",
+     "zone": "residential",
+     "local_m": [
+      1200,
+      2400
+     ],
+     "x": 1200,
+     "z": -2400,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22051-r05",
+     "parish": "22051",
+     "zone": "residential",
+     "local_m": [
+      2200,
+      1600
+     ],
+     "x": 2200,
+     "z": -1600,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    }
+   ],
+   "counts": {
+    "lots": 10,
+    "commercial": 5,
+    "residential": 5,
+    "shop_rentals": 5,
+    "home_rentals": 5
+   }
+  },
+  "22057": {
+   "name": "Lafourche",
+   "lots": [
+    {
+     "id": "lot-22057-r01",
+     "parish": "22057",
+     "zone": "residential",
+     "local_m": [
+      -400,
+      800
+     ],
+     "x": -400,
+     "z": -800,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22057-r02",
+     "parish": "22057",
+     "zone": "residential",
+     "local_m": [
+      800,
+      800
+     ],
+     "x": 800,
+     "z": -800,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22057-r03",
+     "parish": "22057",
+     "zone": "residential",
+     "local_m": [
+      -400,
+      1200
+     ],
+     "x": -400,
+     "z": -1200,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22057-r04",
+     "parish": "22057",
+     "zone": "residential",
+     "local_m": [
+      1000,
+      1000
+     ],
+     "x": 1000,
+     "z": -1000,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22057-c01",
+     "parish": "22057",
+     "zone": "commercial",
+     "local_m": [
+      -1600,
+      0
+     ],
+     "x": -1600,
+     "z": 0,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22057-r05",
+     "parish": "22057",
+     "zone": "residential",
+     "local_m": [
+      200,
+      1600
+     ],
+     "x": 200,
+     "z": -1600,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22057-c02",
+     "parish": "22057",
+     "zone": "commercial",
+     "local_m": [
+      -1800,
+      -200
+     ],
+     "x": -1800,
+     "z": 200,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22057-c03",
+     "parish": "22057",
+     "zone": "commercial",
+     "local_m": [
+      -2000,
+      600
+     ],
+     "x": -2000,
+     "z": -600,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22057-c04",
+     "parish": "22057",
+     "zone": "commercial",
+     "local_m": [
+      -2800,
+      0
+     ],
+     "x": -2800,
+     "z": 0,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22057-c05",
+     "parish": "22057",
+     "zone": "commercial",
+     "local_m": [
+      -2400,
+      -1600
+     ],
+     "x": -2400,
+     "z": 1600,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    }
+   ],
+   "counts": {
+    "lots": 10,
+    "commercial": 5,
+    "residential": 5,
+    "shop_rentals": 5,
+    "home_rentals": 5
+   }
+  },
+  "22063": {
+   "name": "Livingston",
+   "lots": [
+    {
+     "id": "lot-22063-r01",
+     "parish": "22063",
+     "zone": "residential",
+     "local_m": [
+      200,
+      -400
+     ],
+     "x": 200,
+     "z": 400,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22063-r02",
+     "parish": "22063",
+     "zone": "residential",
+     "local_m": [
+      400,
+      -1000
+     ],
+     "x": 400,
+     "z": 1000,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22063-r03",
+     "parish": "22063",
+     "zone": "residential",
+     "local_m": [
+      0,
+      -1400
+     ],
+     "x": 0,
+     "z": 1400,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22063-r04",
+     "parish": "22063",
+     "zone": "residential",
+     "local_m": [
+      -800,
+      1200
+     ],
+     "x": -800,
+     "z": -1200,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22063-r05",
+     "parish": "22063",
+     "zone": "residential",
+     "local_m": [
+      1400,
+      400
+     ],
+     "x": 1400,
+     "z": -400,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22063-c01",
+     "parish": "22063",
+     "zone": "commercial",
+     "local_m": [
+      1000,
+      1200
+     ],
+     "x": 1000,
+     "z": -1200,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22063-c02",
+     "parish": "22063",
+     "zone": "commercial",
+     "local_m": [
+      4000,
+      -2400
+     ],
+     "x": 4000,
+     "z": 2400,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22063-c03",
+     "parish": "22063",
+     "zone": "commercial",
+     "local_m": [
+      -6000,
+      4200
+     ],
+     "x": -6000,
+     "z": -4200,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22063-c04",
+     "parish": "22063",
+     "zone": "commercial",
+     "local_m": [
+      -6800,
+      2800
+     ],
+     "x": -6800,
+     "z": -2800,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22063-c05",
+     "parish": "22063",
+     "zone": "commercial",
+     "local_m": [
+      -3600,
+      -6600
+     ],
+     "x": -3600,
+     "z": 6600,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    }
+   ],
+   "counts": {
+    "lots": 10,
+    "commercial": 5,
+    "residential": 5,
+    "shop_rentals": 5,
+    "home_rentals": 5
+   }
+  },
+  "22071": {
+   "name": "Orleans",
+   "lots": [
+    {
+     "id": "lot-22071-r01",
+     "parish": "22071",
+     "zone": "residential",
+     "local_m": [
+      600,
+      0
+     ],
+     "x": 600,
+     "z": 0,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22071-r02",
+     "parish": "22071",
+     "zone": "residential",
+     "local_m": [
+      600,
+      -400
+     ],
+     "x": 600,
+     "z": 400,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22071-r03",
+     "parish": "22071",
+     "zone": "residential",
+     "local_m": [
+      600,
+      400
+     ],
+     "x": 600,
+     "z": -400,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22071-r04",
+     "parish": "22071",
+     "zone": "residential",
+     "local_m": [
+      800,
+      200
+     ],
+     "x": 800,
+     "z": -200,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22071-r05",
+     "parish": "22071",
+     "zone": "residential",
+     "local_m": [
+      600,
+      -800
+     ],
+     "x": 600,
+     "z": 800,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22071-c01",
+     "parish": "22071",
+     "zone": "commercial",
+     "local_m": [
+      2800,
+      1200
+     ],
+     "x": 2800,
+     "z": -1200,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22071-c02",
+     "parish": "22071",
+     "zone": "commercial",
+     "local_m": [
+      3000,
+      2000
+     ],
+     "x": 3000,
+     "z": -2000,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22071-c03",
+     "parish": "22071",
+     "zone": "commercial",
+     "local_m": [
+      -3800,
+      4000
+     ],
+     "x": -3800,
+     "z": -4000,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22071-c04",
+     "parish": "22071",
+     "zone": "commercial",
+     "local_m": [
+      -4200,
+      4600
+     ],
+     "x": -4200,
+     "z": -4600,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22071-c05",
+     "parish": "22071",
+     "zone": "commercial",
+     "local_m": [
+      -8400,
+      -600
+     ],
+     "x": -8400,
+     "z": 600,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    }
+   ],
+   "counts": {
+    "lots": 10,
+    "commercial": 5,
+    "residential": 5,
+    "shop_rentals": 5,
+    "home_rentals": 5
+   }
+  },
+  "22075": {
+   "name": "Plaquemines",
+   "lots": [
+    {
+     "id": "lot-22075-r01",
+     "parish": "22075",
+     "zone": "residential",
+     "local_m": [
+      0,
+      0
+     ],
+     "x": 0,
+     "z": 0,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22075-r02",
+     "parish": "22075",
+     "zone": "residential",
+     "local_m": [
+      -600,
+      0
+     ],
+     "x": -600,
+     "z": 0,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22075-r03",
+     "parish": "22075",
+     "zone": "residential",
+     "local_m": [
+      600,
+      0
+     ],
+     "x": 600,
+     "z": 0,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22075-r04",
+     "parish": "22075",
+     "zone": "residential",
+     "local_m": [
+      400,
+      -600
+     ],
+     "x": 400,
+     "z": 600,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22075-r05",
+     "parish": "22075",
+     "zone": "residential",
+     "local_m": [
+      400,
+      600
+     ],
+     "x": 400,
+     "z": -600,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22075-c01",
+     "parish": "22075",
+     "zone": "commercial",
+     "local_m": [
+      -3000,
+      -3600
+     ],
+     "x": -3000,
+     "z": 3600,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22075-c02",
+     "parish": "22075",
+     "zone": "commercial",
+     "local_m": [
+      -17000,
+      -3600
+     ],
+     "x": -17000,
+     "z": 3600,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22075-c03",
+     "parish": "22075",
+     "zone": "commercial",
+     "local_m": [
+      -19600,
+      0
+     ],
+     "x": -19600,
+     "z": 0,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22075-c04",
+     "parish": "22075",
+     "zone": "commercial",
+     "local_m": [
+      -19200,
+      -4000
+     ],
+     "x": -19200,
+     "z": 4000,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22075-c05",
+     "parish": "22075",
+     "zone": "commercial",
+     "local_m": [
+      -21200,
+      18000
+     ],
+     "x": -21200,
+     "z": -18000,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    }
+   ],
+   "counts": {
+    "lots": 10,
+    "commercial": 5,
+    "residential": 5,
+    "shop_rentals": 5,
+    "home_rentals": 5
+   }
+  },
+  "22087": {
+   "name": "St. Bernard",
+   "lots": [
+    {
+     "id": "lot-22087-r01",
+     "parish": "22087",
+     "zone": "residential",
+     "local_m": [
+      -200,
+      -200
+     ],
+     "x": -200,
+     "z": 200,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22087-r02",
+     "parish": "22087",
+     "zone": "residential",
+     "local_m": [
+      -200,
+      200
+     ],
+     "x": -200,
+     "z": -200,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22087-r03",
+     "parish": "22087",
+     "zone": "residential",
+     "local_m": [
+      200,
+      200
+     ],
+     "x": 200,
+     "z": -200,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22087-r04",
+     "parish": "22087",
+     "zone": "residential",
+     "local_m": [
+      -400,
+      0
+     ],
+     "x": -400,
+     "z": 0,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22087-r05",
+     "parish": "22087",
+     "zone": "residential",
+     "local_m": [
+      -400,
+      400
+     ],
+     "x": -400,
+     "z": -400,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22087-c01",
+     "parish": "22087",
+     "zone": "commercial",
+     "local_m": [
+      -1400,
+      -6800
+     ],
+     "x": -1400,
+     "z": 6800,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22087-c02",
+     "parish": "22087",
+     "zone": "commercial",
+     "local_m": [
+      -7600,
+      -2200
+     ],
+     "x": -7600,
+     "z": 2200,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22087-c03",
+     "parish": "22087",
+     "zone": "commercial",
+     "local_m": [
+      -8800,
+      -1400
+     ],
+     "x": -8800,
+     "z": 1400,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22087-c04",
+     "parish": "22087",
+     "zone": "commercial",
+     "local_m": [
+      -6600,
+      -6800
+     ],
+     "x": -6600,
+     "z": 6800,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22087-c05",
+     "parish": "22087",
+     "zone": "commercial",
+     "local_m": [
+      -9000,
+      -3000
+     ],
+     "x": -9000,
+     "z": 3000,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    }
+   ],
+   "counts": {
+    "lots": 10,
+    "commercial": 5,
+    "residential": 5,
+    "shop_rentals": 5,
+    "home_rentals": 5
+   }
+  },
+  "22089": {
+   "name": "St. Charles",
+   "lots": [
+    {
+     "id": "lot-22089-r01",
+     "parish": "22089",
+     "zone": "residential",
+     "local_m": [
+      -600,
+      -400
+     ],
+     "x": -600,
+     "z": 400,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22089-r02",
+     "parish": "22089",
+     "zone": "residential",
+     "local_m": [
+      -600,
+      400
+     ],
+     "x": -600,
+     "z": -400,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22089-r03",
+     "parish": "22089",
+     "zone": "residential",
+     "local_m": [
+      -800,
+      -600
+     ],
+     "x": -800,
+     "z": 600,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22089-r04",
+     "parish": "22089",
+     "zone": "residential",
+     "local_m": [
+      200,
+      -1000
+     ],
+     "x": 200,
+     "z": 1000,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22089-r05",
+     "parish": "22089",
+     "zone": "residential",
+     "local_m": [
+      0,
+      -1200
+     ],
+     "x": 0,
+     "z": 1200,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22089-c01",
+     "parish": "22089",
+     "zone": "commercial",
+     "local_m": [
+      -1200,
+      -800
+     ],
+     "x": -1200,
+     "z": 800,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22089-c02",
+     "parish": "22089",
+     "zone": "commercial",
+     "local_m": [
+      -4000,
+      1000
+     ],
+     "x": -4000,
+     "z": -1000,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22089-c03",
+     "parish": "22089",
+     "zone": "commercial",
+     "local_m": [
+      -4400,
+      1800
+     ],
+     "x": -4400,
+     "z": -1800,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22089-c04",
+     "parish": "22089",
+     "zone": "commercial",
+     "local_m": [
+      -2000,
+      -4400
+     ],
+     "x": -2000,
+     "z": 4400,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22089-c05",
+     "parish": "22089",
+     "zone": "commercial",
+     "local_m": [
+      -4800,
+      800
+     ],
+     "x": -4800,
+     "z": -800,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    }
+   ],
+   "counts": {
+    "lots": 10,
+    "commercial": 5,
+    "residential": 5,
+    "shop_rentals": 5,
+    "home_rentals": 5
+   }
+  },
+  "22093": {
+   "name": "St. James",
+   "lots": [
+    {
+     "id": "lot-22093-r01",
+     "parish": "22093",
+     "zone": "residential",
+     "local_m": [
+      200,
+      200
+     ],
+     "x": 200,
+     "z": -200,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22093-c01",
+     "parish": "22093",
+     "zone": "commercial",
+     "local_m": [
+      0,
+      400
+     ],
+     "x": 0,
+     "z": -400,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22093-c02",
+     "parish": "22093",
+     "zone": "commercial",
+     "local_m": [
+      200,
+      600
+     ],
+     "x": 200,
+     "z": -600,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22093-r02",
+     "parish": "22093",
+     "zone": "residential",
+     "local_m": [
+      600,
+      200
+     ],
+     "x": 600,
+     "z": -200,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22093-r03",
+     "parish": "22093",
+     "zone": "residential",
+     "local_m": [
+      0,
+      800
+     ],
+     "x": 0,
+     "z": -800,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22093-r04",
+     "parish": "22093",
+     "zone": "residential",
+     "local_m": [
+      -800,
+      -200
+     ],
+     "x": -800,
+     "z": 200,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22093-r05",
+     "parish": "22093",
+     "zone": "residential",
+     "local_m": [
+      600,
+      600
+     ],
+     "x": 600,
+     "z": -600,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22093-c03",
+     "parish": "22093",
+     "zone": "commercial",
+     "local_m": [
+      -1000,
+      -1800
+     ],
+     "x": -1000,
+     "z": 1800,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22093-c04",
+     "parish": "22093",
+     "zone": "commercial",
+     "local_m": [
+      -2000,
+      600
+     ],
+     "x": -2000,
+     "z": -600,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22093-c05",
+     "parish": "22093",
+     "zone": "commercial",
+     "local_m": [
+      -1400,
+      1600
+     ],
+     "x": -1400,
+     "z": -1600,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    }
+   ],
+   "counts": {
+    "lots": 10,
+    "commercial": 5,
+    "residential": 5,
+    "shop_rentals": 5,
+    "home_rentals": 5
+   }
+  },
+  "22095": {
+   "name": "St. John the Baptist",
+   "lots": [
+    {
+     "id": "lot-22095-r01",
+     "parish": "22095",
+     "zone": "residential",
+     "local_m": [
+      -1000,
+      0
+     ],
+     "x": -1000,
+     "z": 0,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22095-r02",
+     "parish": "22095",
+     "zone": "residential",
+     "local_m": [
+      0,
+      -1000
+     ],
+     "x": 0,
+     "z": 1000,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22095-r03",
+     "parish": "22095",
+     "zone": "residential",
+     "local_m": [
+      -1000,
+      600
+     ],
+     "x": -1000,
+     "z": -600,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22095-r04",
+     "parish": "22095",
+     "zone": "residential",
+     "local_m": [
+      -600,
+      -1000
+     ],
+     "x": -600,
+     "z": 1000,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22095-r05",
+     "parish": "22095",
+     "zone": "residential",
+     "local_m": [
+      -200,
+      -1200
+     ],
+     "x": -200,
+     "z": 1200,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22095-c01",
+     "parish": "22095",
+     "zone": "commercial",
+     "local_m": [
+      -1400,
+      -3800
+     ],
+     "x": -1400,
+     "z": 3800,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22095-c02",
+     "parish": "22095",
+     "zone": "commercial",
+     "local_m": [
+      2400,
+      -3600
+     ],
+     "x": 2400,
+     "z": 3600,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22095-c03",
+     "parish": "22095",
+     "zone": "commercial",
+     "local_m": [
+      4200,
+      -3600
+     ],
+     "x": 4200,
+     "z": 3600,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22095-c04",
+     "parish": "22095",
+     "zone": "commercial",
+     "local_m": [
+      3800,
+      -4200
+     ],
+     "x": 3800,
+     "z": 4200,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22095-c05",
+     "parish": "22095",
+     "zone": "commercial",
+     "local_m": [
+      -1200,
+      -6400
+     ],
+     "x": -1200,
+     "z": 6400,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    }
+   ],
+   "counts": {
+    "lots": 10,
+    "commercial": 5,
+    "residential": 5,
+    "shop_rentals": 5,
+    "home_rentals": 5
+   }
+  },
+  "22103": {
+   "name": "St. Tammany",
+   "lots": [
+    {
+     "id": "lot-22103-r01",
+     "parish": "22103",
+     "zone": "residential",
+     "local_m": [
+      -200,
+      0
+     ],
+     "x": -200,
+     "z": 0,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22103-r02",
+     "parish": "22103",
+     "zone": "residential",
+     "local_m": [
+      0,
+      200
+     ],
+     "x": 0,
+     "z": -200,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22103-r03",
+     "parish": "22103",
+     "zone": "residential",
+     "local_m": [
+      600,
+      0
+     ],
+     "x": 600,
+     "z": 0,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22103-r04",
+     "parish": "22103",
+     "zone": "residential",
+     "local_m": [
+      -200,
+      -600
+     ],
+     "x": -200,
+     "z": 600,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22103-r05",
+     "parish": "22103",
+     "zone": "residential",
+     "local_m": [
+      400,
+      -600
+     ],
+     "x": 400,
+     "z": 600,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22103-c01",
+     "parish": "22103",
+     "zone": "commercial",
+     "local_m": [
+      -6200,
+      400
+     ],
+     "x": -6200,
+     "z": -400,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22103-c02",
+     "parish": "22103",
+     "zone": "commercial",
+     "local_m": [
+      -5600,
+      4600
+     ],
+     "x": -5600,
+     "z": -4600,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22103-c03",
+     "parish": "22103",
+     "zone": "commercial",
+     "local_m": [
+      -5800,
+      5400
+     ],
+     "x": -5800,
+     "z": -5400,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22103-c04",
+     "parish": "22103",
+     "zone": "commercial",
+     "local_m": [
+      0,
+      -8200
+     ],
+     "x": 0,
+     "z": 8200,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22103-c05",
+     "parish": "22103",
+     "zone": "commercial",
+     "local_m": [
+      600,
+      -8200
+     ],
+     "x": 600,
+     "z": 8200,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    }
+   ],
+   "counts": {
+    "lots": 10,
+    "commercial": 5,
+    "residential": 5,
+    "shop_rentals": 5,
+    "home_rentals": 5
+   }
+  },
+  "22105": {
+   "name": "Tangipahoa",
+   "lots": [
+    {
+     "id": "lot-22105-r01",
+     "parish": "22105",
+     "zone": "residential",
+     "local_m": [
+      -200,
+      -200
+     ],
+     "x": -200,
+     "z": 200,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22105-r02",
+     "parish": "22105",
+     "zone": "residential",
+     "local_m": [
+      -200,
+      -600
+     ],
+     "x": -200,
+     "z": 600,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22105-r03",
+     "parish": "22105",
+     "zone": "residential",
+     "local_m": [
+      -600,
+      400
+     ],
+     "x": -600,
+     "z": -400,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22105-r04",
+     "parish": "22105",
+     "zone": "residential",
+     "local_m": [
+      0,
+      800
+     ],
+     "x": 0,
+     "z": -800,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22105-r05",
+     "parish": "22105",
+     "zone": "residential",
+     "local_m": [
+      -800,
+      -400
+     ],
+     "x": -800,
+     "z": 400,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22105-c01",
+     "parish": "22105",
+     "zone": "commercial",
+     "local_m": [
+      5400,
+      -4000
+     ],
+     "x": 5400,
+     "z": 4000,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22105-c02",
+     "parish": "22105",
+     "zone": "commercial",
+     "local_m": [
+      600,
+      -6800
+     ],
+     "x": 600,
+     "z": 6800,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22105-c03",
+     "parish": "22105",
+     "zone": "commercial",
+     "local_m": [
+      6600,
+      -2200
+     ],
+     "x": 6600,
+     "z": 2200,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22105-c04",
+     "parish": "22105",
+     "zone": "commercial",
+     "local_m": [
+      -7200,
+      -600
+     ],
+     "x": -7200,
+     "z": 600,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22105-c05",
+     "parish": "22105",
+     "zone": "commercial",
+     "local_m": [
+      -7000,
+      -1800
+     ],
+     "x": -7000,
+     "z": 1800,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    }
+   ],
+   "counts": {
+    "lots": 10,
+    "commercial": 5,
+    "residential": 5,
+    "shop_rentals": 5,
+    "home_rentals": 5
+   }
+  },
+  "22109": {
+   "name": "Terrebonne",
+   "lots": [
+    {
+     "id": "lot-22109-r01",
+     "parish": "22109",
+     "zone": "residential",
+     "local_m": [
+      -400,
+      -200
+     ],
+     "x": -400,
+     "z": 200,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22109-r02",
+     "parish": "22109",
+     "zone": "residential",
+     "local_m": [
+      0,
+      600
+     ],
+     "x": 0,
+     "z": -600,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22109-r03",
+     "parish": "22109",
+     "zone": "residential",
+     "local_m": [
+      600,
+      -400
+     ],
+     "x": 600,
+     "z": 400,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22109-r04",
+     "parish": "22109",
+     "zone": "residential",
+     "local_m": [
+      600,
+      600
+     ],
+     "x": 600,
+     "z": -600,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22109-r05",
+     "parish": "22109",
+     "zone": "residential",
+     "local_m": [
+      -400,
+      -800
+     ],
+     "x": -400,
+     "z": 800,
+     "size_m": [
+      18,
+      30
+     ],
+     "allowed": [
+      "home"
+     ],
+     "rent_coins_per_day": 12,
+     "buy_coins": 360,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22109-c01",
+     "parish": "22109",
+     "zone": "commercial",
+     "local_m": [
+      6600,
+      400
+     ],
+     "x": 6600,
+     "z": -400,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22109-c02",
+     "parish": "22109",
+     "zone": "commercial",
+     "local_m": [
+      -7000,
+      -800
+     ],
+     "x": -7000,
+     "z": 800,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22109-c03",
+     "parish": "22109",
+     "zone": "commercial",
+     "local_m": [
+      9800,
+      2000
+     ],
+     "x": 9800,
+     "z": -2000,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22109-c04",
+     "parish": "22109",
+     "zone": "commercial",
+     "local_m": [
+      -10600,
+      -600
+     ],
+     "x": -10600,
+     "z": 600,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    },
+    {
+     "id": "lot-22109-c05",
+     "parish": "22109",
+     "zone": "commercial",
+     "local_m": [
+      -10600,
+      -2000
+     ],
+     "x": -10600,
+     "z": 2000,
+     "size_m": [
+      24,
+      30
+     ],
+     "allowed": [
+      "shop"
+     ],
+     "rent_coins_per_day": 25,
+     "buy_coins": 750,
+     "provenance": "AUTHORED",
+     "landuse_provenance": "DERIVED",
+     "label": "AUTHORED game lot - not a real property or address"
+    }
+   ],
+   "counts": {
+    "lots": 10,
+    "commercial": 5,
+    "residential": 5,
+    "shop_rentals": 5,
+    "home_rentals": 5
+   }
+  }
+ }
+}

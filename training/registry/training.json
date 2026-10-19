@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-11",
- "source_stamp": "f2ee35389d8386e5",
+ "source_stamp": "6ac8622613550c50",
  "honesty": {
   "schematic": "every episode comes from SCHEMATIC physics and deterministic rubrics, not a real robot or a real machine: useful for exercising a training pipeline's plumbing and export format, not for training a controller that will run on real equipment.",
   "anonymous": "no name, no email, no biometric or device-identifying data is ever recorded - an episode carries only a scenario id, the control scheme the registry already declares, and the measured outcome.",
@@ -106,5 +106,52 @@
   "consumer": "shaped to hand to the ml-agents fork RECORDED in meta/registry/metaverse.json as example JSON a conversion script could read",
   "not_a_demo_file": "not a native Unity ML-Agents .demo (protobuf) file - this bundle has never produced or tested one, and does not claim to",
   "no_agent_trained": "exporting this file trains nothing by itself: no agent exists in this bundle and none is claimed to, until one is actually trained against this data outside it"
+ },
+ "world_episode_kinds": {
+  "world-teleop": {
+   "v": 1,
+   "fields": [
+    "t",
+    "kind",
+    "v",
+    "env",
+    "embodiment",
+    "world",
+    "actor",
+    "seed",
+    "hz",
+    "dt_s",
+    "steps",
+    "samples",
+    "outcome"
+   ],
+   "actor": "one of ACTORS: `human` (a learner at the keys / touch pad) or `scripted-reference` (the env's SCRIPTED reference policy, deterministic from its seed)",
+   "sample_shape": {
+    "i": "control step index",
+    "pose": "[e_m, n_m, yaw_rad] env-local metres (ROV adds depth_m) - never lat/lon",
+    "vel": "[v_ms, w_rads]",
+    "near": "[AUTHORED object ids within 6 m, at most 4, nearest first]",
+    "a": "[action values in the env's action.fields order]"
+   },
+   "outcome_shape": {
+    "done": "termination id",
+    "success": "bool",
+    "return": "number",
+    "terms": "{reward term: summed value}",
+    "collected": "int"
+   },
+   "granularity": "a fixed low-rate sample (hz) of pose, velocity, nearby AUTHORED object ids and the control inputs, capped at max_samples - a demonstration of SCHEMATIC unicycle kinematics in an AUTHORED arena, not a real robot's trajectory",
+   "what": "one teleoperated (or scripted-reference) run of a robotics env in a world"
+  }
+ },
+ "world_teleop": {
+  "sample_hz": 5,
+  "dt_s": 0.1,
+  "max_samples": 300,
+  "max_samples_policy": "a hard cap per episode: sampling stops at max_samples (60 s at 5 Hz)",
+  "opt_in": "per episode: kept only when the learner pressed Record before driving (or ran the reference policy with Record on), AND the base recorder toggle is not off",
+  "no_personal_data": "no name, email, free text, audio, camera, biometric, device id or real-world location - only env-local pose, velocity, AUTHORED object ids and control inputs",
+  "classroom": "K-12 / classroom mode: recording and sharing are not offered at all",
+  "recorder": "web/robokit.py"
  }
 }

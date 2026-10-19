@@ -21,7 +21,7 @@ import { claimHits, VOCAB } from './honesty.mjs';
 /* ------------------------------------------------------- pure functions --- */
 
 // The claim vocabulary and the scanner live in loop/honesty.json and
-// loop/honesty.mjs, shared with courses/test.mjs and courses/build.py.
+// loop/honesty.mjs, shared with courses_roadmap/test.mjs and courses_roadmap/build.py.
 export const OVERCLAIM = new RegExp(VOCAB.claims.join('|'), 'i');
 export const SECRET = /\bghp_[A-Za-z0-9]{20,}|\bsk-[A-Za-z0-9_-]{20,}|\bAKIA[0-9A-Z]{16}\b|-----BEGIN [A-Z ]*-----/;
 
@@ -120,8 +120,8 @@ function ev01() {
 }
 
 function ev02() {
-  if (!existsSync(join(ROOT, 'courses/test.mjs'))) return ['absent', 'courses/test.mjs does not exist yet'];
-  const r = run('node', ['courses/test.mjs']);
+  if (!existsSync(join(ROOT, 'courses_roadmap/test.mjs'))) return ['absent', 'courses_roadmap/test.mjs does not exist yet'];
+  const r = run('node', ['courses_roadmap/test.mjs']);
   const n = (r.out.match(/^ {2}ok /gm) || []).length;
   return [r.rc === 0 ? 'pass' : 'fail', `${n} checks${r.rc ? ', rc ' + r.rc + ': ' + tail(r.out) : ''}`];
 }

@@ -1,0 +1,34 @@
+{
+ "id": "ti-curtainwall-boom-run",
+ "title": "Curtainwall run under the line, Treasure Island",
+ "job": "Take a basket to each curtainwall work point in order, clipped before it leaves the ground, with an observer who owns the overhead line and a ground attendant who can bring it down.",
+ "place": {"kind": "campus", "id": "treasure-island"},
+ "crew": "aerial-lift-crew",
+ "roles": {
+  "basket-operator": {"union": "glaziers"},
+  "ground-attendant": {"union": "electricians"},
+  "line-observer": {"union": "electricians"}
+ },
+ "handoffs": [
+  {"by": "line-observer", "to": "basket-operator",
+   "from_evidence": {"kind": "walkaround", "sim": "boom-lift", "point": "overhead"},
+   "to_evidence": {"kind": "walkaround", "sim": "boom-lift", "point": "harness"}},
+  {"by": "basket-operator", "to": "ground-attendant",
+   "from_evidence": {"kind": "walkaround", "sim": "boom-lift", "point": "harness"},
+   "to_evidence": {"kind": "walkaround", "sim": "boom-lift", "point": "controls"}},
+  {"by": "ground-attendant", "to": "basket-operator",
+   "from_evidence": {"kind": "walkaround", "sim": "boom-lift", "point": "controls"},
+   "to_evidence": {"kind": "sim", "sim": "boom-lift", "scenario": "bay-curtainwall-run"}},
+  {"by": "basket-operator", "to": "line-observer",
+   "from_evidence": {"kind": "sim", "sim": "boom-lift", "scenario": "bay-curtainwall-run"},
+   "to_evidence": {"kind": "crew", "crew": "aerial-lift-crew", "role": "line-observer", "topic": "zone"}},
+  {"by": "line-observer", "to": "ground-attendant",
+   "from_evidence": {"kind": "crew", "crew": "aerial-lift-crew", "role": "line-observer", "topic": "zone"},
+   "to_evidence": {"kind": "crew", "crew": "aerial-lift-crew", "role": "ground-attendant", "topic": "rescue"}}
+ ],
+ "stop_work": "The line observer stops every move toward the conductor, and the ground attendant brings the basket down without waiting for agreement from the person in it.",
+ "gates": {
+  "walkaround_before_first_move": [{"sim": "boom-lift", "point": "tires-level"}, {"sim": "boom-lift", "point": "guardrails"}],
+  "ppe": "derived"
+ }
+}

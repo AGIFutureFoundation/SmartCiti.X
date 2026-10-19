@@ -11,7 +11,10 @@
  * opens no browser); these hold the generator's source to the fixes so
  * the leak cannot come back quietly. A bug becomes a check.
  */
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 let n = 0;
 const ok = (m, c) => { if (!c) { console.error('FAIL', m); process.exit(1); } n++; console.log('  ok ', m); };
@@ -358,8 +361,7 @@ ok('the carriageway is built with the campus fabric and freed with it',
    legacy path, so a PointLight's intensity is CANDELA and falls off as
    I / r^decay. Every luminaire here was first written with legacy-scale
    numbers (0.5 - 2.6), which at a 2.7 m ceiling or an 8.7 m mast head is
-   indistinguishable from no light at all - measured on a hall interior,
-   scaling them took the frame from a mean luminance of 46 to 89 out of 255.
+   indistinguishable from no light at all - measured on a hall interior, cranking them 60x lifted the frame from near-black to readable. The exact pair was written down twice and the two records disagree - 46 to 96 in this file, 46 to 89 in the suite beside it - and the frame that would settle which is right is gone. So neither number is quoted as measured any more: what survives the disagreement is the direction and the order of magnitude, and a check now holds the two files to the same sentence so they cannot drift apart again unnoticed.
    They were real lights and they did vary with the registry's lux; they
    simply were not lighting anything, which is the same near-miss as an
    emissive box that only looks like a lamp, in different clothes.
@@ -379,8 +381,19 @@ ok('there is one candela conversion, and it states the height it converts for',
 /* And the thing the conversion must not break: a brighter room stays
    brighter. The lux ratio is the fact; the candela is only how it is
    delivered. */
-ok('the room luminaire still scales with the room\'s own lux record',
-  /lampCd\(\.55 \+ luxN \* 1\.45, 2\.32, 1\.7\)/.test(src)
+/* The mounting height used to be the constant 2.32, which was the fitting's
+   real height above the floor for exactly as long as every hall in the
+   network was 3.2 m to the eaves. Halls carry their own clear height now,
+   so the constant would have under-lit every hall taller than the old one
+   while still calling itself a measured conversion. The negative below
+   reads CODE, not source: the comment beside the change quotes the number
+   it replaced. */
+ok('the room luminaire still scales with the room\'s own lux record, and the '
+   + 'candela conversion is given the fitting\'s real height above the floor '
+   + '- EAVE - 1.23, which rides up with the hall\'s own eaves - rather than '
+   + 'the 2.32 that was only true while all 111 halls were the same height',
+  /lampCd\(\.55 \+ luxN \* 1\.45, EAVE - 1\.23, 1\.7\)/.test(code)
+  && !/lampCd\([^)]*, 2\.32,/.test(code)
   && /const luxN = Math\.max\(0, Math\.min\(1, \(rc\.lux - 200\) \/ 800\)\);/.test(src));
 /* A seat is entered from a hall and inherits that campus's sky, and every
    campus here is authored at dusk or under a marine layer - so a yard needs
@@ -547,8 +560,8 @@ const walk = fn('walkStep');
 ok('a corner is not a speed-up: the walk command lands on the unit circle '
   + 'before it is spooled, rather than two full-speed vectors being added',
   /const m = Math\.hypot\(fwd, str\);/.test(walk)
-  && /wkF = drive\(wkF, m \? fwd \/ m : 0, dt, WALK_SPOOL\);/.test(walk)
-  && /wkS = drive\(wkS, m \? str \/ m : 0, dt, WALK_SPOOL\);/.test(walk));
+  && /wkF = drive\(wkF, m > 1 \? fwd \/ m : fwd, dt, WALK_SPOOL\);/.test(walk)
+  && /wkS = drive\(wkS, m > 1 \? str \/ m : str, dt, WALK_SPOOL\);/.test(walk));
 ok('the walker leans into a stride and settles out of one, on the same drive '
   + 'the machines use, with a body\'s rates rather than a hydraulic drive\'s',
   /const WALK_SPOOL = \{ up: 6\.5, down: 9\.5 \};/.test(src)
@@ -631,9 +644,13 @@ ok('the walk probe leaves the page exactly as it found it, so measuring the '
 const solid = fn('pushOutOfSolids');
 ok('the walker is kept out of the SAME footprints the road layout is already '
   + 'checked against - there is no second copy of where a building is',
-  /solids\.push\(\{ cx: rad\.x \* R, cz: rad\.y \* R,/.test(src)
-  && /for \(const r of roads\) for \(const b of rects\) \{/.test(src)
-  && /rects \}\);/.test(src));
+  // wave 7b: the districts are laid out on the campus site plan in campus
+  // axes, so the solids carry the identity frame - but they are still the
+  // very rect objects the road-fault loop reads (allRects holds them)
+  /solids\.push\(\{ cx: 0, cz: 0, cos: 1, sin: 0,/.test(fnCode('buildCampus'))
+  && /allRects\.push\(\.\.\.rects\);/.test(fnCode('buildCampus'))
+  && /for \(const r of roads\) for \(const b of allRects\) \{/.test(fnCode('buildCampus'))
+  && /rects \}\);/.test(fnCode('buildCampus')));
 ok('a district is turned to face the plaza, so the walker is carried into '
   + 'its frame and back rather than its footprints being flattened',
   /let u = dx \* d\.cos - dz \* d\.sin;/.test(solid)
@@ -1155,9 +1172,20 @@ ok('the light\'s basis is REBUILT when the sun moves - it was cached once '
 ok('azimuth is converted from degrees-clockwise-from-north, which is what '
   + 'sky/ publishes, into the axes three.js actually uses',
   /SUN_OFF\.set\(c \* Math\.sin\(az\), Math\.sin\(el\), -c \* Math\.cos\(az\)\)/.test(fn('setSun')));
-ok('the hour is applied BEFORE the sky is drawn: setSky reads where the sun '
-  + 'is and whether the stars are up, and both are the hour\'s',
-  /applyPhase\(\);\n  const t0 = performance\.now\(\);\n(?:[^\n]*\n){0,8}?\s*setSky\(/.test(src));
+{
+  // Asserted as an ORDER, not as a line distance. The first version of this
+  // check wanted setSky within eight lines of applyPhase, and wiring the
+  // gradient - which belongs exactly between them - broke a check whose
+  // guarantee was untouched. What matters is which runs first.
+  const body = fnCode('applyAtmos');
+  ok('the hour is applied BEFORE the sky is drawn: setSky reads where the '
+    + 'sun is, whether the stars are up and which gradient to compose, and '
+    + 'all three are the hour\'s',
+    body.indexOf('applyPhase();') > -1
+    && body.indexOf('setSky(') > body.indexOf('applyPhase();')
+    && body.indexOf('const gStops') > body.indexOf('applyPhase();')
+    && body.indexOf('setSky(') > body.indexOf('const gStops'));
+}
 ok('the weather\'s two colour branches are gone - six hex literals that '
   + 'existed in no registry, making the light a function of the weather '
   + 'when it is a function of the hour',
@@ -1198,5 +1226,2173 @@ ok('the hour is a control a person can reach, filled from the registry in '
   /<select id="hour" aria-label="hour of the day"><\/select>/.test(src)
   && /sel\.innerHTML = PHASES\.map\(\(ph\) => \{/.test(src)
   && /sel\.addEventListener\('change', \(\) => setPhase\(sel\.value\)\);/.test(src));
+
+
+/* ------------------------------------------------- the sky's own colour --- */
+// Capturing frames for the overview is what found this. The hour moved the
+// sun and the lights, and painted the dome for daytime whatever the time:
+// measured on the campus, night came out at luma 34.8 against golden hour's
+// 36.6, a difference of 1.8 out of 255, which is why night looked like
+// dusk. The gradient half of sky/ was declared and unread, and its own
+// honesty block said so.
+//
+// Measured after, on a horizon-facing camera where the dome is actually
+// visible, against noon: golden hour 136%, sunset 117%, civil dusk 96%,
+// night 68%. The low-sun hours come out BRIGHTER than noon, which is the
+// arc a sky really has - a low sun lights the whole dome - and not the one
+// a linear dimmer would have given.
+ok('the sky gradient is composed in the order sky/ declares and no other: '
+  + 'the campus\'s own stops stay the base, the hour mixes over them, the '
+  + 'weather tints that, and the weather\'s own sky_mul goes last',
+  /const gStops = a\.sky\.map\(\(h, i\) => \{/.test(code)
+  && /mixHex\(h, ph\.gradient\.stops\[i\], 1 - ph\.gradient\.campus_mix\)/.test(code)
+  && /darkHex\(mixHex\(lit, ws\.gradient_tint_hex, ws\.tint_mix\), w\.sky_mul\)/.test(code));
+ok('the campus keeps its own character rather than becoming one more thing '
+  + 'mixed in - a Bay station and a Front Range yard must not end their '
+  + 'domes identically',
+  /setSky\(gStops,/.test(code)
+  && /haze: a\.haze,/.test(code));
+ok('the mix is per channel in sRGB, because these are colours chosen by eye '
+  + 'against a screen and linear-space mixing moves them somewhere their '
+  + 'author did not pick',
+  /const mixHex = \(a, b, t\) => '#' \+ \[1, 3, 5\]\.map\(\(i\) => \{/.test(code));
+ok('the weather scales the horizon band, and the identity is named as an '
+  + 'identity rather than left to read as a policy default',
+  /\* \(opts\.hazeMul \?\? 1\)/.test(code)
+  && /not a policy\s*\n\s*\/\/ default but the identity/.test(src));
+ok('the hour control follows the hour whoever set it - a programmatic '
+  + 'change left the bar reading "Solar noon" while the sky was at night, '
+  + 'and the control is the thing a person checks to find out the state',
+  /const sel = document\.getElementById\('hour'\);/.test(fnCode('setPhase'))
+  && /if \(sel && sel\.value !== id\) sel\.value = id;/.test(fnCode('setPhase')));
+ok('applyPhase hands the resolved hour and weather treatment out rather '
+  + 'than having applyAtmos resolve either a second time',
+  /phaseGrad = eff; wxSky = ws;/.test(code)
+  && /const ph = phaseGrad, ws = wxSky;/.test(code));
+
+/* ---- real terrain ----------------------------------------------------
+   Two checks below are scoped to a FUNCTION BODY rather than to `code`,
+   and that is deliberate. `code` is the BUILDER, and the builder now
+   carries build-time gates that quote the very JS they guard - so
+   counting `tintTerrain(parseInt(gStops` across the file found two: the
+   call, and the assertion that there is only one call. That is the same
+   trap as the comment-matching one above, wearing different clothes: the
+   text a check forbids or counts is likeliest to appear in the thing
+   written to enforce it. Scope to where the code actually runs. */
+ok('the terrain pack is shipped to the page, and the page holds no second '
+  + 'copy of where a campus is - geo/ already answers that',
+  /'terrain': \{/.test(src) || /D\.terrain/.test(code));
+ok('every campus the page can open has ground built for it, checked at '
+  + 'build rather than discovered as a thrown error in a browser',
+  /these campuses can be opened but have no terrain/.test(src));
+ok('buildTerrain refuses a campus with no terrain instead of quietly '
+  + 'drawing the old disc - a missing world should stop, not degrade',
+  /throw new Error\('no terrain built for campus ' \+ key\)/
+    .test(fnCode('buildTerrain')));
+ok('the mask is run-length encoded into quads before it is drawn: 9,216 '
+  + 'cells as meshes would cost more draw calls than the whole campus',
+  /mergeGeometries\(geos\)/.test(fnCode('buildTerrain'))
+  && /let run = -1;/.test(fnCode('terrainRuns')));
+ok('terrainRuns drops any run that lies wholly inside the apron, so the '
+  + 'ground a learner stands on is never cut by a 1:10,000,000 shoreline',
+  /const far = Math\.max\(Math\.abs\(x0\), Math\.abs\(x1\)\) > inner/
+    .test(fnCode('terrainRuns'))
+  && /if \(far\) out\.push/.test(fnCode('terrainRuns')));
+ok('the water is coloured from the composed sky gradient\'s own horizon '
+  + 'stop, once - a second solve of the same colour is how the sky and '
+  + 'the stars fell out of step earlier in this file',
+  (fnCode('applyAtmos').match(/tintTerrain\(parseInt\(gStops/g) || [])
+    .length === 1);
+ok('and water is modelled as reflection AND absorption, because reflection '
+  + 'alone put a yellow bay under Miami at golden hour',
+  /const WATER_ABSORB = /.test(code)
+  && /\.lerp\(_waterBody, WATER_ABSORB\)/.test(fnCode('tintTerrain')));
+ok('the land keeps its own tone rather than drifting to the same horizon '
+  + 'the water reflects - at 22% it did, and the coastline went invisible',
+  /\.lerp\(new THREE\.Color\(horizonHex\), \.10\)/.test(fnCode('tintTerrain')));
+ok('the campus fog far plane is read from the terrain window, so the fog '
+  + 'that used to hide a 520 m disc edge cannot hide six kilometres of bay',
+  /T\.local\.half_m \* \.95/.test(fnCode('setCampusFog'))
+  && !/1280 \* fogMul/.test(fnCode('setCampusFog')));
+ok('and the weather still closes the view down - the multiplier is applied '
+  + 'to the derived distance, not replaced by it',
+  /scene\.fog\.far = far \* fogMul;/.test(fnCode('setCampusFog')));
+ok('the terrain belongs to the campus group, so it is torn down with the '
+  + 'campus and needs no disposal path of its own',
+  /buildTerrain\(key, campusGroup\);/.test(code));
+ok('a probe reports the terrain the page actually built, including whether '
+  + 'the mask thinks this campus is standing on water',
+  /window\.__tc3dTerrain = /.test(code)
+  && /anchorOnLand: T\.facts\.anchor_on_land/.test(code));
+
+ok('a measurement recorded twice in two files, with two different values '
+  + 'and no surviving frame to settle it, is reported as a disagreement in '
+  + 'BOTH files rather than as a number in each - and this check is what '
+  + 'stops the two accounts drifting apart again',
+  /the two records disagree/.test(src)
+  // matched in two halves on purpose: written as one literal, this check
+  // would itself be a second copy of the sentence, and any tool counting
+  // the phrase across the tree would find two and call it a duplicate
+  && /46 to 96 in this/.test(src) && /file, 46 to 89 in the suite/.test(src)
+  && /the frame that would settle which is right is gone/.test(src));
+
+
+/* ---- the kit and the props, drawn ------------------------------------
+   kit/registry/kit.json and props/registry/props.json were DECLARED BUT
+   UNBUILT: 1,117 campus pieces and 5,082 prop instances that nothing a
+   learner opened ever read. They are drawn now, and these hold the shape
+   of that drawing: through the pools that already exist (never a mesh per
+   piece), by name against tables that already exist (never a colour from
+   a registry that publishes none), owned by the group that tears them
+   down, and reported by a probe that puts the drawn figure beside the
+   declared one. Every check here is scoped to a function body: the
+   builder now carries gates that quote the very strings these forbid. */
+const kitReg = JSON.parse(readFileSync(new URL('../kit/registry/kit.json', import.meta.url), 'utf8'));
+const propsReg = JSON.parse(readFileSync(new URL('../props/registry/props.json', import.meta.url), 'utf8'));
+
+ok('both packs are shipped to the page as the slices it draws from, and '
+  + 'the kit run formulas are read out of kit/build.py\'s own RUNS table '
+  + 'rather than restated',
+  /'kit': \{/.test(src) && /'props': \{/.test(src)
+  && /_kit_runs_m = re\.search\(r'\\nRUNS = \\\{\(\.\*\?\)\\n\\\}', _kit_build_src, re\.S\)/.test(src)
+  && /const KIT_RUNS = \{ __KIT_RUNS__ \};/.test(src)
+  && /page\.replace\('__KIT_RUNS__', KIT_RUNS_JS\)/.test(src));
+ok('the kit hangs on the envelope building() just drew - called from '
+  + 'inside it with that envelope - and enters the SAME district pool, '
+  + 'not a second one',
+  /kitDress\(h, style, fab, pool, ox, oz, wid, dep, hgt, g\);/.test(fnCode('building'))
+  && /\(pool\.get\(m2\) \?\? pool\.set\(m2, \[\]\)\.get\(m2\)\)\.push\(kitBase\(pid\)\.clone\(\)/
+    .test(fnCode('kitDress')));
+ok('building() itself pushes none of the kit\'s NEW materials through '
+  + 'add(): the kit registry reads which materials add() already pools to '
+  + 'price its own draw calls, and a kit piece pushed through '
+  + 'add(mat.metal) would have priced itself free',
+  (() => {
+    const fresh = new Set(Object.values(kitReg.budget.campuses)
+      .flatMap((c) => c.new_pooled_materials));
+    return fresh.size > 0
+      && [...fresh].every((m) => !fnCode('building').includes('add(' + m + ','))
+      && !/\badd\(kitMat/.test(fnCode('building'));
+  })());
+ok('flushParts() stays the only merge door for the kit: kitDress() builds '
+  + 'no mesh and merges nothing itself, and buildCampus() still flushes '
+  + 'each district once',
+  !/mergeGeometries\(/.test(fnCode('kitDress'))
+  && !/new THREE\.Mesh\(/.test(fnCode('kitDress'))
+  && (fnCode('buildCampus').match(/flushParts\(pool, cg\);/g) || []).length === 1);
+ok('the two instanced kit families are their own InstancedMesh per campus '
+  + 'and never ride the station beacons, which spin every frame',
+  /new THREE\.InstancedMesh\(kitGeo\(pid\)/.test(fnCode('flushKit'))
+  && !/beaconInst|beaconAt|spinBeacons/.test(fnCode('flushKit') + fnCode('kitDress')));
+ok('a kit material is resolved BY NAME against the page\'s own tables and '
+  + 'a name with nothing behind it throws - the kit publishes no colours '
+  + 'and the page invents none for it',
+  /throw new Error\('kit material ' \+ name \+ ' names nothing this page builds'\)/
+    .test(fnCode('kitMat'))
+  && !/0x[0-9a-fA-F]{6}/.test(fnCode('kitMat') + fnCode('kitDress') + fnCode('flushKit')));
+ok('a kit piece that comes out of its recipe with a different triangle '
+  + 'count than the registry budgets throws, so the probe\'s triangles are '
+  + 'the ones drawn',
+  /tris !== p\.tri_budget\)\s+throw new Error/.test(fnCode('kitGeo')));
+ok('a kit count mode, datum or merge mode the page does not resolve is a '
+  + 'thrown error, not a quiet default',
+  /throw new Error\('kit count mode '/.test(fnCode('kitDress'))
+  && /throw new Error\('kit datum '/.test(fnCode('kitDress'))
+  && /which this page does not grant'\)/.test(fnCode('kitDress')));
+ok('every piece the kit registry declares has a shape in the page, and '
+  + 'every shape is a declared piece (the build gates the same pair)',
+  (() => {
+    const blk = code.match(/\nconst KIT_SHAPES = \{([\s\S]*?)\n\};/);
+    const shapes = new Set([...blk[1].matchAll(/^ {2}'([a-z-]+)': \(/gm)].map((m) => m[1]));
+    const pieces = new Set(Object.keys(kitReg.pieces));
+    return shapes.size === pieces.size && [...pieces].every((p) => shapes.has(p))
+      && /KIT_SHAPES and kit\.json disagree about which pieces exist/.test(src);
+  })());
+ok('the kit belongs to the campus group: reset when a campus is built, '
+  + 'flushed into it after the beacons, and freed with it',
+  /kitReset\(\);/.test(fnCode('buildCampus'))
+  && /flushKit\(campusGroup\);/.test(fnCode('buildCampus'))
+  && !/userData\.shared = true/.test(fnCode('kitGeo') + fnCode('flushKit')));
+ok('a probe reports the kit actually drawn beside the figures the registry '
+  + 'predicted and the ceiling it was held to - all three read from the '
+  + 'payload, none typed here',
+  /window\.__tc3dKit = /.test(code)
+  && /D\.kit\.budget\.campuses\[k\]/.test(code)
+  && /drawCallsAdded: kitStat\.newCalls \+ kitStat\.instanced/.test(code)
+  && /ceiling: \{ draw_calls: D\.kit\.budget\.draw_call_ceiling/.test(code));
+ok('the build gates what the browser would otherwise throw on: a kit or '
+  + 'prop material the page does not build, and a safety fixture '
+  + 'triggered by PPE no room record names',
+  /kit\/registry\/kit\.json names a material the page does not build/.test(src)
+  && /props\/registry\/props\.json names a material the page does not build/.test(src)
+  && /is triggered by PPE no room record names/.test(src));
+ok('the kit registry\'s honesty now names the functions that draw it, and '
+  + 'the page has them',
+  /kitDress\(\)/.test(kitReg.honesty.budget_limit)
+  && /__tc3dKit\(\)/.test(kitReg.honesty.budget_limit)
+  && /\nfunction kitDress\(/.test(src) && /\nfunction flushKit\(/.test(src));
+
+ok('the props of all eleven rooms pool into ONE map hoisted above the room '
+  + 'loop and flush ONCE after it - pooling per room would multiply the '
+  + 'hall\'s draw calls by eleven',
+  (() => {
+    const b = fnCode('buildHall');
+    const pool = b.indexOf('propPool = new Map(); propInst = new Map();');
+    const loop = b.indexOf('h.rooms.forEach((r) => {');
+    const flush = b.indexOf('flushProps(hallGroup);');
+    return pool > 0 && loop > pool && flush > loop
+      && (b.match(/flushProps\(hallGroup\);/g) || []).length === 1;
+  })());
+ok('a room\'s props are placed against the rectangle and the doorways its '
+  + 'partitions were cut with, and a safety fixture is stood by the room\'s '
+  + 'OWN conditions record - the one the placard is drawn from, handed in '
+  + 'rather than looked up a second time',
+  /placeRoomProps\(h, r, rx, rz, rw, rd, doors, benches, rc\.ppe,/.test(fnCode('buildHall'))
+  && /runSegments\(doors, 'x@' \+ x0\.toFixed\(2\), zF, zB\)/.test(fnCode('placeRoomProps'))
+  && !/condOf\(|D\.condOver|D\.baseCond/.test(fnCode('placeRoomProps')));
+ok('the fixtures a room\'s record REQUIRES claim their wall before the '
+  + 'furniture its purpose line earns it',
+  (() => {
+    const b = fnCode('placeRoomProps');
+    return b.indexOf('ppe_any') > 0 && b.indexOf('want.push(...ids);') > b.indexOf('ppe_any');
+  })());
+ok('a floor-standing prop registers with wallRect() so the walker cannot '
+  + 'pass through it; a wall-mounted one hangs above nothing a walker '
+  + 'occupies and registers nothing',
+  /if \(!wallMounted\) wallRect\(x, \(z0 \+ z1\) \/ 2, sd \/ 2, sw \/ 2\);/.test(fnCode('placeRoomProps'))
+  && /wallRect\(x, z, sw \/ 2, sd \/ 2\);/.test(fnCode('placeRoomProps')));
+ok('a corner prop is kept out of the fixture benches by the SAME solid '
+  + 'rectangles the walker is, read back from where the bench registered '
+  + 'them rather than from a second copy of the bench size',
+  /benches\.push\(hallSolids\[0\]\.rects\[hallSolids\[0\]\.rects\.length - 1\]\);/.test(fnCode('buildHall'))
+  && /!benches\.some\(\(b\) => Math\.abs\(x - b\.u\) < sw \/ 2 \+ b\.hw \+ BODY_R\)/.test(fnCode('placeRoomProps')));
+ok('the tool crib says which run of which wall it took, and the tools '
+  + 'room\'s props are placed after it has said so',
+  /return \{ wall: 'right', z0: rz - bw \/ 2 - \.75, z1: rz \+ bw \/ 2 \};/.test(fnCode('buildCrib'))
+  && /const reserved = r\.strand === 'tools' \? \[buildCrib\(h, rx, rz, rw, rd\)\] : \[\];/.test(fnCode('buildHall'))
+  && /for \(const rv of reserved\) used\[rv\.wall\]\.push\(\[rv\.z0, rv\.z1\]\);/.test(fnCode('placeRoomProps')));
+ok('a prop material is resolved by name and throws on nothing; an anchor '
+  + 'or merge mode the page does not resolve throws too',
+  /throw new Error\('prop material ' \+ name \+ ' names nothing this page builds'\)/.test(fnCode('propMat'))
+  && /throw new Error\('prop anchor '/.test(fnCode('placeRoomProps'))
+  && /which this page does not grant'\)/.test(fnCode('placeRoomProps')));
+ok('a prop whose recipe adds up to a different triangle count than the '
+  + 'registry states throws, and its geometry is never marked shared, so '
+  + 'disposeOf() frees it with the hall',
+  /tris !== p\.tris\)\s+throw new Error/.test(fnCode('propGeo'))
+  && !/userData\.shared = true/.test(fnCode('propGeo')));
+ok('the pooled props go through flushParts() and each safety fixture is '
+  + 'one InstancedMesh per hall - never the beacons\' - and the recipe '
+  + 'cache is emptied once the clones are merged',
+  /flushParts\(propPool, g\)/.test(fnCode('flushProps'))
+  && /new THREE\.InstancedMesh\(propGeo\(p\)\.clone\(\)/.test(fnCode('flushProps'))
+  && !/beaconInst/.test(fnCode('flushProps'))
+  && /for \(const ge of propGeoCache\.values\(\)\) ge\.dispose\(\);/.test(fnCode('flushProps')));
+ok('a probe reports the props actually standing beside the count the '
+  + 'registry\'s rule wanted, names each one that found no wall and why, '
+  + 'and quotes the registry\'s own per-hall budget rather than a typed one',
+  /window\.__tc3dProps = /.test(code)
+  && /skipped: propStat\.skipped\.slice\(\)/.test(code)
+  && /declared: \{ per_hall: D\.props\.budget\.per_hall/.test(code)
+  && /why: 'no clear back corner'/.test(fnCode('placeRoomProps')));
+ok('the props registry\'s honesty says it is built, names the function '
+  + 'that builds it, the page has that function, and the claim is not '
+  + 'filed under a key called not_built_yet',
+  !('not_built_yet' in propsReg.honesty)
+  && /^BUILT\./.test(propsReg.honesty.built)
+  && /placeRoomProps\(\)/.test(propsReg.honesty.built)
+  && /\nfunction placeRoomProps\(/.test(src));
+ok('every strand the props registry places into is one the room table '
+  + 'inflates, and the page throws rather than furnishing a strand it has '
+  + 'no row for',
+  /throw new Error\('props registry covers no strand named '/.test(fnCode('placeRoomProps'))
+  && /props\/registry\/props\.json and the room table disagree about the strands/.test(src));
+
+ok('the city layer\'s pads, greens, avenues, dashes and tower caps pool '
+  + 'into one mesh per material through flushParts() - 17 places used to '
+  + 'cost 51 draw calls for flat slabs nothing raycasts - while the block '
+  + 'and the tower stay the click targets',
+  /flushParts\(cityPool, g\)/.test(fnCode('buildCity'))
+  && !/box\(24, \.14, 24/.test(fnCode('buildCity'))
+  && !/box\(15, \.12, 15/.test(fnCode('buildCity'))
+  && !/box\(3, \.5, 3,/.test(fnCode('buildCity'))
+  && /cityHits\.push\(bld, twr\);/.test(fnCode('buildCity'))
+  && /return out;/.test(fnCode('flushParts')));
+
+
+/* ----------------------------------------- the hall's lesson roster ----- */
+/* The link between the lessons pack and this scene ran one way. Every
+   lesson on web/trade_craft_lessons.html carries the learner to
+   trade_craft_3d.html?hall=<slug>, and a learner standing in the hall had
+   no way back: nothing in the hall named a lesson, and D.lessons was not
+   even on the wire. These hold the return half to the four rules the
+   bundle already lints everything else by - read the name, fail closed,
+   link both ways, and do not spend the scene's budget on DOM.
+
+   Every one reads a FUNCTION BODY with its comments cut out, never `src`.
+   The builder's own notes quote the strings below (that is what the notes
+   are for), and a check that matches its own explanation has answered a
+   different question - this file has been bitten by exactly that eight
+   times over. */
+ok('the hall roster READS each chip\'s room label out of D.roomDefs - the '
+  + 'per-strand table every room in this building is already labelled from - '
+  + 'and never out of the lesson record\'s own `room_label`, which is the '
+  + 'lessons registry\'s copy of that same fact',
+  /const def = D\.roomDefs\[L\.strand\];/.test(fnCode('lessonRoomLabel'))
+  && /return def\.label;/.test(fnCode('lessonRoomLabel'))
+  && !/room_label/.test(fnCode('lessonRoomLabel') + fnCode('renderHallLessons')));
+
+ok('a lesson standing in a strand this page lays out no room for fails '
+  + 'CLOSED, with the path that went missing named in the error - no `??`, '
+  + 'no substitute label, no blank chip: a default would be this page '
+  + 'quietly deciding where a lesson happens',
+  /throw new Error\('D\.roomDefs\[' \+ L\.strand \+ '\]/.test(fnCode('lessonRoomLabel'))
+  && !/\?\?/.test(fnCode('lessonRoomLabel') + fnCode('renderHallLessons')
+    + fnCode('lessonsOfHall') + fnCode('markActiveLesson')));
+
+ok('each chip is the return half of the lessons page\'s own hall link: it '
+  + 'takes the learner to that lesson\'s section on trade_craft_lessons.html, '
+  + 'so the two surfaces reach each other from a learner\'s side and not '
+  + 'only in the data',
+  /href="trade_craft_lessons\.html#lesson-\$\{esc\(L\.id\)\}"/
+    .test(fnCode('renderHallLessons')));
+
+ok('the number of chips is whatever the hall has: they are mapped straight '
+  + 'off the rows D.lessons files under that hall, so there is no count '
+  + 'here to type and none to drift',
+  /Object\.values\(LESSONS\)\.filter\(\(L\) => L\.hall === sg\)/
+    .test(fnCode('lessonsOfHall'))
+  && !/\d/.test(fnCode('lessonsOfHall'))
+  && /mine\.map\(/.test(fnCode('renderHallLessons')));
+
+ok('the active lesson is driven by the room the learner is standing in and '
+  + 'by nothing else: walkStep hands markActiveLesson() the strand of the '
+  + 'room it has just entered, and null when they walk out of one',
+  /markActiveLesson\(room \? room\.strand : null\);/.test(fnCode('walkStep'))
+  && /a\.dataset\.strand === strand/.test(fnCode('markActiveLesson'))
+  && /const on = !!strand && /.test(fnCode('markActiveLesson')));
+
+ok('the roster stands nothing up in the scene: no THREE object, no '
+  + 'geometry, no material, nothing added to hallGroup - a chip is DOM, so '
+  + 'the hall view\'s draw-call budget pays nothing for it',
+  !/new THREE\.|mergeGeometries\(|\.add\(|scene\./.test(
+    fnCode('renderHallLessons') + fnCode('markActiveLesson')
+    + fnCode('lessonsOfHall') + fnCode('lessonRoomLabel')));
+
+
+/* ------------------------------------------- first responders + EI ------ */
+/* Two packs that the bundle's own R&D register listed as DECLARED AND
+   UNBUILT: nothing a learner opened read either registry. These checks hold
+   the two things a surface for them can most easily get wrong - dropping
+   the review status, and rendering a standards body as though the content
+   came from it - plus the bidirectional hall link and the one rule the EI
+   pack enforces with a regex: it names TYPES of resource and never an
+   instance of one.
+
+   Everything below reads either a function body with its comments cut out
+   (fnCode) or the SHIPPED payload parsed out of the built page, never the
+   generator's prose - a check that reads the comment explaining a removal
+   has answered a different question, and this file has been bitten by that
+   eight times. */
+const respondReg = JSON.parse(readFileSync(new URL('../respond/registry/respond.json', import.meta.url), 'utf8'));
+const eiReg = JSON.parse(readFileSync(new URL('../ei/registry/ei.json', import.meta.url), 'utf8'));
+const builtPage = readFileSync(new URL('./trade_craft_3d.html', import.meta.url), 'utf8');
+const wire = JSON.parse(builtPage.match(
+  /<script id="data" type="application\/json">([\s\S]*?)<\/script>/)[1]);
+
+ok('the responder panel exists, the bar opens it, and every service, role '
+  + 'tier, competency domain and scenario frame the registry declares '
+  + 'reaches the shipped payload',
+  /\nfunction openResponder\(/.test(src)
+  && /window\.__tc3dRespond = openResponder;/.test(code)
+  && /getElementById\('respondBtn'\)\.addEventListener/.test(code)
+  && Object.keys(wire.respond.services).length === respondReg.counts.services
+  && Object.values(wire.respond.services)
+       .reduce((n, s) => n + s.tiers.length, 0) === respondReg.counts.role_tiers
+  && wire.respond.competencies.length === respondReg.counts.competencies
+  && wire.respond.frames.length === respondReg.counts.scenario_frames);
+
+ok('the review status is read from each record\'s OWN two fields and the '
+  + 'banner from the registry\'s own counts - no panel function types the '
+  + 'number of signed-off items',
+  /rec\.needs_practitioner_review === true && rec\.signed_off_by === null/
+    .test(fnCode('respUnsigned'))
+  && /C\.signed_off_items \+ ' of '\s*\+ C\.training_items/.test(fnCode('openResponder'))
+  && !/117|\b0 of\b/.test(fnCode('openResponder'))
+  && !/117/.test(fnCode('respFrameCard'))
+  // and it is actually true of every item that ships, all 117 of them
+  && [...Object.values(wire.respond.services).flatMap((s) => s.tiers),
+      ...wire.respond.competencies, ...wire.respond.frames]
+       .every((r) => r.needs_practitioner_review === true
+                  && r.signed_off_by === null));
+
+ok('no authority is rendered without the line saying whether a document of '
+  + 'that body was opened, and a body the registry does not carry throws '
+  + 'rather than defaulting',
+  /document_read_by_this_build === true/.test(fnCode('respAuthority'))
+  && /no document of this body was opened by this build/.test(fnCode('respAuthority'))
+  && /this pack reproduces/.test(fnCode('respAuthority'))
+  && /throw new Error\('respond: no authority record at D\.respond\./
+       .test(fnCode('respAuthority'))
+  && !/\?\?/.test(fnCode('respAuthority'))
+  && Object.values(wire.respond.authorities)
+       .every((a) => a.document_read_by_this_build === false)
+  && respondReg.counts.authority_documents_opened === 0);
+
+ok('the hall cross-links run both ways: a frame card links into each hall '
+  + 'it names, and a hall whose slug the registry pairs gets a badge back '
+  + 'into the panel - every hall the registry pairs, and no other',
+  /data-hall-goto="' \+ esc\(sg\)/.test(fnCode('respFrameCard'))
+  && /showHall\(hg\.dataset\.hallGoto\)/.test(code)
+  && builtPage.includes('D.respond.crossLinks[sg] ? ` <button class="barbtn" data-respond-hall=')
+  && /openResponder\(rh\.dataset\.respondHall\)/.test(code)
+  && Object.keys(wire.respond.crossLinks).length === respondReg.counts.halls_touched
+  && Object.values(wire.respond.crossLinks)
+       .reduce((n, x) => n + x.frames.length, 0)
+       === respondReg.counts.hall_cross_links);
+
+ok('the cross-links ship no second copy of a hall\'s protective equipment - '
+  + 'the surfaces registry already reaches this page and owns that fact',
+  Object.values(respondReg.hall_cross_links)
+    .every((x) => Array.isArray(x.trade_ppe_in_that_hall))
+  && Object.values(wire.respond.crossLinks)
+       .every((x) => !('trade_ppe_in_that_hall' in x))
+  && wire.baseCond !== undefined);
+
+ok('the EI layer is printed on the advisor it binds to, and a figure the '
+  + 'pack binds nothing to (a crew role) gets nothing invented for it',
+  /\+ advisorConduct\(aid\);/.test(fnCode('openAdvisor'))
+  && /const b = D\.ei\.bindings\[aid\];\s*if \(!b\) return '';/
+       .test(fnCode('advisorConduct'))
+  && eiReg.agent_bindings.length === eiReg.counts.advisors_in_registry
+  && eiReg.agent_bindings.every((b) => b.agent in wire.advisors.who)
+  && Object.keys(wire.ei.bindings).length === eiReg.counts.agent_bindings);
+
+ok('every response is rendered with what it does NOT do, its stop condition '
+  + 'and its handoff rung beside what it does - and a rung the ladder does '
+  + 'not have throws instead of defaulting',
+  /What it does not do/.test(fnCode('eiDoes'))
+  && /r\.does_not\.map/.test(fnCode('eiDoes'))
+  && /esc\(r\.stop_condition\)/.test(fnCode('eiDoes'))
+  && /eiRungLine\(r\.handoff/.test(fnCode('eiDoes'))
+  && /throw new Error\('ei: no handoff rung called '/.test(fnCode('eiRung'))
+  && !/\?\?/.test(fnCode('eiRungLine'))
+  && Object.values(wire.ei.responses).every((r) => r.does_not.length > 0
+       && typeof r.stop_condition === 'string' && r.stop_condition.length > 0));
+
+ok('the post-incident state is rendered as a refusal, not a coach: the '
+  + 'universal response is printed only where its state is hand-off-only, '
+  + 'it lasts one turn, and it neither asks what happened nor offers a '
+  + 'technique',
+  /st\.agent_may !== 'hand-off-only'/.test(fnCode('advisorConduct'))
+  && /this block renders a refusal, not a coach/.test(fnCode('advisorConduct'))
+  && /hand-off only, '\s*\+ r\.max_turns/.test(fnCode('advisorConduct'))
+  && wire.ei.states['post-incident-distress'].agent_may === 'hand-off-only'
+  && wire.ei.responses['post-incident.disclosed'].max_turns === 1
+  && wire.ei.responses['post-incident.disclosed'].universal === true
+  && wire.ei.responses['post-incident.disclosed'].does_not
+       .some((x) => /does not ask what happened/.test(x))
+  && wire.ei.responses['post-incident.disclosed'].does_not
+       .some((x) => /does not offer a technique/.test(x))
+  && eiReg.agent_bindings.every((b) =>
+       b.universal_responses.includes('post-incident.disclosed')));
+
+/* The one rule the ei pack enforces with a regex, re-asked of the bytes
+   that actually ship. The patterns are READ OUT of ei/build.py rather than
+   retyped here, for the same reason build_3d.py reads them: a second copy
+   of a rule is a second chance for the two to disagree about it. */
+const eiBuildSrc = readFileSync(new URL('../ei/build.py', import.meta.url), 'utf8');
+const eiBanBlock = eiBuildSrc.slice(eiBuildSrc.indexOf('\nBANNED = ['),
+  eiBuildSrc.indexOf('\n]\n', eiBuildSrc.indexOf('\nBANNED = [')));
+const eiBanned = eiBanBlock.split('\n    (').slice(1).map((entry) =>
+  new RegExp([...entry.matchAll(/r'((?:[^'\\]|\\.)*)'/g)]
+    .map((m) => m[1]).join('')));
+const eiStrings = (node, path, out = []) => {
+  if (typeof node === 'string') out.push([path, node]);
+  else if (Array.isArray(node)) node.forEach((v, i) => eiStrings(v, `${path}[${i}]`, out));
+  else if (node && typeof node === 'object')
+    for (const [k, v] of Object.entries(node)) eiStrings(v, `${path}.${k}`, out);
+  return out;
+};
+const eiHits = eiStrings(wire.ei, 'D.ei')
+  .flatMap(([p, s]) => eiBanned.map((re) => [p, s.match(re)])
+    .filter(([, m]) => m).map(([p2, m]) => `${p2}: ${m[0]}`));
+
+ok(`the EI layer ships ${eiBanned.length} banned patterns' worth of nothing: `
+  + 'no telephone number, emergency or crisis line, dialling instruction, '
+  + 'web or email address or named support organisation reaches the page, '
+  + 'and the ladder names a resource TYPE on every one of its rungs',
+  eiBanned.length === 5
+  && eiHits.length === 0
+  && wire.ei.ladder.length === eiReg.counts.handoff_rungs
+  && wire.ei.ladder.every((r) => typeof r.resource_type === 'string'
+       && r.resource_type.length > 0 && typeof r.why_no_contact_detail === 'string'));
+
+ok('build_3d.py re-runs that refusal over the bytes it is about to ship, '
+  + 'reading the patterns out of ei/build.py rather than retyping them, and '
+  + 'stops the build on a hit',
+  /_EI_BAN_SRC = \(ROOT \/ 'ei\/build\.py'\)\.read_text\(\)/.test(src)
+  && /EI_BANNED = ast\.literal_eval\(/.test(src)
+  && /ships %s \(%r\) to the page/.test(src)
+  && /raise SystemExit\(\s*\n\s*'build_3d: %s ships/.test(src));
+
+ok('neither panel puts anything in the scene: a panel is DOM, and this one '
+  + 'is held to costing nothing in draw calls',
+  ['openResponder', 'respFrameCard', 'respAuthority', 'advisorConduct',
+   'eiDoes', 'eiSignalRows'].every((f) => !/THREE\./.test(fnCode(f))
+     && !/scene\.add/.test(fnCode(f))));
+/* ---- a panel nothing opens is a panel nobody has ---------------------
+   This check exists because of a mistake I made reading this very file.
+   I searched the built page for `onclick="openResponder` and found zero,
+   and reported that the responder panel was unreachable. It was reachable
+   the whole time: the handler is ATTACHED as a listener, not written as
+   an attribute, so the search could not have found it however true the
+   thing was.
+   Two lessons are encoded below. The check reads the SHIPPED PAGE rather
+   than the generator, because the generator's own comments quote the
+   strings it is looking for. And it matches the wiring by its EFFECT —
+   an element the markup carries, addressed by a script that calls the
+   opener — rather than by one spelling of one idiom. */
+{
+  // the bar control, as it reaches a browser
+  const hasEl = /id="respondBtn"/.test(builtPage);
+  // any script that gets that element and calls the opener, however the
+  // handler is spelled: addEventListener, .onclick =, or an attribute
+  const wired =
+    /getElementById\('respondBtn'\)[\s\S]{0,200}?openResponder\(/
+      .test(builtPage)
+    || /onclick="[^"]*openResponder/.test(builtPage);
+  ok('the responder panel has a control that opens it: #respondBtn is in '
+    + 'the markup and a script reaches it and calls openResponder. A panel '
+    + 'nothing opens is a panel nobody has, and this is checked against the '
+    + 'shipped page because the generator quotes these strings in its own '
+    + 'comments',
+    hasEl && wired);
+
+  // the second way in, from a hall
+  ok('and a hall the registry pairs carries a badge back into it, so the '
+    + 'cross-links run both ways from a learner\'s side and not only in '
+    + 'the data',
+    /responder frame/.test(builtPage)
+    && /D\.respond\.crossLinks\[/.test(builtPage));
+}
+
+/* ---- ?sim= : the deep link into one seat ----------------------------
+   The front door links to a MACHINE now, not to the door of the world, so
+   there are two halves to hold: the page must parse and validate `?sim=`,
+   and index.html must carry exactly the links that page will accept.
+
+   Everything below reads the SHIPPED PAGE or the comment-stripped source.
+   The generator explains this feature in prose that quotes every string
+   these checks look for - `?sim=`, `startSim`, `queueMicrotask`, `xrWalk` -
+   and a check that matches its own explanation has answered a different
+   question. This file has been bitten by that eight times. */
+{
+  const simsReg = JSON.parse(readFileSync(
+    new URL('../sims/registry/sims.json', import.meta.url), 'utf8'));
+  const slugs = Object.keys(simsReg.sims);
+
+  ok('the page parses ?sim= and validates it against the registry, exactly '
+    + 'the way ?hall= is validated against D.halls: an unknown seat name '
+    + 'falls back to NO seat (null), never to a default machine, and the '
+    + 'registry it validates against is the whole registry as shipped',
+    /const simDeep = Object\.keys\(D\.sims\.sims\)\.includes\(params\.get\('sim'\)\)\s*\?\s*params\.get\('sim'\)\s*:\s*null;/
+      .test(code)
+    && Object.keys(wire.sims.sims).length === slugs.length
+    && slugs.every((sl) => sl in wire.sims.sims));
+
+  ok('and it opens that seat through the app\'s own opener, driving the '
+    + 'hall transition itself: a seat is entered FROM the hall that teaches '
+    + 'it (startSim records the run against `slug`), so the deep link calls '
+    + 'showHall() first when the current hall does not teach it - no second '
+    + 'way into a seat',
+    // deliberately silent about HOW the block is scheduled - that is the
+    // next check's question, and one mutation must not fail two checks
+    /const simDef = D\.sims\.sims\[simDeep\];\s*if \(!simDef\.halls\.includes\(slug\)\) showHall\(simDef\.halls\[0\]\);\s*startSim\(simDeep, scenarioDeep\);/
+      .test(code)
+    // the same opener the hall's own seat chooser calls
+    && /if \(b\.length === 1\) return startSim\(b\[0\]\.sim\);/.test(code));
+
+  /* A bug, found in a browser and kept as a check. Called inline, the boot
+     block threw `Cannot access 'xrWalk' before initialization`: the world
+     stood up, the hall opened, and the seat silently did not. startSim()
+     reads xrWalk on its first line, and the emitted page puts the boot
+     block some six hundred lines ABOVE that declaration. The ordering is
+     what makes the deferral load-bearing, so the ordering is what is
+     checked - in the shipped bytes, where it is true or not. */
+  {
+    const DECL = "let xrBlend = 'opaque', xrFloor = true, xrWalk = false";
+    const BOOT = 'if (simDeep) queueMicrotask(';
+    const iDecl = builtPage.indexOf(DECL);
+    const iBoot = builtPage.indexOf(BOOT);
+    ok('the ?sim= open is deferred one microtask, and it has to be: in the '
+      + 'shipped page the boot block sits ABOVE the `let` that declares '
+      + 'xrWalk, which startSim() reads on its first line - called inline '
+      + 'it threw "Cannot access \'xrWalk\' before initialization" in a '
+      + 'real browser and the seat silently did not open',
+      iBoot > 0 && iDecl > 0 && iDecl > iBoot
+      && builtPage.split(BOOT).length === 2
+      && builtPage.split(DECL).length === 2);
+  }
+
+  /* ---- the front door's side of the same link ---------------------- */
+  const home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  // index.html is generated by web/build_home.py, which escapes exactly
+  // this way: whitespace collapsed, then & < > escaped.
+  const esc = (t) => String(t).split(/\s+/).join(' ').trim()
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const linked = [...home.matchAll(
+    /href="web\/trade_craft_3d\.html\?sim=([a-z0-9-]+)"/g)].map((m) => m[1]);
+
+  ok('index.html carries one deep link per simulator and not one more: '
+    + `every one of the ${slugs.length} slugs the registry files a seat `
+    + 'under is linked, no seat is missing, no link names a slug the '
+    + 'registry does not have, and no slug is linked twice',
+    linked.length === slugs.length
+    && new Set(linked).size === slugs.length
+    && slugs.every((sl) => linked.includes(sl))
+    && linked.every((sl) => slugs.includes(sl)));
+
+  ok('and each of those links is informative rather than a bare name: the '
+    + 'entry prints that seat\'s own task line and every rubric axis the '
+    + 'registry scores it on, read from the registry rather than typed '
+    + 'beside it',
+    slugs.every((sl) => {
+      const at = home.indexOf(`<li class="seat-row" id="seat-${sl}">`);
+      if (at < 0) return false;
+      const end = home.indexOf('</li></ul></li>', at);
+      if (end < 0) return false;
+      const entry = home.slice(at, end);
+      const def = simsReg.sims[sl];
+      return entry.includes(esc(def.task))
+        && def.rubric.every((r) => entry.includes(`<b>${esc(r.axis)}</b>`));
+    }));
+}
+
+/* The view hook honours the hall the learner picked.
+
+   This shipped wrong and nothing caught it, because every check in this file
+   reads the source and the fault only shows when you look at the running
+   page: `__tc3dDo('view', 'hall')` read `D.halls[0].slug` - ironworkers -
+   and threw away `slug`. The bar went on saying Welding Trades over an
+   ironworkers building. Worse, the doc screenshots and eval_scene both drive
+   the view through this same hook, so every hall figure and every hall
+   picture this project has taken was of ironworkers rather than of the hall
+   under test.
+
+   Scoped to the dispatcher's own body so the surrounding prose - including
+   the comment that now explains the bug, which quotes the broken expression -
+   cannot satisfy it. */
+// __tc3dDo is an arrow assigned to window, not a function declaration, so
+// fnCode() cannot find it. Slice the dispatcher out of the SHIPPED page by
+// its own opening and strip comments - including the one below that quotes
+// the broken expression, which would otherwise satisfy the check it explains.
+const _vi = builtPage.indexOf("window.__tc3dDo = (fn, arg) =>");
+const _view = _vi < 0 ? '' : strip(builtPage.slice(_vi, _vi + 2500));
+ok('the view hook opens the hall the learner has selected, not a hard-coded '
+   + 'first entry: `hall` falls back to the current `slug` the way `campus` '
+   + 'falls back to `campusKey`, so the selector and the building agree',
+  /what === 'hall'\) showHall\(which \?\? slug\)/.test(_view)
+  && !/showHall\(which \?\? D\.halls\[0\]/.test(_view));
+/* The other three views the page can show. eval_scene.mjs had scored three
+   orbit views out of six because the locker, a running seat and a
+   restoration walk could only be reached by a click or a drag - and a
+   harness that clicks its way there scores whatever the click happened to
+   hit. Each is held to the page's OWN entry (the locker's showAvatar, the
+   seat opener the hall's chooser calls, the walk the campus marker starts)
+   and to the same default rule `hall` and `campus` use: the first of its
+   roster, read from the registry, not a slug typed into the harness. */
+ok('the view hook reaches the three views eval_scene had never scored, each '
+   + 'through the page\'s own entry and defaulting to the first of its roster: '
+   + '`avatar` opens the locker via showAvatar, `sim` starts the first seat in '
+   + 'sims/registry through the seat hook, `restoration` walks the first '
+   + 'walkable site (s.e !== undefined) through startRestorationWalk',
+  /what === 'avatar'\) showAvatar\(\)/.test(_view)
+  && /what === 'sim'\) window\.__tc3dSim\.start\(which \?\? Object\.keys\(D\.sims\.sims\)\[0\]\)/.test(_view)
+  && /what === 'restoration'\) startRestorationWalk\(which\s*\?\? D\.restoration\.sites\.find\(\(s\) => s\.e !== undefined\)\.id\)/.test(_view)
+  && /no such view: /.test(_view)
+  && !/'crane-lift'|'herons-head'/.test(_view));
+/* The gate sign of a walkable restoration site is a placard, and a placard
+   is a stacked board: label() throws when it gets no `items`. The sign was
+   still written as a name-plate after the placard was restacked, so every
+   walkable site threw on entry, half-way through standing the scene up -
+   campus hidden, ground never added, one draw call. Caught by the first
+   `restoration` row of eval_scene.mjs, never by this file: hold it here
+   now, at the source, so it cannot come back without a word. */
+ok('the restoration site\'s entry sign is built as the board the placard kind '
+   + 'is: one organisation to a line (the registry joins them with "; ") as '
+   + 'its items, the kind of work as its caption, in buildRestoGround',
+  (() => {
+    const c = fnCode('buildRestoGround');
+    return /label\(site\.org, site\.category\.replace\(\/-\/g, ' '\), \.62,\s*\{ kind: 'placard', items: site\.org\.split\(\/;\\s\*\/\) \}\)/.test(c);
+  })());
+
+/* ------------------------------------ the hall's own draw-call budget --- */
+/* Eleven of the 111 halls shipped over the draw-call ceiling with every
+   check in this bundle green.
+
+   Nothing here could have caught it: this file reads source and never opens
+   a browser, and the one thing that does measure draw calls - eval_scene -
+   had only ever driven `hall`, which is D.halls[0], ironworkers, 164 calls
+   at almost exactly the median of 111. The hall a visitor with no ?hall=
+   actually landed on cost 238.
+
+   So the page prices ITSELF now, while it builds, against the same number
+   the eval scores it with, and a hall over it throws instead of opening.
+   The checks below hold that arrangement at three joints: the ceiling is
+   read out of web/eval_scene.mjs rather than typed, the number that
+   reached the payload is the number that file states (computed here from
+   both sources, so a change to either that does not reach the other fails
+   this suite), and buildHall() actually calls the price and the price
+   actually throws. */
+const evalSrc = readFileSync(new URL('./eval_scene.mjs', import.meta.url), 'utf8');
+const evalHallCalls = Number(evalSrc.match(/hall:\s*\{\s*calls:\s*([\d_]+)/)[1].replace(/_/g, ''));
+const evalHeadroom = Number(evalSrc.match(/const CALL_HEADROOM = ([\d.]+);/)[1]);
+
+ok('the hall\'s draw-call ceiling reaches the page READ, not typed: the builder '
+   + 'parses web/eval_scene.mjs for the measured hall baseline and the stated '
+   + `headroom, and the ${wire.budget.hall_draw_calls} in the payload is `
+   + `exactly the ${evalHallCalls} x ${evalHeadroom} that file states`,
+  /_eval_src = \(ROOT \/ 'web\/eval_scene\.mjs'\)\.read_text\(\)/.test(src)
+  && /HALL_CALL_CEILING = round\(HALL_CALL_BASE \* float\(_eh\.group\(1\)\)\)/.test(src)
+  && wire.budget.from === 'web/eval_scene.mjs'
+  && wire.budget.hall_calls_measured === evalHallCalls
+  && wire.budget.hall_draw_calls === Math.round(evalHallCalls * evalHeadroom));
+
+ok('a hall that would draw more than that ceiling does NOT open: priceHall() '
+   + 'counts the drawables standing in the view, throws naming the hall, its '
+   + 'count and the ceiling, and buildHall() calls it as its last act - so the '
+   + 'breach cannot come back on a hall nobody happened to measure',
+  /const ceiling = D\.budget\.hall_draw_calls;/.test(fnCode('priceHall'))
+  && /if \(total > ceiling\)\s*throw new Error\('hall ' \+ sg \+ ' stands ' \+ total/
+       .test(fnCode('priceHall'))
+  && /hallCost = priceHall\(sg\);/.test(fnCode('buildHall'))
+  && /window\.__tc3dHall = \(\) => hallCost/.test(code));
+
+ok('the price counts what the eval counts - every visible mesh, sprite and '
+   + 'instanced mesh in the SCENE, not just the hall group, since the hall '
+   + 'stands on a ground plane that draws too',
+  /walk\(scene, false\);/.test(fnCode('priceHall'))
+  && /if \(!o\.visible\) return;/.test(fnCode('priceHall'))
+  && /o\.isInstancedMesh/.test(fnCode('priceHall'))
+  && /o\.isSprite/.test(fnCode('priceHall')) && /o\.isMesh/.test(fnCode('priceHall')));
+
+/* ---- and the four per-item drawers the breach was actually made of ----
+   Every one of these was a recipe drawing one mesh per piece, and each of
+   them varied with the hall: the apron with whether the hall has a seat,
+   the roof with how deep the building is, the benches with how many
+   fixtures the trade's focus line names, the luminaires with how many
+   distinct illuminances its rooms record. Merged, none of them varies. */
+ok('the apron pools per material instead of drawing one mesh per yard piece: '
+   + 'the PROPS recipes are handed a part collector, not the hall group, and '
+   + 'the pool is flushed once - this alone is the ~65 draw calls that put '
+   + 'every seeded hall over the ceiling',
+  /const apronPool = new Map\(\);\s*const apron = partCollector\(apronPool\);/
+    .test(fnCode('buildHall'))
+  && /fn\(apron, px, pz\);/.test(fnCode('buildHall'))
+  && /flushParts\(apronPool, hallGroup\);/.test(fnCode('buildHall'))
+  && !/fn\(hallGroup, px, pz\);/.test(fnCode('buildHall')));
+
+ok('a part collector takes a mesh\'s OWN matrix and clones its geometry '
+   + 'first, so a recipe that turns or tilts a piece merges exactly as it '
+   + 'draws and a shared cached box is never moved by baking into it',
+  /o\.updateMatrix\(\);/.test(fnCode('partCollector'))
+  && /o\.geometry\.clone\(\)\.applyMatrix4\(o\.matrix\)/.test(fnCode('partCollector'))
+  && /throw new Error\('a part collector takes meshes/.test(fnCode('partCollector')));
+
+ok('the crib\'s twelve pegs are ONE mesh: the hue each tool\'s registry entry '
+   + 'declares rides on the vertices instead of buying that tool a material '
+   + 'of its own, and the one material it does wear is hall-owned rather '
+   + 'than a new word in the shared `mat` vocabulary other packs are held to',
+  /geo\.setAttribute\('color', new THREE\.BufferAttribute\(arr, 3\)\)/.test(fnCode('toolGeo'))
+  && /new THREE\.Color\(\)\.setHSL\(tl\.hue \/ 360/.test(fnCode('toolGeo'))
+  && /const peg = new THREE\.Mesh\(mergeGeometries\(pegs\),\s*new THREE\.MeshStandardMaterial\(\{ vertexColors: true/
+       .test(fnCode('buildCrib'))
+  && !/mat\.tool/.test(code));
+
+ok('the roof trusses, their lamps and the wall strips pool into one mesh per '
+   + 'material - so a 16-unit hall pays no more for its roof than a 12-unit '
+   + 'one - and the pool is flushed WITHOUT shadows, because a merged mesh '
+   + 'has one castShadow flag and a luminaire that casts one darkens the '
+   + 'floor it is lighting',
+  /const roofPool = new Map\(\);\s*const roof = partCollector\(roofPool\);/
+    .test(fnCode('buildHall'))
+  && /flushParts\(roofPool, hallGroup, false\);/.test(fnCode('buildHall'))
+  && /function flushParts\(pool, g, shadow = true\)/.test(code)
+  && /mesh\.castShadow = shadow;/.test(fnCode('flushParts')));
+
+ok('the fixture benches pool across all eleven rooms, and the luminaires '
+   + 'share one material per distinct illuminance the rooms RECORD - so the '
+   + 'busiest trade pays for its fourth bench what the plainest pays for its '
+   + 'first, and two rooms share a fitting only where the registry says they '
+   + 'are lit alike',
+  /const benchPool = new Map\(\), benchTop = partCollector\(benchPool\);/
+    .test(fnCode('buildHall'))
+  && /box\(1\.3, \.12, \.7, mat\.steel, bx, \.95, bz, benchTop\);/.test(fnCode('buildHall'))
+  && /flushParts\(benchPool, hallGroup\);/.test(fnCode('buildHall'))
+  && /lumMats\.get\(rc\.lux\) \?\? lumMats\.set\(rc\.lux,/.test(fnCode('buildHall'))
+  && /flushParts\(lumPool, hallGroup, false\);/.test(fnCode('buildHall')));
+
+ok('at most ADV_DETAIL_MAX advisors are drawn as rigged bodies at once, '
+   + 'ranked in place with no allocation in the frame loop - distance alone '
+   + 'bounded nothing, because a learner in the middle of a 36 m hall is '
+   + 'inside ADV_DETAIL of every advisor in it - and priceHall() reports that '
+   + 'bounded walk-up peak rather than folding it into the figure the '
+   + 'ceiling is about',
+  /const ADV_DETAIL_MAX = \d+;/.test(code)
+  && /rank < ADV_DETAIL_MAX/.test(fnCode('advisorProximity'))
+  && !/\.sort\(/.test(fnCode('advisorProximity'))
+  && !/new THREE\.Vector3\(/.test(fnCode('advisorProximity'))
+  && /swaps\.slice\(0, ADV_DETAIL_MAX\)/.test(fnCode('priceHall'))
+  && /walkPeak: peak/.test(fnCode('priceHall')));
+
+/* -------------------------------- what the halls got for the headroom --- */
+/* The budget above is not the point of the budget. It was reclaimed so the
+   halls could carry more, and these hold what they carry. */
+
+const labelsReg = JSON.parse(readFileSync(new URL('../labels/registry/labels.json', import.meta.url), 'utf8'));
+const interiorsSrc = readFileSync(new URL('./interiors.py', import.meta.url), 'utf8');
+
+/* ---- every sign the registry declares is now on a wall ---------------- */
+/* labels/ declares nineteen kinds of sign and explains at length why a
+   chevron, a beacon, a stencil, a tag and a hatched notice are shapes of
+   their own rather than name-plates in another colour - "a sign that has to
+   be read before it can be told apart is the failure this whole registry
+   exists to fix". Five of the nineteen had never been drawn anywhere in the
+   world: egress, muster, door, asset and hazard. A shape nothing wears is a
+   claim, not a convention. The set below is COMPUTED from the registry, so
+   a kind added there and never hung fails this check rather than sitting
+   unnoticed the way these five did. */
+const kindsDrawn = new Set([...code.matchAll(/kind: '([a-z]+)'/g)].map((m) => m[1]));
+const kindsDeclared = Object.keys(labelsReg.kinds);
+/* A SHAPE THAT IS NOT DRAWN IS NOT A CONVENTION.
+
+   labels/ kept a PENDING_PAGE list computed from this page - a kind whose
+   shape has no `case` in labelShape() is pending - and five of the
+   nineteen sat on it: chevron, beacon, stencil, tag, notice. They fell
+   through that switch and drew NO PLATE, so the first three hung in a hall
+   came out as bare text with a shadow, which is what a campus name looks
+   like from across a green, and which is how they were read when somebody
+   looked at the hall. The registry's whole argument is that a sign you
+   have to read to tell apart has failed; five of its shapes were failing
+   it. The list is empty now, and it is empty in the REGISTRY, which
+   recomputes it from this page rather than believing a note. */
+ok('every shape the label registry declares has a drawing branch on the '
+   + 'page, and the registry says so from its own reading of the page: the '
+   + 'chevron, beacon, stencil, tag and notice branches landed together and '
+   + 'the pending list is empty - and the head and tip insets the dot, the '
+   + 'hole, the eyelet and the point need are declared ONCE and read by '
+   + 'both the sizing and the drawing, so no text is laid into them',
+  labelsReg.pending_page.length === 0
+  && labelsReg.counts.drawn === kindsDeclared.length
+  && ['chevron', 'beacon', 'stencil', 'tag', 'notice']
+       .every((sk) => new RegExp("case '" + sk + "':").test(code))
+  && Object.keys(labelsReg.shapes).every((sk) => new RegExp("case '" + sk + "':").test(code)
+       || sk === 'ghost' || sk === 'plate')
+  && /const LHEAD = \{ beacon: 22, stencil: 20, tag: 12 \};/.test(code)
+  && /const head = lblHead\(shape\), tip = lblTip\(shape\);/.test(fnCode('label'))
+  && /\+ head \+ tip;/.test(fnCode('label')));
+
+ok(`all ${kindsDeclared.length} sign kinds labels/registry declares are hung `
+   + 'somewhere in the world - including the five that were declared and '
+   + 'never drawn: a chevron to the way out, a muster beacon on the apron, a '
+   + 'stencilled number at every door, a tag on every machine and a hatched '
+   + 'notice in every room whose own record names a hazard',
+  kindsDeclared.every((k) => kindsDrawn.has(k))
+  && ['egress', 'muster', 'door', 'asset', 'hazard'].every((k) => kindsDrawn.has(k)));
+
+/* A GATE IN EVERY OPENING, AND A NUMBER ON THE WAYS IN.
+
+   The partitions have carried doorways since the reachability work, and a
+   doorway was a GAP - the plan had openings and the building had nothing
+   standing in them. Each gate is deliberately its OWN mesh: merging them is
+   the cheaper drawing and the wrong one, because the floor this view is
+   held to asks how many separate things are standing in it, and a gate is
+   one of them. They hang off the SAME cuts the partitions were drawn
+   around, so a gate can never hang where there is no way through. */
+ok('every opening planDoors() cut has a gate standing in it, hung off those '
+   + 'same cuts, at the height of the partition it hangs on rather than the '
+   + 'height of a door in a different building - and each is its own mesh, '
+   + 'not pooled, because the mesh floor counts separate standing things',
+  /for \(const \[key, cuts\] of doors\) \{/.test(fnCode('buildHall'))
+  && /\? box\(w2, 1\.0, \.05, mat\.metal, at, \.85, on - \.09, hallGroup\)/
+       .test(fnCode('buildHall'))
+  && /: box\(\.05, 1\.0, w2, mat\.metal, on - \.09, \.85, at, hallGroup\)/
+       .test(fnCode('buildHall'))
+  && /g2\.userData\.gate = key;/.test(fnCode('buildHall')));
+
+ok('the stencilled door number hangs on the WAYS IN - the gates off the '
+   + 'building\'s own frontage, which planDoors() cuts for exactly that '
+   + 'reason - and names the room behind it by its place in the plan; one '
+   + 'per room was eleven mono plates repeating eleven room plates, and it '
+   + 'cost the dearest hall eight drawables it did not have',
+  /const frontKey = 'z@' \+ \(-DEP \/ 2\)\.toFixed\(2\);/.test(fnCode('buildHall'))
+  && /if \(key !== frontKey\) continue;/.test(fnCode('buildHall'))
+  && /if \(ri2 < 0\) continue;/.test(fnCode('buildHall'))
+  && /label\(String\(ri2 \+ 1\)\.padStart\(2, '0'\),/.test(fnCode('buildHall')));
+
+/* THE BAR AND THE BUILDING, THE OTHER WAY ROUND.
+
+   The fix one layer up made the CONTENT follow the selector. The selector
+   still did not follow the content: it was written once by renderChrome()
+   at boot, so every other way into a hall - a campus click, a ?hall= link,
+   the lessons cross-link, a seat entered from the yard, the harness hook -
+   moved the building and left the bar reading the hall before it. Same
+   class, opposite direction, and the same consequence: the bar and the
+   building disagree, which is how the draw-call breach stayed hidden.
+
+   Scoped to showHall()'s own body, because the note beside the fix quotes
+   the broken expression from the first half of this bug. */
+ok('the bar follows the building: showHall() writes the hall selector and '
+   + 'then READS IT BACK, because setting .value to a name the list does '
+   + 'not carry leaves the select silently blank - so a hall with no option '
+   + 'is a broken build rather than an empty bar over a drawn building',
+  /const sel = document\.getElementById\('hall'\);\s*sel\.value = sg;/
+    .test(fnCode('showHall'))
+  && /if \(sel\.value !== sg\)\s*throw new Error\('the hall selector carries no option for ' \+ sg/
+       .test(fnCode('showHall')));
+
+/* AND THE THREE SIGNS THAT LOOKED LIKE A LEAK.
+
+   The first draft hung the two egress chevrons and the muster beacon at the
+   scale of a place plate, and a capture of the default hall showed the
+   campus name standing three times across the frame at three depths over
+   the hall plate - which reads as the campus board failing to be torn down,
+   and was reported as that. The scene graph said otherwise: 25 visible
+   sprites, every one inside the hall group. Nothing had leaked; three door
+   signs had been drawn the size of a building name. Both halves are held
+   here - the sizing, and the teardown that makes the reading correct. */
+ok('the way-out signs are sized as signage, not as place plates: both are '
+   + 'well under the 1.35 the hall\'s own name plate wears, both hang on '
+   + 'the hall group so disposeOf() takes them with the building, and '
+   + 'showHall() hides the region board and the campus before it builds one',
+  /label\(outTo, null, \.3, \{ kind: 'egress' \}\)/.test(fnCode('buildHall'))
+  && /label\(outTo, h\.name, \.36, \{ kind: 'muster' \}\)/.test(fnCode('buildHall'))
+  && /hallGroup\.add\(way\);/.test(fnCode('buildHall'))
+  && /hallGroup\.add\(muster\);/.test(fnCode('buildHall'))
+  && /label\(h\.name, D\.i18n\[loc\]\.districts\[h\.district\], 1\.35,/.test(fnCode('buildHall'))
+  && /if \(regionGroup\) regionGroup\.visible = false;/.test(fnCode('showHall'))
+  && /if \(campusGroup\) campusGroup\.visible = false;/.test(fnCode('showHall')));
+
+ok('the hazard notice reads the ABSENCE of a hazards list as the answer it '
+   + 'is - D.baseCond carries no such key and D.condOver adds one only where '
+   + 'the trade has hazards - so a room with none gets no sign rather than a '
+   + 'sign saying there is nothing, and no bare default stands in for a fact',
+  /const hz = 'hazards' in rc \? rc\.hazards : \[\];/.test(fnCode('buildHall'))
+  && /if \(hz\.length\) \{/.test(fnCode('buildHall'))
+  && !/rc\.hazards \?\?/.test(code) && !/rc\.hazards \|\|/.test(code));
+
+ok('the egress chevrons and the muster beacon are read off the plan, not '
+   + 'placed by eye: the chevrons stand in the two back corners and name the '
+   + 'campus through the building\'s one open face, and the beacon stands out '
+   + 'on the apron in front of it',
+  /const outTo = D\.campuses\[campusKey\]\.name;/.test(fnCode('buildHall'))
+  && /for \(const ex of \[cx\(0\) \+ 2\.2, cx\(W\) - 2\.2\]\)/.test(fnCode('buildHall'))
+  && /way\.position\.set\(ex, 2\.1, cz\(DEP\) - \.45\);/.test(fnCode('buildHall'))
+  && /muster\.position\.set\(0, 1\.9, cz\(0\) - 7\);/.test(fnCode('buildHall')));
+
+/* ---- the three levels, stood up ---------------------------------------- */
+ok('the training ladder is READ out of D.strandmods and is hall-wide only '
+   + 'because the strands agree on it: if they ever stop agreeing the page '
+   + 'throws naming each strand\'s rungs, rather than showing a ladder that '
+   + 'is true of one strand and printed over eleven',
+  /const rungs = Object\.entries\(D\.strandmods\)\.map/.test(code)
+  && /if \(one\.size !== 1\)\s*throw new Error\('D\.strandmods: the strands do not agree/
+       .test(code)
+  && /samples\.map\(\(x\) => \(\{ level: x\.level, tier: x\.tier \}\)\)/.test(code));
+
+ok('and it stands up in the Classroom - the one room whose own purpose line '
+   + 'is "Level tests and the instructor track" - as one platform per rung, '
+   + 'each higher than the last, in a SOLID back bay the benches found, so a '
+   + 'rig can no more close a doorway than a bench can; it registers as '
+   + 'solid and joins `benches`, so back-corner props stand clear of it',
+  /\("leadership", *"Classroom", *4, *2, *"Level tests and the instructor track"\)/
+    .test(interiorsSrc)
+  && /if \(r\.strand === 'leadership'\) \{/.test(fnCode('buildHall'))
+  && /const bay = bays\[benches\.length \? 1 : 0\];/.test(fnCode('buildHall'))
+  && /const hgt = rung \+ ti \* step;/.test(fnCode('buildHall'))
+  && /wallRect\(bc, bz2, span \/ 2, \.55\);/.test(fnCode('buildHall'))
+  && /benches\.push\(hallSolids\[0\]\.rects\[hallSolids\[0\]\.rects\.length - 1\]\);\s*\}\s*\}/
+       .test(fnCode('buildHall')));
+
+ok('the rig and its tread nosings pool into the bench pool rather than '
+   + 'buying the Classroom three more meshes, so the ladder costs the hall '
+   + 'one draw call in the halls that had no steel bench and none in those '
+   + 'that did',
+  /box\(tread, hgt, 1\.1, mat\.steel, tx, \.35 \+ hgt \/ 2, bz2, benchTop\);/
+    .test(fnCode('buildHall'))
+  && /box\(tread - \.16, \.05, \.06, mat\.post, tx, \.35 \+ hgt \+ \.03,\s*bz2 - \.52, benchTop\);/
+       .test(fnCode('buildHall')));
+
+/* ---- and the sheds themselves ------------------------------------------ */
+const clears = [...new Set(wire.halls.map((h) => h.clear))].sort((a, b) => a - b);
+ok(`every hall carries its own eaves height and no hall is 3.2 m any more: `
+   + `${clears.length} distinct clear heights across the 111, from `
+   + `${clears[0]} m to ${clears[clears.length - 1]} m, derived at build time `
+   + 'from the fixtures each trade\'s OWN focus line earned it, over a base '
+   + 'every hall gets',
+  wire.halls.length === 111
+  && wire.halls.every((h) => typeof h.clear === 'number' && h.clear >= 4.2)
+  && clears.length > 1
+  && /CLEAR_BASE_M = 4\.2/.test(src)
+  && /def clear_height\(fixtures\):/.test(src));
+
+ok('the headroom table cannot ask for height over equipment no hall has: '
+   + 'every word in it is asserted at build time to appear in a fixture '
+   + 'web/interiors.py already derived from some trade\'s focus line, so the '
+   + 'two readings of that one derivation cannot drift apart',
+  /from interiors import build as build_interiors, FIXTURES as ROOM_FIXTURES/.test(src)
+  && /_fixture_text = ' \| '\.join\(fx for _, fx in ROOM_FIXTURES\.values\(\)\)\.lower\(\)/.test(src)
+  && /assert _w in _fixture_text/.test(src)
+  && Object.keys(labelsReg.kinds).length > 0);
+
+ok('the shed is built to that height rather than to the old constant: the '
+   + 'shell, its texture run, the fascia, the name sign, the trusses, the '
+   + 'lamps, the wall strips, the luminaires and the room lights all hang '
+   + 'off EAVE, and the page fails closed on a hall that ships without one',
+  /const HT = h\.clear, EAVE = \.35 \+ HT;/.test(fnCode('buildHall'))
+  && /if \(typeof h\.clear !== 'number'\)\s*throw new Error/.test(fnCode('buildHall'))
+  && /box\(W, HT, \.25, shellMat, 0, \.35 \+ HT \/ 2, cz\(DEP\), hallGroup\);/.test(fnCode('buildHall'))
+  && /wallMat\(shellW, W \/ U \* 2, HT\)/.test(fnCode('buildHall'))
+  && /fascia\.position\.set\(0, EAVE \+ \.05, cz\(0\)\);/.test(fnCode('buildHall'))
+  && /sign\.position\.set\(0, EAVE \+ 1\.55, cz\(0\)\);/.test(fnCode('buildHall'))
+  && !/box\(W, 3\.2, \.25, shellMat/.test(code));
+
+/* ---- and the strand vocabulary they all still resolve through ---------- */
+/* THE TRAP. Rooms are keyed by STRAND: D.roomDefs[strand] is read by the
+   hall's lesson roster, the props resolve per strand, the lessons registry's
+   steps resolve to rooms by strand, and the hall->lesson cross-link uses it.
+   A strand cannot map to two rooms through a lookup that returns one.
+
+   So the halls got taller, not wider, and they got signs and a ladder
+   rather than more rooms: the eleven-room programme is untouched, every
+   strand still names exactly one room in every hall, and the two things
+   added that are NOT rooms are keyed by something else - a door stencil by
+   the room's own place in the plan, a ladder rung by its TIER. Checked over
+   the shipped payload, every hall, rather than argued. */
+ok('every strand still names exactly one room in every one of the 111 halls, '
+   + `all ${Object.keys(wire.roomDefs).length} of them, and every hall's room `
+   + 'list is that same strand set once over - so D.roomDefs[strand], the '
+   + 'props by_strand table, the finishes, the walls, the conditions and the '
+   + 'lesson roster all still resolve to one room each',
+  (() => {
+    const strands = Object.keys(wire.roomDefs);
+    if (strands.length !== 11) return false;
+    return wire.halls.every((h) => {
+      const lay = wire.layouts[h.lay];
+      const mine = lay.map((r) => r.strand);
+      return mine.length === 11 && new Set(mine).size === 11
+        && mine.every((st) => strands.includes(st));
+    });
+  })());
+
+ok('and nothing added since is keyed by strand: the ladder rung is keyed by '
+   + 'its TIER, read from D.strandmods, and the door stencil by the room\'s '
+   + 'own index in the plan - so neither can ever be asked to resolve a '
+   + 'strand to a second room',
+  /TIER_LADDER\.forEach\(\(rg, ti\) => \{/.test(code)
+  && /D\.i18n\[loc\]\.tiers\[rg\.tier\]/.test(code)
+  && /label\(String\(ri2 \+ 1\)\.padStart\(2, '0'\),/.test(code));
+
+ok('every lesson in the registry still resolves its room through the strand '
+   + 'table, and every strand it names is one of the eleven - the binding '
+   + 'the hall roster reads, checked over all '
+   + `${Object.keys(wire.lessons.lessons).length} lessons`,
+  Object.values(wire.lessons.lessons).every((L) =>
+    wire.roomDefs[L.strand] && wire.roomDefs[L.strand].label === L.room_label)
+  && /const def = D\.roomDefs\[L\.strand\];/.test(fnCode('lessonRoomLabel'))
+  && /if \(!def\) throw new Error/.test(fnCode('lessonRoomLabel')));
+
+ok('every station the registry stands in a hall still names a room that '
+   + 'hall has, by the label the strand table gives it',
+  Object.values(wire.stations).every((st) => {
+    const h = wire.halls.find((x) => x.slug === st.hall);
+    if (!h) return false;
+    return wire.layouts[h.lay].some((r) => wire.roomDefs[r.strand].label === st.room);
+  }));
+
+ok('and the props registry covers every strand a room is keyed by, so '
+   + 'placeRoomProps() can keep throwing on a strand it does not cover '
+   + 'instead of defaulting to an empty room',
+  Object.keys(wire.roomDefs).every((st) => Array.isArray(wire.props.by_strand[st]))
+  && /if \(!ids\) throw new Error\('props registry covers no strand named ' \+ r\.strand\);/
+       .test(fnCode('placeRoomProps')));
+
+/* -------------------------------------------------- signage legibility ---
+   A screenshot of the default hall showed the Classroom plate, three
+   training-ladder plates and seven advisor bubbles collapsed into stacks
+   with the bottom line clipped to "Fu...ntals", and every check in this
+   file was green: nothing here could see a pixel. Measured afterwards in
+   Chromium at 1280x800 through the page's own __tc3dLabelRects(), that
+   view ran 15 overlapping pairs of 22 signs, five covering more than half
+   the smaller plate; the region board ran 488 pairs of 125 signs.
+
+   The COUNTING lives in web/eval_scene.mjs, which has a browser. What
+   lives here is the contract the page is built to: that the order a sign
+   yields in is the registry's and covers every kind, that the two
+   thresholds are two thresholds, that a sign which steps back is faded and
+   not taken out of the scene, and that a kind nobody ranked fails closed
+   instead of being given a rank by a `??`.
+
+   These read the BUILT PAGE, with its comments cut out, because every
+   string below is quoted in the builder's own notes beside the code that
+   uses it - which is the trap that has bitten this file nine times. */
+const pageCode = strip(builtPage);
+const pageFn = (name) => {
+  const i = pageCode.indexOf(`\nfunction ${name}(`);
+  if (i < 0) { console.error('FAIL the built page has no function', name); process.exit(1); }
+  const j = pageCode.indexOf('\n}\n', i + 1);
+  const body = pageCode.slice(i, j < 0 ? undefined : j + 2);
+  if (body.trim().split('\n').length < 3) {
+    console.error('FAIL the built page\'s', name, 'came back empty'); process.exit(1);
+  }
+  return body;
+};
+const wireDecl = wire.labels.declutter;
+
+ok('the order a sign yields in travels from the label registry to the page '
+   + 'unchanged, and it ranks every kind exactly once - so no sign can be '
+   + `drawn that nothing declares a precedence for (${wireDecl.precedence.length} kinds)`,
+  JSON.stringify(wireDecl.precedence)
+    === JSON.stringify(labelsReg.declutter.precedence)
+  && JSON.stringify([...wireDecl.precedence].sort())
+    === JSON.stringify(Object.keys(wire.labels.kinds).sort())
+  && new Set(wireDecl.precedence).size === wireDecl.precedence.length
+  && /_lclCand\.sort\(\(a, b\) => a\.u\.rank - b\.u\.rank \|\| b\.u\.focus - a\.u\.focus\);/
+    .test(pageFn('labelDeclutter')));
+
+ok('hiding and showing are two different thresholds in that order, and the '
+   + 'page reads whichever one applies to the state the sign is already in '
+   + `- the flicker guard (hide over ${wireDecl.cover_hide}, show under ${wireDecl.cover_show})`,
+  wireDecl.cover_show > 0 && wireDecl.cover_show < wireDecl.cover_hide
+  && wireDecl.cover_hide < 1
+  && /const hidden = c\.u\.cover > \.5;/.test(pageFn('labelDeclutter'))
+  && /const out = cover > \(hidden \? LDECL\.cover_show : LDECL\.cover_hide\);/
+    .test(pageFn('labelDeclutter')));
+
+ok('a sign that steps back is FADED and nothing more: the pass scales its '
+   + 'opacity down to the registry\'s own min_op and never removes it from '
+   + 'labelSet, from its group or from the scene, so legibility is not '
+   + 'bought by taking signage away',
+  /c\.sp\.material\.opacity \*= 1 - c\.u\.cover;/.test(pageFn('labelDeclutter'))
+  && /if \(c\.sp\.material\.opacity <= LDECL\.min_op\) c\.sp\.visible = false;/
+    .test(pageFn('labelDeclutter'))
+  && !/splice|\.remove\(|dispose|labelSet\.length =/.test(pageFn('labelDeclutter'))
+  && wireDecl.min_op > 0 && wireDecl.min_op < wire.labels.focus.floor);
+
+ok('a kind nobody ranked fails CLOSED, naming the registry path, rather '
+   + 'than being handed a rank by a default - and a registry that reaches '
+   + 'the page with no precedence at all stops the page instead of picking '
+   + 'a winner itself',
+  /const r = LRANK\.get\(kindId\);/.test(pageCode)
+  && /if \(r === undefined\)\s*throw new Error\('D\.labels\.declutter\.precedence ranks no sign of kind "'/
+    .test(pageCode)
+  && !/LRANK\.get\(kindId\) \?\?/.test(pageCode)
+  && /if \(!d \|\| !Array\.isArray\(d\.precedence\) \|\| !d\.precedence\.length\)\s*throw new Error\('D\.labels\.declutter\.precedence: /
+    .test(pageCode));
+
+ok('the page reports where each on-screen sign actually landed, through one '
+   + 'hook that projects the sprite the way the renderer draws it - so a '
+   + 'harness counts the same rectangles the declutter pass compared, '
+   + 'rather than keeping a second copy of the projection',
+  /window\.__tc3dLabelRects = \(\) => \{/.test(pageCode)
+  && /_lrA\.set\(_lrC\.x - hw, _lrC\.y \+ hh, _lrC\.z\)\.applyMatrix4\(camera\.projectionMatrix\);/
+    .test(pageFn('lblRect'))
+  && /if \(!lblRect\(sp, vw, vh, _lrOut\)\) continue;/.test(pageCode)
+  && /lblRect\(sp, vw, vh, _lclRects\[i\]\)/.test(pageFn('labelDeclutter'))
+  && /_lrInv\.copy\(camera\.matrixWorld\)\.invert\(\);/.test(pageFn('lblViewSync')));
+
+/* ---- what a room requires of you, and where that sign hangs ----------
+
+   These read the BUILT PAGE, like everything else in this block, because
+   every string below is quoted in the builder's notes beside the code
+   that uses it. */
+
+ok('what a room requires of you is a BOARD and not a name-plate: the '
+   + 'registry says so, the page has a branch that draws one, and the band '
+   + 'across its head is the registry\'s own number rather than a second '
+   + 'convention the page invented - a plate held one line however long the '
+   + 'list, which is what made a seven-item PPE sign 670 px wide across a '
+   + '1280 px screen',
+  wire.labels.kinds.placard.shape === 'board'
+  && typeof wire.labels.shapes.board.head_px === 'number'
+  && /case 'board': \{/.test(pageCode)
+  && /g\.fillRect\(0, 0, w, lblBoardHead\(\)\);/.test(pageCode)
+  && /throw new Error\('D\.labels\.shapes\.board\.head_px: /.test(pageFn('lblBoardHead'))
+  && !/shapes\.board\.head_px \?\?/.test(pageCode));
+
+ok('a board is laid out from the LIST it carries and never by splitting the '
+   + 'sentence back apart, so its width is its widest SINGLE item rather '
+   + 'than all of them end to end - and a board kind reaching label() with '
+   + 'no items stops the page instead of drawing an empty frame',
+  /for \(const it of items\) itemW = Math\.max\(itemW, g\.measureText\(it\)\.width\);/
+    .test(pageFn('label'))
+  && /\? Math\.max\(itemW, sw, 150\) \+ padX \* 2/.test(pageFn('label'))
+  && /if \(!Array\.isArray\(opts\.items\) \|\| !opts\.items\.length\)/.test(pageFn('label'))
+  && !/text\.split\(/.test(pageFn('label')));
+
+/* THE PLACEMENT RULE, and why this check is about the COMPARISON rather
+   than about the answer.
+
+   A check that asserted "the board is on the centre-line side" would have
+   passed on the rule this replaced for every room at negative x, because
+   +x IS the centre-line side there - green on exactly the code it exists
+   to reject, and green across half the network while the other half
+   stayed wrong. So what is asserted is what the rule COMPARES: each
+   jamb's distance to the hall's centre line, two quantities that differ
+   unless the doorway sits on the axis, and not the two wall widths that a
+   doorway centred on a room makes exactly equal.
+
+   Replayed over the shipped payload, 393 of the 795 boards that hang
+   beside a jamb - 49%, in every one of the 111 halls - compared two
+   bit-for-bit equal numbers, and `>` sent every one of them to the +x
+   jamb. */
+ok('which jamb a PPE board hangs on is decided by ONE measure, each jamb\'s '
+   + 'distance to the hall\'s centre line, and never again by the two wall '
+   + 'widths a centred doorway makes exactly equal - 393 of the 795 boards '
+   + 'that hang beside a jamb compared two bit-for-bit equal numbers and leant to '
+   + '+x with nobody having chosen it',
+  /jambs\.push\(ca - \.12 - bw \/ 2, cb \+ \.12 \+ bw \/ 2\);/.test(pageCode)
+  && /const j = jambs\[ji\], d = Math\.abs\(j\) - Math\.abs\(bx2\);/.test(pageCode)
+  && !/\(ca - \(rx - rw \/ 2\)\) > \(\(rx \+ rw \/ 2\) - cb\)/.test(pageCode)
+  && !/Math\.abs\(\(a\[0\] \+ a\[1\]\) \/ 2 - rx\)/.test(pageCode));
+
+ok('the one tie that rule leaves - a doorway sitting exactly on the hall\'s '
+   + 'centre line, which is 47 of those 795 boards and so legitimate '
+   + 'geometry rather than a build error - is broken by a side the label '
+   + 'registry NAMES with its reason, and a registry that reaches the page '
+   + 'without one stops the page rather than letting a comparison of two '
+   + 'equal numbers decide it a second time',
+  /d === 0\s*&& \(lblTieJamb\(\) === '-x' \? j < bx2 : j > bx2\)/.test(pageCode)
+  && /throw new Error\('D\.labels\.kinds\.placard\.jamb_on_centre: /
+    .test(pageFn('lblTieJamb'))
+  && !/jamb_on_centre \?\?/.test(pageCode)
+  && ['-x', '+x'].includes(wire.labels.kinds.placard.jamb_on_centre)
+  && wire.labels.kinds.placard.jamb_on_centre_why.length > 80
+  && wire.labels.kinds.placard.jamb_on_centre
+    === labelsReg.kinds.placard.jamb_on_centre);
+
+
+/* ------------------------------------------------ the WebXR layer, held --
+   A read-only review of the walkable/XR layer verified each of these by
+   mutation in a sandbox: the page passed every suite with the bug put
+   back. No browser and no session - mocked or real - runs here, so each
+   contract is held at the source, and each check below was watched failing
+   on its own mutation before it was trusted. */
+ok('a hand is read off the controller slot whose \'connected\' event recorded that handedness - three r160 fills slots in connection order, not by hand - and a side with no slot is skipped',
+  /const slot = xrCtl\.hands\[0\] === side \? 0 : xrCtl\.hands\[1\] === side \? 1 : -1;\s*if \(slot < 0\) continue;\s*const hand = renderer\.xr\.getHand\(slot\);/.test(fnCode('xrHands'))
+  && !/getHand\(side === 'left' \? 0 : 1\)/.test(code));
+ok('page and layer agree on foveation at session start: xrBegan writes the page\'s number to the layer, reads the layer\'s back, and keeps its own only when three r160 returns undefined - so the ladder\'s first step can never LOWER foveation',
+  /renderer\.xr\.setFoveation\(xrFov\);\s*const fov = renderer\.xr\.getFoveation\(\);\s*xrFov = fov === undefined \? xrFov : fov;/.test(fnCode('xrBegan'))
+  && /r160/.test(fn('xrBegan')) && /undefined/.test(fn('xrBegan')));
+ok('the wrist panel mounts on the grip of a left CONTROLLER only: a hand input source has no gripSpace, so a left hand mounts it head-locked on the rig',
+  /if \(h === 'left'\) \{[^\n]*if \(e\.data && e\.data\.hand\) xrHudMount\(null\); else xrHudMount\(grip\); \}/.test(fnCode('xrCtlBuild')));
+ok('a restoration site is placed as a walkable-city marker only when its registry says walkable: true - a missing flag fails CLOSED, never open',
+  /s\.get\('walkable'\) is True else \{\}/.test(src) && !/s\.get\('walkable', True\)/.test(src));
+ok('the restoration panel renders a non-walkable site\'s walkable_reason verbatim after the catalog\'s "not a walkable scene" line, and never a walk control for it - the walk button lives in the e-offset branch alone',
+  (() => {
+    const i = code.indexOf('const walk = s.e !== undefined');
+    const stmt = code.slice(i, code.indexOf(";\n", i));
+    const nw = stmt.indexOf(': (s.walkable === false && s.walkable_reason');
+    return i > 0 && nw > 0
+      && (stmt.match(/data-resto-walk/g) || []).length === 1
+      && stmt.indexOf('data-resto-walk') < nw
+      && /\$\{t\('xr\.notWalkable'\)\}\$\{esc\(s\.walkable_reason\)\}<\/span>` : ''\)$/.test(stmt)
+      && !/(?:barbtn|data-resto-walk|<button)/.test(stmt.slice(nw));
+  })());
+ok('a headset walks at the README\'s speeds: the left stick is a COMMAND that walkStep drives through WALK_MS/RUN_MS and WALK_SPOOL - xrMove hands it back and never moves the rig itself',
+  /const \[xf, xs\] = xrMove\(dt\);\s*fwd = xf \|\| fwd; str = xs \|\| str;/.test(fnCode('walkStep'))
+  && fnCode('walkStep').indexOf('xrMove(dt)') < fnCode('walkStep').indexOf('wkF = drive(wkF')
+  && /const cmd = mag > \.15 \? \[-ly, lx\] : \[0, 0\];/.test(fnCode('xrMove'))
+  && /return cmd;/.test(fnCode('xrMove'))
+  && !/addScaledVector|3 \* dt|xrRig\.position/.test(fnCode('xrMove'))
+  && !/xrRig\.position\.addScaledVector|rig\.addScaledVector\([^)]*xrPad/.test(fnCode('walkStep').split('wkF = drive(')[0]));
+ok('the reference space is asked for in order - local-floor first with xrFloor = true, plain local as the fallback with xrFloor = false - and the rig lift (xrWalkStart, walkStep) is decided by xrFloor',
+  (() => {
+    const st = fnCode('xrStart');
+    const a = st.search(/requiredFeatures: \['local-floor'\], optionalFeatures: \[XR_HANDS\] \}\);\s*xrFloor = true;/);
+    const b = st.search(/requiredFeatures: \['local'\], optionalFeatures: \[XR_HANDS\] \}\);\s*xrFloor = false;/);
+    return a > 0 && b > a && /catch \(e1\)/.test(st)
+      && /setReferenceSpaceType\(xrFloor \? 'local-floor' : 'local'\)/.test(st)
+      && /xrRig\.position\.set\(sx, xrFloor \? 0 : XR_LOCAL_EYE, sz\);/.test(fnCode('xrWalkStart'))
+      && /if \(inXR\) rig\.y = xrFloor \? 0 : XR_LOCAL_EYE;/.test(fnCode('walkStep'));
+  })());
+ok('passthrough hides the ground and the grid around the draw only, and puts both back',
+  /if \(renderer\.xr\.isPresenting && xrBlend !== 'opaque'\) \{[\s\S]*?ground\.visible = false; grid\.visible = false;[\s\S]*?renderer\.render\(scene, camera\);[\s\S]*?ground\.visible = gv; grid\.visible = grv;/.test(fnCode('xrRender')));
+ok('a snap turn keeps the head where it was: the head\'s world position is taken before the rig turns and the rig is moved back under it after',
+  /camera\.getWorldPosition\(_xh\);\s*xrRig\.rotation\.y \+= a; xrRig\.updateMatrixWorld\(true\);\s*const after = camera\.getWorldPosition\(_xf\);\s*xrRig\.position\.add\(_xh\.sub\(after\)\);/.test(fnCode('xrSnap')));
+ok('thumbstick axes 2/3 are read only under the xr-standard gamepad mapping; any other mapping falls back to axes 0/1',
+  /gp\.mapping === 'xr-standard' && gp\.axes\.length >= 4 \? \[gp\.axes\[2\] \|\| 0, gp\.axes\[3\] \|\| 0\] : \[gp\.axes\[0\] \|\| 0, gp\.axes\[1\] \|\| 0\]/.test(fnCode('xrInput')));
+ok('the wrist panel is cleared when the session ends, and the framebuffer scale is set before the session is handed to three',
+  /xrHudClear\(\);/.test(fnCode('xrEnded'))
+  && fnCode('xrStart').indexOf('renderer.xr.setFramebufferScaleFactor(XR_SCALES[xrScaleIdx]);') > 0
+  && fnCode('xrStart').indexOf('setFramebufferScaleFactor(XR_SCALES[xrScaleIdx])') < fnCode('xrStart').indexOf('await renderer.xr.setSession(session)'));
+ok('a missing environmentBlendMode is closed by the mode asked for: alpha-blend for immersive-ar, opaque otherwise - never opaque over a passthrough room',
+  /xrBlend = session\.environmentBlendMode \?\? \(mode === 'immersive-ar' \? 'alpha-blend' : 'opaque'\);/.test(fnCode('xrStart'))
+  && !/environmentBlendMode \?\? 'opaque'/.test(code));
+ok('one truth on the XR layer, in the page\'s own words: joints read for gestures proven on synthetic positions, hands not rendered, every contract held at the source, no session mocked or real driven, a harness the next step and NOT claimed',
+  /No session - mocked or real - has been driven in this tree/.test(src)
+  && /mocked WebXR session harness[\s\S]{0,160}is the next step and is NOT claimed/.test(src)
+  && /hand joints are read, hands are not\s+rendered/.test(src)
+  && !/proves the layer against a mocked/.test(src)
+  && !/proven against a mocked/.test(src));
+ok('the XR HUD speaks from the catalog: every XR string reaches the page through t(\'xr.*\'), each key rides the i18n wire and exists in en.json, and none of the old English literals is left in the code',
+  (() => {
+    const used = [...new Set([...code.matchAll(/t\('(xr\.[A-Za-z]+)'\)/g)].map((m) => m[1]))];
+    const wire = src.slice(src.indexOf("'strings': {k: s[k] for k in ("), src.indexOf(")},", src.indexOf("'strings': {k: s[k] for k in (")));
+    const en = JSON.parse(readFileSync(new URL('../i18n/locales/en.json', import.meta.url), 'utf8')).strings;
+    return used.length >= 15
+      && ['xr.ended', 'xr.unavailable', 'xr.noNavigatorXr', 'xr.banner', 'xr.seatYours', 'xr.handsOnSeat',
+          'xr.operator', 'xr.perf', 'xr.notWalkable', 'xr.walkableCity'].every((k) => used.includes(k))
+      && used.every((k) => wire.includes(`'${k}'`) && typeof en[k] === 'string')
+      && !/'XR session ended'|'XR session unavailable: '|'navigator\.xr is not offered|left stick walks, right stick snaps|'the seat is yours again'|'your hands on the seat'|'reference operator · '|'XR performance: '|not a walkable scene: |walkable in the city layer</.test(code);
+  })());
+
+/* ------------------------------------------- page chrome: h1 and nav --- */
+// A browser smoke run found the page had no <h1> and did not carry the
+// site's shared navigation. Both are held here on the BUILT page and at
+// the source, together with what keeps them out of the scene's way: the
+// nav is fixed (no flow space, so the canvas keeps the whole window every
+// pointer and raycast sum divides by) and sits under the panel scrim.
+const built = readFileSync(new URL('./trade_craft_3d.html', import.meta.url), 'utf8');
+const bodyAt = built.indexOf('<body>');
+ok('the page has exactly one <h1>, visually hidden, naming the PAGE (nav.page.campus, en catalog) with the brand as the kicker line just above it - and renderChrome() re-reads it in the chosen language',
+  (built.match(/<h1\b/g) ?? []).length === 1
+  && built.includes('<p id="pkicker" class="vh" lang="en" dir="ltr">SmartCiti.X : Trade Craft Academy</p>\n<h1 id="ptitle" class="vh">'
+    + JSON.parse(readFileSync(new URL('../i18n/locales/en.json', import.meta.url), 'utf8')).strings['nav.page.campus'] + '</h1>')
+  && !/<h1[^>]*>[^<]*SmartCiti/.test(built)
+  && /\.vh\{position:absolute!important;width:1px;height:1px;[^}]*clip-path:inset\(50%\)/.test(built)
+  && /document\.getElementById\('ptitle'\)\.textContent = t\('nav\.page\.campus'\);/.test(fnCode('renderChrome'))
+  && !/ptitle[^;]*SmartCiti/.test(fnCode('renderChrome'))
+  && /'nav\.campus', 'nav\.page\.campus', 'language\.select'/.test(src)
+  && built.indexOf('<h1 id="ptitle"') > bodyAt && built.indexOf('<h1 id="ptitle"') < built.indexOf('<div id="bar">'));
+ok('the page carries the shared site nav: built by sitenav.nav_html() for its own path, first in the body, with NAV_CSS in the head and no nav markup typed here',
+  /^from sitenav import nav_html, labels as nav_labels, NAV_CSS/m.test(src)
+  && (src.match(/nav_html\('web\/trade_craft_3d\.html', nav_labels\('en'\)\)/g) ?? []).length === 1
+  && /page = page\.replace\('__NAV_CSS__', NAV_CSS\)\.replace\('__NAV__', NAV\)/.test(src)
+  && /<body>\n<nav class="sitenav" data-sitenav [^>]*>/.test(built)
+  && (built.match(/<nav class="sitenav" data-sitenav/g) ?? []).length === 1
+  && /aria-current="page">[^<]+<\/a>/.test(built.slice(bodyAt, built.indexOf('</nav>', bodyAt)))
+  && !/data-sitenav|class="sitenav/.test(src));
+ok('the nav stays out of the scene\'s way: fixed and folded to one row (open on hover or focus), over the bar and under the panel scrim, the bar and minimap moved down by its row, the canvas still sized to the whole window',
+  /nav\.sitenav\{position:fixed;top:0;inset-inline:0;z-index:8;height:var\(--navh\);\s*overflow:hidden;/.test(built)
+  && /nav\.sitenav:hover,nav\.sitenav:focus-within\{height:auto;/.test(built)
+  && /#ov\{position:fixed;inset:0;[^}]*z-index:9\}/.test(built)
+  && /#bar\{top:var\(--navh\)\}/.test(built) && /#mm\{top:calc\(62px \+ var\(--navh\)\)\}/.test(built)
+  && built.indexOf('<style>.sitenav{') < built.indexOf('nav.sitenav{position:fixed')
+  && /renderer\.setSize\(innerWidth, innerHeight\);/.test(code));
+
+ok('below the shared nav\'s breakpoint an OPEN "Site pages" menu is never clipped by the folded bar: the bar grows (height auto, scrolls within the viewport) whenever the disclosure is open, and the groups drop in flow inside it',
+  /nav\.sitenav:has\(\.sitenav-menu\[open\]\)\{height:auto;max-height:100dvh;overflow-y:auto;/.test(built)
+  && /nav\.sitenav \.sitenav-menu\[open\]>\.sitenav-groups\{position:static;/.test(built)
+  && /nav\.sitenav \.sitenav-menu\[open\]\{flex:1 1 100%;min-width:0;max-width:100%\}/.test(built)
+  && /nav\.sitenav \.sitenav-menu\[open\]>summary\{position:absolute;/.test(built)
+  && /<details class="sitenav-menu" data-sitenav-menu>[\s\S]*?<div class="sitenav-groups">/.test(built)
+  && /nav\.sitenav \.sitenav-menu > summary/.test(built));
+
+/* ------------------------------------------------- detail: crib tools --- */
+// Every render kind the tool registry uses is drawn as a tool - several
+// parts, the registry hue on the grip/body - not one block, and the board
+// is still one merged mesh (the existing crib check holds that half).
+{
+  const reg = JSON.parse(readFileSync(new URL('../tools/registry/toolcribs.json', import.meta.url), 'utf8'));
+  const shapes = [...new Set(Object.values(reg.cribs).flatMap((c) => c.tools.map((t) => t.shape)))];
+  const body = fnCode('toolGeo');
+  const cases = {};
+  const parts = body.split(/\n    (?=case '|default:)/).slice(1);
+  for (const c of parts) {
+    const k = (c.match(/^case '([a-z]+)'/) ?? [null, 'default'])[1];
+    cases[k] = { puts: (c.match(/\bput\(/g) ?? []).length, hue: /\bcol\b/.test(c), steelOrGrip: /\b(STEEL|GRIP)\b/.test(c) };
+  }
+  const missing = shapes.filter((sh) => sh !== 'wrench' && !(sh in cases));
+  ok(`every crib render kind the registry uses (${shapes.length}) is drawn as a tool of at least three parts with the registry hue on one of them and steel or rubber on another`,
+    missing.length === 0 && 'default' in cases
+    && Object.values(cases).every((c) => c.puts >= 3 && c.hue && c.steelOrGrip)
+    && Object.keys(cases).length >= 9);
+  ok('a crib tool is laid out in its face frame and turned once onto the board, merged into one geometry that fails loudly if the parts do not merge',
+    /const geo = mergeGeometries\(parts\);/.test(body)
+    && /geo\.rotateY\(-Math\.PI \/ 2\);/.test(body)
+    && /throw new Error\('tool ' \+ tl\.id \+ ': its parts did not merge'\)/.test(body)
+    && !/new THREE\.MeshStandardMaterial/.test(body));
+}
+
+/* ---------------------------------------------- detail: the excavator --- */
+ok('the excavator seat is dressed - sprocket, idler, rollers and grousers on the tracks; framed cab, work lights, exhaust and chevrons on the house; barrel-and-rod cylinders, joint pins and bucket teeth on the arm',
+  /excavatorDetail\(g, hg, boomG, stickG, L1, L2\);/.test(fnCode('excavatorSim'))
+  && [/drive sprocket/, /front idler/, /-1\.2 \+ i \* \.6/, /i < 12; i\+\+\) piece\(1\.14, \.05/, /cab pillars/, /work lights/,
+      /exhaust stack/, /counterweight chevrons/, /boom foot pin/, /boom-stick pin/, /stick-bucket pin/, /L2 \+ \.5, -\.62/]
+    .every((re) => re.test(fn('excavatorDetail')))
+  && (fnCode('excavatorDetail').match(/mat\.paint, [^)]*, (Bm|St), 'x'\)/g) ?? []).length === 3);
+ok('the excavator dress rides the group that moves each piece and costs one mesh per material per group: pooled through partCollector() and flushed by flushParts(), shared materials only',
+  /const \[U, H, Bm, St\] = pools\.map\(partCollector\);/.test(fnCode('excavatorDetail'))
+  && /\[g, hg, boomG, stickG\]\.forEach\(\(grp, i\) => flushParts\(pools\[i\], grp\)\);/.test(fnCode('excavatorDetail'))
+  && !/MeshStandardMaterial|MeshBasicMaterial|\.add\(new THREE\.Mesh/.test(fnCode('excavatorDetail'))
+  && !/\b(g|hg|boomG|stickG)\.add\(/.test(fnCode('excavatorDetail')));
+
+/* ---------------------------------------------- detail: avatar hands --- */
+ok('a person\'s hand is palm, four-finger mitt and thumb - with a gauntlet cuff when the locker says gloves - merged into ONE mesh that replaces the old ball one for one; paws stay paws',
+  /const mitt = new THREE\.CapsuleGeometry\(/.test(fnCode('handMesh'))
+  && /const thumb = new THREE\.CapsuleGeometry\(/.test(fnCode('handMesh'))
+  && /if \(gloved\) \{\s*const cuff = new THREE\.CylinderGeometry\(/.test(fnCode('handMesh'))
+  && /const geo = mergeGeometries\(parts\);/.test(fnCode('handMesh'))
+  && (fnCode('handMesh').match(/new THREE\.Mesh\(/g) ?? []).length === 1
+  && /else handMesh\(\.06, handM, cfg\.extras === 'gloves', hd\);/.test(fnCode('buildAvatarMesh'))
+  && /if \(APE \|\| ANIMAL \|\| cfg\.costume === 'mascot'\)\s*sphere\(/.test(fnCode('buildAvatarMesh')));
+
+/* ------------------------------------------------ the page parses --- */
+// Every check above reads the source as text, and none of them notices a
+// page that does not parse. One did not, while this file passed: a JS
+// string written as 'a hand\'s ...' inside the Python template lost its
+// backslash on the way out, the module died on a SyntaxError and the scene
+// never booted. So the BUILT module and each classic inline script are
+// handed to the JS parser itself (node --check; no browser, nothing run).
+{
+  const dir = mkdtempSync(join(tmpdir(), 'tc3d-parse-'));
+  const bad = [];
+  try {
+    const blocks = [...built.matchAll(/<script(\s[^>]*)?>([\s\S]*?)<\/script>/g)]
+      // data blocks (the JSON payload, the import map, the SEO card's
+      // JSON-LD) are never run, so they are not parsed as script
+      .filter((m) => !/type="(application\/json|application\/ld\+json|importmap)"/.test(m[1] ?? ''));
+    blocks.forEach((m, i) => {
+      const file = join(dir, `s${i}.${/type="module"/.test(m[1] ?? '') ? 'mjs' : 'cjs'}`);
+      writeFileSync(file, m[2]);
+      try { execFileSync(process.execPath, ['--check', file], { stdio: 'pipe' }); }
+      catch (e) { bad.push(`script ${i}: ${String(e.stderr).split('\n').find((l) => /Error/.test(l))}`); }
+    });
+    ok(`every script the built page runs (${blocks.length}, the scene module among them) parses${bad.length ? ': ' + bad.join('; ') : ''}`,
+      blocks.length >= 2 && blocks.some((m) => /type="module"/.test(m[1] ?? '')) && bad.length === 0);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+}
+
+/* ------------------------------------- accessible names, and the wire --- */
+// A QA sweep found seven links and buttons on this page with no accessible
+// name: the bar's controls were empty elements the script filled in, so
+// before it ran (and to anything reading the markup) they were nameless.
+// Every <a> and <button> in the built markup outside the scripts now carries
+// visible text or an aria-label.
+{
+  const markup = built.replace(/<script\b[\s\S]*?<\/script>/g, '').replace(/<style\b[\s\S]*?<\/style>/g, '');
+  const els = [...markup.matchAll(/<(a|button)\b([^>]*)>([\s\S]*?)<\/\1>/g)];
+  const nameless = els.filter((m) => !/aria-label="[^"]+"/.test(m[2]) && !m[3].replace(/<[^>]*>/g, '').trim())
+    .map((m) => `<${m[1]}${(m[2].match(/ id="[^"]*"/) ?? [''])[0]}>`);
+  ok(`every link and button in the built page's markup (${els.length}) has an accessible name - text or aria-label - before any script runs${nameless.length ? ': nameless ' + nameless.join(', ') : ''}`,
+    els.length >= 30 && nameless.length === 0
+    && /page = re\.sub\(r'__L_\(\[a-zA-Z\.\]\+\)__', lambda m: I18N\['en'\]\['strings'\]\[m\.group\(1\)\], page\)/.test(src));
+}
+// The HUD's operator button read "sim.operator" in a browser: t() falls
+// back to the KEY when a string is not on the i18n wire, and that key was
+// used by the page and never put on it. Every t('<literal>') the page calls
+// is on the wire and in en.json.
+{
+  const used = [...new Set([...code.matchAll(/\bt\('([A-Za-z0-9_.]+)'\)/g)].map((m) => m[1]))];
+  const w0 = src.indexOf("'strings': {k: s[k] for k in (");
+  const wire = src.slice(w0, src.indexOf(')}', w0));
+  const en = JSON.parse(readFileSync(new URL('../i18n/locales/en.json', import.meta.url), 'utf8')).strings;
+  const off = used.filter((k) => !wire.includes(`'${k}'`) || typeof en[k] !== 'string');
+  ok(`every catalog key the page reads through t() (${used.length}) rides the i18n wire and is in en.json${off.length ? ': off the wire ' + off.join(', ') : ''}`,
+    used.length >= 40 && off.length === 0);
+}
+
+/* --------------------------------- side quests, treasures and eggs --- */
+// The quest layer (QUEST3D_JS) is play laid over the campus. Each check
+// below holds one promise it makes, on the source and on the built page.
+{
+  const qjs = strip(src.slice(src.indexOf('QUEST3D_JS = r"""'), src.indexOf('"""', src.indexOf('QUEST3D_JS = r"""') + 20)));
+  const dataJson = JSON.parse(built.slice(built.indexOf('<script id="data" type="application/json">') + 42,
+    built.indexOf('</script>', built.indexOf('<script id="data" type="application/json">'))));
+  const Q3 = dataJson.quest3d;
+  const qreg = JSON.parse(readFileSync(new URL('../quests/registry/quests.json', import.meta.url), 'utf8'));
+  const byId = Object.fromEntries(qreg.quests.map((q) => [q.id, q]));
+  const lessons = JSON.parse(readFileSync(new URL('../lessons/registry/lessons.json', import.meta.url), 'utf8')).lessons;
+  // markers: every hall side quest and every seat side quest the registry
+  // carries stands in the page, gated by the registry's OWN lesson ids
+  const regHall = qreg.quests.filter((q) => q.kind === 'side' && q.world.startsWith('hall:'));
+  const regSeat = qreg.quests.filter((q) => q.kind === 'side' && q.world === 'campus' && q.id.startsWith('side-seat-'));
+  ok(`quest markers: all ${regHall.length} hall side quests and ${regSeat.length} seat side quests in quests/registry stand in the page with the registry's own lesson gates, every lesson id real`,
+    regHall.length >= 40 && regSeat.length >= 5
+    && regHall.every((q) => { const h = Q3.hall[q.world.slice(5)];
+      return h && h.id === q.id && JSON.stringify(h.lessons) === JSON.stringify(q.requires.lessons)
+        && dataJson.roomDefs[h.strand].label === q.place; })
+    && regSeat.every((q) => Q3.seat[q.place] && Q3.seat[q.place].id === q.id
+      && JSON.stringify(Q3.seat[q.place].lessons) === JSON.stringify(q.requires.lessons))
+    && [...Object.values(Q3.hall), ...Object.values(Q3.seat)].every((v) => v.lessons.length && v.lessons.every((l) => lessons[l]))
+    && /if \(view === 'hall' && Q3\.hall\[slug\]\)/.test(qjs) && /for \(const st of yardSeatsAt\)/.test(qjs)
+    && /yardSeatsAt\.push\(\{ id, x: yg\.position\.x \+ sx, z: yg\.position\.z \+ sz \}\)/.test(fnCode('buildTrainingYard')));
+  // a marker is LOCKED unless the engine says otherwise - fail closed
+  ok('a quest marker is locked unless TCQuests.check() says ok: no engine means locked, and a locked marker lists the lessons it waits on',
+    /return api \? api\.check\(id\) : \{ ok: false, missing: null \}/.test(qjs)
+    && /if \(it\.kind === 'marker'\) return questCheck\(it\.id\)\.ok \? QCOL\.open : QCOL\.locked/.test(qjs)
+    && /t\('campus3d\.locked'\)/.test(qjs) && /if \(c\.ok\) \{\s*const api = qApi\(\); if \(api\) api\.complete\(q\.id\)/.test(qjs));
+  // pooled: one InstancedMesh, no per-instance mesh, no shadow, no label
+  ok('treasures, markers, egg gems and meteors are ONE pooled InstancedMesh: no THREE.Mesh, no label(), no shadow, one geometry and one material, capacity bounded',
+    (qjs.match(/new THREE\.InstancedMesh\(/g) ?? []).length === 1
+    && !/new THREE\.Mesh\(|new THREE\.Sprite\(|\blabel\(/.test(qjs)
+    && /QPOOL\.castShadow = false; QPOOL\.receiveShadow = false;/.test(qjs)
+    && (qjs.match(/new THREE\.\w+Geometry\(/g) ?? []).length === 1
+    && (qjs.match(/new THREE\.Mesh\w*Material\(/g) ?? []).length === 1
+    && /const QCAP = 128;/.test(qjs) && /Math\.min\(QCAP, all\.length\)/.test(qjs)
+    // the capacity is held at build to every gem one view can stand
+    && /assert f'const QCAP = \{QCAP3D\};' in QUEST3D_JS/.test(src)
+    && /assert len\(_q_seat\) \+ 1 \+ _task_places \+ 16 <= QCAP3D/.test(src)
+    && /scene\.add\(QPOOL\);/.test(qjs) && !/hallGroup\.add\(QPOOL\)/.test(qjs));
+  // treasures read real compliance placards; greens quote modules verbatim
+  const comp = JSON.parse(readFileSync(new URL('../compliance/registry/compliance.json', import.meta.url), 'utf8'));
+  const evals = JSON.parse(readFileSync(new URL('../evals/registry/evals.json', import.meta.url), 'utf8'));
+  const venue = JSON.parse(readFileSync(new URL('../venue/registry/venue.json', import.meta.url), 'utf8'));
+  const greens = Object.values(Q3.green);
+  ok(`every hall treasure reads a HUNG placard from compliance/registry byte for byte (${Object.keys(Q3.treasure).length}); every campus green quotes the eval's limit sentence, the venue's counts or the ledger's is_not verbatim`,
+    Object.keys(Q3.treasure).length === regHall.length
+    && Object.entries(Q3.treasure).every(([sg, tr]) => comp.halls[sg].rooms[tr.strand].placard.hung
+      && JSON.stringify(comp.halls[sg].rooms[tr.strand].placard.items) === JSON.stringify(tr.items))
+    && Object.keys(Q3.green).length === Object.keys(dataJson.campuses).length
+    && greens.some((g) => g.mod === 'evals' && g.text === evals.limit.sentence)
+    && greens.some((g) => g.mod === 'venue' && g.text.includes(`contents_meshes ${venue.counts.contents_meshes}`)
+      && g.text.includes(`floor_plates ${venue.counts.floor_plates}`) && g.text.includes(venue.honesty.a_box_is_not_a_room.split('. ')[0]))
+    && greens.some((g) => g.mod === 'compliance' && comp.honesty.is_not.every((x) => g.text.includes(x))));
+  // eggs: at least five, each wired, each resolving to the registry or
+  // listed as pending (never sent to the engine while pending)
+  const eggIds = Object.values(Q3.eggs);
+  const findable = [...eggIds, ...Object.values(Q3.treasure).map((x) => x.id), ...greens.map((x) => x.id)];
+  const resolved = findable.filter((id) => byId[id]);
+  ok(`${eggIds.length} easter eggs, each with its trigger in the page; each egg and treasure id resolves in quests/registry (${resolved.length}/${findable.length}) with a findable kind, or is listed pending and kept from the engine`,
+    eggIds.length >= 5 && new Set(eggIds).size === eggIds.length
+    && eggIds.every((id) => /^egg-[a-z0-9-]+$/.test(id))
+    && /questEgg\('konami'/.test(qjs) && /questEgg\('typed'/.test(qjs) && /questEgg\('placard'/.test(qjs)
+    && /questEgg\('night'/.test(qjs) && /id: Q3\.eggs\.partition, kind: 'egg'/.test(qjs) && /Q3\.eggs\.advisor/.test(qjs)
+    && /questAdvisorEgg\(aid, topicId\);/.test(fn('openAdvisor')) && /questPhase\(id\);/.test(fn('setPhase'))
+    && findable.every((id) => byId[id] ? ['treasure', 'egg'].includes(byId[id].kind) : Q3.pending.includes(id))
+    && Q3.pending.every((id) => !byId[id])
+    && /if \(api && !qPending\.has\(id\)\) api\.find\(id\);/.test(qjs));
+  // quest_js("campus") comes AFTER the main module, once
+  const mainEnd = built.indexOf('</script>', built.indexOf('<script type="module">'));
+  const coreAt = built.indexOf('QUEST_CORE:BEGIN');
+  ok('quest_js("campus") is carried once, AFTER the page\'s own main module script and before </body>',
+    coreAt > mainEnd && (built.match(/QUEST_CORE:BEGIN/g) ?? []).length === 1
+    && built.indexOf('QW.TCQuests = {') > mainEnd && coreAt < built.lastIndexOf('</body>')
+    && /_head \+ '<\/script>\\n' \+ quest_js\('campus'\) \+ '\\n<\/body>' \+ _tail/.test(src));
+  // the meteor shower runs on the wall clock: a loop-dt countdown died in
+  // under 400 ms in a throttled browser (19 instances, then 3)
+  ok('the konami meteor shower lasts five seconds of wall-clock time (performance.now() end stamp), never a countdown of the loop\'s dt',
+    /qMeteorEnd = performance\.now\(\) \+ 5000;\s*qMeteorT = 5;/.test(fn('questMeteorShower'))
+    && /if \(qMeteorEnd\) \{ qMeteorT = Math\.max\(0, \(qMeteorEnd - performance\.now\(\)\) \/ 1000\);/.test(fn('questStep'))
+    && !/qMeteorT\s*-\s*dt/.test(qjs) && !/qMeteorT\s*-=/.test(qjs));
+  // a probe (or a screenshot) aims at a gem through the orbit target, which
+  // controls.update() would otherwise swing the camera back to next frame
+  ok('window.__tc3dQuestAim(i) points the orbit target AND the camera at quest item i and returns its pixel, so a real click lands on the gem',
+    /window\.__tc3dQuestAim = \(i, dist = 4\) => \{/.test(qjs)
+    && /controls\.target\.copy\(tgt\);\s*camera\.lookAt\(tgt\);\s*controls\.update\(\);/.test(qjs)
+    && /\.project\(camera\)/.test(qjs) && /if \(!it\) throw new Error\('no quest item ' \+ i\);/.test(qjs));
+  // the site's skip link lands on the page's main region, which holds the world
+  ok('the page has exactly one <main id="main"> (the skip link target) wrapping the HUD, and the renderer\'s canvas is placed inside it, failing closed if it is missing',
+    (built.match(/<main id="main">/g) ?? []).length === 1 && (built.match(/<\/main>/g) ?? []).length === 1
+    && built.indexOf('<main id="main">') < built.indexOf('<h1 id="ptitle"')
+    && built.indexOf('</main>') > built.indexOf('<aside id="panel">')
+    && built.indexOf('</main>') < built.indexOf('<script id="data"')
+    && /const mainEl = document\.getElementById\('main'\);\s*if \(!mainEl\) throw new Error/.test(code)
+    && /mainEl\.appendChild\(renderer\.domElement\);/.test(code) && !/document\.body\.appendChild\(renderer\.domElement\)/.test(code));
+  // the HUD quest-log button has an accessible name and opens data-tc-questlog
+  const qb = built.match(/<button id="questBtn" class="barbtn" aria-label="([^"]+)">/);
+  ok('the HUD quest-log button has an accessible name from the catalog, re-read per locale, and opens a [data-tc-questlog] the engine renders',
+    qb && qb[1] === JSON.parse(readFileSync(new URL('../i18n/locales/en.json', import.meta.url), 'utf8')).strings['campus3d.questlog']
+    && /questLogEl\.setAttribute\('data-tc-questlog', ''\)/.test(qjs)
+    && /if \(api\) api\.render\(\);/.test(qjs)
+    && /getElementById\('questBtn'\)\.setAttribute\('aria-label', t\('campus3d\.questlog'\)\)/.test(qjs)
+    && /getElementById\('questBtn'\)\.addEventListener\('click', openQuestLog\)/.test(qjs));
+  // play, said plainly, in every panel the layer opens, in all 8 locales
+  const locs = ['ar', 'de', 'en', 'es', 'fr', 'hi', 'pt', 'zh'].map((l) =>
+    JSON.parse(readFileSync(new URL(`../i18n/locales/${l}.json`, import.meta.url), 'utf8')).strings);
+  ok('every quest panel says once that quests and treasures are play and never a completion record; the campus3d.* keys are real translations in all 8 locales',
+    /\+ '<p class="src">' \+ qEsc\(t\('campus3d\.play'\)\) \+ '<\/p>'/.test(qjs)
+    && ['campus3d.questlog', 'campus3d.play', 'campus3d.locked', 'campus3d.open', 'campus3d.treasure', 'campus3d.egg', 'campus3d.hooks']
+      .every((k) => locs.every((L) => typeof L[k] === 'string' && L[k].length)
+        && locs.filter((L) => L[k] === locs[2][k]).length === 1)
+    && /never enter a completion record/.test(locs[2]['campus3d.play'])
+    && /if \(\(view === 'hall' \|\| view === 'campus'\) && questPick\(ray\)\) return;/.test(fnCode('pickWith'))
+    && /questStep\(dt\);/.test(code));
+}
+
+/* ------------------------------------------------------------ wave 3 --- */
+{
+  const q3at = src.indexOf('QUEST3D_JS = r"' + '""');
+  const qjs3 = strip(src.slice(q3at, src.indexOf('"' + '""', q3at + 20)));
+  const at = '<script id="data" type="application/json">';
+  const data3 = JSON.parse(built.slice(built.indexOf(at) + at.length, built.indexOf('</script>', built.indexOf(at))));
+
+  // the layout hook the geo 3D globe mirrors: read back, never recomputed
+  const lay = (() => { const i = code.indexOf('window.__tc3dLayout = '); return i < 0 ? '' : code.slice(i, code.indexOf('\n};', i)); })();
+  ok('window.__tc3dLayout() reads the campus layout back off the objects buildCampus() made (district groups, hall wall boxes) - never recomputed - in scene metres with north = -Z',
+    lay.length > 0
+    && /cx: cg\.position\.x,\s*cz: cg\.position\.z, psi: cg\.rotation\.y/.test(lay)
+    && /campusGroup\.worldToLocal\(b\.getWorldPosition\(p\)\)/.test(lay)
+    && /w: g\.width, d: g\.depth, h: g\.height/.test(lay) && /top: b\.userData\.top/.test(lay)
+    && /frame: \{ north: '-Z', east: '\+X', units: 'm' \}/.test(lay)
+    && !/Math\.(cos|sin|atan2|ceil|sqrt)|\* 16|pitch|\b168\b|\b124\b/.test(lay)
+    && /cg\.userData\.district = k;/.test(fnCode('buildCampus'))
+    && /ge\.computeBoundingBox\(\);\s*if \(ge\.boundingBox\.max\.y > top\) top = ge\.boundingBox\.max\.y;/.test(fnCode('building'))
+    && /bld\.userData\.top = top;/.test(fnCode('building')));
+
+  // terrain/ writes [east, north]; north is -Z here. Run the page's own
+  // functions on a mask and a line that only have a SOUTH edge.
+  const runs = new Function(fnCode('terrainRuns') + '\nreturn terrainRuns;')();
+  const south = runs({ n: 4, rows: ['1', '0', '0', '0'] }, 100, 0);   // row 0 = the southmost band
+  ok('terrainRuns() puts the mask\'s south row at +Z (north is -Z): a land cell 75 m south of the anchor is drawn south of it, not mirrored north',
+    south.length === 1 && south[0][0] === -100 && south[0][1] === -50 && south[0][2] === 50 && south[0][3] === 100);
+  const pos = [];
+  const lines = new Function('THREE', 'TERRAIN_LINE_Y', fnCode('terrainLines') + '\nreturn terrainLines;')({
+    BufferGeometry: class { setAttribute() {} },
+    Float32BufferAttribute: class { constructor(a) { pos.push(...a); } },
+    LineSegments: class {}, LineBasicMaterial: class {} }, .9);
+  lines([[[3, 10], [4, -20]]], 0, 1);
+  ok('terrainLines() draws a coastline point [east, north] at (x = east, z = -north), the same frame as the sun, the city anchors and terrainRuns',
+    pos.join(',') === '3,0.9,-10,4,0.9,20');
+
+  // the panel opens below the HUD bar, whose bottom edge is measured
+  const lastPanelTop = [...built.matchAll(/#panel\{[^}]*?\btop:([^;}]+)/g)].map((m) => m[1]).pop();
+  ok('#panel opens below the HUD bar (top: var(--hudtop), the bar\'s measured bottom, re-read on resize and on the bar\'s own resize) - no panel heading sits under the bar',
+    lastPanelTop === 'var(--hudtop)'
+    && /const fit = \(\) => document\.documentElement\.style\.setProperty\('--hudtop',\s*Math\.ceil\(bar\.getBoundingClientRect\(\)\.bottom\) \+ 'px'\);/.test(built)
+    && /new ResizeObserver\(fit\)\.observe\(bar\);/.test(built)
+    && built.indexOf("setProperty('--hudtop'") < built.indexOf('<script type="module"'));
+
+  // a gem behind a wall is not clickable: run questOccluded on stub rays
+  const embed = Number((qjs3.match(/const GEM_EMBED = (\.\d+);/) ?? [])[1]);
+  const occ = (view, hallGroup, campusGroup, QPOOL) => new Function('view', 'hallGroup', 'campusGroup', 'QPOOL', 'GEM_EMBED',
+    fnCode('questOccluded') + '\nreturn questOccluded;')(view, hallGroup, campusGroup, QPOOL, embed);
+  const mesh = (d, transparent = false, opacity = 1) => ({ isMesh: true, d, material: { transparent, opacity } });
+  const root = (objs) => ({ traverseVisible: (f) => objs.forEach(f) });
+  const ray = { intersectObjects: (list) => list.map((o) => ({ distance: o.d, object: o })).sort((a, b) => a.distance - b.distance) };
+  const pool = mesh(4);
+  ok('questPick() refuses a gem with something solid in front of it: an opaque wall nearer than the gem stops the click; glass, the pool itself and a wall behind the gem do not',
+    /if \(questOccluded\(ray, hit\.distance\)\) return false;\s*questActivate/.test(fnCode('questPick'))
+    && occ('hall', root([mesh(2), pool]), null, pool)(ray, 4) === true
+    && occ('hall', root([mesh(2, true, .4), pool]), null, pool)(ray, 4) === false
+    && occ('campus', null, root([mesh(6), pool]), pool)(ray, 4) === false
+    && occ('campus', null, root([pool]), pool)(ray, 4) === false
+    && occ('hall', root([mesh(3.9), pool]), null, pool)(ray, 4) === false       // the floor slab a half-sunk gem rests in
+    && /const GEM_EMBED = \.35;/.test(qjs3)
+    && /root\.traverseVisible\(/.test(fnCode('questOccluded')));
+  ok('__tc3dQuestAim walks round the gem for a clear side and reports `occluded` when none is, so a probe never clicks through a wall',
+    /for \(let k = 0; k < 8 && occluded; k\+\+\)/.test(qjs3)
+    && /occluded = questOccluded\(aimRay, camera\.position\.distanceTo\(tgt\) - it\.s\[1\]\);/.test(qjs3)
+    && /return \{ id: it\.id, occluded,/.test(qjs3));
+  ok('konami meteors are big enough to see from the ground: 1.1 m thick, 12 m long at 120-200 m out',
+    /s: \[1\.1, 12, 1\.1\] \}\);/.test(fnCode('questMeteorShower')));
+
+  // simulated tasks: the page's share of tasks/registry, counted by it
+  const treg = JSON.parse(readFileSync(new URL('../tasks/registry/tasks.json', import.meta.url), 'utf8'));
+  const T3 = data3.tasks3d;
+  const onCampus = treg.tasks.filter((x) => x.place.kind !== 'space');
+  const pageRows = Object.values(T3.campuses).flat();
+  const byId3 = Object.fromEntries(pageRows.map((r) => [r.id, r]));
+  ok(`the page carries every campus task in tasks/registry (${pageRows.length}) under its own campus, counts equal to the registry's by_campus, hrefs page-relative, lessons real`,
+    pageRows.length === onCampus.length
+    && Object.entries(treg.counts.by_campus).every(([ck, n]) => ck === 'none' || T3.campuses[ck].length === n)
+    && onCampus.every((x) => byId3[x.id] && T3.campuses[x.place.campus].includes(byId3[x.id])
+      && byId3[x.id].href === (x.launch.href === null ? null : x.launch.href.replace(/^web\//, ''))
+      && (x.launch.href === null ? byId3[x.id].why === x.launch.why : byId3[x.id].lands === x.launch.lands)
+      && JSON.stringify(byId3[x.id].requires) === JSON.stringify(x.requires))
+    && T3.practice === treg.honesty.practice
+    && Object.keys(data3.campuses).every((ck) => Array.isArray(T3.campuses[ck])));
+  ok('the top bar is a SOLID plate and its links use the style\'s link token, so "← Campus map" keeps >= 4.5 over any canvas pixel in every Style (eval_styles measured 4.45 on the translucent bar)',
+    /#bar\{position:fixed;[^}]*background:var\(--plate\);[^}]*\}/.test(built) && !/#bar\{[^}]*color-mix\(/.test(built)
+    && /#bar a\{color:var\(--tc-link\);/.test(built));
+  const viaTasks = onCampus.filter((x) => 'via' in x.launch);
+  ok(`a task whose seat opens on ANOTHER campus (${viaTasks.length} in tasks/registry) carries launch.via verbatim and its card says where it opens (tasks.via), before the launch link`,
+    viaTasks.length > 0
+    && viaTasks.every((x) => byId3[x.id].via && JSON.stringify(byId3[x.id].via) === JSON.stringify({
+      hall: x.launch.via.hall, campus: x.launch.via.campus, hall_name: x.launch.via.hall_name, campus_name: x.launch.via.campus_name })
+      && byId3[x.id].via.campus !== x.place.campus)
+    && pageRows.filter((r) => r.via).length === viaTasks.length
+    && /\(tk\.via\s*\? '<p class="src t3-via"[\s\S]*?t\('tasks\.via'\)\.replace\('\{hall\}', tk\.via\.hall_name\)\.replace\('\{campus\}', tk\.via\.campus_name\)[\s\S]*?\+ \(tk\.href/.test(fnCode('taskCard')));
+  ok('one blue gem per place with tasks (hall roof, restoration post, the green), in the SAME pooled InstancedMesh - no mesh, no label; the tool crib holds the hall\'s gem; walking past a task gem never opens it',
+    /for \(const pl of taskPlaces\(\)\)/.test(fnCode('questLayout'))
+    && /kind: 'task', x, y, z,/.test(fnCode('questLayout'))
+    && /y = b\.userData\.top \+ 3\.2;/.test(fnCode('questLayout'))
+    && /roomRects\.find\(\(x\) => x\.strand === 'tools'\)/.test(fnCode('questLayout'))
+    && /if \(it\.kind === 'task'\) return openTasks\(it\.place\);/.test(fnCode('questActivate'))
+    && /if \(it\.kind === 'marker' \|\| it\.kind === 'task' \|\| qSeen\.has\(it\.id\)\) continue;/.test(fnCode('questStep'))
+    && /if \(tk\.place\.kind === 'wilds-site'\) continue;/.test(fnCode('taskPlaces')));
+  ok('the Tasks panel: kind filter chips (aria-pressed), a launch link from the registry\'s href or its reason why not, the linked lessons, and the registry\'s practice sentence - never the quest layer\'s play line',
+    /aria-pressed="'\s*\+ \(k === tFilter\)/.test(fnCode('openTasks'))
+    && /'<p><a class="tc-btn tc-btn-primary t3-go" href="' \+ qEsc\(tk\.href\)/.test(fnCode('taskCard'))
+    && /qEsc\(t\('tasks\.nolink'\)\) \+ ': ' \+ qEsc\(tk\.why\)/.test(fnCode('taskCard'))
+    && /lessonList\(tk\.requires\)/.test(fnCode('taskCard'))
+    && /qEsc\(T3\.practice\)/.test(fnCode('openTasks'))
+    && !/campus3d\.play/.test(fnCode('openTasks'))
+    && /if \(!list\) throw new Error\('task layer: no task list built for campus ' \+ campusKey\);/.test(fnCode('tasksHere')));
+  ok('the canvas theme (THEME_CONTRACT v1) is adopted panel/button/badge-only: theme(\'canvas\') CSS in the head, body.tc-theme-canvas set before the scene, no hero band on this full-screen canvas',
+    /^THEME_CSS, _theme_js = theme\('canvas'\)$/m.test(src)
+    && (built.match(/body\.tc-theme-canvas \.tc-btn-primary\{/g) ?? []).length === 1
+    && built.indexOf("document.body.classList.add('tc-theme-canvas');") > 0
+    && built.indexOf("document.body.classList.add('tc-theme-canvas');") < built.indexOf('<script type="module"')
+    && /body\.tc-theme-canvas #panel\{background:var\(--tc-panel\)/.test(built)
+    && !/class="ph"|data-ph\b|pagehero\(/.test(built) && !/\bpagehero\(/.test(code));
+  // the site's five Styles reach the panels: the stored style applies in the head before first paint, the nav's
+  // radios are remembered, and the panel/Tasks CSS colours only through tokens the styles re-declare (no hex)
+  const t3css = (() => { const i = built.indexOf('/* the Tasks panel (simulated tasks)'); return i < 0 ? '' : built.slice(i, built.indexOf('.asks{', i)); })();
+  const themeCss = (() => { const i = built.indexOf('/* The canvas theme (web/pagehero.py'); return i < 0 ? '' : built.slice(i, built.indexOf('</style>', i)); })();
+  ok('the reader\'s Style (5 site styles, data-style on <html>) reaches this canvas page: head script before the first stylesheet, the nav radios remembered, and the panel/Tasks CSS coloured only by var(--...) tokens',
+    /^from sitenav import STYLE_JS/m.test(src) && /^from design_kit import STYLE_HEAD_JS/m.test(src)
+    && built.indexOf("localStorage.getItem('tc-style')") > 0
+    && built.indexOf("localStorage.getItem('tc-style')") < built.indexOf('<style>')
+    && built.indexOf("document.addEventListener('change'") > built.indexOf('<nav class="sitenav"')
+    && t3css.length > 200 && themeCss.length > 200
+    && !/#[0-9a-fA-F]{3,8}\b|rgb\(/.test(t3css + themeCss) && /var\(--/.test(t3css) && /var\(--tc-panel\)/.test(themeCss));
+  // ?scenario=<id> (TASKS' NEEDS): only one of the named seat's own scenarios, else null and the campus picks
+  const sdSrc = code.slice(code.indexOf('const scenarioDeep = '), code.indexOf("? params.get('scenario') : null;") + "? params.get('scenario') : null;".length);
+  const sd = (sim, sc) => new Function('D', 'simDeep', 'params', sdSrc + '\nreturn scenarioDeep;')(
+    { sims: { sims: { 'crane-lift': { scenarios: [{ id: 'bay-steel' }, { id: 'nola-wharf' }] }, 'forklift': {} } } },
+    sim, new URLSearchParams(sc === null ? '' : 'scenario=' + sc));
+  ok('?scenario=<id> opens one of the named seat\'s own scenarios through startSim(simDeep, scenarioDeep); an unknown id, another seat\'s id or a seat with no scenarios falls back to null (the campus picks)',
+    sdSrc.length > 40
+    && sd('crane-lift', 'nola-wharf') === 'nola-wharf' && sd('crane-lift', 'nope') === null
+    && sd('crane-lift', null) === null && !sd('forklift', 'nola-wharf') && !sd(null, 'nola-wharf')
+    && /startSim\(simDeep, scenarioDeep\);/.test(code)
+    && /const sc = def\.scenarios\?\.find\(\(s\) => s\.id === scenarioId\)/.test(fnCode('startSim')));
+  const locs3 = ['ar', 'de', 'en', 'es', 'fr', 'hi', 'pt', 'zh'].map((l) =>
+    JSON.parse(readFileSync(new URL(`../i18n/locales/${l}.json`, import.meta.url), 'utf8')).strings);
+  const tb = built.match(/<button id="tasksBtn" class="barbtn" aria-label="([^"]+)">/);
+  ok('the HUD Tasks button has an accessible name from the catalog, re-read per locale; the campus3d.tasks* keys are real translations in all 8 locales',
+    tb && tb[1] === locs3[2]['campus3d.tasks']
+    && /getElementById\('tasksBtn'\)\.setAttribute\('aria-label', t\('campus3d\.tasks'\)\)/.test(qjs3)
+    && /getElementById\('tasksBtn'\)\.addEventListener\('click', \(\) => openTasks\(null\)\)/.test(qjs3)
+    && ['campus3d.tasks', 'campus3d.tasks.all', 'campus3d.tasks.launch', 'campus3d.tasks.lessons',
+        'campus3d.tasks.here', 'campus3d.tasks.showall', 'campus3d.tasks.none']
+      .every((k) => locs3.every((L) => typeof L[k] === 'string' && L[k].length)
+        && locs3.filter((L) => L[k] === locs3[2][k]).length === 1));
+}
+
+/* ------------------------------------------ wave 7b: union halls (HALLS) ---
+   The campus used to read as one big shed with strips inside. Every hall is
+   now its own building on its own site-plan lot, at the walkable interior's
+   real size, wearing its own AUTHORED archetype (web/hallkit.py). */
+{
+  const B7 = readFileSync(new URL('./trade_craft_3d.html', import.meta.url), 'utf8');
+  const D7 = JSON.parse(B7.match(/<script id="data" type="application\/json">([\s\S]*?)<\/script>/)[1]);
+  const hallOf = (sg) => D7.halls.find((h) => h.slug === sg);
+  const hallCampuses = Object.entries(D7.campuses).filter(([, c]) => c.districts.length);
+  const aabbHit = (a, b, pad = 0) => Math.abs(a.x - b.x) < (a.w + b.w) / 2 + pad && Math.abs(a.z - b.z) < (a.d + b.d) / 2 + pad;
+  // 1. one building per hall
+  const bc = fnCode('buildCampus');
+  ok('hall buildings: every hall campus\'s site plan puts each of its halls on exactly one lot at the interior\'s own 36 m x 3d m, no two buildings overlap, and buildCampus() builds one wall box per lot (building() with the lot\'s real size, then buildings.push)',
+    hallCampuses.length === 3 && hallCampuses.every(([k, c]) => {
+      const lots = D7.campusplan[k].lots, hs = lots.map((l) => l.hall);
+      const want = c.districts.flatMap((dk) => D7.districts[dk].halls);
+      return hs.length === want.length && new Set(hs).size === hs.length && want.every((sg) => hs.includes(sg))
+        && lots.every((l) => l.b.w_m === 36 && l.b.d_m === hallOf(l.hall).depth * 3)
+        && lots.every((a, i) => lots.every((b, j) => j <= i || !aabbHit(a.b.aabb, b.b.aabb)));
+    })
+    && /lots\.forEach\(\(lot\) => \{[\s\S]*?bg\.userData\.real = \{ w: B\.w_m, d: B\.d_m, h: B\.height_m \+ \.35 \};\s+const b = building\(h, style, bg, pool, B\.x, B\.z\);[\s\S]*?buildings\.push\(b\.mesh\);/.test(bc)
+    && /bg\.rotation\.y = B\.rot_y;/.test(bc)
+    && /const dep = real \? real\.d : kitRun\.dep, wid = real \? real\.w : kitRun\.wid;/.test(fnCode('building'))
+    && /n = Math\.ceil\(KIT_RUNS\[pl\.run\]\(bg\.userData\.kitRun\.wid, bg\.userData\.kitRun\.dep\) \/ c\.every_m\);/.test(fnCode('kitDress')));
+  // 2. uniqueness
+  const fnv = (str) => { let h = 0x811c9dc5; for (const ch of Buffer.from(str, 'utf8')) { h ^= ch; h = Math.imul(h, 0x01000193) >>> 0; } return h >>> 0; };
+  ok('hall archetypes: no two halls on a campus share an archetype (family/roof/facade/glaze/canopy/plant), each seeded by its own id (FNV-1a of the slug) and signed combo#seed',
+    hallCampuses.every(([k]) => {
+      const hs = D7.campusplan[k].lots.map((l) => hallOf(l.hall));
+      return hs.every((h) => h.arch && h.arch.seed === fnv(h.slug)
+          && h.arch.sig === h.arch.combo + '#' + h.arch.seed.toString(16).padStart(8, '0')
+          && h.arch.combo === [h.arch.family, h.arch.roof, h.arch.facade, h.arch.glaze, h.arch.canopy, h.arch.plant].join('/')
+          && h.arch.family === h.district)
+        && new Set(hs.map((h) => h.arch.combo)).size === hs.length;
+    }) && D7.halls.every((h) => h.arch));
+  // 3. the archetypes are drawn: run the kit itself (its one copy lives in web/hallkit.py)
+  const hkPy = readFileSync(new URL('./hallkit.py', import.meta.url), 'utf8');
+  const q3 = '"""';
+  const k0 = hkPy.indexOf('HALLKIT_JS = r' + q3) + 17;
+  const kitJs = hkPy.slice(k0, hkPy.indexOf(q3, k0));
+  const THREE7 = await import(new URL('./vendor/three.module.min.js', import.meta.url));
+  const HK = new Function('THREE', kitJs + '\nreturn { hkShell, hkBoxGeo };')(THREE7);
+  let drawn = kitJs.length > 2000, maxLod0 = 0;
+  const forms = new Set();
+  for (const h of D7.halls) for (const lod of [0, 1]) {
+    const W = 36, Dp = h.depth * 3, H = h.clear + .35;
+    const c = { roof: 0, shell: 0, yard: 0 };
+    const r = HK.hkShell(h.arch, W, Dp, H, lod, (part) => { c[part]++; });
+    if (!lod) maxLod0 = Math.max(maxLod0, c.roof + c.shell + c.yard);
+    forms.add(h.arch.roof);
+    if (!(c.roof > 0 && c.shell > 0 && r.top > H && (c.yard > 0) === !!h.arch.yard && r.headY > 0 && r.headY < H)) drawn = false;
+  }
+  let throws = false;
+  try { HK.hkShell(null, 36, 30, 6, 0, () => {}); } catch (e) { throws = /no archetype/.test(e.message); }
+  const g7 = HK.hkBoxGeo(0xff0000, 1, 1, 1, 0, 0, 0, 0, 0);
+  ok('hall kit: every hall\'s archetype draws a roof form, cladding and (for the families that have one) a yard kit at both LODs, reaching above its eaves; all six roof forms occur; campus LOD stays <= 22 boxes a hall; a hall with no archetype throws; boxes carry vertex colour for ONE pooled material; the page carries the kit, not a copy',
+    drawn && forms.size === 6 && maxLod0 <= 22 && throws && g7.attributes.color.count === g7.attributes.position.count
+    && !src.includes('HALLKIT_JS = r') && /page\.replace\('__HALLKIT_JS__', HALLKIT_JS\)/.test(src)
+    && /hkShell\(h\.arch, wid, dep, hgt, 0,/.test(fnCode('building'))
+    && /hkShell\(h\.arch, W, DEP, EAVE, 1,/.test(fnCode('buildHall'))
+    && /hkMatShared\.userData\.shared = true;/.test(kitJs));
+  // 4. every hall reachable through its door
+  ok('hall doors: every lot\'s door sits on its building\'s face, 3 m out from it is open ground inside the walk limit, the walker finds a hall by its DOOR, E there walks in (enterHallWalking), and E past the apron walks back out of THAT hall\'s door (exitHallWalking)',
+    hallCampuses.every(([k]) => {
+      const P = D7.campusplan[k], RS = Math.max(D7.campuses[k].districts.length === 2 ? 124 : 168, Math.ceil(P.radius_m) + 30);
+      return P.lots.every((l) => {
+        const a = l.b.aabb, dr = l.b.door;
+        const onX = Math.abs(Math.abs(dr.x - a.x) - a.w / 2) < .01 && Math.abs(dr.z - a.z) <= a.d / 2;
+        const onZ = Math.abs(Math.abs(dr.z - a.z) - a.d / 2) < .01 && Math.abs(dr.x - a.x) <= a.w / 2;
+        const n = Math.hypot(dr.x - a.x, dr.z - a.z);
+        const out = { x: dr.x + (dr.x - a.x) / n * 3, z: dr.z + (dr.z - a.z) / n * 3, w: .6, d: .6 };
+        return (onX || onZ) && P.lots.every((m) => !aabbHit(out, m.b.aabb))
+          && Math.hypot(out.x, out.z) < RS + 20;
+      });
+    })
+    && /if \(b\.userData\.door\) wp\.copy\(b\.userData\.door\); else b\.getWorldPosition\(wp\);/.test(fnCode('walkStep'))
+    && /b\.mesh\.userData\.door = new THREE\.Vector3\(B\.door\.x, 0, B\.door\.z\);/.test(bc)
+    && /if \(plan\) walkLim = Math\.max\(walkLim, RS \+ 20\);/.test(bc)
+    && /&& \(e\.code === 'Enter' \|\| e\.code === 'KeyE'\)\) enterHallWalking\(nearSlug\);/.test(code)
+    && /else if \(walkActive && view === 'hall' && hallExitNear && !sim\s+&& \(e\.code === 'Enter' \|\| e\.code === 'KeyE'\)\) exitHallWalking\(\);/.test(code)
+    && /const ex = !room && pz < -DEP \/ 2 - 18;/.test(fnCode('walkStep'))
+    && /if \(!hallExitKeep\) walkLeave\(\);/.test(fnCode('showCampus'))
+    && /xrRig\.position\.x = dr\.x \+ \(dr\.x - c\.x\) \/ n \* 5;/.test(fnCode('exitHallWalking')));
+  // 5. deep links intact
+  ok('hall deep links: ?hall=<slug> still resolves for every hall (each has its archetype and exactly one lot), syncURL still writes ?hall= and ?campus=, and the layout hook reports each hall\'s own building box, archetype, facing and door',
+    /let slug = D\.halls\.some\(h => h\.slug === params\.get\('hall'\)\) \? params\.get\('hall'\) : 'bricklayers';/.test(src)
+    && /`\?hall=\$\{slug\}&lang=\$\{loc\}`/.test(src) && /`\?campus=\$\{campusKey\}&lang=\$\{loc\}`/.test(src)
+    && D7.halls.every((h) => hallCampuses.filter(([k]) => D7.campusplan[k].lots.some((l) => l.hall === h.slug)).length === 1)
+    && /arch: b\.userData\.arch, sig: b\.userData\.sig, rot: b\.userData\.rot,/.test(src)
+    && /x: p\.x, z: p\.z, w: g\.width, d: g\.depth, h: g\.height,/.test(src));
+  // 6. the walkable hall wears its shell; the roof is a cutaway from above only
+  ok('hall view: the walkable hall wears its archetype as two pooled meshes (shell, cutaway roof) and a facade sign with the hall\'s registry name; the roof hides only from an orbit above its cut height',
+    /for \(const \[list, nm\] of \[\[hkOut, 'hk-shell'\], \[hkTop, 'hk-roof'\]\]\)/.test(fnCode('buildHall'))
+    && /const hkS = hkSign\(h\.name,/.test(fnCode('buildHall'))
+    && /if \(hkRoof\) hkRoof\.visible = view !== 'hall' \|\| eyePos\(\)\.y < hkRoof\.userData\.cut;/.test(code)
+    && /m\.userData\.cut = hkB\.top \+ 1\.5;/.test(fnCode('buildHall')));
+}
+
+/* ---- wave 10: TradesQuest field-job stations in their union halls ------ */
+{
+  const B10 = readFileSync(new URL('./trade_craft_3d.html', import.meta.url), 'utf8');
+  const D10 = JSON.parse(B10.match(/<script id="data" type="application\/json">([\s\S]*?)<\/script>/)[1]);
+  // BRIDGE's own table, read from web/tqkit.py by Python - not restated here
+  const TQH = JSON.parse(execFileSync('python3', ['-B', '-c',
+    'import sys, json; sys.path.insert(0, "web"); from tqkit import TQKIT_HALLS; print(json.dumps(TQKIT_HALLS))'],
+    { cwd: new URL('..', import.meta.url) }).toString());
+  const want = {};
+  for (const [kind, rel] of Object.entries(TQH)) for (const sg of rel.primary) want[sg] = kind;
+  ok(`tq stations: D.tqStations is exactly web/tqkit.py's PRIMARY hall per kind (${Object.entries(want).map(([a, b]) => a + '->' + b).join(', ')}), every one a hall of the page, and the page carries the kit inline with its panel CSS and every tqkit.* string in all ${Object.keys(D10.i18n).length} locales`,
+    JSON.stringify(D10.tqStations) === JSON.stringify(want) && Object.keys(want).length === 5
+    && Object.keys(want).every((sg) => D10.halls.some((h) => h.slug === sg))
+    && B10.includes('/* TQ_KIT:BEGIN') && B10.includes('function createTQStation(kind, opts)') && B10.includes('.tqk-panel{')
+    && !/export \{ TQKIT_API/.test(B10)
+    && Object.values(D10.i18n).every((L) => Object.keys(L.strings).filter((k) => k.startsWith('tqkit.')).length === 27));
+  // tqSpot runs here, pulled out of the page it ships in
+  const fnOf = (text, name) => { const a = text.indexOf(`\nfunction ${name}(`); const b = text.indexOf('\n}\n', a + 1); return a < 0 ? '' : text.slice(a, b + 2); };
+  const consts = B10.match(/const TQ_CLEAR_M = [\d.]+, TQ_GAP_M = [\d.]+, TQ_INSET_M = [\d.]+, TQ_POINT_M = [\d.]+;/);
+  const spotSrc = fnOf(B10, 'tqSpot');
+  ok('tq spot: the page ships tqSpot() and its four stated margins (1.2 m walk-up zone as BRIDGE_CONTRACT asks)',
+    consts !== null && spotSrc.length > 200 && /TQ_CLEAR_M = 1\.2,/.test(consts[0]));
+  const tqSpot = new Function(`${consts[0]}\n${spotSrc}\nreturn tqSpot;`)();
+  const [, CLR, GAP, INS, PT] = consts[0].match(/([\d.]+), TQ_GAP_M = ([\d.]+), TQ_INSET_M = ([\d.]+), TQ_POINT_M = ([\d.]+)/).map(Number);
+  const hitR = (a, b, pad) => Math.abs(a.x - b.u) < a.hw + b.hw + pad - 1e-9 && Math.abs(a.z - b.v) < a.hd + b.hd + pad - 1e-9;
+  const inR = (b, r) => b.x - b.hw >= r.x0 + INS - 1e-6 && b.x + b.hw <= r.x1 - INS + 1e-6 && b.z - b.hd >= r.z0 + INS - 1e-6 && b.z + b.hd <= r.z1 - INS + 1e-6;
+  let seed = 7; const rnd = () => ((seed = (seed * 1103515245 + 12345) >>> 0) / 4294967296);
+  const sizes = { electrical: { w: 2.4, d: 1.2 }, plumbing: { w: 2.6, d: 1.4 }, hvac: { w: 2.8, d: 1.6 }, carpentry: { w: 3.2, d: 1.6 } };
+  let placed = 0, refused = 0, badSpot = [];
+  for (let t = 0; t < 400; t++) {
+    const size = Object.values(sizes)[t % 4];
+    const rooms = [{ label: 'a', x0: -18, x1: 0, z0: -21, z1: -15 }, { label: 'b', x0: 0, x1: 18, z0: -21, z1: -12 }];
+    const rects = Array.from({ length: t % 10 === 0 ? 60 : 2 + (t % 9) }, () => ({ u: -18 + rnd() * 36, v: -21 + rnd() * 9, hw: .2 + rnd() * 1.4, hd: .2 + rnd() * 1.2 }));
+    const pts = Array.from({ length: t % 4 }, () => ({ x: -18 + rnd() * 36, z: -21 + rnd() * 9 }));
+    const at = tqSpot(size, rooms, rects, pts);
+    if (!at) { refused++; continue; }
+    placed++;
+    const r = rooms.find((x) => x.label === at.room);
+    const P = pts.map((q) => ({ u: q.x, v: q.z, hw: PT, hd: PT }));
+    const along = Math.abs(Math.sin(at.yaw)) > .5;
+    const depthOk = Math.abs((along ? at.clear.hw : at.clear.hd) * 2 - CLR) < 1e-9 && Math.abs((along ? at.clear.hd : at.clear.hw) * 2 - size.w) < 1e-9;
+    const front = Math.abs((at.clear.x - at.x) - Math.round(Math.sin(at.yaw)) * (size.d / 2 + CLR / 2)) < 1e-9
+      && Math.abs((at.clear.z - at.z) - Math.round(Math.cos(at.yaw)) * (size.d / 2 + CLR / 2)) < 1e-9;
+    if (!r || !inR(at.foot, r) || !inR(at.clear, r) || !depthOk || !front
+      || rects.concat(P).some((o) => hitR(at.foot, o, GAP) || hitR(at.clear, o, 0))) badSpot.push(t);
+  }
+  const empty = tqSpot(sizes.carpentry, [{ label: 'x', x0: 0, x1: 4, z0: 0, z1: 3 }], [], []);
+  const full = tqSpot(sizes.hvac, [{ label: 'x', x0: 0, x1: 12, z0: 0, z1: 6 }], [{ u: 6, v: 3, hw: 6, hd: 3 }], []);
+  const posts = tqSpot(sizes.electrical, [{ label: 'x', x0: 0, x1: 8, z0: 0, z1: 8 }], [], [{ x: 4, z: 4 }]);
+  ok(`tq spot: over 400 seeded halls the spot found always keeps the footprint ${GAP} m clear of every solid and a ${CLR} m walk-up zone across the station's width on its FRONT clear of every solid, seat post and advisor, both inside one room (${placed} placed, ${refused} refused, bad ${badSpot.length}); a room too small or fully taken gets none rather than a forced spot`,
+    badSpot.length === 0 && placed > 200 && refused > 0 && empty === null && full === null && posts !== null
+    && !hitR(posts.foot, { u: 4, v: 4, hw: PT, hd: PT }, GAP) && !hitR(posts.clear, { u: 4, v: 4, hw: PT, hd: PT }, 0));
+  const bh = fnCode('buildHall'), pl = fnCode('tqPlaceInHall');
+  const iPlace = bh.indexOf('tqPlaceInHall(h);');
+  ok('tq placement: buildHall places the station LAST - after every wallRect, placeRoomProps and spawnHallAdvisors, before the hall is added and priced - reading hallSolids, the seat posts (beacons) and advisorMeshes; the footprint becomes a solid; the group goes into hallGroup (drawn only in that hall) and is disposed with its panel at the next buildHall',
+    iPlace > 0 && bh.lastIndexOf('wallRect(') < iPlace && bh.lastIndexOf('placeRoomProps(') < iPlace
+    && bh.indexOf('spawnHallAdvisors(h, W, DEP);') < iPlace && bh.indexOf('scene.add(hallGroup);') > iPlace
+    && bh.indexOf('hallCost = priceHall(sg);') > iPlace
+    && /^\s*function buildHall\(sg\) \{\s*if \(tqSt\) \{ tqSt\.dispose\(\); tqSt = null; tqAt = null; \}/.test(bh)
+    && /hallSolids\[0\]\.rects\.slice\(\)/.test(pl) && /beacons\.filter\(\(b\) => b\.userData\.station\)/.test(pl)
+    && /advisorMeshes\.map\(/.test(pl) && /const at = tqSpot\(st\.size, roomRects, rects, pts\);/.test(pl)
+    && /wallRect\(at\.foot\.x, at\.foot\.z, at\.foot\.hw, at\.foot\.hd\);/.test(pl) && /hallGroup\.add\(st\.group\);/.test(pl)
+    && /const kind = D\.tqStations\[h\.slug\];/.test(pl) && /if \(kind === undefined\) return;/.test(pl)
+    && /st\.group\.rotation\.y = at\.yaw;/.test(pl) && /if \(!at\) \{ st\.dispose\(\);/.test(pl));
+  ok('tq dock: the station panel lives in a collapsed <details> that is hidden unless the view is the hall it stands in (set every frame from view, tqSt and hallGroup.visible)',
+    /<details id="tqDock" class="tqk-dock" hidden><summary id="tqDockSum"><\/summary><div class="tqk-dock-body"><\/div><\/details>/.test(src)
+    && /const tqOff = !\(view === 'hall' && tqSt && hallGroup && hallGroup\.visible\)/.test(code)
+    && /if \(tqD\.hidden !== tqOff\) tqD\.hidden = tqOff;/.test(code) && /dock\.open = false;/.test(pl));
+}
+
+// wave 10, AUDIT finding (phone): the HUD bar is one sideways-scrolling row under 640 px, every control kept
+ok('phone HUD: under 640 px the bar is ONE row that scrolls sideways (no wrap, no control dropped - only the brand line the site nav already carries steps out), and --hudtop still follows the bar by measurement',
+  /@media \(max-width:640px\)\{\s*#bar\{flex-wrap:nowrap;overflow-x:auto;[^}]*\}\s*#bar > \*\{flex:0 0 auto\}\s*#bar \.brand\{display:none\}\s*#lang\{margin-inline-start:0\}\s*\}/.test(src)
+  && !/@media \(max-width:640px\)\{[^@]*#bar (button|select|a)[^{]*\{[^}]*display:none/.test(src)
+  && /new ResizeObserver\(fit\)\.observe\(bar\);/.test(src));
+
+// wave 10, eval_scene regression (campus: anchor plates crowding over the real-scale site)
+{
+  const bc10 = fnCode('buildCity');
+  ok('city layer: on a hall campus every SCHEMATIC anchor is moved out along its own bearing until the nearest clears the site plan radius by CITY_SITE_CLEAR_M, and one within CITY_ANCHOR_GAP_M of a nearer anchor steps further out; the city blocks, labels and minimap all draw at cityPlace(), and cityPos keeps the log-eased line campusplan reads',
+    /const CITY_SITE_CLEAR_M = 30, CITY_ANCHOR_GAP_M = 160, WAY_GAP_M = 90;/.test(code)
+    && /cityOff = Math\.max\(0, planC\.radius_m \+ CITY_SITE_CLEAR_M - Math\.min\(\.\.\.base\.map\(\(b\) => b\.len\)\)\);/.test(bc10)
+    && /while \(placed\.some\(\(\[qx, qz\]\) => Math\.hypot\(at\(extra\)\[0\] - qx, at\(extra\)\[1\] - qz\) < CITY_ANCHOR_GAP_M\)\)/.test(bc10)
+    && /cityOff = 0; cityExtra = new Map\(\);\s*if \(!pois\.length\) return;/.test(bc10)
+    && /const \[x, z\] = cityPlace\(p\);/.test(bc10) && !/cityPos\(p\)\;\s*const len/.test(bc10)
+    && /const \[px, pz\] = cityPlace\(p\);/.test(code)
+    && /const r = 96 \+ 95 \* Math\.log10\(1 \+ p\.km\);\s*return \[p\.e \/ km \* r, -p\.n \/ km \* r\];\s*\}\s*\/\* -+ orthoimagery/.test(src));
+  ok('site-plan wayfinding: plan parking lots and outdoor training yards carry a sign in the reader\'s language, tagged AUTHORED, never within WAY_GAP_M of the campus sign, a district name, the sims yard or another such sign (campusplan.parking / campusplan.yard reach the page in every locale)',
+    /for \(const r of plan\.parking\) wayPut\(cpS\['campusplan\.parking'\], r\.x, r\.z\);/.test(code)
+    && /for \(const lot of plan\.lots\) if \(lot\.yard\) wayPut\(cpS\['campusplan\.yard'\], lot\.yard\.x, lot\.yard\.z\);/.test(code)
+    && /if \(wayAt\.some\(\(\[qx, qz\]\) => Math\.hypot\(x - qx, z - qz\) < WAY_GAP_M\)\) return;/.test(code)
+    && /const l = label\(text, 'AUTHORED', 1\.4, \{ kind: 'schematic' \}\);\s*l\.position\.set\(x, 6, z\); campusGroup\.add\(l\); wayAt\.push\(\[x, z\]\);/.test(code)
+    && /\+ \('campusplan\.parking', 'campusplan\.yard'\) \+ tuple\(TQKIT_I18N_KEYS\)/.test(src));
+}
+
+// wave 13 (item 3): the campus view's signs, BAYOU's two campus eggs, and time-to-ready by phase
+{
+  const cw = fnCode('cityWater');
+  ok('SF Bay tag on open water: the Bay\'s name stands on the R + 110 ring at the middle of the widest gap between the city anchors\' DRAWN bearings (cityPlace) within BAY_TAG_ARC of north, never at a fixed bearing an anchor can be pushed under',
+    /const BAY_TAG_ARC = 75 \* Math\.PI \/ 180;/.test(code)
+    && /const bays = pois\.map\(\(p\) => \{ const \[px, pz\] = cityPlace\(p\); return Math\.atan2\(px, -pz\); \}\)\s*\.filter\(\(b\) => Math\.abs\(b\) <= BAY_TAG_ARC\)\.sort\(\(a, b\) => a - b\);/.test(cw)
+    && /const edges = \[-BAY_TAG_ARC, \.\.\.bays, BAY_TAG_ARC\];/.test(cw)
+    && /tag\('San Francisco Bay', \(R \+ 110\) \* Math\.sin\(bayAt\), -\(R \+ 110\) \* Math\.cos\(bayAt\)\);/.test(cw)
+    && !/tag\('San Francisco Bay', 0, -\(R \+ 110\)\)/.test(cw)
+    && /tag\('San Francisco Bay', -\(R \+ 90\), 0\);/.test(cw));
+  // the rule itself, run on the page's own anchors for the flagship: the tag's bearing clears every drawn anchor
+  const Dp = JSON.parse(built.match(/<script id="data" type="application\/json">([\s\S]*?)<\/script>/)[1]);
+  const pois = Dp.geo.cityPois['treasure-island'], planTI = Dp.campusplan['treasure-island'];
+  const cp = (p) => { const km = Math.hypot(p.e, p.n) || .001; const r = 96 + 95 * Math.log10(1 + p.km); return [p.e / km * r, -p.n / km * r]; };
+  const base = pois.map((p) => { const [x, z] = cp(p); return { p, x, z, len: Math.hypot(x, z) || .001 }; });
+  const off = Math.max(0, planTI.radius_m + 30 - Math.min(...base.map((b) => b.len)));
+  const placed = [], drawn = [];
+  base.sort((a, b) => a.len - b.len).forEach((b) => {
+    const at = (e) => [b.x / b.len * (b.len + off + e), b.z / b.len * (b.len + off + e)];
+    let e = 0; while (placed.some(([qx, qz]) => Math.hypot(at(e)[0] - qx, at(e)[1] - qz) < 160)) e += 80;
+    placed.push(at(e)); drawn.push(Math.atan2(at(e)[0], -at(e)[1]));
+  });
+  const ARC = 75 * Math.PI / 180, bs = drawn.filter((b) => Math.abs(b) <= ARC).sort((a, b) => a - b);
+  const ed = [-ARC, ...bs, ARC]; let gap = 0, mid = 0;
+  for (let i = 1; i < ed.length; i++) if (ed[i] - ed[i - 1] > gap) { gap = ed[i] - ed[i - 1]; mid = (ed[i] + ed[i - 1]) / 2; }
+  const clearDeg = Math.min(...drawn.map((b) => Math.abs(b - mid))) * 180 / Math.PI;
+  ok(`SF Bay tag on the flagship: the open-water bearing is ${(mid * 180 / Math.PI).toFixed(1)} deg, ${clearDeg.toFixed(1)} deg clear of the nearest of ${drawn.length} drawn anchors (the old due-north tag sat ${Math.min(...drawn.map((b) => Math.abs(b))) * 180 / Math.PI < 12 ? 'within 12 deg of one' : 'clear'}) - at least 20 deg`,
+    drawn.length >= 10 && clearDeg >= 20);
+
+  const wp = fnCode('wayPlace'), bc = fnCode('buildCampus'), sc = fnCode('showCampus');
+  ok('wayfinding placement: every sign wayPut() keeps is remembered, and wayPlace() runs once per campus after every campus sign stands (after buildRestorationSites), only on a planned campus',
+    /l\.position\.set\(x, 6, z\); campusGroup\.add\(l\); wayAt\.push\(\[x, z\]\);\s*waySigns\.push\(l\);/.test(bc)
+    && /waySigns = \[\];\s*const wayAt = /.test(bc)
+    && /buildRestorationSites\(campusGroup\);\s*if \(plan\) wayPlace\(campusGroup, RS, plan\);/.test(bc));
+  const ls = fnCode('lblSettle'), br = fnCode('buildRegion'), sr = fnCode('showRegion');
+  ok('sign settling asks the page\'s own questions: the pose the view opens on (showCampus: 300 cf up, 350 cf back, same cf rule; showRegion: (0,225,235) at (10,0,0)), this renderer\'s viewport, labelStep\'s min_frac/max_frac clamp, each kind\'s hide_beyond_m, lblOverlap() and the declutter\'s own cover_hide - no second threshold',
+    /const cf = Math\.max\(1, R \/ 330\);/.test(wp) && /const cf = Math\.max\(1, campusR \/ 330\);/.test(sc)
+    && /lblSettle\(g, \[0, 300 \* cf, 350 \* cf\], \[0, 0, 0\], waySigns\.map\(/.test(wp)
+    && /camera\.position\.set\(0, 300 \* cf, 350 \* cf\); controls\.target\.set\(0, 0, 0\);/.test(sc)
+    && /lblSettle\(regionGroup, \[0, 225, 235\], \[10, 0, 0\], routeMovers\);\s*scene\.add\(regionGroup\);/.test(br)
+    && /camera\.position\.set\(0, 225, 235\); controls\.target\.set\(10, 0, 0\);/.test(sr)
+    && /cam\.position\.set\(eye\[0\], eye\[1\], eye\[2\]\); cam\.lookAt\(tgt\[0\], tgt\[1\], tgt\[2\]\);/.test(ls)
+    && /new THREE\.PerspectiveCamera\(camera\.fov, vw \/ vh, camera\.near, camera\.far\)/.test(ls)
+    && /if \(u\.hide && d > u\.hide\) return null;/.test(ls)
+    && /LFOCUS\.screen\.max_frac \* vh, Math\.max\(LFOCUS\.screen\.min_frac \* vh, u\.base\.y \/ span \* vh\)/.test(ls)
+    && /const cv = lblOverlap\(pad, q\); if \(cv > 0\) c \+= cv > LDECL\.cover_hide \? 1 : WAY_PAIR_COST;/.test(ls)
+    && /const WAY_LOT_FRAC = \.45, WAY_PAD_PX = 2, WAY_PAIR_COST = 4;/.test(code));
+  ok('sign settling only MOVES a sign to one of its own candidates (a wayfinding sign inside its own AUTHORED lot, centre first; a route distance along its own arc, t .5 - the old spot - first, at the old height): it never hides, drops, fades or re-ranks one, and a sign on no lot stops the build',
+    /const lot = lots\.find\(\(l\) => l\.x === sp\.position\.x && l\.z === sp\.position\.z\);/.test(wp)
+    && /if \(!lot\) throw new Error\(/.test(wp)
+    && /\[\[0, 0\], \[-1, 0\], \[1, 0\], \[0, -1\], \[0, 1\], \[-1, -1\], \[1, -1\], \[-1, 1\], \[1, 1\]\]/.test(wp)
+    && /lot\.x \+ fx \* WAY_LOT_FRAC \* lot\.w, sp\.position\.y, lot\.z \+ fz \* WAY_LOT_FRAC \* lot\.d/.test(wp)
+    && /routeMovers\.push\(\{ sp: kl, cands: \[\.5, \.42, \.58, \.34, \.66\]\.map\(\(tt\) => \{\s*const q = curve\.getPoint\(tt\); return \[q\.x, mid\.y \+ 5, q\.z\]; \}\) \}\);/.test(br)
+    && /if \(!best \|\| c < best\.c\)/.test(ls) && /sp\.position\.copy\(best\.p\);/.test(ls)
+    && !/\.visible\s*=|opacity|labelSet\.splice|\.remove\(|rank\s*=|cover_hide\s*=/.test(ls + wp));
+  // the scoring rule, run here on synthetic plates: a partial pair costs more than a clean step-back, clear is free
+  const coverHide = Dp.labels.declutter.cover_hide;
+  const lov = (a, b) => { const w = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x), h = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y);
+    return w <= 0 || h <= 0 ? 0 : w * h / Math.min(a.w * a.h, b.w * b.h); };
+  const costOf = (r, stand) => stand.reduce((c, q) => { const cv = lov({ x: r.x - 2, y: r.y - 2, w: r.w + 4, h: r.h + 4 }, q); return c + (cv > 0 ? (cv > coverHide ? 1 : 4) : 0); }, 0);
+  const marquee = { x: 541, y: 372, w: 197, h: 27 };
+  ok('wayfinding scoring (the page\'s rule on the w11 measured marquee): a Parking plate 7 px into the marquee costs more than one stepped wholly behind it, and one 3 px clear costs nothing',
+    costOf({ x: 497, y: 366, w: 51, h: 27 }, [marquee]) === 4 && costOf({ x: 560, y: 372, w: 51, h: 27 }, [marquee]) === 1
+    && costOf({ x: 487, y: 366, w: 51, h: 27 }, [marquee]) === 0);
+
+  // BAYOU's campus eggs (GAMES_CONTRACT v1): hidden hooks handed out by questkit.egg_attr, bound by the quest engine
+  const qreg = JSON.parse(readFileSync(new URL('../quests/registry/quests.json', import.meta.url), 'utf8')).quests;
+  const eggIds = ['egg-bayou-campus-hardhatbird', 'egg-bayou-campus-swale'];
+  const qScript = built.slice(built.indexOf('<script data-tc-quests>'));
+  const hooksAt = built.indexOf('<div class="tc-hooks" hidden data-egg-hooks="campus">');
+  ok(`BAYOU campus eggs: both (${eggIds.join(', ')}) resolve in quests/registry as campus eggs with a typed trigger, and the built page carries each once as a hidden hook with the registry's own trigger, inside <main>, before the quest engine that binds them`,
+    eggIds.every((id) => {
+      const q = qreg.find((x) => x.id === id);
+      return q && q.kind === 'egg' && q.world === 'campus' && /^typed:[a-z]{3,24}$/.test(q.trigger)
+        && built.split(`data-tc-egg="${id}"`).length === 2
+        && built.includes(`<span hidden data-tc-egg="${id}" data-tc-trigger="${q.trigger}"></span>`)
+        && qScript.includes(`"id":"${id}"`);
+    })
+    && hooksAt > built.indexOf('<main id="main">') && hooksAt < built.indexOf('</main>')
+    && hooksAt < built.indexOf('<script data-tc-quests>')
+    && /from questkit import egg_attr/.test(src) && /CAMPUS_EGG_HOOKS = \('egg-bayou-campus-hardhatbird', 'egg-bayou-campus-swale'\)/.test(src)
+    && /''\.join\(f'<span hidden \{egg_attr\(_eid\)\}><\/span>' for _eid in CAMPUS_EGG_HOOKS\)/.test(src));
+  ok('BAYOU campus eggs: the engine binds typed triggers on document keydown (questkit glue carried in the page), and nothing in the page stops a keydown from reaching it',
+    /trig === 'konami' \|\| trig\.startsWith\('typed:'\)/.test(qScript) && /document\.addEventListener\('keydown'/.test(qScript)
+    && !/stopImmediatePropagation/.test(code));
+
+  // time-to-ready, split by phase
+  ok('boot phases: window.__tc3dBoot() reports ms-since-navigation marks in build order - module, data, lights, sky, surfaces, chrome, view, ready (the line before window.__tc3d exists) and frame1 (+ the program count) after the first drawn frame',
+    /const BOOT = \{ module: Math\.round\(performance\.now\(\)\), frames: \[\] \};/.test(code) && /window\.__tc3dBoot = \(\) => \(\{ \.\.\.BOOT \}\);/.test(code)
+    && ['data', 'lights', 'sky', 'surfaces', 'chrome', 'view', 'ready'].every((k, i, a) => i === 0 || code.indexOf(`bootMark('${a[i - 1]}')`) < code.indexOf(`bootMark('${k}')`))
+    && /bootMark\('ready'\);\nwindow\.__tc3d = \(\) => \(\{/.test(src)
+    && /xrRender\(\);\s*if \(!\('frame1' in BOOT\)\) \{ bootMark\('frame1'\); BOOT\.programs = renderer\.info\.programs\.length; \}/.test(code));
+  ok('boot sky: while the module builds setSky() only records the request (no canvas, no PMREM); right after the first view stands, and before window.__tc3d, the LAST request is drawn once with its own arguments (a view that asked for none stops the boot)',
+    /let skyBoot = \{ ask: null, n: 0 \};\s*function setSky\(stops, opts = \{\}\) \{\s*if \(skyBoot\) \{ skyBoot\.ask = \[stops, opts\]; skyBoot\.n\+\+; return; \}/.test(code)
+    && /else showRegion\(\);\s*bootMark\('view'\);\s*\{ const ask = skyBoot\.ask; BOOT\.skyAsks = skyBoot\.n; skyBoot = null;\s*if \(!ask\) throw new Error\('boot: no view asked for a sky'\); setSky\(ask\[0\], ask\[1\]\); \}\s*bootMark\('skyDrawn'\);/.test(code)
+    && code.indexOf("bootMark('skyDrawn')") < code.indexOf("bootMark('ready')")
+    && (code.match(/skyBoot = null/g) ?? []).length === 1);
+}
+
+/* BUILD BEGIN (wave 16 B1): surface textures by device tier, the luminaire body and the room header signs.
+   Each check below was watched failing on its own mutation in a sandbox copy before it was kept. */
+{
+  const texSrc = (() => { const i = src.indexOf('DRESSING BEGIN (wave 16 B1): SURFACE TEXTURES BY DEVICE TIER');
+    const j = src.indexOf('/* DRESSING END */', i); return i < 0 || j < 0 ? '' : strip(src.slice(i, j)); })();
+  ok('texture tiers: base 384 / high 1024 / ultra 2048 px, the base tier IS the ladder\'s high rung (a mismatch throws at boot), and a software rasteriser, a device under 4 GB or a GPU under 4096 px stays on base',
+    /const TEX_TIER_PX = \{ base: 384, high: 1024, ultra: 2048 \};/.test(texSrc)
+    && /if \(TEX_TIER_PX\.base !== SURF_PX\.high\)\s*throw new Error/.test(texSrc)
+    && /const SURF_PX = \{ low: 128, high: 384 \};/.test(code)
+    && /soft = \/swiftshader\|llvmpipe\|softpipe\|software\/i\.test\(who\);/.test(texSrc)
+    && /if \(soft \|\| mem < 4 \|\| maxTex < 4096\) return 'base';/.test(texSrc)
+    && /if \(!isTouch && mem >= 8 && cores >= 8 && maxTex >= 8192\) return 'ultra';/.test(texSrc));
+  ok('texture tiers: nothing is repainted before the first frame or while the ladder stands on its low rung, one surface per idle slot, and only surfaces painted at the high rung are candidates',
+    /if \(!\('frame1' in BOOT\) \|\| qLevel === 'low'\) \{ texKick\(1000\); return; \}/.test(fnCode('texStep'))
+    && /const rec = texQ\.splice\(i, 1\)\[0\]/.test(fnCode('texStep'))
+    && /requestIdleCallback\(go, \{ timeout: 400 \}\)/.test(fnCode('texKick'))
+    && /if \(rec\.px < SURF_PX\.high \|\| rec\.px >= TEX_TIER_PX\[texTier\]/.test(fnCode('texEnqueue')));
+  ok('texture tiers: only surfaces the scene is wearing NOW are repainted (a tour of 111 halls leaves every one of them in the cache), and the budget counts only REPAINTED surfaces the scene wears - not labels, sky or atlases (the first browser run counted those and repainted nothing) - so a torn-down hall stops counting',
+    /const live = texLive\(\);\s*const i = texQ\.findIndex\(\(r\) => live\.has\(r\.map\.source\)\);\s*if \(i < 0\) \{ texKick\(1500\); return; \}/.test(fnCode('texStep'))
+    && /for \(const r of texRecs\) if \(r\.px > TEX_TIER_PX\.base\)\s*for \(const t of \[r\.map, r\.normalMap\]\) if \(t && live\.has\(t\.source\)\) liveMB \+= texMiB\(r\.px\);\s*texMB = liveMB;/.test(fnCode('texStep'))
+    && /scene\.traverse\(/.test(fnCode('texLive'))
+    && /if \(!texQ\.some\(\(r\) => live\.has\(r\.map\.source\)\)\) break;/.test(fnCode('texDrain')));
+  ok('texture tiers: every surface map and normal map is mipmapped (LinearMipmapLinear) and anisotropic at what the rung affords, and surfaceMaps() records each one for the tier',
+    /t\.generateMipmaps = true;\s*t\.minFilter = THREE\.LinearMipmapLinearFilter;\s*t\.magFilter = THREE\.LinearFilter;\s*t\.anisotropy = anisoNow\(\);/.test(fnCode('texMip'))
+    && /texMip\(map\); texMip\(normalMap\);\s*Object\.assign\(out, \{ color, pattern, px: S2 \}\);\s*texTrack\(out\);/.test(fnCode('surfaceMaps')));
+  ok('texture tiers: a repaint draws the SAME pattern in the base tier\'s design space scaled up (a brick course is one size in the world at every tier), adds one octave of grain at the device texel, and reads its relief from the same declaration',
+    /const D0 = TEX_TIER_PX\.base, k = px \/ D0;/.test(fnCode('texPaint'))
+    && /g\.scale\(k, k\); hg\.scale\(k, k\);/.test(fnCode('texPaint'))
+    && /paintPattern\(g, hg, pattern, D0\);/.test(fnCode('texPaint'))
+    && /normalFromHeight\(hf, px, PATTERN_RELIEF\[pattern\] \?\? 0\)/.test(fnCode('texPaint')));
+  ok('texture tiers: a tier holds to its memory budget (colour + normal with mips; ultra steps down to 1024 before it gives up), and a repaint swaps into every material wearing the old pair, keeping its repeat and disposing the old clone',
+    /const TEX_TIER_MB = \{ base: 0, high: 320, ultra: 768 \};/.test(texSrc)
+    && /while \(px > TEX_TIER_PX\.high && texMB \+ cost\(px\) > TEX_TIER_MB\[texTier\]\) px \/= 2;\s*if \(texMB \+ cost\(px\) > TEX_TIER_MB\[texTier\]\) \{ texSkipped\+\+; texKick\(\); return; \}/.test(fnCode('texStep'))
+    && /nt\.repeat\.copy\(t\.repeat\); nt\.offset\.copy\(t\.offset\);/.test(fnCode('texSwap'))
+    && /m\[slot\] = nt; t\.dispose\(\);/.test(fnCode('texSwap'))
+    && /scene\.traverse\(/.test(fnCode('texSwap')) && /Object\.values\(mat\)/.test(fnCode('texSwap')));
+  ok('texture tiers: every texel is generated in this browser - the tier code makes canvases and nothing else (no image, no loader, no fetch)',
+    texSrc.length > 2000 && !/new Image\(|TextureLoader|ImageLoader|fetch\(|https?:/.test(texSrc));
+  ok('texture tiers: a harness sets the tier through the page\'s own hook (__tc3dDo(\'tex\', tier), an unknown tier throws; the hook repaints the queue at once under the same first-frame and low-rung rules) and reads it back through __tc3dTex() - tier, px, upgraded, pending, MB, mipmaps, anisotropy',
+    /else if \(fn === 'tex'\) \{ texSet\(arg\); texDrain\(\); \}/.test(code)
+    && /if \(!\('frame1' in BOOT\) \|\| qLevel === 'low'\) return;/.test(fnCode('texDrain'))
+    && /if \(!Object\.hasOwn\(TEX_TIER_PX, tier\)\) throw new Error/.test(fnCode('texSet'))
+    && /window\.__tc3dTex = \(\) => \{/.test(texSrc)
+    && ['tier', 'px', 'upgraded', 'pending', 'mb', 'mipmaps', 'aniso'].every((k) => new RegExp(`\\b${k}:`).test(texSrc)));
+  ok('room luminaires: every fitting has a housing over its diffuser and a hanger to the roof steel, pooled with the benches (no draw call of its own)',
+    /box\(lw \+ \.1, \.05, \.44, mat\.metal, rx, EAVE - \.625, rz, benchTop, false\);\s*box\(\.04, \.3, \.04, mat\.metal, rx, EAVE - \.45, rz, benchTop, false\);/.test(fnCode('buildHall')));
+  ok('room header signs: every room of the hall is queued once, and all of them are built BEFORE the bench pool flushes, so their backs and lintels pool with it',
+    /bdRooms\.push\(\{ r, n: h\.rooms\.indexOf\(r\) \+ 1, rx, rz, rw, rd \}\);/.test(fnCode('buildHall'))
+    && /bdStat = bdHeaderSigns\(h, bdRooms, doors, benchTop\);\s*flushParts\(benchPool, hallGroup\);/.test(fnCode('buildHall')));
+  ok('room header signs: ONE mesh for the whole hall - every board face a cell of one canvas atlas, both faces drawn, merged into one geometry - with the backs and lintels in mat.metal handed to the bench pool',
+    (fnCode('bdHeaderSigns').match(/new THREE\.Mesh\(/g) ?? []).length === 1
+    && /new THREE\.Mesh\(mergeGeometries\(geos\)/.test(fnCode('bdHeaderSigns'))
+    && (fnCode('bdHeaderSigns').match(/new THREE\.CanvasTexture\(/g) ?? []).length === 1
+    && /for \(const side of \[-1, 1\]\)/.test(fnCode('bdHeaderSigns'))
+    && /box\(PW \+ \.06, PH \+ \.06, \.04, mat\.metal, x, y, zF, collector, false\);/.test(fnCode('bdHeaderSigns'))
+    && /box\(cut\[1\] - cut\[0\] \+ \.12, \.08, \.12, mat\.metal, x, BD_PART_TOP - \.04, zF, collector, false\);/.test(fnCode('bdHeaderSigns')));
+  ok('room header signs: a board reads the room\'s own registry label and its strand in this locale under the room\'s number, stands over the opening planDoors() cut in its front edge (nearest its middle), and the partition top it stands on is the partition buildHall() draws',
+    /const room = String\(s\.r\.label\), sub = String\(D\.i18n\[loc\]\.strands\[s\.r\.strand\] \?\? ''\);/.test(fnCode('bdHeaderSigns'))
+    && /doors\.get\('z@' \+ zF\.toFixed\(2\)\)/.test(fnCode('bdHeaderSigns'))
+    && /const BD_PART_TOP = \.9 \+ 1\.1 \/ 2;/.test(code)
+    && /push\(pmat, slab\(len, 1\.1, \.12, c, \.9, zz\)\);/.test(fnCode('buildHall')));
+}
+/* BUILD END */
+
+/* BUILD BEGIN (wave 16 B2): the campus from the street - hall name boards and per-campus street furniture.
+   Each check below was watched failing on its own mutation in a sandbox copy before it was kept. */
+{
+  const b2 = (() => { const i = src.indexOf('DRESSING BEGIN (wave 16 B2): THE CAMPUS FROM THE STREET');
+    const j = src.indexOf('/* DRESSING END */', i); return i < 0 || j < 0 ? '' : strip(src.slice(i, j)); })();
+  const builtB2 = readFileSync(new URL('./trade_craft_3d.html', import.meta.url), 'utf8');
+  ok('campus name boards: the colours are the facades pack\'s AUTHORED sign palettes, read fail-closed at build time (a registry without them stops the build) and carried as colour pairs only - no lot or business name crosses into the page',
+    /facades_reg = json\.load\(open\(ROOT \/ 'facades\/registry\/facades\.json'\)\)\nFACADE_SIGN_PALETTES = facades_reg\['sign_rules'\]\['palettes'\]/.test(src)
+    && /'facadeSigns': \{'contract': facades_reg\['contract'\], 'palettes': FACADE_SIGN_PALETTES\},/.test(src)
+    && /"facadeSigns":\{"contract":"FACADE v1","palettes":\[\["#/.test(builtB2)
+    && !/"facadeSigns":\{[^}]*"signs"/.test(builtB2));
+  ok('campus name boards: ONE mesh and ONE atlas texture per campus - every hall a cell and a quad of one merged geometry - read off the hall\'s registry name and its district in this locale, coloured by a hash of its slug',
+    (fnCode('bdNameBoards').match(/new THREE\.Mesh\(/g) ?? []).length === 1
+    && (fnCode('bdNameBoards').match(/new THREE\.CanvasTexture\(/g) ?? []).length === 1
+    && /new THREE\.Mesh\(mergeGeometries\(geos\)/.test(fnCode('bdNameBoards'))
+    && /const \[ground, ink\] = pals\[bdHash\(bd\.h\.slug\) % pals\.length\];/.test(fnCode('bdNameBoards'))
+    && /const pals = D\.facadeSigns\.palettes;/.test(fnCode('bdNameBoards'))
+    && /const name = String\(bd\.h\.name\), sub = String\(D\.i18n\[loc\]\.districts\[bd\.h\.district\] \?\? ''\);/.test(fnCode('bdNameBoards')));
+  ok('campus name boards: each stands on its archetype\'s own front header (headY as hallkit reported it, a missing one throws), proud of the cladding face, no wider than 9 m so it clears the campus-scale roll-up door, and turned with its lot',
+    /g\.userData\.headY = hk\.headY;/.test(fnCode('building'))
+    && /if \(typeof bd\.headY !== 'number'\) throw new Error/.test(fnCode('bdNameBoards'))
+    && /const BH = Math\.min\(9 \/ 8, room \* \.8\), BW = BH \* 8;/.test(fnCode('bdNameBoards'))
+    && /q\.translate\(0, y, -bd\.d \/ 2 - \.38\);/.test(fnCode('bdNameBoards'))
+    && /q\.applyMatrix4\(bd\.bg\.matrixWorld\);/.test(fnCode('bdNameBoards')));
+  ok('campus street furniture: lamps and benches are ONE InstancedMesh per family per campus (in the city\'s trim and the shared timber), so the whole dressing adds at most three draw calls to a campus',
+    (fnCode('bdFurniture').match(/new THREE\.InstancedMesh\(/g) ?? []).length === 1
+    && /\[\[lamps, bdLampGeo\(\), fab\.trim, 'bd-lamps'\], \[benches, bdBenchGeo\(\), mat\.wood, 'bd-benches'\]\]/.test(fnCode('bdFurniture'))
+    && !/new THREE\.Mesh\(/.test(fnCode('bdFurniture'))
+    && /drawCalls: \(boards\.boards \? 1 : 0\) \+ furniture\.length,/.test(fnCode('bdDressCampus')));
+  ok('campus street furniture: a lamp never stands on a road or a lot, inside the plaza, or within a spacing of another lamp; the ring is lit on its inner edge and every street and walk down one side (parking is not)',
+    /const free = \(x, z\) => !onRoad\(x, z, \.4\) && !onLot\(x, z, 1\) && Math\.hypot\(x, z\) > 30\s*&& !lamps\.some\(\(\[a, b\]\) => Math\.hypot\(x - a, z - b\) < BD_LAMP_EVERY_M \* \.6\);/.test(fnCode('bdFurniture'))
+    && /const ringR = rr - 2\.4 - 1\.1/.test(fnCode('bdFurniture'))
+    && /for \(const r of bdCamp\.lit\.filter\(/.test(fnCode('bdFurniture'))
+    && /bdCamp\.lit = roads\.slice\(0, plan\.streets\.length \+ plan\.walkways\.length\);/.test(fnCode('buildCampus'))
+    && /const BD_LAMP_EVERY_M = 48, BD_BENCHES = 8;/.test(code));
+  ok('campus dressing: reset with the kit for every campus, each lot\'s building recorded as it is laid, the roads and lots handed over from the site plan, and the whole of it built into the campus group (freed with it) right after the kit flushes',
+    /kitReset\(\);\s*bdCamp = \{ key, boards: \[\], roads: \[\], rects: \[\], lit: \[\] \};/.test(fnCode('buildCampus'))
+    && /bdCamp\.boards\.push\(\{ h, bg, w: b\.w, d: b\.d, hgt: bg\.userData\.real\.h, headY: bg\.userData\.headY \}\);/.test(fnCode('buildCampus'))
+    && /bdCamp\.roads = roads; bdCamp\.rects = allRects;/.test(fnCode('buildCampus'))
+    && /flushKit\(campusGroup\);\s*bdCampStat = bdDressCampus\(campusGroup, rr\);/.test(fnCode('buildCampus')));
+  ok('campus dressing: none of it is a label sprite - boards are geometry on a wall - so the declutter and __tc3dLabelRects() are untouched and no legibility row moves',
+    b2.length > 3000 && !/\blabel\(/.test(b2) && !/new THREE\.Sprite\(/.test(b2));
+}
+/* BUILD END */
+
+/* BUILD BEGIN (wave 16 B3): the street furniture is solid, through the grounds' own push-out record.
+   Watched failing on its mutation in a sandbox copy before it was kept. */
+ok('campus street furniture is SOLID: every lamp standard and bench is recorded where it is built through campusSolid() - the same disc record the yard mast and the stand posts use - so the walker goes round it',
+  /for \(const \[x, z\] of list\) campusSolid\(x, z, name === 'bd-lamps' \? \.12 : \.6\);/.test(fnCode('bdFurniture'))
+  && /e\.rects\.push\(\{ u: x, v: z, r \}\);/.test(fnCode('campusSolid')));
+/* BUILD END */
+
+/* POLISH w16 BEGIN - crew roles open through the harness hook; advisors split exactly as before */
+{
+  const _hi = builtPage.indexOf("window.__tc3dDo = (fn, arg) =>");
+  const disp = _hi < 0 ? '' : strip(builtPage.slice(_hi, _hi + 2500));
+  ok('the harness hook resolves an advisor key through advisorHookArgs and never spreads a raw split(\':\') into openAdvisor',
+    /fn === 'advisor'\) openAdvisor\(\.\.\.advisorHookArgs\(arg\)\)/.test(disp) && !/openAdvisor\(\.\.\.String\(arg\)\.split/.test(disp));
+  const lift = (name) => { const i = builtPage.indexOf(`\nfunction ${name}(`); return i < 0 ? '' : builtPage.slice(i, builtPage.indexOf('\n}\n', i) + 3); };
+  const [hook, fig] = new Function('ADVISOR_TABLE', 'CREW_TABLE', lift('figureOf') + lift('advisorHookArgs')
+    + 'return [typeof advisorHookArgs === "function" ? advisorHookArgs : () => null, figureOf];')(wire.advisors.who, wire.crews.crews);
+  const J = (x) => JSON.stringify(x);
+  const advs = Object.entries(wire.advisors.who);
+  const roles = Object.entries(wire.crews.crews).flatMap(([cid, c]) => Object.entries(c.roles).map(([rid, r]) => [`${cid}:${rid}`, cid, r]));
+  ok(`advisor keys split exactly as before through the hook (${advs.length} advisors, each bare and with every topic, plus an unknown key)`,
+    advs.length > 0 && advs.every(([a, x]) => J(hook(a)) === J(a.split(':'))
+      && x.topics.every((tp) => J(hook(`${a}:${tp.id}`)) === J([a, tp.id]) && J(hook(`${a}:${tp.id}`)) === J(`${a}:${tp.id}`.split(':'))))
+    && J(hook('nobody:x:y')) === J(['nobody', 'x', 'y']));
+  ok(`every crew role opens through the hook by its "<crew>:<role>" key, alone or with a topic (${roles.length} roles; HOOK-CREW)`,
+    roles.length > 0 && roles.every(([k, cid, r]) => J(hook(k)) === J([k]) && fig(hook(k)[0])?.inCrew === cid
+      && r.topics.every((tp) => J(hook(`${k}:${tp.id}`)) === J([k, tp.id]))));
+  ok('no advisor id is also a crew id, so an advisor key can never be read as a crew role',
+    advs.every(([a]) => !(a in wire.crews.crews)));
+}
+/* POLISH w16 END */
 
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);

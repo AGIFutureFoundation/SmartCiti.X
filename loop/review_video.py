@@ -5,7 +5,7 @@ SmartCiti.X : Trade Craft Academy — the 2-minute cycle review video.
 Renders exactly 120 seconds from what the loop actually recorded: the cycle
 ledger (loop/registry/cycles.json), the latest executed eval gates
 (loop/state/evals_latest.json), the latest heartbeat (loop/state/heartbeat.jsonl)
-and the course pack (courses/registry/courses.json). Nothing on a card is typed
+and the course pack (courses_roadmap/registry/courses.json). Nothing on a card is typed
 here; every line is read from those files, so a review cannot report a gate
 that did not run.
 
@@ -153,7 +153,7 @@ def main():
     ended = str(cyc.get("ended") or "")
     before = [b for b in beats if str(b.get("ts", "")) <= ended] if ended else beats
     hb = (before or beats or [{"ok": cyc.get("heartbeat_ok", False), "checks": []}])[-1]
-    courses = json.load(open(ROOT / "courses/registry/courses.json", encoding="utf-8"))["courses"]
+    courses = json.load(open(ROOT / "courses_roadmap/registry/courses.json", encoding="utf-8"))["courses"]
 
     work = tempfile.mkdtemp(prefix="review_")
     try:

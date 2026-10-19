@@ -15,7 +15,7 @@
       "ended": "2026-10-12T09:40:00Z",
       "sprint": "S1 course schema and authoring pipeline",
       "shipped": [
-        "courses/ pack: 12 planned courses, 56 flipped modules mapped onto home, class, floor, gate",
+        "courses_roadmap/ pack: 12 planned courses, 56 flipped modules mapped onto home, class, floor, gate",
         "Real hall, sim and station links; plumbing mapped to pipefitters with a note; cosmetology flagged outside the 111 halls",
         "TCA-140 Welding modules 1-2 wired to the weld-bead sim and the welders lesson",
         "loop/: heartbeat, 8 executed eval gates, cycle ledger, meta-prompt for 8 agents",
@@ -30,7 +30,7 @@
         },
         {
           "name": "Curriculum Mapper",
-          "task": "build courses/ pack",
+          "task": "build courses_roadmap/ pack",
           "result": "29 checks pass; 4 of 12 courses have a real floor sim (TCA-110, 140, 150, 160)"
         },
         {
@@ -497,7 +497,7 @@
         }
       ],
       "notes": [
-        "The red-team pass found that S2-S4 had been recorded as shipped although their windows have not opened and much of their ship lists is not built; corrected in courses/build.py.",
+        "The red-team pass found that S2-S4 had been recorded as shipped although their windows have not opened and much of their ship lists is not built; corrected in courses_roadmap/build.py.",
         "The one-directory-per-agent rule in METAPROMPT.md was not kept during this loop; recorded there.",
         "Still open: mentor guards are regex patterns (blind 2/12 before tuning); the dashboard runs on synthetic data; 6 of 56 modules are wired; beauty courses wait on Beauty School, which is not in this repository."
       ],

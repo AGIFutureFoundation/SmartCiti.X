@@ -1,0 +1,4710 @@
+{
+ "pack": "modules",
+ "schema": "tc-modules/1",
+ "built": "2026-10-12",
+ "source_stamp": "d30b183cc4b3c58aed9ff79b6fed263358a4f6706c1d41cc9147fe4546d636d8",
+ "sources": [
+  "lessons/registry/lessons.json",
+  "training/registry/training.json",
+  "worksites/registry/worksites.json",
+  "unions/registry/districts.json",
+  "restoration/registry/restoration.json",
+  "restoration/registry/scenarios.json",
+  "wilds/registry/wilds.json",
+  "robotics/registry/robotics.json",
+  "hive/registry/hive.json",
+  "agents/registry/crews.json",
+  "sims/registry/sims.json",
+  "stations/registry/stations.json",
+  "unionpaths/registry/union_paths.json",
+  "courses/registry/courses.json"
+ ],
+ "provenance": "AUTHORED by rule: every module is composed by a rule in modules/build.py from the registries listed; every step is one of the existing step kinds and every id resolves in the registry that owns it",
+ "honesty": {
+  "standing": "Lessons and modules are unverified general practice. Nothing here certifies, qualifies or licenses anybody.",
+  "no_durations": "No duration and no credential is stated; none of the source registries declares one.",
+  "greeters": "Omega Hive: SCRIPTED, no AI model, the device speech synthesis, on a click, AUTHORED personalities.",
+  "no_new_kinds": "No new step kind, episode kind or storage key: lessons, completion and courses are read, never changed."
+ },
+ "step_kinds": [
+  "advisor",
+  "crew",
+  "crib",
+  "placard",
+  "sim",
+  "station",
+  "walk",
+  "walkaround",
+  "world-teleop"
+ ],
+ "rules": {
+  "worksite-district": "per union district, the worksites whose crew musters from a first hall of that district; steps are their hand-off evidence (from, then to) in order, duplicates dropped",
+  "restoration-site": "per walkable restoration site: scenario titles and steps and staged task title and brief quoted verbatim as the brief; steps are the hand-off evidence of worksites at the site, then per needed trade the opening step and first recording step of the first lesson in its union path",
+  "wilds-world": "per wilds world: the steps of its site walks in site order, copied verbatim from lessons.json",
+  "robot-yard": "one module: watch the SCRIPTED reference rover in the walkable world (world-teleop, actor scripted-reference), then drive the same env in the Robotics lab (world-teleop, actor human)",
+  "greeter": "one Omega Hive agent per module; the line is its first greeting line, else its first line",
+  "supplements": "the module's own lessons, then lessons whose steps run the same seat or ask the same crew, in lessons registry order, at most 6 unless its own lessons are more; each is a courses.json supplement"
+ },
+ "counts": {
+  "modules": 16,
+  "by_family": {
+   "worksite-district": 3,
+   "restoration-site": 8,
+   "wilds-world": 4,
+   "robot-yard": 1
+  },
+  "steps": 191,
+  "steps_by_kind": {
+   "advisor": 59,
+   "crew": 35,
+   "placard": 23,
+   "sim": 14,
+   "station": 2,
+   "walk": 36,
+   "walkaround": 20,
+   "world-teleop": 2
+  },
+  "brief_quotes": 168,
+  "lessons_referenced": 26,
+  "greeters": 6,
+  "refused": 8,
+  "certifies": 0,
+  "durations": 0,
+  "trained_models": 0
+ },
+ "refused": {
+  "worksite-district:envelope": "no worksite in worksites.json has a crew whose first hall stands in this district",
+  "worksite-district:energy": "no worksite in worksites.json has a crew whose first hall stands in this district",
+  "worksite-district:industry": "no worksite in worksites.json has a crew whose first hall stands in this district",
+  "worksite-district:transport": "no worksite in worksites.json has a crew whose first hall stands in this district",
+  "worksite-district:control": "no worksite in worksites.json has a crew whose first hall stands in this district",
+  "restoration:spartina-removal": "bay-wide, unpinned - no single point to walk",
+  "restoration:hunters-point-shipyard": "an actively litigated federal cleanup site is not something this platform can responsibly present as a place to stroll",
+  "restoration:treasure-island-nsti": "an active federal cleanup site with unresolved radiological criteria is not something this platform can responsibly present as a place to stroll"
+ },
+ "modules": [
+  {
+   "id": "module-worksites-structural",
+   "family": "worksite-district",
+   "district": "structural",
+   "district_name": "Structural",
+   "title": "Structural worksites",
+   "world": "bay",
+   "places": [
+    {
+     "worksite": "nola-tank-entry",
+     "title": "Tank seam entry, New Orleans",
+     "place_kind": "campus",
+     "place": "new-orleans",
+     "source": "worksites/registry/worksites.json#sites[1]"
+    },
+    {
+     "worksite": "oak-terminal-blind-pick",
+     "title": "Blind pick between the container stacks, Oakland",
+     "place_kind": "campus",
+     "place": "oakland",
+     "source": "worksites/registry/worksites.json#sites[2]"
+    },
+    {
+     "worksite": "ti-tower-steel-pick",
+     "title": "Tower steel pick, crane simulator bay",
+     "place_kind": "space",
+     "place": "crane-sim-bay",
+     "source": "worksites/registry/worksites.json#sites[6]"
+    },
+    {
+     "worksite": "ti-welding-bay-hot-work",
+     "title": "Deck seam under permit, welding bay",
+     "place_kind": "space",
+     "place": "welding-bay",
+     "source": "worksites/registry/worksites.json#sites[7]"
+    }
+   ],
+   "brief": [
+    {
+     "text": "Put one welder inside a tank to run a seam, with the space isolated and tested first, an attendant who never goes in, and a count out by name.",
+     "source": "worksites/registry/worksites.json#sites[1].job"
+    },
+    {
+     "text": "Carry a load the cab cannot see land, high over the stacks, on one signaller's hands and one rigger's weight.",
+     "source": "worksites/registry/worksites.json#sites[2].job"
+    },
+    {
+     "text": "Pick one steel member off the supply pad and set it in the ring with the plan read out loud first, one signaller, and nobody under the load.",
+     "source": "worksites/registry/worksites.json#sites[6].job"
+    },
+    {
+     "text": "Run one deck seam under a hot-work permit that names this bay only, with a fire watch posted where the sparks land and held through the post-work period.",
+     "source": "worksites/registry/worksites.json#sites[7].job"
+    }
+   ],
+   "steps": [
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "confined-space-crew",
+     "role": "entry-supervisor",
+     "topic": "authorise",
+     "ask": "What are you authorising?",
+     "agent": "crew:confined-space-crew:entry-supervisor",
+     "note": "isolates the space, has it tested, and authorises the entry against what the test found",
+     "from": "worksites/registry/worksites.json#sites[1].handoffs[0].from_evidence",
+     "worksite": "nola-tank-entry",
+     "n": 1
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "confined-space-crew",
+     "role": "attendant",
+     "topic": "contact",
+     "ask": "What counts as contact?",
+     "agent": "crew:confined-space-crew:attendant",
+     "note": "isolates the space, has it tested, and authorises the entry against what the test found",
+     "from": "worksites/registry/worksites.json#sites[1].handoffs[0].to_evidence",
+     "worksite": "nola-tank-entry",
+     "n": 2
+    },
+    {
+     "kind": "walkaround",
+     "records": "walkaround",
+     "sim": "weld-bead",
+     "point": "extraction",
+     "label": "Fume extraction",
+     "check": "running and pulling at the work, not past your face",
+     "note": "logs who is going in, sets the means of contact, and takes station at the opening",
+     "from": "worksites/registry/worksites.json#sites[1].handoffs[1].to_evidence",
+     "worksite": "nola-tank-entry",
+     "n": 3
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "confined-space-crew",
+     "role": "attendant",
+     "topic": "never",
+     "ask": "Why do you never go in?",
+     "agent": "crew:confined-space-crew:attendant",
+     "note": "enters and reports that the space matches what was authorised before touching the work",
+     "from": "worksites/registry/worksites.json#sites[1].handoffs[2].to_evidence",
+     "worksite": "nola-tank-entry",
+     "n": 4
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "confined-space-crew",
+     "role": "entry-supervisor",
+     "topic": "isolate",
+     "ask": "Why isolate before testing?",
+     "agent": "crew:confined-space-crew:entry-supervisor",
+     "note": "raises anything that changed - the air, the contact, a second body at the opening",
+     "from": "worksites/registry/worksites.json#sites[1].handoffs[3].to_evidence",
+     "worksite": "nola-tank-entry",
+     "n": 5
+    },
+    {
+     "kind": "sim",
+     "records": "sim",
+     "sim": "weld-bead",
+     "scenario": "nola-tank-seam",
+     "seat_name": "Weld Bead Run",
+     "scenario_name": "Tank shell seam",
+     "note": "comes out on the word, and is counted out by name",
+     "from": "worksites/registry/worksites.json#sites[1].handoffs[4].from_evidence",
+     "worksite": "nola-tank-entry",
+     "n": 6
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "confined-space-crew",
+     "role": "attendant",
+     "topic": "walk",
+     "ask": "What gets walked before an entry?",
+     "agent": "crew:confined-space-crew:attendant",
+     "note": "comes out on the word, and is counted out by name",
+     "from": "worksites/registry/worksites.json#sites[1].handoffs[4].to_evidence",
+     "worksite": "nola-tank-entry",
+     "n": 7
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "crane-lift-crew",
+     "role": "lift-director",
+     "topic": "plan",
+     "ask": "What is in a lift plan?",
+     "agent": "crew:crane-lift-crew:lift-director",
+     "note": "reads the plan out: weight, radius, hitch, path, and who stands where",
+     "from": "worksites/registry/worksites.json#sites[2].handoffs[0].from_evidence",
+     "worksite": "oak-terminal-blind-pick",
+     "n": 8
+    },
+    {
+     "kind": "station",
+     "records": null,
+     "station": "st005",
+     "station_name": "Rigging & Material Handling",
+     "note": "reads the plan out: weight, radius, hitch, path, and who stands where",
+     "from": "worksites/registry/worksites.json#sites[2].handoffs[0].to_evidence",
+     "worksite": "oak-terminal-blind-pick",
+     "n": 9
+    },
+    {
+     "kind": "sim",
+     "records": "sim",
+     "sim": "load-chart",
+     "scenario": "oak-heavy-list",
+     "seat_name": "Load Chart Judgment",
+     "scenario_name": "Terminal heavy list",
+     "note": "makes the hitch, checks the sling angles and calls the load rigged",
+     "from": "worksites/registry/worksites.json#sites[2].handoffs[1].from_evidence",
+     "worksite": "oak-terminal-blind-pick",
+     "n": 10
+    },
+    {
+     "kind": "walkaround",
+     "records": "walkaround",
+     "sim": "rigging-signals",
+     "point": "radio",
+     "label": "Radio and whistle",
+     "check": "checked both ways on a working channel before the first pick, and the channel is one nobody else on the site is on",
+     "note": "makes the hitch, checks the sling angles and calls the load rigged",
+     "from": "worksites/registry/worksites.json#sites[2].handoffs[1].to_evidence",
+     "worksite": "oak-terminal-blind-pick",
+     "n": 11
+    },
+    {
+     "kind": "sim",
+     "records": "sim",
+     "sim": "rigging-signals",
+     "scenario": "oak-blind-pick",
+     "seat_name": "Rigging Signal Call",
+     "scenario_name": "Blind terminal pick",
+     "note": "takes the load’s path, clears it of people, and gives the first move",
+     "from": "worksites/registry/worksites.json#sites[2].handoffs[2].from_evidence",
+     "worksite": "oak-terminal-blind-pick",
+     "n": 12
+    },
+    {
+     "kind": "sim",
+     "records": "sim",
+     "sim": "crane-lift",
+     "scenario": "oak-terminal",
+     "seat_name": "Tower Crane Lift",
+     "scenario_name": "Oakland terminal lift",
+     "note": "takes the load’s path, clears it of people, and gives the first move",
+     "from": "worksites/registry/worksites.json#sites[2].handoffs[2].to_evidence",
+     "worksite": "oak-terminal-blind-pick",
+     "n": 13
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "crane-lift-crew",
+     "role": "signalperson",
+     "topic": "one",
+     "ask": "Can two of you signal at once?",
+     "agent": "crew:crane-lift-crew:signalperson",
+     "note": "moves only on a signal, and calls a hold the moment one is unclear",
+     "from": "worksites/registry/worksites.json#sites[2].handoffs[3].to_evidence",
+     "worksite": "oak-terminal-blind-pick",
+     "n": 14
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "crane-lift-crew",
+     "role": "rigger",
+     "topic": "hitch",
+     "ask": "Why this hitch and not another?",
+     "agent": "crew:crane-lift-crew:rigger",
+     "note": "walks the load to the set and holds it still until hands are on it",
+     "from": "worksites/registry/worksites.json#sites[2].handoffs[4].to_evidence",
+     "worksite": "oak-terminal-blind-pick",
+     "n": 15
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "crane-lift-crew",
+     "role": "lift-director",
+     "topic": "change",
+     "ask": "What if the lift changes?",
+     "agent": "crew:crane-lift-crew:lift-director",
+     "note": "unhooks clear of the load and reports the pick closed against the plan",
+     "from": "worksites/registry/worksites.json#sites[2].handoffs[5].to_evidence",
+     "worksite": "oak-terminal-blind-pick",
+     "n": 16
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "crane-lift-crew",
+     "role": "lift-director",
+     "topic": "plan",
+     "ask": "What is in a lift plan?",
+     "agent": "crew:crane-lift-crew:lift-director",
+     "note": "reads the plan out: weight, radius, hitch, path, and who stands where",
+     "from": "worksites/registry/worksites.json#sites[6].handoffs[0].from_evidence",
+     "worksite": "ti-tower-steel-pick",
+     "n": 17
+    },
+    {
+     "kind": "sim",
+     "records": "sim",
+     "sim": "load-chart",
+     "scenario": "bay-pick-list",
+     "seat_name": "Load Chart Judgment",
+     "scenario_name": "Yard pick list",
+     "note": "reads the plan out: weight, radius, hitch, path, and who stands where",
+     "from": "worksites/registry/worksites.json#sites[6].handoffs[0].to_evidence",
+     "worksite": "ti-tower-steel-pick",
+     "n": 18
+    },
+    {
+     "kind": "walkaround",
+     "records": "walkaround",
+     "sim": "rigging-signals",
+     "point": "sightline",
+     "label": "Line of sight",
+     "check": "the operator can read your hands from every planned position",
+     "note": "makes the hitch, checks the sling angles and calls the load rigged",
+     "from": "worksites/registry/worksites.json#sites[6].handoffs[1].to_evidence",
+     "worksite": "ti-tower-steel-pick",
+     "n": 19
+    },
+    {
+     "kind": "sim",
+     "records": "sim",
+     "sim": "rigging-signals",
+     "scenario": "bay-first-card",
+     "seat_name": "Rigging Signal Call",
+     "scenario_name": "First lift card",
+     "note": "takes the load’s path, clears it of people, and gives the first move",
+     "from": "worksites/registry/worksites.json#sites[6].handoffs[2].from_evidence",
+     "worksite": "ti-tower-steel-pick",
+     "n": 20
+    },
+    {
+     "kind": "sim",
+     "records": "sim",
+     "sim": "crane-lift",
+     "scenario": "bay-steel",
+     "seat_name": "Tower Crane Lift",
+     "scenario_name": "Bay high-steel lift",
+     "note": "takes the load’s path, clears it of people, and gives the first move",
+     "from": "worksites/registry/worksites.json#sites[6].handoffs[2].to_evidence",
+     "worksite": "ti-tower-steel-pick",
+     "n": 21
+    },
+    {
+     "kind": "walkaround",
+     "records": "walkaround",
+     "sim": "rigging-signals",
+     "point": "path",
+     "label": "The load path",
+     "check": "walked end to end, nothing and nobody under it",
+     "note": "moves only on a signal, and calls a hold the moment one is unclear",
+     "from": "worksites/registry/worksites.json#sites[6].handoffs[3].to_evidence",
+     "worksite": "ti-tower-steel-pick",
+     "n": 22
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "crane-lift-crew",
+     "role": "rigger",
+     "topic": "weight",
+     "ask": "How do you know what it weighs?",
+     "agent": "crew:crane-lift-crew:rigger",
+     "note": "walks the load to the set and holds it still until hands are on it",
+     "from": "worksites/registry/worksites.json#sites[6].handoffs[4].to_evidence",
+     "worksite": "ti-tower-steel-pick",
+     "n": 23
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "crane-lift-crew",
+     "role": "lift-director",
+     "topic": "change",
+     "ask": "What if the lift changes?",
+     "agent": "crew:crane-lift-crew:lift-director",
+     "note": "unhooks clear of the load and reports the pick closed against the plan",
+     "from": "worksites/registry/worksites.json#sites[6].handoffs[5].to_evidence",
+     "worksite": "ti-tower-steel-pick",
+     "n": 24
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "hot-work-crew",
+     "role": "permit-holder",
+     "topic": "covers",
+     "ask": "What does a hot work permit cover?",
+     "agent": "crew:hot-work-crew:permit-holder",
+     "note": "walks the area, clears or covers what can burn, and issues for that area only",
+     "from": "worksites/registry/worksites.json#sites[7].handoffs[0].from_evidence",
+     "worksite": "ti-welding-bay-hot-work",
+     "n": 25
+    },
+    {
+     "kind": "walkaround",
+     "records": "walkaround",
+     "sim": "weld-bead",
+     "point": "screens",
+     "label": "Welding screens",
+     "check": "standing and closed - nobody flashes off your arc",
+     "note": "walks the area, clears or covers what can burn, and issues for that area only",
+     "from": "worksites/registry/worksites.json#sites[7].handoffs[0].to_evidence",
+     "worksite": "ti-welding-bay-hot-work",
+     "n": 26
+    },
+    {
+     "kind": "walkaround",
+     "records": "walkaround",
+     "sim": "weld-bead",
+     "point": "firewatch",
+     "label": "Fire watch kit",
+     "check": "extinguisher charged and in reach, combustibles cleared",
+     "note": "sets the screens and the leads, then says the arc is about to be struck",
+     "from": "worksites/registry/worksites.json#sites[7].handoffs[1].to_evidence",
+     "worksite": "ti-welding-bay-hot-work",
+     "n": 27
+    },
+    {
+     "kind": "sim",
+     "records": "sim",
+     "sim": "weld-bead",
+     "scenario": "bay-deck-seam",
+     "seat_name": "Weld Bead Run",
+     "scenario_name": "Deck plate seam",
+     "note": "takes station where the sparks land, not where the arc is, and says the watch is set",
+     "from": "worksites/registry/worksites.json#sites[7].handoffs[2].to_evidence",
+     "worksite": "ti-welding-bay-hot-work",
+     "n": 28
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "hot-work-crew",
+     "role": "fire-watch",
+     "topic": "after",
+     "ask": "How long do you stay after?",
+     "agent": "crew:hot-work-crew:fire-watch",
+     "note": "runs the bead, and says out loud when the arc is out",
+     "from": "worksites/registry/worksites.json#sites[7].handoffs[3].to_evidence",
+     "worksite": "ti-welding-bay-hot-work",
+     "n": 29
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "hot-work-crew",
+     "role": "permit-holder",
+     "topic": "close",
+     "ask": "What closes it?",
+     "agent": "crew:hot-work-crew:permit-holder",
+     "note": "holds the watch through the whole post-work period, then hands the permit back to be closed",
+     "from": "worksites/registry/worksites.json#sites[7].handoffs[4].to_evidence",
+     "worksite": "ti-welding-bay-hot-work",
+     "n": 30
+    }
+   ],
+   "greeter": {
+    "agent": "crew:confined-space-crew:entry-supervisor",
+    "name": "Entry supervisor",
+    "kind": "crew-role",
+    "glyph": "📝",
+    "line": "The entry is authorised for conditions, not for people. Ask me which conditions.",
+    "line_source": "agents/registry/crews.json#crews.confined-space-crew.roles.entry-supervisor.greeting",
+    "rule": "the Hive crew role asked in the first crew step; else the door guide",
+    "provenance": "SCRIPTED",
+    "voice": "the device speech synthesis, on a click; no AI model"
+   },
+   "lessons": [],
+   "supplements": [
+    "riggers-first-card",
+    "riggers-carry-under-control",
+    "crane-ops-read-the-chart",
+    "ironworkers-plan-out-loud",
+    "welders-the-watch",
+    "boilermakers-get-them-out"
+   ],
+   "provenance": "AUTHORED by rule",
+   "standing": "unverified general practice; certifies nobody"
+  },
+  {
+   "id": "module-worksites-systems",
+   "family": "worksite-district",
+   "district": "systems",
+   "district_name": "Building Systems",
+   "title": "Building Systems worksites",
+   "world": "bay",
+   "places": [
+    {
+     "worksite": "ti-curtainwall-boom-run",
+     "title": "Curtainwall run under the line, Treasure Island",
+     "place_kind": "campus",
+     "place": "treasure-island",
+     "source": "worksites/registry/worksites.json#sites[4]"
+    }
+   ],
+   "brief": [
+    {
+     "text": "Take a basket to each curtainwall work point in order, clipped before it leaves the ground, with an observer who owns the overhead line and a ground attendant who can bring it down.",
+     "source": "worksites/registry/worksites.json#sites[4].job"
+    }
+   ],
+   "steps": [
+    {
+     "kind": "walkaround",
+     "records": "walkaround",
+     "sim": "boom-lift",
+     "point": "overhead",
+     "label": "Overhead-hazard scan",
+     "check": "every line, beam and canopy on the run found and its clearance called before the first lift",
+     "note": "walks the overhead line, sets the exclusion zone on the ground and says where it is",
+     "from": "worksites/registry/worksites.json#sites[4].handoffs[0].from_evidence",
+     "worksite": "ti-curtainwall-boom-run",
+     "n": 1
+    },
+    {
+     "kind": "walkaround",
+     "records": "walkaround",
+     "sim": "boom-lift",
+     "point": "harness",
+     "label": "Harness and anchor point",
+     "check": "webbing and stitching whole, lanyard in date, the basket anchor rated and unbent",
+     "note": "walks the overhead line, sets the exclusion zone on the ground and says where it is",
+     "from": "worksites/registry/worksites.json#sites[4].handoffs[0].to_evidence",
+     "worksite": "ti-curtainwall-boom-run",
+     "n": 2
+    },
+    {
+     "kind": "walkaround",
+     "records": "walkaround",
+     "sim": "boom-lift",
+     "point": "controls",
+     "label": "Controls and emergency lowering",
+     "check": "every function answers at the basket and the ground station, and the manual lowering valve works",
+     "note": "sets the stabilizers on the level pad, clips to the basket anchor, and calls for the ground controls to be manned",
+     "from": "worksites/registry/worksites.json#sites[4].handoffs[1].to_evidence",
+     "worksite": "ti-curtainwall-boom-run",
+     "n": 3
+    },
+    {
+     "kind": "sim",
+     "records": "sim",
+     "sim": "boom-lift",
+     "scenario": "bay-curtainwall-run",
+     "seat_name": "Boom Lift Basket Work",
+     "scenario_name": "Curtain-wall panel run",
+     "note": "proves the ground controls, then stays in sight and sound for the whole run",
+     "from": "worksites/registry/worksites.json#sites[4].handoffs[2].to_evidence",
+     "worksite": "ti-curtainwall-boom-run",
+     "n": 4
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "aerial-lift-crew",
+     "role": "line-observer",
+     "topic": "zone",
+     "ask": "What is the exclusion zone?",
+     "agent": "crew:aerial-lift-crew:line-observer",
+     "note": "takes the basket to each work point and asks for a clearance call before every move toward the line",
+     "from": "worksites/registry/worksites.json#sites[4].handoffs[3].to_evidence",
+     "worksite": "ti-curtainwall-boom-run",
+     "n": 5
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "aerial-lift-crew",
+     "role": "ground-attendant",
+     "topic": "rescue",
+     "ask": "What happens if they collapse up there?",
+     "agent": "crew:aerial-lift-crew:ground-attendant",
+     "note": "calls the clearance, and calls the stop the moment the machine closes on the zone",
+     "from": "worksites/registry/worksites.json#sites[4].handoffs[4].to_evidence",
+     "worksite": "ti-curtainwall-boom-run",
+     "n": 6
+    }
+   ],
+   "greeter": {
+    "agent": "crew:aerial-lift-crew:line-observer",
+    "name": "Line observer",
+    "kind": "crew-role",
+    "glyph": "⚡",
+    "line": "I am watching one gap and nothing else. Ask me why that gap is hard to judge from up there.",
+    "line_source": "agents/registry/crews.json#crews.aerial-lift-crew.roles.line-observer.greeting",
+    "rule": "the Hive crew role asked in the first crew step; else the door guide",
+    "provenance": "SCRIPTED",
+    "voice": "the device speech synthesis, on a click; no AI model"
+   },
+   "lessons": [],
+   "supplements": [
+    "electricians-clip-in-first",
+    "glaziers-watch-the-line",
+    "insulators-stay-inside-the-rails",
+    "window-glazing-let-the-ground-judge-it",
+    "sheetmetal-name-the-kit-before-you-climb"
+   ],
+   "provenance": "AUTHORED by rule",
+   "standing": "unverified general practice; certifies nobody"
+  },
+  {
+   "id": "module-worksites-earthworks",
+   "family": "worksite-district",
+   "district": "earthworks",
+   "district_name": "Earthworks & Plant",
+   "title": "Earthworks & Plant worksites",
+   "world": "bay",
+   "places": [
+    {
+     "worksite": "herons-head-shoreline-cut",
+     "title": "Shoreline drainage cut, Heron's Head",
+     "place_kind": "restoration-site",
+     "place": "herons-head",
+     "source": "worksites/registry/worksites.json#sites[0]"
+    },
+    {
+     "worksite": "salt-ponds-levee-trench",
+     "title": "Levee toe trench, South Bay salt ponds",
+     "place_kind": "restoration-site",
+     "place": "south-bay-salt-ponds",
+     "source": "worksites/registry/worksites.json#sites[3]"
+    },
+    {
+     "worksite": "ti-scaffold-court-bay",
+     "title": "One bay up and tagged, scaffold court",
+     "place_kind": "space",
+     "place": "scaffold-court",
+     "source": "worksites/registry/worksites.json#sites[5]"
+    }
+   ],
+   "brief": [
+    {
+     "text": "Cut a shallow drainage run through the upland fill above the tide line, cell by cell, with the ground inspected before the first bite and after anything that changes it.",
+     "source": "worksites/registry/worksites.json#sites[0].job"
+    },
+    {
+     "text": "Open one trench cell along the levee toe with the buried services marked and proved first, a spotter in the operator's eyeline, and the cut held shallow where the marks run.",
+     "source": "worksites/registry/worksites.json#sites[3].job"
+    },
+    {
+     "text": "Build one scaffold bay in stage order from bedded sills to guardrails, hold the drop zone, and hand it to a competent person to inspect and tag before anyone stands on it.",
+     "source": "worksites/registry/worksites.json#sites[5].job"
+    }
+   ],
+   "steps": [
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "trench-crew",
+     "role": "locator",
+     "topic": "marks",
+     "ask": "How good are the marks?",
+     "agent": "crew:trench-crew:locator",
+     "note": "marks what is buried and says which marks are proved and which are only painted",
+     "from": "worksites/registry/worksites.json#sites[0].handoffs[0].from_evidence",
+     "worksite": "herons-head-shoreline-cut",
+     "n": 1
+    },
+    {
+     "kind": "walkaround",
+     "records": "walkaround",
+     "sim": "excavator-trench",
+     "point": "edge",
+     "label": "The trench edge",
+     "check": "spoil set back, no load surcharging the cut",
+     "note": "marks what is buried and says which marks are proved and which are only painted",
+     "from": "worksites/registry/worksites.json#sites[0].handoffs[0].to_evidence",
+     "worksite": "herons-head-shoreline-cut",
+     "n": 2
+    },
+    {
+     "kind": "walkaround",
+     "records": "walkaround",
+     "sim": "excavator-trench",
+     "point": "bucket",
+     "label": "Bucket teeth and pins",
+     "check": "teeth tight, pins keepered, no cracks at the ears",
+     "note": "inspects the ground and sets the depth the machine may take without support",
+     "from": "worksites/registry/worksites.json#sites[0].handoffs[1].to_evidence",
+     "worksite": "herons-head-shoreline-cut",
+     "n": 3
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "trench-crew",
+     "role": "spotter",
+     "topic": "call",
+     "ask": "What is your one call?",
+     "agent": "crew:trench-crew:spotter",
+     "note": "sets up on level ground and asks for the swing radius to be walked and held",
+     "from": "worksites/registry/worksites.json#sites[0].handoffs[2].to_evidence",
+     "worksite": "herons-head-shoreline-cut",
+     "n": 4
+    },
+    {
+     "kind": "sim",
+     "records": "sim",
+     "sim": "excavator-trench",
+     "scenario": "bay-retrofit",
+     "seat_name": "Excavator Trench Cut",
+     "scenario_name": "Seismic retrofit cut",
+     "note": "takes station in the operator’s eyeline, keeps the radius clear, and holds the one call",
+     "from": "worksites/registry/worksites.json#sites[0].handoffs[3].to_evidence",
+     "worksite": "herons-head-shoreline-cut",
+     "n": 5
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "trench-crew",
+     "role": "trench-competent-person",
+     "topic": "again",
+     "ask": "How often does it get inspected?",
+     "agent": "crew:trench-crew:trench-competent-person",
+     "note": "cuts cell by cell and stops shallow where the marked service runs",
+     "from": "worksites/registry/worksites.json#sites[0].handoffs[4].to_evidence",
+     "worksite": "herons-head-shoreline-cut",
+     "n": 6
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "trench-crew",
+     "role": "locator",
+     "topic": "prove",
+     "ask": "What does proving a mark mean?",
+     "agent": "crew:trench-crew:locator",
+     "note": "re-inspects after anything that changed the ground, and sends the locator back when a mark is gone",
+     "from": "worksites/registry/worksites.json#sites[0].handoffs[5].to_evidence",
+     "worksite": "herons-head-shoreline-cut",
+     "n": 7
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "trench-crew",
+     "role": "locator",
+     "topic": "marks",
+     "ask": "How good are the marks?",
+     "agent": "crew:trench-crew:locator",
+     "note": "marks what is buried and says which marks are proved and which are only painted",
+     "from": "worksites/registry/worksites.json#sites[3].handoffs[0].from_evidence",
+     "worksite": "salt-ponds-levee-trench",
+     "n": 8
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "trench-crew",
+     "role": "trench-competent-person",
+     "topic": "soil",
+     "ask": "What are you reading the ground for?",
+     "agent": "crew:trench-crew:trench-competent-person",
+     "note": "marks what is buried and says which marks are proved and which are only painted",
+     "from": "worksites/registry/worksites.json#sites[3].handoffs[0].to_evidence",
+     "worksite": "salt-ponds-levee-trench",
+     "n": 9
+    },
+    {
+     "kind": "walkaround",
+     "records": "walkaround",
+     "sim": "excavator-trench",
+     "point": "tracks",
+     "label": "Tracks and rollers",
+     "check": "tension right, no cut pads or leaking rollers",
+     "note": "inspects the ground and sets the depth the machine may take without support",
+     "from": "worksites/registry/worksites.json#sites[3].handoffs[1].to_evidence",
+     "worksite": "salt-ponds-levee-trench",
+     "n": 10
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "trench-crew",
+     "role": "spotter",
+     "topic": "where",
+     "ask": "Where do you stand?",
+     "agent": "crew:trench-crew:spotter",
+     "note": "sets up on level ground and asks for the swing radius to be walked and held",
+     "from": "worksites/registry/worksites.json#sites[3].handoffs[2].to_evidence",
+     "worksite": "salt-ponds-levee-trench",
+     "n": 11
+    },
+    {
+     "kind": "sim",
+     "records": "sim",
+     "sim": "excavator-trench",
+     "scenario": "oak-fill",
+     "seat_name": "Excavator Trench Cut",
+     "scenario_name": "Old-fill utility cut",
+     "note": "takes station in the operator’s eyeline, keeps the radius clear, and holds the one call",
+     "from": "worksites/registry/worksites.json#sites[3].handoffs[3].to_evidence",
+     "worksite": "salt-ponds-levee-trench",
+     "n": 12
+    },
+    {
+     "kind": "walkaround",
+     "records": "walkaround",
+     "sim": "excavator-trench",
+     "point": "edge",
+     "label": "The trench edge",
+     "check": "spoil set back, no load surcharging the cut",
+     "note": "cuts cell by cell and stops shallow where the marked service runs",
+     "from": "worksites/registry/worksites.json#sites[3].handoffs[4].to_evidence",
+     "worksite": "salt-ponds-levee-trench",
+     "n": 13
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "trench-crew",
+     "role": "locator",
+     "topic": "prove",
+     "ask": "What does proving a mark mean?",
+     "agent": "crew:trench-crew:locator",
+     "note": "re-inspects after anything that changed the ground, and sends the locator back when a mark is gone",
+     "from": "worksites/registry/worksites.json#sites[3].handoffs[5].to_evidence",
+     "worksite": "salt-ponds-levee-trench",
+     "n": 14
+    },
+    {
+     "kind": "walkaround",
+     "records": "walkaround",
+     "sim": "scaffold-bay",
+     "point": "sills",
+     "label": "Sills and bearing",
+     "check": "full bearing on grade, no blocks or debris packing",
+     "note": "levels and beds the sills, then passes the first frames up",
+     "from": "worksites/registry/worksites.json#sites[5].handoffs[0].from_evidence",
+     "worksite": "ti-scaffold-court-bay",
+     "n": 15
+    },
+    {
+     "kind": "walkaround",
+     "records": "walkaround",
+     "sim": "scaffold-bay",
+     "point": "plumb",
+     "label": "Frames plumb and level",
+     "check": "plumb both ways, level across the bay",
+     "note": "levels and beds the sills, then passes the first frames up",
+     "from": "worksites/registry/worksites.json#sites[5].handoffs[0].to_evidence",
+     "worksite": "ti-scaffold-court-bay",
+     "n": 16
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "scaffold-crew",
+     "role": "ground-tender",
+     "topic": "order",
+     "ask": "Why not just send everything up at once?",
+     "agent": "crew:scaffold-crew:ground-tender",
+     "note": "sets frames and braces, and calls for the next stage only once the one below is complete",
+     "from": "worksites/registry/worksites.json#sites[5].handoffs[1].to_evidence",
+     "worksite": "ti-scaffold-court-bay",
+     "n": 17
+    },
+    {
+     "kind": "sim",
+     "records": "sim",
+     "sim": "scaffold-bay",
+     "scenario": "bay-training-bay",
+     "seat_name": "Scaffold Bay Build",
+     "scenario_name": "Yard training bay",
+     "note": "holds the drop zone and passes planks and rails in the order they were called",
+     "from": "worksites/registry/worksites.json#sites[5].handoffs[2].to_evidence",
+     "worksite": "ti-scaffold-court-bay",
+     "n": 18
+    },
+    {
+     "kind": "walkaround",
+     "records": "walkaround",
+     "sim": "scaffold-bay",
+     "point": "brace-pins",
+     "label": "Brace pins",
+     "check": "every brace pinned home, none sprung",
+     "note": "lands the guardrails and hands the finished bay over to be inspected",
+     "from": "worksites/registry/worksites.json#sites[5].handoffs[3].to_evidence",
+     "worksite": "ti-scaffold-court-bay",
+     "n": 19
+    },
+    {
+     "kind": "station",
+     "records": null,
+     "station": "st003",
+     "station_name": "Scaffold & Fall Protection",
+     "note": "inspects, tags the bay, and says out loud who may now stand on it",
+     "from": "worksites/registry/worksites.json#sites[5].handoffs[4].from_evidence",
+     "worksite": "ti-scaffold-court-bay",
+     "n": 20
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "scaffold-crew",
+     "role": "ground-tender",
+     "topic": "zone",
+     "ask": "What is a drop zone?",
+     "agent": "crew:scaffold-crew:ground-tender",
+     "note": "inspects, tags the bay, and says out loud who may now stand on it",
+     "from": "worksites/registry/worksites.json#sites[5].handoffs[4].to_evidence",
+     "worksite": "ti-scaffold-court-bay",
+     "n": 21
+    }
+   ],
+   "greeter": {
+    "agent": "crew:trench-crew:locator",
+    "name": "Utility locator",
+    "kind": "crew-role",
+    "glyph": "📡",
+    "line": "Paint on the ground is a guess with a tolerance. Ask me how big the tolerance is.",
+    "line_source": "agents/registry/crews.json#crews.trench-crew.roles.locator.greeting",
+    "rule": "the Hive crew role asked in the first crew step; else the door guide",
+    "provenance": "SCRIPTED",
+    "voice": "the device speech synthesis, on a click; no AI model"
+   },
+   "lessons": [],
+   "supplements": [
+    "operating-eng-locate-first",
+    "demolition-stand-back",
+    "scaffold-read-the-tag",
+    "scaffold-build-in-order",
+    "waterproofers-flash-it-right",
+    "shoring-read-the-ground-again"
+   ],
+   "provenance": "AUTHORED by rule",
+   "standing": "unverified general practice; certifies nobody"
+  },
+  {
+   "id": "module-restoration-herons-head",
+   "family": "restoration-site",
+   "site": "herons-head",
+   "title": "Heron's Head Park Shoreline Resilience Project (Phases 1 and 2)",
+   "world": "bay",
+   "places": [
+    {
+     "restoration_site": "herons-head",
+     "source": "restoration/registry/restoration.json#sites[0]"
+    }
+   ],
+   "runners": [
+    {
+     "task": "resto-sim-herons-head-shoreline-resilience",
+     "href": "web/trade_craft_bay.html#resto=herons-head"
+    },
+    {
+     "task": "resto-sim-herons-head-wq-stormwater",
+     "href": "web/trade_craft_bay.html#resto=herons-head"
+    }
+   ],
+   "brief": [
+    {
+     "text": "Shoreline resilience - living shoreline and green infrastructure placement",
+     "source": "restoration/registry/scenarios.json#scenarios[0].title"
+    },
+    {
+     "text": "crew brief: tide window, lift plan and exclusion area around the machine",
+     "source": "restoration/registry/scenarios.json#scenarios[0].steps[0].text"
+    },
+    {
+     "text": "mark the footprint the design drawings show",
+     "source": "restoration/registry/scenarios.json#scenarios[0].steps[1].text"
+    },
+    {
+     "text": "place material (rock, logs or planted media) as drawn",
+     "source": "restoration/registry/scenarios.json#scenarios[0].steps[2].text"
+    },
+    {
+     "text": "secure placed material per the drawings",
+     "source": "restoration/registry/scenarios.json#scenarios[0].steps[3].text"
+    },
+    {
+     "text": "plant the upper edge where the plan calls for it",
+     "source": "restoration/registry/scenarios.json#scenarios[0].steps[4].text"
+    },
+    {
+     "text": "walk the finished reach and record photo-points",
+     "source": "restoration/registry/scenarios.json#scenarios[0].steps[5].text"
+    },
+    {
+     "text": "Stormwater capture - inspecting a green-infrastructure cell",
+     "source": "restoration/registry/scenarios.json#scenarios[1].title"
+    },
+    {
+     "text": "crew brief: traffic control, inlet locations and the inspection form",
+     "source": "restoration/registry/scenarios.json#scenarios[1].steps[0].text"
+    },
+    {
+     "text": "set traffic or pedestrian control around the cell",
+     "source": "restoration/registry/scenarios.json#scenarios[1].steps[1].text"
+    },
+    {
+     "text": "inspect inlets and curb cuts for blockage",
+     "source": "restoration/registry/scenarios.json#scenarios[1].steps[2].text"
+    },
+    {
+     "text": "record sediment, trash and standing water in the cell",
+     "source": "restoration/registry/scenarios.json#scenarios[1].steps[3].text"
+    },
+    {
+     "text": "check the overflow and outlet structure",
+     "source": "restoration/registry/scenarios.json#scenarios[1].steps[4].text"
+    },
+    {
+     "text": "record findings and photos on the form",
+     "source": "restoration/registry/scenarios.json#scenarios[1].steps[5].text"
+    },
+    {
+     "text": "Shoreline resilience - living shoreline and green infrastructure placement - Heron's Head Park Shoreline Resilience Project (Phases 1 and 2)",
+     "source": "restoration/registry/scenarios.json#staged_tasks[0].title"
+    },
+    {
+     "text": "training scenario, not the project's actual work plan; 6 steps, 2 safety gates",
+     "source": "restoration/registry/scenarios.json#staged_tasks[0].brief"
+    },
+    {
+     "text": "Stormwater capture - inspecting a green-infrastructure cell - Heron's Head Park Shoreline Resilience Project (Phases 1 and 2)",
+     "source": "restoration/registry/scenarios.json#staged_tasks[1].title"
+    },
+    {
+     "text": "training scenario, not the project's actual work plan; 6 steps, 1 safety gates",
+     "source": "restoration/registry/scenarios.json#staged_tasks[1].brief"
+    }
+   ],
+   "steps": [
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "trench-crew",
+     "role": "locator",
+     "topic": "marks",
+     "ask": "How good are the marks?",
+     "agent": "crew:trench-crew:locator",
+     "note": "marks what is buried and says which marks are proved and which are only painted",
+     "from": "worksites/registry/worksites.json#sites[0].handoffs[0].from_evidence",
+     "worksite": "herons-head-shoreline-cut",
+     "n": 1
+    },
+    {
+     "kind": "walkaround",
+     "records": "walkaround",
+     "sim": "excavator-trench",
+     "point": "edge",
+     "label": "The trench edge",
+     "check": "spoil set back, no load surcharging the cut",
+     "note": "marks what is buried and says which marks are proved and which are only painted",
+     "from": "worksites/registry/worksites.json#sites[0].handoffs[0].to_evidence",
+     "worksite": "herons-head-shoreline-cut",
+     "n": 2
+    },
+    {
+     "kind": "walkaround",
+     "records": "walkaround",
+     "sim": "excavator-trench",
+     "point": "bucket",
+     "label": "Bucket teeth and pins",
+     "check": "teeth tight, pins keepered, no cracks at the ears",
+     "note": "inspects the ground and sets the depth the machine may take without support",
+     "from": "worksites/registry/worksites.json#sites[0].handoffs[1].to_evidence",
+     "worksite": "herons-head-shoreline-cut",
+     "n": 3
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "trench-crew",
+     "role": "spotter",
+     "topic": "call",
+     "ask": "What is your one call?",
+     "agent": "crew:trench-crew:spotter",
+     "note": "sets up on level ground and asks for the swing radius to be walked and held",
+     "from": "worksites/registry/worksites.json#sites[0].handoffs[2].to_evidence",
+     "worksite": "herons-head-shoreline-cut",
+     "n": 4
+    },
+    {
+     "kind": "sim",
+     "records": "sim",
+     "sim": "excavator-trench",
+     "scenario": "bay-retrofit",
+     "seat_name": "Excavator Trench Cut",
+     "scenario_name": "Seismic retrofit cut",
+     "note": "takes station in the operator’s eyeline, keeps the radius clear, and holds the one call",
+     "from": "worksites/registry/worksites.json#sites[0].handoffs[3].to_evidence",
+     "worksite": "herons-head-shoreline-cut",
+     "n": 5
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "trench-crew",
+     "role": "trench-competent-person",
+     "topic": "again",
+     "ask": "How often does it get inspected?",
+     "agent": "crew:trench-crew:trench-competent-person",
+     "note": "cuts cell by cell and stops shallow where the marked service runs",
+     "from": "worksites/registry/worksites.json#sites[0].handoffs[4].to_evidence",
+     "worksite": "herons-head-shoreline-cut",
+     "n": 6
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "trench-crew",
+     "role": "locator",
+     "topic": "prove",
+     "ask": "What does proving a mark mean?",
+     "agent": "crew:trench-crew:locator",
+     "note": "re-inspects after anything that changed the ground, and sends the locator back when a mark is gone",
+     "from": "worksites/registry/worksites.json#sites[0].handoffs[5].to_evidence",
+     "worksite": "herons-head-shoreline-cut",
+     "n": 7
+    },
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Induction is the room that decides whether you are allowed near the others, so start there.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "laborers-stand-where-the-cab-can-see",
+     "lesson_step": 1,
+     "hall": "laborers",
+     "n": 8
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what the room requires rather than copying whoever walked in ahead of you.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "ppe",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What do I need on in here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What do I need on in here?"
+     ],
+     "lesson": "laborers-stand-where-the-cab-can-see",
+     "lesson_step": 3,
+     "hall": "laborers",
+     "n": 9
+    },
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Setting out and control points live here, and so does the habit of trusting a mark only as far as it was proved.",
+     "where": "layout",
+     "do": "Walk to the Layout Floor — setting out, control points, marking.",
+     "names_read": [
+      "Layout Floor"
+     ],
+     "lesson": "operating-eng-locate-first",
+     "lesson_step": 1,
+     "hall": "operating-eng",
+     "n": 10
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what the control actually is before you work off something painted near it.",
+     "where": "layout",
+     "advisor": "layout-hand",
+     "topic": "control",
+     "answer_kind": "say",
+     "do": "Ask the Layout hand in the Layout Floor: \"What is a control point?\"",
+     "names_read": [
+      "Layout Floor",
+      "Layout hand",
+      "What is a control point?"
+     ],
+     "lesson": "operating-eng-locate-first",
+     "lesson_step": 2,
+     "hall": "operating-eng",
+     "n": 11
+    }
+   ],
+   "greeter": {
+    "agent": "advisor:safety-steward",
+    "name": "Safety steward",
+    "kind": "advisor",
+    "glyph": "🦺",
+    "line": "Before you go past me: ask what this room is held to.",
+    "line_source": "agents/registry/advisors.json#advisors.safety-steward.greeting",
+    "rule": "the Omega Hive advisor the union path names for the site's first needed trade",
+    "provenance": "SCRIPTED",
+    "voice": "the device speech synthesis, on a click; no AI model"
+   },
+   "lessons": [
+    "operating-eng-locate-first",
+    "laborers-stand-where-the-cab-can-see"
+   ],
+   "supplements": [
+    "operating-eng-locate-first",
+    "laborers-stand-where-the-cab-can-see",
+    "demolition-stand-back",
+    "shoring-read-the-ground-again"
+   ],
+   "provenance": "AUTHORED by rule",
+   "standing": "unverified general practice; certifies nobody"
+  },
+  {
+   "id": "module-restoration-candlestick-point",
+   "family": "restoration-site",
+   "site": "candlestick-point",
+   "title": "Candlestick Point Stewardship Project (Phases 1 and 2)",
+   "world": "bay",
+   "places": [
+    {
+     "restoration_site": "candlestick-point",
+     "source": "restoration/registry/restoration.json#sites[1]"
+    }
+   ],
+   "runners": [
+    {
+     "task": "resto-sim-candlestick-point-trash-cleanup",
+     "href": "web/trade_craft_bay.html#resto=candlestick-point"
+    },
+    {
+     "task": "resto-sim-candlestick-point-native-planting",
+     "href": "web/trade_craft_bay.html#resto=candlestick-point"
+    },
+    {
+     "task": "resto-sim-candlestick-point-habitat-monitoring",
+     "href": "web/trade_craft_bay.html#resto=candlestick-point"
+    },
+    {
+     "task": "resto-sim-candlestick-point-wq-trash-capture",
+     "href": "web/trade_craft_bay.html#resto=candlestick-point"
+    }
+   ],
+   "brief": [
+    {
+     "text": "Shoreline trash clean-up",
+     "source": "restoration/registry/scenarios.json#scenarios[2].title"
+    },
+    {
+     "text": "crew brief: area, tide, what not to touch and how to report it",
+     "source": "restoration/registry/scenarios.json#scenarios[2].steps[0].text"
+    },
+    {
+     "text": "sweep the area in lines, picking up with grabbers",
+     "source": "restoration/registry/scenarios.json#scenarios[2].steps[1].text"
+    },
+    {
+     "text": "sort recyclables and trash into separate bags",
+     "source": "restoration/registry/scenarios.json#scenarios[2].steps[2].text"
+    },
+    {
+     "text": "report and flag anything hazardous without touching it",
+     "source": "restoration/registry/scenarios.json#scenarios[2].steps[3].text"
+    },
+    {
+     "text": "weigh or count bags and record the tally",
+     "source": "restoration/registry/scenarios.json#scenarios[2].steps[4].text"
+    },
+    {
+     "text": "Native planting and plant propagation",
+     "source": "restoration/registry/scenarios.json#scenarios[3].title"
+    },
+    {
+     "text": "crew brief: planting plan, species list and where not to step",
+     "source": "restoration/registry/scenarios.json#scenarios[3].steps[0].text"
+    },
+    {
+     "text": "stage plant stock in shade and keep the roots moist",
+     "source": "restoration/registry/scenarios.json#scenarios[3].steps[1].text"
+    },
+    {
+     "text": "lay out planting spots from the plan with flags",
+     "source": "restoration/registry/scenarios.json#scenarios[3].steps[2].text"
+    },
+    {
+     "text": "plant each plug to the root collar and firm the soil",
+     "source": "restoration/registry/scenarios.json#scenarios[3].steps[3].text"
+    },
+    {
+     "text": "water in and mulch where the plan says",
+     "source": "restoration/registry/scenarios.json#scenarios[3].steps[4].text"
+    },
+    {
+     "text": "record counts and photo-points for monitoring",
+     "source": "restoration/registry/scenarios.json#scenarios[3].steps[5].text"
+    },
+    {
+     "text": "Habitat monitoring - photo-points, plots and records",
+     "source": "restoration/registry/scenarios.json#scenarios[4].title"
+    },
+    {
+     "text": "crew brief: plot list, route and check-in times",
+     "source": "restoration/registry/scenarios.json#scenarios[4].steps[0].text"
+    },
+    {
+     "text": "relocate each permanent plot or photo-point from the record",
+     "source": "restoration/registry/scenarios.json#scenarios[4].steps[1].text"
+    },
+    {
+     "text": "record cover, counts or photos exactly as the protocol asks",
+     "source": "restoration/registry/scenarios.json#scenarios[4].steps[2].text"
+    },
+    {
+     "text": "check the data sheet is complete before leaving the plot",
+     "source": "restoration/registry/scenarios.json#scenarios[4].steps[3].text"
+    },
+    {
+     "text": "file the records with date, time and observer",
+     "source": "restoration/registry/scenarios.json#scenarios[4].steps[4].text"
+    },
+    {
+     "text": "Trash capture device inspection",
+     "source": "restoration/registry/scenarios.json#scenarios[5].title"
+    },
+    {
+     "text": "crew brief: device list, traffic control and the inspection form",
+     "source": "restoration/registry/scenarios.json#scenarios[5].steps[0].text"
+    },
+    {
+     "text": "set traffic control around the inlet",
+     "source": "restoration/registry/scenarios.json#scenarios[5].steps[1].text"
+    },
+    {
+     "text": "inspect the screen or insert from above for fullness and damage",
+     "source": "restoration/registry/scenarios.json#scenarios[5].steps[2].text"
+    },
+    {
+     "text": "record fullness and condition on the form",
+     "source": "restoration/registry/scenarios.json#scenarios[5].steps[3].text"
+    },
+    {
+     "text": "flag a full or damaged device for the maintenance crew",
+     "source": "restoration/registry/scenarios.json#scenarios[5].steps[4].text"
+    },
+    {
+     "text": "Shoreline trash clean-up - Candlestick Point Stewardship Project (Phases 1 and 2)",
+     "source": "restoration/registry/scenarios.json#staged_tasks[2].title"
+    },
+    {
+     "text": "training scenario, not the project's actual work plan; 5 steps, 1 safety gates",
+     "source": "restoration/registry/scenarios.json#staged_tasks[2].brief"
+    },
+    {
+     "text": "Native planting and plant propagation - Candlestick Point Stewardship Project (Phases 1 and 2)",
+     "source": "restoration/registry/scenarios.json#staged_tasks[3].title"
+    },
+    {
+     "text": "training scenario, not the project's actual work plan; 6 steps, 1 safety gates",
+     "source": "restoration/registry/scenarios.json#staged_tasks[3].brief"
+    },
+    {
+     "text": "Habitat monitoring - photo-points, plots and records - Candlestick Point Stewardship Project (Phases 1 and 2)",
+     "source": "restoration/registry/scenarios.json#staged_tasks[4].title"
+    },
+    {
+     "text": "training scenario, not the project's actual work plan; 5 steps, 1 safety gates",
+     "source": "restoration/registry/scenarios.json#staged_tasks[4].brief"
+    },
+    {
+     "text": "Trash capture device inspection - Candlestick Point Stewardship Project (Phases 1 and 2)",
+     "source": "restoration/registry/scenarios.json#staged_tasks[5].title"
+    },
+    {
+     "text": "training scenario, not the project's actual work plan; 5 steps, 1 safety gates",
+     "source": "restoration/registry/scenarios.json#staged_tasks[5].brief"
+    }
+   ],
+   "steps": [
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Induction is the room that decides whether you are allowed near the others, so start there.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "laborers-stand-where-the-cab-can-see",
+     "lesson_step": 1,
+     "hall": "laborers",
+     "n": 1
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what the room requires rather than copying whoever walked in ahead of you.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "ppe",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What do I need on in here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What do I need on in here?"
+     ],
+     "lesson": "laborers-stand-where-the-cab-can-see",
+     "lesson_step": 3,
+     "hall": "laborers",
+     "n": 2
+    },
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Setting out lives here, which makes this the right room to be pedantic in.",
+     "where": "layout",
+     "do": "Walk to the Layout Floor — setting out, control points, marking.",
+     "names_read": [
+      "Layout Floor"
+     ],
+     "lesson": "surveyors-trust-the-control",
+     "lesson_step": 1,
+     "hall": "surveyors",
+     "n": 3
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what control is, then ask how you would know if it had moved.",
+     "where": "layout",
+     "advisor": "layout-hand",
+     "topic": "control",
+     "answer_kind": "say",
+     "do": "Ask the Layout hand in the Layout Floor: \"What is a control point?\"",
+     "names_read": [
+      "Layout Floor",
+      "Layout hand",
+      "What is a control point?"
+     ],
+     "lesson": "surveyors-trust-the-control",
+     "lesson_step": 3,
+     "hall": "surveyors",
+     "n": 4
+    }
+   ],
+   "greeter": {
+    "agent": "advisor:safety-steward",
+    "name": "Safety steward",
+    "kind": "advisor",
+    "glyph": "🦺",
+    "line": "Before you go past me: ask what this room is held to.",
+    "line_source": "agents/registry/advisors.json#advisors.safety-steward.greeting",
+    "rule": "the Omega Hive advisor the union path names for the site's first needed trade",
+    "provenance": "SCRIPTED",
+    "voice": "the device speech synthesis, on a click; no AI model"
+   },
+   "lessons": [
+    "surveyors-trust-the-control",
+    "laborers-stand-where-the-cab-can-see"
+   ],
+   "supplements": [
+    "surveyors-trust-the-control",
+    "laborers-stand-where-the-cab-can-see"
+   ],
+   "provenance": "AUTHORED by rule",
+   "standing": "unverified general practice; certifies nobody"
+  },
+  {
+   "id": "module-restoration-east-oakland-youth",
+   "family": "restoration-site",
+   "site": "east-oakland-youth",
+   "title": "Bay Restoration: Youth Engagement and Service Learning in East Oakland",
+   "world": "bay",
+   "places": [
+    {
+     "restoration_site": "east-oakland-youth",
+     "source": "restoration/registry/restoration.json#sites[2]"
+    }
+   ],
+   "runners": [
+    {
+     "task": "resto-sim-east-oakland-youth-native-planting",
+     "href": "web/trade_craft_bay.html#resto=east-oakland-youth"
+    }
+   ],
+   "brief": [
+    {
+     "text": "Native planting and plant propagation",
+     "source": "restoration/registry/scenarios.json#scenarios[6].title"
+    },
+    {
+     "text": "crew brief: planting plan, species list and where not to step",
+     "source": "restoration/registry/scenarios.json#scenarios[6].steps[0].text"
+    },
+    {
+     "text": "stage plant stock in shade and keep the roots moist",
+     "source": "restoration/registry/scenarios.json#scenarios[6].steps[1].text"
+    },
+    {
+     "text": "lay out planting spots from the plan with flags",
+     "source": "restoration/registry/scenarios.json#scenarios[6].steps[2].text"
+    },
+    {
+     "text": "plant each plug to the root collar and firm the soil",
+     "source": "restoration/registry/scenarios.json#scenarios[6].steps[3].text"
+    },
+    {
+     "text": "water in and mulch where the plan says",
+     "source": "restoration/registry/scenarios.json#scenarios[6].steps[4].text"
+    },
+    {
+     "text": "record counts and photo-points for monitoring",
+     "source": "restoration/registry/scenarios.json#scenarios[6].steps[5].text"
+    },
+    {
+     "text": "Native planting and plant propagation - Bay Restoration: Youth Engagement and Service Learning in East Oakland",
+     "source": "restoration/registry/scenarios.json#staged_tasks[6].title"
+    },
+    {
+     "text": "training scenario, not the project's actual work plan; 6 steps, 1 safety gates",
+     "source": "restoration/registry/scenarios.json#staged_tasks[6].brief"
+    }
+   ],
+   "steps": [
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Induction is the room that decides whether you are allowed near the others, so start there.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "laborers-stand-where-the-cab-can-see",
+     "lesson_step": 1,
+     "hall": "laborers",
+     "n": 1
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what the room requires rather than copying whoever walked in ahead of you.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "ppe",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What do I need on in here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What do I need on in here?"
+     ],
+     "lesson": "laborers-stand-where-the-cab-can-see",
+     "lesson_step": 3,
+     "hall": "laborers",
+     "n": 2
+    }
+   ],
+   "greeter": {
+    "agent": "advisor:safety-steward",
+    "name": "Safety steward",
+    "kind": "advisor",
+    "glyph": "🦺",
+    "line": "Before you go past me: ask what this room is held to.",
+    "line_source": "agents/registry/advisors.json#advisors.safety-steward.greeting",
+    "rule": "the Omega Hive advisor the union path names for the site's first needed trade",
+    "provenance": "SCRIPTED",
+    "voice": "the device speech synthesis, on a click; no AI model"
+   },
+   "lessons": [
+    "laborers-stand-where-the-cab-can-see"
+   ],
+   "supplements": [
+    "laborers-stand-where-the-cab-can-see"
+   ],
+   "provenance": "AUTHORED by rule",
+   "standing": "unverified general practice; certifies nobody"
+  },
+  {
+   "id": "module-restoration-alviso-shoreline",
+   "family": "restoration-site",
+   "site": "alviso-shoreline",
+   "title": "Alviso Shoreline Habitat Restoration",
+   "world": "bay",
+   "places": [
+    {
+     "restoration_site": "alviso-shoreline",
+     "source": "restoration/registry/restoration.json#sites[3]"
+    }
+   ],
+   "runners": [
+    {
+     "task": "resto-sim-alviso-shoreline-native-planting",
+     "href": "web/trade_craft_bay.html#resto=alviso-shoreline"
+    }
+   ],
+   "brief": [
+    {
+     "text": "Native planting and plant propagation",
+     "source": "restoration/registry/scenarios.json#scenarios[7].title"
+    },
+    {
+     "text": "crew brief: planting plan, species list and where not to step",
+     "source": "restoration/registry/scenarios.json#scenarios[7].steps[0].text"
+    },
+    {
+     "text": "stage plant stock in shade and keep the roots moist",
+     "source": "restoration/registry/scenarios.json#scenarios[7].steps[1].text"
+    },
+    {
+     "text": "lay out planting spots from the plan with flags",
+     "source": "restoration/registry/scenarios.json#scenarios[7].steps[2].text"
+    },
+    {
+     "text": "plant each plug to the root collar and firm the soil",
+     "source": "restoration/registry/scenarios.json#scenarios[7].steps[3].text"
+    },
+    {
+     "text": "water in and mulch where the plan says",
+     "source": "restoration/registry/scenarios.json#scenarios[7].steps[4].text"
+    },
+    {
+     "text": "record counts and photo-points for monitoring",
+     "source": "restoration/registry/scenarios.json#scenarios[7].steps[5].text"
+    },
+    {
+     "text": "Native planting and plant propagation - Alviso Shoreline Habitat Restoration",
+     "source": "restoration/registry/scenarios.json#staged_tasks[7].title"
+    },
+    {
+     "text": "training scenario, not the project's actual work plan; 6 steps, 1 safety gates",
+     "source": "restoration/registry/scenarios.json#staged_tasks[7].brief"
+    }
+   ],
+   "steps": [
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Induction is the room that decides whether you are allowed near the others, so start there.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "laborers-stand-where-the-cab-can-see",
+     "lesson_step": 1,
+     "hall": "laborers",
+     "n": 1
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what the room requires rather than copying whoever walked in ahead of you.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "ppe",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What do I need on in here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What do I need on in here?"
+     ],
+     "lesson": "laborers-stand-where-the-cab-can-see",
+     "lesson_step": 3,
+     "hall": "laborers",
+     "n": 2
+    }
+   ],
+   "greeter": {
+    "agent": "advisor:safety-steward",
+    "name": "Safety steward",
+    "kind": "advisor",
+    "glyph": "🦺",
+    "line": "Before you go past me: ask what this room is held to.",
+    "line_source": "agents/registry/advisors.json#advisors.safety-steward.greeting",
+    "rule": "the Omega Hive advisor the union path names for the site's first needed trade",
+    "provenance": "SCRIPTED",
+    "voice": "the device speech synthesis, on a click; no AI model"
+   },
+   "lessons": [
+    "laborers-stand-where-the-cab-can-see"
+   ],
+   "supplements": [
+    "laborers-stand-where-the-cab-can-see"
+   ],
+   "provenance": "AUTHORED by rule",
+   "standing": "unverified general practice; certifies nobody"
+  },
+  {
+   "id": "module-restoration-south-bay-salt-ponds",
+   "family": "restoration-site",
+   "site": "south-bay-salt-ponds",
+   "title": "South Bay Salt Pond Restoration — ecotone levee (Phase 1)",
+   "world": "bay",
+   "places": [
+    {
+     "restoration_site": "south-bay-salt-ponds",
+     "source": "restoration/registry/restoration.json#sites[4]"
+    }
+   ],
+   "runners": [
+    {
+     "task": "resto-sim-south-bay-salt-ponds-ecotone-levee",
+     "href": "web/trade_craft_bay.html#resto=south-bay-salt-ponds"
+    },
+    {
+     "task": "resto-sim-south-bay-salt-ponds-tidal-marsh",
+     "href": "web/trade_craft_bay.html#resto=south-bay-salt-ponds"
+    }
+   ],
+   "brief": [
+    {
+     "text": "Ecotone levee - grading a gentle marsh-to-upland slope",
+     "source": "restoration/registry/scenarios.json#scenarios[8].title"
+    },
+    {
+     "text": "crew brief: work area, tide window, haul routes and who signals the machine",
+     "source": "restoration/registry/scenarios.json#scenarios[8].steps[0].text"
+    },
+    {
+     "text": "set grade stakes and slope limits from the survey layout",
+     "source": "restoration/registry/scenarios.json#scenarios[8].steps[1].text"
+    },
+    {
+     "text": "place fill in lifts along the levee face, working from the crown",
+     "source": "restoration/registry/scenarios.json#scenarios[8].steps[2].text"
+    },
+    {
+     "text": "shape the gentle transition slope to the staked grade",
+     "source": "restoration/registry/scenarios.json#scenarios[8].steps[3].text"
+    },
+    {
+     "text": "check grade against stakes and record the as-built shots",
+     "source": "restoration/registry/scenarios.json#scenarios[8].steps[4].text"
+    },
+    {
+     "text": "install temporary erosion control on the bare slope",
+     "source": "restoration/registry/scenarios.json#scenarios[8].steps[5].text"
+    },
+    {
+     "text": "Tidal marsh restoration - preparing a diked or managed site for tidal return",
+     "source": "restoration/registry/scenarios.json#scenarios[9].title"
+    },
+    {
+     "text": "crew brief: tide tables, access route on levee crowns, buddy pairs",
+     "source": "restoration/registry/scenarios.json#scenarios[9].steps[0].text"
+    },
+    {
+     "text": "walk and mark the channel alignment from the design layout",
+     "source": "restoration/registry/scenarios.json#scenarios[9].steps[1].text"
+    },
+    {
+     "text": "cut starter channels to the marked alignment",
+     "source": "restoration/registry/scenarios.json#scenarios[9].steps[2].text"
+    },
+    {
+     "text": "place spoil where the plan marks it, never into open water",
+     "source": "restoration/registry/scenarios.json#scenarios[9].steps[3].text"
+    },
+    {
+     "text": "photo-point and record water levels after the first tides",
+     "source": "restoration/registry/scenarios.json#scenarios[9].steps[4].text"
+    },
+    {
+     "text": "Ecotone levee - grading a gentle marsh-to-upland slope - South Bay Salt Pond Restoration — ecotone levee (Phase 1)",
+     "source": "restoration/registry/scenarios.json#staged_tasks[8].title"
+    },
+    {
+     "text": "training scenario, not the project's actual work plan; 6 steps, 2 safety gates",
+     "source": "restoration/registry/scenarios.json#staged_tasks[8].brief"
+    },
+    {
+     "text": "Tidal marsh restoration - preparing a diked or managed site for tidal return - South Bay Salt Pond Restoration — ecotone levee (Phase 1)",
+     "source": "restoration/registry/scenarios.json#staged_tasks[9].title"
+    },
+    {
+     "text": "training scenario, not the project's actual work plan; 5 steps, 2 safety gates",
+     "source": "restoration/registry/scenarios.json#staged_tasks[9].brief"
+    }
+   ],
+   "steps": [
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "trench-crew",
+     "role": "locator",
+     "topic": "marks",
+     "ask": "How good are the marks?",
+     "agent": "crew:trench-crew:locator",
+     "note": "marks what is buried and says which marks are proved and which are only painted",
+     "from": "worksites/registry/worksites.json#sites[3].handoffs[0].from_evidence",
+     "worksite": "salt-ponds-levee-trench",
+     "n": 1
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "trench-crew",
+     "role": "trench-competent-person",
+     "topic": "soil",
+     "ask": "What are you reading the ground for?",
+     "agent": "crew:trench-crew:trench-competent-person",
+     "note": "marks what is buried and says which marks are proved and which are only painted",
+     "from": "worksites/registry/worksites.json#sites[3].handoffs[0].to_evidence",
+     "worksite": "salt-ponds-levee-trench",
+     "n": 2
+    },
+    {
+     "kind": "walkaround",
+     "records": "walkaround",
+     "sim": "excavator-trench",
+     "point": "tracks",
+     "label": "Tracks and rollers",
+     "check": "tension right, no cut pads or leaking rollers",
+     "note": "inspects the ground and sets the depth the machine may take without support",
+     "from": "worksites/registry/worksites.json#sites[3].handoffs[1].to_evidence",
+     "worksite": "salt-ponds-levee-trench",
+     "n": 3
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "trench-crew",
+     "role": "spotter",
+     "topic": "where",
+     "ask": "Where do you stand?",
+     "agent": "crew:trench-crew:spotter",
+     "note": "sets up on level ground and asks for the swing radius to be walked and held",
+     "from": "worksites/registry/worksites.json#sites[3].handoffs[2].to_evidence",
+     "worksite": "salt-ponds-levee-trench",
+     "n": 4
+    },
+    {
+     "kind": "sim",
+     "records": "sim",
+     "sim": "excavator-trench",
+     "scenario": "oak-fill",
+     "seat_name": "Excavator Trench Cut",
+     "scenario_name": "Old-fill utility cut",
+     "note": "takes station in the operator’s eyeline, keeps the radius clear, and holds the one call",
+     "from": "worksites/registry/worksites.json#sites[3].handoffs[3].to_evidence",
+     "worksite": "salt-ponds-levee-trench",
+     "n": 5
+    },
+    {
+     "kind": "walkaround",
+     "records": "walkaround",
+     "sim": "excavator-trench",
+     "point": "edge",
+     "label": "The trench edge",
+     "check": "spoil set back, no load surcharging the cut",
+     "note": "cuts cell by cell and stops shallow where the marked service runs",
+     "from": "worksites/registry/worksites.json#sites[3].handoffs[4].to_evidence",
+     "worksite": "salt-ponds-levee-trench",
+     "n": 6
+    },
+    {
+     "kind": "crew",
+     "records": "crew",
+     "crew": "trench-crew",
+     "role": "locator",
+     "topic": "prove",
+     "ask": "What does proving a mark mean?",
+     "agent": "crew:trench-crew:locator",
+     "note": "re-inspects after anything that changed the ground, and sends the locator back when a mark is gone",
+     "from": "worksites/registry/worksites.json#sites[3].handoffs[5].to_evidence",
+     "worksite": "salt-ponds-levee-trench",
+     "n": 7
+    },
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Setting out and control points live here, and so does the habit of trusting a mark only as far as it was proved.",
+     "where": "layout",
+     "do": "Walk to the Layout Floor — setting out, control points, marking.",
+     "names_read": [
+      "Layout Floor"
+     ],
+     "lesson": "operating-eng-locate-first",
+     "lesson_step": 1,
+     "hall": "operating-eng",
+     "n": 8
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what the control actually is before you work off something painted near it.",
+     "where": "layout",
+     "advisor": "layout-hand",
+     "topic": "control",
+     "answer_kind": "say",
+     "do": "Ask the Layout hand in the Layout Floor: \"What is a control point?\"",
+     "names_read": [
+      "Layout Floor",
+      "Layout hand",
+      "What is a control point?"
+     ],
+     "lesson": "operating-eng-locate-first",
+     "lesson_step": 2,
+     "hall": "operating-eng",
+     "n": 9
+    },
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Induction is the room that decides whether you are allowed near the others, so start there.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "laborers-stand-where-the-cab-can-see",
+     "lesson_step": 1,
+     "hall": "laborers",
+     "n": 10
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what the room requires rather than copying whoever walked in ahead of you.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "ppe",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What do I need on in here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What do I need on in here?"
+     ],
+     "lesson": "laborers-stand-where-the-cab-can-see",
+     "lesson_step": 3,
+     "hall": "laborers",
+     "n": 11
+    },
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Setting out lives here, which makes this the right room to be pedantic in.",
+     "where": "layout",
+     "do": "Walk to the Layout Floor — setting out, control points, marking.",
+     "names_read": [
+      "Layout Floor"
+     ],
+     "lesson": "surveyors-trust-the-control",
+     "lesson_step": 1,
+     "hall": "surveyors",
+     "n": 12
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what control is, then ask how you would know if it had moved.",
+     "where": "layout",
+     "advisor": "layout-hand",
+     "topic": "control",
+     "answer_kind": "say",
+     "do": "Ask the Layout hand in the Layout Floor: \"What is a control point?\"",
+     "names_read": [
+      "Layout Floor",
+      "Layout hand",
+      "What is a control point?"
+     ],
+     "lesson": "surveyors-trust-the-control",
+     "lesson_step": 3,
+     "hall": "surveyors",
+     "n": 13
+    }
+   ],
+   "greeter": {
+    "agent": "advisor:layout-hand",
+    "name": "Layout hand",
+    "kind": "advisor",
+    "glyph": "📐",
+    "line": "Everything downstream is wrong if the line is wrong.",
+    "line_source": "agents/registry/advisors.json#advisors.layout-hand.greeting",
+    "rule": "the Omega Hive advisor the union path names for the site's first needed trade",
+    "provenance": "SCRIPTED",
+    "voice": "the device speech synthesis, on a click; no AI model"
+   },
+   "lessons": [
+    "operating-eng-locate-first",
+    "surveyors-trust-the-control",
+    "laborers-stand-where-the-cab-can-see"
+   ],
+   "supplements": [
+    "operating-eng-locate-first",
+    "surveyors-trust-the-control",
+    "laborers-stand-where-the-cab-can-see",
+    "demolition-stand-back",
+    "shoring-read-the-ground-again"
+   ],
+   "provenance": "AUTHORED by rule",
+   "standing": "unverified general practice; certifies nobody"
+  },
+  {
+   "id": "module-restoration-montezuma-wetlands",
+   "family": "restoration-site",
+   "site": "montezuma-wetlands",
+   "title": "Montezuma Tidal and Seasonal Wetlands Restoration Project",
+   "world": "bay",
+   "places": [
+    {
+     "restoration_site": "montezuma-wetlands",
+     "source": "restoration/registry/restoration.json#sites[5]"
+    }
+   ],
+   "runners": [
+    {
+     "task": "resto-sim-montezuma-wetlands-tidal-marsh",
+     "href": "web/trade_craft_bay.html#resto=montezuma-wetlands"
+    }
+   ],
+   "brief": [
+    {
+     "text": "Tidal marsh restoration - preparing a diked or managed site for tidal return",
+     "source": "restoration/registry/scenarios.json#scenarios[10].title"
+    },
+    {
+     "text": "crew brief: tide tables, access route on levee crowns, buddy pairs",
+     "source": "restoration/registry/scenarios.json#scenarios[10].steps[0].text"
+    },
+    {
+     "text": "walk and mark the channel alignment from the design layout",
+     "source": "restoration/registry/scenarios.json#scenarios[10].steps[1].text"
+    },
+    {
+     "text": "cut starter channels to the marked alignment",
+     "source": "restoration/registry/scenarios.json#scenarios[10].steps[2].text"
+    },
+    {
+     "text": "place spoil where the plan marks it, never into open water",
+     "source": "restoration/registry/scenarios.json#scenarios[10].steps[3].text"
+    },
+    {
+     "text": "photo-point and record water levels after the first tides",
+     "source": "restoration/registry/scenarios.json#scenarios[10].steps[4].text"
+    },
+    {
+     "text": "Tidal marsh restoration - preparing a diked or managed site for tidal return - Montezuma Tidal and Seasonal Wetlands Restoration Project",
+     "source": "restoration/registry/scenarios.json#staged_tasks[10].title"
+    },
+    {
+     "text": "training scenario, not the project's actual work plan; 5 steps, 2 safety gates",
+     "source": "restoration/registry/scenarios.json#staged_tasks[10].brief"
+    }
+   ],
+   "steps": [
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Setting out and control points live here, and so does the habit of trusting a mark only as far as it was proved.",
+     "where": "layout",
+     "do": "Walk to the Layout Floor — setting out, control points, marking.",
+     "names_read": [
+      "Layout Floor"
+     ],
+     "lesson": "operating-eng-locate-first",
+     "lesson_step": 1,
+     "hall": "operating-eng",
+     "n": 1
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what the control actually is before you work off something painted near it.",
+     "where": "layout",
+     "advisor": "layout-hand",
+     "topic": "control",
+     "answer_kind": "say",
+     "do": "Ask the Layout hand in the Layout Floor: \"What is a control point?\"",
+     "names_read": [
+      "Layout Floor",
+      "Layout hand",
+      "What is a control point?"
+     ],
+     "lesson": "operating-eng-locate-first",
+     "lesson_step": 2,
+     "hall": "operating-eng",
+     "n": 2
+    },
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Induction is the room that decides whether you are allowed near the others, so start there.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "laborers-stand-where-the-cab-can-see",
+     "lesson_step": 1,
+     "hall": "laborers",
+     "n": 3
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what the room requires rather than copying whoever walked in ahead of you.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "ppe",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What do I need on in here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What do I need on in here?"
+     ],
+     "lesson": "laborers-stand-where-the-cab-can-see",
+     "lesson_step": 3,
+     "hall": "laborers",
+     "n": 4
+    }
+   ],
+   "greeter": {
+    "agent": "advisor:layout-hand",
+    "name": "Layout hand",
+    "kind": "advisor",
+    "glyph": "📐",
+    "line": "Everything downstream is wrong if the line is wrong.",
+    "line_source": "agents/registry/advisors.json#advisors.layout-hand.greeting",
+    "rule": "the Omega Hive advisor the union path names for the site's first needed trade",
+    "provenance": "SCRIPTED",
+    "voice": "the device speech synthesis, on a click; no AI model"
+   },
+   "lessons": [
+    "operating-eng-locate-first",
+    "laborers-stand-where-the-cab-can-see"
+   ],
+   "supplements": [
+    "operating-eng-locate-first",
+    "laborers-stand-where-the-cab-can-see"
+   ],
+   "provenance": "AUTHORED by rule",
+   "standing": "unverified general practice; certifies nobody"
+  },
+  {
+   "id": "module-restoration-american-canyon",
+   "family": "restoration-site",
+   "site": "american-canyon",
+   "title": "American Canyon Wetlands Restoration Plan",
+   "world": "bay",
+   "places": [
+    {
+     "restoration_site": "american-canyon",
+     "source": "restoration/registry/restoration.json#sites[6]"
+    }
+   ],
+   "runners": [
+    {
+     "task": "resto-sim-american-canyon-planning-survey",
+     "href": "web/trade_craft_bay.html#resto=american-canyon"
+    }
+   ],
+   "brief": [
+    {
+     "text": "Baseline condition survey for a restoration plan",
+     "source": "restoration/registry/scenarios.json#scenarios[11].title"
+    },
+    {
+     "text": "crew brief: access permissions, route and check-in times",
+     "source": "restoration/registry/scenarios.json#scenarios[11].steps[0].text"
+    },
+    {
+     "text": "set or recover survey control",
+     "source": "restoration/registry/scenarios.json#scenarios[11].steps[1].text"
+    },
+    {
+     "text": "walk transects and record existing conditions",
+     "source": "restoration/registry/scenarios.json#scenarios[11].steps[2].text"
+    },
+    {
+     "text": "take photo-points at the marked stations",
+     "source": "restoration/registry/scenarios.json#scenarios[11].steps[3].text"
+    },
+    {
+     "text": "file the baseline record with its method notes",
+     "source": "restoration/registry/scenarios.json#scenarios[11].steps[4].text"
+    },
+    {
+     "text": "Baseline condition survey for a restoration plan - American Canyon Wetlands Restoration Plan",
+     "source": "restoration/registry/scenarios.json#staged_tasks[11].title"
+    },
+    {
+     "text": "training scenario, not the project's actual work plan; 5 steps, 1 safety gates",
+     "source": "restoration/registry/scenarios.json#staged_tasks[11].brief"
+    }
+   ],
+   "steps": [
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Induction is the room that decides whether you are allowed near the others, so start there.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "laborers-stand-where-the-cab-can-see",
+     "lesson_step": 1,
+     "hall": "laborers",
+     "n": 1
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what the room requires rather than copying whoever walked in ahead of you.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "ppe",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What do I need on in here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What do I need on in here?"
+     ],
+     "lesson": "laborers-stand-where-the-cab-can-see",
+     "lesson_step": 3,
+     "hall": "laborers",
+     "n": 2
+    }
+   ],
+   "greeter": {
+    "agent": "advisor:safety-steward",
+    "name": "Safety steward",
+    "kind": "advisor",
+    "glyph": "🦺",
+    "line": "Before you go past me: ask what this room is held to.",
+    "line_source": "agents/registry/advisors.json#advisors.safety-steward.greeting",
+    "rule": "the Omega Hive advisor the union path names for the site's first needed trade",
+    "provenance": "SCRIPTED",
+    "voice": "the device speech synthesis, on a click; no AI model"
+   },
+   "lessons": [
+    "laborers-stand-where-the-cab-can-see"
+   ],
+   "supplements": [
+    "laborers-stand-where-the-cab-can-see"
+   ],
+   "provenance": "AUTHORED by rule",
+   "standing": "unverified general practice; certifies nobody"
+  },
+  {
+   "id": "module-restoration-straw-north-bay",
+   "family": "restoration-site",
+   "site": "straw-north-bay",
+   "title": "Restoring Wetland-Upland Transition Zone Habitat in the North Bay with STRAW",
+   "world": "bay",
+   "places": [
+    {
+     "restoration_site": "straw-north-bay",
+     "source": "restoration/registry/restoration.json#sites[7]"
+    }
+   ],
+   "runners": [
+    {
+     "task": "resto-sim-straw-north-bay-transition-zone",
+     "href": "web/trade_craft_bay.html#resto=straw-north-bay"
+    }
+   ],
+   "brief": [
+    {
+     "text": "Wetland-upland transition zone planting",
+     "source": "restoration/registry/scenarios.json#scenarios[12].title"
+    },
+    {
+     "text": "crew brief: zone boundaries, sensitive areas and the tide line",
+     "source": "restoration/registry/scenarios.json#scenarios[12].steps[0].text"
+    },
+    {
+     "text": "hand-clear weeds from the planting band the plan marks",
+     "source": "restoration/registry/scenarios.json#scenarios[12].steps[1].text"
+    },
+    {
+     "text": "plant the band from wet edge to upland, species by elevation",
+     "source": "restoration/registry/scenarios.json#scenarios[12].steps[2].text"
+    },
+    {
+     "text": "install plant protection where the plan calls for it",
+     "source": "restoration/registry/scenarios.json#scenarios[12].steps[3].text"
+    },
+    {
+     "text": "record survival plots and photo-points",
+     "source": "restoration/registry/scenarios.json#scenarios[12].steps[4].text"
+    },
+    {
+     "text": "Wetland-upland transition zone planting - Restoring Wetland-Upland Transition Zone Habitat in the North Bay with STRAW",
+     "source": "restoration/registry/scenarios.json#staged_tasks[12].title"
+    },
+    {
+     "text": "training scenario, not the project's actual work plan; 5 steps, 1 safety gates",
+     "source": "restoration/registry/scenarios.json#staged_tasks[12].brief"
+    }
+   ],
+   "steps": [
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Induction is the room that decides whether you are allowed near the others, so start there.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "laborers-stand-where-the-cab-can-see",
+     "lesson_step": 1,
+     "hall": "laborers",
+     "n": 1
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what the room requires rather than copying whoever walked in ahead of you.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "ppe",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What do I need on in here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What do I need on in here?"
+     ],
+     "lesson": "laborers-stand-where-the-cab-can-see",
+     "lesson_step": 3,
+     "hall": "laborers",
+     "n": 2
+    }
+   ],
+   "greeter": {
+    "agent": "advisor:safety-steward",
+    "name": "Safety steward",
+    "kind": "advisor",
+    "glyph": "🦺",
+    "line": "Before you go past me: ask what this room is held to.",
+    "line_source": "agents/registry/advisors.json#advisors.safety-steward.greeting",
+    "rule": "the Omega Hive advisor the union path names for the site's first needed trade",
+    "provenance": "SCRIPTED",
+    "voice": "the device speech synthesis, on a click; no AI model"
+   },
+   "lessons": [
+    "laborers-stand-where-the-cab-can-see"
+   ],
+   "supplements": [
+    "laborers-stand-where-the-cab-can-see"
+   ],
+   "provenance": "AUTHORED by rule",
+   "standing": "unverified general practice; certifies nobody"
+  },
+  {
+   "id": "module-wilds-mountain",
+   "family": "wilds-world",
+   "world": "wilds:mountain",
+   "title": "High Country",
+   "places": [
+    {
+     "wilds_site": "m-adit-portal",
+     "title": "Adit portal and ground support",
+     "lesson": "m-adit-portal-site-walk"
+    },
+    {
+     "wilds_site": "m-hv-corridor",
+     "title": "High-voltage line corridor",
+     "lesson": "m-hv-corridor-site-walk"
+    },
+    {
+     "wilds_site": "m-rockfall-netting",
+     "title": "Rockfall netting on a road cut",
+     "lesson": "m-rockfall-netting-site-walk"
+    },
+    {
+     "wilds_site": "m-snow-road",
+     "title": "Snow-road grading on the pass",
+     "lesson": "m-snow-road-site-walk"
+    },
+    {
+     "wilds_site": "m-wind-ridge",
+     "title": "Ridge-top turbine pad",
+     "lesson": "m-wind-ridge-site-walk"
+    },
+    {
+     "wilds_site": "m-survey-control",
+     "title": "Survey control on the high ground",
+     "lesson": "m-survey-control-site-walk"
+    }
+   ],
+   "brief": [
+    {
+     "text": "Adit portal and ground support",
+     "source": "wilds/registry/wilds.json#worlds[0].sites[0].title"
+    },
+    {
+     "text": "A mine adit driven into the hillside: ground support, ventilation and a portal that has to stay open.",
+     "source": "wilds/registry/wilds.json#worlds[0].sites[0].work"
+    },
+    {
+     "text": "High-voltage line corridor",
+     "source": "wilds/registry/wilds.json#worlds[0].sites[1].title"
+    },
+    {
+     "text": "A transmission line crossing the valley on lattice towers; stringing, clearances and fault finding.",
+     "source": "wilds/registry/wilds.json#worlds[0].sites[1].work"
+    },
+    {
+     "text": "Rockfall netting on a road cut",
+     "source": "wilds/registry/wilds.json#worlds[0].sites[2].title"
+    },
+    {
+     "text": "Mesh and anchors hung on a cut slope above the road; rope access and lifted panels.",
+     "source": "wilds/registry/wilds.json#worlds[0].sites[2].work"
+    },
+    {
+     "text": "Snow-road grading on the pass",
+     "source": "wilds/registry/wilds.json#worlds[0].sites[3].title"
+    },
+    {
+     "text": "Graders and plough trucks keeping a mountain road open; machines checked before they climb.",
+     "source": "wilds/registry/wilds.json#worlds[0].sites[3].work"
+    },
+    {
+     "text": "Ridge-top turbine pad",
+     "source": "wilds/registry/wilds.json#worlds[0].sites[4].title"
+    },
+    {
+     "text": "A crane pad on a ridge for a wind turbine; the lift chart decides what goes up in the wind.",
+     "source": "wilds/registry/wilds.json#worlds[0].sites[4].work"
+    },
+    {
+     "text": "Survey control on the high ground",
+     "source": "wilds/registry/wilds.json#worlds[0].sites[5].title"
+    },
+    {
+     "text": "A control point and a drone landing square; everything below is laid out from here.",
+     "source": "wilds/registry/wilds.json#worlds[0].sites[5].work"
+    }
+   ],
+   "steps": [
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "m-adit-portal-site-walk",
+     "lesson_step": 1,
+     "hall": "miners",
+     "n": 1
+    },
+    {
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "m-adit-portal-site-walk",
+     "lesson_step": 2,
+     "hall": "miners",
+     "n": 2
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ],
+     "lesson": "m-adit-portal-site-walk",
+     "lesson_step": 3,
+     "hall": "miners",
+     "n": 3
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ],
+     "lesson": "m-adit-portal-site-walk",
+     "lesson_step": 4,
+     "hall": "miners",
+     "n": 4
+    },
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "m-hv-corridor-site-walk",
+     "lesson_step": 1,
+     "hall": "transmission",
+     "n": 5
+    },
+    {
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "m-hv-corridor-site-walk",
+     "lesson_step": 2,
+     "hall": "transmission",
+     "n": 6
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ],
+     "lesson": "m-hv-corridor-site-walk",
+     "lesson_step": 3,
+     "hall": "transmission",
+     "n": 7
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ],
+     "lesson": "m-hv-corridor-site-walk",
+     "lesson_step": 4,
+     "hall": "transmission",
+     "n": 8
+    },
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "m-rockfall-netting-site-walk",
+     "lesson_step": 1,
+     "hall": "high-angle",
+     "n": 9
+    },
+    {
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "m-rockfall-netting-site-walk",
+     "lesson_step": 2,
+     "hall": "high-angle",
+     "n": 10
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ],
+     "lesson": "m-rockfall-netting-site-walk",
+     "lesson_step": 3,
+     "hall": "high-angle",
+     "n": 11
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ],
+     "lesson": "m-rockfall-netting-site-walk",
+     "lesson_step": 4,
+     "hall": "high-angle",
+     "n": 12
+    },
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "m-snow-road-site-walk",
+     "lesson_step": 1,
+     "hall": "operating-eng",
+     "n": 13
+    },
+    {
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "m-snow-road-site-walk",
+     "lesson_step": 2,
+     "hall": "operating-eng",
+     "n": 14
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ],
+     "lesson": "m-snow-road-site-walk",
+     "lesson_step": 3,
+     "hall": "operating-eng",
+     "n": 15
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ],
+     "lesson": "m-snow-road-site-walk",
+     "lesson_step": 4,
+     "hall": "operating-eng",
+     "n": 16
+    },
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "m-wind-ridge-site-walk",
+     "lesson_step": 1,
+     "hall": "wind",
+     "n": 17
+    },
+    {
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "m-wind-ridge-site-walk",
+     "lesson_step": 2,
+     "hall": "wind",
+     "n": 18
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ],
+     "lesson": "m-wind-ridge-site-walk",
+     "lesson_step": 3,
+     "hall": "wind",
+     "n": 19
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ],
+     "lesson": "m-wind-ridge-site-walk",
+     "lesson_step": 4,
+     "hall": "wind",
+     "n": 20
+    },
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "m-survey-control-site-walk",
+     "lesson_step": 1,
+     "hall": "surveyors",
+     "n": 21
+    },
+    {
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "m-survey-control-site-walk",
+     "lesson_step": 2,
+     "hall": "surveyors",
+     "n": 22
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ],
+     "lesson": "m-survey-control-site-walk",
+     "lesson_step": 3,
+     "hall": "surveyors",
+     "n": 23
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ],
+     "lesson": "m-survey-control-site-walk",
+     "lesson_step": 4,
+     "hall": "surveyors",
+     "n": 24
+    }
+   ],
+   "greeter": {
+    "agent": "advisor:safety-steward",
+    "name": "Safety steward",
+    "kind": "advisor",
+    "glyph": "🦺",
+    "line": "Before you go past me: ask what this room is held to.",
+    "line_source": "agents/registry/advisors.json#advisors.safety-steward.greeting",
+    "rule": "the Hive advisor asked in the first advisor step of the first site walk",
+    "provenance": "SCRIPTED",
+    "voice": "the device speech synthesis, on a click; no AI model"
+   },
+   "lessons": [
+    "m-adit-portal-site-walk",
+    "m-hv-corridor-site-walk",
+    "m-rockfall-netting-site-walk",
+    "m-snow-road-site-walk",
+    "m-wind-ridge-site-walk",
+    "m-survey-control-site-walk"
+   ],
+   "supplements": [
+    "m-adit-portal-site-walk",
+    "m-hv-corridor-site-walk",
+    "m-rockfall-netting-site-walk",
+    "m-snow-road-site-walk",
+    "m-wind-ridge-site-walk",
+    "m-survey-control-site-walk"
+   ],
+   "provenance": "AUTHORED by rule",
+   "standing": "unverified general practice; certifies nobody"
+  },
+  {
+   "id": "module-wilds-forest",
+   "family": "wilds-world",
+   "world": "wilds:forest",
+   "title": "Deep Timber",
+   "places": [
+    {
+     "wilds_site": "f-line-clearance",
+     "title": "Utility line clearance",
+     "lesson": "f-line-clearance-site-walk"
+    },
+    {
+     "wilds_site": "f-trail-bridge",
+     "title": "Trail bridge crew",
+     "lesson": "f-trail-bridge-site-walk"
+    },
+    {
+     "wilds_site": "f-fuel-break",
+     "title": "Wildfire fuel break",
+     "lesson": "f-fuel-break-site-walk"
+    },
+    {
+     "wilds_site": "f-timber-frame",
+     "title": "Timber-frame shelter raising",
+     "lesson": "f-timber-frame-site-walk"
+    },
+    {
+     "wilds_site": "f-water-intake",
+     "title": "Lake intake and main",
+     "lesson": "f-water-intake-site-walk"
+    },
+    {
+     "wilds_site": "f-fire-lookout",
+     "title": "Fire lookout tower",
+     "lesson": "f-fire-lookout-site-walk"
+    }
+   ],
+   "brief": [
+    {
+     "text": "Utility line clearance",
+     "source": "wilds/registry/wilds.json#worlds[1].sites[0].title"
+    },
+    {
+     "text": "A distribution line through the timber: the right-of-way cut back and the line walked for faults.",
+     "source": "wilds/registry/wilds.json#worlds[1].sites[0].work"
+    },
+    {
+     "text": "Trail bridge crew",
+     "source": "wilds/registry/wilds.json#worlds[1].sites[1].title"
+    },
+    {
+     "text": "A timber footbridge over a creek; carpenters framing, labourers packing material in.",
+     "source": "wilds/registry/wilds.json#worlds[1].sites[1].work"
+    },
+    {
+     "text": "Wildfire fuel break",
+     "source": "wilds/registry/wilds.json#worlds[1].sites[2].title"
+    },
+    {
+     "text": "A strip thinned and cleared along a ridge; machines and hand crews working the same ground.",
+     "source": "wilds/registry/wilds.json#worlds[1].sites[2].work"
+    },
+    {
+     "text": "Timber-frame shelter raising",
+     "source": "wilds/registry/wilds.json#worlds[1].sites[3].title"
+    },
+    {
+     "text": "A post-and-beam shelter raised in a clearing; bents lifted and pinned.",
+     "source": "wilds/registry/wilds.json#worlds[1].sites[3].work"
+    },
+    {
+     "text": "Lake intake and main",
+     "source": "wilds/registry/wilds.json#worlds[1].sites[4].title"
+    },
+    {
+     "text": "A raw-water intake at the lake edge feeding a main down the valley.",
+     "source": "wilds/registry/wilds.json#worlds[1].sites[4].work"
+    },
+    {
+     "text": "Fire lookout tower",
+     "source": "wilds/registry/wilds.json#worlds[1].sites[5].title"
+    },
+    {
+     "text": "A steel lookout on the highest knoll; the frame erected and the access scaffold tagged.",
+     "source": "wilds/registry/wilds.json#worlds[1].sites[5].work"
+    }
+   ],
+   "steps": [
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "f-line-clearance-site-walk",
+     "lesson_step": 1,
+     "hall": "line-workers",
+     "n": 1
+    },
+    {
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "f-line-clearance-site-walk",
+     "lesson_step": 2,
+     "hall": "line-workers",
+     "n": 2
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ],
+     "lesson": "f-line-clearance-site-walk",
+     "lesson_step": 3,
+     "hall": "line-workers",
+     "n": 3
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ],
+     "lesson": "f-line-clearance-site-walk",
+     "lesson_step": 4,
+     "hall": "line-workers",
+     "n": 4
+    },
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "f-trail-bridge-site-walk",
+     "lesson_step": 1,
+     "hall": "carpenters",
+     "n": 5
+    },
+    {
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "f-trail-bridge-site-walk",
+     "lesson_step": 2,
+     "hall": "carpenters",
+     "n": 6
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ],
+     "lesson": "f-trail-bridge-site-walk",
+     "lesson_step": 3,
+     "hall": "carpenters",
+     "n": 7
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ],
+     "lesson": "f-trail-bridge-site-walk",
+     "lesson_step": 4,
+     "hall": "carpenters",
+     "n": 8
+    },
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "f-fuel-break-site-walk",
+     "lesson_step": 1,
+     "hall": "grounds",
+     "n": 9
+    },
+    {
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "f-fuel-break-site-walk",
+     "lesson_step": 2,
+     "hall": "grounds",
+     "n": 10
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ],
+     "lesson": "f-fuel-break-site-walk",
+     "lesson_step": 3,
+     "hall": "grounds",
+     "n": 11
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ],
+     "lesson": "f-fuel-break-site-walk",
+     "lesson_step": 4,
+     "hall": "grounds",
+     "n": 12
+    },
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "f-timber-frame-site-walk",
+     "lesson_step": 1,
+     "hall": "riggers",
+     "n": 13
+    },
+    {
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "f-timber-frame-site-walk",
+     "lesson_step": 2,
+     "hall": "riggers",
+     "n": 14
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ],
+     "lesson": "f-timber-frame-site-walk",
+     "lesson_step": 3,
+     "hall": "riggers",
+     "n": 15
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ],
+     "lesson": "f-timber-frame-site-walk",
+     "lesson_step": 4,
+     "hall": "riggers",
+     "n": 16
+    },
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "f-water-intake-site-walk",
+     "lesson_step": 1,
+     "hall": "water-distrib",
+     "n": 17
+    },
+    {
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "f-water-intake-site-walk",
+     "lesson_step": 2,
+     "hall": "water-distrib",
+     "n": 18
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ],
+     "lesson": "f-water-intake-site-walk",
+     "lesson_step": 3,
+     "hall": "water-distrib",
+     "n": 19
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ],
+     "lesson": "f-water-intake-site-walk",
+     "lesson_step": 4,
+     "hall": "water-distrib",
+     "n": 20
+    },
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "f-fire-lookout-site-walk",
+     "lesson_step": 1,
+     "hall": "steel-erectors",
+     "n": 21
+    },
+    {
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "f-fire-lookout-site-walk",
+     "lesson_step": 2,
+     "hall": "steel-erectors",
+     "n": 22
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ],
+     "lesson": "f-fire-lookout-site-walk",
+     "lesson_step": 3,
+     "hall": "steel-erectors",
+     "n": 23
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ],
+     "lesson": "f-fire-lookout-site-walk",
+     "lesson_step": 4,
+     "hall": "steel-erectors",
+     "n": 24
+    }
+   ],
+   "greeter": {
+    "agent": "advisor:safety-steward",
+    "name": "Safety steward",
+    "kind": "advisor",
+    "glyph": "🦺",
+    "line": "Before you go past me: ask what this room is held to.",
+    "line_source": "agents/registry/advisors.json#advisors.safety-steward.greeting",
+    "rule": "the Hive advisor asked in the first advisor step of the first site walk",
+    "provenance": "SCRIPTED",
+    "voice": "the device speech synthesis, on a click; no AI model"
+   },
+   "lessons": [
+    "f-line-clearance-site-walk",
+    "f-trail-bridge-site-walk",
+    "f-fuel-break-site-walk",
+    "f-timber-frame-site-walk",
+    "f-water-intake-site-walk",
+    "f-fire-lookout-site-walk"
+   ],
+   "supplements": [
+    "f-line-clearance-site-walk",
+    "f-trail-bridge-site-walk",
+    "f-fuel-break-site-walk",
+    "f-timber-frame-site-walk",
+    "f-water-intake-site-walk",
+    "f-fire-lookout-site-walk"
+   ],
+   "provenance": "AUTHORED by rule",
+   "standing": "unverified general practice; certifies nobody"
+  },
+  {
+   "id": "module-wilds-canyon",
+   "family": "wilds-world",
+   "world": "wilds:canyon",
+   "title": "Red Rock Canyon",
+   "places": [
+    {
+     "wilds_site": "c-river-intake",
+     "title": "Run-of-river intake and penstock",
+     "lesson": "c-river-intake-site-walk"
+    },
+    {
+     "wilds_site": "c-pipeline-crossing",
+     "title": "Pipeline river crossing",
+     "lesson": "c-pipeline-crossing-site-walk"
+    },
+    {
+     "wilds_site": "c-valve-vault",
+     "title": "Valve vault rescue drill",
+     "lesson": "c-valve-vault-site-walk"
+    },
+    {
+     "wilds_site": "c-mesa-solar",
+     "title": "Mesa-top solar array",
+     "lesson": "c-mesa-solar-site-walk"
+    },
+    {
+     "wilds_site": "c-quarry-bench",
+     "title": "Quarry bench and blast pattern",
+     "lesson": "c-quarry-bench-site-walk"
+    }
+   ],
+   "brief": [
+    {
+     "text": "Run-of-river intake and penstock",
+     "source": "wilds/registry/wilds.json#worlds[2].sites[0].title"
+    },
+    {
+     "text": "A low weir and an intake feeding a penstock down to a small powerhouse; divers work the screens.",
+     "source": "wilds/registry/wilds.json#worlds[2].sites[0].work"
+    },
+    {
+     "text": "Pipeline river crossing",
+     "source": "wilds/registry/wilds.json#worlds[2].sites[1].title"
+    },
+    {
+     "text": "A pipeline crossing the canyon; tie-in digs on each side and a permit closed the way it opened.",
+     "source": "wilds/registry/wilds.json#worlds[2].sites[1].work"
+    },
+    {
+     "text": "Valve vault rescue drill",
+     "source": "wilds/registry/wilds.json#worlds[2].sites[2].title"
+    },
+    {
+     "text": "A buried valve vault on the mesa used for a confined-space entry and retrieval drill.",
+     "source": "wilds/registry/wilds.json#worlds[2].sites[2].work"
+    },
+    {
+     "text": "Mesa-top solar array",
+     "source": "wilds/registry/wilds.json#worlds[2].sites[3].title"
+    },
+    {
+     "text": "Racking and strings laid out across a flat mesa top.",
+     "source": "wilds/registry/wilds.json#worlds[2].sites[3].work"
+    },
+    {
+     "text": "Quarry bench and blast pattern",
+     "source": "wilds/registry/wilds.json#worlds[2].sites[4].title"
+    },
+    {
+     "text": "A stepped quarry face with a drill pattern marked out; everybody knows where not to stand.",
+     "source": "wilds/registry/wilds.json#worlds[2].sites[4].work"
+    }
+   ],
+   "steps": [
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "c-river-intake-site-walk",
+     "lesson_step": 1,
+     "hall": "hydro",
+     "n": 1
+    },
+    {
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "c-river-intake-site-walk",
+     "lesson_step": 2,
+     "hall": "hydro",
+     "n": 2
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ],
+     "lesson": "c-river-intake-site-walk",
+     "lesson_step": 3,
+     "hall": "hydro",
+     "n": 3
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ],
+     "lesson": "c-river-intake-site-walk",
+     "lesson_step": 4,
+     "hall": "hydro",
+     "n": 4
+    },
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "c-pipeline-crossing-site-walk",
+     "lesson_step": 1,
+     "hall": "pipeline",
+     "n": 5
+    },
+    {
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "c-pipeline-crossing-site-walk",
+     "lesson_step": 2,
+     "hall": "pipeline",
+     "n": 6
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ],
+     "lesson": "c-pipeline-crossing-site-walk",
+     "lesson_step": 3,
+     "hall": "pipeline",
+     "n": 7
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ],
+     "lesson": "c-pipeline-crossing-site-walk",
+     "lesson_step": 4,
+     "hall": "pipeline",
+     "n": 8
+    },
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "c-valve-vault-site-walk",
+     "lesson_step": 1,
+     "hall": "confined-space",
+     "n": 9
+    },
+    {
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "c-valve-vault-site-walk",
+     "lesson_step": 2,
+     "hall": "confined-space",
+     "n": 10
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ],
+     "lesson": "c-valve-vault-site-walk",
+     "lesson_step": 3,
+     "hall": "confined-space",
+     "n": 11
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ],
+     "lesson": "c-valve-vault-site-walk",
+     "lesson_step": 4,
+     "hall": "confined-space",
+     "n": 12
+    },
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "c-mesa-solar-site-walk",
+     "lesson_step": 1,
+     "hall": "solar",
+     "n": 13
+    },
+    {
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "c-mesa-solar-site-walk",
+     "lesson_step": 2,
+     "hall": "solar",
+     "n": 14
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ],
+     "lesson": "c-mesa-solar-site-walk",
+     "lesson_step": 3,
+     "hall": "solar",
+     "n": 15
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ],
+     "lesson": "c-mesa-solar-site-walk",
+     "lesson_step": 4,
+     "hall": "solar",
+     "n": 16
+    },
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "c-quarry-bench-site-walk",
+     "lesson_step": 1,
+     "hall": "blasters",
+     "n": 17
+    },
+    {
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "c-quarry-bench-site-walk",
+     "lesson_step": 2,
+     "hall": "blasters",
+     "n": 18
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ],
+     "lesson": "c-quarry-bench-site-walk",
+     "lesson_step": 3,
+     "hall": "blasters",
+     "n": 19
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ],
+     "lesson": "c-quarry-bench-site-walk",
+     "lesson_step": 4,
+     "hall": "blasters",
+     "n": 20
+    }
+   ],
+   "greeter": {
+    "agent": "advisor:safety-steward",
+    "name": "Safety steward",
+    "kind": "advisor",
+    "glyph": "🦺",
+    "line": "Before you go past me: ask what this room is held to.",
+    "line_source": "agents/registry/advisors.json#advisors.safety-steward.greeting",
+    "rule": "the Hive advisor asked in the first advisor step of the first site walk",
+    "provenance": "SCRIPTED",
+    "voice": "the device speech synthesis, on a click; no AI model"
+   },
+   "lessons": [
+    "c-river-intake-site-walk",
+    "c-pipeline-crossing-site-walk",
+    "c-valve-vault-site-walk",
+    "c-mesa-solar-site-walk",
+    "c-quarry-bench-site-walk"
+   ],
+   "supplements": [
+    "c-river-intake-site-walk",
+    "c-pipeline-crossing-site-walk",
+    "c-valve-vault-site-walk",
+    "c-mesa-solar-site-walk",
+    "c-quarry-bench-site-walk"
+   ],
+   "provenance": "AUTHORED by rule",
+   "standing": "unverified general practice; certifies nobody"
+  },
+  {
+   "id": "module-wilds-delta",
+   "family": "wilds-world",
+   "world": "wilds:delta",
+   "title": "Salt Marsh Delta",
+   "places": [
+    {
+     "wilds_site": "d-levee-pump",
+     "title": "Levee pump station",
+     "lesson": "d-levee-pump-site-walk"
+    },
+    {
+     "wilds_site": "d-terminal-berth",
+     "title": "River terminal berth",
+     "lesson": "d-terminal-berth-site-walk"
+    },
+    {
+     "wilds_site": "d-pile-trestle",
+     "title": "Timber pile trestle over a bayou",
+     "lesson": "d-pile-trestle-site-walk"
+    },
+    {
+     "wilds_site": "d-outfall-dive",
+     "title": "Outfall line and dive station",
+     "lesson": "d-outfall-dive-site-walk"
+    },
+    {
+     "wilds_site": "d-spill-boom",
+     "title": "Spill boom staging",
+     "lesson": "d-spill-boom-site-walk"
+    },
+    {
+     "wilds_site": "d-wind-staging",
+     "title": "Wind turbine staging yard",
+     "lesson": "d-wind-staging-site-walk"
+    }
+   ],
+   "brief": [
+    {
+     "text": "Levee pump station",
+     "source": "wilds/registry/wilds.json#worlds[3].sites[0].title"
+    },
+    {
+     "text": "A drainage pump station set into the levee; wastewater crews keep the pumps, screens and wet well working.",
+     "source": "wilds/registry/wilds.json#worlds[3].sites[0].work"
+    },
+    {
+     "text": "River terminal berth",
+     "source": "wilds/registry/wilds.json#worlds[3].sites[1].title"
+    },
+    {
+     "text": "A barge berth with a crane working cargo; the lane is briefed before anything swings.",
+     "source": "wilds/registry/wilds.json#worlds[3].sites[1].work"
+    },
+    {
+     "text": "Timber pile trestle over a bayou",
+     "source": "wilds/registry/wilds.json#worlds[3].sites[2].title"
+    },
+    {
+     "text": "A pile-supported trestle across a channel: new piles driven from a rig on firm footing, old bents inspected.",
+     "source": "wilds/registry/wilds.json#worlds[3].sites[2].work"
+    },
+    {
+     "text": "Outfall line and dive station",
+     "source": "wilds/registry/wilds.json#worlds[3].sites[3].title"
+    },
+    {
+     "text": "An outfall pipe running into the channel; a dive team inspects it from a station on the bank.",
+     "source": "wilds/registry/wilds.json#worlds[3].sites[3].work"
+    },
+    {
+     "text": "Spill boom staging",
+     "source": "wilds/registry/wilds.json#worlds[3].sites[4].title"
+    },
+    {
+     "text": "Containment boom and a skimmer staged on the bank, ready to deploy across a channel mouth.",
+     "source": "wilds/registry/wilds.json#worlds[3].sites[4].work"
+    },
+    {
+     "text": "Wind turbine staging yard",
+     "source": "wilds/registry/wilds.json#worlds[3].sites[5].title"
+    },
+    {
+     "text": "A turbine erected on the ridge beside a laydown yard where blades and tower sections wait for the crane.",
+     "source": "wilds/registry/wilds.json#worlds[3].sites[5].work"
+    }
+   ],
+   "steps": [
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "d-levee-pump-site-walk",
+     "lesson_step": 1,
+     "hall": "wastewater",
+     "n": 1
+    },
+    {
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "d-levee-pump-site-walk",
+     "lesson_step": 2,
+     "hall": "wastewater",
+     "n": 2
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ],
+     "lesson": "d-levee-pump-site-walk",
+     "lesson_step": 3,
+     "hall": "wastewater",
+     "n": 3
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ],
+     "lesson": "d-levee-pump-site-walk",
+     "lesson_step": 4,
+     "hall": "wastewater",
+     "n": 4
+    },
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "d-terminal-berth-site-walk",
+     "lesson_step": 1,
+     "hall": "marine-terminal",
+     "n": 5
+    },
+    {
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "d-terminal-berth-site-walk",
+     "lesson_step": 2,
+     "hall": "marine-terminal",
+     "n": 6
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ],
+     "lesson": "d-terminal-berth-site-walk",
+     "lesson_step": 3,
+     "hall": "marine-terminal",
+     "n": 7
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ],
+     "lesson": "d-terminal-berth-site-walk",
+     "lesson_step": 4,
+     "hall": "marine-terminal",
+     "n": 8
+    },
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "d-pile-trestle-site-walk",
+     "lesson_step": 1,
+     "hall": "piling",
+     "n": 9
+    },
+    {
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "d-pile-trestle-site-walk",
+     "lesson_step": 2,
+     "hall": "piling",
+     "n": 10
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ],
+     "lesson": "d-pile-trestle-site-walk",
+     "lesson_step": 3,
+     "hall": "piling",
+     "n": 11
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ],
+     "lesson": "d-pile-trestle-site-walk",
+     "lesson_step": 4,
+     "hall": "piling",
+     "n": 12
+    },
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "d-outfall-dive-site-walk",
+     "lesson_step": 1,
+     "hall": "divers",
+     "n": 13
+    },
+    {
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "d-outfall-dive-site-walk",
+     "lesson_step": 2,
+     "hall": "divers",
+     "n": 14
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ],
+     "lesson": "d-outfall-dive-site-walk",
+     "lesson_step": 3,
+     "hall": "divers",
+     "n": 15
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ],
+     "lesson": "d-outfall-dive-site-walk",
+     "lesson_step": 4,
+     "hall": "divers",
+     "n": 16
+    },
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "d-spill-boom-site-walk",
+     "lesson_step": 1,
+     "hall": "spill-response",
+     "n": 17
+    },
+    {
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "d-spill-boom-site-walk",
+     "lesson_step": 2,
+     "hall": "spill-response",
+     "n": 18
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ],
+     "lesson": "d-spill-boom-site-walk",
+     "lesson_step": 3,
+     "hall": "spill-response",
+     "n": 19
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ],
+     "lesson": "d-spill-boom-site-walk",
+     "lesson_step": 4,
+     "hall": "spill-response",
+     "n": 20
+    },
+    {
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE — gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "d-wind-staging-site-walk",
+     "lesson_step": 1,
+     "hall": "crane-ops",
+     "n": 21
+    },
+    {
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ],
+     "lesson": "d-wind-staging-site-walk",
+     "lesson_step": 2,
+     "hall": "crane-ops",
+     "n": 22
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what is actually in force for work away from the hall rather than assuming the site is held to the same.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ],
+     "lesson": "d-wind-staging-site-walk",
+     "lesson_step": 3,
+     "hall": "crane-ops",
+     "n": 23
+    },
+    {
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing, because far from the hall it is the easiest part to skip.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ],
+     "lesson": "d-wind-staging-site-walk",
+     "lesson_step": 4,
+     "hall": "crane-ops",
+     "n": 24
+    }
+   ],
+   "greeter": {
+    "agent": "advisor:safety-steward",
+    "name": "Safety steward",
+    "kind": "advisor",
+    "glyph": "🦺",
+    "line": "Before you go past me: ask what this room is held to.",
+    "line_source": "agents/registry/advisors.json#advisors.safety-steward.greeting",
+    "rule": "the Hive advisor asked in the first advisor step of the first site walk",
+    "provenance": "SCRIPTED",
+    "voice": "the device speech synthesis, on a click; no AI model"
+   },
+   "lessons": [
+    "d-levee-pump-site-walk",
+    "d-terminal-berth-site-walk",
+    "d-pile-trestle-site-walk",
+    "d-outfall-dive-site-walk",
+    "d-spill-boom-site-walk",
+    "d-wind-staging-site-walk"
+   ],
+   "supplements": [
+    "d-levee-pump-site-walk",
+    "d-terminal-berth-site-walk",
+    "d-pile-trestle-site-walk",
+    "d-outfall-dive-site-walk",
+    "d-spill-boom-site-walk",
+    "d-wind-staging-site-walk"
+   ],
+   "provenance": "AUTHORED by rule",
+   "standing": "unverified general practice; certifies nobody"
+  },
+  {
+   "id": "module-robot-yard",
+   "family": "robot-yard",
+   "world": "parishes",
+   "title": "Litter pickup",
+   "places": [
+    {
+     "env": "world.litter-pickup",
+     "source": "robotics/registry/robotics.json#envs[\"world.litter-pickup\"]"
+    }
+   ],
+   "brief": [
+    {
+     "text": "Drive the rover over AUTHORED litter items (types read from ambient/) to collect them all.",
+     "source": "robotics/registry/robotics.json#envs[\"world.litter-pickup\"].brief"
+    },
+    {
+     "text": "turn toward the nearest open target (proportional on bearing)",
+     "source": "robotics/registry/robotics.json#envs[\"world.litter-pickup\"].reference_policy.steps[0]"
+    },
+    {
+     "text": "drive at a speed that falls with the heading error",
+     "source": "robotics/registry/robotics.json#envs[\"world.litter-pickup\"].reference_policy.steps[1]"
+    },
+    {
+     "text": "veer away when an obstacle sits within 2 m ahead",
+     "source": "robotics/registry/robotics.json#envs[\"world.litter-pickup\"].reference_policy.steps[2]"
+    }
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "kind": "world-teleop",
+     "actor": "scripted-reference",
+     "env": "world.litter-pickup",
+     "embodiment": "rover.wheeled",
+     "policy": "ref.litter-pickup",
+     "page": "web/trade_craft_parishes.html",
+     "records": null,
+     "note": "watch: the rover yard replays the reference steps on a seeded loop and stores nothing"
+    },
+    {
+     "n": 2,
+     "kind": "world-teleop",
+     "actor": "human",
+     "env": "world.litter-pickup",
+     "embodiment": "rover.wheeled",
+     "page": "web/trade_craft_robotics.html",
+     "records": "world-teleop",
+     "note": "drive: the same env at the keys in the Robotics lab, recorded by the lab as its existing world-teleop episode"
+    }
+   ],
+   "greeter": {
+    "agent": "advisor:operator",
+    "name": "Operator",
+    "kind": "advisor",
+    "glyph": "👷",
+    "line": "Before you touch a control, ask me what this seat is and what it actually measures.",
+    "line_source": "agents/registry/advisors.json#advisors.operator.greeting",
+    "rule": "the Hive operator advisor, an AUTHORED choice for a driving task",
+    "provenance": "SCRIPTED",
+    "voice": "the device speech synthesis, on a click; no AI model"
+   },
+   "lessons": [],
+   "supplements": [],
+   "provenance": "AUTHORED by rule",
+   "standing": "unverified general practice; certifies nobody"
+  }
+ ]
+}

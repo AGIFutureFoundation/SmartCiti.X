@@ -71,6 +71,8 @@ sys.path.insert(0, str(ROOT))
 from interiors import build as build_interiors, ROOMS as ROOM_PROGRAMME  # noqa: E402
 from mapdata import make_codes, HUES as SHARED_HUES  # noqa: E402
 from staleness import emit  # noqa: E402
+from seo import apply_seo  # noqa: E402  head tags only
+from sitenav import nav_html, labels as nav_labels, NAV_CSS, with_style_memory  # noqa: E402
 
 _districts_json = json.load(open(PACKS / 'unions/registry/districts.json'))['districts']
 DISTRICT_MAP = {k: (d['name'], d['tagline'], d['halls'])
@@ -232,16 +234,196 @@ assert NEED <= PAD_W, (
     f"{LONGEST['name']} ({len(LONGEST['name'])} chars) needs {NEED:.0f}px "
     f"and the pad is {PAD_W}px")
 
-DATA = {
-    'halls': halls,
+# ------------------------------------------------------ training depth ----
+# What training stands in each hall, read from the registry that owns each
+# fact and carried onto the page VERBATIM (the whole document, no per-hall
+# preprocessing - the same contract lessons.json#page_contract.data states).
+# Per-hall and legend counts are computed by the page at render from that
+# payload, and cross-checked here against each registry's own published
+# count, so a number on the map can only ever be the registry's number.
+def need(obj, key, where):
+    """§23.1: a missing field fails the build by NAME - no default, no
+    `.get`, so a registry that drops a field breaks this build loudly."""
+    if not isinstance(obj, dict):
+        raise KeyError(f'{where} is not an object, cannot read {key!r}')
+    if key not in obj:
+        raise KeyError(f'{where} has no field {key!r}')
+    return obj[key]
+
+
+SOURCES = {
+    'halls': 'pack/registry/halls.json',
+    'lessons': 'lessons/registry/lessons.json',
+    'sims': 'sims/registry/sims.json',
+    'schools': 'schools/registry/schools.json',
+    'completion': 'completion/registry/completion.json',
+}
+REG = {k: json.loads((PACKS / rel).read_text(encoding='utf-8')) for k, rel in SOURCES.items()}
+assert REG['halls']['halls'] == halls_json, 'the hall registry read twice must agree'
+
+_LR = SOURCES['lessons']
+LESSONS = need(REG['lessons'], 'lessons', _LR)
+LESSON_HALLS = set()
+for lid, L in LESSONS.items():
+    w = f'{_LR}#lessons.{lid}'
+    if need(L, 'id', w) != lid:
+        raise KeyError(f'{w} is keyed {lid!r} but carries id {L["id"]!r}')
+    hall = need(L, 'hall', w)
+    if hall not in unions:
+        raise KeyError(f'{w} stands in {hall!r}, which pack/registry/halls.json does not list')
+    need(L, 'title', w)
+    if not need(L, 'steps', w):
+        raise KeyError(f'{w} carries no steps')
+    LESSON_HALLS.add(hall)
+_LC = need(REG['lessons'], 'counts', _LR)
+if need(_LC, 'halls_covered', f'{_LR}#counts') != len(LESSON_HALLS):
+    raise KeyError(f'{_LR}#counts.halls_covered disagrees with the lessons it lists')
+if need(_LC, 'halls_total', f'{_LR}#counts') != SHAPE['halls']:
+    raise KeyError(f'{_LR}#counts.halls_total disagrees with the pack ledger')
+EDGES = need(need(REG['lessons'], 'ladder', _LR), 'edges', f'{_LR}#ladder')
+for i, e in enumerate(EDGES):
+    w = f'{_LR}#ladder.edges[{i}]'
+    for k in ('lesson', 'needs', 'because'):
+        if need(e, k, w) not in LESSONS and k != 'because':
+            raise KeyError(f'{w}.{k} names {e[k]!r}, which is not a lesson')
+if need(_LC, 'prerequisite_edges', f'{_LR}#counts') != len(EDGES):
+    raise KeyError(f'{_LR}#counts.prerequisite_edges disagrees with #ladder.edges')
+
+_SR = SOURCES['sims']
+SIMS = need(REG['sims'], 'sims', _SR)
+BINDINGS = need(REG['sims'], 'hall_bindings', _SR)
+for slug, bs in BINDINGS.items():
+    w = f'{_SR}#hall_bindings.{slug}'
+    if slug not in unions:
+        raise KeyError(f'{w} binds a seat to a hall the pack does not list')
+    if not bs:
+        raise KeyError(f'{w} is an empty binding list')
+    for j, b in enumerate(bs):
+        sim = need(b, 'sim', f'{w}[{j}]')
+        need(b, 'skill_id', f'{w}[{j}]')
+        need(need(SIMS, sim, f'{_SR}#sims'), 'name', f'{_SR}#sims.{sim}')
+_SC = need(need(REG['sims'], 'coverage', _SR), 'halls', f'{_SR}#coverage')
+if need(_SC, 'with_a_seat', f'{_SR}#coverage.halls') != len(BINDINGS):
+    raise KeyError(f'{_SR}#coverage.halls.with_a_seat disagrees with #hall_bindings')
+if need(_SC, 'total', f'{_SR}#coverage.halls') != SHAPE['halls']:
+    raise KeyError(f'{_SR}#coverage.halls.total disagrees with the pack ledger')
+
+_HR = SOURCES['schools']
+UNITS = need(REG['schools'], 'units', _HR)
+_unit_halls = []
+for i, u in enumerate(UNITS):
+    w = f'{_HR}#units[{i}]'
+    hall = need(u, 'hall', w)
+    if hall not in unions:
+        raise KeyError(f'{w} stands in {hall!r}, which the pack does not list')
+    for k in ('class_stations', 'class_drill', 'floor_sims', 'gate', 'home'):
+        need(u, k, w)
+    for s in u['floor_sims']:
+        if s not in SIMS:
+            raise KeyError(f'{w}.floor_sims names {s!r}, which {_SR}#sims does not hold')
+    _unit_halls.append(hall)
+if len(set(_unit_halls)) != len(_unit_halls):
+    raise KeyError(f'{_HR}#units lists a hall twice')
+
+_CR = SOURCES['completion']
+COMPLETION = need(REG['completion'], 'lessons', _CR)
+if set(COMPLETION) != set(LESSONS):
+    raise KeyError(f'{_CR}#lessons and {_LR}#lessons do not name the same lessons')
+_completable = 0
+for lid, c in COMPLETION.items():
+    w = f'{_CR}#lessons.{lid}'
+    if need(c, 'hall', w) != LESSONS[lid]['hall']:
+        raise KeyError(f'{w}.hall disagrees with {_LR}#lessons.{lid}.hall')
+    if need(c, 'steps', w) != len(LESSONS[lid]['steps']):
+        raise KeyError(f'{w}.steps disagrees with {_LR}#lessons.{lid}.steps')
+    ok_ = need(c, 'completable', w)
+    why = need(c, 'not_completable_why', w)
+    if ok_ is not (why is None):
+        raise KeyError(f'{w}: completable and not_completable_why contradict each other')
+    need(c, 'needs', w)
+    _completable += 1 if ok_ else 0
+_CC = need(REG['completion'], 'counts', _CR)
+if need(_CC, 'lessons_completable', f'{_CR}#counts') != _completable:
+    raise KeyError(f'{_CR}#counts.lessons_completable disagrees with #lessons')
+if need(_CC, 'lessons_not_completable', f'{_CR}#counts') != len(COMPLETION) - _completable:
+    raise KeyError(f'{_CR}#counts.lessons_not_completable disagrees with #lessons')
+if need(_CC, 'ladder_edges', f'{_CR}#counts') != len(EDGES):
+    raise KeyError(f'{_CR}#counts.ladder_edges disagrees with {_LR}#ladder.edges')
+
+
+def signed_off_halls():
+    """Per-hall practitioner sign-off, through the module that owns the
+    rule (pack/hall_signoff.mjs) - exactly as bundles/build.py reads it.
+    Counting `content_status` strings here would be a second opinion about
+    what a sign-off is."""
+    script = (
+        "const hs = await import('./pack/hall_signoff.mjs');"
+        "const halls = JSON.parse(require('fs')"
+        f"  .readFileSync('{SOURCES['halls']}','utf8')).halls;"
+        "const per = {};"
+        "for (const h of halls) per[h.slug] = hs.claimsHallSignoff(h.content_status);"
+        "console.log(JSON.stringify({"
+        "  halls: per,"
+        "  signed: Object.values(per).filter(Boolean).length,"
+        "  of: halls.length,"
+        "  statuses: hs.HALL_CONTENT_STATUSES,"
+        "  claiming: hs.HALL_CONTENT_STATUSES.filter((s) => hs.claimsHallSignoff(s)) }));")
+    proc = subprocess.run(
+        ['node', '--input-type=module', '-e',
+         "import { createRequire } from 'node:module';"
+         "const require = createRequire(process.cwd() + '/x.js');" + script],
+        cwd=str(PACKS), capture_output=True, text=True)
+    if proc.returncode != 0:
+        raise RuntimeError('cannot read pack/hall_signoff.mjs through node:\n' + proc.stderr.strip())
+    return json.loads(proc.stdout)
+
+
+SIGNOFF = signed_off_halls()
+if need(SIGNOFF, 'of', 'pack/hall_signoff.mjs') != SHAPE['halls']:
+    raise KeyError('pack/hall_signoff.mjs counted a different number of halls than the ledger')
+if len(need(SIGNOFF, 'claiming', 'pack/hall_signoff.mjs')) != 1:
+    raise KeyError('pack/hall_signoff.mjs must name exactly one claiming status')
+SIGNOFF['claiming'] = SIGNOFF['claiming'][0]
+SIGNOFF['rule'] = 'pack/hall_signoff.mjs'
+SIGNOFF['caveat'] = need(need(manifest, 'honesty', 'pack/manifest.json'), 'content', 'pack/manifest.json#honesty')
+
+# Every deep link the hall panel offers must resolve to a page in web/. The
+# parameter shapes are the target pages' own: ?hall=<slug> is what
+# build_3d.py, build_ladder.py and build_progress.py read, and
+# #lesson-<id> is the anchor build_lessons.py writes per lesson.
+LINKS = {'3d': 'trade_craft_3d.html', 'lessons': 'trade_craft_lessons.html',
+         'ladder': 'trade_craft_ladder.html', 'progress': 'trade_craft_progress.html'}
+for k, f in LINKS.items():
+    if not (ROOT / f).is_file():
+        raise FileNotFoundError(f'hall panel link {k} -> web/{f} does not exist')
+
+# Simulated tasks: one board per hall, rendered by web/taskkit.py from
+# tasks/registry/tasks.json and nothing else (TASK_CONTRACT). Every hall has
+# at least its tool-crib drill, so a hall with no board is a broken join.
+from taskkit import (tasks_for, task_board, labels_from, TASKS_CSS,  # noqa: E402
+                     TASK_FILTER_JS)
+TASK_LABELS = labels_from(_EN)
+TASK_BOARDS = {}
+for _slug in unions:
+    _ts = tasks_for('hall', _slug)
+    if not _ts:
+        raise KeyError(f'tasks: hall {_slug} has no simulated task in tasks/registry/tasks.json')
+    TASK_BOARDS[_slug] = task_board(_ts, S('tasks.here'), TASK_LABELS, board_id=f'tasks-{_slug}')
+
+DATA = {    'halls': halls,
+    'taskBoards': TASK_BOARDS,
     'districts': [{'key': b['key'], 'name': b['name'], 'blurb': b['blurb'],
                    'n': b['n'], 'campus': b['campus']} for b in bands],
     'totals': TOTALS,
     'campusNames': CAMPUS_NAMES,
+    'sources': SOURCES,
+    'reg': REG,
+    'signoff': SIGNOFF,
+    'links': LINKS,
 }
 
 # ------------------------------------------------------------- render ----
-D = json.dumps(DATA, separators=(',', ':'))
+D = json.dumps(DATA, separators=(',', ':'), ensure_ascii=False).replace('</', '<\\/')
 
 BAND_SVG = ''.join(
     f'<g class="band" data-d="{b["key"]}">'
@@ -259,11 +441,16 @@ GRID = ''.join(
     f'<text class="gref" x="{BAND_X - 30}" y="{b["y"] + 27}">{i+1}</text>'
     for i, b in enumerate(bands))
 
-PAGE = f'''<title>Trade Craft {S('map.page_title')}</title>
+NAV = nav_html('web/trade_craft_map.html', nav_labels('en'))
+from questkit import QUEST_CSS, quest_js, page_hooks  # noqa: E402  quests: egg hooks only (body tail)
+QUEST_TAIL = '<style>' + QUEST_CSS + '</style>\n' + page_hooks('web/trade_craft_map.html') + quest_js('page:web/trade_craft_map.html')
+
+PAGE = f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Trade Craft {S('map.page_title')}</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C1113'/%3E%3Cpath d='M7 21 L16 7 L25 21 Z' fill='none' stroke='%23E8A33D' stroke-width='2.6' stroke-linejoin='round'/%3E%3Cpath d='M11 21 h10' stroke='%2341C4D4' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
 <!-- Self-hosted: nothing on this page is fetched from another origin at run time. See web/fetch_fonts.py. -->
 <link rel="stylesheet" href="vendor/fonts/fonts.css">
 <style>
+.vh{{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}}
 :root{{
   --plate:#12181B; --panel:#182023; --sunk:#0C1113; --ink:#E8EDEC; --muted:#93A3A6;
   --rule:#28353A; --mark:#E8A33D; --mark-ink:#12181B; --steel:#41C4D4; --steel-ink:#7FDCE8;
@@ -280,6 +467,11 @@ PAGE = f'''<title>Trade Craft {S('map.page_title')}</title>
   --rule:#CBD6D6; --mark:#9F680B; --mark-ink:#FFFFFF; --steel:#0A7E8C; --steel-ink:#065A66;
   --land:#E7EDEB; --good:#2C7A50; --warn:#9A6408; --crit:#A8432F;
 }}
+/* a site style (data-style, design_kit.style_css) re-declares the plate and panel, so the status
+   colours must follow it too: its own --tc-ok/--tc-warn (set on body only while a style is on),
+   else the page's own scheme-aware values (QA wave 4) */
+:root{{--pg-good:var(--good);--pg-warn:var(--warn);--pg-crit:var(--crit)}}
+body{{--good:var(--tc-ok,var(--pg-good));--warn:var(--tc-warn,var(--pg-warn));--crit:var(--tc-warn,var(--pg-crit))}}
 *{{box-sizing:border-box}}
 body{{margin:0;background:var(--plate);color:var(--ink);
   font:15px/1.6 "IBM Plex Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}}
@@ -307,7 +499,7 @@ header .sheetmeta span{{font-family:"IBM Plex Mono",monospace;font-size:9.5px;le
   text-transform:uppercase;color:var(--muted)}}
 
 .shell{{display:grid;grid-template-columns:266px minmax(0,1fr);gap:0;min-height:calc(100vh - 74px)}}
-@media(max-width:900px){{.shell{{grid-template-columns:1fr}}}}
+@media(max-width:900px){{.shell{{grid-template-columns:minmax(0,1fr)}}}}
 
 aside{{border-inline-end:1px solid var(--rule);padding:20px;display:flex;flex-direction:column;gap:20px;
   background:var(--panel)}}
@@ -333,7 +525,7 @@ aside{{border-inline-end:1px solid var(--rule);padding:20px;display:flex;flex-di
 .key .swatch-sch{{background:var(--steel)}} .key .swatch-dra{{background:var(--rule);border:1px solid var(--muted)}}
 
 /* ---- the plan ---- */
-.plan{{position:relative;padding:22px;display:grid;gap:0;align-content:start}}
+.plan{{position:relative;padding:22px;display:grid;grid-template-columns:minmax(0,1fr);gap:0;align-content:start}}
 .planwrap{{position:relative;border:1px solid var(--rule);border-radius:4px;background:var(--sunk);
   overflow-x:auto}}
 svg.map{{display:block;width:100%;height:auto;min-width:940px}}
@@ -376,13 +568,17 @@ svg.map{{display:block;width:100%;height:auto;min-width:940px}}
 
 /* ---- detail card ---- */
 .detail{{margin-top:18px;border:1px solid var(--rule);border-radius:4px;background:var(--panel);
-  padding:18px 20px;display:grid;gap:14px}}
+  padding:18px 20px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px}}
 .detail .dhead{{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}}
 .detail h2{{font-size:26px}}
+/* the district colour is a swatch and a rule, never the text colour: the
+   light hues fail contrast as text on the light theme's panel */
+.detail h2.dname{{color:var(--ink);border-inline-start:6px solid var(--rule);padding-inline-start:10px}}
+.detail .dist .dsw{{display:inline-block;width:10px;height:10px;border-radius:2px;margin-inline-end:6px;vertical-align:-1px}}
 .detail .ref{{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);
   border:1px solid var(--rule);border-radius:2px;padding:3px 7px}}
 .detail .dist{{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;
-  text-transform:uppercase;margin-inline-start:auto}}
+  text-transform:uppercase;margin-inline-start:auto;overflow-wrap:anywhere;min-width:0}}
 /* ---- hall interior ---- */
 .plan2{{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:22px;align-items:start}}
 @media(max-width:860px){{.plan2{{grid-template-columns:1fr}}}}
@@ -420,6 +616,37 @@ svg.floor{{display:block;width:100%;height:auto;background:var(--sunk);
 .legrow span{{display:flex;align-items:center;gap:7px}}
 .legrow em{{font-style:normal;color:var(--muted)}}
 .legrow i{{width:9px;height:9px;border-radius:2px}}
+/* ---- training layers ---- */
+.layers{{display:flex;flex-direction:column;gap:6px;font-size:12px}}
+.layers label{{display:grid;grid-template-columns:auto 11px 1fr auto;gap:8px;align-items:center;cursor:pointer}}
+.layers label i{{width:11px;height:11px;border-radius:50%;flex:0 0 auto}}
+.layers label code{{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10px;color:var(--muted);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
+.layers label .lname{{display:grid;gap:1px;line-height:1.2}}
+.layers label .lc{{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;white-space:nowrap}}
+.layers label[data-focus="true"] code{{color:var(--mark)}}
+.layers .lfocus{{border:1px solid var(--rule);background:none;color:var(--muted);font:inherit;font-size:10px;
+  border-radius:2px;padding:1px 8px;cursor:pointer;grid-column:2/-1;justify-self:start;min-height:24px;min-width:24px}}
+.layers .lfocus[aria-pressed="true"]{{border-color:var(--mark);color:var(--mark)}}
+.hall .lm{{stroke:var(--sunk);stroke-width:.8}}
+svg.map[data-off~="lessons"] .lm[data-layer="lessons"],svg.map[data-off~="seats"] .lm[data-layer="seats"],
+svg.map[data-off~="units"] .lm[data-layer="units"],svg.map[data-off~="signoff"] .lm[data-layer="signoff"],
+svg.map[data-off~="completable"] .lm[data-layer="completable"],svg.map[data-off~="blocked"] .lm[data-layer="blocked"]{{display:none}}
+.hallpanel{{border-top:1px solid var(--rule);padding-top:14px;display:grid;gap:12px}}
+.hallpanel .hp-links{{display:flex;flex-wrap:wrap;gap:6px 14px;min-width:0}}
+.hallpanel .hp-links a,.hallpanel .hp-row a{{overflow-wrap:anywhere}}
+.hallpanel a{{color:var(--steel);text-decoration:none;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11.5px}}
+.hallpanel a:hover{{text-decoration:underline}}
+.hallpanel .hp-row{{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 12px;align-items:baseline;font-size:12.5px}}
+.hallpanel .hp-row>.hp-k{{display:grid;gap:2px;line-height:1.2}}
+.hallpanel .hp-row code{{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10px;color:var(--muted);white-space:nowrap}}
+.hallpanel .hp-row>div{{display:grid;gap:5px;min-width:0}}
+.hallpanel .hp-row .lc,.hallpanel .hp-row em,.hallpanel .hp-row a{{overflow-wrap:anywhere;min-width:0}}
+.hallpanel .hp-row .lc{{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px}}
+.hallpanel .hp-row em{{font-style:normal;color:var(--muted);font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10.5px;display:block}}
+.hallpanel .hp-row .none{{color:var(--muted);font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px}}
+.hallpanel .hp-row .yes{{color:var(--good)}} .hallpanel .hp-row .no{{color:var(--crit)}}
+.hallpanel .caveat{{font-size:12px;color:var(--muted);border:1px dashed var(--rule);border-radius:3px;padding:8px 10px;margin:0}}
 footer{{padding:26px 22px 40px;color:var(--muted);font-size:13px;border-top:1px solid var(--rule)}}
 footer p{{max-width:78ch;margin:0 0 8px}}
 .sheetnav{{display:flex;flex-wrap:wrap;gap:6px 16px;padding:8px 22px;
@@ -427,9 +654,29 @@ footer p{{max-width:78ch;margin:0 0 8px}}
 .sheetnav a{{color:var(--steel);text-decoration:none;font-size:12px;
   font-family:"IBM Plex Mono",monospace;letter-spacing:.04em}}
 .sheetnav a:hover{{text-decoration:underline}}
+/* POLISH w13 (audit row 15): on a phone the SHEET comes first - the header figures tighten, the sheet links keep one
+   scrolling row, the district list folds into one horizontal row of chips right above the plan (descriptions fold
+   away; the hall panel still says them), and the pipeline key + layer switches follow the plan. The aside unwraps
+   (display:contents) so its three blocks are ordered around the plan inside the one-column shell. */
+@media(max-width:600px){{
+  header.sheet{{gap:10px 14px;padding:12px 16px}}
+  header .sheetmeta{{gap:14px}}
+  .sheetnav{{flex-wrap:nowrap;overflow-x:auto;padding:8px 16px;scrollbar-width:thin}}
+  .sheetnav a{{flex:none;white-space:nowrap}}
+  .shell{{align-content:start;min-height:0}}
+  .shell>aside{{display:contents}}
+  .shell>aside>div{{order:2;padding:12px 16px;background:var(--panel)}}
+  .shell>aside>div:first-child{{order:0;padding-block:10px 4px}}
+  .shell>.plan{{order:1;padding:10px 16px}}
+  .dlist{{flex-direction:row;overflow-x:auto;gap:6px;padding-block-end:6px;scrollbar-width:thin}}
+  .dlist>.dbtn{{flex:none;width:auto;min-block-size:44px;align-items:center;border-color:var(--rule)}}
+  .dlist>.dbtn small{{display:none}}
+}}
 :focus-visible{{outline:2px solid var(--mark);outline-offset:2px}}
 </style>
-
+<style>{NAV_CSS}</style>
+{NAV}
+<h1 class="vh">{S('map.page_title')}</h1>
 <header class="sheet">
   <a class="bx-lockup" href="#">
     <svg class="bx-mark" width="34" height="34" viewBox="0 0 48 48" role="img" aria-label="SmartCiti.X">
@@ -472,6 +719,10 @@ footer p{{max-width:78ch;margin:0 0 8px}}
         <div><i class="swatch-sch"></i> {S('map.key.schema_ok')}</div>
         <div><i class="swatch-dra"></i> {S('map.key.draft')}</div>
       </div>
+    </div>
+    <div>
+      <p class="kicker">{S('map.layers')} &#183; {S('map.layer.stations')}</p>
+      <div class="layers" id="layers"></div>
     </div>
   </aside>
 
@@ -520,15 +771,26 @@ footer p{{max-width:78ch;margin:0 0 8px}}
   <p>{S('map.footer.p3')}</p>
 </footer>
 
+<script id="data" type="application/json">{D}</script>
 <script>
-const DATA = {D};
+const DATA = JSON.parse(document.getElementById('data').textContent);
+const REG = DATA.reg;
+const hasOwn = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 // The i18n catalog's own strings, carried in as data rather than retyped:
+// layerLabels: the six training layers' prose labels, shown beside (never
+// instead of) the registry field path each layer is read from.
 // the {{token}} placeholders are filled below, the same contract i18n/test.mjs
 // enforces server-side (placeholder survival) for every locale of this key.
 const I18N = {json.dumps({
     'ariaHall': S('map.aria.hall'), 'ariaFloor': S('map.aria.floor'),
     'noAddress': S('map.detail.no_address'), 'of': S('map.detail.of'),
     'modulesWord': S('map.detail.modules_word'), 'fixture': S('map.detail.fixture'),
+    'layers': S('map.layers'), 'nav3d': S('map.nav.3d'), 'hallsWord': S('map.meta.halls'),
+    'layerLabels': {
+        'lessons': S('map.layer.lessons'), 'seats': S('map.layer.seats'),
+        'units': S('map.layer.units'), 'signoff': S('map.layer.signoff'),
+        'completable': S('map.layer.completable'), 'blocked': S('map.layer.blocked'),
+    },
     'states': {
         'live': STATE('live'), 'calibrating': STATE('calibrating'),
         'schema_ok': STATE('schema_ok'), 'draft': STATE('draft'),
@@ -539,6 +801,50 @@ const F = (n) => n.toLocaleString('en-US');
 const SW = {{live:'var(--good)', calibrating:'var(--warn)', schema_ok:'var(--steel)', draft:'var(--rule)'}};
 let filter = null, selected = DATA.halls[0].slug;
 
+// Training layers. Every count here is COMPUTED from the verbatim registry
+// payload above - nothing is typed - and each is held to the owning
+// the published count of the owning registry; a disagreement throws rather than draws.
+const LAYERS = {{
+  lessons: {{ src: DATA.sources.lessons + '#lessons', sw: 'var(--mark)', by: 'halls', label: I18N.layerLabels.lessons,
+    of: (h) => Object.values(REG.lessons.lessons).filter((l) => l.hall === h.slug).map((l) => l.id),
+    published: () => REG.lessons.counts.halls_covered }},
+  seats: {{ src: DATA.sources.sims + '#hall_bindings', sw: 'var(--steel)', by: 'halls', label: I18N.layerLabels.seats,
+    of: (h) => hasOwn(REG.sims.hall_bindings, h.slug) ? REG.sims.hall_bindings[h.slug].map((b) => b.sim) : [],
+    published: () => REG.sims.coverage.halls.with_a_seat }},
+  units: {{ src: DATA.sources.schools + '#units', sw: 'var(--good)', by: 'halls', label: I18N.layerLabels.units,
+    of: (h) => REG.schools.units.filter((u) => u.hall === h.slug).map((u) => u.class_drill),
+    published: () => REG.schools.units.length }},
+  signoff: {{ src: DATA.signoff.rule, sw: 'var(--crit)', by: 'halls', label: I18N.layerLabels.signoff,
+    of: (h) => DATA.signoff.halls[h.slug] === true ? [DATA.signoff.claiming] : [],
+    published: () => DATA.signoff.signed }},
+  completable: {{ src: DATA.sources.completion + '#lessons.completable', sw: 'var(--steel-ink)', by: 'items', label: I18N.layerLabels.completable,
+    of: (h) => Object.entries(REG.completion.lessons).filter(([, c]) => c.hall === h.slug && c.completable === true).map(([id]) => id),
+    published: () => REG.completion.counts.lessons_completable }},
+  blocked: {{ src: DATA.sources.completion + '#lessons.not_completable_why', sw: 'var(--warn)', by: 'items', label: I18N.layerLabels.blocked,
+    of: (h) => Object.entries(REG.completion.lessons).filter(([, c]) => c.hall === h.slug && c.completable === false).map(([id]) => id),
+    published: () => REG.completion.counts.lessons_not_completable }},
+}};
+const COUNTS = {{}};
+for (const [k, L] of Object.entries(LAYERS)) {{
+  const rows = DATA.halls.map((h) => L.of(h).length);
+  const halls = rows.filter((n) => n > 0).length, items = rows.reduce((a, b) => a + b, 0);
+  const got = L.by === 'halls' ? halls : items;
+  if (got !== L.published()) throw new Error(k + ': computed ' + got + ' != published ' + L.published() + ' @ ' + L.src);
+  COUNTS[k] = {{ halls, items }};
+}}
+if (COUNTS.signoff.halls !== Object.values(DATA.signoff.halls).filter((v) => v === true).length)
+  throw new Error('signoff: layer != ' + DATA.signoff.rule);
+const off = new Set();
+let focus = null;
+const layersEl = document.getElementById('layers');
+layersEl.innerHTML = Object.entries(LAYERS).map(([k, L]) => `<label data-layer="${{k}}">
+    <input type="checkbox" data-toggle="${{k}}" checked>
+    <i style="background:${{L.sw}}"></i>
+    <span class="lname">${{L.label}}<code title="${{L.src}}">${{L.src}}</code></span>
+    <span class="lc" data-count="${{k}}">${{F(COUNTS[k].halls)}} ${{I18N.of}} ${{F(DATA.halls.length)}}${{L.by === 'items' ? ' · ' + F(COUNTS[k].items) : ''}}</span>
+    <button class="lfocus" data-focus="${{k}}" aria-pressed="false">${{L.label}}</button>
+  </label>`).join('');
+
 const dlist = document.getElementById('dlist');
 dlist.innerHTML = DATA.districts.map((d) =>
   `<button class="dbtn" data-d="${{d.key}}" aria-pressed="false">
@@ -548,12 +854,15 @@ dlist.innerHTML = DATA.districts.map((d) =>
 const hallsG = document.getElementById('halls');
 hallsG.innerHTML = DATA.halls.map((h) => {{
   const w = h.w, hh = h.h, x = h.x, y = h.y;
-  return `<g class="hall" data-s="${{h.slug}}" data-d="${{h.district}}" role="button" tabindex="0"
+  const marks = Object.entries(LAYERS).map(([k, L]) => `data-${{k}}="${{L.of(h).length}}"`).join(' ');
+  return `<g class="hall" data-s="${{h.slug}}" data-d="${{h.district}}" ${{marks}} role="button" tabindex="0"
             aria-label="${{fillTokens(I18N.ariaHall, {{name: h.name, district: h.district_name, ref: h.ref}})}}" aria-pressed="false">
     <rect class="pad" x="${{x}}" y="${{y}}" width="${{w}}" height="${{hh}}" rx="3"/>
     <rect class="bar" x="${{x}}" y="${{y}}" width="4" height="${{hh}}" fill="${{h.chip}}"/>
     <text class="hname" x="${{x + 13}}" y="${{y + 17}}">${{h.name}}</text>
     <text class="hcode" x="${{x + 13}}" y="${{y + 31}}">${{h.code}} · ${{h.ref}} · ${{F(h.modules)}}</text>
+    ${{Object.entries(LAYERS).map(([k, L], i) => L.of(h).length
+      ? `<circle class="lm" data-layer="${{k}}" cx="${{x + w - 12 - i * 11}}" cy="${{y + hh - 11}}" r="3.6" fill="${{L.sw}}"><title>${{L.src}}</title></circle>` : '').join('')}}
   </g>`;
 }}).join('');
 
@@ -584,15 +893,15 @@ function renderDetail(slug) {{
   }}).join('');
 
   const programme = I.rooms.map((r) => `<div class="pr">
-      <b style="color:${{r.fixtures.length ? h.chip : 'var(--muted)'}}">${{r.label}}</b>
+      <b style="${{r.fixtures.length ? `color:var(--ink);box-shadow:inset 0 -3px 0 ${{h.chip}}` : 'color:var(--muted)'}}">${{r.label}}</b>
       <span>${{r.purpose}}${{r.fixtures.length ? `<em>${{r.fixtures.join(' · ')}}</em>` : ''}}</span>
     </div>`).join('');
 
   document.getElementById('detail').innerHTML = `
     <div class="dhead">
-      <h2 style="color:${{h.chip}}">${{h.name}}</h2>
+      <h2 class="dname" style="border-inline-start-color:${{h.chip}}">${{h.name}}</h2>
       <span class="ref mono">${{h.code}} · GRID ${{h.ref}}</span>
-      <span class="dist" style="color:${{h.chip}}">${{h.district_name}} &#183; ${{h.campus}}</span>
+      <span class="dist"><i class="dsw" style="background:${{h.chip}}"></i>${{h.district_name}} &#183; ${{h.campus}}</span>
     </div>
     <p>${{h.focus}}.</p>
     <div class="stack">${{seg('live')}}${{seg('calibrating')}}${{seg('schema_ok')}}${{seg('draft')}}</div>
@@ -624,26 +933,91 @@ function renderDetail(slug) {{
           <p>${{I.site.note}}</p>
         </div>
       </div>
+    </div>
+    ${{hallPanel(h)}}`;
+}}
+
+/* The hall panel: what training stands in this hall, every line read from
+   the registry payload by field name, with a deep link into the page that
+   owns it. Labels are the field names of the registries, so a reader can
+   follow each line back to its source. */
+function hallPanel(h) {{
+  const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const lessons = LAYERS.lessons.of(h).map((id) => {{
+    const L = REG.lessons.lessons[id], C = REG.completion.lessons[id];
+    const pre = REG.lessons.ladder.edges.filter((e) => e.lesson === id);
+    return `<div data-lesson="${{id}}" data-completable="${{C.completable}}">
+      <a href="${{DATA.links.lessons}}#lesson-${{id}}">${{esc(L.title)}}</a>
+      <span class="lc">steps: ${{L.steps.length}} · strand: ${{esc(L.strand)}} · tier: ${{esc(L.tier)}}</span>
+      ${{pre.map((e) => `<em data-needs="${{e.needs}}">needs: ${{e.needs}} (${{esc(e.because)}})</em>`).join('')}}
+      ${{C.completable === true ? `<em class="yes">completable: true</em>`
+        : `<em class="no">not_completable_why: ${{esc(C.not_completable_why)}}</em>`}}
     </div>`;
+  }});
+  const seats = LAYERS.seats.of(h).map((sim, i) => `<span class="lc" data-seat="${{sim}}">${{esc(REG.sims.sims[sim].name)}}
+      <em>${{sim}} · ${{esc(REG.sims.hall_bindings[h.slug][i].skill_id)}}</em></span>`);
+  const units = REG.schools.units.filter((u) => u.hall === h.slug).map((u) => `<span class="lc" data-unit="${{esc(u.class_drill)}}">
+      class_drill: ${{esc(u.class_drill)}} · floor_sims: ${{u.floor_sims.join(', ')}} · class_stations: ${{u.class_stations.length}}
+      <em>gate: ${{esc(u.gate)}}</em><em>home: ${{esc(u.home)}}</em></span>`);
+  const signed = DATA.signoff.halls[h.slug] === true;
+  const row = (k, body) => `<div class="hp-row" data-panel="${{k}}"><span class="hp-k">${{LAYERS[k].label}}<code>${{LAYERS[k].src}}</code></span>
+      <div>${{body.length ? body.join('') : `<span class="none">0</span>`}}</div></div>`;
+  return `<section class="hallpanel" data-hall-panel="${{h.slug}}">
+    <p class="kicker">${{I18N.layers}} &#183; ${{h.name}}</p>
+    <div class="hp-links">
+      <a href="${{DATA.links['3d']}}?hall=${{h.slug}}">⬡ ${{I18N.nav3d}}</a>
+      <a href="${{DATA.links.lessons}}">${{DATA.links.lessons}}</a>
+      <a href="${{DATA.links.ladder}}?hall=${{h.slug}}">${{DATA.links.ladder}}?hall=${{h.slug}}</a>
+      <a href="${{DATA.links.progress}}?hall=${{h.slug}}">${{DATA.links.progress}}?hall=${{h.slug}}</a>
+    </div>
+    ${{row('lessons', lessons)}}
+    ${{row('seats', seats)}}
+    ${{row('units', units)}}
+    <div class="hp-row" data-panel="signoff" data-signed="${{signed}}"><span class="hp-k">${{I18N.layerLabels.signoff}}<code>${{DATA.signoff.rule}}</code></span>
+      <div><span class="lc ${{signed ? 'yes' : 'no'}}">${{signed ? DATA.signoff.claiming : DATA.signoff.statuses[0]}}
+        <em>${{F(DATA.signoff.signed)}} ${{I18N.of}} ${{F(DATA.signoff.of)}} ${{I18N.hallsWord}}</em></span></div></div>
+    <p class="caveat">${{esc(DATA.signoff.caveat)}}</p>
+    ${{DATA.taskBoards[h.slug]}}
+  </section>`;
 }}
 
 function apply() {{
+  document.querySelector('svg.map').dataset.off = [...off].join(' ');
   for (const g of hallsG.children) {{
-    const on = !filter || g.dataset.d === filter;
+    const on = (!filter || g.dataset.d === filter) && (!focus || g.dataset[focus] !== '0');
     g.classList.toggle('dim', !on);
     g.setAttribute('aria-pressed', g.dataset.s === selected ? 'true' : 'false');
   }}
   for (const b of dlist.children) b.setAttribute('aria-pressed', b.dataset.d === filter ? 'true' : 'false');
 }}
 
+/* the panel a hall opens lies far below the plan on most screens: a click that
+   only fills it looks like a click that did nothing, so bring it into view and
+   put focus on it (a keyboard or screen-reader user lands where the content is) */
+const detailEl = document.getElementById('detail');
+detailEl.setAttribute('tabindex', '-1');
+function showDetail() {{
+  detailEl.scrollIntoView({{ block: 'start' }});
+  detailEl.focus({{ preventScroll: true }});
+}}
 hallsG.addEventListener('click', (e) => {{
   const g = e.target.closest('.hall'); if (!g) return;
-  selected = g.dataset.s; renderDetail(selected); apply();
+  selected = g.dataset.s; renderDetail(selected); apply(); showDetail();
 }});
 hallsG.addEventListener('keydown', (e) => {{
   if (e.key !== 'Enter' && e.key !== ' ') return;
   const g = e.target.closest('.hall'); if (!g) return;
-  e.preventDefault(); selected = g.dataset.s; renderDetail(selected); apply();
+  e.preventDefault(); selected = g.dataset.s; renderDetail(selected); apply(); showDetail();
+}});
+layersEl.addEventListener('change', (e) => {{
+  const t = e.target.closest('[data-toggle]'); if (!t) return;
+  if (t.checked) off.delete(t.dataset.toggle); else off.add(t.dataset.toggle); apply();
+}});
+layersEl.addEventListener('click', (e) => {{
+  const b = e.target.closest('[data-focus]'); if (!b) return;
+  e.preventDefault(); focus = focus === b.dataset.focus ? null : b.dataset.focus;
+  for (const x of layersEl.querySelectorAll('[data-focus]')) x.setAttribute('aria-pressed', x.dataset.focus === focus ? 'true' : 'false');
+  apply();
 }});
 dlist.addEventListener('click', (e) => {{
   const b = e.target.closest('.dbtn'); if (!b) return;
@@ -652,7 +1026,11 @@ dlist.addEventListener('click', (e) => {{
 
 renderDetail(selected); apply();
 </script>
-'''
+''' + '<style>' + TASKS_CSS + '</style>\n' + TASK_FILTER_JS + '\n' + QUEST_TAIL
 
 out = ROOT / 'trade_craft_map.html'
+PAGE = apply_seo(PAGE, 'web/trade_craft_map.html', 'Network plan \u2014 SmartCiti.X : Trade Craft Academy',
+    S('seo.desc.map'), 'page')
+# AUDIT row 12: follow the reader's saved style (sitenav.with_style_memory, UX)
+PAGE = with_style_memory(PAGE)
 emit(out, PAGE, f'{len(halls)} halls | {TOTALS["all"]:,} modules', encoding='utf-8')

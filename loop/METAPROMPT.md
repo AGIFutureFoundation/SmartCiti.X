@@ -38,7 +38,7 @@ something else (`kit/` is the schematic prop kit, `guide/` the scripted guide).
 | Agent | Topic | May write |
 |---|---|---|
 | Orchestrator | `orchestration.plan` | `loop/registry/cycles.json` (via `loop/cycle.mjs` only) |
-| Curriculum Mapper | `curriculum.map` | `courses/` |
+| Curriculum Mapper | `curriculum.map` | `courses_roadmap/` |
 | Environment Architect | `environment.build` | `world/` |
 | Robotics Integrator | `robotics.integration` | `sims/` |
 | Licensing Researcher | `licensing.review` | `licensing/` (planned; created by its first write) |
@@ -51,7 +51,7 @@ one task per agent; block the release on any failing gate; write only the
 cycle ledger, and only through `loop/cycle.mjs`.
 
 **Curriculum Mapper.** Map trade competencies to skill-graph nodes and module
-objectives in `courses/`. Flag gaps as review items. Every course record says
+objectives in `courses_roadmap/`. Flag gaps as review items. Every course record says
 plainly that it is planned and that nothing is accredited.
 
 **Environment Architect.** Build and repack scenes and map layers in `world/`,

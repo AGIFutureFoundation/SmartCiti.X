@@ -419,6 +419,33 @@ const desk = () => {
   ok('SECURITY.md calls nothing "not built" that the packs export, and names no owner it does not have');
 }
 
+/* ------------------------------------------- canonical response headers - */
+{
+  // security/headers.json is the one header policy; each deploy config is held to it.
+  const H = JSON.parse(readFileSync(join(HERE, 'headers.json'), 'utf8'));
+  for (const list of ['site', 'api']) {
+    assert.ok(Array.isArray(H[list]) && H[list].length > 0, `headers.json ${list} is empty`);
+    for (const h of H[list]) {
+      assert.ok(typeof h.key === 'string' && /^[A-Za-z-]+$/.test(h.key), `headers.json ${list}: bad key`);
+      assert.ok(typeof h.value === 'string' && h.value.length > 0 && !/[\r\n]/.test(h.value), `headers.json ${list} ${h.key}: bad value`);
+      assert.ok(typeof h.why === 'string' && h.why.length > 0, `headers.json ${list} ${h.key}: no reason`);
+    }
+  }
+  for (const h of H.site) assert.equal(typeof h.in_vercel, 'boolean', `headers.json site ${h.key}: in_vercel must be true or false`);
+  const V = JSON.parse(readFileSync(join(ROOT, 'vercel.json'), 'utf8'));
+  const all = V.headers.filter((r) => r.source === '/(.*)').flatMap((r) => r.headers.map((h) => `${h.key}: ${h.value}`)).sort();
+  const want = H.site.filter((h) => h.in_vercel).map((h) => `${h.key}: ${h.value}`).sort();
+  assert.deepEqual(all, want, 'vercel.json site headers differ from security/headers.json (in_vercel)');
+  const csp = H.site.find((h) => h.key === 'Content-Security-Policy');
+  assert.ok(csp && /frame-ancestors 'none'/.test(csp.value) && /object-src 'none'/.test(csp.value), 'the baseline CSP forbids framing and plugins');
+  const api = H.api.find((h) => h.key === 'Content-Security-Policy');
+  assert.ok(api && /^default-src 'none'/.test(api.value), 'the API CSP is deny-all');
+  const cf = readFileSync(join(ROOT, 'cloudflare/_headers'), 'utf8');
+  for (const h of H.site) assert.ok(cf.includes(`/*\n`) && cf.includes(`  ${h.key}: ${h.value}\n`), `cloudflare/_headers lacks ${h.key}`);
+  for (const h of H.api) assert.ok(cf.split('/api/*\n')[1]?.includes(`  ${h.key}: ${h.value}\n`), `cloudflare/_headers /api/* lacks ${h.key}`);
+  ok('one header policy (headers.json): vercel.json and cloudflare/_headers carry exactly what it says');
+}
+
 {
   const root = readFileSync(join(ROOT, 'SECURITY.md'), 'utf8');
   const m = root.match(/ships with (\d+) checks in `test\.mjs`/);

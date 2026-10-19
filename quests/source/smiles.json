@@ -1,0 +1,327 @@
+{
+ "from": "SMILES",
+ "for": "quests/build.py multi-source loader (BAYOU): world smiles:<zone>, zones are smiles/registry/smiles.json zones[].id",
+ "note": "AUTHORED tooth-fairy style eggs in the AUTHORED Unspoken Smiles district. Play only: never a completion record.",
+ "entries": [
+  {
+   "id": "egg-smiles-tooth-fairy-coin",
+   "kind": "egg",
+   "title": "The tooth fairy dropped a coin",
+   "world": "smiles:park",
+   "place": "bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Where do tired walkers rest by the river?",
+   "reward": {
+    "badge": "badge-egg-smiles-tooth-fairy-coin",
+    "label": "Tooth fairy friend"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "reveal": "Baby teeth hold space for adult teeth, so caring for them matters too (public-health dental guidance)."
+  },
+  {
+   "id": "egg-smiles-golden-toothbrush",
+   "kind": "egg",
+   "title": "The golden toothbrush",
+   "world": "smiles:school",
+   "place": "classroom",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Two minutes, twice a day - find the brush that shines at school.",
+   "reward": {
+    "badge": "badge-egg-smiles-golden-toothbrush",
+    "label": "Golden brusher"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "reveal": "Brushing twice a day for two minutes with fluoride toothpaste is the everyday habit public-health dental guidance recommends."
+  },
+  {
+   "id": "egg-smiles-lost-molar",
+   "kind": "egg",
+   "title": "A lost baby molar",
+   "world": "smiles:playground",
+   "place": "sandbox",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Something small and white is buried where kids dig.",
+   "reward": {
+    "badge": "badge-egg-smiles-lost-molar",
+    "label": "Molar finder"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "reveal": "Back teeth have grooves where food can hide; dental sealants are one way clinics help protect them (public-health dental guidance)."
+  },
+  {
+   "id": "egg-smiles-floss-rainbow",
+   "kind": "egg",
+   "title": "The floss rainbow",
+   "world": "smiles:community",
+   "place": "hall",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Between the teeth and between the walls - look for a thread of colour.",
+   "reward": {
+    "badge": "badge-egg-smiles-floss-rainbow",
+    "label": "Floss explorer"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "reveal": "Cleaning between your teeth every day reaches places a toothbrush misses (public-health dental guidance)."
+  },
+  {
+   "id": "egg-smiles-van-sticker",
+   "kind": "egg",
+   "title": "The van's secret sticker",
+   "world": "smiles:vanlot",
+   "place": "van",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The clinic on wheels hides a smile sticker.",
+   "reward": {
+    "badge": "badge-egg-smiles-van-sticker",
+    "label": "Van spotter"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "reveal": "Mobile dental vans and school programmes bring check-ups to where people already are (public-health dental programmes, in general terms)."
+  },
+  {
+   "id": "egg-smiles-sugar-bug",
+   "kind": "egg",
+   "title": "The sugar bug poster",
+   "world": "smiles:shop",
+   "place": "shelf",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A sneaky bug loves sticky sweets - find its poster in the shop.",
+   "reward": {
+    "badge": "badge-egg-smiles-sugar-bug",
+    "label": "Sugar bug buster"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "reveal": "Mouth germs feed on sugar and make acids that can harm tooth enamel, so limit sugary snacks and drinks (public-health dental guidance)."
+  },
+  {
+   "id": "egg-smiles-giant-molar",
+   "kind": "egg",
+   "title": "The giant model molar",
+   "world": "smiles:clinic",
+   "place": "lab",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The lab bench keeps a tooth far too big for any mouth.",
+   "reward": {
+    "badge": "badge-egg-smiles-giant-molar",
+    "label": "Model maker"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "reveal": "Dental labs make crowns, dentures and models from impressions or digital scans - one of many dental careers."
+  },
+  {
+   "id": "egg-smiles-garden-carrot",
+   "kind": "egg",
+   "title": "The crunchy carrot",
+   "world": "smiles:garden",
+   "place": "bed",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A crunchy snack grows in the ground near the van lot.",
+   "reward": {
+    "badge": "badge-egg-smiles-garden-carrot",
+    "label": "Crunch champion"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "reveal": "Crunchy vegetables, cheese and water are tooth-friendly snack choices (general public-health nutrition guidance)."
+  },
+  {
+   "id": "egg-smiles-library-book",
+   "kind": "egg",
+   "title": "The picture book about teeth",
+   "world": "smiles:library",
+   "place": "shelf",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A quiet place with many stories hides one about smiles.",
+   "reward": {
+    "badge": "badge-egg-smiles-library-book",
+    "label": "Story smile"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "reveal": "Picture books about brushing and check-ups are a friendly way for families to talk about healthy habits (public-health dental guidance)."
+  },
+  {
+   "id": "egg-smiles-water-bottle",
+   "kind": "egg",
+   "title": "The team water bottle",
+   "world": "smiles:sports",
+   "place": "bench",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Thirsty after the match? Look by the bench.",
+   "reward": {
+    "badge": "badge-egg-smiles-water-bottle",
+    "label": "Water champion"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "reveal": "Water is a great drink after sport; many sports drinks have added sugar (public-health dental guidance)."
+  },
+  {
+   "id": "egg-smiles-mouthguard",
+   "kind": "egg",
+   "title": "The lost mouthguard",
+   "world": "smiles:sports",
+   "place": "goal",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Players protect their smiles near the goal.",
+   "reward": {
+    "badge": "badge-egg-smiles-mouthguard",
+    "label": "Mouthguard keeper"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "reveal": "A mouthguard helps protect teeth during contact sports (public-health dental guidance)."
+  },
+  {
+   "id": "egg-smiles-bus-reminder",
+   "kind": "egg",
+   "title": "The check-up reminder card",
+   "world": "smiles:busstop",
+   "place": "shelter",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Wait for the bus and read the reminder.",
+   "reward": {
+    "badge": "badge-egg-smiles-bus-reminder",
+    "label": "Check-up planner"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "reveal": "Regular dental check-ups are part of public-health dental guidance - plan how you will get there."
+  },
+  {
+   "id": "egg-smiles-market-apple",
+   "kind": "egg",
+   "title": "The crunchy apple",
+   "world": "smiles:market",
+   "place": "stall",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A market stall keeps a crunchy, tooth-friendly snack.",
+   "reward": {
+    "badge": "badge-egg-smiles-market-apple",
+    "label": "Market muncher"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "reveal": "Whole fruit and vegetables make tooth-friendly snacks (general public-health nutrition guidance)."
+  },
+  {
+   "id": "egg-smiles-soap-bar",
+   "kind": "egg",
+   "title": "The bubbly soap bar",
+   "world": "smiles:homes-a",
+   "place": "porch",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Someone left soap by a porch on Maple Row.",
+   "reward": {
+    "badge": "badge-egg-smiles-soap-bar",
+    "label": "Bubble hero"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "reveal": "Wash hands with soap and water, scrubbing all over, before eating and after the toilet (public-health hand hygiene guidance)."
+  },
+  {
+   "id": "egg-smiles-brush-swap",
+   "kind": "egg",
+   "title": "The old frayed toothbrush",
+   "world": "smiles:homes-b",
+   "place": "garden",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A worn-out brush waits in a Birch Row garden.",
+   "reward": {
+    "badge": "badge-egg-smiles-brush-swap",
+    "label": "Brush swapper"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "reveal": "Replace a toothbrush when its bristles look frayed or worn (public-health dental guidance)."
+  },
+  {
+   "id": "egg-smiles-fluoride-tap",
+   "kind": "egg",
+   "title": "The kitchen tap",
+   "world": "smiles:homes-c",
+   "place": "kitchen",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Clean water flows in a Cedar Row kitchen.",
+   "reward": {
+    "badge": "badge-egg-smiles-fluoride-tap",
+    "label": "Tap detective"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "reveal": "Many communities add fluoride to drinking water to help prevent tooth decay (public-health dental guidance)."
+  }
+ ]
+}

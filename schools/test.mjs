@@ -116,6 +116,29 @@ ok('the interactive map renders a flipped-unit badge only for a hall that has on
   pageInteractive.includes('h.schoolsUnit') && pageInteractive.includes('schoolsChip')
   && pageInteractive.includes('trade_craft_3d.html?hall=${h.slug}'));
 
+/* ------------------------------------------------ units meet lessons --- */
+// A flipped unit names a hall; the lessons pack now stands in every hall.
+// The tie is re-derived here from both registries, so a unit whose hall
+// lost its lessons, or a band whose tier no lesson or skill can carry,
+// fails by name rather than showing an empty pathway.
+const lessonsReg = JSON.parse(readFileSync(new URL('../lessons/registry/lessons.json', import.meta.url)));
+const skillTiers = new Set(JSON.parse(readFileSync(new URL('../pack/registry/skills.json', import.meta.url)))
+  .skills.map((k) => k.tier));
+const lessonHalls = new Set(Object.values(lessonsReg.lessons).map((L) => L.hall));
+const unitsWithoutLesson = reg.units.filter((u) => !lessonHalls.has(u.hall)).map((u) => u.hall);
+ok('every flipped unit stands in a hall that has at least one walkable lesson'
+  + (unitsWithoutLesson.length ? ` - none in ${unitsWithoutLesson.join(', ')}` : ''),
+  unitsWithoutLesson.length === 0);
+ok('every tier a band declares is a skill tier the pack declares, and K-5 alone is tierless',
+  reg.bands.every((b) => (b.band === 'K-5') === (b.tier === null)
+    && (b.tier === null || skillTiers.has(b.tier))));
+ok('every lesson tier in use is the tier of exactly one band, so each lesson has one band to land in by tier',
+  [...new Set(Object.values(lessonsReg.lessons).map((L) => L.tier))]
+    .every((t) => reg.bands.filter((b) => b.tier === t).length === 1));
+ok('the lessons pack plugs into the class and floor stages this model declares, and never the gate',
+  lessonsReg.plugs_into.stages_used.every((s) => reg.model.stages.some((m) => m.stage === s))
+  && !lessonsReg.plugs_into.stages_used.includes('gate'));
+
 const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('the registry was built from the current builder source (stamp check)',
   reg.source_stamp === createHash('sha256').update(src).digest('hex').slice(0, 16));

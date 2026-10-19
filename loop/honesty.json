@@ -1,5 +1,5 @@
 {
-  "about": "The one honesty vocabulary for SmartCiti.X : Trade Craft Academy. loop/honesty.mjs (EV-05, courses/test.mjs) and courses/build.py both load this file, so Node and Python judge text identically. Entries are regex sources valid in both JavaScript and Python. claims and negations match case-insensitively; abbreviations match case-sensitively. A claim is excused only by a negation EARLIER in the same clause.",
+  "about": "The one honesty vocabulary for SmartCiti.X : Trade Craft Academy. loop/honesty.mjs (EV-05, courses_roadmap/test.mjs) and courses_roadmap/build.py both load this file, so Node and Python judge text identically. Entries are regex sources valid in both JavaScript and Python. claims and negations match case-insensitively; abbreviations match case-sensitively. A claim is excused only by a negation EARLIER in the same clause.",
   "claims": [
     "\\baccredited\\b",
     "\\bendorsed\\b",

@@ -1,264 +1,244 @@
-/**
- * Courses pack verification.
- *
- * The twelve courses are a PLANNED draft mapped onto machinery this
- * repository ships. Every mapping is a claim - a hall exists, a simulator
- * binds that hall, a station stands in it, a wired module runs on a real
- * site - and every one is proven here against the pack that owns it. The
- * draft's own honesty is held to account too: a course that claims credit,
- * an accrediting body or a partner it does not have fails its build.
- */
+/* courses/test.mjs - the course catalogue and the lesson supplements, checked against the registries they are composed
+ * from. Browser-free, network-free. Recompute, never re-read: every course is regrouped from lessons.json, every order
+ * re-sorted from the ladder, every band re-derived from the schools offer, every placard quote re-printed by the 3D
+ * page's own condLine() (extracted from web/build_3d.py and run here), and every self-check answer, glossary meaning
+ * and key concept is resolved at the registry pointer it names. */
+import { readFileSync, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
-import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { claimHits, verdict } from '../loop/honesty.mjs';
+import { dirname, join } from 'node:path';
+import { execFileSync } from 'node:child_process';
 
-let n = 0;
-const ok = (m, c) => { if (!c) { console.error('FAIL', m); process.exit(1); } n++; console.log('  ok ', m); };
+const HERE = dirname(fileURLToPath(import.meta.url));
+const ROOT = join(HERE, '..');
+let pass = 0, fail = 0;
+const ok = (m, c, why) => { if (c) { pass++; console.log('  ok  ' + m); } else { fail++; console.log('FAIL  ' + m + (why !== undefined ? ' :: ' + JSON.stringify(why).slice(0, 500) : '')); } };
+const J = (p) => JSON.parse(readFileSync(join(ROOT, p), 'utf8'));
 
-const read = (p) => JSON.parse(readFileSync(new URL(p, import.meta.url)));
-const regPath = new URL('./registry/courses.json', import.meta.url);
-const regBytes = readFileSync(regPath, 'utf8');
-const reg = JSON.parse(regBytes);
-const manifest = read('../pack/manifest.json');
-const draft = read('./draft/curriculum_2026q4.json');
-const slugs = new Set(read('../unions/registry/unions.json').unions.map((u) => u.slug));
-const sims = read('../sims/registry/sims.json');
-const stationsReg = read('../stations/registry/stations.json').stations;
-const stationHall = new Map(stationsReg.map((s) => [s.station_id, s.hall]));
-const lessons = read('../lessons/registry/lessons.json').lessons;
-const cribs = read('../tools/registry/toolcribs.json');
+const reg = J('courses/registry/courses.json');
+const LES = J('lessons/registry/lessons.json'), HALLS = J('pack/registry/halls.json').halls, DIST = J('unions/registry/districts.json').districts;
+const CAMP = J('unions/registry/campuses.json').campuses, SIMS = J('sims/registry/sims.json'), STA = J('stations/registry/stations.json');
+const CRIBS = J('tools/registry/toolcribs.json'), FIN = J('surfaces/registry/finishes.json'), ADV = J('agents/registry/advisors.json');
+const CREWS = J('agents/registry/crews.json'), SCH = J('schools/registry/schools.json');
+const ROOMS = JSON.parse(execFileSync('python3', ['-c', `import json,sys; sys.path.insert(0, ${JSON.stringify(join(ROOT, 'web'))}); from interiors import ROOMS; print(json.dumps([[s, l, p] for s, l, _w, _h, p in ROOMS]))`], { encoding: 'utf8' }));
+const STRANDS = ROOMS.map((r) => r[0]), LABEL = Object.fromEntries(ROOMS.map((r) => [r[0], r[1]])), PURPOSE = Object.fromEntries(ROOMS.map((r) => [r[0], r[2]]));
+const L = LES.lessons, LORDER = Object.keys(L), C = reg.courses, CV = Object.values(C), SUP = reg.supplements;
+const sha16 = (b) => createHash('sha256').update(b).digest('hex').slice(0, 16);
 
-const C = reg.courses;
-const byCode = Object.fromEntries(C.map((c) => [c.code, c]));
-const MENTORS = new Set(['Chris', 'Joyce', 'Tessa', 'Gemma', 'Iris', 'Dana', 'Sam']);
-const NEG = /\b(?:no|not|none|nothing|never|neither|nor)\b/i;
-const sentences = (t) => t.replace(/\b(e\.g|i\.e|Art|No)\./g, '$1').split(/(?<=[.!?])\s+/);
-function* strings(o) {
-  if (typeof o === 'string') yield o;
-  else if (Array.isArray(o)) for (const v of o) yield* strings(v);
-  else if (o && typeof o === 'object') for (const v of Object.values(o)) yield* strings(v);
+/* ---- provenance and staleness ---- */
+ok('the registry was built from the current builder source (stamp = sha256 of build.py + supplements.py)',
+  reg.source_stamp === sha16(Buffer.concat([readFileSync(join(HERE, 'build.py')), readFileSync(join(HERE, 'supplements.py'))])));
+ok(`every source registry is the one the catalogue was built from (${reg.sources.length} sha256 stamps re-hashed)`,
+  reg.sources.length === 12 && reg.sources.every((s) => existsSync(join(ROOT, s.path)) && sha16(readFileSync(join(ROOT, s.path))) === s.sha256),
+  reg.sources.filter((s) => !existsSync(join(ROOT, s.path)) || sha16(readFileSync(join(ROOT, s.path))) !== s.sha256).map((s) => s.path));
+ok('schema tc-courses/1, pack smartcitix-courses', reg.schema === 'tc-courses/1' && reg.pack === 'smartcitix-courses');
+
+/* ---- honesty ---- */
+ok('honesty: lessons stay unverified general practice, and no course certifies, qualifies or permits anybody',
+  /^unverified general practice/.test(reg.honesty.content) && /no course certifies, qualifies or permits anybody/.test(reg.honesty.not_certification));
+ok('honesty: prerequisites are advice, not a gate; the unaided verification gate is untouched', /Nothing is locked/.test(reg.honesty.not_a_gate) && /unaided verification gate/.test(reg.honesty.not_a_gate));
+ok('honesty: K-12 bands are DERIVED from the schools offer, not a placement; districts stay PROPOSED',
+  /DERIVED/.test(reg.honesty.bands) && /not a placement/.test(reg.honesty.bands) && /PROPOSED/.test(reg.honesty.bands));
+{ const text = JSON.stringify({ h: reg.honesty, r: reg.rules, s: reg.supplement_rules });
+  ok('the authored text claims no certification, accreditation, endorsement, partner agreement or trained model',
+    !/\b(accredit|endorse|certified by|approved by|agreement with|signed with|trained model)/i.test(text)); }
+{ const all = readFileSync(join(HERE, 'registry/courses.json'), 'utf8');
+  ok('no internal reference in the registry (no scratchpad or /tmp path, no memory/ or console mention, no model identifier)',
+    !/\/tmp\/|scratchpad|memory\/|consoles?\b|claude-|gpt-|\bopus\b|\bsonnet\b/i.test(all)); }
+
+/* ---- the catalogue: grouping, recounted ---- */
+const trade = CV.filter((c) => c.kind === 'trade'), strand = CV.filter((c) => c.kind === 'strand');
+ok(`counts are recounted: ${CV.length} courses = ${trade.length} trade + ${strand.length} strand; ${LORDER.length} lessons, steps summed from lessons.json`,
+  reg.counts.courses === CV.length && reg.counts.trade_courses === trade.length && reg.counts.strand_courses === strand.length
+  && reg.counts.lessons === LORDER.length && reg.counts.steps === LORDER.reduce((a, k) => a + L[k].steps.length, 0)
+  && reg.counts.steps === LES.counts.steps && reg.counts.lessons === LES.counts.lessons);
+ok(`one trade course per hall of pack/registry/halls.json (${HALLS.length}), titled with the roster name and focus (READ)`,
+  trade.length === HALLS.length && HALLS.every((h) => C['trade.' + h.slug] && C['trade.' + h.slug].title === h.name && C['trade.' + h.slug].focus === h.focus));
+ok('each trade course sits in its hall\'s district and campus (re-read from unions/)',
+  trade.every((c) => DIST[c.district].halls.includes(c.hall) && DIST[c.district].name === c.district_name
+    && CAMP[c.campus].halls.includes(c.hall) && CAMP[c.campus].name === c.campus_name));
+ok(`the catalogue lists the ${Object.keys(DIST).length} districts in registry order, each with exactly its halls' courses`,
+  JSON.stringify(reg.districts.map((d) => [d.district, d.name, d.courses])) === JSON.stringify(Object.entries(DIST).map(([k, d]) => [k, d.name, d.halls.map((h) => 'trade.' + h)])));
+ok(`one strand course per room of web/interiors.py (${STRANDS.length}), titled with the room label and purpose (READ)`,
+  strand.length === STRANDS.length && STRANDS.every((s) => C['strand.' + s] && C['strand.' + s].title === LABEL[s] && C['strand.' + s].focus === PURPOSE[s]));
+ok('every lesson is in exactly one trade course (its hall) and exactly one strand course (its strand)',
+  LORDER.every((k) => trade.filter((c) => c.lessons.includes(k)).length === 1 && C['trade.' + L[k].hall].lessons.includes(k)
+    && strand.filter((c) => c.lessons.includes(k)).length === 1 && C['strand.' + L[k].strand].lessons.includes(k)));
+const depth = LES.ladder.depth;
+const sorted = (ids) => [...ids].sort((a, b) => depth[a] - depth[b] || LORDER.indexOf(a) - LORDER.indexOf(b));
+ok('every course outline is in ladder order: depth, then the lessons registry order (re-sorted here)',
+  CV.every((c) => JSON.stringify(c.lessons) === JSON.stringify(sorted(c.lessons)) && JSON.stringify(c.outline.map((o) => o.lesson)) === JSON.stringify(c.lessons)));
+ok('every outline row reads its title, room, tier, campus and step count from the lesson (READ, not retyped)',
+  CV.every((c) => c.outline.every((o) => { const l = L[o.lesson]; return o.title === l.title && o.room_label === l.room_label && o.tier === l.tier
+    && o.campus === l.campus && o.steps === l.steps.length && o.depth === depth[o.lesson] && o.hall_name === l.hall_name
+    && JSON.stringify(o.kinds) === JSON.stringify(l.steps.map((s) => s.kind)); })));
+{ const edges = LES.ladder.edges.length; let tin = 0, tout = 0, sin = 0, sout = 0, good = true;
+  for (const c of CV) {
+    const want = c.lessons.flatMap((k) => LES.ladder.prerequisites[k].map((p) => ({ lesson: k, needs: p.needs, because: p.because })));
+    const got = [...c.prerequisites_inside, ...c.prerequisites_outside];
+    if (JSON.stringify(got.map((x) => JSON.stringify(x)).sort()) !== JSON.stringify(want.map((x) => JSON.stringify(x)).sort())) good = false;
+    if (!c.prerequisites_inside.every((p) => c.lessons.includes(p.needs)) || !c.prerequisites_outside.every((p) => !c.lessons.includes(p.needs))) good = false;
+    if (c.kind === 'trade') { tin += c.prerequisites_inside.length; tout += c.prerequisites_outside.length; } else { sin += c.prerequisites_inside.length; sout += c.prerequisites_outside.length; }
+  }
+  ok(`prerequisites are the ladder's own ${edges} edges, each kept once per course family and split inside/outside correctly (trade ${tin}+${tout}, strand ${sin}+${sout})`,
+    good && tin + tout === edges && sin + sout === edges && reg.counts.cross_course_edges_trade === tout); }
+{ const bad = CV.filter((c) => { const halls = c.kind === 'trade' ? [c.hall] : [...new Set(c.lessons.map((k) => L[k].hall))];
+    const bound = [...new Set(halls.flatMap((h) => (SIMS.hall_bindings[h] || []).map((b) => b.sim)))];
+    const steps = c.lessons.flatMap((k) => L[k].steps);
+    const inl = [...new Set(steps.filter((s) => s.kind === 'sim' || s.kind === 'walkaround').map((s) => s.sim))];
+    const t = c.seat_time;
+    return JSON.stringify([...t.seats_bound].sort()) !== JSON.stringify(bound.sort()) || JSON.stringify([...t.seats_in_lessons].sort()) !== JSON.stringify(inl.sort())
+      || t.sim_runs !== steps.filter((s) => s.kind === 'sim').length || t.walkaround_points !== steps.filter((s) => s.kind === 'walkaround').length
+      || t.crew_asks !== steps.filter((s) => s.kind === 'crew').length || t.minutes !== null; });
+  ok('seat time is recounted (seats bound via sims hall_bindings, seat runs, walkaround points, crew asks) and no course gives minutes', bad.length === 0, bad.map((c) => c.id)); }
+ok('no minutes can be read from sims/: every seat\'s time axis is informational, so "minutes: null" is the record, not an omission',
+  Object.values(SIMS.sims).every((s) => s.rubric.filter((r) => r.axis === 'time').every((r) => r.pass === 'informational')));
+ok(`trade courses with a bound seat = the lessons pack's seat-bound halls (${LES.spread.seat_bound_halls.length})`,
+  JSON.stringify(trade.filter((c) => c.seat_time.seats_bound.length).map((c) => c.hall).sort()) === JSON.stringify([...LES.spread.seat_bound_halls].sort()));
+
+/* ---- tiers and K-12 bands, re-derived ---- */
+const TR = { fundamentals: 0, applied: 1, mastery: 2 };
+ok('the three tiers are the skill graph\'s, and mastery is honestly empty (no lesson stands at it)',
+  JSON.stringify(reg.tiers) === JSON.stringify(['fundamentals', 'applied', 'mastery']) && reg.counts.lessons_by_tier.mastery === LORDER.filter((k) => L[k].tier === 'mastery').length
+  && reg.counts.lessons_by_tier.fundamentals + reg.counts.lessons_by_tier.applied + reg.counts.lessons_by_tier.mastery === LORDER.length);
+ok('each band rule rests on words its schools/ offer still says, with the tier schools/ gives it',
+  SCH.bands.every((b) => { const r = reg.rules.bands[b.band]; return r && b.offer.includes(r.rests_on) && (b.tier === null || b.tier === r.max_tier); })
+  && Object.keys(reg.rules.bands).join() === SCH.bands.map((b) => b.band).join());
+const bandsOf = (l) => SCH.bands.map((b) => b.band).filter((b) => { const r = reg.rules.bands[b];
+  return TR[l.tier] <= TR[r.max_tier] && l.steps.every((s) => r.kinds.includes(s.kind)); });
+ok('every lesson\'s bands are re-derived by the printed rule (tier ceiling and allowed step kinds)',
+  CV.every((c) => c.outline.every((o) => JSON.stringify(o.bands) === JSON.stringify(bandsOf(L[o.lesson])))
+    && JSON.stringify(c.bands) === JSON.stringify(Object.keys(c.band_lessons).filter((b) => c.band_lessons[b].length))
+    && Object.entries(c.band_lessons).every(([b, ids]) => JSON.stringify(ids) === JSON.stringify(c.lessons.filter((k) => bandsOf(L[k]).includes(b))))));
+ok('K-5 admits no seat, walkaround, crew, station or crib step; 6-8 admits no floor step (the offers\' own limits)',
+  LORDER.filter((k) => bandsOf(L[k]).includes('K-5')).every((k) => L[k].steps.every((s) => ['walk', 'placard', 'advisor'].includes(s.kind)))
+  && LORDER.filter((k) => bandsOf(L[k]).includes('6-8')).every((k) => L[k].steps.every((s) => s.stage === 'class') && L[k].tier === 'fundamentals'));
+
+/* ---- supplements ---- */
+const S = Object.values(SUP);
+ok(`one supplement per lesson (${S.length} of ${LORDER.length}), in registry order`, JSON.stringify(Object.keys(SUP)) === JSON.stringify(LORDER));
+// a resolver for "path#a.b.c": greedy keys (a binding id may hold a dot), arrays by [i] or by element id
+const FILES = { 'lessons/registry/lessons.json': LES, 'sims/registry/sims.json': SIMS, 'stations/registry/stations.json': STA,
+  'tools/registry/toolcribs.json': CRIBS, 'surfaces/registry/finishes.json': FIN, 'agents/registry/advisors.json': ADV,
+  'agents/registry/crews.json': CREWS, 'web/interiors.py': { ROOMS: Object.fromEntries(ROOMS.map((r) => [r[0], { id: r[0], label: r[1], purpose: r[2] }])) } };
+function resolve(ref) {
+  const [file, ptr] = ref.split('#'); let node = FILES[file]; if (!node || !ptr) return undefined;
+  const segs = ptr.split('.');
+  for (let i = 0; i < segs.length;) {
+    let seg = segs[i], idx = null; const m = seg.match(/^(.*)\[(\d+)\]$/); if (m) { seg = m[1]; idx = Number(m[2]); }
+    if (Array.isArray(node)) { node = node.find((x) => x && (x.id === seg || x.station_id === seg)); i++; }
+    else if (node && typeof node === 'object') {
+      let j = segs.length; while (j > i && !(segs.slice(i, j).join('.').replace(/\[\d+\]$/, '') in node)) j--;
+      if (j === i) return undefined;
+      const key = segs.slice(i, j).join('.'); const mm = key.match(/^(.*)\[(\d+)\]$/);
+      node = mm ? node[mm[1]][Number(mm[2])] : node[key]; i = j; idx = null; continue;
+    } else return undefined;
+    if (idx !== null && node) node = node[idx];
+  }
+  return node;
 }
+ok('every glossary term carries the meaning its owning record gives (tool use, room purpose, place, seat task, scenario brief, point check, advisor role, crew job) or none',
+  S.every((s) => s.glossary.every((g) => { const n = resolve(g.source);
+    if (g.kind === 'ppe' || g.kind === 'hazard') return Array.isArray(n) && n.includes(g.term) && g.meaning === null && g.listed_in;
+    if (g.kind === 'tool') return n && n.name === g.term && n.use === g.meaning;
+    if (g.kind === 'room') return n && n.label === g.term && n.purpose === g.meaning;
+    if (g.kind === 'place') return n && n.short === g.term && n.what === g.meaning;
+    if (g.kind === 'seat') return typeof n === 'string' && n === g.meaning;
+    if (g.kind === 'scenario') return n && n.name === g.term && n.brief === g.meaning;
+    if (g.kind === 'walkaround') return n && n.point === g.term && n.check === g.meaning;
+    if (g.kind === 'advisor') return n && n.name === g.term && n.role === g.meaning;
+    if (g.kind === 'crew-role') return n && n.name === g.term && n.job === g.meaning;
+    return false; })), S.flatMap((s) => s.glossary.filter((g) => !resolve(g.source)).map((g) => s.lesson + ': ' + g.source)).slice(0, 5));
+ok('every supplement\'s glossary holds every tool of its hall\'s district crib (the crib named in where-to-go)',
+  S.every((s) => { const d = CRIBS.hall_bindings[s.hall].district; return s.where.crib.district === d && s.where.crib.name === CRIBS.cribs[d].name
+    && CRIBS.cribs[d].tools.every((t) => s.glossary.some((g) => g.kind === 'tool' && g.id === t.id)); }));
+ok('every key concept is found verbatim at the record it cites (a crew stop line as "<role>: <stops>")',
+  S.every((s) => s.concepts.every((c) => { const n = resolve(c.source); return c.kind === 'crew-stops' ? typeof n === 'string' && c.text.endsWith(': ' + n) : n === c.text; }))
+  && S.every((s) => s.concepts[0].kind === 'why' && s.concepts[0].text === L[s.lesson].why));
+// the placard, printed by the 3D page's own function
+const src3d = readFileSync(join(ROOT, 'web/build_3d.py'), 'utf8');
+const fm = src3d.match(/function condLine\(c\) \{[\s\S]*?\n\}/);
+const condLine = fm ? new Function(fm[0].replace(/\\u([0-9a-fA-F]{4})/g, (_, h) => '\\u' + h) + '; return condLine;')() : null;
+ok('condLine() is extracted from web/build_3d.py and runs here', typeof condLine === 'function');
+{ const bad = []; let n = 0;
+  for (const s of S) for (const p of s.safety.placards) { n++; const c = FIN.halls[s.hall].conditions[p.strand];
+    if (!condLine || p.quote !== condLine(c) || p.placard_hung !== c.ppe.length > 0 || JSON.stringify(p.ppe) !== JSON.stringify(c.ppe)
+      || JSON.stringify(p.hazards) !== JSON.stringify(c.hazards) || p.room_label !== LABEL[p.strand]) bad.push(s.lesson + ':' + p.strand); }
+  ok(`every safety note quotes the door placard verbatim as the 3D page prints it (${n} quotes, ${S.reduce((a, s) => a + s.safety.placards.filter((p) => p.placard_hung).length, 0)} hung)`,
+    bad.length === 0 && n === reg.supplement_counts.placard_quotes, bad.slice(0, 5)); }
+ok('every room a lesson walks has its record quoted, and every placard step\'s room is marked as read',
+  S.every((s) => { const rooms = [...new Set(L[s.lesson].steps.map((x) => x.where).filter((w) => STRANDS.includes(w)))];
+    return JSON.stringify(s.safety.placards.map((p) => p.strand)) === JSON.stringify(rooms)
+      && L[s.lesson].placard_steps_in.every((w) => s.safety.placards.find((p) => p.strand === w && p.read_in_lesson && p.placard_hung)); }));
+ok('every safety section is labelled unverified general practice and carries the lesson\'s limits and the not-certification line verbatim',
+  S.every((s) => s.safety.label === 'unverified general practice' && s.safety.limits === L[s.lesson].limits && s.safety.not_certification === LES.honesty.not_certification));
+ok('every safety line (walkaround fault, crew stop work, station checklist) is verbatim at its source',
+  S.every((s) => s.safety.lines.every((x) => resolve(x.source) === x.text)));
+/* questions */
+const QK = ['course.q.walk', 'course.q.placard', 'course.q.advisor', 'course.q.point', 'course.q.scenario', 'course.q.crew', 'course.q.crib', 'course.q.station', 'course.q.doctrine'];
+const answerAt = (q) => { const n = resolve(q.answer.ref); if (n === undefined || n === null) return false;
+  const fm2 = q.answer.ref.match(/halls\.([^.]+)\.conditions\.([^.]+)$/); if (fm2) return q.answer.id === fm2[1] + '.' + fm2[2];
+  if (n.options) return n.options.some((o) => o.prop === q.answer.id && o.correct === true);
+  return n.id === q.answer.id || n.station_id === q.answer.id || (typeof n === 'object' && q.answer.ref.endsWith('.' + q.answer.id)); };
+ok(`every self-check answer is a registry id that resolves at the pointer it names (${reg.supplement_counts.questions} questions)`,
+  S.every((s) => s.questions.every(answerAt)), S.flatMap((s) => s.questions.filter((q) => !answerAt(q)).map((q) => q.id)).slice(0, 5));
+ok('every question has its answer among its options exactly once, at least two options, no two options alike, and a known stem',
+  S.every((s) => s.questions.every((q) => q.options.filter((o) => o.id === q.answer.id).length === 1 && q.options.length >= 2
+    && new Set(q.options.map((o) => o.label)).size === q.options.length && QK.includes(q.stem))));
+ok('the answer is the step\'s own id: room = where, advisor = advisor, point = point, scenario = scenario, role = role, station = station',
+  S.every((s) => { const st = L[s.lesson].steps; const want = st.flatMap((x) => x.kind === 'walk' ? [x.where] : x.kind === 'placard' ? [s.hall + '.' + x.where]
+    : x.kind === 'advisor' ? [x.advisor] : x.kind === 'walkaround' ? [x.point] : x.kind === 'sim' ? [x.scenario] : x.kind === 'crew' ? [x.role] : []);
+    const got = s.questions.filter((q) => !['crib', 'station'].includes(q.kind)).map((q) => q.answer.id);
+    return JSON.stringify(got) === JSON.stringify(want); }));
+ok('every crib question is a drill item of the hall\'s district, answered by the drill\'s own tool (two when the lesson runs the crib check)',
+  S.every((s) => { const d = CRIBS.hall_bindings[s.hall].district, cq = s.questions.filter((q) => q.kind === 'crib');
+    return cq.length === (L[s.lesson].steps.some((x) => x.kind === 'crib') ? 2 : 1)
+      && cq.every((q) => CRIBS.drills[d].some((it) => it.ask === q.args.ask && it.tool === q.answer.id)); }));
+ok('every option label is the registry\'s label for that option id (no option text is typed)',
+  S.every((s) => s.questions.every((q) => q.options.every((o) => {
+    if (q.kind === 'walk') return LABEL[o.id] === o.label;
+    if (q.kind === 'advisor') return ADV.advisors[o.id].name === o.label;
+    if (q.kind === 'crib') return CRIBS.cribs[CRIBS.hall_bindings[s.hall].district].tools.find((t) => t.id === o.id).name === o.label;
+    if (q.kind === 'placard') { const [h, st] = o.id.split('.'); return condLine && condLine(FIN.halls[h].conditions[st]) === o.label; }
+    return typeof o.label === 'string' && o.label.length > 0; }))));
+{ const pos = S.flatMap((s) => s.questions.map((q) => q.options.findIndex((o) => o.id === q.answer.id)));
+  const hist = [0, 1, 2, 3].map((i) => pos.filter((p) => p === i).length);
+  ok(`the correct option is not always in one place (positions 1-4: ${hist.join('/')})`, hist.filter((h) => h > 0).length >= 3 && Math.max(...hist) < pos.length * 0.5); }
+ok(`at least three self-check questions per lesson (min ${reg.supplement_counts.min_questions})`, S.every((s) => s.questions.length >= 3) && reg.supplement_counts.min_questions >= 3);
+/* worksheet and where-to-go */
+const WK = { walk: 'course.w.walk', placard: 'course.w.placard', advisor: 'course.w.advisor', station: 'course.w.station', crib: 'course.w.crib', walkaround: 'course.w.walkaround', sim: 'course.w.sim', crew: 'course.w.crew' };
+ok('the worksheet is one line per step, with the step\'s own do-line verbatim and its kind\'s fill-in key',
+  S.every((s) => JSON.stringify(s.worksheet.map((w) => [w.n, w.kind, w.do, w.fill])) === JSON.stringify(L[s.lesson].steps.map((x) => [x.n, x.kind, x.do, WK[x.kind]])))
+  && S.every((s) => s.worksheet.every((w) => w.kind !== 'crib' || w.args.picks === CRIBS.drill.picks)));
+ok('where-to-go: the places walked, the advisors asked (with the room they stand in), the seats and crews run, from their records',
+  S.every((s) => { const st = L[s.lesson].steps;
+    return JSON.stringify(s.where.places.map((p) => p.where)) === JSON.stringify([...new Set(st.map((x) => x.where))])
+      && s.where.places.every((p) => p.label === (LABEL[p.where] || LES.off_room_places[p.where].short))
+      && JSON.stringify(s.where.advisors.map((a) => a.id)) === JSON.stringify([...new Set(st.filter((x) => x.kind === 'advisor').map((x) => x.advisor))])
+      && s.where.advisors.every((a) => a.stands_in === ADV.advisors[a.id].stands_in && a.name === ADV.advisors[a.id].name)
+      && JSON.stringify(s.where.seats.map((x) => x.sim)) === JSON.stringify([...new Set(st.filter((x) => x.kind === 'sim' || x.kind === 'walkaround').map((x) => x.sim))])
+      && JSON.stringify(s.where.crews.map((x) => x.crew)) === JSON.stringify([...new Set(st.filter((x) => x.kind === 'crew').map((x) => x.crew))]); }));
+ok('where-to-go links name real pages: the lesson anchor, the hall in 3D, the ladder',
+  S.every((s) => s.where.links.lesson === `web/trade_craft_lessons.html#lesson-${s.lesson}` && s.where.links.hall3d === `web/trade_craft_3d.html?hall=${s.hall}`)
+  && ['web/trade_craft_lessons.html', 'web/trade_craft_3d.html', 'web/trade_craft_ladder.html'].every((f) => existsSync(join(ROOT, f))));
+{ const sc = reg.supplement_counts;
+  ok(`supplement counts are recounted: ${sc.glossary_terms} glossary terms, ${sc.concepts} concepts, ${sc.questions} questions, ${sc.worksheet_lines} worksheet lines, ${sc.safety_lines} safety lines`,
+    sc.supplements === S.length && sc.glossary_terms === S.reduce((a, s) => a + s.glossary.length, 0) && sc.concepts === S.reduce((a, s) => a + s.concepts.length, 0)
+    && sc.questions === S.reduce((a, s) => a + s.questions.length, 0) && sc.worksheet_lines === reg.counts.steps
+    && sc.safety_lines === S.reduce((a, s) => a + s.safety.lines.length, 0)
+    && Object.values(sc.questions_by_kind).reduce((a, b) => a + b, 0) === sc.questions); }
 
-/* ------------------------------------------------------------- envelope --- */
-ok('registry envelope: pack, product, built, source_stamp present',
-  reg.pack === 'smartcitix-trade-craft-academy-courses'
-  && reg.product === 'SmartCiti.X : Trade Craft Academy (powered by AGI Corp)'
-  && /^\d{4}-\d{2}-\d{2}$/.test(reg.built) && /^[0-9a-f]{16}$/.test(reg.source_stamp));
-ok(`pack_version equals the manifest (${manifest.pack_version})`,
-  reg.pack_version === manifest.pack_version);
-ok('honesty block present and refuses status, credit, marks and mapping overclaims',
-  /PLANNED DRAFT/.test(reg.honesty.status) && /never count toward/.test(reg.honesty.credit)
-  && /no course is accredited/.test(reg.honesty.marks) && /not that the course content was reviewed/.test(reg.honesty.mapping));
-
-/* -------------------------------------------------------------- courses --- */
-ok('12 courses with unique TCA codes, matching the draft one to one',
-  C.length === 12 && new Set(C.map((c) => c.code)).size === 12
-  && C.every((c) => /^TCA-\d{3}$/.test(c.code))
-  && draft.courses.map((d) => d.code).join() === C.map((c) => c.code).join());
-ok('every course status is "planned draft"', C.every((c) => c.status === 'planned draft'));
-ok('module count and titles carried verbatim from the draft',
-  draft.courses.every((d) => {
-    const c = byCode[d.code];
-    return c.modules.length === d.modules.length
-      && d.modules.every((m, i) => c.modules[i].title === m.title && c.modules[i].n === i + 1);
-  }));
-ok('every module has all four stages in order home,class,floor,gate with non-empty text',
-  C.every((c) => c.modules.every((m) => m.stages.map((s) => s.stage).join() === 'home,class,floor,gate'
-    && m.stages.every((s) => typeof s.text === 'string' && s.text.trim().length > 10))));
-ok('stage text is the authored phase text: prepare->home, analyze->class, practice->floor, verify->gate',
-  draft.courses.every((d) => d.modules.every((m, i) => byCode[d.code].modules[i].stages
-    .every((s) => s.text === m.flipped[s.phase]
-      && { prepare: 'home', analyze: 'class', practice: 'floor', verify: 'gate' }[s.phase] === s.stage))));
-
-/* ---------------------------------------------------------------- halls --- */
-ok('every hall slug resolves in unions/registry/unions.json',
-  C.every((c) => c.halls.every((h) => slugs.has(h))));
-ok('every trade course outside beauty names at least one hall',
-  C.filter((c) => !c.roster_note).every((c) => c.halls.length > 0));
-ok('core trade mapping: electricians, hvacr, welders, carpenters, heavy-equip as planned',
-  byCode['TCA-110'].halls.includes('electricians') && byCode['TCA-130'].halls.includes('hvacr')
-  && byCode['TCA-140'].halls.includes('welders') && byCode['TCA-150'].halls.includes('carpenters')
-  && ['heavy-equip', 'operating-eng', 'survey-drone'].every((h) => byCode['TCA-160'].halls.includes(h))
-  && ['TCA-310', 'TCA-320'].every((k) => byCode[k].halls.includes('robotics')));
-ok('plumbing maps to pipefitters and carries a mapping_note that no plumbers hall exists',
-  byCode['TCA-120'].halls.join() === 'pipefitters' && !slugs.has('plumbers')
-  && /no plumbers hall/.test(byCode['TCA-120'].mapping_note));
-ok('cosmetology, nail and esthetics courses have empty halls AND a Beauty School roster_note',
-  ['TCA-210', 'TCA-220', 'TCA-230'].every((k) => byCode[k].halls.length === 0
-    && byCode[k].floor_sims.length === 0 && byCode[k].class_stations.length === 0
-    && /outside the 111-hall roster/.test(byCode[k].roster_note) && /Beauty School/.test(byCode[k].roster_note))
-  && C.filter((c) => c.roster_note).length === 3);
-ok('every course states what can run in this bundle; an empty floor is never silent',
-  C.every((c) => typeof c.delivery_status === 'string' && c.delivery_status.length > 20)
-  && ['TCA-210', 'TCA-220', 'TCA-230'].every((k) => /not part of this repository/.test(byCode[k].delivery_status))
-  && C.filter((c) => !c.roster_note && !c.floor_sims.length && !c.class_stations.length)
-      .every((c) => /no floor simulator/.test(c.delivery_status))
-  && C.filter((c) => c.floor_sims.length).every((c) => /all four stages/.test(c.delivery_status))
-  && C.filter((c) => !c.roster_note).every((c) => !/all four stages/.test(c.delivery_status) || c.floor_sims.length > 0));
-ok('a course with class stations but no floor sim (TCA-410) is station-only, not "all four stages"',
-  C.filter((c) => !c.floor_sims.length && c.class_stations.length).map((c) => c.code).join() === 'TCA-410'
-  && /class stations are bound but no floor simulator/.test(byCode['TCA-410'].delivery_status)
-  && byCode['TCA-410'].catalog_section === 'home-and-class');
-ok('leadership is cross_hall with a stated reason',
-  byCode['TCA-410'].cross_hall === true && byCode['TCA-410'].cross_hall_reason.length > 30);
-
-/* ------------------------------------------------------- sims, stations --- */
-ok('every floor_sim exists in sims.json and binds one of the course halls',
-  C.every((c) => c.floor_sims.every((id) => sims.sims[id]
-    && c.halls.some((h) => (sims.hall_bindings[h] || []).some((b) => b.sim === id)))));
-ok('floor_sims are complete: every sim bound to a mapped hall is listed',
-  C.every((c) => c.halls.every((h) => (sims.hall_bindings[h] || []).every((b) => c.floor_sims.includes(b.sim)))));
-ok('every class_station exists in stations.json and stands in a mapped hall',
-  C.every((c) => c.class_stations.every((id) => stationHall.has(id) && c.halls.includes(stationHall.get(id)))));
-ok('class_stations are complete: every station in a mapped hall is listed',
-  stationsReg.every((s) => C.every((c) => !c.halls.includes(s.hall) || c.class_stations.includes(s.station_id))));
-
-/* ---------------------------------------------------------------- wired --- */
-const wired = C.flatMap((c) => c.modules.filter((m) => m.wired).map((m) => [c.code, m]));
-const WIRED_SET = 'TCA-110#1,TCA-120#4,TCA-130#1,TCA-140#1,TCA-140#2,TCA-150#1';
-ok(`exactly ${WIRED_SET} are wired; every other module is wired:false with no sites`,
-  wired.map(([k, m]) => `${k}#${m.n}`).join() === WIRED_SET
-  && C.every((c) => c.modules.every((m) => typeof m.wired === 'boolean' && (m.wired || !('sites' in m)))));
-const siteResolves = (code, s) => {
-  const halls = byCode[code].halls;
-  if (s.kind === 'sim') return !!sims.sims[s.id] && halls.some((h) => (sims.hall_bindings[h] || []).some((b) => b.sim === s.id));
-  if (s.kind === 'station') return stationHall.has(s.id) && halls.includes(stationHall.get(s.id));
-  if (s.kind === 'lesson') return !!lessons[s.id] && halls.includes(lessons[s.id].hall);
-  if (s.kind === 'crib') return !!cribs.cribs[s.id]
-    && halls.some((h) => cribs.hall_bindings[h] && cribs.hall_bindings[h].district === s.id)
-    && cribs.cribs[s.id].tools.some((t) => t.id === s.tool)
-    && cribs.drills[s.id].some((d) => d.tool === s.tool);
-  return false;
-};
-ok('every site id of every wired module resolves in the registry that owns it and binds a course hall',
-  wired.length > 0 && wired.every(([k, m]) => m.sites.length > 0 && m.sites.every((s) => siteResolves(k, s))));
-ok('the welding slice still runs on the weld-bead sim',
-  wired.filter(([k]) => k === 'TCA-140').every(([, m]) => m.sites.some((s) => s.kind === 'sim' && s.id === 'weld-bead')));
-ok('every wired module explains its match in a wiring_note; unwired modules carry none',
-  C.every((c) => c.modules.every((m) => (m.wired ? typeof m.wiring_note === 'string' && m.wiring_note.length > 30 : !('wiring_note' in m)))));
-ok('TCA-110 m1 is matched to the multimeter drill pick and TCA-130 m1 to the manifold gauge and the hvacr lesson',
-  byCode['TCA-110'].modules[0].sites.some((s) => s.kind === 'crib' && s.tool === 'multimeter')
-  && /multimeter|meter/i.test(byCode['TCA-110'].modules[0].title)
-  && byCode['TCA-130'].modules[0].sites.some((s) => s.kind === 'crib' && s.tool === 'manifold-gauge')
-  && byCode['TCA-130'].modules[0].sites.some((s) => s.kind === 'lesson' && s.id === 'hvacr-prove-the-sequence')
-  && byCode['TCA-130'].modules[0].stages.some((st) => /manifold gauges/.test(st.text)));
-ok('TCA-110 and TCA-130 each state a wiring_gap naming what is missing for their unwired modules',
-  ['TCA-110', 'TCA-130'].every((k) => typeof byCode[k].wiring_gap === 'string'
-    && byCode[k].modules.some((m) => !m.wired) && /modules 2-5 are unwired/.test(byCode[k].wiring_gap))
-  && /no hvacr simulator or class station exists/.test(byCode['TCA-130'].wiring_gap)
-  && !sims.hall_bindings.hvacr && !stationsReg.some((s) => s.hall === 'hvacr'));
-
-ok('S4: TCA-120 m4 is matched to the pipe-wrench pick, TCA-150 m1 to the chalk-line pick and the carpenters crib lesson',
-  byCode['TCA-120'].modules[3].sites.length === 1
-  && byCode['TCA-120'].modules[3].sites.some((s) => s.kind === 'crib' && s.id === 'systems' && s.tool === 'pipe-wrench')
-  && /sediment trap/.test(byCode['TCA-120'].modules[3].stages[2].text)
-  && byCode['TCA-150'].modules[0].sites.some((s) => s.kind === 'crib' && s.id === 'envelope' && s.tool === 'chalk-line')
-  && byCode['TCA-150'].modules[0].sites.some((s) => s.kind === 'lesson' && s.id === 'carpenters-return-it-the-same')
-  && /chalk line|snap wall lines/i.test(byCode['TCA-150'].modules[0].stages.map((x) => x.text).join(' ')));
-ok('S4: TCA-120, TCA-150 and TCA-220 each state a wiring_gap; TCA-220 (coming-soon) has no wired module',
-  ['TCA-120', 'TCA-150', 'TCA-220'].every((k) => typeof byCode[k].wiring_gap === 'string' && byCode[k].wiring_gap.length > 60)
-  && /modules 1-3 are unwired/.test(byCode['TCA-120'].wiring_gap) && /modules 2-5 are unwired/.test(byCode['TCA-150'].wiring_gap)
-  && /scaffold-bay/.test(byCode['TCA-150'].wiring_gap)
-  && byCode['TCA-220'].modules.every((m) => !m.wired) && /no module is wired/.test(byCode['TCA-220'].wiring_gap)
-  && !sims.hall_bindings.pipefitters && !stationsReg.some((s) => s.hall === 'pipefitters')
-  && !Object.values(lessons).some((l) => l.hall === 'pipefitters'));
-
-/* ------------------------------------------------------------- catalog --- */
-const SECTIONS = ['available', 'home-and-class', 'coming-soon'];
-ok('every course has a catalog_section from the closed set available / home-and-class / coming-soon',
-  C.every((c) => SECTIONS.includes(c.catalog_section)));
-ok('catalog_section follows the bundle: available iff a floor sim is bound, home-and-class otherwise, outside beauty',
-  C.filter((c) => !c.roster_note).every((c) => c.catalog_section
-    === (c.floor_sims.length ? 'available' : 'home-and-class'))
-  && C.filter((c) => c.catalog_section === 'available').every((c) => /all four stages/.test(c.delivery_status))
-  && C.filter((c) => c.catalog_section === 'home-and-class').every((c) => /no floor simulator/.test(c.delivery_status)));
-ok('coming-soon is exactly TCA-210/220/230, held out of the main catalog until a sprint commits to Beauty School, nothing deleted',
-  C.filter((c) => c.catalog_section === 'coming-soon').map((c) => c.code).join() === 'TCA-210,TCA-220,TCA-230'
-  && ['TCA-210', 'TCA-220', 'TCA-230'].every((k) => /held out of the main catalog until a sprint commits to Beauty School/.test(byCode[k].catalog_note)
-    && /nothing is deleted/.test(byCode[k].catalog_note) && byCode[k].modules.length > 0)
-  && C.filter((c) => c.catalog_section !== 'coming-soon').every((c) => !('catalog_note' in c)));
-ok('plumbing mapping carries mapping_review 2026-10-12 and a re-review-on-roster-change note',
-  byCode['TCA-120'].mapping_review === '2026-10-12'
-  && /re-reviewed whenever the hall roster/.test(byCode['TCA-120'].mapping_review_note));
-
-/* -------------------------------------------------------------- honesty --- */
-ok('every course carries a licensure_note that does not claim credit',
-  C.every((c) => typeof c.licensure_note === 'string' && c.licensure_note.length > 20
-    && sentences(c.licensure_note).every((s) => !/counts? toward licen/i.test(s) || NEG.test(s))
-    && /planned|no |not|nothing/i.test(c.licensure_note)));
-ok('no forbidden claim anywhere in the registry (shared loop/honesty.json vocabulary, positional negation)',
-  [...strings(reg)].every((t) => claimHits(t).length === 0));
-{
-  const fx = read('../loop/registry/honesty_fixtures.json').cases;
-  ok(`the shared honesty scanner returns the expected verdict on all ${fx.length} corpus cases`,
-    fx.length >= 16 && fx.every((c) => verdict(c.text) === c.expect));
-  const py = JSON.parse(execFileSync('python3', [fileURLToPath(new URL('./build.py', import.meta.url)), '--scan-fixtures'],
-    { encoding: 'utf8' }));
-  ok('the Python scanner (build.py --scan-fixtures) gives the identical verdict on every corpus case',
-    py.length === fx.length && py.every((v, i) => v === verdict(fx[i].text) && v === fx[i].expect));
-}
-ok('brand spelling: SmartCiti with an i, no SmartCity anywhere in the registry or builder',
-  !/SmartCity/i.test(regBytes) && !/SmartCity/i.test(readFileSync(new URL('./build.py', import.meta.url), 'utf8'))
-  && regBytes.includes('SmartCiti.X : Trade Craft Academy'));
-
-/* -------------------------------------------------------------- mentors --- */
-ok('mentors drawn only from {Chris, Joyce, Tessa, Gemma, Iris, Dana, Sam}, every course has one',
-  C.every((c) => c.mentors.length > 0 && c.mentors.every((m) => MENTORS.has(m)))
-  && reg.agent_assist.every((a) => MENTORS.has(a.agent))
-  && [...reg.teacher_kit, ...reg.student_kit].every((k) =>
-    (k.agent.match(/[A-Z][a-z]+/g) || []).every((m) => MENTORS.has(m))));
-const noStatus = (xs) => xs.map(({ status, ...k }) => k);
-ok('teacher_kit, student_kit and agent_assist copied verbatim from the draft (kits add only a status field)',
-  JSON.stringify(noStatus(reg.teacher_kit)) === JSON.stringify(draft.teacher_kit)
-  && JSON.stringify(noStatus(reg.student_kit)) === JSON.stringify(draft.student_kit)
-  && JSON.stringify(reg.agent_assist) === JSON.stringify(draft.agent_assist));
-
-ok('every teacher and student kit item carries a status; only items with code here are called built, and synthetic ones say so',
-  [...reg.teacher_kit, ...reg.student_kit].every((k) => typeof k.status === 'string'
-    && (k.status === 'planned' || /built/.test(k.status)))
-  && [...reg.teacher_kit, ...reg.student_kit].filter((k) => /dashboard|skill map/i.test(k.name)).every((k) => /SYNTHETIC/.test(k.status))
-  && [...reg.teacher_kit, ...reg.student_kit].filter((k) => k.status !== 'planned').length === 4);
-
-/* -------------------------------------------------------------- sprints --- */
-const day = 86400000;
-ok('sprints S1..S8 are contiguous 14-day windows starting 2026-10-12',
-  reg.sprints.map((s) => s.sprint).join() === 'S1,S2,S3,S4,S5,S6,S7,S8'
-  && reg.sprints[0].start === '2026-10-12'
-  && reg.sprints.every((s, i) => (Date.parse(s.end) - Date.parse(s.start)) / day === 13
-    && (i === 0 || (Date.parse(s.start) - Date.parse(reg.sprints[i - 1].end)) / day === 1)));
-ok('sprint status comes from a closed set; a sprint whose gate ran states its result and what is and is not built; none is "shipped" before its window closes',
-  reg.sprints.every((s) => ['planned', 'in-progress', 'gate-run-early', 'shipped', 'slipped', 'cancelled'].includes(s.status))
-  // A gate run is recorded by in-progress, gate-run-early and shipped; those need a result and build lists.
-  // planned never has one; slipped or cancelled may or may not, depending on whether a gate ran first.
-  && reg.sprints.every((s) => {
-    const ran = typeof s.gate_result === 'string' && s.gate_result.length > 10;
-    if (['in-progress', 'gate-run-early', 'shipped'].includes(s.status)) return ran && Array.isArray(s.built) && s.built.length > 0 && Array.isArray(s.not_built);
-    if (s.status === 'planned') return s.gate_result === null && !('built' in s);
-    return !ran || (Array.isArray(s.built) && Array.isArray(s.not_built));
-  })
-  && reg.sprints.every((s) => s.status !== 'shipped' || (Date.parse(s.end) < Date.parse(reg.built) && s.not_built.length === 0))
-  && reg.sprints.every((s) => s.status !== 'gate-run-early' || Date.parse(s.start) > Date.parse('2026-10-12'))
-  && /held-out/.test(reg.sprints.find((s) => s.sprint === 'S2').gate_result)
-  && /do not generalise/.test(reg.sprints.find((s) => s.sprint === 'S2').gate_result)
-  && /1,342 of 1,342/.test(reg.sprints.find((s) => s.sprint === 'S3').gate_result));
-ok('the S8 pilot carries its preconditions as a field, naming a partner, a consent plan and EV-09',
-  (() => { const p = reg.sprints.find((s) => s.sprint === 'S8').preconditions || [];
-    return p.some((x) => /partner/.test(x)) && p.some((x) => /consent/.test(x)) && p.some((x) => /EV-09/.test(x)); })());
-ok('every sprint carries its authored ship line and eval gate',
-  reg.sprints.every((s, i) => s.ship === draft.rapid_roadmap[i].ship
-    && s.eval_gate === draft.rapid_roadmap[i].eval_gate));
-
-/* -------------------------------------------------------------- rebuild --- */
-const here = fileURLToPath(new URL('.', import.meta.url));
-const src = Buffer.concat([readFileSync(new URL('./build.py', import.meta.url)),
-  readFileSync(new URL('./draft/curriculum_2026q4.json', import.meta.url))]);
-ok('the registry was built from the current builder and draft (stamp check)',
-  reg.source_stamp === createHash('sha256').update(src).digest('hex').slice(0, 16));
-const fresh = execFileSync('python3', [here + 'build.py', '--stdout'], { encoding: 'utf8' });
-ok('the registry is byte-identical to a fresh build', fresh === regBytes);
-
-const nMods = C.reduce((a, c) => a + c.modules.length, 0);
-console.log(`courses/test: ${n} checks passed — ${C.length} planned courses, ${nMods} modules, `
-  + `${wired.length} wired, ${reg.sprints.length} sprints`);
+{ const cv = reg.supplement_counts.coverage, steps = LORDER.flatMap((k) => L[k].steps), ask = ['walk', 'placard', 'advisor', 'walkaround', 'sim', 'crew', 'station'];
+  const asked = S.reduce((a, s) => a + s.questions.filter((q) => !['crib'].includes(q.kind)).length, 0);
+  ok(`coverage is recounted: ${cv.lessons_with_supplement}/${cv.lessons} lessons, ${cv.steps_with_worksheet_line}/${cv.steps} steps on a worksheet, ${cv.id_steps_with_question}/${cv.id_steps} id-naming steps asked, ${cv.crib_steps_with_drill_items}/${cv.crib_steps} crib steps drilled, ${cv.cribs_in_glossaries}/${cv.cribs} cribs glossed, ${cv.lessons_with_a_placard_hung} lessons quote a hung placard`,
+    cv.lessons_with_supplement === LORDER.length && cv.lessons === LORDER.length && cv.steps_with_worksheet_line === steps.length && cv.steps === steps.length
+    && cv.id_steps === steps.filter((x) => ask.includes(x.kind)).length && cv.id_steps_with_question === asked && asked === cv.id_steps
+    && cv.crib_steps === steps.filter((x) => x.kind === 'crib').length && cv.crib_steps_with_drill_items === cv.crib_steps
+    && S.filter((s) => s.questions.filter((q) => q.kind === 'crib').length === 2).length === LORDER.filter((k) => L[k].steps.some((x) => x.kind === 'crib')).length
+    && cv.cribs === Object.keys(CRIBS.cribs).length && cv.cribs_in_glossaries === new Set(S.map((s) => s.where.crib.district)).size
+    && cv.lessons_with_crib_glossary === LORDER.length
+    && cv.lessons_with_a_placard_hung === S.filter((s) => s.safety.placards.some((p) => p.placard_hung)).length
+    && cv.lessons_with_a_placard_hung + cv.lessons_whose_rooms_hang_no_placard === LORDER.length); }
+console.log(`  (measured) ${CV.length} courses (${trade.length} trade, ${strand.length} strand); ${S.length} supplements; ${reg.supplement_counts.questions} questions; ${reg.supplement_counts.glossary_terms} glossary terms; ${reg.supplement_counts.placard_quotes} placard quotes; bands K-5 ${reg.counts.lessons_by_band['K-5']}, 6-8 ${reg.counts.lessons_by_band['6-8']}, 9-10 ${reg.counts.lessons_by_band['9-10']}, 11-12 ${reg.counts.lessons_by_band['11-12']}`);
+console.log(`courses/test: ${pass} passed, ${fail} failed`);
+if (fail) process.exit(1);

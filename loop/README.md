@@ -24,8 +24,8 @@ the loop works on a branch and a human merges.
 | `cycle.mjs` | Ledger validator and writer. Fills gates, check count and heartbeat from `state/` when the input omits them. |
 | `registry/cycles.json` | The cycle ledger. |
 | `METAPROMPT.md` | Orchestrator meta-prompt and one role prompt per agent, each with the one directory it may write. |
-| `honesty.json`, `honesty.mjs` | The one honesty vocabulary and scanner, used by EV-05 and `courses/test.mjs`; `courses/build.py` loads the same JSON. |
-| `registry/honesty_fixtures.json` | The scanner corpus (flag / clean). `loop/test.mjs` and `courses/test.mjs` run it; `courses/test.mjs` also runs `python3 courses/build.py --scan-fixtures` and requires identical verdicts. |
+| `honesty.json`, `honesty.mjs` | The one honesty vocabulary and scanner, used by EV-05 and `courses_roadmap/test.mjs`; `courses_roadmap/build.py` loads the same JSON. |
+| `registry/honesty_fixtures.json` | The scanner corpus (flag / clean). `loop/test.mjs` and `courses_roadmap/test.mjs` run it; `courses_roadmap/test.mjs` also runs `python3 courses_roadmap/build.py --scan-fixtures` and requires identical verdicts. |
 | `patch_cycle.mjs` | Refresh a logged cycle's gates from `state/` and attach its video by bare file name; validates the ledger before writing. |
 | `registry/*_draft.json` | Planning drafts the loop was adapted from. A `built-elsewhere` status means built in another project and not verified here. |
 
@@ -34,7 +34,7 @@ the loop works on a branch and a human merges.
 | Gate | Executes | Absent when |
 |---|---|---|
 | EV-01 | `./verify_all.sh`; records total checks and failing suites | — |
-| EV-02 | `node courses/test.mjs` | the file does not exist yet |
+| EV-02 | `node courses_roadmap/test.mjs` | the file does not exist yet |
 | EV-03 | `node brand/lint.mjs .` | — |
 | EV-04 | `node brand/figures.mjs .` | — |
 | EV-05 | honesty lint over files changed vs `origin/main` plus untracked | — |

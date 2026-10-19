@@ -1,5 +1,12 @@
 __pycache__/
 *.pyc
+config/runtime.json
+
+# local secrets - never committed (Reactor API key, wrangler dev vars)
+.dev.vars
+**/.dev.vars
+.env
+.env.*
 loop/state/
 loop/media
 /desk*.png

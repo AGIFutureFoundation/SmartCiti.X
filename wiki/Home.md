@@ -26,15 +26,48 @@ content graph and details:
 | **Toolrooms** (inside the 3D + interactive maps) | 8 district tool cribs — 96 tools with the deterministic crib drill | [Toolrooms](Toolrooms.md) |
 | **Advisors** (in the rooms and on the green) | 9 scripted guides answering 35 fixed questions — 21 of them read straight from the registry that holds the fact | [Advisors](Advisors.md) |
 | **The world** (sky, weather, ground, animals) | 6 weather states over per-campus atmospheres, 22 generated ground surfaces and 101 animals — and not one texture file anywhere | [World](World.md) |
-| **The signs** (every word in the 3D world) | 19 kinds over 15 shapes — shape carries the category, colour the provenance, type the rank, and every sign reacts to where you are looking | [Signs](Signs.md) |
+| **The signs** (every word in the 3D world) | 19 kinds over 16 shapes — shape carries the category, colour the provenance, type the rank, and every sign reacts to where you are looking | [Signs](Signs.md) |
 | **Training data** (device-local, opt-out, exportable) | 4 episode kinds recorded from real interactions — sim outcomes, advisor exchanges, walkaround checks — plus SCRIPTED sim episodes the reference operator generates on request, shaped for the org's own `ml-agents` fork, never read by a grader | [Training-Data](Training-Data.md) |
 | **Orbis synthetic-training prompts** (text only, no network) | a deterministic prompt for every one of the 111 union modules, built for a hosted video model this build never calls — a separate, clearly-labelled AI-SYNTHESIZED stream from the real episode log above | [Orbis-Synthetic-Training](Orbis-Synthetic-Training.md) |
 | **The network roadmap** (10 built, 0 candidates) | the path from 10 built campuses to 10 walkable worlds — two honest provenance tiers, and the real checklist a candidate has to clear to become built | [Roadmap](Roadmap.md) |
 | **Metaverse layer** (`meta/registry/metaverse.json`) | The interchange contract: 4 open standards claimed (gltf-2.0, webxr, geojson-wgs84, geopose-1.0), 6 honestly not, avatar and hall .glb export, learner-local import | [Metaverse-Layer](Metaverse-Layer.md) |
-| **Spatial fabric** (`spatial/registry/`) | The Academy as a self-hosted OMBI-sense spatial fabric: 67 OGC GeoPose 1.0 poses (10 campuses, 47 anchors, 10 restoration sites; height and heading zero-with-UNKNOWN), a fabric manifest and a SOM-shaped scene graph with 57 external origins — GeoPose claimed, the OMBI shapes honestly not | [Spatial-Fabric](Spatial-Fabric.md) |
+| **Spatial fabric** (`spatial/registry/`) | The Academy as a self-hosted OMBI-sense spatial fabric: 89 OGC GeoPose 1.0 poses (10 campuses, 69 anchors, 10 restoration sites; height and heading zero-with-UNKNOWN), a fabric manifest and a SOM-shaped scene graph with 66 external origins — GeoPose claimed, the OMBI shapes honestly not | [Spatial-Fabric](Spatial-Fabric.md) |
 | **City records** (`parcels/registry/parcels.json`) | The source contract for the three campus regions' own parcel and building-footprint authorities (254,122 records published upstream), plus the public-domain federal orthoimagery both maps draw | [City-Records](City-Records.md) |
-| **Network geomap** (`web/trade_craft_geomap.html`) | The geo registry on a real WGS84 map (MapLibre, no basemap tiles): campuses, 47 anchors (19 RECORDED, 28 AUTHORED), great-circle routes, city frames at their own provenance | [Campus-Map](Campus-Map.md) |
+| **Network geomap** (`web/trade_craft_geomap.html`) | The geo registry on a real WGS84 map (MapLibre, no basemap tiles): campuses, 69 anchors (41 RECORDED, 28 AUTHORED), great-circle routes, city frames at their own provenance | [Campus-Map](Campus-Map.md) |
 | **Bay Restoration** (`restoration/registry/restoration.json`) | 11 real, independently-run San Francisco Bay sites across two categories (9 habitat-restoration, 2 environmental-monitoring — Hunters Point Naval Shipyard, a real, litigated federal Superfund site, and Former Naval Station Treasure Island, a real Navy BRAC cleanup that is not NPL-listed, both pinned but never walkable) — 10 mapped, 8 walkable — bridged to 3 field-skill tracks bound to real skill_ids already in this bundle's graph — not a SmartCiti.X program | [Bay-Restoration](Bay-Restoration.md) |
+| **The guide** (`guide/registry/guide.json`) | One control reachable from every view and over every panel: 11 places, 6 fixed questions each, 66 written answers and no free text — with two voice switches that are off until switched on, and WebXR hand gestures declared against a mocked session rather than proved on hardware | [Guide](Guide.md) |
+| **The day cycle** (`sky/registry/sky.json`) | 14 solar phases at one real latitude, 10 of them solved by bisection from the elevation that defines them — the sun, the light and the stars move by the hour; the 56 gradient stops are declared and still unread | [Day-Cycle](Day-Cycle.md) |
+| **The lessons** (`lessons/registry/lessons.json`) | 139 walkable lessons, 568 steps in 8 kinds, across all 11 skill strands and 111 of the 111 halls, ordered by a 40-edge acyclic ladder that locks nothing — and certifying nobody | [Lessons](Lessons.md) |
+| **The building kit** (`kit/registry/kit.json`) | 18 exterior pieces in 15 families, median 34 triangles, arithmetic for 1,117 pieces at 8 draw calls on the Treasure Island Campus — declared against a measured reference, and drawn by the page: a browser probe reports 1,117 pieces for 8 draw calls on that campus, the figure this row predicts | [Building-Kit](Building-Kit.md) |
+| **The room props** (`props/registry/props.json`) | 108 interior props over all 11 strands, 8,448 instances across 1,221 rooms, every hazard prop derived from that room's own protective-equipment record — read by the page: placeRoomProps() stands them against the partitions buildHall() cuts, and __tc3dProps() reports what was drawn beside what the count rule wanted | [Room-Props](Room-Props.md) |
+| **The surface finishes** (`surfaces/registry/finishes.json`) | 84 floor and 51 wall finishes over 32 patterns, placed onto every room of every hall by hazard, then craft (30 crafts in use, 0 halls matching none), then function — and it cost no new material at all, because a hall builds one material per room and never one per catalogue row; the colours, roughnesses and metalnesses are AUTHORED, chosen by eye and never sampled | [Surface-Finishes](Surface-Finishes.md) |
+| **The furniture** (`props/registry/props.json`) | 300 pieces in 12 families cut from 36 forms — 108 standing in halls now and 192 district pieces derived from the 96 real tools the cribs issue, built and priced at 0 new draw calls and deliberately not drawn; every shape is SCHEMATIC, the form of a tool's bench and no manufacturer's model | [Furniture](Furniture.md) |
+| **The measured venue** (`venue/registry/venue.json`) | a real multi-salon event building read for its proportions and never imported — 1,008 meshes is 5.1× the whole hall draw-call ceiling, so it enters neither the scene nor the tree — CC-BY-4.0 by GL events Paris Venues, with the unit left honestly UNRESOLVED and the ratios published as the part that transfers | [Measured-Venue](Measured-Venue.md) |
+| **First responders** (`respond/registry/respond.json`) | 5 services, 30 role tiers, 62 competency domains and 25 scenario frames, cross-linked 152 times into 81 of the 111 trade halls — a scaffold, not a protocol: 0 of 117 items carry a practitioner sign-off and 0 of the 23 standards bodies had a document opened | [First-Responders](First-Responders.md) |
+| **The simulator index** (`index.html`) | one entry per seat on the front door — 11 rows with the task line, controls and rubric axes each machine is judged on, each linking into that seat with `?sim=<slug>`, validated against the registry so an unknown seat opens no seat at all — and the deep link does not survive a reload | [Simulator-Index](Simulator-Index.md) |
+| **The lessons page** (`web/trade_craft_lessons.html`) | the 139 walkable lessons and 568 steps finally drawn for a learner to work from, limits above the first lesson and the ladder rendered as advice that locks nothing — the page that took `lessons/registry/lessons.json` off the declared-and-unbuilt list | [Lessons-Page](Lessons-Page.md) |
+| **Sign-in** (`web/trade_craft_signin.html`) | 5 sign-in methods, 2 that work here and 3 issuer adapters that are off because an authorization-code exchange needs a server holding a client secret — and 0 of the 5 authenticate anybody or gate anything | [Sign-In](Sign-In.md) |
+| **The emotional-intelligence layer** (`ei/registry/ei.json`) | 59 records binding 9 of the advisors to what they may do when a learner is struggling — 12 responses each with a stop condition, 11 red lines, a 5-rung ladder that names resource TYPES and no contact detail at all, and 0 of 59 records read by a clinician | [Emotional-Intelligence](Emotional-Intelligence.md) |
+
+## The processes
+
+What a learner or a union rep *does* with the bundle, step by step, each page
+with its screenshots, the command that checks it offline and that command's
+real output, captured when the page was built:
+
+| Process | Page |
+|---|---|
+| export a `tc-completion/1` record from the progress page | [Completion-Record](Completion-Record.md) |
+| a union rep checks a record offline | [Verify-A-Record](Verify-A-Record.md) |
+| share recorded episodes under consent, as a file | [Contribute](Contribute.md) |
+| the agent networks a contribution could go to - none integrated | [Protocols](Protocols.md) |
+| a crew from several unions, checked from each member's own record | [Work-Sites](Work-Sites.md) |
+| what a record evidences against the bundle's own rules | [Compliance-Ledger](Compliance-Ledger.md) |
+| the episode log read back as sessions | [Sessions](Sessions.md) |
+| training rooms composed from what the bundle holds | [Custom-Spaces](Custom-Spaces.md) |
+| the front door, and where each card leads | [Site-Navigation](Site-Navigation.md) |
+
+**The loop.** [Completion-Record](Completion-Record.md) (export your progress) -> [Verify-A-Record](Verify-A-Record.md) (a rep checks it) -> [Contribute](Contribute.md) (share the episodes behind it, if you choose). [Work-Sites](Work-Sites.md) -> [Verify-A-Record](Verify-A-Record.md) for a crew. [Sessions](Sessions.md) and [Compliance-Ledger](Compliance-Ledger.md) read the same files.
 
 ## The districts at a glance
 
@@ -139,7 +172,7 @@ directly consumable by any Mapbox/MapLibre-compatible stack. The 3D network
 view places its campus plates by these true bearings, with the real
 kilometres on the route labels.
 
-Around each campus sit **47 anchors** — 19 RECORDED, real
+Around each campus sit **69 anchors** — 41 RECORDED, real
 cities and institutions copied verbatim from Locator.X's committed tables
 (the Bay Area city table and the New Orleans POI table, Apache-2.0) and
 cross-checked against those files at build time, and 28 AUTHORED for

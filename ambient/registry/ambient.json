@@ -1,0 +1,435 @@
+{
+ "behaviour": {
+  "bird_circle_m": [
+   18,
+   45
+  ],
+  "flee_calm_s": 3.0,
+  "perch_return_s": 8,
+  "road_step_m": 4,
+  "vehicle_alert_m": 25,
+  "wander_radius_m": 18,
+  "wander_turn_s": [
+   2.0,
+   6.0
+  ]
+ },
+ "budgets": {
+  "cap": {
+   "animal": 48,
+   "bird": 60,
+   "bush": 1800,
+   "grass": 9000,
+   "litter": 700,
+   "palm": 400
+  },
+  "draw_calls_max": 8,
+  "flock_size_max": 6,
+  "lod_m": {
+   "animal": 140,
+   "bird": 400,
+   "bush": 220,
+   "grass": 80,
+   "litter": 70,
+   "palm": 480
+  },
+  "meshes": [
+   "grass",
+   "bush",
+   "palm",
+   "litter",
+   "bird",
+   "animal"
+  ],
+  "per_chunk": {
+   "animal": 8,
+   "bush": 140,
+   "flock": 2,
+   "grass": 4000,
+   "litter": 250,
+   "palm": 12
+  },
+  "refill_m": 12
+ },
+ "counts": {
+  "bird_species": 4,
+  "ground_species": 4,
+  "land_uses": 4,
+  "litter_types": 5,
+  "meshes": 6,
+  "reused_species": 5,
+  "species": 8,
+  "vegetation_types": 4
+ },
+ "densities_per_ha": {
+  "commercial": {
+   "animals": {
+    "cat": 0.3
+   },
+   "bush": 4,
+   "flocks": {
+    "gull": 0.02,
+    "pigeon": 0.12
+   },
+   "grass": 50,
+   "litter": 40,
+   "palm": 0.8
+  },
+  "industrial": {
+   "animals": {
+    "cat": 0.3,
+    "dog": 0.3
+   },
+   "bush": 3,
+   "flocks": {
+    "gull": 0.03,
+    "pigeon": 0.08
+   },
+   "grass": 90,
+   "litter": 30,
+   "palm": 0.2
+  },
+  "park": {
+   "animals": {
+    "cat": 0.2,
+    "dog": 1.2,
+    "duck": 1.0,
+    "squirrel": 2.0
+   },
+   "bush": 20,
+   "flocks": {
+    "egret": 0.06,
+    "gull": 0.02,
+    "pelican": 0.02,
+    "pigeon": 0.05
+   },
+   "grass": 700,
+   "litter": 8,
+   "palm": 1.6
+  },
+  "residential": {
+   "animals": {
+    "cat": 1.0,
+    "dog": 0.8,
+    "squirrel": 0.6
+   },
+   "bush": 14,
+   "flocks": {
+    "pigeon": 0.06
+   },
+   "grass": 400,
+   "litter": 15,
+   "palm": 1.2
+  }
+ },
+ "honesty": {
+  "animals": "generic species only - no breeds, no named animals, no sighting or population claimed; animals wander, flee and follow, and are never harmed: vehicles are blocked before contact and animals step off the road when one is near",
+  "litter": "litter is AUTHORED set dressing placed by a seed; picking it up is play and never enters any record",
+  "page_line": "Animals, plants, litter and wind are AUTHORED ambience - generic species, not a wildlife survey; no animal is ever harmed.",
+  "vegetation": "grass, bushes and palms are AUTHORED scatter on AUTHORED land-use districts, not a planting survey",
+  "wind": "one AUTHORED wind field - not a forecast, not an observation"
+ },
+ "inputs": [
+  "ambient/build.py",
+  "ambient/authored/ambient.json",
+  "world/registry/world.json",
+  "parishes/registry/parishes.json"
+ ],
+ "land_uses": [
+  "residential",
+  "commercial",
+  "park",
+  "industrial"
+ ],
+ "litter": {
+  "bag": {
+   "color": "#d8dcd6",
+   "name": "Plastic bag",
+   "size_m": 0.35
+  },
+  "bottle": {
+   "color": "#5f8a6a",
+   "name": "Bottle",
+   "size_m": 0.25
+  },
+  "can": {
+   "color": "#a9b1b8",
+   "name": "Can",
+   "size_m": 0.12
+  },
+  "cup": {
+   "color": "#d9c9a8",
+   "name": "Cup",
+   "size_m": 0.14
+  },
+  "paper": {
+   "color": "#e7e2d6",
+   "name": "Paper scrap",
+   "size_m": 0.22
+  }
+ },
+ "note": "AUTHORED ambience for the parish worlds: generic species, behaviour, densities per AUTHORED land-use district, vegetation, litter and one wind field. Nothing here is a survey, a sighting, a population count, a forecast or a measurement.",
+ "pack": "ambient",
+ "pack_version": "3.2.0",
+ "provenance": {
+  "behaviour": "AUTHORED",
+  "budgets": "AUTHORED",
+  "densities": "AUTHORED",
+  "land_uses": "parishes/registry/parishes.json#parishes.*.map.fabric_layers.land_use (AUTHORED fabric)",
+  "litter": "AUTHORED",
+  "species_appearance": "reused from world/registry/world.json#fauna where reused_from is set, else AUTHORED",
+  "vegetation": "AUTHORED",
+  "wind": "AUTHORED"
+ },
+ "source_stamp": "f2960f6141346107",
+ "source_stamp_sha256": "f2960f61413461074b3144ae93ad99d1affa5125a4d10ab47fbc69a7ac8c4735",
+ "species": {
+  "cat": {
+   "accent": "#3b332c",
+   "body": "quadruped",
+   "cls": "pet",
+   "color": "#8a7a6a",
+   "flee_m": 7,
+   "follow_m": 0,
+   "follows": false,
+   "keep_m": 0,
+   "kind": "ground",
+   "motion": "wander",
+   "name": "Cat",
+   "provenance": "AUTHORED",
+   "reused_from": null,
+   "run_mps": 3.6,
+   "size_m": 0.45,
+   "span_m": 0.5,
+   "walk_mps": 0.7
+  },
+  "dog": {
+   "accent": "#3a2f24",
+   "body": "quadruped",
+   "cls": "pet",
+   "color": "#6f5a44",
+   "flee_m": 0,
+   "flock": 1,
+   "follow_m": 14,
+   "follows": true,
+   "height_m": [
+    0,
+    0
+   ],
+   "keep_m": 2.5,
+   "kind": "ground",
+   "motion": "patrol",
+   "name": "Dog",
+   "provenance": "appearance reused from world.json fauna; behaviour AUTHORED",
+   "reused_from": "world/registry/world.json#fauna.yard-dog",
+   "run_mps": 3.2,
+   "size_m": 0.8,
+   "span_m": 1.0,
+   "walk_mps": 1.1
+  },
+  "duck": {
+   "accent": "#2f5d3a",
+   "body": "quadruped",
+   "cls": "animal",
+   "color": "#6d6a52",
+   "flee_m": 6,
+   "follow_m": 0,
+   "follows": false,
+   "keep_m": 0,
+   "kind": "ground",
+   "motion": "wander",
+   "name": "Duck",
+   "provenance": "AUTHORED",
+   "reused_from": null,
+   "run_mps": 1.4,
+   "size_m": 0.4,
+   "span_m": 0.8,
+   "walk_mps": 0.4
+  },
+  "egret": {
+   "accent": "#d8cc9a",
+   "body": "wader",
+   "color": "#f2f4f2",
+   "flock": 2,
+   "flush_m": 10,
+   "fly_mps": 4.5,
+   "height_m": [
+    0,
+    0
+   ],
+   "kind": "bird",
+   "motion": "perch",
+   "name": "Egret",
+   "provenance": "appearance reused from world.json fauna; behaviour AUTHORED",
+   "reused_from": "world/registry/world.json#fauna.egret",
+   "span_m": 1.0
+  },
+  "gull": {
+   "accent": "#9aa6ad",
+   "body": "bird",
+   "color": "#e6ecef",
+   "flock": 5,
+   "flush_m": 0,
+   "fly_mps": 8.0,
+   "height_m": [
+    14,
+    30
+   ],
+   "kind": "bird",
+   "motion": "circuit",
+   "name": "Gull",
+   "provenance": "appearance reused from world.json fauna; behaviour AUTHORED",
+   "reused_from": "world/registry/world.json#fauna.gull",
+   "span_m": 1.2
+  },
+  "pelican": {
+   "accent": "#e0d6c2",
+   "body": "bird",
+   "color": "#8d7f6c",
+   "flock": 3,
+   "flush_m": 0,
+   "fly_mps": 6.0,
+   "height_m": [
+    10,
+    18
+   ],
+   "kind": "bird",
+   "motion": "glide",
+   "name": "Pelican",
+   "provenance": "appearance reused from world.json fauna; behaviour AUTHORED",
+   "reused_from": "world/registry/world.json#fauna.pelican",
+   "span_m": 2.0
+  },
+  "pigeon": {
+   "accent": "#2f3a42",
+   "body": "bird",
+   "color": "#6b7076",
+   "flock": 6,
+   "flush_m": 6,
+   "fly_mps": 7.0,
+   "height_m": [
+    0,
+    6
+   ],
+   "kind": "bird",
+   "motion": "hop",
+   "name": "Pigeon",
+   "provenance": "appearance reused from world.json fauna; behaviour AUTHORED",
+   "reused_from": "world/registry/world.json#fauna.pigeon",
+   "span_m": 0.6
+  },
+  "squirrel": {
+   "accent": "#b9a58c",
+   "body": "quadruped",
+   "cls": "animal",
+   "color": "#7b6a58",
+   "flee_m": 9,
+   "follow_m": 0,
+   "follows": false,
+   "keep_m": 0,
+   "kind": "ground",
+   "motion": "wander",
+   "name": "Squirrel",
+   "provenance": "AUTHORED",
+   "reused_from": null,
+   "run_mps": 4.0,
+   "size_m": 0.3,
+   "span_m": 0.35,
+   "walk_mps": 0.9
+  }
+ },
+ "vegetation": {
+  "bush": {
+   "colors": [
+    "#3f5a34",
+    "#4a6a3a",
+    "#56703f",
+    "#3b4f33"
+   ],
+   "height_m": [
+    0.7,
+    1.6
+   ],
+   "name": "Bush",
+   "sway": "bush",
+   "width_m": [
+    0.9,
+    2.0
+   ]
+  },
+  "grass": {
+   "colors": [
+    "#56713f",
+    "#6b8a4a",
+    "#7e9a52",
+    "#8a9a5c"
+   ],
+   "height_m": [
+    0.35,
+    0.7
+   ],
+   "name": "Grass tuft",
+   "sway": "grass",
+   "tint_from": "world/registry/world.json#ground.grass.grain",
+   "tint_rgb": [
+    126,
+    172,
+    96
+   ],
+   "width_m": 1.0
+  },
+  "oak": {
+   "drawn_by": "host page trees (web/build_parishes.py treeGeo): not duplicated by this kit",
+   "name": "Broadleaf tree"
+  },
+  "palm": {
+   "colors": [
+    "#4f6b3a",
+    "#5d7a40"
+   ],
+   "crown_m": 3.4,
+   "height_m": [
+    5.0,
+    9.0
+   ],
+   "name": "Palm",
+   "sway": "palm",
+   "trunk": "#7a6a55"
+  }
+ },
+ "wind": {
+  "amplitude_m": {
+   "bush": 0.06,
+   "grass": 0.16,
+   "palm": 0.32
+  },
+  "gust_gain": 0.45,
+  "gust_period_s": 7.0,
+  "ranges": {
+   "amplitude_m": [
+    0,
+    0.5
+   ],
+   "gust_gain": [
+    0,
+    1
+   ],
+   "gust_period_s": [
+    1,
+    60
+   ],
+   "speed_mps": [
+    0,
+    15
+   ],
+   "wavelength_m": [
+    2,
+    200
+   ]
+  },
+  "speed_mps": 3.5,
+  "toward_deg": 35,
+  "wavelength_m": 18.0
+ },
+ "world_fauna_honesty": "ambience, not a wildlife survey: common names, schematic bodies and authored paths. No species record, population count or sighting is claimed, and no animal here is drawn from any photograph."
+}

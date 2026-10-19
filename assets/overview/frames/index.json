@@ -1,0 +1,59 @@
+{
+ "captured": "2026-09-22",
+ "viewport": [
+  1920,
+  1080
+ ],
+ "shots": [
+  {
+   "id": "01-front-door",
+   "what": "the generated front door, with the campus network drawn from real coordinates",
+   "file": "/home/user/SmartCiti.X/assets/overview/frames/01-front-door.png"
+  },
+  {
+   "id": "02-region",
+   "what": "the region board: ten campuses as plates on a map",
+   "file": "/home/user/SmartCiti.X/assets/overview/frames/02-region.png"
+  },
+  {
+   "id": "03-campus-noon",
+   "what": "a campus green at noon",
+   "file": "/home/user/SmartCiti.X/assets/overview/frames/03-campus-noon.png"
+  },
+  {
+   "id": "04-campus-golden",
+   "what": "golden hour from the ground - the sun placed by its solved elevation",
+   "file": "/home/user/SmartCiti.X/assets/overview/frames/04-campus-golden.png"
+  },
+  {
+   "id": "05-campus-night",
+   "what": "and the same view at night, the stars up because the sun is down",
+   "file": "/home/user/SmartCiti.X/assets/overview/frames/05-campus-night.png"
+  },
+  {
+   "id": "06-hall",
+   "what": "inside a hall: eleven rooms, each with its own finish and light",
+   "file": "/home/user/SmartCiti.X/assets/overview/frames/06-hall.png"
+  },
+  {
+   "id": "07-seat",
+   "what": "a training seat, operable and scored",
+   "file": "/home/user/SmartCiti.X/assets/overview/frames/07-seat.png"
+  },
+  {
+   "id": "08-guide",
+   "what": "the guide, reachable from every view",
+   "file": "/home/user/SmartCiti.X/assets/overview/frames/08-guide.png"
+  },
+  {
+   "id": "09-dashboard",
+   "what": "the network dashboard, every figure read from the pack that owns it",
+   "file": "/home/user/SmartCiti.X/assets/overview/frames/09-dashboard.png"
+  },
+  {
+   "id": "10-map",
+   "what": "the interactive campus map, all 111 halls with switchable layers",
+   "file": "/home/user/SmartCiti.X/assets/overview/frames/10-map.png"
+  }
+ ]
+}

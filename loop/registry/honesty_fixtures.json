@@ -1,5 +1,5 @@
 {
-  "about": "Honesty scanner corpus for SmartCiti.X : Trade Craft Academy. Every case is run through loop/honesty.mjs (loop/test.mjs, courses/test.mjs) and through courses/build.py --scan-fixtures; all three must return the expected verdict. These sentences are test fixtures, not statements about the project.",
+  "about": "Honesty scanner corpus for SmartCiti.X : Trade Craft Academy. Every case is run through loop/honesty.mjs (loop/test.mjs, courses_roadmap/test.mjs) and through courses_roadmap/build.py --scan-fixtures; all three must return the expected verdict. These sentences are test fixtures, not statements about the project.",
   "cases": [
     {"text": "The course is accredited by the State Board.", "expect": "flag", "why": "plain claim"},
     {"text": "We partnered with a district last spring.", "expect": "flag", "why": "plain partnership claim"},

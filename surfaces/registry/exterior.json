@@ -1,0 +1,1635 @@
+{
+ "pack": "smartcitix-exterior-patterns-and-colour",
+ "pack_version": "3.2.0",
+ "built": "2026-09-10",
+ "source_stamp": "c1f048b4be52ebd6",
+ "provenance": "AUTHORED",
+ "honesty": "Every recipe, tile size and colour here is AUTHORED - chosen by eye for this build. No colour is sampled from a photograph or a supplier, none is a paint brand's, a standard's official value or a trademarked name, and no image file is shipped: web/patternkit.py draws each recipe at runtime.",
+ "kinds": [
+  "bond",
+  "herringbone",
+  "basketweave",
+  "lap",
+  "board_batten",
+  "shingle",
+  "speckle",
+  "formed",
+  "corrugated",
+  "seam",
+  "cobble",
+  "hex",
+  "barrel",
+  "slate"
+ ],
+ "families": [
+  "brick",
+  "siding",
+  "render",
+  "concrete",
+  "metal",
+  "paving",
+  "roof"
+ ],
+ "colour_uses": [
+  "body",
+  "trim",
+  "accent",
+  "roof",
+  "ground"
+ ],
+ "quality_sizes": {
+  "low": 128,
+  "medium": 256,
+  "high": 512
+ },
+ "recipes": {
+  "brick.running": {
+   "family": "brick",
+   "name": "Running bond brick",
+   "kind": "bond",
+   "params": {
+    "courses": 12,
+    "per_course": 4,
+    "offset": 0.5,
+    "joint": 0.14,
+    "header_every": 0,
+    "vary": 0.06
+   },
+   "tile_m": 0.9,
+   "joint_shade": -0.28,
+   "uses": [
+    "wall"
+   ],
+   "why": "Half-lap stretchers: the everyday wall of a commercial street."
+  },
+  "brick.flemish": {
+   "family": "brick",
+   "name": "Flemish bond brick",
+   "kind": "bond",
+   "params": {
+    "courses": 16,
+    "per_course": 6,
+    "offset": 0.75,
+    "joint": 0.14,
+    "header_every": 1,
+    "vary": 0.05
+   },
+   "tile_m": 1.2,
+   "joint_shade": -0.28,
+   "uses": [
+    "wall"
+   ],
+   "why": "Stretcher and header alternating in every course; headers drawn darker."
+  },
+  "brick.english": {
+   "family": "brick",
+   "name": "English bond brick",
+   "kind": "bond",
+   "params": {
+    "courses": 12,
+    "per_course": 4,
+    "offset": 0.25,
+    "joint": 0.14,
+    "header_every": 2,
+    "vary": 0.05
+   },
+   "tile_m": 0.9,
+   "joint_shade": -0.28,
+   "uses": [
+    "wall"
+   ],
+   "why": "A course of stretchers, then a course of headers."
+  },
+  "brick.stack": {
+   "family": "brick",
+   "name": "Stack bond brick",
+   "kind": "bond",
+   "params": {
+    "courses": 12,
+    "per_course": 4,
+    "offset": 0.0,
+    "joint": 0.14,
+    "header_every": 0,
+    "vary": 0.04
+   },
+   "tile_m": 0.9,
+   "joint_shade": -0.28,
+   "uses": [
+    "wall",
+    "ground"
+   ],
+   "why": "Joints aligned both ways: a modern, decorative bond."
+  },
+  "brick.herringbone": {
+   "family": "brick",
+   "name": "Herringbone brick",
+   "kind": "herringbone",
+   "params": {
+    "units": 8,
+    "ratio": 2,
+    "joint": 0.12,
+    "vary": 0.06
+   },
+   "tile_m": 0.8,
+   "joint_shade": -0.3,
+   "uses": [
+    "ground",
+    "wall"
+   ],
+   "why": "Units at right angles in a zigzag: courtyards and walks."
+  },
+  "brick.basketweave": {
+   "family": "brick",
+   "name": "Basketweave brick",
+   "kind": "basketweave",
+   "params": {
+    "cells": 4,
+    "per_cell": 2,
+    "joint": 0.12,
+    "vary": 0.05
+   },
+   "tile_m": 0.8,
+   "joint_shade": -0.3,
+   "uses": [
+    "ground"
+   ],
+   "why": "Pairs of units turned each cell: a patio or plaza floor."
+  },
+  "siding.clapboard": {
+   "family": "siding",
+   "name": "Clapboard siding",
+   "kind": "lap",
+   "params": {
+    "boards": 8,
+    "shadow": 0.22,
+    "bevel": 1,
+    "vary": 0.02
+   },
+   "tile_m": 1.2,
+   "joint_shade": -0.3,
+   "uses": [
+    "wall"
+   ],
+   "why": "Bevelled boards overlapping downward: a deep shadow line under each."
+  },
+  "siding.shiplap": {
+   "family": "siding",
+   "name": "Shiplap siding",
+   "kind": "lap",
+   "params": {
+    "boards": 8,
+    "shadow": 0.08,
+    "bevel": 0,
+    "vary": 0.02
+   },
+   "tile_m": 1.2,
+   "joint_shade": -0.25,
+   "uses": [
+    "wall"
+   ],
+   "why": "Rebated boards lying flat: a thin, even groove."
+  },
+  "siding.board_batten": {
+   "family": "siding",
+   "name": "Board-and-batten siding",
+   "kind": "board_batten",
+   "params": {
+    "boards": 4,
+    "batten": 0.14,
+    "vary": 0.02
+   },
+   "tile_m": 1.2,
+   "joint_shade": -0.22,
+   "uses": [
+    "wall"
+   ],
+   "why": "Wide vertical boards with a narrow batten over each seam."
+  },
+  "siding.shingle": {
+   "family": "siding",
+   "name": "Straight-cut shingle",
+   "kind": "shingle",
+   "params": {
+    "rows": 8,
+    "per_row": 6,
+    "shape": "square",
+    "joint": 0.08,
+    "vary": 0.08
+   },
+   "tile_m": 1.0,
+   "joint_shade": -0.3,
+   "uses": [
+    "wall",
+    "roof"
+   ],
+   "why": "Staggered straight-cut shingles, each a little different."
+  },
+  "siding.fishscale": {
+   "family": "siding",
+   "name": "Fish-scale shingle",
+   "kind": "shingle",
+   "params": {
+    "rows": 8,
+    "per_row": 6,
+    "shape": "round",
+    "joint": 0.08,
+    "vary": 0.06
+   },
+   "tile_m": 1.0,
+   "joint_shade": -0.3,
+   "uses": [
+    "wall"
+   ],
+   "why": "Round-butt shingles: a gable-end ornament."
+  },
+  "render.stucco": {
+   "family": "render",
+   "name": "Stucco render",
+   "kind": "speckle",
+   "params": {
+    "dots": 900,
+    "size": [
+     0.004,
+     0.012
+    ],
+    "spread": 0.1,
+    "aggregate": 0
+   },
+   "tile_m": 1.0,
+   "joint_shade": -0.1,
+   "uses": [
+    "wall"
+   ],
+   "why": "A trowelled cement render: fine, low-contrast grain."
+  },
+  "render.terrazzo": {
+   "family": "render",
+   "name": "Terrazzo",
+   "kind": "speckle",
+   "params": {
+    "dots": 260,
+    "size": [
+     0.01,
+     0.034
+    ],
+    "spread": 0.3,
+    "aggregate": 1
+   },
+   "tile_m": 0.6,
+   "joint_shade": -0.35,
+   "uses": [
+    "ground",
+    "wall"
+   ],
+   "why": "Stone chips set in a binder and ground flat."
+  },
+  "concrete.board_formed": {
+   "family": "concrete",
+   "name": "Board-formed concrete",
+   "kind": "formed",
+   "params": {
+    "boards": 6,
+    "grain": 14,
+    "tie_holes": 2,
+    "vary": 0.05
+   },
+   "tile_m": 1.2,
+   "joint_shade": -0.18,
+   "uses": [
+    "wall"
+   ],
+   "why": "Concrete cast against planks: the grain and tie holes stay."
+  },
+  "concrete.block": {
+   "family": "concrete",
+   "name": "Concrete block",
+   "kind": "bond",
+   "params": {
+    "courses": 4,
+    "per_course": 2,
+    "offset": 0.5,
+    "joint": 0.06,
+    "header_every": 0,
+    "vary": 0.04
+   },
+   "tile_m": 0.8,
+   "joint_shade": -0.22,
+   "uses": [
+    "wall"
+   ],
+   "why": "Large hollow units in running bond: warehouses and yards."
+  },
+  "metal.corrugated": {
+   "family": "metal",
+   "name": "Corrugated metal",
+   "kind": "corrugated",
+   "params": {
+    "waves": 8,
+    "bands": 6
+   },
+   "tile_m": 0.8,
+   "joint_shade": -0.3,
+   "uses": [
+    "wall",
+    "roof"
+   ],
+   "why": "A sine-profile sheet: sheds, docks, workshops."
+  },
+  "metal.standing_seam": {
+   "family": "metal",
+   "name": "Standing-seam metal",
+   "kind": "seam",
+   "params": {
+    "panels": 4,
+    "seam": 0.05
+   },
+   "tile_m": 1.6,
+   "joint_shade": -0.3,
+   "uses": [
+    "roof",
+    "wall"
+   ],
+   "why": "Flat pans joined by raised seams: a modern roof."
+  },
+  "paving.pavers": {
+   "family": "paving",
+   "name": "Concrete pavers",
+   "kind": "bond",
+   "params": {
+    "courses": 4,
+    "per_course": 2,
+    "offset": 0.5,
+    "joint": 0.05,
+    "header_every": 0,
+    "vary": 0.07
+   },
+   "tile_m": 0.8,
+   "joint_shade": -0.3,
+   "uses": [
+    "ground"
+   ],
+   "why": "Rectangular pavers in running bond: sidewalks and plazas."
+  },
+  "paving.cobble": {
+   "family": "paving",
+   "name": "Cobblestones",
+   "kind": "cobble",
+   "params": {
+    "cols": 6,
+    "rows": 6,
+    "jitter": 0.18,
+    "joint": 0.1,
+    "vary": 0.12
+   },
+   "tile_m": 0.9,
+   "joint_shade": -0.4,
+   "uses": [
+    "ground"
+   ],
+   "why": "Rounded setts in loose rows: an old street."
+  },
+  "paving.hex": {
+   "family": "paving",
+   "name": "Hexagon pavers",
+   "kind": "hex",
+   "params": {
+    "cols": 4,
+    "rows": 4,
+    "joint": 0.07,
+    "vary": 0.06
+   },
+   "tile_m": 0.9,
+   "joint_shade": -0.3,
+   "uses": [
+    "ground"
+   ],
+   "why": "Six-sided pavers: a park path."
+  },
+  "roof.barrel_tile": {
+   "family": "roof",
+   "name": "Barrel clay tile",
+   "kind": "barrel",
+   "params": {
+    "rows": 6,
+    "per_row": 6,
+    "shade": 0.25
+   },
+   "tile_m": 1.2,
+   "joint_shade": -0.35,
+   "uses": [
+    "roof"
+   ],
+   "why": "Half-round tiles laid in rows: a warm-climate roof."
+  },
+  "roof.slate": {
+   "family": "roof",
+   "name": "Slate roof",
+   "kind": "slate",
+   "params": {
+    "rows": 8,
+    "per_row": 5,
+    "joint": 0.06,
+    "vary": 0.1
+   },
+   "tile_m": 1.0,
+   "joint_shade": -0.35,
+   "uses": [
+    "roof"
+   ],
+   "why": "Split stone laid in staggered courses."
+  },
+  "roof.asphalt_shingle": {
+   "family": "roof",
+   "name": "Three-tab roof shingle",
+   "kind": "shingle",
+   "params": {
+    "rows": 10,
+    "per_row": 4,
+    "shape": "square",
+    "joint": 0.1,
+    "vary": 0.1
+   },
+   "tile_m": 1.0,
+   "joint_shade": -0.35,
+   "uses": [
+    "roof"
+   ],
+   "why": "Granular strip shingles: the common house roof."
+  }
+ },
+ "colour_families": {
+  "earth": {
+   "name": "Earth",
+   "why": "Fired clay, adobe and sandstone: warm, low-chroma bodies with a dark trim.",
+   "colours": [
+    {
+     "id": "earth.adobe",
+     "name": "Adobe",
+     "hex": "#C79A74",
+     "use": "body",
+     "label_ink": "#000000",
+     "label_ratio": 8.303
+    },
+    {
+     "id": "earth.fired_clay",
+     "name": "Fired clay",
+     "hex": "#9C4E35",
+     "use": "body",
+     "label_ink": "#FFFFFF",
+     "label_ratio": 5.908
+    },
+    {
+     "id": "earth.sandstone",
+     "name": "Sandstone",
+     "hex": "#E3CFA5",
+     "use": "body",
+     "label_ink": "#000000",
+     "label_ratio": 13.735
+    },
+    {
+     "id": "earth.umber_trim",
+     "name": "Umber trim",
+     "hex": "#4A3223",
+     "use": "trim",
+     "label_ink": "#FFFFFF",
+     "label_ratio": 11.853
+    },
+    {
+     "id": "earth.ochre",
+     "name": "Ochre",
+     "hex": "#C8912C",
+     "use": "accent",
+     "label_ink": "#000000",
+     "label_ratio": 7.542
+    },
+    {
+     "id": "earth.terracotta_roof",
+     "name": "Terracotta roof",
+     "hex": "#CF7A4E",
+     "use": "roof",
+     "label_ink": "#000000",
+     "label_ratio": 6.547
+    },
+    {
+     "id": "earth.packed_earth",
+     "name": "Packed earth",
+     "hex": "#8C7A62",
+     "use": "ground",
+     "label_ink": "#000000",
+     "label_ratio": 5.075
+    }
+   ],
+   "lettering": [
+    {
+     "fg": "earth.umber_trim",
+     "bg": "earth.sandstone",
+     "ratio": 7.752
+    },
+    {
+     "fg": "earth.sandstone",
+     "bg": "earth.umber_trim",
+     "ratio": 7.752
+    }
+   ],
+   "cvd_worst": {
+    "family": "earth",
+    "worst_delta_e": 12.815,
+    "view": "protanopia",
+    "pair": [
+     "earth.adobe",
+     "earth.terracotta_roof"
+    ]
+   }
+  },
+  "coastal": {
+   "name": "Coastal",
+   "why": "Weathered boards, sea-glass and sand: light bodies, white trim.",
+   "colours": [
+    {
+     "id": "coastal.driftwood",
+     "name": "Driftwood",
+     "hex": "#B7AE9E",
+     "use": "body",
+     "label_ink": "#000000",
+     "label_ratio": 9.562
+    },
+    {
+     "id": "coastal.sea_glass",
+     "name": "Sea glass",
+     "hex": "#9FC7BE",
+     "use": "body",
+     "label_ink": "#000000",
+     "label_ratio": 11.387
+    },
+    {
+     "id": "coastal.shell_white",
+     "name": "Shell white",
+     "hex": "#F3F0E8",
+     "use": "trim",
+     "label_ink": "#000000",
+     "label_ratio": 18.44
+    },
+    {
+     "id": "coastal.harbour_blue",
+     "name": "Harbour blue",
+     "hex": "#2F5F7F",
+     "use": "accent",
+     "label_ink": "#FFFFFF",
+     "label_ratio": 6.853
+    },
+    {
+     "id": "coastal.weathered_shingle",
+     "name": "Weathered shingle",
+     "hex": "#6E6A64",
+     "use": "roof",
+     "label_ink": "#FFFFFF",
+     "label_ratio": 5.373
+    },
+    {
+     "id": "coastal.dune_sand",
+     "name": "Dune sand",
+     "hex": "#D9C7A0",
+     "use": "ground",
+     "label_ink": "#000000",
+     "label_ratio": 12.627
+    }
+   ],
+   "lettering": [
+    {
+     "fg": "coastal.harbour_blue",
+     "bg": "coastal.shell_white",
+     "ratio": 6.018
+    },
+    {
+     "fg": "coastal.shell_white",
+     "bg": "coastal.harbour_blue",
+     "ratio": 6.018
+    }
+   ],
+   "cvd_worst": {
+    "family": "coastal",
+    "worst_delta_e": 10.229,
+    "view": "protanopia",
+    "pair": [
+     "coastal.driftwood",
+     "coastal.sea_glass"
+    ]
+   }
+  },
+  "creole": {
+   "name": "Creole and Caribbean",
+   "why": "Saturated shotgun-house bodies with contrasting shutters and trim.",
+   "colours": [
+    {
+     "id": "creole.mango",
+     "name": "Mango",
+     "hex": "#E8A33D",
+     "use": "body",
+     "label_ink": "#000000",
+     "label_ratio": 9.737
+    },
+    {
+     "id": "creole.bougainvillea",
+     "name": "Bougainvillea",
+     "hex": "#B8336A",
+     "use": "body",
+     "label_ink": "#FFFFFF",
+     "label_ratio": 5.646
+    },
+    {
+     "id": "creole.lagoon",
+     "name": "Lagoon",
+     "hex": "#2A9D8F",
+     "use": "body",
+     "label_ink": "#000000",
+     "label_ratio": 6.318
+    },
+    {
+     "id": "creole.lime_wash",
+     "name": "Lime wash",
+     "hex": "#F4EFD8",
+     "use": "trim",
+     "label_ink": "#000000",
+     "label_ratio": 18.185
+    },
+    {
+     "id": "creole.shutter_green",
+     "name": "Shutter green",
+     "hex": "#173F2A",
+     "use": "accent",
+     "label_ink": "#FFFFFF",
+     "label_ratio": 11.792
+    },
+    {
+     "id": "creole.rust_roof",
+     "name": "Rust roof",
+     "hex": "#8A3B24",
+     "use": "roof",
+     "label_ink": "#FFFFFF",
+     "label_ratio": 7.687
+    },
+    {
+     "id": "creole.shell_path",
+     "name": "Shell path",
+     "hex": "#CFC6B2",
+     "use": "ground",
+     "label_ink": "#000000",
+     "label_ratio": 12.374
+    }
+   ],
+   "lettering": [
+    {
+     "fg": "creole.shutter_green",
+     "bg": "creole.lime_wash",
+     "ratio": 10.211
+    },
+    {
+     "fg": "creole.lime_wash",
+     "bg": "creole.shutter_green",
+     "ratio": 10.211
+    },
+    {
+     "fg": "creole.lime_wash",
+     "bg": "creole.rust_roof",
+     "ratio": 6.657
+    }
+   ],
+   "cvd_worst": {
+    "family": "creole",
+    "worst_delta_e": 13.846,
+    "view": "deuteranopia",
+    "pair": [
+     "creole.bougainvillea",
+     "creole.lagoon"
+    ]
+   }
+  },
+  "midcentury": {
+   "name": "Mid-century",
+   "why": "Breeze-block pastels and teak: flat planes with one bright accent.",
+   "colours": [
+    {
+     "id": "midcentury.avocado",
+     "name": "Avocado",
+     "hex": "#8C9A4B",
+     "use": "body",
+     "label_ink": "#000000",
+     "label_ratio": 6.839
+    },
+    {
+     "id": "midcentury.pale_turquoise",
+     "name": "Pale turquoise",
+     "hex": "#8FCFCB",
+     "use": "body",
+     "label_ink": "#000000",
+     "label_ratio": 11.955
+    },
+    {
+     "id": "midcentury.teak",
+     "name": "Teak",
+     "hex": "#7A4A2A",
+     "use": "trim",
+     "label_ink": "#FFFFFF",
+     "label_ratio": 7.393
+    },
+    {
+     "id": "midcentury.atomic_orange",
+     "name": "Atomic orange",
+     "hex": "#D8662B",
+     "use": "accent",
+     "label_ink": "#000000",
+     "label_ratio": 5.855
+    },
+    {
+     "id": "midcentury.charcoal_roof",
+     "name": "Charcoal roof",
+     "hex": "#3A3C3E",
+     "use": "roof",
+     "label_ink": "#FFFFFF",
+     "label_ratio": 11.077
+    },
+    {
+     "id": "midcentury.terrazzo_white",
+     "name": "Terrazzo white",
+     "hex": "#E6E2D8",
+     "use": "ground",
+     "label_ink": "#000000",
+     "label_ratio": 16.235
+    }
+   ],
+   "lettering": [
+    {
+     "fg": "midcentury.teak",
+     "bg": "midcentury.terrazzo_white",
+     "ratio": 5.716
+    },
+    {
+     "fg": "midcentury.terrazzo_white",
+     "bg": "midcentury.charcoal_roof",
+     "ratio": 8.563
+    }
+   ],
+   "cvd_worst": {
+    "family": "midcentury",
+    "worst_delta_e": 11.251,
+    "view": "protanopia",
+    "pair": [
+     "midcentury.pale_turquoise",
+     "midcentury.terrazzo_white"
+    ]
+   }
+  },
+  "industrial": {
+   "name": "Industrial",
+   "why": "Galvanised sheet, weathered steel and concrete: greys with a hard accent.",
+   "colours": [
+    {
+     "id": "industrial.galvanised",
+     "name": "Galvanised",
+     "hex": "#A7ADB1",
+     "use": "body",
+     "label_ink": "#000000",
+     "label_ratio": 9.255
+    },
+    {
+     "id": "industrial.weathering_steel",
+     "name": "Weathering steel",
+     "hex": "#7E3F22",
+     "use": "body",
+     "label_ink": "#FFFFFF",
+     "label_ratio": 8.012
+    },
+    {
+     "id": "industrial.concrete_grey",
+     "name": "Concrete grey",
+     "hex": "#8E8D88",
+     "use": "body",
+     "label_ink": "#000000",
+     "label_ratio": 6.316
+    },
+    {
+     "id": "industrial.iron_black",
+     "name": "Iron black",
+     "hex": "#1E2226",
+     "use": "trim",
+     "label_ink": "#FFFFFF",
+     "label_ratio": 16.006
+    },
+    {
+     "id": "industrial.crane_yellow",
+     "name": "Crane yellow",
+     "hex": "#E3B21B",
+     "use": "accent",
+     "label_ink": "#000000",
+     "label_ratio": 10.65
+    },
+    {
+     "id": "industrial.sheet_roof",
+     "name": "Sheet roof",
+     "hex": "#5C6166",
+     "use": "roof",
+     "label_ink": "#FFFFFF",
+     "label_ratio": 6.256
+    },
+    {
+     "id": "industrial.yard_asphalt",
+     "name": "Yard asphalt",
+     "hex": "#3F4042",
+     "use": "ground",
+     "label_ink": "#FFFFFF",
+     "label_ratio": 10.379
+    }
+   ],
+   "lettering": [
+    {
+     "fg": "industrial.iron_black",
+     "bg": "industrial.crane_yellow",
+     "ratio": 8.117
+    },
+    {
+     "fg": "industrial.crane_yellow",
+     "bg": "industrial.iron_black",
+     "ratio": 8.117
+    },
+    {
+     "fg": "industrial.iron_black",
+     "bg": "industrial.galvanised",
+     "ratio": 7.054
+    }
+   ],
+   "cvd_worst": {
+    "family": "industrial",
+    "worst_delta_e": 13.045,
+    "view": "deuteranopia",
+    "pair": [
+     "industrial.galvanised",
+     "industrial.concrete_grey"
+    ]
+   }
+  },
+  "civic": {
+   "name": "Civic and safety accent",
+   "why": "Stone and brick public buildings, with the high-visibility accents a yard or hall uses to mark a hazard (AUTHORED hues, not any standard's official value).",
+   "colours": [
+    {
+     "id": "civic.limestone",
+     "name": "Limestone",
+     "hex": "#DCD3C0",
+     "use": "body",
+     "label_ink": "#000000",
+     "label_ratio": 14.122
+    },
+    {
+     "id": "civic.civic_brick",
+     "name": "Civic brick",
+     "hex": "#8E3B2E",
+     "use": "body",
+     "label_ink": "#FFFFFF",
+     "label_ratio": 7.46
+    },
+    {
+     "id": "civic.slate_trim",
+     "name": "Slate trim",
+     "hex": "#2E3A45",
+     "use": "trim",
+     "label_ink": "#FFFFFF",
+     "label_ratio": 11.619
+    },
+    {
+     "id": "civic.signal_orange",
+     "name": "Signal orange",
+     "hex": "#E8641E",
+     "use": "accent",
+     "label_ink": "#000000",
+     "label_ratio": 6.273
+    },
+    {
+     "id": "civic.caution_yellow",
+     "name": "Caution yellow",
+     "hex": "#F2C81B",
+     "use": "accent",
+     "label_ink": "#000000",
+     "label_ratio": 13.053
+    },
+    {
+     "id": "civic.copper_roof",
+     "name": "Copper roof",
+     "hex": "#4E8B78",
+     "use": "roof",
+     "label_ink": "#000000",
+     "label_ratio": 5.288
+    },
+    {
+     "id": "civic.plaza_granite",
+     "name": "Plaza granite",
+     "hex": "#B5B0A8",
+     "use": "ground",
+     "label_ink": "#000000",
+     "label_ratio": 9.74
+    }
+   ],
+   "lettering": [
+    {
+     "fg": "civic.slate_trim",
+     "bg": "civic.limestone",
+     "ratio": 7.814
+    },
+    {
+     "fg": "civic.slate_trim",
+     "bg": "civic.caution_yellow",
+     "ratio": 7.222
+    },
+    {
+     "fg": "civic.limestone",
+     "bg": "civic.civic_brick",
+     "ratio": 5.016
+    }
+   ],
+   "cvd_worst": {
+    "family": "civic",
+    "worst_delta_e": 13.697,
+    "view": "protanopia",
+    "pair": [
+     "civic.limestone",
+     "civic.plaza_granite"
+    ]
+   }
+  },
+  "park": {
+   "name": "Park and landscape",
+   "why": "Planting, bark and path: greens that read apart from each other.",
+   "colours": [
+    {
+     "id": "park.meadow",
+     "name": "Meadow",
+     "hex": "#7FA650",
+     "use": "ground",
+     "label_ink": "#000000",
+     "label_ratio": 7.473
+    },
+    {
+     "id": "park.canopy",
+     "name": "Canopy",
+     "hex": "#3E7A3F",
+     "use": "body",
+     "label_ink": "#FFFFFF",
+     "label_ratio": 5.172
+    },
+    {
+     "id": "park.bark",
+     "name": "Bark",
+     "hex": "#3F2D20",
+     "use": "trim",
+     "label_ink": "#FFFFFF",
+     "label_ratio": 13.063
+    },
+    {
+     "id": "park.path_gravel",
+     "name": "Path gravel",
+     "hex": "#C9BFA9",
+     "use": "ground",
+     "label_ink": "#000000",
+     "label_ratio": 11.509
+    },
+    {
+     "id": "park.bloom",
+     "name": "Bloom",
+     "hex": "#D9577A",
+     "use": "accent",
+     "label_ink": "#000000",
+     "label_ratio": 5.595
+    },
+    {
+     "id": "park.pond",
+     "name": "Pond",
+     "hex": "#3C7F9C",
+     "use": "accent",
+     "label_ink": "#000000",
+     "label_ratio": 4.708
+    }
+   ],
+   "lettering": [
+    {
+     "fg": "park.bark",
+     "bg": "park.path_gravel",
+     "ratio": 7.159
+    },
+    {
+     "fg": "park.path_gravel",
+     "bg": "park.bark",
+     "ratio": 7.159
+    }
+   ],
+   "cvd_worst": {
+    "family": "park",
+    "worst_delta_e": 15.139,
+    "view": "protanopia",
+    "pair": [
+     "park.bloom",
+     "park.pond"
+    ]
+   }
+  },
+  "night": {
+   "name": "Night and neon",
+   "why": "After-dark signs and glazing: dark bodies with emissive accents.",
+   "colours": [
+    {
+     "id": "night.night_body",
+     "name": "Night body",
+     "hex": "#141722",
+     "use": "body",
+     "label_ink": "#FFFFFF",
+     "label_ratio": 17.866
+    },
+    {
+     "id": "night.dusk_trim",
+     "name": "Dusk trim",
+     "hex": "#4C4F6B",
+     "use": "trim",
+     "label_ink": "#FFFFFF",
+     "label_ratio": 7.961
+    },
+    {
+     "id": "night.neon_pink",
+     "name": "Neon pink",
+     "hex": "#FF5FA2",
+     "use": "accent",
+     "label_ink": "#000000",
+     "label_ratio": 7.411
+    },
+    {
+     "id": "night.neon_cyan",
+     "name": "Neon cyan",
+     "hex": "#3FE0F0",
+     "use": "accent",
+     "label_ink": "#000000",
+     "label_ratio": 13.132
+    },
+    {
+     "id": "night.sodium_amber",
+     "name": "Sodium amber",
+     "hex": "#F5A623",
+     "use": "accent",
+     "label_ink": "#000000",
+     "label_ratio": 10.361
+    },
+    {
+     "id": "night.wet_asphalt",
+     "name": "Wet asphalt",
+     "hex": "#3E4147",
+     "use": "ground",
+     "label_ink": "#FFFFFF",
+     "label_ratio": 10.234
+    }
+   ],
+   "lettering": [
+    {
+     "fg": "night.neon_cyan",
+     "bg": "night.night_body",
+     "ratio": 11.172
+    },
+    {
+     "fg": "night.neon_pink",
+     "bg": "night.night_body",
+     "ratio": 6.305
+    },
+    {
+     "fg": "night.sodium_amber",
+     "bg": "night.wet_asphalt",
+     "ratio": 5.05
+    }
+   ],
+   "cvd_worst": {
+    "family": "night",
+    "worst_delta_e": 13.872,
+    "view": "deuteranopia",
+    "pair": [
+     "night.dusk_trim",
+     "night.wet_asphalt"
+    ]
+   }
+  }
+ },
+ "landuse_hints": {
+  "residential": {
+   "wall": [
+    "siding.clapboard",
+    "siding.shiplap",
+    "siding.board_batten",
+    "siding.fishscale",
+    "render.stucco",
+    "brick.running"
+   ],
+   "roof": [
+    "roof.asphalt_shingle",
+    "roof.barrel_tile",
+    "metal.standing_seam",
+    "roof.slate"
+   ],
+   "ground": [
+    "paving.pavers",
+    "brick.herringbone"
+   ],
+   "families": [
+    "creole",
+    "coastal",
+    "midcentury",
+    "earth"
+   ]
+  },
+  "commercial": {
+   "wall": [
+    "brick.running",
+    "brick.flemish",
+    "brick.english",
+    "render.stucco",
+    "brick.stack"
+   ],
+   "roof": [
+    "metal.standing_seam",
+    "roof.slate"
+   ],
+   "ground": [
+    "paving.pavers",
+    "render.terrazzo",
+    "brick.basketweave"
+   ],
+   "families": [
+    "earth",
+    "midcentury",
+    "night"
+   ]
+  },
+  "industrial": {
+   "wall": [
+    "metal.corrugated",
+    "concrete.block",
+    "concrete.board_formed"
+   ],
+   "roof": [
+    "metal.corrugated",
+    "metal.standing_seam"
+   ],
+   "ground": [
+    "paving.pavers"
+   ],
+   "families": [
+    "industrial",
+    "civic"
+   ]
+  },
+  "civic": {
+   "wall": [
+    "brick.flemish",
+    "concrete.board_formed",
+    "render.stucco",
+    "brick.english"
+   ],
+   "roof": [
+    "roof.slate",
+    "metal.standing_seam"
+   ],
+   "ground": [
+    "render.terrazzo",
+    "paving.hex",
+    "brick.herringbone"
+   ],
+   "families": [
+    "civic",
+    "earth"
+   ]
+  },
+  "park": {
+   "wall": [
+    "siding.board_batten"
+   ],
+   "roof": [
+    "siding.shingle"
+   ],
+   "ground": [
+    "paving.cobble",
+    "paving.hex",
+    "brick.herringbone"
+   ],
+   "families": [
+    "park"
+   ]
+  }
+ },
+ "checks": {
+  "aa": {
+   "method": "web/design_kit.contrast (WCAG 2.x); threshold 4.5:1 for every lettering pair and every swatch label",
+   "label_inks": [
+    "#000000",
+    "#FFFFFF"
+   ],
+   "pairs": [
+    {
+     "pair": "label #000000 on earth.adobe",
+     "ratio": 8.303
+    },
+    {
+     "pair": "label #FFFFFF on earth.fired_clay",
+     "ratio": 5.908
+    },
+    {
+     "pair": "label #000000 on earth.sandstone",
+     "ratio": 13.735
+    },
+    {
+     "pair": "label #FFFFFF on earth.umber_trim",
+     "ratio": 11.853
+    },
+    {
+     "pair": "label #000000 on earth.ochre",
+     "ratio": 7.542
+    },
+    {
+     "pair": "label #000000 on earth.terracotta_roof",
+     "ratio": 6.547
+    },
+    {
+     "pair": "label #000000 on earth.packed_earth",
+     "ratio": 5.075
+    },
+    {
+     "pair": "earth.umber_trim on earth.sandstone",
+     "ratio": 7.752
+    },
+    {
+     "pair": "earth.sandstone on earth.umber_trim",
+     "ratio": 7.752
+    },
+    {
+     "pair": "label #000000 on coastal.driftwood",
+     "ratio": 9.562
+    },
+    {
+     "pair": "label #000000 on coastal.sea_glass",
+     "ratio": 11.387
+    },
+    {
+     "pair": "label #000000 on coastal.shell_white",
+     "ratio": 18.44
+    },
+    {
+     "pair": "label #FFFFFF on coastal.harbour_blue",
+     "ratio": 6.853
+    },
+    {
+     "pair": "label #FFFFFF on coastal.weathered_shingle",
+     "ratio": 5.373
+    },
+    {
+     "pair": "label #000000 on coastal.dune_sand",
+     "ratio": 12.627
+    },
+    {
+     "pair": "coastal.harbour_blue on coastal.shell_white",
+     "ratio": 6.018
+    },
+    {
+     "pair": "coastal.shell_white on coastal.harbour_blue",
+     "ratio": 6.018
+    },
+    {
+     "pair": "label #000000 on creole.mango",
+     "ratio": 9.737
+    },
+    {
+     "pair": "label #FFFFFF on creole.bougainvillea",
+     "ratio": 5.646
+    },
+    {
+     "pair": "label #000000 on creole.lagoon",
+     "ratio": 6.318
+    },
+    {
+     "pair": "label #000000 on creole.lime_wash",
+     "ratio": 18.185
+    },
+    {
+     "pair": "label #FFFFFF on creole.shutter_green",
+     "ratio": 11.792
+    },
+    {
+     "pair": "label #FFFFFF on creole.rust_roof",
+     "ratio": 7.687
+    },
+    {
+     "pair": "label #000000 on creole.shell_path",
+     "ratio": 12.374
+    },
+    {
+     "pair": "creole.shutter_green on creole.lime_wash",
+     "ratio": 10.211
+    },
+    {
+     "pair": "creole.lime_wash on creole.shutter_green",
+     "ratio": 10.211
+    },
+    {
+     "pair": "creole.lime_wash on creole.rust_roof",
+     "ratio": 6.657
+    },
+    {
+     "pair": "label #000000 on midcentury.avocado",
+     "ratio": 6.839
+    },
+    {
+     "pair": "label #000000 on midcentury.pale_turquoise",
+     "ratio": 11.955
+    },
+    {
+     "pair": "label #FFFFFF on midcentury.teak",
+     "ratio": 7.393
+    },
+    {
+     "pair": "label #000000 on midcentury.atomic_orange",
+     "ratio": 5.855
+    },
+    {
+     "pair": "label #FFFFFF on midcentury.charcoal_roof",
+     "ratio": 11.077
+    },
+    {
+     "pair": "label #000000 on midcentury.terrazzo_white",
+     "ratio": 16.235
+    },
+    {
+     "pair": "midcentury.teak on midcentury.terrazzo_white",
+     "ratio": 5.716
+    },
+    {
+     "pair": "midcentury.terrazzo_white on midcentury.charcoal_roof",
+     "ratio": 8.563
+    },
+    {
+     "pair": "label #000000 on industrial.galvanised",
+     "ratio": 9.255
+    },
+    {
+     "pair": "label #FFFFFF on industrial.weathering_steel",
+     "ratio": 8.012
+    },
+    {
+     "pair": "label #000000 on industrial.concrete_grey",
+     "ratio": 6.316
+    },
+    {
+     "pair": "label #FFFFFF on industrial.iron_black",
+     "ratio": 16.006
+    },
+    {
+     "pair": "label #000000 on industrial.crane_yellow",
+     "ratio": 10.65
+    },
+    {
+     "pair": "label #FFFFFF on industrial.sheet_roof",
+     "ratio": 6.256
+    },
+    {
+     "pair": "label #FFFFFF on industrial.yard_asphalt",
+     "ratio": 10.379
+    },
+    {
+     "pair": "industrial.iron_black on industrial.crane_yellow",
+     "ratio": 8.117
+    },
+    {
+     "pair": "industrial.crane_yellow on industrial.iron_black",
+     "ratio": 8.117
+    },
+    {
+     "pair": "industrial.iron_black on industrial.galvanised",
+     "ratio": 7.054
+    },
+    {
+     "pair": "label #000000 on civic.limestone",
+     "ratio": 14.122
+    },
+    {
+     "pair": "label #FFFFFF on civic.civic_brick",
+     "ratio": 7.46
+    },
+    {
+     "pair": "label #FFFFFF on civic.slate_trim",
+     "ratio": 11.619
+    },
+    {
+     "pair": "label #000000 on civic.signal_orange",
+     "ratio": 6.273
+    },
+    {
+     "pair": "label #000000 on civic.caution_yellow",
+     "ratio": 13.053
+    },
+    {
+     "pair": "label #000000 on civic.copper_roof",
+     "ratio": 5.288
+    },
+    {
+     "pair": "label #000000 on civic.plaza_granite",
+     "ratio": 9.74
+    },
+    {
+     "pair": "civic.slate_trim on civic.limestone",
+     "ratio": 7.814
+    },
+    {
+     "pair": "civic.slate_trim on civic.caution_yellow",
+     "ratio": 7.222
+    },
+    {
+     "pair": "civic.limestone on civic.civic_brick",
+     "ratio": 5.016
+    },
+    {
+     "pair": "label #000000 on park.meadow",
+     "ratio": 7.473
+    },
+    {
+     "pair": "label #FFFFFF on park.canopy",
+     "ratio": 5.172
+    },
+    {
+     "pair": "label #FFFFFF on park.bark",
+     "ratio": 13.063
+    },
+    {
+     "pair": "label #000000 on park.path_gravel",
+     "ratio": 11.509
+    },
+    {
+     "pair": "label #000000 on park.bloom",
+     "ratio": 5.595
+    },
+    {
+     "pair": "label #000000 on park.pond",
+     "ratio": 4.708
+    },
+    {
+     "pair": "park.bark on park.path_gravel",
+     "ratio": 7.159
+    },
+    {
+     "pair": "park.path_gravel on park.bark",
+     "ratio": 7.159
+    },
+    {
+     "pair": "label #FFFFFF on night.night_body",
+     "ratio": 17.866
+    },
+    {
+     "pair": "label #FFFFFF on night.dusk_trim",
+     "ratio": 7.961
+    },
+    {
+     "pair": "label #000000 on night.neon_pink",
+     "ratio": 7.411
+    },
+    {
+     "pair": "label #000000 on night.neon_cyan",
+     "ratio": 13.132
+    },
+    {
+     "pair": "label #000000 on night.sodium_amber",
+     "ratio": 10.361
+    },
+    {
+     "pair": "label #FFFFFF on night.wet_asphalt",
+     "ratio": 10.234
+    },
+    {
+     "pair": "night.neon_cyan on night.night_body",
+     "ratio": 11.172
+    },
+    {
+     "pair": "night.neon_pink on night.night_body",
+     "ratio": 6.305
+    },
+    {
+     "pair": "night.sodium_amber on night.wet_asphalt",
+     "ratio": 5.05
+    }
+   ],
+   "min_ratio": 4.708
+  },
+  "cvd": {
+   "method": "Machado, Oliveira and Fernandes (2009) simulation matrices at severity 1.0 applied to linear sRGB, clipped, re-encoded; CIE76 dE between every pair of colours in one family, under normal vision and each simulation",
+   "matrices": {
+    "protanopia": [
+     [
+      0.152286,
+      1.052583,
+      -0.204868
+     ],
+     [
+      0.114503,
+      0.786281,
+      0.113216
+     ],
+     [
+      -0.003882,
+      -0.048116,
+      1.051998
+     ]
+    ],
+    "deuteranopia": [
+     [
+      0.367322,
+      0.860646,
+      -0.227968
+     ],
+     [
+      0.280085,
+      0.672501,
+      0.047413
+     ],
+     [
+      -0.01182,
+      0.04294,
+      0.968881
+     ]
+    ]
+   },
+   "min_delta_e": 10.0,
+   "why": "CIE76 dE 2.3 is a just-noticeable difference side by side; 10 is about four times that, a gap a reader sees at a glance on a facade at street distance. Inside one family these colours are body, trim, accent, roof and ground of the same building, so each must read apart from every other for a reader with protanopia or deuteranopia too.",
+   "families": [
+    {
+     "family": "earth",
+     "worst_delta_e": 12.815,
+     "view": "protanopia",
+     "pair": [
+      "earth.adobe",
+      "earth.terracotta_roof"
+     ]
+    },
+    {
+     "family": "coastal",
+     "worst_delta_e": 10.229,
+     "view": "protanopia",
+     "pair": [
+      "coastal.driftwood",
+      "coastal.sea_glass"
+     ]
+    },
+    {
+     "family": "creole",
+     "worst_delta_e": 13.846,
+     "view": "deuteranopia",
+     "pair": [
+      "creole.bougainvillea",
+      "creole.lagoon"
+     ]
+    },
+    {
+     "family": "midcentury",
+     "worst_delta_e": 11.251,
+     "view": "protanopia",
+     "pair": [
+      "midcentury.pale_turquoise",
+      "midcentury.terrazzo_white"
+     ]
+    },
+    {
+     "family": "industrial",
+     "worst_delta_e": 13.045,
+     "view": "deuteranopia",
+     "pair": [
+      "industrial.galvanised",
+      "industrial.concrete_grey"
+     ]
+    },
+    {
+     "family": "civic",
+     "worst_delta_e": 13.697,
+     "view": "protanopia",
+     "pair": [
+      "civic.limestone",
+      "civic.plaza_granite"
+     ]
+    },
+    {
+     "family": "park",
+     "worst_delta_e": 15.139,
+     "view": "protanopia",
+     "pair": [
+      "park.bloom",
+      "park.pond"
+     ]
+    },
+    {
+     "family": "night",
+     "worst_delta_e": 13.872,
+     "view": "deuteranopia",
+     "pair": [
+      "night.dusk_trim",
+      "night.wet_asphalt"
+     ]
+    }
+   ]
+  }
+ }
+}

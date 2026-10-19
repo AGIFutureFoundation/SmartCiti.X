@@ -1,0 +1,2671 @@
+{
+ "pack": "smartcitix-trade-craft-academy-completion",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-09-26",
+ "source_stamp": "d3cae35643b4f2cb",
+ "provenance": "DERIVED",
+ "provenance_note": "every fact here is read from the registry that owns it and re-derivable by build.py; the fixture record is SCRIPTED and labelled as not a learner",
+ "honesty": {
+  "proves": [
+   "the record has not changed since it was exported: its SHA-256 digest recomputes over the canonical form",
+   "every lesson, step, hall, seat, scenario, station and district it names exists in this bundle at the stated pack version",
+   "every step marked done whose kind writes a training episode carries that episode as evidence",
+   "no lesson is marked complete with a step still undone, and none ahead of its ladder prerequisite"
+  ],
+  "does_not_prove": [
+   "who the learner is: identity.claimed is typed by the person, attested by this device only, and nothing checks it - unless a wallet signed, in which case it is the identity of a key, not of a person; a stolen key signs just as well",
+   "anything on any blockchain: a wallet signature is computed in the browser and carried in the file; nothing is written to any chain, nothing is anchored, and no one can look it up",
+   "that the device was honest: a record can be written by hand and will verify if it is internally consistent",
+   "that a self-reported step (walk, placard) happened at all",
+   "a station or crib mark is a device-local mark, not a recorded episode",
+   "that the seat was passed under supervision, or that any score means anything outside this bundle",
+   "any accreditation, ticket, licence or credential; no hall, employer or authority has signed anything",
+   "any duration of training, and no price is claimed"
+  ],
+  "digest": "a digest proves integrity since export, not identity",
+  "signature": "null unless a wallet signed: this bundle has no key of its own and no server, so an unsigned record is attested by this device only. A signed record carries an EIP-191 personal_sign signature by the connected wallet over this record's digest; it proves that the holder of that key signed this digest at export - the identity of a key, not of a person. A signature that does not recover to the address it claims, or that signs any other message, is refused as a forgery. Nothing is written to any chain and nothing is anchored.",
+  "accreditation": "nothing here is an accreditation"
+ },
+ "record_tag": "tc-completion/1",
+ "progress_source": {
+  "key": "tc-progress",
+  "where": "localStorage of the built page (web/build_3d.py)",
+  "fields": [
+   "sims[id].passed",
+   "tools[district].passed",
+   "stations[]"
+  ]
+ },
+ "contract": {
+  "record": {
+   "is": "the literal string tc-completion/1",
+   "proves": "which contract the verifier applies"
+  },
+  "product": {
+   "is": "pack/manifest.json product",
+   "proves": "which product wrote it; nothing about the learner"
+  },
+  "pack_version": {
+   "is": "pack/manifest.json pack_version",
+   "proves": "which registries the ids resolve against"
+  },
+  "exported_at": {
+   "is": "ISO-8601 string, device clock",
+   "proves": "nothing: a device clock is not attested"
+  },
+  "identity": {
+   "is": "{claimed: string|null, attested_by: \"this device only\" | \"wallet signature over the digest\", signature: null | {scheme: \"eip191-personal_sign\", address, message, sig}}",
+   "proves": "unsigned: nothing about who the learner is; claimed is typed, not checked. Signed: that the holder of the key for `address` signed this digest at export - a key, not a person; see registry#signature"
+  },
+  "lessons": {
+   "is": "one entry per lesson the export covers: lesson id, hall, complete, steps[]",
+   "proves": "per step: done and its evidence per the evidence rule of its kind"
+  },
+  "sims": {
+   "is": "{sim id: {passed, score, attempts}} from tc-progress.sims",
+   "proves": "the page marked the seat passed; the score has no registry threshold"
+  },
+  "tools": {
+   "is": "{district: {passed}} from tc-progress.tools",
+   "proves": "the crib check was graded passed on this device"
+  },
+  "stations": {
+   "is": "station ids from tc-progress.stations",
+   "proves": "a station was taken at its bench on this device"
+  },
+  "honesty": {
+   "is": "the proves / does_not_prove lists of this registry, carried in the record",
+   "proves": "that the record says of itself what this registry says of it"
+  },
+  "digest": {
+   "alg": "SHA-256",
+   "over": "canonical JSON of every top-level field except digest, with identity.signature forced to null: keys sorted recursively, no whitespace, UTF-8",
+   "excludes_signature_why": "the signature is a signature OVER the digest, made after it; a digest that covered it would be circular. Every other byte of identity (claimed, attested_by) is covered.",
+   "numbers": "exporters write integers for score and attempts so Python and JavaScript canonicalise alike"
+  }
+ },
+ "digest": {
+  "alg": "SHA-256",
+  "over": "canonical JSON of every top-level field except digest, with identity.signature forced to null: keys sorted recursively, no whitespace, UTF-8",
+  "excludes_signature_why": "the signature is a signature OVER the digest, made after it; a digest that covered it would be circular. Every other byte of identity (claimed, attested_by) is covered.",
+  "numbers": "exporters write integers for score and attempts so Python and JavaScript canonicalise alike"
+ },
+ "signature": {
+  "field": "identity.signature",
+  "null_means": "unsigned: this device only. Then identity.attested_by must be exactly \"this device only\" and identity.claimed is whatever was typed.",
+  "object_shape": {
+   "scheme": "eip191-personal_sign",
+   "address": "0x + 40 hex, the signer the wallet reported",
+   "message": "the exact string signed (below)",
+   "sig": "0x + 130 hex: r | s | v, 65 bytes"
+  },
+  "scheme": "eip191-personal_sign",
+  "signing_method": "personal_sign (EIP-191), requested from window.ethereum",
+  "message": {
+   "structure": "<statement>\\ndigest: <digest.hex>\\nexported_at: <exported_at>",
+   "statement": "I am naming this Ethereum account as the owner of the Trade Craft Academy training record kept in this browser. This signature does not log me in, does not reach any server, and protects nothing: this bundle has no backend.",
+   "statement_from": "auth/registry/auth.json#siwe.statement - the line auth/ already puts in front of the human",
+   "why_fixed": "the verifier rebuilds this message from THIS record's digest.hex and exported_at and requires equality, so a signature over any other text - another record, another export, a friendly sentence - is refused by name"
+  },
+  "when_signed": "identity.attested_by must be exactly \"wallet signature over the digest\", identity.claimed must equal signature.address, and the address recovered from (message, sig) must equal both - compared as lowercase hex, so EIP-55 casing differences are not a mismatch",
+  "order": "digest first: a tampered digest under a valid signature fails `digest` (and the signature no longer matches the rebuilt message, so identity.signature is listed after it); a tampered message or sig with an intact digest fails `identity.signature` alone",
+  "recovery": "auth/recover.mjs, which lifts the AUTH-CORE region of web/trade_craft_signin.html - the sign-in page's own keccak-256, secp256k1 recovery and EIP-55 derivation, the code auth/test.mjs holds against node's sha3-256, node's secp256k1 and the published addresses of keys 1, 2 and 3. No second keccak and no second curve exist in this pack.",
+  "where_the_wallet_comes_from": "the progress page reads the identity the sign-in page stored under tc-identity; only a record whose method is siwe-ethereum carries an address, and only then is signing offered. No wallet, no signature: the record stays unsigned and says so. A signature is never fabricated by the page.",
+  "proves": "that the holder of the private key for signature.address signed this record's digest at export. The identity of a key, not of a person.",
+  "does_not_prove": [
+   "who the person is: a key is held, lent, shared and stolen",
+   "anything about any chain: nothing is written to any chain, nothing is anchored, no transaction exists",
+   "that the record is true: the digest covers what the device exported, and the device can be edited",
+   "any accreditation: no hall, employer or authority has signed anything"
+  ]
+ },
+ "evidence_classes": {
+  "episode-backed": "the step kind records a training episode; only this class is called evidence-backed",
+  "device-mark": "station or crib: a mark in the device-local progress record, not a recorded episode",
+  "self-reported": "walk or placard: no mark at all; done is the learner's word"
+ },
+ "evidence_rule": {
+  "walk": {
+   "class": "self-reported",
+   "records": null,
+   "evidence_required_when_done": false,
+   "evidence_shape": null,
+   "why_no_episode": "arriving somewhere is not an achievement, and a bundle that logged footsteps would be counting attendance while claiming to teach"
+  },
+  "placard": {
+   "class": "self-reported",
+   "records": null,
+   "evidence_required_when_done": false,
+   "evidence_shape": null,
+   "why_no_episode": "the placard states the room condition record; reading a record changes nothing and is nobody's score"
+  },
+  "station": {
+   "class": "device-mark",
+   "records": null,
+   "evidence_required_when_done": false,
+   "evidence_shape": {
+    "station": "station id"
+   },
+   "from": "tc-progress.stations",
+   "why_no_episode": "a station mark lands in the device-local progress record the halls already keep; the training log holds simulator, advisor, crew and walkaround episodes and this pack adds no fifth kind to it"
+  },
+  "crib": {
+   "class": "device-mark",
+   "records": null,
+   "evidence_required_when_done": false,
+   "evidence_shape": {
+    "crib": "district",
+    "passed": "bool"
+   },
+   "from": "tc-progress.tools[district].passed",
+   "why_no_episode": "the crib check is graded deterministically against the crib record and kept with the progress record, not as a training episode"
+  },
+  "walkaround": {
+   "class": "episode-backed",
+   "records": "walkaround",
+   "evidence_required_when_done": true,
+   "evidenceable": true,
+   "evidenceable_why": "every reference field the step carries is recorded by the episode",
+   "evidence_shape": {
+    "episode": "walkaround",
+    "t": "ISO-8601 string (the page writes new Date().toISOString()); Date.parse must be finite",
+    "hall": "the step's own hall, verbatim",
+    "point": "the step's own point, verbatim",
+    "sim": "the step's own sim, verbatim"
+   },
+   "episode_fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "sim",
+    "point"
+   ],
+   "checkable": [
+    "hall",
+    "point",
+    "sim"
+   ],
+   "not_checkable": [],
+   "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
+   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value"
+  },
+  "sim": {
+   "class": "episode-backed",
+   "records": "sim",
+   "evidence_required_when_done": true,
+   "evidenceable": true,
+   "evidenceable_why": "every reference field the step carries is recorded by the episode",
+   "evidence_shape": {
+    "sim": "sim id",
+    "scenario": "scenario id",
+    "score": "number",
+    "passed": "bool"
+   },
+   "episode_fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "sim",
+    "scenario",
+    "controls",
+    "actor",
+    "operator",
+    "outcome"
+   ],
+   "checkable": [
+    "campus",
+    "hall",
+    "scenario",
+    "sim"
+   ],
+   "not_checkable": [],
+   "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
+   "rule": "ids.sim / ids.scenario: the evidence sim and scenario must be the step's own"
+  },
+  "advisor": {
+   "class": "episode-backed",
+   "records": "advisor",
+   "evidence_required_when_done": true,
+   "evidenceable": true,
+   "evidenceable_why": "every reference field the step carries is recorded by the episode",
+   "evidence_shape": {
+    "episode": "advisor",
+    "t": "ISO-8601 string (the page writes new Date().toISOString()); Date.parse must be finite",
+    "advisor": "the step's own advisor, verbatim",
+    "answer_kind": "the step's own answer_kind, verbatim",
+    "hall": "the step's own hall, verbatim",
+    "topic": "the step's own topic, verbatim"
+   },
+   "episode_fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "advisor",
+    "topic",
+    "answer_kind"
+   ],
+   "checkable": [
+    "advisor",
+    "answer_kind",
+    "hall",
+    "topic"
+   ],
+   "not_checkable": [],
+   "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
+   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value"
+  },
+  "crew": {
+   "class": "episode-backed",
+   "records": "crew",
+   "evidence_required_when_done": true,
+   "evidenceable": false,
+   "evidenceable_why": "a crew step cannot be evidenced by this bundle: the crew episode records no muster and no seat",
+   "evidence_shape": {
+    "episode": "crew",
+    "t": "ISO-8601 string (the page writes new Date().toISOString()); Date.parse must be finite",
+    "answer_kind": "the step's own answer_kind, verbatim",
+    "crew": "the step's own crew, verbatim",
+    "hall": "the step's own hall, verbatim",
+    "role": "the step's own role, verbatim",
+    "topic": "the step's own topic, verbatim"
+   },
+   "episode_fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "crew",
+    "role",
+    "topic",
+    "answer_kind"
+   ],
+   "checkable": [
+    "answer_kind",
+    "crew",
+    "hall",
+    "role",
+    "topic"
+   ],
+   "not_checkable": [
+    "muster",
+    "seat"
+   ],
+   "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
+   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value"
+  }
+ },
+ "recording_kinds": [
+  "advisor",
+  "crew",
+  "sim",
+  "walkaround"
+ ],
+ "silent_kinds": [
+  "crib",
+  "placard",
+  "station",
+  "walk"
+ ],
+ "counts": {
+  "lessons": 139,
+  "recording_steps": 301,
+  "silent_steps": 267,
+  "episode_backed_steps": 301,
+  "device_mark_steps": 34,
+  "self_reported_steps": 233,
+  "sims": 11,
+  "sims_with_threshold": 0,
+  "ladder_edges": 40,
+  "lessons_completable": 116,
+  "lessons_not_completable": 23,
+  "fixture_mutants": 16
+ },
+ "lessons": {
+  "riggers-first-card": {
+   "hall": "riggers",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 3,
+   "silent_steps": 1,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "riggers-carry-under-control": {
+   "hall": "riggers",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 5,
+   "recording_steps": 4,
+   "silent_steps": 1,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "riggers-first-card"
+   ]
+  },
+  "crane-ops-read-the-chart": {
+   "hall": "crane-ops",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 3,
+   "silent_steps": 1,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "riggers-first-card"
+   ]
+  },
+  "ironworkers-plan-out-loud": {
+   "hall": "ironworkers",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 4,
+   "recording_steps": 3,
+   "silent_steps": 1,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "riggers-carry-under-control"
+   ]
+  },
+  "millwrights-shop-move": {
+   "hall": "millwrights",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 5,
+   "recording_steps": 3,
+   "silent_steps": 2,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": [
+    "crane-ops-read-the-chart"
+   ]
+  },
+  "welders-the-watch": {
+   "hall": "welders",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 5,
+   "recording_steps": 3,
+   "silent_steps": 2,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "boilermakers-get-them-out": {
+   "hall": "boilermakers",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 5,
+   "recording_steps": 3,
+   "silent_steps": 2,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": [
+    "welders-the-watch"
+   ]
+  },
+  "operating-eng-locate-first": {
+   "hall": "operating-eng",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 5,
+   "recording_steps": 4,
+   "silent_steps": 1,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "demolition-stand-back": {
+   "hall": "demolition",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": [
+    "operating-eng-locate-first"
+   ]
+  },
+  "scaffold-read-the-tag": {
+   "hall": "scaffold",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 5,
+   "recording_steps": 2,
+   "silent_steps": 3,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 1,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "scaffold-build-in-order": {
+   "hall": "scaffold",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 5,
+   "recording_steps": 3,
+   "silent_steps": 2,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": [
+    "scaffold-read-the-tag"
+   ]
+  },
+  "waterproofers-flash-it-right": {
+   "hall": "waterproofers",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 1,
+   "self_reported_steps": 1,
+   "needs": [
+    "scaffold-build-in-order"
+   ]
+  },
+  "bricklayers-gear-that-stays-on": {
+   "hall": "bricklayers",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 1,
+   "silent_steps": 3,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 1,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "bricklayers-grout-the-lift": {
+   "hall": "bricklayers",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 1,
+   "silent_steps": 3,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 1,
+   "self_reported_steps": 2,
+   "needs": [
+    "bricklayers-gear-that-stays-on"
+   ]
+  },
+  "cement-masons-mind-the-weather": {
+   "hall": "cement-masons",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 6,
+   "recording_steps": 1,
+   "silent_steps": 5,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 2,
+   "self_reported_steps": 3,
+   "needs": [
+    "bricklayers-gear-that-stays-on"
+   ]
+  },
+  "stone-carvers-hang-it-safely": {
+   "hall": "stone-carvers",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 3,
+   "recording_steps": 1,
+   "silent_steps": 2,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 1,
+   "self_reported_steps": 1,
+   "needs": [
+    "bricklayers-gear-that-stays-on"
+   ]
+  },
+  "tilesetters-start-underneath": {
+   "hall": "tilesetters",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 1,
+   "silent_steps": 3,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 2,
+   "self_reported_steps": 1,
+   "needs": [
+    "bricklayers-gear-that-stays-on"
+   ]
+  },
+  "lathers-frame-for-the-next-trade": {
+   "hall": "lathers",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 1,
+   "silent_steps": 3,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 2,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "restore-point-the-joint": {
+   "hall": "masonry-restore",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 1,
+   "silent_steps": 3,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 2,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "restore-write-it-down": {
+   "hall": "masonry-restore",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 3,
+   "recording_steps": 1,
+   "silent_steps": 2,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 1,
+   "self_reported_steps": 1,
+   "needs": [
+    "restore-point-the-joint"
+   ]
+  },
+  "refractory-dry-it-slowly": {
+   "hall": "refractory",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 5,
+   "recording_steps": 1,
+   "silent_steps": 4,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 2,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "painters-contain-it": {
+   "hall": "painters",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 5,
+   "recording_steps": 3,
+   "silent_steps": 2,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "painters-lay-the-coat": {
+   "hall": "painters",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": [
+    "painters-contain-it"
+   ]
+  },
+  "hazmat-wash-and-decon": {
+   "hall": "hazmat",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 5,
+   "recording_steps": 3,
+   "silent_steps": 2,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": [
+    "painters-contain-it"
+   ]
+  },
+  "electricians-clip-in-first": {
+   "hall": "electricians",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 4,
+   "recording_steps": 3,
+   "silent_steps": 1,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "glaziers-watch-the-line": {
+   "hall": "glaziers",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": [
+    "electricians-clip-in-first"
+   ]
+  },
+  "site-safety-make-it-normal": {
+   "hall": "site-safety",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 3,
+   "recording_steps": 1,
+   "silent_steps": 2,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 1,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "surveyors-trust-the-control": {
+   "hall": "surveyors",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 5,
+   "recording_steps": 2,
+   "silent_steps": 3,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 1,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "line-workers-find-the-fault": {
+   "hall": "line-workers",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 5,
+   "recording_steps": 1,
+   "silent_steps": 4,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 1,
+   "self_reported_steps": 3,
+   "needs": []
+  },
+  "hvacr-prove-the-sequence": {
+   "hall": "hvacr",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 1,
+   "silent_steps": 3,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 1,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "fiber-splicers-keep-the-trace": {
+   "hall": "fiber-splicers",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 3,
+   "recording_steps": 2,
+   "silent_steps": 1,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "carpenters-return-it-the-same": {
+   "hall": "carpenters",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 1,
+   "silent_steps": 3,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 1,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "steel-erectors-land-it-on-the-bolts": {
+   "hall": "steel-erectors",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 5,
+   "recording_steps": 4,
+   "silent_steps": 1,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "riggers-carry-under-control",
+    "riggers-first-card"
+   ]
+  },
+  "port-crane-read-the-rope": {
+   "hall": "port-crane",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 5,
+   "recording_steps": 4,
+   "silent_steps": 1,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "riggers-carry-under-control"
+   ]
+  },
+  "decking-walk-the-path-first": {
+   "hall": "decking",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 5,
+   "recording_steps": 3,
+   "silent_steps": 2,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": [
+    "riggers-first-card"
+   ]
+  },
+  "tank-erectors-isolate-before-testing": {
+   "hall": "tank-erectors",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 6,
+   "recording_steps": 4,
+   "silent_steps": 2,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": [
+    "boilermakers-get-them-out"
+   ]
+  },
+  "piling-stand-the-rig-on-something": {
+   "hall": "piling",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 5,
+   "recording_steps": 3,
+   "silent_steps": 2,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": [
+    "riggers-carry-under-control"
+   ]
+  },
+  "shoring-read-the-ground-again": {
+   "hall": "shoring",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 5,
+   "recording_steps": 4,
+   "silent_steps": 1,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "operating-eng-locate-first"
+   ]
+  },
+  "laborers-stand-where-the-cab-can-see": {
+   "hall": "laborers",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 5,
+   "recording_steps": 3,
+   "silent_steps": 2,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": [
+    "demolition-stand-back"
+   ]
+  },
+  "teamsters-check-the-truck-before-the-load": {
+   "hall": "teamsters",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 5,
+   "recording_steps": 3,
+   "silent_steps": 2,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "heavy-equip-listen-to-the-dash": {
+   "hall": "heavy-equip",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 3,
+   "silent_steps": 1,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "teamsters-check-the-truck-before-the-load"
+   ]
+  },
+  "marine-terminal-brief-the-lane": {
+   "hall": "marine-terminal",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 3,
+   "silent_steps": 1,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "teamsters-check-the-truck-before-the-load"
+   ]
+  },
+  "shipfitters-say-what-you-cannot-see": {
+   "hall": "shipfitters",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 5,
+   "recording_steps": 3,
+   "silent_steps": 2,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": [
+    "welders-the-watch"
+   ]
+  },
+  "fabricators-lay-it-out-then-prove-it": {
+   "hall": "fabricators",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 5,
+   "recording_steps": 4,
+   "silent_steps": 1,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "shipfitters-say-what-you-cannot-see"
+   ]
+  },
+  "pipeline-close-the-permit-properly": {
+   "hall": "pipeline",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 5,
+   "recording_steps": 3,
+   "silent_steps": 2,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": [
+    "tank-erectors-isolate-before-testing"
+   ]
+  },
+  "marine-pipe-know-when-to-come-out": {
+   "hall": "marine-pipe",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 5,
+   "recording_steps": 3,
+   "silent_steps": 2,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": [
+    "pipeline-close-the-permit-properly"
+   ]
+  },
+  "roofers-mind-the-edge-and-the-skylight": {
+   "hall": "roofers",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 6,
+   "recording_steps": 4,
+   "silent_steps": 2,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": [
+    "scaffold-read-the-tag"
+   ]
+  },
+  "insulators-stay-inside-the-rails": {
+   "hall": "insulators",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 6,
+   "recording_steps": 3,
+   "silent_steps": 3,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 1,
+   "self_reported_steps": 2,
+   "needs": [
+    "electricians-clip-in-first"
+   ]
+  },
+  "plasterers-pin-every-brace": {
+   "hall": "plasterers",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 5,
+   "recording_steps": 4,
+   "silent_steps": 1,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "scaffold-build-in-order"
+   ]
+  },
+  "firestop-write-down-what-you-sealed": {
+   "hall": "firestop",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 4,
+   "recording_steps": 3,
+   "silent_steps": 1,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "tilesetters-start-underneath"
+   ]
+  },
+  "cladding-check-the-plank-you-stand-on": {
+   "hall": "cladding",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 3,
+   "silent_steps": 1,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "firestop-write-down-what-you-sealed"
+   ]
+  },
+  "curtainwall-fuss-about-the-sills": {
+   "hall": "curtainwall",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 5,
+   "recording_steps": 4,
+   "silent_steps": 1,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "cladding-check-the-plank-you-stand-on"
+   ]
+  },
+  "window-glazing-let-the-ground-judge-it": {
+   "hall": "window-glazing",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 4,
+   "recording_steps": 3,
+   "silent_steps": 1,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "glaziers-watch-the-line"
+   ]
+  },
+  "sheetmetal-name-the-kit-before-you-climb": {
+   "hall": "sheetmetal",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 5,
+   "recording_steps": 3,
+   "silent_steps": 2,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 1,
+   "self_reported_steps": 1,
+   "needs": [
+    "fiber-splicers-keep-the-trace"
+   ]
+  },
+  "machinists-move-the-job-without-marking-it": {
+   "hall": "machinists",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 3,
+   "silent_steps": 1,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "millwrights-shop-move"
+   ]
+  },
+  "foundry-clear-the-runway-first": {
+   "hall": "foundry",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 6,
+   "recording_steps": 3,
+   "silent_steps": 3,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 1,
+   "self_reported_steps": 2,
+   "needs": [
+    "machinists-move-the-job-without-marking-it"
+   ]
+  },
+  "pipefitters-safety-first-walk": {
+   "hall": "pipefitters",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "elevator-tools-first-walk": {
+   "hall": "elevator",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 1,
+   "silent_steps": 3,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 1,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "drywall-layout-first-walk": {
+   "hall": "drywall",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "flooring-inspection-first-walk": {
+   "hall": "flooring",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "grounds-coordination-first-walk": {
+   "hall": "grounds",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 3,
+   "recording_steps": 2,
+   "silent_steps": 1,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "solar-documentation-first-walk": {
+   "hall": "solar",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 3,
+   "recording_steps": 2,
+   "silent_steps": 1,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "wind-safety-first-walk": {
+   "hall": "wind",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "fire-sprinkler-tools-first-walk": {
+   "hall": "fire-sprinkler",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 1,
+   "silent_steps": 3,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 1,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "divers-layout-first-walk": {
+   "hall": "divers",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "blasters-inspection-first-walk": {
+   "hall": "blasters",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "miners-coordination-first-walk": {
+   "hall": "miners",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 3,
+   "recording_steps": 2,
+   "silent_steps": 1,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "smelter-documentation-first-walk": {
+   "hall": "smelter",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 3,
+   "recording_steps": 2,
+   "silent_steps": 1,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "toolmakers-safety-first-walk": {
+   "hall": "toolmakers",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "platers-tools-first-walk": {
+   "hall": "platers",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 1,
+   "silent_steps": 3,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 1,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "substation-layout-first-walk": {
+   "hall": "substation",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "cable-splicers-inspection-first-walk": {
+   "hall": "cable-splicers",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "meter-techs-coordination-first-walk": {
+   "hall": "meter-techs",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 3,
+   "recording_steps": 2,
+   "silent_steps": 1,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "gas-distrib-documentation-first-walk": {
+   "hall": "gas-distrib",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 3,
+   "recording_steps": 2,
+   "silent_steps": 1,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "water-distrib-safety-first-walk": {
+   "hall": "water-distrib",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "wastewater-tools-first-walk": {
+   "hall": "wastewater",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 1,
+   "silent_steps": 3,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 1,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "nuclear-layout-first-walk": {
+   "hall": "nuclear",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "hydro-inspection-first-walk": {
+   "hall": "hydro",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "geothermal-coordination-first-walk": {
+   "hall": "geothermal",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 3,
+   "recording_steps": 2,
+   "silent_steps": 1,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "battery-storage-documentation-first-walk": {
+   "hall": "battery-storage",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 3,
+   "recording_steps": 2,
+   "silent_steps": 1,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "ev-charging-safety-first-walk": {
+   "hall": "ev-charging",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "hydrogen-tools-first-walk": {
+   "hall": "hydrogen",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 1,
+   "silent_steps": 3,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 1,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "transmission-layout-first-walk": {
+   "hall": "transmission",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "district-energy-inspection-first-walk": {
+   "hall": "district-energy",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "terrazzo-coordination-first-walk": {
+   "hall": "terrazzo",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 3,
+   "recording_steps": 2,
+   "silent_steps": 1,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "acoustic-documentation-first-walk": {
+   "hall": "acoustic",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 3,
+   "recording_steps": 2,
+   "silent_steps": 1,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "concrete-pump-safety-first-walk": {
+   "hall": "concrete-pump",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "post-tension-tools-first-walk": {
+   "hall": "post-tension",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 1,
+   "silent_steps": 3,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 1,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "precast-layout-first-walk": {
+   "hall": "precast",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "bas-controls-inspection-first-walk": {
+   "hall": "bas-controls",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "fire-alarm-coordination-first-walk": {
+   "hall": "fire-alarm",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 3,
+   "recording_steps": 2,
+   "silent_steps": 1,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "security-sys-documentation-first-walk": {
+   "hall": "security-sys",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 3,
+   "recording_steps": 2,
+   "silent_steps": 1,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "network-cabling-safety-first-walk": {
+   "hall": "network-cabling",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "data-center-tools-first-walk": {
+   "hall": "data-center",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 1,
+   "silent_steps": 3,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 1,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "instrumentation-layout-first-walk": {
+   "hall": "instrumentation",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "plc-techs-inspection-first-walk": {
+   "hall": "plc-techs",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "robotics-coordination-first-walk": {
+   "hall": "robotics",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 3,
+   "recording_steps": 2,
+   "silent_steps": 1,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "automation-int-documentation-first-walk": {
+   "hall": "automation-int",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 3,
+   "recording_steps": 2,
+   "silent_steps": 1,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "cleanroom-safety-first-walk": {
+   "hall": "cleanroom",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "medical-gas-tools-first-walk": {
+   "hall": "medical-gas",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 1,
+   "silent_steps": 3,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 1,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "rail-track-layout-first-walk": {
+   "hall": "rail-track",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "rail-signals-inspection-first-walk": {
+   "hall": "rail-signals",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "catenary-coordination-first-walk": {
+   "hall": "catenary",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 3,
+   "recording_steps": 2,
+   "silent_steps": 1,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "transit-vehicle-documentation-first-walk": {
+   "hall": "transit-vehicle",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 3,
+   "recording_steps": 2,
+   "silent_steps": 1,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "aviation-ground-safety-first-walk": {
+   "hall": "aviation-ground",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "airfield-tools-first-walk": {
+   "hall": "airfield",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 1,
+   "silent_steps": 3,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 1,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "fleet-diesel-layout-first-walk": {
+   "hall": "fleet-diesel",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "bridge-inspect-inspection-first-walk": {
+   "hall": "bridge-inspect",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "asbestos-coordination-first-walk": {
+   "hall": "asbestos",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 3,
+   "recording_steps": 2,
+   "silent_steps": 1,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "lead-abatement-documentation-first-walk": {
+   "hall": "lead-abatement",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 3,
+   "recording_steps": 2,
+   "silent_steps": 1,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "mold-remediation-safety-first-walk": {
+   "hall": "mold-remediation",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "spill-response-tools-first-walk": {
+   "hall": "spill-response",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 1,
+   "silent_steps": 3,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 1,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "confined-space-layout-first-walk": {
+   "hall": "confined-space",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "high-angle-inspection-first-walk": {
+   "hall": "high-angle",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "industrial-clean-coordination-first-walk": {
+   "hall": "industrial-clean",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 3,
+   "recording_steps": 2,
+   "silent_steps": 1,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "survey-drone-documentation-first-walk": {
+   "hall": "survey-drone",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 3,
+   "recording_steps": 2,
+   "silent_steps": 1,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "m-adit-portal-site-walk": {
+   "hall": "miners",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "m-hv-corridor-site-walk": {
+   "hall": "transmission",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "m-rockfall-netting-site-walk": {
+   "hall": "high-angle",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "m-snow-road-site-walk": {
+   "hall": "operating-eng",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "m-wind-ridge-site-walk": {
+   "hall": "wind",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "m-survey-control-site-walk": {
+   "hall": "surveyors",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "f-line-clearance-site-walk": {
+   "hall": "line-workers",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "f-trail-bridge-site-walk": {
+   "hall": "carpenters",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "f-fuel-break-site-walk": {
+   "hall": "grounds",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "f-timber-frame-site-walk": {
+   "hall": "riggers",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "f-water-intake-site-walk": {
+   "hall": "water-distrib",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "f-fire-lookout-site-walk": {
+   "hall": "steel-erectors",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "c-river-intake-site-walk": {
+   "hall": "hydro",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "c-pipeline-crossing-site-walk": {
+   "hall": "pipeline",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "c-valve-vault-site-walk": {
+   "hall": "confined-space",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "c-mesa-solar-site-walk": {
+   "hall": "solar",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "c-quarry-bench-site-walk": {
+   "hall": "blasters",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "d-levee-pump-site-walk": {
+   "hall": "wastewater",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "d-terminal-berth-site-walk": {
+   "hall": "marine-terminal",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "d-pile-trestle-site-walk": {
+   "hall": "piling",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "d-outfall-dive-site-walk": {
+   "hall": "divers",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "d-spill-boom-site-walk": {
+   "hall": "spill-response",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "d-wind-staging-site-walk": {
+   "hall": "crane-ops",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  }
+ },
+ "sims": {
+  "crane-lift": {
+   "name": "Tower Crane Lift",
+   "scenarios": [
+    "bay-steel",
+    "oak-terminal",
+    "nola-wharf"
+   ],
+   "threshold": null,
+   "why": "sims/registry/sims.json scores this seat per rubric axis (\"pass\" rule per axis below) and publishes no scalar score threshold; none is invented here. The page sets tc-progress.sims[id].passed from the axes, and the verifier takes `passed` from the record without re-deriving it.",
+   "rubric_axes": [
+    {
+     "axis": "placement",
+     "pass": "<= 1.2"
+    },
+    {
+     "axis": "swing",
+     "pass": "<= 2.0"
+    },
+    {
+     "axis": "strikes",
+     "pass": "== 0"
+    },
+    {
+     "axis": "time",
+     "pass": "informational"
+    }
+   ],
+   "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score"
+  },
+  "excavator-trench": {
+   "name": "Excavator Trench Cut",
+   "scenarios": [
+    "bay-retrofit",
+    "oak-fill",
+    "nola-below-sea"
+   ],
+   "threshold": null,
+   "why": "sims/registry/sims.json scores this seat per rubric axis (\"pass\" rule per axis below) and publishes no scalar score threshold; none is invented here. The page sets tc-progress.sims[id].passed from the axes, and the verifier takes `passed` from the record without re-deriving it.",
+   "rubric_axes": [
+    {
+     "axis": "grade",
+     "pass": "== all"
+    },
+    {
+     "axis": "utility",
+     "pass": "== 0"
+    },
+    {
+     "axis": "spoil",
+     "pass": "== all"
+    },
+    {
+     "axis": "time",
+     "pass": "informational"
+    }
+   ],
+   "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score"
+  },
+  "forklift-run": {
+   "name": "Forklift Yard Run",
+   "scenarios": [
+    "bay-yard",
+    "oak-lane",
+    "nola-dock"
+   ],
+   "threshold": null,
+   "why": "sims/registry/sims.json scores this seat per rubric axis (\"pass\" rule per axis below) and publishes no scalar score threshold; none is invented here. The page sets tc-progress.sims[id].passed from the axes, and the verifier takes `passed` from the record without re-deriving it.",
+   "rubric_axes": [
+    {
+     "axis": "gates",
+     "pass": "== all"
+    },
+    {
+     "axis": "cones",
+     "pass": "== 0"
+    },
+    {
+     "axis": "docking",
+     "pass": "required"
+    },
+    {
+     "axis": "time",
+     "pass": "informational"
+    }
+   ],
+   "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score"
+  },
+  "weld-bead": {
+   "name": "Weld Bead Run",
+   "scenarios": [
+    "bay-deck-seam",
+    "oak-flange-bead",
+    "nola-tank-seam"
+   ],
+   "threshold": null,
+   "why": "sims/registry/sims.json scores this seat per rubric axis (\"pass\" rule per axis below) and publishes no scalar score threshold; none is invented here. The page sets tc-progress.sims[id].passed from the axes, and the verifier takes `passed` from the record without re-deriving it.",
+   "rubric_axes": [
+    {
+     "axis": "fusion",
+     "pass": "== all"
+    },
+    {
+     "axis": "band",
+     "pass": ">= 90"
+    },
+    {
+     "axis": "burns",
+     "pass": "== 0"
+    },
+    {
+     "axis": "time",
+     "pass": "informational"
+    }
+   ],
+   "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score"
+  },
+  "scaffold-bay": {
+   "name": "Scaffold Bay Build",
+   "scenarios": [
+    "bay-training-bay",
+    "oak-plant-bay",
+    "nola-storm-bay"
+   ],
+   "threshold": null,
+   "why": "sims/registry/sims.json scores this seat per rubric axis (\"pass\" rule per axis below) and publishes no scalar score threshold; none is invented here. The page sets tc-progress.sims[id].passed from the axes, and the verifier takes `passed` from the record without re-deriving it.",
+   "rubric_axes": [
+    {
+     "axis": "sequence",
+     "pass": "== 0"
+    },
+    {
+     "axis": "complete",
+     "pass": "informational"
+    },
+    {
+     "axis": "time",
+     "pass": "informational"
+    }
+   ],
+   "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score"
+  },
+  "rigging-signals": {
+   "name": "Rigging Signal Call",
+   "scenarios": [
+    "bay-first-card",
+    "oak-blind-pick",
+    "nola-wind-card"
+   ],
+   "threshold": null,
+   "why": "sims/registry/sims.json scores this seat per rubric axis (\"pass\" rule per axis below) and publishes no scalar score threshold; none is invented here. The page sets tc-progress.sims[id].passed from the axes, and the verifier takes `passed` from the record without re-deriving it.",
+   "rubric_axes": [
+    {
+     "axis": "calls",
+     "pass": "== all"
+    },
+    {
+     "axis": "wrong",
+     "pass": "== 0"
+    },
+    {
+     "axis": "time",
+     "pass": "informational"
+    }
+   ],
+   "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score"
+  },
+  "load-chart": {
+   "name": "Load Chart Judgment",
+   "scenarios": [
+    "bay-pick-list",
+    "oak-heavy-list",
+    "nola-barge-list"
+   ],
+   "threshold": null,
+   "why": "sims/registry/sims.json scores this seat per rubric axis (\"pass\" rule per axis below) and publishes no scalar score threshold; none is invented here. The page sets tc-progress.sims[id].passed from the axes, and the verifier takes `passed` from the record without re-deriving it.",
+   "rubric_axes": [
+    {
+     "axis": "judgments",
+     "pass": "== all"
+    },
+    {
+     "axis": "overloads",
+     "pass": "== 0"
+    },
+    {
+     "axis": "time",
+     "pass": "informational"
+    }
+   ],
+   "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score"
+  },
+  "pressure-washer": {
+   "name": "Pressure Washer Surface Clean",
+   "scenarios": [
+    "bay-seawall-clean",
+    "oak-bulkhead-clean",
+    "nola-floodwall-clean"
+   ],
+   "threshold": null,
+   "why": "sims/registry/sims.json scores this seat per rubric axis (\"pass\" rule per axis below) and publishes no scalar score threshold; none is invented here. The page sets tc-progress.sims[id].passed from the axes, and the verifier takes `passed` from the record without re-deriving it.",
+   "rubric_axes": [
+    {
+     "axis": "coverage",
+     "pass": ">= 95"
+    },
+    {
+     "axis": "damage",
+     "pass": "== 0"
+    },
+    {
+     "axis": "containment",
+     "pass": "required"
+    },
+    {
+     "axis": "time",
+     "pass": "informational"
+    }
+   ],
+   "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score"
+  },
+  "airless-sprayer": {
+   "name": "Airless Paint Sprayer Finish",
+   "scenarios": [
+    "bay-terminal-finish",
+    "oak-warehouse-finish",
+    "nola-shotgun-finish"
+   ],
+   "threshold": null,
+   "why": "sims/registry/sims.json scores this seat per rubric axis (\"pass\" rule per axis below) and publishes no scalar score threshold; none is invented here. The page sets tc-progress.sims[id].passed from the axes, and the verifier takes `passed` from the record without re-deriving it.",
+   "rubric_axes": [
+    {
+     "axis": "coverage",
+     "pass": ">= 95"
+    },
+    {
+     "axis": "runs",
+     "pass": "== 0"
+    },
+    {
+     "axis": "holidays",
+     "pass": "== 0"
+    },
+    {
+     "axis": "overspray",
+     "pass": "== 0"
+    },
+    {
+     "axis": "time",
+     "pass": "informational"
+    }
+   ],
+   "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score"
+  },
+  "boom-lift": {
+   "name": "Boom Lift Basket Work",
+   "scenarios": [
+    "bay-curtainwall-run",
+    "oak-terminal-fixtures",
+    "nola-storm-shutters"
+   ],
+   "threshold": null,
+   "why": "sims/registry/sims.json scores this seat per rubric axis (\"pass\" rule per axis below) and publishes no scalar score threshold; none is invented here. The page sets tc-progress.sims[id].passed from the axes, and the verifier takes `passed` from the record without re-deriving it.",
+   "rubric_axes": [
+    {
+     "axis": "reach",
+     "pass": "== all"
+    },
+    {
+     "axis": "envelope",
+     "pass": "== 0"
+    },
+    {
+     "axis": "tie-off",
+     "pass": "required"
+    },
+    {
+     "axis": "slope",
+     "pass": "required"
+    },
+    {
+     "axis": "strikes",
+     "pass": "== 0"
+    },
+    {
+     "axis": "time",
+     "pass": "informational"
+    }
+   ],
+   "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score"
+  },
+  "overhead-crane": {
+   "name": "Overhead Crane Shop Move",
+   "scenarios": [
+    "bay-fab-coil",
+    "oak-foundry-ladle",
+    "nola-boatshed-engine"
+   ],
+   "threshold": null,
+   "why": "sims/registry/sims.json scores this seat per rubric axis (\"pass\" rule per axis below) and publishes no scalar score threshold; none is invented here. The page sets tc-progress.sims[id].passed from the axes, and the verifier takes `passed` from the record without re-deriving it.",
+   "rubric_axes": [
+    {
+     "axis": "placement",
+     "pass": "<= 0.5"
+    },
+    {
+     "axis": "sway",
+     "pass": "<= 0.6"
+    },
+    {
+     "axis": "path",
+     "pass": "== 0"
+    },
+    {
+     "axis": "limits",
+     "pass": "== 0"
+    },
+    {
+     "axis": "clear",
+     "pass": "required"
+    },
+    {
+     "axis": "time",
+     "pass": "informational"
+    }
+   ],
+   "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score"
+  }
+ },
+ "ladder": [
+  {
+   "lesson": "riggers-carry-under-control",
+   "needs": "riggers-first-card",
+   "because": "same-hall"
+  },
+  {
+   "lesson": "crane-ops-read-the-chart",
+   "needs": "riggers-first-card",
+   "because": "same-district-crib"
+  },
+  {
+   "lesson": "ironworkers-plan-out-loud",
+   "needs": "riggers-carry-under-control",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "millwrights-shop-move",
+   "needs": "crane-ops-read-the-chart",
+   "because": "same-district-crib"
+  },
+  {
+   "lesson": "boilermakers-get-them-out",
+   "needs": "welders-the-watch",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "demolition-stand-back",
+   "needs": "operating-eng-locate-first",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "scaffold-build-in-order",
+   "needs": "scaffold-read-the-tag",
+   "because": "same-hall"
+  },
+  {
+   "lesson": "waterproofers-flash-it-right",
+   "needs": "scaffold-build-in-order",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "bricklayers-grout-the-lift",
+   "needs": "bricklayers-gear-that-stays-on",
+   "because": "same-hall"
+  },
+  {
+   "lesson": "cement-masons-mind-the-weather",
+   "needs": "bricklayers-gear-that-stays-on",
+   "because": "same-district-crib"
+  },
+  {
+   "lesson": "stone-carvers-hang-it-safely",
+   "needs": "bricklayers-gear-that-stays-on",
+   "because": "same-district-crib"
+  },
+  {
+   "lesson": "tilesetters-start-underneath",
+   "needs": "bricklayers-gear-that-stays-on",
+   "because": "same-district-crib"
+  },
+  {
+   "lesson": "restore-write-it-down",
+   "needs": "restore-point-the-joint",
+   "because": "same-hall"
+  },
+  {
+   "lesson": "painters-lay-the-coat",
+   "needs": "painters-contain-it",
+   "because": "same-hall"
+  },
+  {
+   "lesson": "hazmat-wash-and-decon",
+   "needs": "painters-contain-it",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "glaziers-watch-the-line",
+   "needs": "electricians-clip-in-first",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "steel-erectors-land-it-on-the-bolts",
+   "needs": "riggers-first-card",
+   "because": "same-district-crib"
+  },
+  {
+   "lesson": "steel-erectors-land-it-on-the-bolts",
+   "needs": "riggers-carry-under-control",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "port-crane-read-the-rope",
+   "needs": "riggers-carry-under-control",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "decking-walk-the-path-first",
+   "needs": "riggers-first-card",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "tank-erectors-isolate-before-testing",
+   "needs": "boilermakers-get-them-out",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "piling-stand-the-rig-on-something",
+   "needs": "riggers-carry-under-control",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "shoring-read-the-ground-again",
+   "needs": "operating-eng-locate-first",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "laborers-stand-where-the-cab-can-see",
+   "needs": "demolition-stand-back",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "heavy-equip-listen-to-the-dash",
+   "needs": "teamsters-check-the-truck-before-the-load",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "marine-terminal-brief-the-lane",
+   "needs": "teamsters-check-the-truck-before-the-load",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "shipfitters-say-what-you-cannot-see",
+   "needs": "welders-the-watch",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "fabricators-lay-it-out-then-prove-it",
+   "needs": "shipfitters-say-what-you-cannot-see",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "pipeline-close-the-permit-properly",
+   "needs": "tank-erectors-isolate-before-testing",
+   "because": "same-district-crib"
+  },
+  {
+   "lesson": "marine-pipe-know-when-to-come-out",
+   "needs": "pipeline-close-the-permit-properly",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "roofers-mind-the-edge-and-the-skylight",
+   "needs": "scaffold-read-the-tag",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "insulators-stay-inside-the-rails",
+   "needs": "electricians-clip-in-first",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "plasterers-pin-every-brace",
+   "needs": "scaffold-build-in-order",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "firestop-write-down-what-you-sealed",
+   "needs": "tilesetters-start-underneath",
+   "because": "same-district-crib"
+  },
+  {
+   "lesson": "cladding-check-the-plank-you-stand-on",
+   "needs": "firestop-write-down-what-you-sealed",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "curtainwall-fuss-about-the-sills",
+   "needs": "cladding-check-the-plank-you-stand-on",
+   "because": "same-district-crib"
+  },
+  {
+   "lesson": "window-glazing-let-the-ground-judge-it",
+   "needs": "glaziers-watch-the-line",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "sheetmetal-name-the-kit-before-you-climb",
+   "needs": "fiber-splicers-keep-the-trace",
+   "because": "same-district-crib"
+  },
+  {
+   "lesson": "machinists-move-the-job-without-marking-it",
+   "needs": "millwrights-shop-move",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "foundry-clear-the-runway-first",
+   "needs": "machinists-move-the-job-without-marking-it",
+   "because": "same-seat"
+  }
+ ],
+ "resolves_against": {
+  "lessons": "lessons/registry/lessons.json",
+  "sims": "sims/registry/sims.json",
+  "halls": "pack/registry/halls.json",
+  "stations": "stations/registry/stations.json",
+  "tools": "tools/registry/toolcribs.json",
+  "manifest": "pack/manifest.json",
+  "training": "training/registry/training.json",
+  "auth": "auth/registry/auth.json"
+ },
+ "verifier": {
+  "run": "node completion/verify.mjs <record.json>",
+  "rules": [
+   "record.fields",
+   "digest",
+   "identity.signature",
+   "ids.lesson",
+   "ids.hall",
+   "ids.step",
+   "ids.sim",
+   "ids.scenario",
+   "ids.station",
+   "ids.district",
+   "step.recording-evidence",
+   "step.episode-evidence",
+   "lesson.complete-all-steps",
+   "sim.threshold",
+   "ladder.prerequisite"
+  ]
+ },
+ "fixture": {
+  "good": "fixture/good.json",
+  "mutants": {
+   "fixture/mutant-bad-digest.json": "digest",
+   "fixture/mutant-forged-signature.json": "identity.signature",
+   "fixture/mutant-signature-wrong-scheme.json": "identity.signature",
+   "fixture/mutant-attested-by-wallet-unsigned.json": "identity.signature",
+   "fixture/mutant-recording-step-without-evidence.json": "step.recording-evidence",
+   "fixture/mutant-complete-lesson-with-undone-step.json": "lesson.complete-all-steps",
+   "fixture/mutant-unknown-sim.json": "ids.sim",
+   "fixture/mutant-prerequisite-not-met.json": "ladder.prerequisite",
+   "fixture/mutant-episode-wrong-kind.json": "step.episode-evidence",
+   "fixture/mutant-episode-wrong-point.json": "step.episode-evidence",
+   "fixture/mutant-episode-t-unparseable.json": "step.episode-evidence",
+   "fixture/mutant-crew-done-unrecordable.json": "step.episode-evidence",
+   "fixture/mutant-unknown-lesson.json": "ids.lesson",
+   "fixture/mutant-unknown-station.json": "ids.station",
+   "fixture/mutant-missing-field.json": "record.fields",
+   "fixture/mutant-unknown-scenario.json": "ids.scenario"
+  },
+  "signed": {
+   "built_by": "completion/test.mjs, in memory, from fixture/good.json",
+   "why_not_on_disk": "python3's stdlib has no keccak-256 and no secp256k1, and writing a second one here would be a second truth; the key is a throwaway generated by node:crypto (generateKeyPairSync secp256k1) so it differs per run, and a build must be deterministic. The signing routine lives ONLY in the test; the verifier only recovers.",
+   "good": "the fixture re-attested \"wallet signature over the digest\" with claimed = the throwaway address, digest restamped, then signed over the structured message: verifies on every rule and the verifier prints the recovered address",
+   "mutants": {
+    "signed-sig-tampered": "identity.signature",
+    "signed-message-tampered": "identity.signature",
+    "signed-address-swapped": "identity.signature",
+    "signed-wrong-scheme": "identity.signature",
+    "signed-claimed-not-the-signer": "identity.signature",
+    "signed-digest-tampered": "digest, listed first; identity.signature follows because the signed message names the old digest"
+   }
+  }
+ }
+}

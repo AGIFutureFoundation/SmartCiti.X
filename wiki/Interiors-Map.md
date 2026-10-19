@@ -55,7 +55,7 @@ packs rooms per hall by its own focus line and fixtures.)*
 ## Floor finishes (spec §24, as code)
 
 Every room's floor finish is resolved by `surfaces/build.py` —
-**38 finishes** in the catalogue, each carrying
+**84 finishes** in the catalogue, each carrying
 renderer-ready parameters and the reason it exists. Selection runs
 most-specific-first: the trade's hazard, then the room's function, and the
 record says which rule placed it. 104

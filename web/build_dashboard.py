@@ -38,6 +38,13 @@ ROOT = _pack_root()
 sys.path.insert(0, str(ROOT / 'web'))
 from mapdata import HUES  # noqa: E402
 from staleness import emit  # noqa: E402
+from seo import apply_seo  # noqa: E402  head tags only
+from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
+from style_bridge import bridge_css  # noqa: E402  HOMEUX w4: page palette -> the 5 switcher styles
+from style_bridge import sel as _style_sel, scheme as _style_scheme  # noqa: E402
+from design_kit import STYLES as _STYLES  # noqa: E402
+# district chips: same hue per district; light styles darken the text to 26% lightness (>= 4.5 on white)
+CHIP_LIGHT = ''.join(_style_sel(s['id']) + ' .chip[style]{--chip-l:26%}' for s in _STYLES if _style_scheme(s) == 'light')
 manifest = json.load(open(ROOT / 'pack/manifest.json'))
 L = manifest['ledger']
 districts = json.load(open(ROOT / 'unions/registry/districts.json'))['districts']
@@ -137,7 +144,7 @@ PROV_CLASS = {'RECORDED': 'rec', 'DERIVED': 'rec', 'AUTHORED': 'auth'}
 def campus_card(slug, c, is_built):
     is_hub = is_built and not c['districts']
     dist_chips = ''.join(
-        f'<span class="chip" style="border-color:hsl({HUES[d]} 45% 40%);color:hsl({HUES[d]} 65% 72%)">{districts[d]["name"]}</span>'
+        f'<span class="chip" style="--chip-h:{HUES[d]}">{districts[d]["name"]}</span>'
         for d in c['districts'])
     if is_hub:
         dist_chips = '<span class="chip">regional hub · no home district</span>'
@@ -168,6 +175,10 @@ stat_tiles = ''.join(
     f'<div class="fig"><b>{v}</b><span>{lbl}</span></div>' for v, lbl in STATS)
 spatial_tiles = ''.join(
     f'<div class="fig"><b>{v}</b><span>{lbl}</span></div>' for v, lbl in SPATIAL_STATS)
+
+NAV = nav_html('web/trade_craft_dashboard.html', nav_labels('en'))
+from questkit import QUEST_CSS, quest_js, page_hooks  # noqa: E402  quests: egg hooks only
+QUEST_TAIL = '<style>' + QUEST_CSS + '</style>\n' + page_hooks('web/trade_craft_dashboard.html') + quest_js('page:web/trade_craft_dashboard.html')
 
 page = f'''<!doctype html>
 <html lang="en">
@@ -203,7 +214,7 @@ h2{{font:600 22px "Barlow Condensed",system-ui,sans-serif;letter-spacing:.02em;
 .ch{{display:flex;align-items:center;gap:8px;flex-wrap:wrap}}
 .ch b{{font:600 16px "Barlow Condensed",system-ui,sans-serif}}
 .tag{{font-size:10px;letter-spacing:.06em;font-weight:700;border-radius:4px;padding:2px 7px}}
-.tag.built{{background:var(--good);color:#0c1113}}
+.tag.built{{background:var(--good);color:var(--good-ink,#0c1113)}}
 .tag.planned{{background:var(--sunk);color:var(--mark);border:1px solid var(--mark)}}
 .sub{{color:var(--muted);font-size:12.5px;margin:4px 0}}
 .prov{{font-weight:700;letter-spacing:.03em}}
@@ -211,6 +222,8 @@ h2{{font:600 22px "Barlow Condensed",system-ui,sans-serif;letter-spacing:.02em;
 .prov.auth{{color:var(--mark)}}
 .chips{{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0}}
 .chip{{font-size:11px;border:1px solid var(--rule);border-radius:999px;padding:2px 9px;color:var(--muted)}}
+.chip[style]{{--chip-l:72%;border-color:hsl(var(--chip-h) 45% 40%);color:hsl(var(--chip-h) 65% var(--chip-l))}}
+{CHIP_LIGHT}
 .why{{color:var(--ink);font-size:12.5px;margin:8px 0 0;line-height:1.55}}
 .figs{{display:flex;flex-wrap:wrap;gap:10px}}
 .fig{{background:var(--panel);border:1px solid var(--rule);border-radius:8px;
@@ -231,8 +244,11 @@ h2{{font:600 22px "Barlow Condensed",system-ui,sans-serif;letter-spacing:.02em;
 footer{{color:var(--muted);font-size:12px;margin-top:30px;padding-top:14px;border-top:1px solid var(--rule)}}
 a{{color:var(--steel)}}
 </style>
+<style>{NAV_CSS}</style>
+<style>{bridge_css({'good-ink': 'on-ok'})}</style>
 </head>
-<body><div class="wrap">
+<body>
+{NAV}<div class="wrap">
 <header>
   <h1>SmartCiti<span class="x">.X</span> : Trade Craft Academy</h1>
   <p>Network dashboard — powered by AGI Corp</p>
@@ -304,9 +320,15 @@ document.querySelectorAll('[data-dl]').forEach((b) => b.addEventListener('click'
   <a href="trade_craft_geomap.html">network geomap</a> ·
   <a href="../wiki/Home.md">wiki</a>
 </footer>
-</div></body>
+</div>{QUEST_TAIL}</body>
 </html>
 '''
 
 out = HERE / 'trade_craft_dashboard.html'
+page = apply_seo(page, 'web/trade_craft_dashboard.html', 'SmartCiti.X : Trade Craft Academy \u2014 network dashboard',
+    'The network dashboard: every platform figure read from its own registry, with the provenance tiers shown side by side.', 'page')
+# wave 3 (HOMEUX): MEDIA's pagehero band + the theme layer, head/hero region only;
+# every word from the catalog (hero.dashboard.*), see web/herovideo.py doc_hero().
+from herovideo import adopt_doc_hero  # noqa: E402
+page = adopt_doc_hero('dashboard', page)
 emit(out, page, f"{len(built)}/{target} built, {len(cand)} candidates")

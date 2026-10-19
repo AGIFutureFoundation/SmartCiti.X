@@ -6,7 +6,7 @@ worlds — for assets the Academy could adopt. This page is hand-maintained
 survey material, not generated from the registries; treat each row as a
 candidate to be verified before adoption, per the roadmap's standing rules.
 
-## 1. The pre-rebrand yard (`stonebyte-vr-bac-yard-`)
+## 1. The pre-rebrand yard (`SmartCiti.X-VR-BAC-Yard`)
 
 **The clearest orphaned Academy artifact found.** The repository holds a
 complete single-file Three.js training-yard application — 25 interactive

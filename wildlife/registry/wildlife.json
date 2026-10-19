@@ -1,0 +1,1513 @@
+{
+ "pack": "wildlife",
+ "pack_version": "3.2.0",
+ "source_stamp": "ae98002983ba1670",
+ "source_stamp_sha256": "ae98002983ba167044d5642b62e00c65303139df671a9500d075938b0817e457",
+ "provenance": "AUTHORED",
+ "honesty": {
+  "play": "Sightings, photos, tags and badges here are play: kept on this device only, never a completion record, never money, never a permit or a licence.",
+  "rules_line": "Real activity follows state rules - check the state wildlife agency (Louisiana Department of Wildlife and Fisheries; California Department of Fish and Wildlife).",
+  "calendar": "Sighting windows and seasons are an approximate, game calendar - not survey data, not season dates.",
+  "species": "Real regional species named generally; facts are general lines naming the kind of source; no sizes, limits, quotas or dates are given. Game distances are AUTHORED world metres.",
+  "habitat": "Sightings spawn only on AUTHORED map surfaces (water, shore, land) - not a surveyed range map."
+ },
+ "regions": [
+  "parishes",
+  "bay",
+  "wilds"
+ ],
+ "wilds_worlds": [
+  "mountain",
+  "forest",
+  "canyon",
+  "delta"
+ ],
+ "habitats": {
+  "water": "on AUTHORED open water (a lake, bayou, river or bay polygon the page draws)",
+  "shore": "on AUTHORED land within a short walk of AUTHORED water (bank, marsh edge, beach, levee)",
+  "land": "on AUTHORED walkable ground away from water (park, field, woodland, trail)"
+ },
+ "times": [
+  "dawn",
+  "day",
+  "dusk",
+  "night"
+ ],
+ "safe_viewing": [
+  {
+   "id": "distance",
+   "text": "Watch from a distance - use a zoom lens or binoculars instead of walking closer."
+  },
+  {
+   "id": "never-feed",
+   "text": "Never feed wildlife: fed animals lose their fear of people and that puts them and you at risk."
+  },
+  {
+   "id": "never-harass",
+   "text": "Never chase, corner, touch or harass an animal; if it changes what it is doing, you are too close."
+  },
+  {
+   "id": "alligators",
+   "text": "Alligators are dangerous: stay well back from the water's edge where they live and never approach one."
+  },
+  {
+   "id": "nests",
+   "text": "Leave nests, eggs and young alone - a parent is usually nearby even when you cannot see it."
+  },
+  {
+   "id": "pets",
+   "text": "Keep pets leashed and away from wildlife and the water's edge."
+  },
+  {
+   "id": "trails",
+   "text": "Stay on trails and boardwalks so plants and nesting ground are not trampled."
+  },
+  {
+   "id": "report",
+   "text": "Report injured or stranded wildlife to the state wildlife agency or a licensed rehabilitator; do not handle it."
+  }
+ ],
+ "species": [
+  {
+   "id": "american-alligator",
+   "name": "American alligator",
+   "group": "reptile",
+   "regions": [
+    "parishes"
+   ],
+   "habitat": "shore",
+   "window": {
+    "months": [
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "times": [
+     "day",
+     "dusk",
+     "night"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "common",
+   "points": 1,
+   "colour": "#4f6b3a",
+   "game_m": {
+    "safe": 40,
+    "photo": 120
+   },
+   "dangerous": true,
+   "fact": "Once listed as endangered in the United States, the alligator recovered under protection and is now managed by state wildlife agencies (state wildlife agency).",
+   "safety": "Dangerous: never approach, feed or tease an alligator - feeding wild alligators is against state law in Louisiana.",
+   "provenance": "AUTHORED",
+   "quests": {
+    "parishes": "treasure-bayou-photo-parishes-american-alligator"
+   }
+  },
+  {
+   "id": "brown-pelican",
+   "name": "Brown pelican",
+   "group": "bird",
+   "regions": [
+    "parishes",
+    "bay"
+   ],
+   "habitat": "water",
+   "window": {
+    "months": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "times": [
+     "dawn",
+     "day"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "common",
+   "points": 1,
+   "colour": "#8a6f4d",
+   "game_m": {
+    "safe": 25,
+    "photo": 110
+   },
+   "dangerous": false,
+   "fact": "Brown pelicans plunge-dive from the air to catch fish; the brown pelican is Louisiana's state bird (state wildlife agency).",
+   "safety": "Never feed pelicans or leave fishing line behind - line and hooks tangle birds.",
+   "provenance": "AUTHORED",
+   "quests": {
+    "parishes": "treasure-bayou-photo-parishes-brown-pelican",
+    "bay": "treasure-bayou-photo-bay-brown-pelican"
+   }
+  },
+  {
+   "id": "roseate-spoonbill",
+   "name": "Roseate spoonbill",
+   "group": "bird",
+   "regions": [
+    "parishes"
+   ],
+   "habitat": "shore",
+   "window": {
+    "months": [
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "times": [
+     "dawn",
+     "day"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "rare",
+   "points": 3,
+   "colour": "#e58fa6",
+   "game_m": {
+    "safe": 30,
+    "photo": 110
+   },
+   "dangerous": false,
+   "fact": "A spoonbill sweeps its flat bill side to side in shallow water; its pink colour comes from pigments in the food it eats (bird conservation groups).",
+   "safety": "Give wading birds room: if a bird stops feeding to watch you, back away.",
+   "provenance": "AUTHORED",
+   "quests": {
+    "parishes": "treasure-bayou-photo-parishes-roseate-spoonbill"
+   }
+  },
+  {
+   "id": "great-egret",
+   "name": "Great egret",
+   "group": "bird",
+   "regions": [
+    "parishes",
+    "bay"
+   ],
+   "habitat": "shore",
+   "window": {
+    "months": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "times": [
+     "dawn",
+     "day",
+     "dusk"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "common",
+   "points": 1,
+   "colour": "#f2f2ee",
+   "game_m": {
+    "safe": 25,
+    "photo": 110
+   },
+   "dangerous": false,
+   "fact": "Great egrets were once hunted for their plumes for hats; protection laws helped them recover (bird conservation groups).",
+   "safety": "Keep back from rookeries - nesting colonies abandon nests when disturbed.",
+   "provenance": "AUTHORED",
+   "quests": {
+    "parishes": "treasure-bayou-photo-parishes-great-egret",
+    "bay": "treasure-bayou-photo-bay-great-egret"
+   }
+  },
+  {
+   "id": "great-blue-heron",
+   "name": "Great blue heron",
+   "group": "bird",
+   "regions": [
+    "parishes",
+    "bay",
+    "wilds"
+   ],
+   "habitat": "shore",
+   "window": {
+    "months": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "times": [
+     "dawn",
+     "day",
+     "dusk"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "common",
+   "points": 1,
+   "colour": "#6f8aa3",
+   "game_m": {
+    "safe": 25,
+    "photo": 110
+   },
+   "dangerous": false,
+   "fact": "The great blue heron stands still in the shallows and strikes fish with its bill; it is the largest heron in North America (bird field guides).",
+   "safety": "Herons flush easily: move slowly, stay low and keep your distance.",
+   "provenance": "AUTHORED",
+   "quests": {
+    "parishes": "treasure-bayou-photo-parishes-great-blue-heron",
+    "bay": "treasure-bayou-photo-bay-great-blue-heron"
+   }
+  },
+  {
+   "id": "white-ibis",
+   "name": "White ibis",
+   "group": "bird",
+   "regions": [
+    "parishes"
+   ],
+   "habitat": "shore",
+   "window": {
+    "months": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "times": [
+     "day"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "common",
+   "points": 1,
+   "colour": "#f4f1ea",
+   "game_m": {
+    "safe": 20,
+    "photo": 100
+   },
+   "dangerous": false,
+   "fact": "A white ibis probes mud with its long curved bill for crawfish and insects (bird field guides).",
+   "safety": "Never feed ibises in parks - human food harms wild birds.",
+   "provenance": "AUTHORED",
+   "quests": {
+    "parishes": "treasure-bayou-photo-parishes-white-ibis"
+   }
+  },
+  {
+   "id": "osprey",
+   "name": "Osprey",
+   "group": "bird",
+   "regions": [
+    "parishes",
+    "bay",
+    "wilds"
+   ],
+   "habitat": "water",
+   "window": {
+    "months": [
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "times": [
+     "day"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "uncommon",
+   "points": 2,
+   "colour": "#7a6a58",
+   "game_m": {
+    "safe": 40,
+    "photo": 160
+   },
+   "dangerous": false,
+   "fact": "Ospreys dive feet-first to catch fish and carry them head-forward in flight (bird field guides).",
+   "safety": "Never climb toward a nest platform; watch from far below.",
+   "provenance": "AUTHORED",
+   "quests": {
+    "parishes": "treasure-bayou-photo-parishes-osprey",
+    "bay": "treasure-bayou-photo-bay-osprey"
+   }
+  },
+  {
+   "id": "nutria",
+   "name": "Nutria",
+   "group": "mammal",
+   "regions": [
+    "parishes"
+   ],
+   "habitat": "shore",
+   "window": {
+    "months": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "times": [
+     "dusk",
+     "night"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "common",
+   "points": 1,
+   "colour": "#6b4f36",
+   "game_m": {
+    "safe": 20,
+    "photo": 90
+   },
+   "dangerous": false,
+   "fact": "Nutria are South American rodents brought to Louisiana; their feeding strips marsh plants and adds to coastal wetland loss (state wildlife agency).",
+   "safety": "Nutria can bite: never corner or hand-feed one.",
+   "provenance": "AUTHORED",
+   "quests": {
+    "parishes": "treasure-bayou-photo-parishes-nutria"
+   }
+  },
+  {
+   "id": "river-otter",
+   "name": "North American river otter",
+   "group": "mammal",
+   "regions": [
+    "parishes",
+    "bay",
+    "wilds"
+   ],
+   "habitat": "water",
+   "window": {
+    "months": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "times": [
+     "dawn",
+     "dusk"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "rare",
+   "points": 3,
+   "colour": "#5a4432",
+   "game_m": {
+    "safe": 30,
+    "photo": 110
+   },
+   "dangerous": false,
+   "fact": "River otters hunt fish and crawfish and den in banks near water (state wildlife agency).",
+   "safety": "Otters are wild predators: watch quietly from the bank and never approach a den.",
+   "provenance": "AUTHORED",
+   "quests": {
+    "parishes": "treasure-bayou-photo-parishes-river-otter",
+    "bay": "treasure-bayou-photo-bay-river-otter"
+   }
+  },
+  {
+   "id": "red-eared-slider",
+   "name": "Red-eared slider",
+   "group": "reptile",
+   "regions": [
+    "parishes",
+    "bay"
+   ],
+   "habitat": "shore",
+   "window": {
+    "months": [
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "times": [
+     "day"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "common",
+   "points": 1,
+   "colour": "#5d7a3a",
+   "game_m": {
+    "safe": 10,
+    "photo": 70
+   },
+   "dangerous": false,
+   "fact": "Sliders bask on logs to warm up; released pet sliders compete with native turtles in many places, including California (state wildlife agency).",
+   "safety": "Never release a pet turtle into the wild, and never take a wild turtle home.",
+   "provenance": "AUTHORED",
+   "quests": {
+    "parishes": "treasure-bayou-photo-parishes-red-eared-slider",
+    "bay": "treasure-bayou-photo-bay-red-eared-slider"
+   }
+  },
+  {
+   "id": "bald-eagle",
+   "name": "Bald eagle",
+   "group": "bird",
+   "regions": [
+    "parishes",
+    "bay",
+    "wilds"
+   ],
+   "habitat": "water",
+   "window": {
+    "months": [
+     1,
+     2,
+     3,
+     10,
+     11,
+     12
+    ],
+    "times": [
+     "day"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "rare",
+   "points": 3,
+   "colour": "#3b2f25",
+   "game_m": {
+    "safe": 60,
+    "photo": 200
+   },
+   "dangerous": false,
+   "fact": "Bald eagles recovered after the pesticide DDT was banned in the United States; they are protected by federal law (federal wildlife agency).",
+   "safety": "Nesting eagles are protected: never approach a nest tree.",
+   "provenance": "AUTHORED",
+   "quests": {
+    "parishes": "treasure-bayou-photo-parishes-bald-eagle",
+    "bay": "treasure-bayou-photo-bay-bald-eagle"
+   }
+  },
+  {
+   "id": "monarch-butterfly",
+   "name": "Monarch butterfly",
+   "group": "insect",
+   "regions": [
+    "parishes",
+    "bay"
+   ],
+   "habitat": "land",
+   "window": {
+    "months": [
+     1,
+     2,
+     3,
+     4,
+     9,
+     10,
+     11,
+     12
+    ],
+    "times": [
+     "day"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "uncommon",
+   "points": 2,
+   "colour": "#e07b1f",
+   "game_m": {
+    "safe": 3,
+    "photo": 30
+   },
+   "dangerous": false,
+   "fact": "Monarch caterpillars eat only milkweed; western monarchs gather to overwinter in groves on the California coast (conservation groups).",
+   "safety": "Never shake or touch clustered monarchs - it wastes the energy they need to survive winter.",
+   "provenance": "AUTHORED",
+   "quests": {
+    "parishes": "treasure-bayou-photo-parishes-monarch-butterfly",
+    "bay": "treasure-bayou-photo-bay-monarch-butterfly"
+   }
+  },
+  {
+   "id": "green-anole",
+   "name": "Green anole",
+   "group": "reptile",
+   "regions": [
+    "parishes"
+   ],
+   "habitat": "land",
+   "window": {
+    "months": [
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "times": [
+     "day"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "common",
+   "points": 1,
+   "colour": "#4c9a3a",
+   "game_m": {
+    "safe": 3,
+    "photo": 30
+   },
+   "dangerous": false,
+   "fact": "Green anoles change colour from green to brown with temperature and mood (state wildlife agency).",
+   "safety": "Look, do not catch: grabbing a lizard can hurt it.",
+   "provenance": "AUTHORED",
+   "quests": {
+    "parishes": "treasure-bayou-photo-parishes-green-anole"
+   }
+  },
+  {
+   "id": "white-tailed-deer",
+   "name": "White-tailed deer",
+   "group": "mammal",
+   "regions": [
+    "parishes",
+    "wilds"
+   ],
+   "habitat": "land",
+   "window": {
+    "months": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "times": [
+     "dawn",
+     "dusk"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "uncommon",
+   "points": 2,
+   "colour": "#9b7650",
+   "game_m": {
+    "safe": 40,
+    "photo": 140
+   },
+   "dangerous": false,
+   "fact": "A white-tailed deer raises its white tail like a flag as an alarm when it runs (state wildlife agency).",
+   "safety": "Never approach a fawn lying alone - its mother leaves it hidden on purpose.",
+   "provenance": "AUTHORED",
+   "quests": {
+    "parishes": "treasure-bayou-photo-parishes-white-tailed-deer"
+   }
+  },
+  {
+   "id": "california-sea-lion",
+   "name": "California sea lion",
+   "group": "mammal",
+   "regions": [
+    "bay"
+   ],
+   "habitat": "water",
+   "window": {
+    "months": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "times": [
+     "day"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "common",
+   "points": 1,
+   "colour": "#6a5238",
+   "game_m": {
+    "safe": 40,
+    "photo": 140
+   },
+   "dangerous": false,
+   "fact": "Sea lions bark loudly and can walk on land by turning their rear flippers forward; marine mammals are protected by federal law (NOAA Fisheries).",
+   "safety": "Stay back from hauled-out sea lions and never touch or feed them - they can bite.",
+   "provenance": "AUTHORED",
+   "quests": {
+    "bay": "treasure-bayou-photo-bay-california-sea-lion"
+   }
+  },
+  {
+   "id": "harbor-seal",
+   "name": "Harbor seal",
+   "group": "mammal",
+   "regions": [
+    "bay"
+   ],
+   "habitat": "shore",
+   "window": {
+    "months": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "times": [
+     "dawn",
+     "day"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "uncommon",
+   "points": 2,
+   "colour": "#8c8a80",
+   "game_m": {
+    "safe": 40,
+    "photo": 140
+   },
+   "dangerous": false,
+   "fact": "Harbor seals cannot turn their rear flippers forward, so they wriggle on land; they rest hauled out on rocks and beaches (NOAA Fisheries).",
+   "safety": "A seal pup alone on a beach is usually waiting for its mother: stay back and report it, never move it.",
+   "provenance": "AUTHORED",
+   "quests": {
+    "bay": "treasure-bayou-photo-bay-harbor-seal"
+   }
+  },
+  {
+   "id": "dungeness-crab",
+   "name": "Dungeness crab",
+   "group": "crustacean",
+   "regions": [
+    "bay"
+   ],
+   "habitat": "shore",
+   "window": {
+    "months": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "times": [
+     "dawn",
+     "night"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "uncommon",
+   "points": 2,
+   "colour": "#b0553a",
+   "game_m": {
+    "safe": 3,
+    "photo": 25
+   },
+   "dangerous": false,
+   "fact": "The Dungeness crab is named after a place on the Washington coast and lives on sandy bottoms along the Pacific coast (state wildlife agency).",
+   "safety": "Look in tide pools without lifting rocks away; put anything you turn over back gently.",
+   "provenance": "AUTHORED",
+   "quests": {
+    "bay": "treasure-bayou-photo-bay-dungeness-crab"
+   }
+  },
+  {
+   "id": "western-gull",
+   "name": "Western gull",
+   "group": "bird",
+   "regions": [
+    "bay"
+   ],
+   "habitat": "shore",
+   "window": {
+    "months": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "times": [
+     "dawn",
+     "day",
+     "dusk"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "common",
+   "points": 1,
+   "colour": "#d9dcdf",
+   "game_m": {
+    "safe": 10,
+    "photo": 80
+   },
+   "dangerous": false,
+   "fact": "Western gulls nest on islands in the Bay and along the Pacific coast (bird field guides).",
+   "safety": "Never feed gulls - it teaches them to take food from people.",
+   "provenance": "AUTHORED",
+   "quests": {
+    "bay": "treasure-bayou-photo-bay-western-gull"
+   }
+  },
+  {
+   "id": "black-crowned-night-heron",
+   "name": "Black-crowned night heron",
+   "group": "bird",
+   "regions": [
+    "parishes",
+    "bay"
+   ],
+   "habitat": "shore",
+   "window": {
+    "months": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "times": [
+     "dusk",
+     "night"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "uncommon",
+   "points": 2,
+   "colour": "#4a5560",
+   "game_m": {
+    "safe": 25,
+    "photo": 100
+   },
+   "dangerous": false,
+   "fact": "Night herons roost in trees by day and hunt at dusk and after dark (bird field guides).",
+   "safety": "Keep lights low and voices quiet near roosts.",
+   "provenance": "AUTHORED",
+   "quests": {
+    "parishes": "treasure-bayou-photo-parishes-black-crowned-night-heron",
+    "bay": "treasure-bayou-photo-bay-black-crowned-night-heron"
+   }
+  },
+  {
+   "id": "american-avocet",
+   "name": "American avocet",
+   "group": "bird",
+   "regions": [
+    "bay"
+   ],
+   "habitat": "shore",
+   "window": {
+    "months": [
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "times": [
+     "day"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "uncommon",
+   "points": 2,
+   "colour": "#c98a5a",
+   "game_m": {
+    "safe": 25,
+    "photo": 100
+   },
+   "dangerous": false,
+   "fact": "Avocets sweep their upturned bills side to side through shallow water; they feed in salt ponds and mudflats (bird field guides).",
+   "safety": "Shorebirds need their feeding time: stay off mudflats and give flocks space.",
+   "provenance": "AUTHORED",
+   "quests": {
+    "bay": "treasure-bayou-photo-bay-american-avocet"
+   }
+  },
+  {
+   "id": "california-quail",
+   "name": "California quail",
+   "group": "bird",
+   "regions": [
+    "bay"
+   ],
+   "habitat": "land",
+   "window": {
+    "months": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "times": [
+     "dawn",
+     "dusk"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "uncommon",
+   "points": 2,
+   "colour": "#6b6c7c",
+   "game_m": {
+    "safe": 15,
+    "photo": 80
+   },
+   "dangerous": false,
+   "fact": "The California quail, with its forward-curling head plume, is California's state bird (state wildlife agency).",
+   "safety": "Keep cats indoors and dogs leashed where quail forage on the ground.",
+   "provenance": "AUTHORED",
+   "quests": {
+    "bay": "treasure-bayou-photo-bay-california-quail"
+   }
+  },
+  {
+   "id": "western-pond-turtle",
+   "name": "Western pond turtle",
+   "group": "reptile",
+   "regions": [
+    "bay"
+   ],
+   "habitat": "shore",
+   "window": {
+    "months": [
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "times": [
+     "day"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "rare",
+   "points": 3,
+   "colour": "#5a5a3a",
+   "game_m": {
+    "safe": 10,
+    "photo": 70
+   },
+   "dangerous": false,
+   "fact": "Pond turtles are native freshwater turtles of California and a species of conservation concern (state wildlife agency).",
+   "safety": "Never take a wild turtle home or release a pet turtle into a pond.",
+   "provenance": "AUTHORED",
+   "quests": {
+    "bay": "treasure-bayou-photo-bay-western-pond-turtle"
+   }
+  },
+  {
+   "id": "coyote",
+   "name": "Coyote",
+   "group": "mammal",
+   "regions": [
+    "bay",
+    "wilds"
+   ],
+   "habitat": "land",
+   "window": {
+    "months": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "times": [
+     "dawn",
+     "dusk",
+     "night"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "uncommon",
+   "points": 2,
+   "colour": "#a08560",
+   "game_m": {
+    "safe": 60,
+    "photo": 180
+   },
+   "dangerous": false,
+   "fact": "Coyotes live in many cities, including parks around the Bay; they are adaptable and wary of people unless fed (state wildlife agency).",
+   "safety": "Never feed a coyote; if one approaches, stand tall, make noise and back away slowly.",
+   "provenance": "AUTHORED",
+   "quests": {
+    "bay": "treasure-bayou-photo-bay-coyote"
+   }
+  },
+  {
+   "id": "beaver",
+   "name": "North American beaver",
+   "group": "mammal",
+   "regions": [
+    "wilds"
+   ],
+   "habitat": "water",
+   "window": {
+    "months": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "times": [
+     "dusk",
+     "night"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "uncommon",
+   "points": 2,
+   "colour": "#5e4028",
+   "game_m": {
+    "safe": 25,
+    "photo": 100
+   },
+   "dangerous": false,
+   "fact": "Beavers build dams that turn streams into ponds and wetlands used by many other animals (state wildlife agency).",
+   "safety": "Watch from the bank at dusk; never disturb a lodge or a dam.",
+   "provenance": "AUTHORED",
+   "quests": {}
+  },
+  {
+   "id": "american-black-bear",
+   "name": "American black bear",
+   "group": "mammal",
+   "regions": [
+    "wilds"
+   ],
+   "habitat": "land",
+   "window": {
+    "months": [
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11
+    ],
+    "times": [
+     "dawn",
+     "day",
+     "dusk"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "rare",
+   "points": 3,
+   "colour": "#2a2522",
+   "game_m": {
+    "safe": 90,
+    "photo": 240
+   },
+   "dangerous": true,
+   "fact": "Black bears eat mostly plants, berries and insects, and learn fast where people leave food (state wildlife agency).",
+   "safety": "Dangerous: never approach or feed a bear; store food and trash where bears cannot reach it.",
+   "provenance": "AUTHORED",
+   "quests": {}
+  },
+  {
+   "id": "mule-deer",
+   "name": "Mule deer",
+   "group": "mammal",
+   "regions": [
+    "wilds"
+   ],
+   "habitat": "land",
+   "window": {
+    "months": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "times": [
+     "dawn",
+     "dusk"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "common",
+   "points": 1,
+   "colour": "#8f7457",
+   "game_m": {
+    "safe": 40,
+    "photo": 140
+   },
+   "dangerous": false,
+   "fact": "Mule deer are named for their large, mule-like ears (state wildlife agency).",
+   "safety": "Give deer space, especially in the autumn rut and near fawns.",
+   "provenance": "AUTHORED",
+   "quests": {}
+  },
+  {
+   "id": "red-tailed-hawk",
+   "name": "Red-tailed hawk",
+   "group": "bird",
+   "regions": [
+    "bay",
+    "wilds",
+    "parishes"
+   ],
+   "habitat": "land",
+   "window": {
+    "months": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "times": [
+     "day"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "common",
+   "points": 1,
+   "colour": "#9a5a3a",
+   "game_m": {
+    "safe": 30,
+    "photo": 160
+   },
+   "dangerous": false,
+   "fact": "Red-tailed hawks often perch on poles beside open fields watching for rodents (bird field guides).",
+   "safety": "Never approach a perched raptor or its nest.",
+   "provenance": "AUTHORED",
+   "quests": {
+    "bay": "treasure-bayou-photo-bay-red-tailed-hawk",
+    "parishes": "treasure-bayou-photo-parishes-red-tailed-hawk"
+   }
+  },
+  {
+   "id": "bighorn-sheep",
+   "name": "Bighorn sheep",
+   "group": "mammal",
+   "regions": [
+    "wilds"
+   ],
+   "habitat": "land",
+   "window": {
+    "months": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "times": [
+     "day"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "rare",
+   "points": 3,
+   "colour": "#a38b6a",
+   "game_m": {
+    "safe": 60,
+    "photo": 200
+   },
+   "dangerous": false,
+   "fact": "Bighorn rams clash horns to settle rank in the autumn rut; their split hooves grip steep rock (state wildlife agency).",
+   "safety": "Never approach sheep on cliffs - a startled animal can fall or knock rocks loose.",
+   "provenance": "AUTHORED",
+   "quests": {}
+  },
+  {
+   "id": "american-pika",
+   "name": "American pika",
+   "group": "mammal",
+   "regions": [
+    "wilds"
+   ],
+   "habitat": "land",
+   "window": {
+    "months": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "times": [
+     "day"
+    ],
+    "label": "approximate, game calendar"
+   },
+   "rarity": "rare",
+   "points": 3,
+   "colour": "#8a7d6b",
+   "game_m": {
+    "safe": 8,
+    "photo": 50
+   },
+   "dangerous": false,
+   "fact": "The pika, a small rabbit relative of rocky slopes, gathers piles of plants in summer to eat through winter (national park guidance).",
+   "safety": "Stay on the trail and never move rocks in a talus slope - it is the pika's home.",
+   "provenance": "AUTHORED",
+   "quests": {}
+  }
+ ],
+ "games": {
+  "gator-season": {
+   "title": "Alligator season (simulation)",
+   "label": "SIMULATION - licensed-tag harvest, no animal is shown harmed; a catch is a tag recorded.",
+   "rules_line": "Real activity follows state rules - check the state wildlife agency (Louisiana Department of Wildlife and Fisheries; California Department of Fish and Wildlife).",
+   "general": "Louisiana runs a regulated alligator harvest season with tags issued through the state wildlife agency; this game shows the steps only in general terms, on an approximate game calendar.",
+   "months": {
+    "list": [
+     8,
+     9
+    ],
+    "label": "approximate, game calendar"
+   },
+   "region": "parishes",
+   "steps": [
+    {
+     "id": "tag",
+     "text": "Check your (simulated) licence and tag before you go out - no tag, no hunt."
+    },
+    {
+     "id": "buddy",
+     "text": "Go with a trained partner, tell someone your plan, wear a life jacket in the boat."
+    },
+    {
+     "id": "line",
+     "text": "Set a line at the marked spot on the bank of AUTHORED water - never near a swimming or boat area."
+    },
+    {
+     "id": "wait",
+     "text": "Keep well back from the line and the water's edge; alligators are dangerous."
+    },
+    {
+     "id": "check",
+     "text": "Check the line with your partner from the boat, never alone and never by hand."
+    },
+    {
+     "id": "record",
+     "text": "Record the tag number in the log - in this game a catch is a tag recorded, nothing more."
+    }
+   ],
+   "quest": "treasure-bayou-gator-tag",
+   "classroom": {
+    "title": "Alligator nest survey (K-12)",
+    "label": "Classroom mode: the alligator season is replaced by a nest SURVEY - count and photograph from a distance.",
+    "steps": [
+     {
+      "id": "distance",
+      "text": "Stay far back: a mother alligator guards her nest mound."
+     },
+     {
+      "id": "spot",
+      "text": "Spot the nest mound of piled plants at the marsh edge through binoculars."
+     },
+     {
+      "id": "photo",
+      "text": "Take a photo from the survey point - never walk up to a nest."
+     },
+     {
+      "id": "record",
+      "text": "Record the mound on the survey sheet (a game record on this device only)."
+     },
+     {
+      "id": "leave",
+      "text": "Leave quietly the way you came."
+     }
+    ],
+    "quest": "treasure-bayou-nest-survey"
+   }
+  },
+  "photo-safari": {
+   "title": "Birding photo safari",
+   "label": "Photograph birds from the photo band: too close and the shot is refused.",
+   "target_group": "bird",
+   "target_count": 5,
+   "quests": {
+    "parishes": "side-bayou-photo-safari-parishes",
+    "bay": "side-bayou-photo-safari-bay"
+   }
+  },
+  "turtle-crossing": {
+   "title": "Turtle crossing helper",
+   "label": "Choose what a safe helper does when a turtle is crossing a road.",
+   "rounds": [
+    {
+     "q": "A turtle is halfway across a quiet road. Traffic is clear.",
+     "options": [
+      {
+       "text": "Move it across in the direction it was heading, then step back.",
+       "right": true
+      },
+      {
+       "text": "Take it home as a pet.",
+       "right": false
+      },
+      {
+       "text": "Turn it around to where it came from.",
+       "right": false
+      }
+     ],
+     "why": "Wildlife agencies advise helping only when it is safe, in the direction the turtle was going."
+    },
+    {
+     "q": "A big turtle with a long tail and a strong beak is crossing.",
+     "options": [
+      {
+       "text": "Pick it up by the tail.",
+       "right": false
+      },
+      {
+       "text": "Let it cross and keep people and pets back.",
+       "right": true
+      },
+      {
+       "text": "Poke it to hurry it.",
+       "right": false
+      }
+     ],
+     "why": "Snapping turtles can bite hard: never lift one by the tail; keep back and let it cross."
+    },
+    {
+     "q": "Cars are coming fast on a busy road.",
+     "options": [
+      {
+       "text": "Run into the road to save it.",
+       "right": false
+      },
+      {
+       "text": "Stay safe off the road and report it if needed.",
+       "right": true
+      },
+      {
+       "text": "Wave cars to stop.",
+       "right": false
+      }
+     ],
+     "why": "Your own safety comes first - never step into traffic for an animal."
+    }
+   ],
+   "quests": {
+    "parishes": "treasure-bayou-turtle-parishes",
+    "bay": "treasure-bayou-turtle-bay"
+   }
+  },
+  "shoreline-litter": {
+   "title": "Shoreline litter for wildlife",
+   "label": "Sort shoreline litter into the right bag and learn why it matters to wildlife.",
+   "items": [
+    {
+     "id": "fishing-line",
+     "name": "Tangled fishing line",
+     "bin": "trash",
+     "why": "Loose fishing line tangles birds, turtles and otters."
+    },
+    {
+     "id": "ring-carrier",
+     "name": "Plastic can rings",
+     "bin": "trash",
+     "why": "Rings can trap a bird's neck or a turtle's shell."
+    },
+    {
+     "id": "plastic-bag",
+     "name": "Plastic bag",
+     "bin": "trash",
+     "why": "Turtles can mistake floating bags for food."
+    },
+    {
+     "id": "can",
+     "name": "Aluminium can",
+     "bin": "recycle",
+     "why": "Cans are widely recyclable - check local rules."
+    },
+    {
+     "id": "glass-bottle",
+     "name": "Glass bottle",
+     "bin": "recycle",
+     "why": "Broken glass cuts paws and feet on the shore."
+    },
+    {
+     "id": "driftwood",
+     "name": "Driftwood",
+     "bin": "leave",
+     "why": "Natural driftwood is shelter for small animals - leave it."
+    }
+   ],
+   "bins": [
+    "trash",
+    "recycle",
+    "leave"
+   ],
+   "quests": {
+    "parishes": "treasure-bayou-litter-parishes",
+    "bay": "treasure-bayou-litter-bay"
+   }
+  }
+ },
+ "counts": {
+  "species": 29,
+  "parishes": 16,
+  "bay": 18,
+  "wilds": 12,
+  "dangerous": 2
+ }
+}

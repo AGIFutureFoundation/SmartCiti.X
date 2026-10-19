@@ -1,7 +1,7 @@
 /**
- * The honesty scanner, shared by EV-05 (loop/evals.mjs) and courses/test.mjs.
- * courses/build.py implements the same rules in Python over the same
- * vocabulary (loop/honesty.json); courses/test.mjs proves both give identical
+ * The honesty scanner, shared by EV-05 (loop/evals.mjs) and courses_roadmap/test.mjs.
+ * courses_roadmap/build.py implements the same rules in Python over the same
+ * vocabulary (loop/honesty.json); courses_roadmap/test.mjs proves both give identical
  * verdicts on loop/registry/honesty_fixtures.json.
  *
  * Rules:
