@@ -1219,6 +1219,7 @@
   "robo.arena.binned": "Müllsortierung: eingeworfene Objekte (alle vier Stufen, zurückgehaltene Seeds)",
   "robo.arena.binned.col": "Eingeworfene Objekte",
   "robo.arena.binned.mean": "Pro Episode, Mittel [95 %-KI]",
+  "robo.arena.vs_teacher": "Die Tabelle mit ihren Intervallen lesen: Die zweite gelernte Policy steht nach ihrem Mittelwert vorn, doch ihr Intervall überlappt das der SCRIPTED-Referenz, und sie wirft genauso viele Objekte ein wie diese Referenz, von der sie gelernt hat. Sie erreicht ihren Lehrer; sie übertrifft ihn nicht.",
   "robo.to.h": "Omega Claw · Trainingsbetrieb",
   "robo.to.note": "Fünf SCRIPTED Orchestrierungs-Agenten – kein KI-Modell, AUTHORED Persönlichkeiten, die Sprachausgabe des Geräts auf Klick. Jede Zeile ist aus einem Register zitiert oder liest eine gemessene Zahl vor. Nichts auf dieser Seite trainiert ein Modell: Der Datensatz unten dient dazu, anderswo eines zu trainieren.",
   "robo.to.mute": "Stimmen stumm",

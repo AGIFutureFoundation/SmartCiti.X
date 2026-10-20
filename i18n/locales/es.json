@@ -1219,6 +1219,7 @@
   "robo.arena.binned": "Clasificación de basura: objetos depositados (los cuatro niveles, semillas reservadas)",
   "robo.arena.binned.col": "Objetos depositados",
   "robo.arena.binned.mean": "Por episodio, media [IC 95 %]",
+  "robo.arena.vs_teacher": "Lea la tabla con sus intervalos: la segunda política aprendida queda primera por su media, pero su intervalo se solapa con el de la referencia SCRIPTED y deposita los mismos objetos que esa referencia, de la que aprendió. Iguala a su maestra; no la supera.",
   "robo.to.h": "Omega Claw · operaciones de entrenamiento",
   "robo.to.note": "Cinco agentes de orquestación SCRIPTED: sin modelo de IA, personalidades AUTHORED, la síntesis de voz del propio dispositivo al hacer clic. Cada frase se cita de un registro o lee un número medido. Nada en esta página entrena un modelo: el conjunto de datos de abajo sirve para entrenar uno en otro lugar.",
   "robo.to.mute": "Silenciar voces",

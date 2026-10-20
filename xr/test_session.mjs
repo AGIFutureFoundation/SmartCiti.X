@@ -257,9 +257,13 @@ if (BROWSER) {
       console.log('seats in this run: ' + list.join(', '));
       const sink = {};
       try {
-        res = await Promise.race([runSeats({ sink, browser, base: `http://127.0.0.1:${port}`, mockSrc, seats: list, probe, probeSeats, budgetMs: (budgetS - 8) * 1000,
+        const runP = runSeats({ sink, browser, base: `http://127.0.0.1:${port}`, mockSrc, seats: list, probe, probeSeats, budgetMs: (budgetS - 8) * 1000,
           coachMs: Number(argv('coach-secs', SEAT_COACH_SECS)) * 1000, coachMsOf: (i) => (args.some((x) => x.startsWith('--coach-secs=')) ? Number(argv('coach-secs', 0)) : (SEAT_COACH_CAP_S[i] || SEAT_COACH_SECS)) * 1000, expectOf: (i) => SEAT_EXPECT[i] || 'completion',
-          onCheck: (c) => ok(c.ok, 'MOCKED session: ' + c.name + (process.env.XR_TRACE ? ` [+${(c.atMs / 1000).toFixed(1)}s]` : ''), c.detail) }), hard]);
+          onCheck: (c) => ok(c.ok, 'MOCKED session: ' + c.name + (process.env.XR_TRACE ? ` [+${(c.atMs / 1000).toFixed(1)}s]` : ''), c.detail) });
+        // if the budget timer wins, the run is still in flight when the browser closes; its later rejection is
+        // expected and must not take the process down before the 'late' failure and the partial rows are printed
+        runP.catch(() => {});
+        res = await Promise.race([runP, hard]);
         if (res === 'late') { ok(false, 'the seat batch finished inside its 90 s budget'); res = { measured: sink.measured || { seats: {}, probe: {} } }; }
       } finally { await browser.close().catch(() => {}); }
       const m = res.measured;

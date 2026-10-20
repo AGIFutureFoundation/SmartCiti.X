@@ -57,7 +57,7 @@ PAGE_KEYS += ['robo.h.chart', 'robo.chart.note', 'robo.chart.total', 'robo.h.rep
               'robo.rp.exact', 'robo.rp.held', 'robo.rp.none', 'robo.bench.reach']
 # ---- ARENA BEGIN (wave 18): the model-arena i18n keys (chrome words of the arena section; 8 locales) ---------------------
 PAGE_KEYS += ['robo.h.arena', 'robo.arena.note', 'robo.arena.match', 'robo.arena.task', 'robo.arena.pause', 'robo.arena.resume',
-              'robo.arena.speed', 'robo.arena.live', 'robo.arena.board', 'robo.arena.binned', 'robo.arena.binned.col', 'robo.arena.binned.mean', 'robo.arena.policy', 'robo.arena.kind',
+              'robo.arena.speed', 'robo.arena.live', 'robo.arena.board', 'robo.arena.binned', 'robo.arena.binned.col', 'robo.arena.binned.mean', 'robo.arena.vs_teacher', 'robo.arena.policy', 'robo.arena.kind',
               'robo.arena.success', 'robo.arena.win', 'robo.arena.wins', 'robo.arena.cards', 'robo.arena.class', 'robo.arena.progress']
 # ---- ARENA END ------------------------------------------------------------------------------------------------------------
 KEYS = PAGE_KEYS + robo_i18n_keys()
@@ -593,6 +593,14 @@ _binned = ''.join(
     f'<tr data-arena-binned-policy="{E(p)}"><td>{E(_AR["cards"][p]["name"])}</td><td data-arena-binned="{_SORT[p]["items_binned"]}">{_SORT[p]["items_binned"]} / {_SORT[p]["items_total"]}</td>'
     f'<td data-arena-binned-mean="{_SORT[p]["binned_per_episode"]["mean"]}">{_ci(_SORT[p]["binned_per_episode"])}</td></tr>'
     for p in _HO['policies'])
+# The sentence beside the board says the second learned policy matches its teacher and does not beat it.
+# It is DERIVED, not typed: the build checks the claim against the registry and stops if it no longer holds.
+_lbr = {r['policy']: r for r in _LB['rows']}
+_ov = lambda a, b: a['ci95'][0] <= b['ci95'][1] and b['ci95'][0] <= a['ci95'][1]
+if not ('bcg' in _lbr and 'scripted' in _lbr and _ov(_lbr['bcg']['success_rate'], _lbr['scripted']['success_rate'])
+        and _SORT['bcg']['items_binned'] == _SORT['scripted']['items_binned']):
+    raise RoboticsPageError('build_robotics: robo.arena.vs_teacher says the second policy matches its teacher; '
+                            'the registry no longer shows overlapping intervals and equal items binned - rewrite the sentence')
 _cards = ''.join(f'<li data-arena-card="{E(pid)}"><b>{E(c["name"])}</b> <span class="tag">{E(c["kind"])}</span> {E(c["what"])}. '
                  f'<span class="muted">{E(c["not"])}.</span></li>' for pid, c in _AR['cards'].items())
 _ARENA_DATA = {
@@ -620,6 +628,7 @@ ARENA_HTML = (
     f'<tbody>{_board}</tbody></table></div>'
     f'<h3>{T("robo.arena.binned")}</h3><div class="tw"><table id="arena-binned"><thead><tr><th>{T("robo.arena.policy")}</th><th>{T("robo.arena.binned.col")}</th>'
     f'<th>{T("robo.arena.binned.mean")}</th></tr></thead><tbody>{_binned}</tbody></table></div>'
+    f'<p class="muted" data-arena-vs-teacher>{T("robo.arena.vs_teacher")}</p>'
     f'<h3>{T("robo.arena.cards")}</h3><ul id="arena-cards">{_cards}</ul>'
     f'<p class="muted">robotics/arena/registry/arena.json · {E(_AR["schema"])} · stamp <code>{E(_AR["source_stamp"])}</code> · '
     + ' · '.join(f'{E(k)} weights sha256 <code>{E(m["weights_sha256"][:16])}</code>' for k, m in _MODELS.items()) + '</p></section>')

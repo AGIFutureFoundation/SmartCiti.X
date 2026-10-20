@@ -42,6 +42,11 @@ ok('the page prints the litter-sort items-binned table of the held-out seeds, on
   const rows = [...sec.matchAll(/data-arena-binned-policy="([a-z]+)"><td>[^<]*<\/td><td data-arena-binned="(\d+)">(\d+) \/ (\d+)<\/td><td data-arena-binned-mean="([0-9.]+)">/g)], S = AR.tables.held_out.sort.summary;
   return rows.length === AR.tables.held_out.policies.length && rows.length === 5 && rows.every((r) => S[r[1]] && +r[2] === S[r[1]].items_binned && +r[3] === S[r[1]].items_binned && +r[4] === S[r[1]].items_total && +r[5] === S[r[1]].binned_per_episode.mean)
     && rows.some((r) => r[1] === 'bcg') && sec.includes('id="arena-binned"'); });
+ok('beside the board the page says the second learned policy matches its teacher and does not beat it, and the registry still bears that out (overlapping success intervals, equal items binned)', () => {
+  const r = Object.fromEntries(AR.leaderboard.rows.map((x) => [x.policy, x.success_rate])), S = AR.tables.held_out.sort.summary;
+  const ov = r.bcg && r.scripted && r.bcg.ci95[0] <= r.scripted.ci95[1] && r.scripted.ci95[0] <= r.bcg.ci95[1];
+  const p = ((sec.match(/<p class="muted" data-arena-vs-teacher>([\s\S]*?)<\/p>/) || [])[1] || '').replace(/<[^>]+>/g, '');
+  return ov && S.bcg.items_binned === S.scripted.items_binned && /does not beat it/.test(p) && /overlaps/.test(p); });
 ok('the arena script stores and sends nothing (no storage, no network APIs)', !/localStorage|sessionStorage|indexedDB|fetch\s*\(|XMLHttpRequest|sendBeacon|WebSocket/.test(ajs + POLBLOCK));
 ok('no language-model claim in the arena section (only "None is a language model" / "not a language model" may name one)',
   !/language model|\bLLM\b|\bGPT\b|chatbot/i.test(sec.replace(/None is a language model|not a language model/g, '')));

@@ -50,8 +50,8 @@ from interiors import plan_for, ROOMS  # noqa: E402  (read only)
 
 KINDS = ('prop', 'furniture', 'seat', 'station', 'crib', 'sign')
 ROTATIONS = (0, 90, 180, 270)
-WALKABLE = 'declared, walkable in the 3D page'
-WALKABLE_NOTE = ('declared, walkable in the 3D page: an AUTHORED proposal composed '
+WALKABLE = 'declared, a walk-through in the 3D page with equipment shown as markers'
+WALKABLE_NOTE = ('declared, a walk-through in the 3D page with equipment shown as markers: an AUTHORED proposal composed '
                  'from this bundle\'s own assets, drawn in the room of its strand by '
                  'the link trade_craft_3d.html?space=<id>; props and furniture are '
                  'drawn from their registry recipes, seats, stations, cribs and signs '

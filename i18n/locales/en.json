@@ -1219,6 +1219,7 @@
   "robo.arena.binned": "Litter sort: items binned (all four levels, held-out seeds)",
   "robo.arena.binned.col": "Items binned",
   "robo.arena.binned.mean": "Per episode, mean [95% CI]",
+  "robo.arena.vs_teacher": "Read the board with its intervals: the second learned policy ranks first by its mean, but its interval overlaps the SCRIPTED reference's, and it bins the same number of items as that reference, which taught it. It matches its teacher; it does not beat it.",
   "robo.to.h": "Omega Claw · training operations",
   "robo.to.note": "Five SCRIPTED orchestration agents — no AI model, AUTHORED personalities, the device’s own speech synthesis on a click. Every line is quoted from a registry or reads out a measured number. Nothing on this page trains a model: the dataset below is for training one elsewhere.",
   "robo.to.mute": "Mute voices",

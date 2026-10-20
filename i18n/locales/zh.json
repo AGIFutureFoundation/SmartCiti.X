@@ -1219,6 +1219,7 @@
   "robo.arena.binned": "垃圾分拣：投入垃圾桶的物品数（四个等级，预留种子）",
   "robo.arena.binned.col": "投入的物品数",
   "robo.arena.binned.mean": "每回合均值 [95% 置信区间]",
+  "robo.arena.vs_teacher": "请结合区间阅读此表：第二个学习策略按均值排名第一，但其区间与 SCRIPTED 参考策略的区间重叠，且投入的物品数与教它的参考策略相同。它与老师持平，并未超过老师。",
   "robo.to.h": "Omega Claw · 训练运营",
   "robo.to.note": "五个 SCRIPTED 编排代理——没有 AI 模型，AUTHORED 的性格，点击后使用设备自带的语音合成。每一句都引自某个注册表，或读出一个测得的数字。本页面不训练任何模型：下面的数据集供在别处训练模型使用。",
   "robo.to.mute": "静音",

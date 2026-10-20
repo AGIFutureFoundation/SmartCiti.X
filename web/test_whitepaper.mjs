@@ -211,6 +211,7 @@ if (hasArena && trained > 0) {
     if (!/not a language model/.test(m.card.what || '')) bcBad.push(`${m.id}: the card does not say it is not a language model`);
   }
   const lv = arena.learned_vs_reference.rows;
+  if (lv.some((row) => row.policy === 'bcg') && !/<p data-vs-teacher>[^<]*It matches its teacher; it does not beat it\.<\/p>/.test(RB)) bcBad.push('the page does not say the second policy matches its teacher and does not beat it');
   if (!lv.every((row) => ['items_binned', 'items_total', 'binned_per_episode/mean', 'binned_per_episode/ci95/0', 'binned_per_episode/ci95/1', 'episodes_with_any']
     .every((f) => RB.includes(`data-fig="robotics/arena/registry/arena.json#/learned_vs_reference/rows/[policy=${row.policy}]/${f}"`)))) bcBad.push('the items-binned table does not carry every learned_vs_reference figure');
 }

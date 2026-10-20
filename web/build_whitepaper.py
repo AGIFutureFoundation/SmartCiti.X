@@ -435,6 +435,17 @@ if TRAINED and HAVE_ARENA:
         brow.append([N(q('policy')), N(q('kind')), N(q('items_binned')) + ' / ' + N(q('items_total')),
                      N(q('binned_per_episode/mean')) + ' [' + N(q('binned_per_episode/ci95/0')) + ', ' + N(q('binned_per_episode/ci95/1')) + ']',
                      N(q('episodes_with_any')) + ' / ' + N(q('episodes'))])
+    # One plain sentence beside the tables, DERIVED: the build checks the claim against the arena registry and stops if it no longer holds.
+    _lb = {x['policy']: x['success_rate'] for x in load(R['arena'])['leaderboard']['rows']}
+    _lr = {x['policy']: x for x in lv['rows']}
+    _ov = lambda a, b: a['ci95'][0] <= b['ci95'][1] and b['ci95'][0] <= a['ci95'][1]  # noqa: E731
+    if not ('bcg' in _lb and 'scripted' in _lb and 'bcg' in _lr and 'scripted' in _lr and _ov(_lb['bcg'], _lb['scripted'])
+            and _lr['bcg']['items_binned'] == _lr['scripted']['items_binned']):
+        raise Missing('build_whitepaper: the arena no longer shows the second policy matching its teacher (overlapping success '
+                      'intervals, equal items binned) - rewrite the matches-its-teacher sentence')
+    VS_TEACHER = ('<p data-vs-teacher>Read the tables with their intervals: the second learned policy ranks first by its mean, but its '
+                  'interval overlaps the SCRIPTED reference\'s, and it bins the same number of items as that reference, which taught it. '
+                  'It matches its teacher; it does not beat it.</p>')
     body += (f' Trained here: {whats}. They are compared below with the SCRIPTED '
              f'reference, a SCRIPTED greedy policy and a random baseline on the held-out seeds, measured at build time; '
              f'intervals are bootstrap confidence intervals at level {N(r("arena", "/tables/held_out/bootstrap/level"))} '
@@ -449,6 +460,7 @@ if TRAINED and HAVE_ARENA:
              + '<p>Success in litter sort means every item binned, which the SCRIPTED reference itself seldom manages at the first three '
                'levels, so items binned is the measure for the learned policies. Numbers are copied from the arena registry, whatever they are.</p>'
              + table(['Policy', 'Kind', 'Items binned', 'Per episode, mean [interval]', 'Episodes binning any'], brow)
+             + VS_TEACHER
              + '<h3>The trained policies\' cards, verbatim</h3>'
              + cards
              + Q(r('arena', '/honesty/not_llm')))

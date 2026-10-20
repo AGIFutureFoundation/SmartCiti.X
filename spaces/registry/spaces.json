@@ -1,5 +1,5 @@
 {
- "authored_stamp": "023d63468acde71d",
+ "authored_stamp": "73a96b7a13bf7308",
  "counts": {
   "area_m2": 501.5,
   "cost_estimated_items": 73,
@@ -41,7 +41,7 @@
   "footprints": "an item with no size_m in its registry is recorded as footprint unknown and its overlap is not checked; nothing is assumed",
   "not_stated": "no duration, price, accreditation or venue",
   "ppe": "never typed: strand base PPE plus the PPE of every hazard the surfaces rules say the chosen floor and wall stand for in that strand's room; a hazard prop is admitted only when the finishes already derive a hazard it is keyed to",
-  "status": "declared, walkable in the 3D page: an AUTHORED proposal composed from this bundle's own assets, drawn in the room of its strand by the link trade_craft_3d.html?space=<id>; props and furniture are drawn from their registry recipes, seats, stations, cribs and signs as marker pads; no dimension is a measurement of a real venue, and no duration, price or accreditation is stated",
+  "status": "declared, a walk-through in the 3D page with equipment shown as markers: an AUTHORED proposal composed from this bundle's own assets, drawn in the room of its strand by the link trade_craft_3d.html?space=<id>; props and furniture are drawn from their registry recipes, seats, stations, cribs and signs as marker pads; no dimension is a measurement of a real venue, and no duration, price or accreditation is stated",
   "walk": "walkable means: the 3D page draws the space in the room of its strand and a walker can reach that room by the doorways the plan cuts; a seat, station, crib or sign is a marker pad, not the asset, and no marker is solid"
  },
  "kinds": [
@@ -715,7 +715,7 @@
   "sign": "labels/registry/labels.json#kinds",
   "station": "stations/registry/stations.json#stations"
  },
- "source_stamp": "cc1027e4e04a1146",
+ "source_stamp": "eb752058a3e5d556",
  "spaces": [
   {
    "cost": {
@@ -1264,7 +1264,7 @@
    "purpose": "The tower crane, overhead crane and load chart seats behind two guard rails, with the checkout board and log desk a plant bay signs in and out on.",
    "room_label": "Equipment Bay",
    "source": "spaces/authored/crane-sim-bay.json",
-   "status": "declared, walkable in the 3D page",
+   "status": "declared, a walk-through in the 3D page with equipment shown as markers",
    "strand": "machines",
    "title": "Crane simulator bay",
    "unions": [
@@ -1775,7 +1775,7 @@
    "purpose": "Two fault-finding benches under a live rig frame, a prove-dead post and the rubber goods and lockout fixtures a live-electrical room hangs on its wall.",
    "room_label": "Diagnostic Bench",
    "source": "spaces/authored/electrical-lab.json",
-   "status": "declared, walkable in the 3D page",
+   "status": "declared, a walk-through in the 3D page with equipment shown as markers",
    "strand": "troubleshooting",
    "title": "Electrical lab",
    "unions": [
@@ -2288,7 +2288,7 @@
    "purpose": "Six desks in two rows facing a lectern, an easel and a progress board, so the reading is done before the room and the room is spent on the questions.",
    "room_label": "Classroom",
    "source": "spaces/authored/flipped-classroom.json",
-   "status": "declared, walkable in the 3D page",
+   "status": "declared, a walk-through in the 3D page with equipment shown as markers",
    "strand": "leadership",
    "title": "Flipped classroom",
    "unions": [
@@ -2815,7 +2815,7 @@
    "purpose": "A lay-down table, sling and hoist inspection rails and a trial flange beam, with the two rigging seats standing in the open floor between them.",
    "room_label": "Materials Store",
    "source": "spaces/authored/rigging-yard.json",
-   "status": "declared, walkable in the 3D page",
+   "status": "declared, a walk-through in the 3D page with equipment shown as markers",
    "strand": "materials",
    "title": "Rigging yard",
    "unions": [
@@ -3430,7 +3430,7 @@
    "purpose": "An open matted floor for the scaffold and boom-lift seats, with harness, lanyard, helmet and edge-protection fixtures along the back wall and two trestles for the tie-in work.",
    "room_label": "Practice Bays",
    "source": "spaces/authored/scaffold-court.json",
-   "status": "declared, walkable in the 3D page",
+   "status": "declared, a walk-through in the 3D page with equipment shown as markers",
    "strand": "procedure",
    "title": "Scaffold court",
    "unions": [
@@ -4110,7 +4110,7 @@
    "purpose": "Three screened arc positions with the rod oven, stub bin and quench tank a run of practice beads needs, and a fire watch post at the back.",
    "room_label": "Practice Bays",
    "source": "spaces/authored/welding-bay.json",
-   "status": "declared, walkable in the 3D page",
+   "status": "declared, a walk-through in the 3D page with equipment shown as markers",
    "strand": "procedure",
    "title": "Welding bay",
    "unions": [
@@ -4158,7 +4158,7 @@
    }
   }
  ],
- "status": "declared, walkable in the 3D page",
+ "status": "declared, a walk-through in the 3D page with equipment shown as markers",
  "unions_served": [
   "carpenters",
   "crane-ops",

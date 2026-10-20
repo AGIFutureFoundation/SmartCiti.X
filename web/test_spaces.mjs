@@ -216,8 +216,8 @@ for (const s of spaces) {
 }
 ok('[shipped] every space swatches its finishes in the catalogue colours, lists the derived PPE, its not-estimated items, its status and its serving halls',
   swBad.length === 0, swBad);
-ok('[shipped] the page states the pack status "declared, walkable in the 3D page" from the data, and no longer says the spaces are not yet walkable',
-  (page.match(/<b data-pack-status>([^<]*)<\/b>/) || [])[1] === reg.status && reg.status === 'declared, walkable in the 3D page'
+ok('[shipped] the page states the pack status "declared, a walk-through in the 3D page with equipment shown as markers" from the data, and no longer says the spaces are not yet walkable',
+  (page.match(/<b data-pack-status>([^<]*)<\/b>/) || [])[1] === reg.status && reg.status === 'declared, a walk-through in the 3D page with equipment shown as markers'
   && !/not yet walkable|not a room anyone can walk into/.test(page.replace(/<script type="application\/json"[\s\S]*?<\/script>/, '')));
 ok('[shipped] the footer stamps are the registry stamps',
   page.includes(`<code data-stamp>${reg.source_stamp}</code>`) && page.includes(`<code data-authored-stamp>${reg.authored_stamp}</code>`));

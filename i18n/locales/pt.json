@@ -1219,6 +1219,7 @@
   "robo.arena.binned": "Triagem de lixo: itens depositados (os quatro níveis, sementes reservadas)",
   "robo.arena.binned.col": "Itens depositados",
   "robo.arena.binned.mean": "Por episódio, média [IC 95%]",
+  "robo.arena.vs_teacher": "Leia a tabela com os seus intervalos: a segunda política aprendida fica em primeiro pela média, mas o seu intervalo sobrepõe-se ao da referência SCRIPTED, e deposita o mesmo número de itens que essa referência, que a ensinou. Iguala o seu professor; não o supera.",
   "robo.to.h": "Omega Claw · operações de treino",
   "robo.to.note": "Cinco agentes de orquestração SCRIPTED — sem modelo de IA, personalidades AUTHORED, a síntese de voz do próprio dispositivo com um clique. Cada frase é citada de um registro ou lê um número medido. Nada nesta página treina um modelo: o conjunto de dados abaixo serve para treinar um em outro lugar.",
   "robo.to.mute": "Silenciar vozes",

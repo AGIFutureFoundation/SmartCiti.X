@@ -61,8 +61,8 @@ ok('[registry] authored_stamp is sha256 over spaces/authored/*.json in name orde
   reg.authored_stamp === authoredHash.digest('hex').slice(0, 16));
 ok('[registry] one space per authored file, ids in file order',
   same(reg.spaces.map((s) => s.id), authoredFiles.map((f) => f.replace(/\.json$/, ''))));
-ok('[registry] status says declared, walkable in the 3D page, on the pack and on every space, and the note keeps the AUTHORED and not-a-venue lines',
-  reg.status === 'declared, walkable in the 3D page'
+ok('[registry] status says declared, a walk-through in the 3D page with equipment shown as markers, on the pack and on every space, and the note keeps the AUTHORED and not-a-venue lines',
+  reg.status === 'declared, a walk-through in the 3D page with equipment shown as markers'
     && reg.spaces.every((s) => s.status === reg.status)
     && reg.honesty.status.includes('AUTHORED') && reg.honesty.status.includes('no dimension is a measurement of a real venue')
     && !/not yet walkable/.test(JSON.stringify(reg)));
@@ -358,7 +358,7 @@ const DRILL = [
   ['the builder edited without a rebuild', 'source_stamp is sha256 of spaces/build.py'],
   ['a door route naming two rooms that share no edge', 'every serving hall ... fewest-door route recomputed here'],
   ['a space wedged in a room the plan seals off', 'every serving hall ... fewest-door route recomputed here'],
-  ['the status put back to not yet walkable while the page walks', 'status says declared, walkable in the 3D page'],
+  ['the status put back to not yet walkable while the page walks', 'status says declared, a walk-through in the 3D page with equipment shown as markers'],
 ];
 ok(`[drill] ${DRILL.length} mutations each name the check that catches them`,
   DRILL.every(([, check]) => check.length > 0));

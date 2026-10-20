@@ -1219,6 +1219,7 @@
   "robo.arena.binned": "Tri des déchets : objets déposés (les quatre niveaux, graines réservées)",
   "robo.arena.binned.col": "Objets déposés",
   "robo.arena.binned.mean": "Par épisode, moyenne [IC 95 %]",
+  "robo.arena.vs_teacher": "Lisez le tableau avec ses intervalles : la seconde politique apprise est première par sa moyenne, mais son intervalle recouvre celui de la référence SCRIPTED, et elle dépose autant d'objets que cette référence, qui l'a formée. Elle égale son enseignant ; elle ne le dépasse pas.",
   "robo.to.h": "Omega Claw · opérations d’entraînement",
   "robo.to.note": "Cinq agents d’orchestration SCRIPTED — aucun modèle d’IA, des personnalités AUTHORED, la synthèse vocale de l’appareil sur un clic. Chaque phrase est citée d’un registre ou lit un nombre mesuré. Rien sur cette page n’entraîne un modèle : le jeu de données ci-dessous sert à en entraîner un ailleurs.",
   "robo.to.mute": "Couper les voix",
