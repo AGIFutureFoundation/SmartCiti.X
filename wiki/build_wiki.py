@@ -295,6 +295,10 @@ phrased against the learner's own parish.
   the four-stage flipped loop, grade bands, {len(schools['districts'])} proposed districts and live units
 - [Upgrade-Candidates](Upgrade-Candidates.md) — what the sibling repositories
   offer the Academy, from a reviewed survey
+- [Media-and-Builds](Media-and-Builds.md) — every built page, the b-roll, the
+  stills and the explainer video, and the commits that landed each wave
+- [Build-and-Landing](Build-and-Landing.md) — how a batch of work is frozen,
+  rebuilt, verified and landed, and the team's token rules
 
 ## Honesty
 
@@ -4337,6 +4341,388 @@ this page goes stale when the front door changes.
 {FOOTER}'''
 
 
+# ---- MEDIA-AND-BUILDS BEGIN ---------------------------------------------------
+# Two pages generated from files at build time: Media-and-Builds (every built
+# page, the b-roll, the stills, the explainer and the landing commits) and
+# Build-and-Landing (the landing protocol, read off tools/landing/).
+import html as _html
+
+SITE_GROUPS = [
+    ('Worlds', 'the walkable and drivable places', [
+        'trade_craft_3d', 'trade_craft_parishes', 'trade_craft_bay', 'trade_craft_wilds',
+        'trade_craft_smiles', 'trade_craft_fleet', 'trade_craft_robotics']),
+    ('Learning', 'what a learner or a teacher works through', [
+        'trade_craft_courses', 'trade_craft_lessons', 'trade_craft_unions', 'trade_craft_programs',
+        'trade_craft_schools', 'trade_craft_classroom', 'trade_craft_hive', 'trade_craft_ladder',
+        'trade_craft_quests', 'trade_craft_worksites', 'trade_craft_spaces']),
+    ('Maps and records', 'the maps, the learner\'s own record and how it is checked', [
+        'trade_craft_interactive', 'trade_craft_geomap', 'trade_craft_map', 'trade_craft_fabric',
+        'trade_craft_progress', 'trade_craft_verify', 'trade_craft_contribute', 'trade_craft_signin',
+        'trade_craft_dashboard']),
+    ('About', 'the front door and the pages that explain the project', [
+        'index', 'trade_craft_landing', 'smartcitix_trade_craft_academy', 'smartcitix_whitepaper',
+        'trade_craft_packs', 'trade_craft_plans', 'trade_craft_design', 'trade_craft_languages']),
+]
+
+
+def _md(t):
+    """One line of page text, safe inside a markdown table cell."""
+    return re.sub(r'\s+', ' ', _html.unescape(t)).strip().replace('|', '\\|')
+
+
+def _kb(n):
+    return f'{n / 2**20:.1f} MB' if n >= 2**20 else f'{n / 1024:.0f} KB'
+
+
+def _page_facts(rel):
+    path = ROOT / rel
+    if not path.is_file():
+        raise Refused(f'{rel} is named by the site groups and is not on disk')
+    head = path.read_text(errors='replace')[:40000]
+    t = re.search(r'<title>(.*?)</title>', head, re.S)
+    d = re.search(r'<meta\s+name="description"\s+content="([^"]*)"', head)
+    if not t or not d:
+        raise Refused(f'{rel} has no <title> or no meta description in its first 40 KB')
+    return _md(t.group(1)), _md(d.group(1)), path.stat().st_size
+
+
+def _live_base():
+    """The published root, read from the one place it is written (web/seo.py),
+    or None when this repository has no Pages deploy workflow."""
+    m = re.search(r"^BASE = '(https://[^']+/)'", (ROOT / 'web/seo.py').read_text(), re.M)
+    wf = ROOT / '.github/workflows/pages.yml'
+    deploys = wf.is_file() and 'actions/deploy-pages' in wf.read_text()
+    if deploys and not m:
+        raise Refused('web/seo.py states no BASE although a Pages deploy exists')
+    return m.group(1) if deploys else None
+
+
+def _pr(repo, n):
+    return f'[#{n}](https://github.com/{repo}/pull/{n})'
+
+
+def _sha(repo, sha):
+    return f'[`{sha}`](https://github.com/{repo}/commit/{sha})'
+
+
+def _checks(n):
+    return format(n, ',') if n is not None else 'not stated'
+
+
+def page_media_builds():
+    base = _live_base()
+    reg = json.loads((ROOT / 'media/registry/media.json').read_text())
+    builds = json.loads((ROOT / 'wiki/registry/builds.json').read_text())
+    repo = builds['repo']
+    listed = [f for _, _, fs in SITE_GROUPS for f in fs]
+    if len(listed) != len(set(listed)):
+        raise Refused('a page appears in two site groups')
+    on_disk = sorted(p.stem for p in (ROOT / 'web').glob('*.html')) + ['index']
+    stray = sorted(set(on_disk) - set(listed))
+    if stray:
+        raise Refused('built pages in no site group: ' + ', '.join(stray))
+
+    # --- the pages
+    n_pages = 0
+    total = 0
+    blocks = []
+    for name, blurb, stems in SITE_GROUPS:
+        rows = []
+        for stem in stems:
+            rel = 'index.html' if stem == 'index' else f'web/{stem}.html'
+            title, desc, size = _page_facts(rel)
+            live = f' [live]({base}{"" if stem == "index" else rel}) |' if base else ''
+            rows.append(f'| [`{rel}`](../{rel}) | {title} | {desc} | {_kb(size)} |{live}')
+            n_pages += 1
+            total += size
+        head = '| Page | Title | What it says | Size |' + (' Published |' if base else '')
+        sep = '|---|---|---|---|' + ('---|' if base else '')
+        blocks.append(f'### {name}\n\n*{up_first(blurb)}.*\n\n{head}\n{sep}\n' + '\n'.join(rows))
+    if base:
+        deploy = (f'`.github/workflows/pages.yml` deploys the committed pages to GitHub Pages on every push to '
+                  f'`main`, and `web/seo.py` states the address that deploy serves: **{base}**. Each page below '
+                  'carries its published link. The workflow itself notes that Pages has to be switched on once '
+                  'by a repository admin, and nothing in the repository records whether that has been done, so '
+                  'these are the addresses the deploy serves, not a check that they answer today.')
+    else:
+        deploy = ('This repository has no GitHub Pages deploy workflow, so no published address is given: '
+                  'the pages below are served from the repository files only.')
+
+    # --- the b-roll
+    clips = []
+    for c in reg['clips']:
+        f = c['files']
+        for k in ('webm', 'mp4', 'poster', 'preview'):
+            if k not in f or not (ROOT / f[k]['path']).is_file():
+                raise Refused(f'media registry: {c["id"]} has no {k} file on disk')
+        known = '' if c['known_issue'] is None else f'\n- **Known issue:** {c["known_issue"]}'
+        clips.append(
+            f'### {c["title"]}\n\n'
+            f'![{c["title"]}: poster frame](../{f["poster"]["path"]})\n\n'
+            f'{c["shows"]}\n\n'
+            f'- **Duration:** {c["duration_s"]} s at {c["fps"]} fps, {c["resolution"][0]}x{c["resolution"][1]}; '
+            f'camera move: {c["camera_move"]}\n'
+            f'- **Filmed on:** `{c["source"]["page"]}`, {c["source"]["view"]}\n'
+            f'- **Files:** [mp4](../{f["mp4"]["path"]}) ({_kb(f["mp4"]["bytes"])}) · '
+            f'[webm](../{f["webm"]["path"]}) ({_kb(f["webm"]["bytes"])}) · '
+            f'[{c["preview_width"]} px preview](../{f["preview"]["path"]}) ({_kb(f["preview"]["bytes"])})\n'
+            f'- **Provenance:** {c["provenance"]}; licence {c["licence"]}; status: {c["status"]}{known}')
+    pending = ''
+    if reg['pending']:
+        pending = ' **Planned, not yet rendered:** ' + '; '.join(
+            f'`{p["id"]}` ({p["why"]})' for p in reg['pending']) + '.'
+
+    # --- the explainer
+    ex = reg['explainer']
+    for k in ex['files'].values():
+        if not (ROOT / k['path']).is_file():
+            raise Refused(f'media registry: {k["path"]} is not on disk')
+    cap_lines = [x for x in (ROOT / ex['files']['captions']['path']).read_text().splitlines() if x.strip()]
+    quoted = '\n'.join(f'> {x}' for x in cap_lines)
+    exf = ex['files']
+    explainer = (
+        f'![{ex["title"]}: title frame](../{exf["poster"]["path"]})\n\n'
+        f'- **Watch:** [explainer.mp4](../{exf["mp4"]["path"]}) ({_kb(exf["mp4"]["bytes"])}, {ex["duration_s"]} s, '
+        f'{ex["resolution"][0]}x{ex["resolution"][1]} at {ex["fps"]} fps; audio: {ex["audio"]})\n'
+        f'- **Captions as text:** [explainer.captions.txt](../{exf["captions"]["path"]}) ({len(cap_lines)} lines, quoted below)\n'
+        f'- **Provenance:** {ex["provenance"]}\n'
+        f'- **What it is made of:** {ex["composition"]}\n'
+        f'- **Format:** {ex["format_note"]}\n'
+        f'- **Figures:** {ex["figures_note"]}\n\n'
+        f'Captions, quoted from the file the video was composed with:\n\n{quoted}')
+
+    # --- the stills
+    cap = reg['capture']
+    stills = []
+    for s in reg['stills']:
+        fl = s['file']
+        if not (ROOT / fl['path']).is_file():
+            raise Refused(f'media registry: still {s["id"]} is not on disk')
+        stills.append(f'![{s["id"]}: {s["source"]["view"]}](../{fl["path"]})\n\n'
+                      f'*{s["caption"]}* View: {s["source"]["view"]}; {fl["width"]}x{fl["height"]}, {_kb(fl["bytes"])}.')
+
+    # --- the builds
+    land = '\n'.join(
+        f'| {l["wave"]} | {_sha(repo, l["sha"])} | {l["date"]} | {_md(l["title"])} | '
+        f'{_checks(l["checks_stated"])} | {_pr(repo, l["pr"])} |' for l in builds['landings'])
+    merges = '\n'.join(
+        f'| {_pr(repo, m["pr"])} | {_sha(repo, m["sha"])} | {m["date"]} | {_md(m["title"])} | '
+        f'{_checks(m["checks_stated"])} |' for m in builds['merges'])
+    shas = [l['sha'] for l in builds['landings']] + [m['sha'] for m in builds['merges']]
+    if len(shas) != len(set(shas)):
+        raise Refused('wiki/registry/builds.json lists a commit twice')
+    clip_text = '\n\n'.join(clips)
+    still_text = '\n\n'.join(stills)
+    block_text = '\n\n'.join(blocks)
+
+    return f'''# Media and builds
+
+Every built page with what it says about itself, the video library, the
+stills and the explainer video with where each was recorded from, and the
+commits that landed each wave of work. All of it is read from files when this
+wiki is built: the pages themselves, `media/registry/media.json` and
+`wiki/registry/builds.json`.
+
+## The built pages
+
+{n_pages} pages ({_kb(total)} in all; KB and MB are 1,024-based), each linked from here and grouped as
+the front door groups them. The title and the description are the page's own
+`<title>` and meta description.
+
+{deploy}
+
+{block_text}
+
+## The b-roll
+
+{len(reg["clips"])} clips filmed frame by frame from this build's own pages
+(`media/record.mjs`, graded and encoded by `media/encode.py`). Nothing is stock.{pending}
+
+{clip_text}
+
+## The explainer video
+
+{explainer}
+
+## Stills
+
+{len(stills)} stills, each one screenshot of a built page. Provenance for every one: **{cap["provenance"]}**.
+{cap["note"]}
+
+{still_text}
+
+## Builds: what landed, and when
+
+Each row is a commit on the way to `main`, with the date it was authored and
+the check count its own message states (`not stated` where the message gives
+none). Read from `wiki/registry/builds.json`, which is typed from the history
+once, so this page stays checkable without a repository history at hand.
+
+| Wave | Commit | Date | What it shipped | Checks stated | Merged in |
+|---|---|---|---|---|---|
+{land}
+
+The merge commits on `main`:
+
+| Pull request | Merge commit | Date | Title | Checks stated |
+|---|---|---|---|---|
+{merges}
+
+## Also published privately
+
+A whitepaper and a video tour are also published privately and are shared on
+request; they are not linked from this repository.
+
+## The honest limits
+
+- The stills and the b-roll are RECORDED from the pages; the explainer is DERIVED, composed from that footage and those stills, and silent.
+- Every figure spoken or shown in the explainer is the figure of the pages at the commit it was recorded from; none is refreshed here.
+- Where a clip is pending this page says so, and a clip with a known issue is never offered as hero quality.
+{FOOTER}'''
+
+
+def _script_facts():
+    """What each landing script says it does, read from its own header."""
+    out = []
+    for name in ('rebuild_all.sh', 'browser_round.sh', 'browser_runs.sh', 'readme_fix.py',
+                 'geomap_hillshade_probe.mjs', 'test.mjs'):
+        path = ROOT / 'tools/landing' / name
+        if not path.is_file():
+            raise Refused(f'tools/landing/{name} is missing')
+        body = path.read_text()
+        if name.endswith('.py'):
+            doc = re.search(r'"""(.*?)"""', body, re.S)
+            lines = [l.strip() for l in doc.group(1).strip().splitlines()] if doc else []
+        else:
+            lines = [re.sub(r'^(#|//)\s?', '', l).strip() for l in body.splitlines()
+                     if l.startswith(('#', '//')) and not l.startswith('#!')]
+        use = next((l for l in lines if l.startswith('usage:')), None)
+        first = next((l for l in lines if l and not l.startswith('usage:')), None)
+        if not first:
+            raise Refused(f'tools/landing/{name} states nothing about itself in its header')
+        out.append((name, _md(use or first).replace('<', '&lt;').replace('>', '&gt;')))
+    return out
+
+
+def _rebuild_order():
+    order = []
+    for line in (ROOT / 'tools/landing/rebuild_all.sh').read_text().splitlines():
+        if line.startswith('#') or not line.strip():
+            continue
+        m = re.match(r'for p in ([^;]+); do python3 \$p/build\.py', line)
+        if m:
+            order += [p + '/build.py' for p in m.group(1).split()]
+            continue
+        if 'for b in web/build_*.py' in line:
+            order.append('web/build_*.py')
+        order += re.findall(r'python3 ((?:[a-z0-9_]+/)+[a-z0-9_]*\.py)', line)
+    if not order or order[-1] != 'wiki/build_wiki.py':
+        raise Refused('tools/landing/rebuild_all.sh no longer ends with the wiki builder')
+    return order
+
+
+def page_build_landing():
+    scripts = _script_facts()
+    order = _rebuild_order()
+    runs = []
+    for l in (ROOT / 'tools/landing/browser_runs.sh').read_text().splitlines():
+        if l.startswith('run '):
+            w = l.split(None, 3)
+            runs.append((w[1], w[2], w[3]))
+    if not runs:
+        raise Refused('tools/landing/browser_runs.sh has no run lines')
+    skip = re.findall(r"^  '([^']+)': '(.*)',$", (ROOT / 'tools/landing/test.mjs').read_text(), re.M)
+    if not skip:
+        raise Refused('tools/landing/test.mjs has no skip list to quote')
+    sc_rows = '\n'.join(f'| [`{n}`](../tools/landing/{n}) | {u} |' for n, u in scripts)
+    run_rows = '\n'.join(f'| `{n}` | {t} s | `{_md(c)}` |' for n, t, c in runs)
+    skip_rows = '\n'.join(f'| `{b}` | {_md(r)} |' for b, r in skip)
+    order_text = '\n'.join(order)
+    return f'''# Build and landing
+
+How a batch of work gets from a working tree onto `main` without anyone having
+to trust a build that has not been checked. The scripts live in
+[`tools/landing/`](../tools/landing/README.md); this page is generated from them.
+
+## The protocol, in plain words
+
+1. **Freeze the tree.** Copy the working tree to a separate directory. Every
+   later step runs on the copy, so nothing that is still being edited can
+   change what is being checked.
+2. **Rebuild twice.** Run `rebuild_all.sh` on the copy, then run it again. The
+   first pass builds every registry and page in dependency order; the second
+   settles the files that stamp one another, so a third rebuild would change
+   nothing.
+3. **Verify.** Run `verify_all.sh` in the copy and keep what it prints: one
+   line per suite with its check count, and one total.
+4. **Fix the README counts in the frozen copy only.** The README types a count
+   beside every suite and a headline total. `readme_fix.py` moves each to the
+   count the verify run printed. It is run on the copy, never on the live
+   tree, so the working tree is not rewritten under whoever is editing it.
+5. **Browser round, under one chromium lock.** `browser_round.sh` serves the
+   copy locally and runs the browser suites one after another, each holding
+   the same lock, so two browser jobs never compete for the machine and a
+   timing is not an accident of load.
+6. **Byte-compare the archive.** What is going to be committed is compared,
+   file for file, with the frozen copy that was verified.
+7. **Scan.** The change is searched for secrets, for model identifiers and for
+   machine-local paths. Any hit stops the landing.
+8. **Commit, push.** Only the person landing the work runs git; builders,
+   suites and agents never commit.
+
+## The team token rules
+
+- **Read by line range.** Find the lines with `grep -n`, then read only those
+  with `sed -n a,bp`. Never print a built page: they run from 0.1 to 3 MB.
+- **Single suites while iterating.** Run the one suite for the file you
+  changed. `verify_all.sh` and `rebuild_all.sh` are for whoever lands.
+- **At most four browser runs** per agent, each under the lock and within 90
+  seconds; plan each run to collect everything it can.
+- **Hand back in under 400 words:** files changed, suites and counts,
+  mutations, the measured numbers, and what is still open.
+
+## The scripts
+
+| Script | Usage, or what it says of itself |
+|---|---|
+{sc_rows}
+
+## The rebuild order
+
+`rebuild_all.sh` runs these builders in this order ({len(order)} entries, read
+from the script; `web/build_*.py` stands for the loop over every web page
+builder):
+
+```
+{order_text}
+```
+
+## The browser round
+
+The default round, as `browser_runs.sh` lists it. Every run is one line: a name,
+a timeout and a command, and `$B` is the local base URL.
+
+| Run | Timeout | Command |
+|---|---|---|
+{run_rows}
+
+## What keeps it honest
+
+`node tools/landing/test.mjs` fails when a builder exists that the rebuild does
+not run, when a script holds a path that only works on one machine, when a
+script is not executable, or when the README fixer stops doing what is said
+above. The builders it deliberately does not require in the script, each with
+its reason:
+
+| Builder | Why it is not a line of the script |
+|---|---|
+{skip_rows}
+{FOOTER}'''
+
+
+# ---- MEDIA-AND-BUILDS END ------------------------------------------------------
+
+
 PROCESS_PAGES = {
     'Completion-Record.md': page_completion_record,
     'Verify-A-Record.md': page_verify_record,
@@ -4431,6 +4817,8 @@ PAGES = {
     'Sign-In.md': page_signin,
     **PROCESS_PAGES,
     'Provenance.md': page_provenance,
+    'Media-and-Builds.md': page_media_builds,
+    'Build-and-Landing.md': page_build_landing,
     **{f'District-{k}.md': (lambda k=k, d=d: page_district(k, d))
        for k, d in districts.items()},
 }

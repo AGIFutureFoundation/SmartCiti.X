@@ -3,7 +3,7 @@
  "how": "media/record.mjs (virtual clock, camera driven through the page hook, one screenshot per frame) -> media/encode.py (grade, VP9 + H.264, poster, 480 px preview) -> media/build.py",
  "budget_bytes": 3145728,
  "fps": 24,
- "source_stamp": "ab25fa3ea0c004f513d03ee5222c5dfca348eee896113d897d26ae69c3c65507",
+ "source_stamp": "4d060748f61f7d459bdb90b3bf127c23240246752850444fa5ca1f783e15b436",
  "clips": [
   {
    "id": "campus-green-crane-up",
@@ -407,5 +407,290 @@
    "id": "sim-crane-seat",
    "why": "not rendered yet: sim-crane-seat.webm, sim-crane-seat.mp4, sim-crane-seat-poster.jpg, sim-crane-seat-480.webm"
   }
- ]
+ ],
+ "capture": {
+  "commit": "83db20b",
+  "viewport": [
+   1280,
+   720
+  ],
+  "tool": "headless Chromium",
+  "provenance": "RECORDED: captured in headless Chromium from the pages at commit 83db20b, 1280x720",
+  "note": "Each still is one screenshot of the built page at that viewport width; some are cropped to a shorter height (the registry measures each file)."
+ },
+ "stills": [
+  {
+   "id": "arena",
+   "source": {
+    "page": "web/trade_craft_robotics.html",
+    "view": "Model arena, match 1 (litter sort, seed 15)"
+   },
+   "caption": "The robotics lab (`web/trade_craft_robotics.html`), model arena: four policies on the same seeded task, live in the browser.",
+   "file": {
+    "path": "web/media/stills/arena.jpg",
+    "bytes": 79208,
+    "sha256": "714a4a0fca9ce8349466ca9294ff67c503082a6f442455ed227d2034af0ecd5a",
+    "type": "image/jpeg",
+    "width": 1280,
+    "height": 720
+   },
+   "provenance": "RECORDED: captured in headless Chromium from the pages at commit 83db20b, 1280x720",
+   "licence": "first-party"
+  },
+  {
+   "id": "c3d_campus",
+   "source": {
+    "page": "web/trade_craft_3d.html",
+    "view": "Treasure Island campus view, solar noon"
+   },
+   "caption": "The walkable world (`web/trade_craft_3d.html`), campus view of the Treasure Island campus: the Structural, Envelope and Building Systems hall clusters.",
+   "file": {
+    "path": "web/media/stills/c3d_campus.jpg",
+    "bytes": 137241,
+    "sha256": "f9209c58993b8e2841a485580e028c3ae381f1f7e463d702a47b4666ea97aa3b",
+    "type": "image/jpeg",
+    "width": 1280,
+    "height": 720
+   },
+   "provenance": "RECORDED: captured in headless Chromium from the pages at commit 83db20b, 1280x720",
+   "licence": "first-party"
+  },
+  {
+   "id": "classroom",
+   "source": {
+    "page": "web/trade_craft_classroom.html",
+    "view": "Top of page, class session panel open"
+   },
+   "caption": "The classroom page (`web/trade_craft_classroom.html`), top of page, with the play-only class session panel open.",
+   "file": {
+    "path": "web/media/stills/classroom.jpg",
+    "bytes": 83907,
+    "sha256": "4b34bd121cd90af0a10da74d8b8c715a29fbd64341345dcc01ba139047b99f68",
+    "type": "image/jpeg",
+    "width": 1280,
+    "height": 600
+   },
+   "provenance": "RECORDED: captured in headless Chromium from the pages at commit 83db20b, 1280x720",
+   "licence": "first-party"
+  },
+  {
+   "id": "courses",
+   "source": {
+    "page": "web/trade_craft_lessons.html",
+    "view": "Lessons hero band over trade-hall footage"
+   },
+   "caption": "The lessons hero band (`web/trade_craft_lessons.html`) over looping footage of one trade hall; the capture job was pointed at the Courses page, but the band in the pixels is the lessons one.",
+   "file": {
+    "path": "web/media/stills/courses.jpg",
+    "bytes": 69271,
+    "sha256": "8806c5db2050eeee24ba6d182e9066b2fd17f8a3cb30d4f881cbae9ec54a058d",
+    "type": "image/jpeg",
+    "width": 1280,
+    "height": 600
+   },
+   "provenance": "RECORDED: captured in headless Chromium from the pages at commit 83db20b, 1280x720",
+   "licence": "first-party"
+  },
+  {
+   "id": "fleet",
+   "source": {
+    "page": "web/trade_craft_fleet.html",
+    "view": "Showroom, compact hatchback on test drive"
+   },
+   "caption": "The fleet showroom (`web/trade_craft_fleet.html`): a compact hatchback on the test-drive pad with its AUTHORED spec card.",
+   "file": {
+    "path": "web/media/stills/fleet.jpg",
+    "bytes": 90356,
+    "sha256": "5562cd348183826310dbbe03d34bb776bf7398c45738405356ede1b75819e562",
+    "type": "image/jpeg",
+    "width": 1280,
+    "height": 720
+   },
+   "provenance": "RECORDED: captured in headless Chromium from the pages at commit 83db20b, 1280x720",
+   "licence": "first-party"
+  },
+  {
+   "id": "hab_salt",
+   "source": {
+    "page": "web/trade_craft_bay.html",
+    "view": "Walking at the South Bay Salt Pond ecotone levee site"
+   },
+   "caption": "The Bay world (`web/trade_craft_bay.html`), on foot at the South Bay Salt Pond ecotone levee restoration site.",
+   "file": {
+    "path": "web/media/stills/hab_salt.jpg",
+    "bytes": 68172,
+    "sha256": "6b3a2177c357e80afa9c7cebec8a12f89a1e3eb16f2d87b8bbb4931e419012d4",
+    "type": "image/jpeg",
+    "width": 1280,
+    "height": 720
+   },
+   "provenance": "RECORDED: captured in headless Chromium from the pages at commit 83db20b, 1280x720",
+   "licence": "first-party"
+  },
+  {
+   "id": "hive",
+   "source": {
+    "page": "web/trade_craft_hive.html",
+    "view": "Top of page, roster counts"
+   },
+   "caption": "The Omega Hive page (`web/trade_craft_hive.html`), top of page: the scripted-agent roster counts and what the agents are and are not.",
+   "file": {
+    "path": "web/media/stills/hive.jpg",
+    "bytes": 82459,
+    "sha256": "d11e1bca99e7e862ba9ae7fce754259c92e082fc5279ce6aaecc1fa61d4c8b5c",
+    "type": "image/jpeg",
+    "width": 1280,
+    "height": 600
+   },
+   "provenance": "RECORDED: captured in headless Chromium from the pages at commit 83db20b, 1280x720",
+   "licence": "first-party"
+  },
+  {
+   "id": "modules",
+   "source": {
+    "page": "web/trade_craft_courses.html",
+    "view": "World training modules list"
+   },
+   "caption": "The Courses page (`web/trade_craft_courses.html`), the world training modules list: worksite districts and Bay restoration sites.",
+   "file": {
+    "path": "web/media/stills/modules.jpg",
+    "bytes": 74734,
+    "sha256": "2d7c59d5ba440dde09f6aab5b52f16c95a6b6a16c42b015bc90a5cceb24d24ec",
+    "type": "image/jpeg",
+    "width": 1280,
+    "height": 600
+   },
+   "provenance": "RECORDED: captured in headless Chromium from the pages at commit 83db20b, 1280x720",
+   "licence": "first-party"
+  },
+  {
+   "id": "par_door",
+   "source": {
+    "page": "web/trade_craft_parishes.html",
+    "view": "Standing at a hall door in the parish world"
+   },
+   "caption": "The parish world (`web/trade_craft_parishes.html`), on foot at a hall door with the Jackson Square landmark in view.",
+   "file": {
+    "path": "web/media/stills/par_door.jpg",
+    "bytes": 66695,
+    "sha256": "66d3f1c6beebe79062f3cb1f902ae86feb22daf4e92bdbd26cf2bc41cbf3efb0",
+    "type": "image/jpeg",
+    "width": 1280,
+    "height": 720
+   },
+   "provenance": "RECORDED: captured in headless Chromium from the pages at commit 83db20b, 1280x720",
+   "licence": "first-party"
+  },
+  {
+   "id": "programs",
+   "source": {
+    "page": "web/trade_craft_programs.html",
+    "view": "Top of page, \"Read this first\" box"
+   },
+   "caption": "The programs page (`web/trade_craft_programs.html`), top of page: the K-12 and nonprofit pathways and the PROPOSED-status notes.",
+   "file": {
+    "path": "web/media/stills/programs.jpg",
+    "bytes": 93834,
+    "sha256": "960b788af0c9a90320f4e2cd2bc32133580662af958ca7ec70686b156ebcf539",
+    "type": "image/jpeg",
+    "width": 1280,
+    "height": 600
+   },
+   "provenance": "RECORDED: captured in headless Chromium from the pages at commit 83db20b, 1280x720",
+   "licence": "first-party"
+  },
+  {
+   "id": "smiles",
+   "source": {
+    "page": "web/trade_craft_smiles.html",
+    "view": "Top of page and the made-up district"
+   },
+   "caption": "The Unspoken Smiles world (`web/trade_craft_smiles.html`): the made-up district around the dental clinic, with the hygiene games and the egg hunt.",
+   "file": {
+    "path": "web/media/stills/smiles.jpg",
+    "bytes": 99115,
+    "sha256": "dc01c702ffbb57f0670993012bc13e2f89bca79cd9383aa16355ebdbc14ec12c",
+    "type": "image/jpeg",
+    "width": 1280,
+    "height": 720
+   },
+   "provenance": "RECORDED: captured in headless Chromium from the pages at commit 83db20b, 1280x720",
+   "licence": "first-party"
+  },
+  {
+   "id": "unions",
+   "source": {
+    "page": "web/trade_craft_unions.html",
+    "view": "Top of page, union hall directory counts"
+   },
+   "caption": "The union hall directory (`web/trade_craft_unions.html`), top of page: the directory counts and what a named union is not.",
+   "file": {
+    "path": "web/media/stills/unions.jpg",
+    "bytes": 84601,
+    "sha256": "be854dcaf66e19cc33875958cf07ef6e0c4723d6b0156cf76b29a2334e6edc71",
+    "type": "image/jpeg",
+    "width": 1280,
+    "height": 600
+   },
+   "provenance": "RECORDED: captured in headless Chromium from the pages at commit 83db20b, 1280x720",
+   "licence": "first-party"
+  },
+  {
+   "id": "wild_forest",
+   "source": {
+    "page": "web/trade_craft_wilds.html",
+    "view": "Walking in a forest landscape"
+   },
+   "caption": "The wilds (`web/trade_craft_wilds.html`), on foot in a forest, with the pace, flyover and vehicle controls.",
+   "file": {
+    "path": "web/media/stills/wild_forest.jpg",
+    "bytes": 58469,
+    "sha256": "bbff9414906ea2b4928d3776748a1bdbb22b4d8012a1cc4ed331f67d77adfc20",
+    "type": "image/jpeg",
+    "width": 1280,
+    "height": 720
+   },
+   "provenance": "RECORDED: captured in headless Chromium from the pages at commit 83db20b, 1280x720",
+   "licence": "first-party"
+  }
+ ],
+ "explainer": {
+  "id": "explainer",
+  "title": "SmartCiti.X Holodeck, a two-minute tour",
+  "fps": 24,
+  "audio": "none",
+  "provenance": "DERIVED: composed from recorded page footage and stills at 83db20b, captioned, silent",
+  "composition": "Three recorded b-roll clips from this library (globe flyover, hall interior dolly, wilds mountain flyover), a recorded capture of the model arena, page stills, a title card, two text cards (the arena's measured success table and a how-it-is-built card) and an end card with the project contact; every caption is the registered captions text.",
+  "budget_bytes": 10485760,
+  "format_note": "mp4 only (H.264), to keep the repository lean; no webm.",
+  "figures_note": "The numbers spoken in the captions are those of the pages at commit 83db20b and are not refreshed here.",
+  "duration_s": 122,
+  "measured_duration_s": 122.0,
+  "resolution": [
+   1280,
+   720
+  ],
+  "caption_lines": 18,
+  "files": {
+   "mp4": {
+    "path": "web/media/explainer/explainer.mp4",
+    "bytes": 8197957,
+    "sha256": "cd93deff14497653b152edc931e6bd79441e619d43fd4191704a4b74ce7ba4c0",
+    "type": "video/mp4; codecs=avc1"
+   },
+   "poster": {
+    "path": "web/media/explainer/explainer-poster.jpg",
+    "bytes": 69856,
+    "sha256": "74e066ab2387fce515c48be6ebe9a10d13350c86b7639ca78cf722f5ee72a554",
+    "type": "image/jpeg"
+   },
+   "captions": {
+    "path": "web/media/explainer/explainer.captions.txt",
+    "bytes": 2069,
+    "sha256": "f30435c9da5cac21c93f69aa1789193841ea077bf7e971ea75de587bcdf3eefb",
+    "type": "text/plain; charset=utf-8"
+   }
+  },
+  "licence": "first-party"
+ }
 }

@@ -1,0 +1,158 @@
+{
+ "what": "AUTHORED registry of the commits that landed each wave of work after 152b5c1, read once from the first-parent and per-PR history of the repository and typed here so the wiki page renders hermetically. Dates are commit dates. A checks figure is the count the commit message itself states; null means the message states none.",
+ "range": "152b5c1..dfa7e0a",
+ "repo": "AGIFutureFoundation/SmartCiti.X",
+ "landings": [
+  {
+   "sha": "f20ca33",
+   "date": "2026-10-12",
+   "wave": 16,
+   "title": "Wave 16 landing 1: robotics replay and reachable level, wilds flora, geomap hillshade, Bay shore depth",
+   "checks_stated": 6337,
+   "pr": 108
+  },
+  {
+   "sha": "f42a9b0",
+   "date": "2026-10-12",
+   "wave": 16,
+   "title": "Wave 16 landing 2: Trade Craft courses and supplements, Omega Hive voiced agents, building and campus dressing",
+   "checks_stated": 6543,
+   "pr": 108
+  },
+  {
+   "sha": "ae17cb3",
+   "date": "2026-10-12",
+   "wave": 16,
+   "title": "Wave 16 landing 3: packs list Courses and the Omega Hive, crew-role hook, relief parked in the overview, README lessons row",
+   "checks_stated": 6570,
+   "pr": 108
+  },
+  {
+   "sha": "c066319",
+   "date": "2026-10-12",
+   "wave": 17,
+   "title": "Wave 17 landing 1: Omega Hive agents embodied, furnished hall interiors, device-tier world textures, readable hillshade",
+   "checks_stated": 6632,
+   "pr": 108
+  },
+  {
+   "sha": "43c063d",
+   "date": "2026-10-12",
+   "wave": 17,
+   "title": "Wave 17 landing 2: building exteriors, campus trees, solid street detail, all-hall interior sweep",
+   "checks_stated": 6657,
+   "pr": 108
+  },
+  {
+   "sha": "834434b",
+   "date": "2026-10-12",
+   "wave": 17,
+   "title": "Wave 17 landing 3: street-level detail in the parish and Bay worlds",
+   "checks_stated": 6670,
+   "pr": 108
+  },
+  {
+   "sha": "aff302b",
+   "date": "2026-10-12",
+   "wave": 18,
+   "title": "Wave 18 landing 1: union-hall pathways, K-12 programs and nonprofit sectors, deep Bay restoration sites, SEO whitepaper page",
+   "checks_stated": 6806,
+   "pr": 108
+  },
+  {
+   "sha": "c2d6a97",
+   "date": "2026-10-12",
+   "wave": 18,
+   "title": "Wave 18 landing 2: robot model arena with a trained BC policy, Omega Claw datasets, union directory, Programs page, solid levees",
+   "checks_stated": 6996,
+   "pr": 108
+  },
+  {
+   "sha": "3a5a889",
+   "date": "2026-10-12",
+   "wave": 18,
+   "title": "Wave 18 landing 3: a robot yard in the parish and Bay worlds",
+   "checks_stated": 7001,
+   "pr": 108
+  },
+  {
+   "sha": "83db20b",
+   "date": "2026-10-12",
+   "wave": 19,
+   "title": "Wave 19: world training modules, a shared realistic look, and doors in and out of the worlds",
+   "checks_stated": 7201,
+   "pr": 108
+  },
+  {
+   "sha": "d8094b8",
+   "date": "2026-10-19",
+   "wave": 20,
+   "title": "Wave 20 landing 1: crew lessons completable, mocked WebXR session, module links in the worlds, parish view cull, roadmap v3.6 and v3.7",
+   "checks_stated": 7339,
+   "pr": 109
+  },
+  {
+   "sha": "b51f651",
+   "date": "2026-10-19",
+   "wave": 20,
+   "title": "Rebuild registries after the main merge (README headline count)",
+   "checks_stated": 7388,
+   "pr": 108
+  },
+  {
+   "sha": "b098362",
+   "date": "2026-10-19",
+   "wave": 20,
+   "title": "Wave 20 landing 2: walk and placard evidence, campus and network brightness, guide cull, roadmap v3.7 status",
+   "checks_stated": 7405,
+   "pr": 109
+  },
+  {
+   "sha": "b81d6e2",
+   "date": "2026-10-19",
+   "wave": 21,
+   "title": "Wave 21 checkpoint: station and crib episodes, mocked-session seat harness, inland water skip, worksite module links",
+   "checks_stated": null,
+   "pr": 109
+  },
+  {
+   "sha": "4459f74",
+   "date": "2026-10-20",
+   "wave": 21,
+   "title": "Evidence strength by step kind, and a separate consent scope for lesson-activity data",
+   "checks_stated": 7829,
+   "pr": 109
+  },
+  {
+   "sha": "2f826bd",
+   "date": "2026-10-20",
+   "wave": 21,
+   "title": "Roadmap: lead the lesson evidence line with the graded figure",
+   "checks_stated": 7829,
+   "pr": 109
+  }
+ ],
+ "merges": [
+  {
+   "sha": "6f88380",
+   "date": "2026-10-19",
+   "pr": 107,
+   "title": "Merge pull request #107: the roadmap loop (cycles 1 to 5: course pack, agent loop, eval gates, safety gate, review fixes)",
+   "checks_stated": null
+  },
+  {
+   "sha": "7ae6818",
+   "date": "2026-10-19",
+   "pr": 108,
+   "title": "Merge pull request #108: waves 16 to 19 (courses and the Omega Hive, world detail, robot arena, programs, whitepaper, training modules) and the README links",
+   "checks_stated": null
+  },
+  {
+   "sha": "dfa7e0a",
+   "date": "2026-10-19",
+   "pr": 109,
+   "title": "Merge pull request #109: waves 20-21 (lesson evidence by strength, consented activity data, mocked VR session, module links, view culls)",
+   "checks_stated": 7829
+  }
+ ]
+}

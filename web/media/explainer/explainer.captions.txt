@@ -1,0 +1,18 @@
+Trade Craft Academy is a training network for the skilled trades, set in walkable worlds instead of slides.
+Everything you see here was recorded from the live pages, in a browser, with nothing installed.
+Three walkable campuses hold all 111 union training halls: Treasure Island, Oakland Waterfront and Crescent Works in New Orleans.
+Click a hall and walk in. Eleven rooms: briefing, equipment bay, tool crib, practice bays and simulator seats.
+Each hall has a scripted advisor with an avatar and a voice that starts on a click. No AI model writes what it says.
+Thirteen connected New Orleans parishes to walk, drive and boat across, with authored streets and landmarks.
+New: walk up to a hall and press Enter to go inside it in 3D, then come back to the spot you left. 29 doors here, 9 in the Bay.
+Nine connected Bay Area counties, from San Francisco and Oakland to the North Bay marshes.
+Eight walkable shoreline restoration projects, each with its own habitat scene, crew mentors and a scenario you can step through.
+The wilds: four authored landscapes, 427.9 square kilometres, where the outdoor trades work.
+23 work sites, from a pipeline river crossing to line clearance, each linked to the halls and lessons that teach the work.
+Robots compete live on the same seeded trade task, match after match, while a harness compares every model.
+A small behaviour-cloning network, trained on scripted episodes, plays beside the reference. It is not a language model.
+Measured with 95% intervals. Omega Claw refereed 1,040 runs with no disagreements and built a 260-sample dataset for training elsewhere.
+The Omega Hive: 197 scripted agents with avatars and authored personalities. Every line is quoted from a registry.
+New: 16 hands-on modules with 191 steps send learners into the worlds: worksites, restoration sites, the wilds and the robot yard.
+122 courses, K-12 pathways for four grade bands and 105 teacher program cards. Districts and partners are proposed.
+Lessons are unverified general practice and certify nobody. Unions named are not partners or affiliates.
