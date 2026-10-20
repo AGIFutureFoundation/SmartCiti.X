@@ -216,8 +216,9 @@ for (const s of spaces) {
 }
 ok('[shipped] every space swatches its finishes in the catalogue colours, lists the derived PPE, its not-estimated items, its status and its serving halls',
   swBad.length === 0, swBad);
-ok('[shipped] the page states the pack status "declared, not yet walkable" from the data',
-  (page.match(/<b data-pack-status>([^<]*)<\/b>/) || [])[1] === reg.status && reg.status === 'declared, not yet walkable');
+ok('[shipped] the page states the pack status "declared, a walk-through in the 3D page with equipment shown as markers" from the data, and no longer says the spaces are not yet walkable',
+  (page.match(/<b data-pack-status>([^<]*)<\/b>/) || [])[1] === reg.status && reg.status === 'declared, a walk-through in the 3D page with equipment shown as markers'
+  && !/not yet walkable|not a room anyone can walk into/.test(page.replace(/<script type="application\/json"[\s\S]*?<\/script>/, '')));
 ok('[shipped] the footer stamps are the registry stamps',
   page.includes(`<code data-stamp>${reg.source_stamp}</code>`) && page.includes(`<code data-authored-stamp>${reg.authored_stamp}</code>`));
 
@@ -233,6 +234,63 @@ ok('[shipped] every in-page anchor points at an element id',
 ok('[shipped] the 3D hall links use the ?hall= query the 3D page reads',
   attr(/data-hall="[^"]+"/g).length > 0 && [...page.matchAll(/href="([^"]+)" data-hall="([^"]+)"/g)].every((m) => m[1] === `trade_craft_3d.html?hall=${m[2]}`));
 
+/* ------------------------------------------------------- walkable, linked -- */
+// every (space, serving hall) pair has a walk link that carries the ?space= and &hall= the 3D page reads,
+// the registry's door route, and a file beside the page; the 3D page itself is read for the loader
+const wkBad = [];
+let wkLinks = 0;
+const page3d = (() => { try { return readFileSync(join(WEB, 'trade_craft_3d.html'), 'utf8'); } catch { return ''; } })();
+let d3 = null;
+try {
+  const m = page3d.match(/<script id="data" type="application\/json">([\s\S]*?)<\/script>/);
+  d3 = m ? JSON.parse(m[1]) : null;
+} catch { d3 = null; }
+for (const s of spaces) {
+  const sec = page.slice(page.indexOf(`data-space="${s.id}"`), page.indexOf('</section>', page.indexOf(`data-space="${s.id}"`)));
+  const found = [...sec.matchAll(/<li data-walk="([^"]+)"><a class="walkin" href="([^"]+)" data-walk-link="([^"]+)" data-walk-hall="([^"]+)">[\s\S]*?data-route="([^"]*)"/g)];
+  if (!same(found.map((m) => m[1]), s.walk.halls.map((w) => w.hall))) wkBad.push(`${s.id}: walk links ${found.map((m) => m[1])} are not its serving halls`);
+  for (const m0 of found) {
+    const m = m0.map((v) => (typeof v === 'string' ? v.replace(/&gt;/g, '>').replace(/&amp;/g, '&') : v));
+    wkLinks++;
+    const w = s.walk.halls.find((x) => x.hall === m[1]);
+    if (!w) continue;
+    if (m[2] !== `trade_craft_3d.html?${reg.walk_param}=${s.id}&hall=${w.hall}` || m[3] !== s.id || m[4] !== w.hall) wkBad.push(`${s.id}/${w.hall}: href ${m[2]}`);
+    if (m[5] !== w.route.join('>')) wkBad.push(`${s.id}/${w.hall}: route ${m[5]} != ${w.route.join('>')}`);
+    const q = new URLSearchParams(m[2].split('?')[1]);
+    if (q.get('space') !== s.id || q.get('hall') !== w.hall) wkBad.push(`${s.id}/${w.hall}: query ${m[2]}`);
+    if (d3) {
+      const sp3 = d3.spaces3d && d3.spaces3d.spaces[s.id];
+      if (!sp3 || !sp3.halls.includes(w.hall) || !d3.halls.some((h) => h.slug === w.hall)) wkBad.push(`${s.id}/${w.hall}: the 3D page does not carry this space in this hall`);
+    }
+  }
+}
+ok(`[walk] every serving hall of every space (${wkLinks}) has a link carrying ?space= and &hall=, the registry's door route, and a 3D page that carries that space in that hall`,
+  wkLinks === spaces.reduce((t, s) => t + s.walk.halls.length, 0) && d3 !== null && wkBad.length === 0, wkBad);
+ok('[walk] the 3D page carries each space as its registry declares it: items in order with kind, id, position and rotation, the footprint, the finish colour, the route and the turn',
+  d3 !== null && spaces.every((s) => {
+    const q = d3.spaces3d.spaces[s.id];
+    return q && q.strand === s.strand && q.w === s.footprint_m.w && q.d === s.footprint_m.d && q.floor === s.floor.color
+      && same(q.ppe, s.ppe.required)
+      && same(q.route, Object.fromEntries(s.walk.halls.map((w) => [w.hall, w.route])))
+      && same(q.orient, Object.fromEntries(s.walk.halls.map((w) => [w.hall, w.orient])))
+      && same(q.items.map((i) => [i.k, i.id, i.x, i.y, i.r]), s.items.map((i) => [i.kind, i.id, i.x, i.y, i.rotation]))
+      && same(q.items.map((i) => i.fp), s.items.map((i) => (i.footprint ? [i.footprint.w, i.footprint.d] : null)));
+  }) && Object.keys(d3.spaces3d.spaces).length === spaces.length);
+ok('[walk] the 3D page reads ?space= against the declared spaces only (an unknown id opens nothing), draws props through the page\'s own prop path, keeps a piece out of the solids where it stands in a doorway lane, and keeps seats, stations, cribs and signs as non-solid markers',
+  /const spaceDeep = Object\.hasOwn\(D\.spaces3d\.spaces, params\.get\('space'\)\)/.test(page3d)
+  && /if \(spaceDeep && !D\.spaces3d\.spaces\[spaceDeep\]\.halls\.includes\(params\.get\('hall'\)\)\)/.test(page3d)
+  && /const p = PROP_BY_ID\.get\(it\.id\);\s*if \(!p\) throw new Error\('space '/.test(page3d)
+  && /if \(it\.fp\) \{[\s\S]{0,500}spStat\.ghosts\+\+;\s*else \{ wallRect\(hx, hz, fw, fd\); spStat\.solids\+\+; \}/.test(page3d)
+  && /function spaceLanes\(doors, rx, rz, rw, rd\)/.test(page3d)
+  && /const SP_PAD = \{ seat:/.test(page3d)
+  && /window\.__tc3dSpaceWalk = /.test(page3d) && /window\.__tc3dSpaceLoad = /.test(page3d));
+ok('[walk] the 3D page says the space is AUTHORED, a declared proposal and not a measured venue, and links back to the spaces page',
+  /'AUTHORED space \u00b7 '/.test(page3d) && /A declared proposal, not a measured venue\./.test(page3d) && /a\.href = 'trade_craft_spaces\.html'/.test(page3d));
+ok('[walk] the spaces page states the placement is AUTHORED and names what is drawn and what is a marker',
+  /AUTHORED placement, centred in the room/.test(page) && /marker pads/.test(page) && /No dimension is a measurement of a real venue/.test(page));
+ok('[walk] the walk figures on the page equal the registry counts',
+  Number(figs.walk_links) === reg.counts.walk_links && Number(figs.walk_reachable) === reg.counts.walk_reachable && reg.counts.walk_links === wkLinks && reg.counts.walk_reachable === reg.counts.walk_links);
+
 /* ------------------------------------------------------------- generator -- */
 ok('[generator] the builder types no figure: every number comes from the registry',
   !/data-fig="[a-z0-9_]+"[^>]*>\d/.test(gen) && !/\.get\([^)]*,/.test(gen));
@@ -245,6 +303,9 @@ const DRILL = [
   ['the embedded registry edited', 'the embedded registry is spaces/registry/spaces.json verbatim'],
   ['a plan drawn at another scale', 'metres-to-pixels is declared once'],
   ['a swatch recoloured', 'every space swatches its finishes in the catalogue colours'],
+  ['a walk link with the wrong hall or space', 'every serving hall of every space ... has a link carrying ?space= and &hall='],
+  ['the 3D page built before the registry was', 'the 3D page carries each space as its registry declares it'],
+  ['the 3D page loader reading any ?space= string', 'the 3D page reads ?space= against the declared spaces only'],
 ];
 ok(`[drill] ${DRILL.length} mutations each name the check that catches them`, DRILL.every(([, c]) => c.length > 0));
 

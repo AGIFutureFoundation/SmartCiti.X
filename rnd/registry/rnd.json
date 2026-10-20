@@ -39,7 +39,7 @@
   "budget_currencies": 2,
   "budget_agreements": 7,
   "suites_run": 157,
-  "suite_checks_declared": 8195,
+  "suite_checks_declared": 8265,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
@@ -3613,6 +3613,7 @@
   },
   "spaces/registry/spaces.json": {
    "app_renderers": [
+    "web/build_3d.py",
     "web/build_home.py",
     "web/build_spaces.py"
    ],
@@ -5627,14 +5628,14 @@
    {
     "suite": "spaces/test.mjs",
     "pack": "spaces",
-    "readme_checks": 29,
+    "readme_checks": 34,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_spaces.mjs",
     "pack": "web",
-    "readme_checks": 19,
+    "readme_checks": 25,
     "declared": true,
     "in_readme_table": true
    },
@@ -5683,7 +5684,7 @@
    {
     "suite": "web/test_nav.mjs",
     "pack": "web",
-    "readme_checks": 36,
+    "readme_checks": 39,
     "declared": true,
     "in_readme_table": true
    },
@@ -5984,7 +5985,7 @@
    {
     "suite": "robotics/test.mjs",
     "pack": "robotics",
-    "readme_checks": 43,
+    "readme_checks": 44,
     "declared": true,
     "in_readme_table": true
    },
@@ -6082,7 +6083,7 @@
    {
     "suite": "web/test_terrainkit.mjs",
     "pack": "web",
-    "readme_checks": 68,
+    "readme_checks": 94,
     "declared": true,
     "in_readme_table": true
    },
@@ -6180,14 +6181,14 @@
    {
     "suite": "robotics/arena/test.mjs",
     "pack": "robotics",
-    "readme_checks": 36,
+    "readme_checks": 51,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_arena.mjs",
     "pack": "web",
-    "readme_checks": 11,
+    "readme_checks": 13,
     "declared": true,
     "in_readme_table": true
    },
@@ -6236,7 +6237,7 @@
    {
     "suite": "xr/test_session.mjs",
     "pack": "xr",
-    "readme_checks": 82,
+    "readme_checks": 88,
     "declared": true,
     "in_readme_table": true
    },
@@ -6257,7 +6258,7 @@
    {
     "suite": "tools/landing/test.mjs",
     "pack": "tools",
-    "readme_checks": 279,
+    "readme_checks": 285,
     "declared": true,
     "in_readme_table": true
    }
@@ -6268,8 +6269,8 @@
    "control/soak.mjs",
    "restoration/test_scenarios.mjs"
   ],
-  "declared_total": 8195,
-  "readme_headline": 8230,
+  "declared_total": 8265,
+  "readme_headline": 8300,
   "unaccounted_for": 35,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
@@ -6285,10 +6286,6 @@
     "checks": 9
    },
    {
-    "suite": "web/test_arena.mjs",
-    "checks": 11
-   },
-   {
     "suite": "control/test.mjs",
     "checks": 12
    },
@@ -6299,6 +6296,10 @@
    {
     "suite": "security/test_sbom.mjs",
     "checks": 13
+   },
+   {
+    "suite": "tools/test.mjs",
+    "checks": 13
    }
   ],
   "thickest": [
@@ -6308,7 +6309,7 @@
    },
    {
     "suite": "tools/landing/test.mjs",
-    "checks": 279
+    "checks": 285
    },
    {
     "suite": "media/test.mjs",

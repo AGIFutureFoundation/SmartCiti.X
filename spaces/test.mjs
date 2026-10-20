@@ -61,10 +61,11 @@ ok('[registry] authored_stamp is sha256 over spaces/authored/*.json in name orde
   reg.authored_stamp === authoredHash.digest('hex').slice(0, 16));
 ok('[registry] one space per authored file, ids in file order',
   same(reg.spaces.map((s) => s.id), authoredFiles.map((f) => f.replace(/\.json$/, ''))));
-ok('[registry] status says declared, not yet walkable, on the pack and on every space',
-  reg.status === 'declared, not yet walkable'
-    && reg.spaces.every((s) => s.status === 'declared, not yet walkable')
-    && reg.honesty.status.includes('not yet walkable'));
+ok('[registry] status says declared, a walk-through in the 3D page with equipment shown as markers, on the pack and on every space, and the note keeps the AUTHORED and not-a-venue lines',
+  reg.status === 'declared, a walk-through in the 3D page with equipment shown as markers'
+    && reg.spaces.every((s) => s.status === reg.status)
+    && reg.honesty.status.includes('AUTHORED') && reg.honesty.status.includes('no dimension is a measurement of a real venue')
+    && !/not yet walkable/.test(JSON.stringify(reg)));
 ok('[registry] provenance: declarations AUTHORED, everything else DERIVED',
   reg.provenance.declarations === 'AUTHORED' && reg.provenance.everything_else === 'DERIVED'
     && reg.spaces.every((s) => s.provenance.declaration === 'AUTHORED'
@@ -271,6 +272,73 @@ ok('[registry] six spaces are declared', reg.spaces.length === 6);
 ok('[registry] every space places every kind at least once across the pack',
   KINDS.every((k) => byKind[k] > 0));
 
+/* --------------------------------------------------------------- walk -- */
+// The door graph is recomputed here from the plan rectangles, by the rule
+// web/build_3d.py planDoors() cuts doorways with: one door on every shared
+// edge with a positive overlap, one in the frontage of every room on y == 0.
+const walkBad = [];
+const planBad = [];
+for (const [hall, rooms] of Object.entries(reg.plans)) {
+  rooms.forEach((a, i) => {
+    if (a.x < 0 || a.x + a.w > 12) planBad.push(`${hall}/${a.strand} leaves the 12-unit envelope`);
+    rooms.slice(i + 1).forEach((b) => {
+      if (!(a.x + a.w <= b.x || b.x + b.w <= a.x || a.y + a.h <= b.y || b.y + b.h <= a.y)) planBad.push(`${hall}: ${a.strand} overlaps ${b.strand}`);
+    });
+  });
+}
+ok('[walk] the stored plans are rooms inside the 12-unit envelope and no two overlap', planBad.length === 0 && Object.keys(reg.plans).length > 0, planBad);
+const adjOf = (rooms) => {
+  const adj = new Map(rooms.map((r) => [r.strand, new Set()]));
+  rooms.forEach((a, i) => rooms.slice(i + 1).forEach((b) => {
+    const side = (a.x + a.w === b.x || b.x + b.w === a.x) && Math.min(a.y + a.h, b.y + b.h) > Math.max(a.y, b.y);
+    const back = (a.y + a.h === b.y || b.y + b.h === a.y) && Math.min(a.x + a.w, b.x + b.w) > Math.max(a.x, b.x);
+    if (side || back) { adj.get(a.strand).add(b.strand); adj.get(b.strand).add(a.strand); }
+  }));
+  return adj;
+};
+const fewest = (rooms, target) => {   // doors from the open front: BFS over every front room at once
+  const adj = adjOf(rooms), dist = new Map();
+  const queue = rooms.filter((r) => r.y === 0).map((r) => { dist.set(r.strand, 1); return r.strand; });
+  for (const cur of queue) for (const nx of adj.get(cur)) if (!dist.has(nx)) { dist.set(nx, dist.get(cur) + 1); queue.push(nx); }
+  return dist.has(target) ? dist.get(target) : null;
+};
+let links = 0;
+for (const s of reg.spaces) {
+  const servedHalls = s.unions.map((u) => u.slug);
+  if (!same(s.walk.halls.map((w) => w.hall), servedHalls)) walkBad.push(`${s.id}: walk halls ${s.walk.halls.map((w) => w.hall)} are not its unions ${servedHalls}`);
+  for (const w of s.walk.halls) {
+    links++;
+    const rooms = reg.plans[w.hall];
+    if (!rooms) { walkBad.push(`${s.id}/${w.hall}: no stored plan`); continue; }
+    const room = rooms.find((r) => r.strand === s.strand);
+    const env = s.fits_in.find((e) => e.hall === w.hall);
+    if (!room || !same(room, w.room)) walkBad.push(`${s.id}/${w.hall}: walk.room is not the plan's ${s.strand} room`);
+    if (room && env && (room.w * 3 !== env.w_m || room.h * 3 !== env.d_m)) walkBad.push(`${s.id}/${w.hall}: room ${room.w * 3}x${room.h * 3} m is not the envelope ${env.w_m}x${env.d_m} m`);
+    const W = s.footprint_m.w, D = s.footprint_m.d, rw = room.w * 3, rd = room.h * 3;
+    const orient = (W <= rw && D <= rd) ? 'direct' : ((D <= rw && W <= rd) ? 'transposed' : 'none');
+    if (w.orient !== orient || orient === 'none') walkBad.push(`${s.id}/${w.hall}: orient ${w.orient}, recomputed ${orient}`);
+    const adj = adjOf(rooms), route = w.route;
+    const first = rooms.find((r) => r.strand === route[0]);
+    if (!first || first.y !== 0) walkBad.push(`${s.id}/${w.hall}: the route does not start in a room on the open front`);
+    if (route[route.length - 1] !== s.strand) walkBad.push(`${s.id}/${w.hall}: the route does not end in the ${s.strand} room`);
+    for (let k = 1; k < route.length; k++) if (!adj.get(route[k - 1])?.has(route[k])) walkBad.push(`${s.id}/${w.hall}: no door between ${route[k - 1]} and ${route[k]}`);
+    const best = fewest(rooms, s.strand);
+    if (best === null) walkBad.push(`${s.id}/${w.hall}: ${s.strand} cannot be reached from the open front`);
+    else if (route.length !== best || w.doors_passed !== best) walkBad.push(`${s.id}/${w.hall}: route has ${route.length} rooms, fewest is ${best}`);
+    if (w.reachable !== (best !== null)) walkBad.push(`${s.id}/${w.hall}: reachable flag ${w.reachable}`);
+    if (w.href !== `trade_craft_3d.html?${reg.walk_param}=${s.id}&hall=${w.hall}`) walkBad.push(`${s.id}/${w.hall}: href ${w.href}`);
+  }
+}
+ok(`[walk] every serving hall of every space (${links}) has the space's room in its stored plan, a fitting turn, and a door route from the open front that is the fewest-door route recomputed here`, walkBad.length === 0, walkBad);
+ok('[walk] every hall plan stored is the plan of a serving hall, and no hall is stored that no space serves',
+  same(Object.keys(reg.plans).sort(), [...new Set(reg.spaces.flatMap((s) => s.walk.halls.map((w) => w.hall)))].sort()));
+ok('[walk] the walk counts are recomputed, not typed',
+  c.walk_links === links
+    && c.walk_reachable === reg.spaces.reduce((t, s) => t + s.walk.halls.filter((w) => w.reachable).length, 0)
+    && c.walk_transposed === reg.spaces.reduce((t, s) => t + s.walk.halls.filter((w) => w.orient === 'transposed').length, 0));
+ok('[walk] the placement is stated AUTHORED and the route DERIVED',
+  reg.spaces.every((s) => /^AUTHORED/.test(s.walk.placement) && s.walk.provenance === 'DERIVED'));
+
 /* ------------------------------------------------------------ generator -- */
 const src = builderSrc.replace(/#.*$/gm, '').replace(/"""[\s\S]*?"""/g, '');
 ok('[generator] the builder never reads with .get(k, default) and fails closed on a missing key',
@@ -288,6 +356,9 @@ const DRILL = [
   ['a count typed', 'every count is recomputed from the spaces, none typed'],
   ['a space wider than its room', 'every space fits the room of its strand in every serving hall'],
   ['the builder edited without a rebuild', 'source_stamp is sha256 of spaces/build.py'],
+  ['a door route naming two rooms that share no edge', 'every serving hall ... fewest-door route recomputed here'],
+  ['a space wedged in a room the plan seals off', 'every serving hall ... fewest-door route recomputed here'],
+  ['the status put back to not yet walkable while the page walks', 'status says declared, a walk-through in the 3D page with equipment shown as markers'],
 ];
 ok(`[drill] ${DRILL.length} mutations each name the check that catches them`,
   DRILL.every(([, check]) => check.length > 0));

@@ -26,12 +26,12 @@ the room of its strand and priced in declared figures:
 
 | Space | id | Room | Strand | Items | Status |
 |---|---|---|---|---|---|
-| **Crane simulator bay** | `crane-sim-bay` | Equipment Bay | `machines` | 19 | declared, not yet walkable |
-| **Electrical lab** | `electrical-lab` | Diagnostic Bench | `troubleshooting` | 15 | declared, not yet walkable |
-| **Flipped classroom** | `flipped-classroom` | Classroom | `leadership` | 18 | declared, not yet walkable |
-| **Rigging yard** | `rigging-yard` | Materials Store | `materials` | 15 | declared, not yet walkable |
-| **Scaffold court** | `scaffold-court` | Practice Bays | `procedure` | 17 | declared, not yet walkable |
-| **Welding bay** | `welding-bay` | Practice Bays | `procedure` | 18 | declared, not yet walkable |
+| **Crane simulator bay** | `crane-sim-bay` | Equipment Bay | `machines` | 19 | declared, a walk-through in the 3D page with equipment shown as markers |
+| **Electrical lab** | `electrical-lab` | Diagnostic Bench | `troubleshooting` | 15 | declared, a walk-through in the 3D page with equipment shown as markers |
+| **Flipped classroom** | `flipped-classroom` | Classroom | `leadership` | 18 | declared, a walk-through in the 3D page with equipment shown as markers |
+| **Rigging yard** | `rigging-yard` | Materials Store | `materials` | 15 | declared, a walk-through in the 3D page with equipment shown as markers |
+| **Scaffold court** | `scaffold-court` | Practice Bays | `procedure` | 17 | declared, a walk-through in the 3D page with equipment shown as markers |
+| **Welding bay** | `welding-bay` | Practice Bays | `procedure` | 18 | declared, a walk-through in the 3D page with equipment shown as markers |
 
 ## Check it offline
 
@@ -45,7 +45,7 @@ Quoted from the registry at build time, never retyped:
 
 `spaces/registry/spaces.json#honesty.status`:
 
-> declared, not yet walkable: an AUTHORED proposal composed from this bundle's own assets; nothing here is built into the 3D world, no dimension is a measurement of a real venue, and no duration, price or accreditation is stated
+> declared, a walk-through in the 3D page with equipment shown as markers: an AUTHORED proposal composed from this bundle's own assets, drawn in the room of its strand by the link trade_craft_3d.html?space=<id>; props and furniture are drawn from their registry recipes, seats, stations, cribs and signs as marker pads; no dimension is a measurement of a real venue, and no duration, price or accreditation is stated
 
 `spaces/registry/spaces.json#honesty.composed_only_from`:
 

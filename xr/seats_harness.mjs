@@ -76,6 +76,16 @@ export function hallOrder(ids) {
   return out;
 }
 
+/* the hall the page is booted into: one of the first seat's halls, the one that also teaches the most
+   seats of the batch, so the in-session start of the later seats does not rebuild a hall (a hall rebuild
+   was measured at 15 s to 52 s in the mocked session at load 4 to 6) */
+export function bootHall(ids) {
+  const halls = SIMS.sims[ids[0]].halls;
+  let best = halls[0], bestN = -1;
+  for (const h of halls) { const n = ids.filter((i) => SIMS.sims[i].halls.includes(h)).length; if (n > bestN) { best = h; bestN = n; } }
+  return best;
+}
+
 /* the classification the report prints */
 export function levelOf(def, obs) {
   if (!obs || obs.skipped) return 'not run';
@@ -105,8 +115,11 @@ export function judgeSeat(id, obs, expect = 'completion') {
       s && JSON.stringify([...s.got].sort()) === JSON.stringify([...want].sort()) && s.heldOk && s.releasedOk && s.after.length === 0,
       s ? JSON.stringify({ want, got: s.got, after: s.after }) : 'sweep not run');
   }
+  /* each sweep is compared with the reading taken just before it: a seat whose verbs cancel when pressed
+     together (the scaffold bay steps its rack on A and jumps it on R, in one frame) answers the other sweep */
+  const moved = (obs.sweeps || []).filter((x) => x.gBefore && x.gHeld && JSON.stringify(x.gBefore) !== JSON.stringify(x.gHeld));
   c('at least one gauge reading moved while the controllers held the seat\'s verbs (the seat answers the sticks)',
-    obs.gaugesMoved === true, JSON.stringify({ a: obs.gauges0, b: obs.gauges1 }).slice(0, 220));
+    moved.length >= 1, JSON.stringify((obs.sweeps || []).map((x) => ({ s: x.label, a: x.gBefore, b: x.gHeld }))).slice(0, 420));
   c('the right trigger reached three.js as a select and the page read it as pressed', obs.trigger && obs.trigger.selects >= 1 && obs.trigger.pagePressed === true, JSON.stringify(obs.trigger));
   if (expect === 'completion') {
     const rub = def.rubric.map((r) => r.axis), p = obs.panel;
@@ -129,7 +142,7 @@ export function judgeSeat(id, obs, expect = 'completion') {
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-export async function runSeats({ browser, base, mockSrc, seats, budgetMs = 80000, coachMs = 22000, probe = false, probeSeats = null, expectOf = () => 'completion', onCheck = null, cfg = {}, sink = {} }) {
+export async function runSeats({ browser, base, mockSrc, seats, budgetMs = 80000, coachMs = 22000, coachMsOf = () => coachMs, probe = false, probeSeats = null, expectOf = () => 'completion', onCheck = null, cfg = {}, sink = {} }) {
   const checks = [], measured = { seats: {}, probe: {} };
   sink.measured = measured;                         // a caller that gives up on a late run still reads the partial measurements
   const deadline = Date.now() + budgetMs;
@@ -156,7 +169,7 @@ export async function runSeats({ browser, base, mockSrc, seats, budgetMs = 80000
   /* ---- boot into the first seat, with the mock in place ---------------- */
   const first = seats[0], fdef = seatDef(first);
   const t0 = Date.now();
-  await page.goto(`${base}/web/trade_craft_3d.html?hall=${fdef.halls[0]}&sim=${first}&scenario=${firstScenario(first)}`, { waitUntil: 'load' });
+  await page.goto(`${base}/web/trade_craft_3d.html?hall=${bootHall(seats)}&sim=${first}&scenario=${firstScenario(first)}`, { waitUntil: 'load' });
   let booted = true;
   try {
     await page.waitForFunction(() => window.__tc3d && window.__tc3dXR && window.__tc3dSim && window.__tc3dCoach, null, { timeout: Tc(60000) });
@@ -198,10 +211,11 @@ export async function runSeats({ browser, base, mockSrc, seats, budgetMs = 80000
   /* the per-frame driver: while it is on, the coach's next inputs are written onto the controllers
      in the frame the page is handed (the mock calls beforeFrame just before delivering it) */
   await ev(() => {
-    const d = window.__seatDrv = { on: false, grip: null, n: 0, prevAct: false, used: {}, phase: null, acts: 0 };
+    const d = window.__seatDrv = { on: false, grip: null, n: 0, prevAct: false, used: {}, phase: null, acts: 0, last: 0, maxGap: 0, slow: 0 };
     const m = window.__xrMock;
     m.beforeFrame = () => {
-      if (!d.on) return;
+      if (!d.on) { d.last = 0; return; }
+      const now = performance.now(); if (d.last) { const gp = now - d.last; if (gp > d.maxGap) d.maxGap = gp; if (gp > 250) d.slow++; } d.last = now;   // the frame gaps the coach was driven through
       const r = window.__tc3dCoach.next(); if (!r) return;
       const has = (k) => r.keys.includes(k);
       m.stick('left', (has('KeyD') ? 1 : 0) - (has('KeyA') ? 1 : 0), (has('KeyS') ? 1 : 0) - (has('KeyW') ? 1 : 0));
@@ -240,6 +254,7 @@ export async function runSeats({ browser, base, mockSrc, seats, budgetMs = 80000
       for (const sw of SWEEPS) {
         const want = sweepWant(def, sw), entry = { label: sw.label, want, got: [], heldOk: false, releasedOk: false, after: [] };
         obs.sweeps.push(entry);
+        entry.gBefore = await gau();
         if (!want.length) { entry.heldOk = entry.releasedOk = true; continue; }
         const hasX = sw.keys.some((k) => ['A', 'D'].includes(k) && v.stick.includes(k)), hasY = sw.keys.some((k) => ['W', 'S'].includes(k) && v.stick.includes(k)),
           hasR = sw.keys.some((k) => ['Q', 'E'].includes(k) && v.stick.includes(k));
@@ -251,15 +266,17 @@ export async function runSeats({ browser, base, mockSrc, seats, budgetMs = 80000
         entry.got = all.filter((_, i) => held[i]);
         entry.heldOk = want.every((k) => entry.got.includes(k));
         await waitFrames(3, 5000);                       // let the drive spool up before the gauges are compared
-        if (sw === SWEEPS[0]) obs.gauges1 = await gau();
+        entry.gHeld = await gau();                       // this sweep's reading while its verbs are held, compared with its OWN baseline
+        entry.moved = JSON.stringify(entry.gBefore) !== JSON.stringify(entry.gHeld);
         await releaseAll();
         await waitFrames(2, 4000);
         const rel = await keysNow(all);
         entry.after = all.filter((_, i) => rel[i]);
         entry.releasedOk = entry.after.length === 0;
       }
-      obs.gauges1 = obs.gauges1 || await gau();
-      obs.gaugesMoved = JSON.stringify(obs.gauges0) !== JSON.stringify(obs.gauges1);
+      const mv = obs.sweeps.find((x) => x.moved) || obs.sweeps.find((x) => x.gHeld);
+      obs.gauges1 = mv ? mv.gHeld : await gau();
+      obs.gaugesMoved = obs.sweeps.some((x) => x.moved);
       /* the trigger: a press and a release is one select on the controller three.js built */
       const s0m = await ev(() => window.__xrMock.stats.select);
       await ev(() => window.__xrMock.button('right', 0, true));
@@ -269,13 +286,13 @@ export async function runSeats({ browser, base, mockSrc, seats, budgetMs = 80000
       await waitFrames(2, 4000);
       obs.trigger = { selects: (await ev(() => window.__xrMock.stats.select)) - s0m, pagePressed };
       /* 2. completion: restart the seat clean, then let the coach write the controllers */
-      if (expectOf(id) === 'completion' || coachMs > 0) {
+      if (expectOf(id) === 'completion' || coachMsOf(id) > 0) {
         const s1 = await startSeat(id);
-        const began = await ev(([g]) => { const d = window.__seatDrv; d.used = {}; d.n = 0; d.acts = 0; d.prevAct = false; d.grip = g; d.phase = null; return window.__tc3dCoach.begin('optimal', 1); }, [v.grip ? CODE(v.grip) : null]);
+        const began = await ev(([g]) => { const d = window.__seatDrv; d.used = {}; d.n = 0; d.acts = 0; d.prevAct = false; d.grip = g; d.phase = null; d.last = 0; d.maxGap = 0; d.slow = 0; return window.__tc3dCoach.begin('optimal', 1); }, [v.grip ? CODE(v.grip) : null]);
         obs.coach.began = !!began; obs.coach.phases = began && began.phases;
         const nF = await frames(), tC = Date.now();
         await ev(() => { window.__seatDrv.on = true; });
-        const cap = Tc(Math.min(coachMs, left() - 3500));
+        const cap = Tc(Math.min(coachMsOf(id), left() - 3500));
         try { await page.waitForFunction(() => window.__tc3dCoach.done(), null, { timeout: cap, polling: 150 }); } catch { /* panel judged below */ }
         obs.coach.secs = +((Date.now() - tC) / 1000).toFixed(1);
         obs.coach.fps = await fpsOf(nF, tC);
@@ -284,12 +301,21 @@ export async function runSeats({ browser, base, mockSrc, seats, budgetMs = 80000
         const info = await ev(() => {
           const pb = document.getElementById('pbody'), h = pb.querySelector('h2'), chip = pb.querySelector('.chip');
           const rows = [...pb.querySelectorAll('tbody tr')].map((tr) => { const td = tr.querySelectorAll('td'); return { axis: td[0].textContent.trim(), value: td[1].textContent.trim(), ok: td[2].textContent.trim() }; });
-          return { coach: window.__tc3dCoach.state(), drv: { n: window.__seatDrv.n, acts: window.__seatDrv.acts, used: window.__seatDrv.used, phase: window.__seatDrv.phase },
+          return { coach: window.__tc3dCoach.state(), drv: { n: window.__seatDrv.n, acts: window.__seatDrv.acts, used: window.__seatDrv.used, phase: window.__seatDrv.phase, maxGap: Math.round(window.__seatDrv.maxGap), slow: window.__seatDrv.slow },
             panel: h ? { title: h.textContent, chip: chip && chip.textContent.trim(), rows, open: document.body.classList.contains('open'), scripted: /scripted reference/.test(pb.textContent) } : null,
             op: window.__tc3dSim.state(), stepGau: window.__tc3d().gau ? Object.fromEntries(Object.entries(window.__tc3d().gau).map(([k, x]) => [k, x.txt ?? x.v])) : null };
         });
         obs.panel = info.panel; obs.opAttached = info.op !== null;
-        obs.coach.state = info.coach; obs.coach.steps = info.drv.n; obs.coach.acts = info.drv.acts; obs.coach.keysUsed = Object.keys(info.drv.used); obs.coach.stepGau = info.stepGau;
+        /* a seat that ended on a retry verdict: is that the controller path, or the reference policy at this frame
+           rate? The same policy is run headless at the frame time the session actually delivered, and at 1/60 s.
+           Diagnostic only - it is reported next to the verdict and never changes it. */
+        if (info.panel && !/Passed/.test(info.panel.chip || '') && left() > 6000) {
+          const dtc = obs.coach.fps > 0 ? 1 / obs.coach.fps : 0.09;
+          try {
+            obs.dtDiag = await ev(([i, sc, d]) => { const f = (dt) => { const o = window.__tc3dSim.run(i, sc, { level: 'optimal', dt, maxSec: 200 }); return { dt: +dt.toFixed(3), passed: !!o.passed, timedOut: !!o.timedOut }; }; return { atSessionDt: f(d), at60: f(1 / 60) }; }, [id, firstScenario(id), dtc]);
+          } catch (e) { obs.dtDiag = { error: String(e.message || e).slice(0, 100) }; }
+        }
+        obs.coach.state = info.coach; obs.coach.steps = info.drv.n; obs.coach.maxGapMs = info.drv.maxGap; obs.coach.slowFrames = info.drv.slow; obs.coach.acts = info.drv.acts; obs.coach.keysUsed = Object.keys(info.drv.used); obs.coach.stepGau = info.stepGau;
         obs.startMs2 = s1.ms;
       }
       await ev(() => window.__tc3dCoach.end());

@@ -7,8 +7,11 @@ robotics/registry/robotics.json, every declared curriculum level, on a declared 
 runs them headless on the SIM_CORE block of web/robokit.py (the code the pages run) and the policy block
 robotics/arena/policies.js (the code the arena page runs) and prints the runs and per-policy statistics; this build
 stores them. Policies: the SCRIPTED reference, a seeded uniform-random baseline, a SCRIPTED greedy heuristic and,
-when its weights are in robotics/arena/registry/models.json, the small behaviour-cloning (BC) network trained by
-robotics/arena/train.mjs on SCRIPTED reference episodes of the TRAIN seeds and compared on the held-out TEST seeds.
+when their weights are in robotics/arena/registry/models.json, two small behaviour-cloning (BC) networks trained by
+robotics/arena/train.mjs on SCRIPTED reference episodes of the TRAIN seeds and compared on the held-out TEST seeds: bc
+(the first; never learned grip timing) and bcg (the second: features that expose the distance to the gripper's reach and
+a class-weighted grip head). Each table also carries `sort`: items binned in litter sort per policy, because success
+there means every item binned and the SCRIPTED reference itself seldom manages that at the first three levels.
 
 WHAT THIS IS NOT. Not a language model and no call to one; not trained on any learner's data; not a claim about any
 real robot (the arena is AUTHORED, the kinematics SCHEMATIC). The 11 sim-seat envs are not run: their SCRIPTED
@@ -41,14 +44,14 @@ def need(cond, msg):
 
 
 # ---- the tables this registry carries (AUTHORED choice of policies x seed lists) ----------------------------------
-# all_seeds: the three non-trained policies on every declared seed. held_out: every policy, BC included, on the TEST
-# seeds only (BC never saw them), so the BC row is a held-out number and the others are measured on the same tasks.
+# all_seeds: the three non-trained policies on every declared seed. held_out: every policy, both BC models included, on
+# the TEST seeds only (neither saw them), so each BC row is a held-out number and the others are measured on the same tasks.
 TABLES = {
     'all_seeds': {'policies': ['scripted', 'random', 'greedy'], 'seeds': 'all'},
-    'held_out': {'policies': ['scripted', 'random', 'greedy', 'bc'], 'seeds': 'test'},
+    'held_out': {'policies': ['scripted', 'random', 'greedy', 'bc', 'bcg'], 'seeds': 'test'},
 }
 LEADERBOARD_TABLE = 'held_out'
-NEEDS_MODELS = any('bc' in t['policies'] for t in TABLES.values())
+NEEDS_MODELS = any('bc' in t['policies'] or 'bcg' in t['policies'] for t in TABLES.values())
 
 robotics = json.loads((ROOT / 'robotics/registry/robotics.json').read_text())
 need('reference_benchmark' in robotics, 'robotics.json has no reference_benchmark - run robotics/build.py first')
@@ -68,7 +71,7 @@ def harness(policies, seeds):
     need(r.returncode == 0, f'arena: harness.mjs failed:\n{r.stderr[-2000:]}')
     out = json.loads(r.stdout)
     for k in ('harness', 'policies', 'policy_versions', 'cards', 'seeds', 'tasks', 'excluded', 'columns', 'runs', 'summary',
-              'results_sha256', 'bootstrap'):
+              'results_sha256', 'bootstrap', 'sort', 'sort_sha256'):
         need(k in out, f'arena: harness printed no {k}')
     need(out['harness'] == SCHEMA, 'arena: harness schema mismatch')
     need(out['policies'] == policies, 'arena: harness ran other policies than asked')
@@ -111,6 +114,17 @@ board.sort(key=lambda b: (-b['success_rate']['mean'], -b['return']['mean'], b['p
 for i, b in enumerate(board):
     b['rank'] = i + 1
 
+# the number exit criterion 5 reads ("a learned policy that bins something"): items binned in litter sort on the held-out
+# seeds for the SCRIPTED reference and every TRAINED policy, copied from the table's own `sort` block, whatever it is.
+SORT = LB['sort']['summary']
+learned = []
+for pid in ['scripted'] + [p for p in LB['policies'] if cards[p]['kind'] == 'TRAINED']:
+    sm = LB['summary'][pid]
+    learned.append({'policy': pid, 'kind': cards[pid]['kind'], 'items_binned': SORT[pid]['items_binned'], 'items_total': SORT[pid]['items_total'],
+                    'episodes': SORT[pid]['episodes'], 'episodes_with_any': SORT[pid]['episodes_with_any'],
+                    'binned_per_episode': SORT[pid]['binned_per_episode'], 'share_of_items': SORT[pid]['share_of_items'],
+                    'success_rate': sm['success_rate'], 'win_vs_ref': sm['win_vs_ref'], 'bins_something': SORT[pid]['items_binned'] > 0})
+
 src = b''.join((HERE / f).read_bytes() for f in ('build.py', 'harness.mjs', 'policies.js') + (('train.mjs',) if NEEDS_MODELS else ()))
 stamp = hashlib.sha256(src).hexdigest()[:16]
 doc = {
@@ -118,10 +132,10 @@ doc = {
     'honesty': {
         'what': 'MEASURED at build time by robotics/arena/harness.mjs: policies compared on the AUTHORED, SCHEMATIC robokit '
                 'world tasks, every declared level, on declared seeds. A sandbox comparison, not a claim about any real robot.',
-        'trained': (f'{len(trained)} model trained here: ' + '; '.join(m['card']['what'] for m in trained) + '.') if trained
+        'trained': (f'{len(trained)} model{"s" if len(trained) != 1 else ""} trained here: ' + '; '.join(m['card']['what'] for m in trained) + '.') if trained
                    else 'No model is trained in this table: every policy compared here is SCRIPTED or a seeded random baseline.',
         'not_llm': 'No policy here is a language model, and none calls one. No network.',
-        'data': 'No learner data is read: the BC network is trained only on SCRIPTED reference episodes generated on the '
+        'data': 'No learner data is read: the BC networks are trained only on SCRIPTED reference episodes generated on the '
                 'TRAIN seeds; every table run is generated by the harness from declared seeds.',
         'seats': 'The 11 sim-seat envs are not run (excluded, with the reason): their SCRIPTED operators live in the 3D '
                  'page\'s simulator, which has no headless core.',
@@ -131,6 +145,10 @@ doc = {
     'cards': cards,
     'models': [{k: m[k] for k in ('id', 'policy', 'provenance', 'weights_sha256', 'split', 'train', 'card')} for m in models['models']],
     'tables': tables,
+    'learned_vs_reference': {'table': LEADERBOARD_TABLE, 'seeds': LB['seeds'], 'task': 'world.litter-sort, all four levels (items binned)',
+                             'what': 'the held-out items-binned numbers of the SCRIPTED reference and every TRAINED policy, copied from the table; '
+                                     'bins_something is items_binned > 0, recorded whatever it is',
+                             'rows': learned},
     'leaderboard': {'table': LEADERBOARD_TABLE, 'seeds': LB['seeds'], 'order': 'success rate, then mean return', 'rows': board},
     'counts': {'policies': len(cards), 'trained_models': len(trained),
                'runs': sum(len(t['runs']) for t in tables.values()),

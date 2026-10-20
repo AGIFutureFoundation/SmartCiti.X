@@ -1,5 +1,5 @@
 {
- "authored_stamp": "adf72518ba64f34d",
+ "authored_stamp": "73a96b7a13bf7308",
  "counts": {
   "area_m2": 501.5,
   "cost_estimated_items": 73,
@@ -20,7 +20,10 @@
   "ppe_items": 12,
   "spaces": 6,
   "tris": 7260,
-  "unions_served": 7
+  "unions_served": 7,
+  "walk_links": 10,
+  "walk_reachable": 10,
+  "walk_transposed": 0
  },
  "honesty": {
   "composed_only_from": [
@@ -38,7 +41,8 @@
   "footprints": "an item with no size_m in its registry is recorded as footprint unknown and its overlap is not checked; nothing is assumed",
   "not_stated": "no duration, price, accreditation or venue",
   "ppe": "never typed: strand base PPE plus the PPE of every hazard the surfaces rules say the chosen floor and wall stand for in that strand's room; a hazard prop is admitted only when the finishes already derive a hazard it is keyed to",
-  "status": "declared, not yet walkable: an AUTHORED proposal composed from this bundle's own assets; nothing here is built into the 3D world, no dimension is a measurement of a real venue, and no duration, price or accreditation is stated"
+  "status": "declared, a walk-through in the 3D page with equipment shown as markers: an AUTHORED proposal composed from this bundle's own assets, drawn in the room of its strand by the link trade_craft_3d.html?space=<id>; props and furniture are drawn from their registry recipes, seats, stations, cribs and signs as marker pads; no dimension is a measurement of a real venue, and no duration, price or accreditation is stated",
+  "walk": "walkable means: the 3D page draws the space in the room of its strand and a walker can reach that room by the doorways the plan cuts; a seat, station, crib or sign is a marker pad, not the asset, and no marker is solid"
  },
  "kinds": [
   "prop",
@@ -50,6 +54,639 @@
  ],
  "pack": "smartcitix-trade-craft-academy-spaces",
  "pack_version": "3.2.0",
+ "plans": {
+  "carpenters": [
+   {
+    "h": 2,
+    "label": "Induction & PPE",
+    "strand": "safety",
+    "w": 12,
+    "x": 0,
+    "y": 0
+   },
+   {
+    "h": 3,
+    "label": "Practice Bays",
+    "strand": "procedure",
+    "w": 7,
+    "x": 0,
+    "y": 2
+   },
+   {
+    "h": 3,
+    "label": "Equipment Bay",
+    "strand": "machines",
+    "w": 5,
+    "x": 7,
+    "y": 2
+   },
+   {
+    "h": 2,
+    "label": "Tool Crib",
+    "strand": "tools",
+    "w": 4,
+    "x": 0,
+    "y": 5
+   },
+   {
+    "h": 2,
+    "label": "Materials Store",
+    "strand": "materials",
+    "w": 8,
+    "x": 4,
+    "y": 5
+   },
+   {
+    "h": 2,
+    "label": "Layout Floor",
+    "strand": "layout",
+    "w": 5,
+    "x": 0,
+    "y": 7
+   },
+   {
+    "h": 2,
+    "label": "Inspection Bench",
+    "strand": "inspection",
+    "w": 7,
+    "x": 5,
+    "y": 7
+   },
+   {
+    "h": 2,
+    "label": "Diagnostic Bench",
+    "strand": "troubleshooting",
+    "w": 6,
+    "x": 0,
+    "y": 9
+   },
+   {
+    "h": 2,
+    "label": "Briefing Room",
+    "strand": "coordination",
+    "w": 6,
+    "x": 6,
+    "y": 9
+   },
+   {
+    "h": 2,
+    "label": "Records",
+    "strand": "documentation",
+    "w": 3,
+    "x": 0,
+    "y": 11
+   },
+   {
+    "h": 2,
+    "label": "Classroom",
+    "strand": "leadership",
+    "w": 9,
+    "x": 3,
+    "y": 11
+   }
+  ],
+  "crane-ops": [
+   {
+    "h": 2,
+    "label": "Induction & PPE",
+    "strand": "safety",
+    "w": 6,
+    "x": 0,
+    "y": 0
+   },
+   {
+    "h": 3,
+    "label": "Practice Bays",
+    "strand": "procedure",
+    "w": 6,
+    "x": 6,
+    "y": 0
+   },
+   {
+    "h": 3,
+    "label": "Equipment Bay",
+    "strand": "machines",
+    "w": 6,
+    "x": 0,
+    "y": 3
+   },
+   {
+    "h": 2,
+    "label": "Tool Crib",
+    "strand": "tools",
+    "w": 6,
+    "x": 6,
+    "y": 3
+   },
+   {
+    "h": 2,
+    "label": "Materials Store",
+    "strand": "materials",
+    "w": 6,
+    "x": 0,
+    "y": 6
+   },
+   {
+    "h": 2,
+    "label": "Layout Floor",
+    "strand": "layout",
+    "w": 6,
+    "x": 6,
+    "y": 6
+   },
+   {
+    "h": 2,
+    "label": "Inspection Bench",
+    "strand": "inspection",
+    "w": 6,
+    "x": 0,
+    "y": 8
+   },
+   {
+    "h": 2,
+    "label": "Diagnostic Bench",
+    "strand": "troubleshooting",
+    "w": 6,
+    "x": 6,
+    "y": 8
+   },
+   {
+    "h": 2,
+    "label": "Briefing Room",
+    "strand": "coordination",
+    "w": 5,
+    "x": 0,
+    "y": 10
+   },
+   {
+    "h": 2,
+    "label": "Records",
+    "strand": "documentation",
+    "w": 3,
+    "x": 5,
+    "y": 10
+   },
+   {
+    "h": 2,
+    "label": "Classroom",
+    "strand": "leadership",
+    "w": 4,
+    "x": 8,
+    "y": 10
+   }
+  ],
+  "electricians": [
+   {
+    "h": 2,
+    "label": "Induction & PPE",
+    "strand": "safety",
+    "w": 6,
+    "x": 0,
+    "y": 0
+   },
+   {
+    "h": 3,
+    "label": "Practice Bays",
+    "strand": "procedure",
+    "w": 6,
+    "x": 6,
+    "y": 0
+   },
+   {
+    "h": 3,
+    "label": "Equipment Bay",
+    "strand": "machines",
+    "w": 5,
+    "x": 0,
+    "y": 3
+   },
+   {
+    "h": 2,
+    "label": "Tool Crib",
+    "strand": "tools",
+    "w": 7,
+    "x": 5,
+    "y": 3
+   },
+   {
+    "h": 2,
+    "label": "Materials Store",
+    "strand": "materials",
+    "w": 6,
+    "x": 0,
+    "y": 6
+   },
+   {
+    "h": 2,
+    "label": "Layout Floor",
+    "strand": "layout",
+    "w": 6,
+    "x": 6,
+    "y": 6
+   },
+   {
+    "h": 2,
+    "label": "Inspection Bench",
+    "strand": "inspection",
+    "w": 12,
+    "x": 0,
+    "y": 8
+   },
+   {
+    "h": 2,
+    "label": "Diagnostic Bench",
+    "strand": "troubleshooting",
+    "w": 7,
+    "x": 0,
+    "y": 10
+   },
+   {
+    "h": 2,
+    "label": "Briefing Room",
+    "strand": "coordination",
+    "w": 5,
+    "x": 7,
+    "y": 10
+   },
+   {
+    "h": 2,
+    "label": "Records",
+    "strand": "documentation",
+    "w": 3,
+    "x": 0,
+    "y": 12
+   },
+   {
+    "h": 2,
+    "label": "Classroom",
+    "strand": "leadership",
+    "w": 9,
+    "x": 3,
+    "y": 12
+   }
+  ],
+  "ironworkers": [
+   {
+    "h": 2,
+    "label": "Induction & PPE",
+    "strand": "safety",
+    "w": 6,
+    "x": 0,
+    "y": 0
+   },
+   {
+    "h": 3,
+    "label": "Practice Bays",
+    "strand": "procedure",
+    "w": 6,
+    "x": 6,
+    "y": 0
+   },
+   {
+    "h": 3,
+    "label": "Equipment Bay",
+    "strand": "machines",
+    "w": 6,
+    "x": 0,
+    "y": 3
+   },
+   {
+    "h": 2,
+    "label": "Tool Crib",
+    "strand": "tools",
+    "w": 6,
+    "x": 6,
+    "y": 3
+   },
+   {
+    "h": 2,
+    "label": "Materials Store",
+    "strand": "materials",
+    "w": 6,
+    "x": 0,
+    "y": 6
+   },
+   {
+    "h": 2,
+    "label": "Layout Floor",
+    "strand": "layout",
+    "w": 6,
+    "x": 6,
+    "y": 6
+   },
+   {
+    "h": 2,
+    "label": "Inspection Bench",
+    "strand": "inspection",
+    "w": 6,
+    "x": 0,
+    "y": 8
+   },
+   {
+    "h": 2,
+    "label": "Diagnostic Bench",
+    "strand": "troubleshooting",
+    "w": 6,
+    "x": 6,
+    "y": 8
+   },
+   {
+    "h": 2,
+    "label": "Briefing Room",
+    "strand": "coordination",
+    "w": 5,
+    "x": 0,
+    "y": 10
+   },
+   {
+    "h": 2,
+    "label": "Records",
+    "strand": "documentation",
+    "w": 3,
+    "x": 5,
+    "y": 10
+   },
+   {
+    "h": 2,
+    "label": "Classroom",
+    "strand": "leadership",
+    "w": 4,
+    "x": 8,
+    "y": 10
+   }
+  ],
+  "riggers": [
+   {
+    "h": 2,
+    "label": "Induction & PPE",
+    "strand": "safety",
+    "w": 6,
+    "x": 0,
+    "y": 0
+   },
+   {
+    "h": 3,
+    "label": "Practice Bays",
+    "strand": "procedure",
+    "w": 6,
+    "x": 6,
+    "y": 0
+   },
+   {
+    "h": 3,
+    "label": "Equipment Bay",
+    "strand": "machines",
+    "w": 6,
+    "x": 0,
+    "y": 3
+   },
+   {
+    "h": 2,
+    "label": "Tool Crib",
+    "strand": "tools",
+    "w": 6,
+    "x": 6,
+    "y": 3
+   },
+   {
+    "h": 2,
+    "label": "Materials Store",
+    "strand": "materials",
+    "w": 6,
+    "x": 0,
+    "y": 6
+   },
+   {
+    "h": 2,
+    "label": "Layout Floor",
+    "strand": "layout",
+    "w": 6,
+    "x": 6,
+    "y": 6
+   },
+   {
+    "h": 2,
+    "label": "Inspection Bench",
+    "strand": "inspection",
+    "w": 12,
+    "x": 0,
+    "y": 8
+   },
+   {
+    "h": 2,
+    "label": "Diagnostic Bench",
+    "strand": "troubleshooting",
+    "w": 7,
+    "x": 0,
+    "y": 10
+   },
+   {
+    "h": 2,
+    "label": "Briefing Room",
+    "strand": "coordination",
+    "w": 5,
+    "x": 7,
+    "y": 10
+   },
+   {
+    "h": 2,
+    "label": "Records",
+    "strand": "documentation",
+    "w": 3,
+    "x": 0,
+    "y": 12
+   },
+   {
+    "h": 2,
+    "label": "Classroom",
+    "strand": "leadership",
+    "w": 9,
+    "x": 3,
+    "y": 12
+   }
+  ],
+  "scaffold": [
+   {
+    "h": 2,
+    "label": "Induction & PPE",
+    "strand": "safety",
+    "w": 12,
+    "x": 0,
+    "y": 0
+   },
+   {
+    "h": 3,
+    "label": "Practice Bays",
+    "strand": "procedure",
+    "w": 12,
+    "x": 0,
+    "y": 2
+   },
+   {
+    "h": 3,
+    "label": "Equipment Bay",
+    "strand": "machines",
+    "w": 6,
+    "x": 0,
+    "y": 5
+   },
+   {
+    "h": 2,
+    "label": "Tool Crib",
+    "strand": "tools",
+    "w": 6,
+    "x": 6,
+    "y": 5
+   },
+   {
+    "h": 2,
+    "label": "Materials Store",
+    "strand": "materials",
+    "w": 6,
+    "x": 0,
+    "y": 8
+   },
+   {
+    "h": 2,
+    "label": "Layout Floor",
+    "strand": "layout",
+    "w": 6,
+    "x": 6,
+    "y": 8
+   },
+   {
+    "h": 2,
+    "label": "Inspection Bench",
+    "strand": "inspection",
+    "w": 6,
+    "x": 0,
+    "y": 10
+   },
+   {
+    "h": 2,
+    "label": "Diagnostic Bench",
+    "strand": "troubleshooting",
+    "w": 6,
+    "x": 6,
+    "y": 10
+   },
+   {
+    "h": 2,
+    "label": "Briefing Room",
+    "strand": "coordination",
+    "w": 5,
+    "x": 0,
+    "y": 12
+   },
+   {
+    "h": 2,
+    "label": "Records",
+    "strand": "documentation",
+    "w": 3,
+    "x": 5,
+    "y": 12
+   },
+   {
+    "h": 2,
+    "label": "Classroom",
+    "strand": "leadership",
+    "w": 4,
+    "x": 8,
+    "y": 12
+   }
+  ],
+  "welders": [
+   {
+    "h": 2,
+    "label": "Induction & PPE",
+    "strand": "safety",
+    "w": 12,
+    "x": 0,
+    "y": 0
+   },
+   {
+    "h": 3,
+    "label": "Practice Bays",
+    "strand": "procedure",
+    "w": 7,
+    "x": 0,
+    "y": 2
+   },
+   {
+    "h": 3,
+    "label": "Equipment Bay",
+    "strand": "machines",
+    "w": 5,
+    "x": 7,
+    "y": 2
+   },
+   {
+    "h": 2,
+    "label": "Tool Crib",
+    "strand": "tools",
+    "w": 4,
+    "x": 0,
+    "y": 5
+   },
+   {
+    "h": 2,
+    "label": "Materials Store",
+    "strand": "materials",
+    "w": 8,
+    "x": 4,
+    "y": 5
+   },
+   {
+    "h": 2,
+    "label": "Layout Floor",
+    "strand": "layout",
+    "w": 5,
+    "x": 0,
+    "y": 7
+   },
+   {
+    "h": 2,
+    "label": "Inspection Bench",
+    "strand": "inspection",
+    "w": 7,
+    "x": 5,
+    "y": 7
+   },
+   {
+    "h": 2,
+    "label": "Diagnostic Bench",
+    "strand": "troubleshooting",
+    "w": 6,
+    "x": 0,
+    "y": 9
+   },
+   {
+    "h": 2,
+    "label": "Briefing Room",
+    "strand": "coordination",
+    "w": 6,
+    "x": 6,
+    "y": 9
+   },
+   {
+    "h": 2,
+    "label": "Records",
+    "strand": "documentation",
+    "w": 3,
+    "x": 0,
+    "y": 11
+   },
+   {
+    "h": 2,
+    "label": "Classroom",
+    "strand": "leadership",
+    "w": 9,
+    "x": 3,
+    "y": 11
+   }
+  ]
+ },
+ "plans_note": "the rooms of each serving hall in grid units (3 m), in plan order, as web/interiors.py plan_for lays them out; the walk routes are searched over these",
  "ppe_items": [
   "arc-flash face shield",
   "chinstrap helmet",
@@ -78,7 +715,7 @@
   "sign": "labels/registry/labels.json#kinds",
   "station": "stations/registry/stations.json#stations"
  },
- "source_stamp": "3965c62e082f2af3",
+ "source_stamp": "eb752058a3e5d556",
  "spaces": [
   {
    "cost": {
@@ -627,7 +1264,7 @@
    "purpose": "The tower crane, overhead crane and load chart seats behind two guard rails, with the checkout board and log desk a plant bay signs in and out on.",
    "room_label": "Equipment Bay",
    "source": "spaces/authored/crane-sim-bay.json",
-   "status": "declared, not yet walkable",
+   "status": "declared, a walk-through in the 3D page with equipment shown as markers",
    "strand": "machines",
    "title": "Crane simulator bay",
    "unions": [
@@ -642,6 +1279,60 @@
      "slug": "riggers"
     }
    ],
+   "walk": {
+    "halls": [
+     {
+      "doors_passed": 3,
+      "hall": "crane-ops",
+      "href": "trade_craft_3d.html?space=crane-sim-bay&hall=crane-ops",
+      "orient": "direct",
+      "reachable": true,
+      "room": {
+       "h": 3,
+       "label": "Equipment Bay",
+       "strand": "machines",
+       "w": 6,
+       "x": 0,
+       "y": 3
+      },
+      "room_m": {
+       "d": 9,
+       "w": 18
+      },
+      "route": [
+       "procedure",
+       "tools",
+       "machines"
+      ]
+     },
+     {
+      "doors_passed": 3,
+      "hall": "riggers",
+      "href": "trade_craft_3d.html?space=crane-sim-bay&hall=riggers",
+      "orient": "direct",
+      "reachable": true,
+      "room": {
+       "h": 3,
+       "label": "Equipment Bay",
+       "strand": "machines",
+       "w": 6,
+       "x": 0,
+       "y": 3
+      },
+      "room_m": {
+       "d": 9,
+       "w": 18
+      },
+      "route": [
+       "procedure",
+       "tools",
+       "machines"
+      ]
+     }
+    ],
+    "placement": "AUTHORED: the footprint is centred in the room; \"transposed\" turns the declaration a quarter turn (x and y swap, rotation + 90) to fit; the route is DERIVED from the plan",
+    "provenance": "DERIVED"
+   },
    "wall": {
     "color": "#8a8452",
     "id": "mesh-guard",
@@ -1084,7 +1775,7 @@
    "purpose": "Two fault-finding benches under a live rig frame, a prove-dead post and the rubber goods and lockout fixtures a live-electrical room hangs on its wall.",
    "room_label": "Diagnostic Bench",
    "source": "spaces/authored/electrical-lab.json",
-   "status": "declared, not yet walkable",
+   "status": "declared, a walk-through in the 3D page with equipment shown as markers",
    "strand": "troubleshooting",
    "title": "Electrical lab",
    "unions": [
@@ -1094,6 +1785,39 @@
      "slug": "electricians"
     }
    ],
+   "walk": {
+    "halls": [
+     {
+      "doors_passed": 6,
+      "hall": "electricians",
+      "href": "trade_craft_3d.html?space=electrical-lab&hall=electricians",
+      "orient": "direct",
+      "reachable": true,
+      "room": {
+       "h": 2,
+       "label": "Diagnostic Bench",
+       "strand": "troubleshooting",
+       "w": 7,
+       "x": 0,
+       "y": 10
+      },
+      "room_m": {
+       "d": 6,
+       "w": 21
+      },
+      "route": [
+       "procedure",
+       "tools",
+       "machines",
+       "materials",
+       "inspection",
+       "troubleshooting"
+      ]
+     }
+    ],
+    "placement": "AUTHORED: the footprint is centred in the room; \"transposed\" turns the declaration a quarter turn (x and y swap, rotation + 90) to fit; the route is DERIVED from the plan",
+    "provenance": "DERIVED"
+   },
    "wall": {
     "color": "#a8834f",
     "id": "ply-lined",
@@ -1564,7 +2288,7 @@
    "purpose": "Six desks in two rows facing a lectern, an easel and a progress board, so the reading is done before the room and the room is spent on the questions.",
    "room_label": "Classroom",
    "source": "spaces/authored/flipped-classroom.json",
-   "status": "declared, not yet walkable",
+   "status": "declared, a walk-through in the 3D page with equipment shown as markers",
    "strand": "leadership",
    "title": "Flipped classroom",
    "unions": [
@@ -1579,6 +2303,67 @@
      "slug": "electricians"
     }
    ],
+   "walk": {
+    "halls": [
+     {
+      "doors_passed": 6,
+      "hall": "carpenters",
+      "href": "trade_craft_3d.html?space=flipped-classroom&hall=carpenters",
+      "orient": "direct",
+      "reachable": true,
+      "room": {
+       "h": 2,
+       "label": "Classroom",
+       "strand": "leadership",
+       "w": 9,
+       "x": 3,
+       "y": 11
+      },
+      "room_m": {
+       "d": 6,
+       "w": 27
+      },
+      "route": [
+       "safety",
+       "machines",
+       "materials",
+       "inspection",
+       "coordination",
+       "leadership"
+      ]
+     },
+     {
+      "doors_passed": 7,
+      "hall": "electricians",
+      "href": "trade_craft_3d.html?space=flipped-classroom&hall=electricians",
+      "orient": "direct",
+      "reachable": true,
+      "room": {
+       "h": 2,
+       "label": "Classroom",
+       "strand": "leadership",
+       "w": 9,
+       "x": 3,
+       "y": 12
+      },
+      "room_m": {
+       "d": 6,
+       "w": 27
+      },
+      "route": [
+       "procedure",
+       "tools",
+       "machines",
+       "materials",
+       "inspection",
+       "coordination",
+       "leadership"
+      ]
+     }
+    ],
+    "placement": "AUTHORED: the footprint is centred in the room; \"transposed\" turns the declaration a quarter turn (x and y swap, rotation + 90) to fit; the route is DERIVED from the plan",
+    "provenance": "DERIVED"
+   },
    "wall": {
     "color": "#dce4e8",
     "id": "whiteboard-panel",
@@ -2030,7 +2815,7 @@
    "purpose": "A lay-down table, sling and hoist inspection rails and a trial flange beam, with the two rigging seats standing in the open floor between them.",
    "room_label": "Materials Store",
    "source": "spaces/authored/rigging-yard.json",
-   "status": "declared, not yet walkable",
+   "status": "declared, a walk-through in the 3D page with equipment shown as markers",
    "strand": "materials",
    "title": "Rigging yard",
    "unions": [
@@ -2045,6 +2830,62 @@
      "slug": "ironworkers"
     }
    ],
+   "walk": {
+    "halls": [
+     {
+      "doors_passed": 4,
+      "hall": "riggers",
+      "href": "trade_craft_3d.html?space=rigging-yard&hall=riggers",
+      "orient": "direct",
+      "reachable": true,
+      "room": {
+       "h": 2,
+       "label": "Materials Store",
+       "strand": "materials",
+       "w": 6,
+       "x": 0,
+       "y": 6
+      },
+      "room_m": {
+       "d": 6,
+       "w": 18
+      },
+      "route": [
+       "procedure",
+       "tools",
+       "machines",
+       "materials"
+      ]
+     },
+     {
+      "doors_passed": 4,
+      "hall": "ironworkers",
+      "href": "trade_craft_3d.html?space=rigging-yard&hall=ironworkers",
+      "orient": "direct",
+      "reachable": true,
+      "room": {
+       "h": 2,
+       "label": "Materials Store",
+       "strand": "materials",
+       "w": 6,
+       "x": 0,
+       "y": 6
+      },
+      "room_m": {
+       "d": 6,
+       "w": 18
+      },
+      "route": [
+       "procedure",
+       "tools",
+       "machines",
+       "materials"
+      ]
+     }
+    ],
+    "placement": "AUTHORED: the footprint is centred in the room; \"transposed\" turns the declaration a quarter turn (x and y swap, rotation + 90) to fit; the route is DERIVED from the plan",
+    "provenance": "DERIVED"
+   },
    "wall": {
     "color": "#8a8452",
     "id": "mesh-guard",
@@ -2589,7 +3430,7 @@
    "purpose": "An open matted floor for the scaffold and boom-lift seats, with harness, lanyard, helmet and edge-protection fixtures along the back wall and two trestles for the tie-in work.",
    "room_label": "Practice Bays",
    "source": "spaces/authored/scaffold-court.json",
-   "status": "declared, not yet walkable",
+   "status": "declared, a walk-through in the 3D page with equipment shown as markers",
    "strand": "procedure",
    "title": "Scaffold court",
    "unions": [
@@ -2604,6 +3445,58 @@
      "slug": "carpenters"
     }
    ],
+   "walk": {
+    "halls": [
+     {
+      "doors_passed": 2,
+      "hall": "scaffold",
+      "href": "trade_craft_3d.html?space=scaffold-court&hall=scaffold",
+      "orient": "direct",
+      "reachable": true,
+      "room": {
+       "h": 3,
+       "label": "Practice Bays",
+       "strand": "procedure",
+       "w": 12,
+       "x": 0,
+       "y": 2
+      },
+      "room_m": {
+       "d": 9,
+       "w": 36
+      },
+      "route": [
+       "safety",
+       "procedure"
+      ]
+     },
+     {
+      "doors_passed": 2,
+      "hall": "carpenters",
+      "href": "trade_craft_3d.html?space=scaffold-court&hall=carpenters",
+      "orient": "direct",
+      "reachable": true,
+      "room": {
+       "h": 3,
+       "label": "Practice Bays",
+       "strand": "procedure",
+       "w": 7,
+       "x": 0,
+       "y": 2
+      },
+      "room_m": {
+       "d": 9,
+       "w": 21
+      },
+      "route": [
+       "safety",
+       "procedure"
+      ]
+     }
+    ],
+    "placement": "AUTHORED: the footprint is centred in the room; \"transposed\" turns the declaration a quarter turn (x and y swap, rotation + 90) to fit; the route is DERIVED from the plan",
+    "provenance": "DERIVED"
+   },
    "wall": {
     "color": "#948877",
     "id": "impact-block",
@@ -3217,7 +4110,7 @@
    "purpose": "Three screened arc positions with the rod oven, stub bin and quench tank a run of practice beads needs, and a fire watch post at the back.",
    "room_label": "Practice Bays",
    "source": "spaces/authored/welding-bay.json",
-   "status": "declared, not yet walkable",
+   "status": "declared, a walk-through in the 3D page with equipment shown as markers",
    "strand": "procedure",
    "title": "Welding bay",
    "unions": [
@@ -3227,6 +4120,35 @@
      "slug": "welders"
     }
    ],
+   "walk": {
+    "halls": [
+     {
+      "doors_passed": 2,
+      "hall": "welders",
+      "href": "trade_craft_3d.html?space=welding-bay&hall=welders",
+      "orient": "direct",
+      "reachable": true,
+      "room": {
+       "h": 3,
+       "label": "Practice Bays",
+       "strand": "procedure",
+       "w": 7,
+       "x": 0,
+       "y": 2
+      },
+      "room_m": {
+       "d": 9,
+       "w": 21
+      },
+      "route": [
+       "safety",
+       "procedure"
+      ]
+     }
+    ],
+    "placement": "AUTHORED: the footprint is centred in the room; \"transposed\" turns the declaration a quarter turn (x and y swap, rotation + 90) to fit; the route is DERIVED from the plan",
+    "provenance": "DERIVED"
+   },
    "wall": {
     "color": "#566269",
     "id": "weld-screen",
@@ -3236,7 +4158,7 @@
    }
   }
  ],
- "status": "declared, not yet walkable",
+ "status": "declared, a walk-through in the 3D page with equipment shown as markers",
  "unions_served": [
   "carpenters",
   "crane-ops",
@@ -3249,5 +4171,6 @@
  "units": {
   "grid_unit_m": 3,
   "metres": "x, y are the item centre from the space's bottom-left corner; rotation in degrees, 90/270 swap the footprint axes"
- }
+ },
+ "walk_param": "space"
 }

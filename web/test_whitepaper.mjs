@@ -197,18 +197,23 @@ let bcBad = ['no card'];
 if (hasArena && trained > 0) {
   const models = JSON.parse(read('robotics/arena/registry/models.json')).models;
   const arena = JSON.parse(read('robotics/arena/registry/arena.json'));
-  const dl = (RB.match(/<dl class="bccard" data-card="([^"]+)">([\s\S]*?)<\/dl>/) || []);
-  const m = models.find((x) => x.id === unesc(dl[1] || ''));
+  const dls = [...RB.matchAll(/<dl class="bccard" data-card="([^"]+)">([\s\S]*?)<\/dl>/g)];
   bcBad = [];
-  if (!m) bcBad.push('no card on the page names a model in models.json');
-  else {
-    const shown = Object.fromEntries([...(dl[2] || '').matchAll(/data-fig="robotics\/arena\/registry\/models\.json#\/models\/\[id=[^\]]+\]\/card\/([a-z_]+)"[^>]*>([^<]*)</g)].map((x) => [x[1], unesc(x[2])]));
-    for (const [k, v] of Object.entries(m.card)) if (shown[k] !== show(v)) bcBad.push(`card.${k}: page "${shown[k]}", models.json "${show(v)}"`);
-    for (const k of Object.keys(shown)) if (!(k in m.card)) bcBad.push(`card.${k} is not in models.json`);
+  if (dls.length !== models.length) bcBad.push(`the page prints ${dls.length} cards, models.json has ${models.length}`);
+  for (const m of models) {
+    const dl = dls.find((x) => unesc(x[1]) === m.id);
+    if (!dl) { bcBad.push(`no card on the page for model ${m.id}`); continue; }
+    const shown = Object.fromEntries([...dl[2].matchAll(/data-fig="robotics\/arena\/registry\/models\.json#\/models\/\[id=[^\]]+\]\/card\/([a-z_]+)"[^>]*>([^<]*)</g)].map((x) => [x[1], unesc(x[2])]));
+    for (const [k, v] of Object.entries(m.card)) if (shown[k] !== show(v)) bcBad.push(`${m.id} card.${k}: page "${shown[k]}", models.json "${show(v)}"`);
+    for (const k of Object.keys(shown)) if (!(k in m.card)) bcBad.push(`${m.id} card.${k} is not in models.json`);
     const ac = arena.cards[m.policy] || {};
     for (const [k, v] of Object.entries(m.card)) if (k in ac && JSON.stringify(ac[k]) !== JSON.stringify(v)) bcBad.push(`arena.json cards.${m.policy}.${k} disagrees with models.json`);
-    if (!/not a language model/.test(m.card.what || '')) bcBad.push('the card does not say it is not a language model');
+    if (!/not a language model/.test(m.card.what || '')) bcBad.push(`${m.id}: the card does not say it is not a language model`);
   }
+  const lv = arena.learned_vs_reference.rows;
+  if (lv.some((row) => row.policy === 'bcg') && !/<p data-vs-teacher>[^<]*It matches its teacher; it does not beat it\.<\/p>/.test(RB)) bcBad.push('the page does not say the second policy matches its teacher and does not beat it');
+  if (!lv.every((row) => ['items_binned', 'items_total', 'binned_per_episode/mean', 'binned_per_episode/ci95/0', 'binned_per_episode/ci95/1', 'episodes_with_any']
+    .every((f) => RB.includes(`data-fig="robotics/arena/registry/arena.json#/learned_vs_reference/rows/[policy=${row.policy}]/${f}"`)))) bcBad.push('the items-binned table does not carry every learned_vs_reference figure');
 }
 ok('[robotics] the trained policy\'s card is printed verbatim, every field of models.json\'s card, and arena.json\'s card for it agrees',
   trained === 0 || bcBad.length === 0, bcBad);

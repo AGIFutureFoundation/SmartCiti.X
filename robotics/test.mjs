@@ -3,7 +3,7 @@
  * Recompute, never re-read: counts are recounted, DERIVED values are re-derived from the registries they cite
  * (sims/, ambient/, web/deepkit.py), and the deterministic core is extracted from web/robokit.py and run here -
  * the same code the page runs - so determinism, sample shape and the contract's field list are proven, not
- * asserted. The most important family: NOTHING IS TRAINED ON LEARNER DATA (ARENA wave 18: trained_models = the one arena BC model, honesty says so, no format claim).
+ * asserted. The most important family: NOTHING IS TRAINED ON LEARNER DATA (ARENA wave 18, wave 22: trained_models = the arena's carded BC models, 2 now, honesty says so, no format claim).
  */
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
@@ -29,11 +29,17 @@ ok('counts are recounted from the entries: envs, robokit envs, sim-seat envs, em
   && reg.counts.embodiments === Object.keys(reg.embodiments).length && rk.length === 4);
 
 /* ---- honesty: nothing trained ---- */
-// ARENA BEGIN (wave 18): one model is trained here - the BC policy of robotics/arena/ - and none on learner data
+// ARENA BEGIN (wave 18, wave 22): two models are trained here - the BC policies of robotics/arena/ - and none on learner data
 const ARENA_TRAINED = J('robotics/arena/registry/models.json').models.filter((m) => m.provenance === 'TRAINED');
-ok('NOTHING HAS BEEN TRAINED ON ANY LEARNER\'S DATA: trained_models is the arena\'s TRAINED-model count (exactly 1, the BC card verbatim) and the honesty line says so first',
-  reg.counts.trained_models === ARENA_TRAINED.length && ARENA_TRAINED.length === 1 && /^NOTHING HAS BEEN TRAINED ON ANY LEARNER'S DATA, and no language model/.test(reg.honesty.trained)
+ok('NOTHING HAS BEEN TRAINED ON ANY LEARNER\'S DATA: trained_models is the arena\'s TRAINED-model count (exactly 2, each BC card verbatim) and the honesty line says so first',
+  reg.counts.trained_models === ARENA_TRAINED.length && ARENA_TRAINED.length === 2 && /^NOTHING HAS BEEN TRAINED ON ANY LEARNER'S DATA, and no language model is trained or used here\. 2 models have been trained/.test(reg.honesty.trained) && /^NOTHING HAS BEEN TRAINED ON ANY LEARNER'S DATA, and no language model/.test(reg.honesty.trained)
   && ARENA_TRAINED.every((m) => reg.honesty.trained.includes(m.card.what)) && !/records no training run/.test(reg.honesty.trained));
+ok('every TRAINED model of the models registry has a held-out interval on seeds 11-20 in the arena registry, the arena counts the same number as robotics.json, and both honesty lines still say no language model is trained',
+  (() => { const AR = J('robotics/arena/registry/arena.json'), HO = AR.tables.held_out;
+    return AR.counts.trained_models === ARENA_TRAINED.length && reg.counts.trained_models === AR.counts.trained_models
+      && JSON.stringify(HO.seeds) === JSON.stringify([11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
+      && ARENA_TRAINED.every((m) => HO.policies.includes(m.policy) && HO.summary[m.policy].success_rate.ci95.length === 2 && HO.summary[m.policy].success_rate.ci95.every((x) => typeof x === 'number'))
+      && /No policy here is a language model, and none calls one/.test(AR.honesty.not_llm) && /no language model is trained or used/.test(reg.honesty.trained); })());
 // ARENA END
 ok('no external-format compatibility is claimed (RLDS / LeRobot / ML-Agents named only as "not", no round-trip test)',
   /Not an RLDS, LeRobot or ML-Agents file/.test(reg.honesty.formats) && /no round-trip/.test(reg.honesty.formats));

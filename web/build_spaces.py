@@ -8,7 +8,10 @@ at one declared metres-to-pixels scale, each item is labelled with its
 registry name, the finishes are swatched with the catalogue colours the
 registry copied by id, the PPE is the derived list, and every space links to
 the 3D hall of each union it serves and to the lessons page. The page says
-what the registry says: these spaces are declared, not yet walkable.
+what the registry says: these spaces are declared, AUTHORED proposals that
+stand in the 3D page - each hall that serves one gets a link
+(trade_craft_3d.html?space=<id>&hall=<slug>) and the door route a walker takes
+to its room, read from the registry's walk block.
 """
 import json
 import math
@@ -29,6 +32,7 @@ PX_PER_M = 40          # declared once; every plan and every item is scaled by i
 PLAN_PAD_PX = 24       # room for the dimension ticks around a plan
 LESSONS_HREF = 'trade_craft_lessons.html'
 HALL_HREF = 'trade_craft_3d.html?hall='
+WALK_PARAM = reg['walk_param']
 
 
 def esc(s):
@@ -237,6 +241,13 @@ def space_section(s):
     halls = ''.join(
         f'<a class="hall" href="{HALL_HREF}{esc(u["slug"])}" data-hall="{esc(u["slug"])}">'
         f'{esc(u["name"])} hall (3D)</a>' for u in s['unions'])
+    walks = ''.join(
+        f'<li data-walk="{esc(w["hall"])}"><a class="walkin" href="{esc(w["href"])}" data-walk-link="{esc(s["id"])}" '
+        f'data-walk-hall="{esc(w["hall"])}">Walk it in the {esc(w["hall"])} hall (3D)</a> '
+        f'<span class="route" data-route="{esc(">".join(w["route"]))}">from the open front through '
+        f'{esc(" → ".join(w["route"]))} ({w["doors_passed"]} doorways)</span>'
+        f'{" - turned a quarter turn to fit" if w["orient"] == "transposed" else ""}</li>'
+        for w in s['walk']['halls'])
     fits = ''.join(
         f'<li>{esc(e["label"])} of {esc(e["hall"])}: '
         f'<span data-env="{esc(e["hall"])}">{e["w_m"]} x {e["d_m"]} m</span></li>' for e in s['fits_in'])
@@ -262,7 +273,7 @@ def space_section(s):
 <h2>{esc(s["title"])} <span class="status" data-status>{esc(s["status"])}</span></h2>
 <p class="purpose">{esc(s["purpose"])}</p>
 <p class="serves">Serves {halls} · <a href="{LESSONS_HREF}" data-lessons>lessons</a>
- · would stand in the <b>{esc(s["room_label"])}</b> ({esc(s["strand"])} strand)</p>
+ · stands in the <b>{esc(s["room_label"])}</b> ({esc(s["strand"])} strand)</p>
 <div class="cols">
 <div class="planwrap">{plan_svg(s)}</div>
 <div class="facts">
@@ -282,6 +293,8 @@ def space_section(s):
 <h3>PPE required <small>(derived, never typed)</small></h3>
 <ul class="ppe" data-ppe-list="{esc(s["id"])}">{ppe}</ul>
 <p class="hz">Hazards the finishes stand for: {hazards}</p>
+<h3>Walk it in 3D <small>(AUTHORED placement, centred in the room; the route is derived from the plan)</small></h3>
+<ul class="walks" data-walks="{esc(s["id"])}">{walks}</ul>
 <h3>Fits the room the 3D builder lays out</h3>
 <ul class="fits">{fits}</ul>
 <h3>Not estimated</h3>
@@ -353,6 +366,8 @@ a{{color:var(--steel)}}
 .swatches{{display:flex;flex-direction:column;gap:6px;font-size:14px}}
 .ppe{{margin:0;padding-inline-start:20px;columns:2}}
 .ppe .none{{color:var(--muted);font-style:italic;columns:1}}
+.walks{{margin:0;padding-inline-start:20px;font-size:14px}}
+.walks .route{{color:var(--muted)}}
 .hz,.fits,.notest{{color:var(--muted);font-size:14px}}
 .fits,.notest{{margin:0;padding-inline-start:20px}}
 details{{margin-top:14px}}
@@ -373,7 +388,7 @@ code{{font:13px "IBM Plex Mono",monospace;color:var(--steel)}}
   <h1>SmartCiti<span class="x">.X</span> : Trade Craft Academy</h1>
   <p>powered by AGI Corp · custom spaces</p>
 </header>
-<p class="intro">Purpose-built training spaces a union or a programme declares, composed only from assets this bundle already holds and validated at build. Every space here is <b data-pack-status>{esc(reg["status"])}</b>: an authored proposal drawn as a floor plan, not a room anyone can walk into yet, and no dimension is a measurement of a real venue.</p>
+<p class="intro">Purpose-built training spaces a union or a programme declares, composed only from assets this bundle already holds and validated at build. Every space here is <b data-pack-status>{esc(reg["status"])}</b>: an AUTHORED proposal, drawn below as a floor plan and standing in the 3D page by the link under each plan: props and furniture are drawn from their registry recipes, seats, stations, cribs and signs as marker pads. No dimension is a measurement of a real venue. See also <a href="trade_craft_contribute.html" data-contribute>contribute episode data</a>.</p>
 <div class="figs">
  <div class="fig"><b data-fig="spaces">{c["spaces"]}</b><span>spaces declared</span></div>
  <div class="fig"><b data-fig="items">{c["items"]}</b><span>items placed</span></div>
@@ -385,6 +400,8 @@ code{{font:13px "IBM Plex Mono",monospace;color:var(--steel)}}
  <div class="fig"><b data-fig="cost_not_estimated_items">{c["cost_not_estimated_items"]}</b><span>items not estimated</span></div>
  <div class="fig"><b data-fig="footprint_unknown">{c["footprint_unknown"]}</b><span>items with footprint unknown</span></div>
  <div class="fig"><b data-fig="area_m2">{c["area_m2"]}</b><span>m² declared in all</span></div>
+ <div class="fig"><b data-fig="walk_links">{c["walk_links"]}</b><span>space-in-hall walks linked</span></div>
+ <div class="fig"><b data-fig="walk_reachable">{c["walk_reachable"]}</b><span>reachable by doorways from the open front</span></div>
 </div>
 <p class="legend">{kind_legend} <span class="lg">scale: 1 m = <span data-px-per-m>{PX_PER_M}</span> px</span></p>
 <nav class="toc">{toc}</nav>
@@ -395,6 +412,7 @@ code{{font:13px "IBM Plex Mono",monospace;color:var(--steel)}}
 <li>{esc(reg["honesty"]["footprints"])}</li>
 <li>{esc(reg["honesty"]["cost"])}</li>
 <li>{esc(reg["honesty"]["not_stated"])}</li>
+<li>{esc(reg["honesty"]["walk"])}</li>
 </ul>
 {sections}
 <footer class="serves">Registry: <code>spaces/registry/spaces.json</code> · stamp <code data-stamp>{esc(reg["source_stamp"])}</code> · authored <code data-authored-stamp>{esc(reg["authored_stamp"])}</code> · embedded verbatim below.</footer>

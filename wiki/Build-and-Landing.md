@@ -173,6 +173,9 @@ a timeout and a command, and `$B` is the local base URL.
 | `eval_parishes` | 240 s | `env "PARISHES_URL=$B/web/trade_craft_parishes.html" node web/eval_parishes.mjs` |
 | `eval_bayworld` | 180 s | `env "BAY_URL=$B/web/trade_craft_bay.html" node web/eval_bayworld.mjs` |
 | `eval_wilds` | 180 s | `env "WILDS_URL=$B/web/trade_craft_wilds.html" node web/eval_wilds.mjs` |
+| `eval_look` | 120 s | `env "LOOK_BASE=$B" node web/eval_look.mjs` |
+| `spaces_a` | 90 s | `node web/browser_spaces.mjs "$B/web/trade_craft_3d.html" --pairs=0-4` |
+| `spaces_b` | 90 s | `node web/browser_spaces.mjs "$B/web/trade_craft_3d.html" --deep=scaffold-court --pairs=5-9 --halltest=flipped-classroom:electricians` |
 | `geomap_probe` | 90 s | `node tools/landing/geomap_hillshade_probe.mjs "$B/web/trade_craft_geomap.html" "$O/geomap.png"` |
 | `eval_styles` | 600 s | `node web/eval_styles.mjs "--base=$B" "--root=$T"` |
 

@@ -175,5 +175,51 @@ check('[kit] no "real elevation" claim for AUTHORED relief', !/AUTHORED[^.\n]{0,
   }
 }
 
+// [aware] RELIEF-AWARE (wave 22): the relief-aware ground rule, BESIDE the flat-ground rule (every land vertex at y = 0)
+{
+  let wild = false;
+  const hills = { height: (x, z) => (wild ? 9 : x >= 20 && x <= 60 ? 3 : 0), provenance: 'AUTHORED', source: 'test' };
+  const lat = T.terrainLattice(hills, 10), lift = 0.03;
+  const mkMesh = (patch = true, tweak = null) => {
+    const flat = new Float32Array([0, 0, 0, 100, 0, 0, 100, 0, 100, 0, 0, 100]);
+    let pos = flat;
+    if (patch) { const g = T.terrainPatch(lat, 20, 0, 60, 40, () => 'p', lift).get('p'); pos = new Float32Array(flat.length + g.position.length); pos.set(flat); pos.set(g.position, flat.length); }
+    if (tweak) tweak(pos, flat.length);
+    const fg = { attributes: { position: { array: flat } } }, mg = { attributes: { position: { array: pos } } };
+    return { geometry: patch ? mg : fg, parent: {}, userData: { parish: 'p', elevFlat: fg, elevMerged: patch ? mg : null } };
+  };
+  const A = (m) => T.terrainGroundAudit([m], lat, lift, 0.002);
+  const good = A(mkMesh());
+  check('[aware] a merged mesh: flat part at 0, patch on the lattice at height + lift, none under 0', good.merged === 1 && good.patchVerts > 0 && good.flatBad === 0 && good.patchBad === 0 && good.offLattice === 0 && good.below === 0 && good.maxDev <= 0.002, good);
+  check('[aware] the patch really stands on relief (a 3 m ridge is in it)', (() => { const m = mkMesh(); return Math.max(...m.geometry.attributes.position.array.filter((_, i) => i % 3 === 1)) > 2.9; })());
+  check('[aware] a flat-only mesh (relief off or parked in the overview) is judged by the flat rule alone', (() => { const a = A(mkMesh(false)); return a.flatOnly === 1 && a.patchVerts === 0 && a.flatBad === 0; })());
+  check('[aware] FLAT rule kept: a raised vertex on the flat part is flat-bad', A(mkMesh(true, (p) => { p[1] = 0.1; })).flatBad === 1);
+  check('[aware] FLAT rule kept: a raised vertex on a flat-only mesh is flat-bad', A(mkMesh(false, (p) => { p[4] = 0.2; })).flatBad === 1);
+  check('[aware] a patch vertex 5 cm off the lattice height is patch-bad', (() => { const a = A(mkMesh(true, (p, n) => { p[n + 1] += 0.05; })); return a.patchBad === 1 && a.maxDev > 0.04; })());
+  check('[aware] a patch vertex under the flat land is counted below 0', A(mkMesh(true, (p, n) => { p[n + 1] = -1; })).below === 1);
+  check('[aware] a patch vertex off the lattice is counted', A(mkMesh(true, (p, n) => { p[n] += 3; })).offLattice === 1);
+  check('[aware] a stale patch (the lattice changed after it was built) is patch-bad', (() => { const m = mkMesh(); wild = true; lat.clear(); const a = A(m); wild = false; lat.clear(); return a.patchBad > 0; })());
+  check('[aware] the audit is exported by the kit', typeof T.terrainGroundAudit === 'function');
+  for (const [name, file] of [['parish', 'trade_craft_parishes.html'], ['bay', 'trade_craft_bay.html']]) {
+    const html = readFileSync(join(HERE, file), 'utf8');
+    check(`[aware] ${name}: elev.groundAudit judges the land meshes IN THE SCENE with the lattice lift and a 2 mm tolerance`, /groundAudit: \(\) => elevGroundAudit\(\)/.test(html) && /drawn = all\.filter\(\(m\) => m\.parent\), a = terrainGroundAudit\(drawn, E\.lat, E\.R\.lift_m, 0\.002\)/.test(html));
+    check(`[aware] ${name}: elev.eyeAudit reads the drawn camera against the ground under it`, /eyeAudit: \(\) => elevEyeAudit\(\)/.test(html) && /g = E\.on \? E\.lat\.height\(p\.x, p\.z\) : 0/.test(html) && /above: \+\(p\.y - g\)\.toFixed\(3\)/.test(html));
+    check(`[aware] ${name}: page JS carries the neutral RELIEF-AWARE name, no team codename`, html.includes('RELIEF-AWARE') && !/RELIEF BEGIN|RELIEF END|RELIEF·|wave 22/.test(html));
+    check(`[aware] ${name}: the flat-ground stat is still there, unchanged (every land vertex at y = 0)`, /groundY: \[\.\.\.landMesh\.values\(\)\]\.every\(\(m\) => \{ const a = m\.geometry\.attributes\.position\.array; for \(let i = 1; i < a\.length; i \+= 3\) if \(a\[i\] !== 0\) return false; return true; \}\),/.test(html));
+  }
+  // the evals: the flat rows are untouched, the relief-aware row sits beside them and reads their declared ceilings
+  const ev = (f) => readFileSync(join(HERE, f), 'utf8'), rel = ev('eval_relief.mjs');
+  check('[aware] eval_parishes keeps its flat-ground rows verbatim', ev('eval_parishes.mjs').includes("if (!st.groundY) fail(row, 'a land mesh vertex is not at y = 0 (flat AUTHORED ground)');") && ev('eval_parishes.mjs').includes("if (!gst.groundY) fail(groundRow, 'draped ground is not at y = 0');"));
+  check('[aware] eval_bayworld keeps its flat-ground row verbatim', ev('eval_bayworld.mjs').includes("if (!st.groundY) fail(row, 'a land mesh vertex is not at y = 0 (flat AUTHORED ground)');"));
+  check('[aware] eval_relief holds the relief row and the relief-aware row, both sides named', /export async function reliefRow/.test(rel) && /export async function reliefAwareRow/.test(rel) && /for \(const side of \['off', 'on'\]\)/.test(rel) && /FLAT rule: a land mesh vertex is not at y = 0 with relief off/.test(rel));
+  check('[aware] eval_relief judges the relief side by the audit, the eye height and the overview parking', /ground audit: flat-bad/.test(rel) && /want \$\{r\.ea\.eyeH\} \+- 0\.15/.test(rel) && /overview must draw the flat land/.test(rel));
+  check('[aware] eval_relief copies no ceiling: it reads BASE and the headrooms from the sibling evals', /new Function\('return \(' \+ grab\(/.test(rel) && !/tris: \d/.test(rel) && /eval_bayworld\.mjs/.test(rel) && /eval_parishes\.mjs/.test(rel));
+  check('[aware] eval_relief prints the load average beside the frame time and does not judge it', /load1: \+loadavg\(\)\[0\]\.toFixed\(2\)/.test(rel) && /o\.msOver = ms > o\.msCeiling;/.test(rel) && !/f\(`frame/.test(rel));
+  const R = await import(pathToFileURL(join(HERE, 'eval_relief.mjs')).href);
+  const bay = R.declaredBase('http://x/web/trade_craft_bay.html'), par = R.declaredBase('http://x/web/trade_craft_parishes.html');
+  check('[aware] declared ceilings read: 3 Bay probes and 3 parish probes, 9 targets each, headrooms 1.25 / 1.5 / 2', bay.PROBE.length === 3 && par.PROBE.length === 3 && bay.PROBE.every((p) => ['origin', 'border', 'overview'].every((v) => bay.BASE[p][v].tris > 0)) && par.PROBE.every((p) => ['origin', 'border', 'overview'].every((v) => par.BASE[p][v].tris > 0)) && bay.CALL_HEADROOM === 1.25 && bay.TRI_HEADROOM === 1.5 && par.MS_HEADROOM === 2);
+  check('[aware] the Bay overview triangle ceilings are the declared ones (06001 3,295 x 1.5 = 4,943; 06081 1,320 x 1.5 = 1,980)', Math.round(bay.BASE['06001'].overview.tris * bay.TRI_HEADROOM) === 4943 && Math.round(bay.BASE['06081'].overview.tris * bay.TRI_HEADROOM) === 1980, bay.BASE);
+}
+
 if (fails) { console.log(`FAIL test_terrainkit: ${fails} failed`); process.exit(1); }
 console.log('test_terrainkit: all checks ok');
