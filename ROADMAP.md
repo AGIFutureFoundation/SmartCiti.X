@@ -604,8 +604,9 @@ commit cannot name its own sha.
 9. **Station and crib steps record episodes** — *shipped, wave 21.* A station
    episode on a correct quiz pick at a station a lesson names; a crib episode
    from a passed tool check with its picks. Matched by the completion contract
-   with no rule loosened. Lessons fully verifiable by episode: 110 -> 139 of
-   139; silent steps 34 -> 0. The station episode is proven in a browser run;
+   with no rule loosened. Lessons with at least one graded step: 58 of 139;
+   lessons whose every step records an episode: 110 -> 139 of 139, most of it
+   act and presence evidence, not graded work; silent steps 34 -> 0. The station episode is proven in a browser run;
    the crib episode only by the vm behaviour test so far.
    Evidence is not all equal, and the record says so: each step kind declares a
    strength in `completion/` (strong: sim, station, crib, graded by the page;
