@@ -9,10 +9,11 @@
   "signature": null
  },
  "consent": {
-  "statement": "I share the training episodes in this package, recorded by this device, for the scopes named in consent.scope under the licence named in consent.license. I can withdraw by not sharing the file again; copies already given away are governed by that licence. Nothing in this package names me: it carries scenario ids, control schemes and measured outcomes, and the label or wallet address I chose to attach.",
+  "statement": "I share the training episodes in this package, recorded by this device, for the scopes named in consent.scope under the licence named in consent.license. I can withdraw by not sharing the file again; copies already given away are governed by that licence. Nothing in this package names me: it carries scenario ids, control schemes, measured outcomes and the fixed advisor topics, crew questions and walkaround points I picked, and the label or wallet address I chose to attach. It carries room movement, dwell times, quiz picks and tool picks only if consent.scope names lesson-activity.",
   "granted_at": "2026-09-26T00:00:00Z",
   "scope": [
    "agent-training",
+   "lesson-activity",
    "robot-training"
   ],
   "revocable": true,
@@ -580,7 +581,8 @@
    "every sim, scenario, hall and campus an episode names exists in this bundle at the stated pack version",
    "a trace, where attached, has no more samples than training/ caps and each sample has the declared keys",
    "the consent scope is a non-empty subset of the scopes this registry declares, the statement is this registry's and the licence is this registry's one licence",
-   "the counts the package states about itself (episodes by kind, traces attached, sims covered) recompute from its episodes"
+   "the counts the package states about itself (episodes by kind, traces attached, sims covered) recompute from its episodes",
+   "every walk, placard, station or crib episode (room movement, dwell times, quiz picks and tool picks) sits in a package whose consent.scope names lesson-activity; a package without that scope that carries one is refused by name"
   ],
   "does_not_prove": [
    "who the contributor is: contributor.claimed is a label this device stored, attested by this device only, and nothing checks it - unless a wallet signed, in which case it is the identity of a key, not of a person; a stolen key signs just as well",
@@ -599,6 +601,6 @@
  "digest": {
   "alg": "SHA-256",
   "over": "canonical JSON of every top-level field except digest, with contributor.signature forced to null: keys sorted recursively, no whitespace, UTF-8",
-  "hex": "a184a01af3fc778d60263e2230ae4e87dd6743e49e283d8dd1d5374cbc99c7ba"
+  "hex": "f34467cfb20216f2273619018bcc5575f3c324ddd41e251860dc50776d8d0a5f"
  }
 }

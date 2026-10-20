@@ -3,19 +3,19 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-26",
- "source_stamp": "9c72ddb44180716e",
+ "source_stamp": "d63dbb6d1e232f53",
  "stamps": {
   "finishes": "a305c18b33261ef5",
   "sims": "1af48d2eed34ccb2",
   "lessons": "75e757b1c322727a",
   "halls": "3807e54afe6abfe6",
-  "completion": "0efb0906905f6c7d",
+  "completion": "9f5e6aaa8a103a8f",
   "manifest": "169fa4e75499d00e",
   "build_3d": "de3561f05d9b15b9",
   "hall_signoff": "e67ba161ef70d996",
-  "roadmap": "41952ce885f6601c",
-  "completion_fixture": "7f6d929aa0f0ecb4",
-  "self": "9c72ddb44180716e"
+  "roadmap": "0308c92b96d5b510",
+  "completion_fixture": "76aa5ee9a0248deb",
+  "self": "d63dbb6d1e232f53"
  },
  "stamped_paths": {
   "finishes": "surfaces/registry/finishes.json",
@@ -54,6 +54,7 @@
   ],
   "signoff": "no hall's content is signed off by a practitioner today (read through pack/hall_signoff.mjs); every hall inherits the global caveat",
   "signature": "a signed record attests a key, not a person (completion.json#signature)",
+  "evidence_strength": "evidenced does not mean equally strong: completion.json declares per step kind whether the evidence is strong (graded by the page), act (a question asked or a point marked) or presence (a device saw a room or an open panel); this ledger reports the split next to its evidenced totals and decides nothing by it",
   "self_reported": "no step kind is self-reported today: walk and placard write episodes now. A walk or placard episode records that a device saw the walker in a room, or a placard panel left open for its dwell; it never says the placard was read or that anything it requires was met, and the room requirement itself stays not-evidenced"
  },
  "placard_rule": {
@@ -89,42 +90,50 @@
   "walk": {
    "ledger_class": "evidenceable",
    "completion_class": "episode-backed",
-   "why": "every reference field the step carries is recorded by the episode"
+   "why": "every reference field the step carries is recorded by the episode",
+   "strength": "presence"
   },
   "placard": {
    "ledger_class": "evidenceable",
    "completion_class": "episode-backed",
-   "why": "every reference field the step carries is recorded by the episode"
+   "why": "every reference field the step carries is recorded by the episode",
+   "strength": "presence"
   },
   "station": {
    "ledger_class": "evidenceable",
    "completion_class": "episode-backed",
-   "why": "every reference field the step carries is recorded by the episode"
+   "why": "every reference field the step carries is recorded by the episode",
+   "strength": "strong"
   },
   "crib": {
    "ledger_class": "evidenceable",
    "completion_class": "episode-backed",
-   "why": "every reference field the step carries is recorded by the episode"
+   "why": "every reference field the step carries is recorded by the episode",
+   "strength": "strong"
   },
   "walkaround": {
    "ledger_class": "evidenceable",
    "completion_class": "episode-backed",
-   "why": "every reference field the step carries is recorded by the episode"
+   "why": "every reference field the step carries is recorded by the episode",
+   "strength": "act"
   },
   "sim": {
    "ledger_class": "evidenceable",
    "completion_class": "episode-backed",
-   "why": "every reference field the step carries is recorded by the episode"
+   "why": "every reference field the step carries is recorded by the episode",
+   "strength": "strong"
   },
   "advisor": {
    "ledger_class": "evidenceable",
    "completion_class": "episode-backed",
-   "why": "every reference field the step carries is recorded by the episode"
+   "why": "every reference field the step carries is recorded by the episode",
+   "strength": "act"
   },
   "crew": {
    "ledger_class": "evidenceable",
    "completion_class": "episode-backed",
-   "why": "every reference field the step carries is recorded by the episode"
+   "why": "every reference field the step carries is recorded by the episode",
+   "strength": "act"
   }
  },
  "signoff_statuses": {
@@ -1028,25 +1037,29 @@
        "n": 1,
        "kind": "walk",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -1415,25 +1428,29 @@
        "n": 1,
        "kind": "walk",
        "where": "machines",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     }
@@ -1763,25 +1780,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -2139,25 +2160,29 @@
        "n": 1,
        "kind": "walk",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "crib",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     },
@@ -2189,25 +2214,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -2586,31 +2615,36 @@
        "n": 1,
        "kind": "walk",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 5,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     },
@@ -2646,25 +2680,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -3055,31 +3093,36 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 5,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -3414,31 +3457,36 @@
        "n": 1,
        "kind": "walk",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "crib",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 4,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 5,
        "kind": "advisor",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -3821,25 +3869,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "station",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     },
@@ -3875,25 +3927,29 @@
        "n": 1,
        "kind": "walk",
        "where": "procedure",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "procedure",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "station",
        "where": "procedure",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -4232,37 +4288,43 @@
        "n": 1,
        "kind": "walk",
        "where": "materials",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "materials",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "station",
        "where": "materials",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 4,
        "kind": "crib",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 5,
        "kind": "walk",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 6,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -4632,37 +4694,43 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 5,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 6,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     }
@@ -5056,31 +5124,36 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 5,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     },
@@ -5110,25 +5183,29 @@
        "n": 1,
        "kind": "walk",
        "where": "procedure",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "procedure",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     }
@@ -5471,25 +5548,29 @@
        "n": 1,
        "kind": "walk",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -5855,37 +5936,43 @@
        "n": 1,
        "kind": "walk",
        "where": "materials",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "materials",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "crib",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 4,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 5,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 6,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     }
@@ -6258,31 +6345,36 @@
        "n": 1,
        "kind": "walk",
        "where": "machines",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "machines",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 5,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -6646,31 +6738,36 @@
        "n": 1,
        "kind": "walk",
        "where": "procedure",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "procedure",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 5,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -7010,25 +7107,29 @@
        "n": 1,
        "kind": "walk",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "crib",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     }
@@ -7394,31 +7495,36 @@
        "n": 1,
        "kind": "walk",
        "where": "machines",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "machines",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 5,
        "kind": "advisor",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -7777,31 +7883,36 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 5,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -8132,25 +8243,29 @@
        "n": 1,
        "kind": "walk",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "crib",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     }
@@ -8513,25 +8628,29 @@
        "n": 1,
        "kind": "walk",
        "where": "machines",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     },
@@ -8563,25 +8682,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -8944,25 +9067,29 @@
        "n": 1,
        "kind": "walk",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     },
@@ -8992,31 +9119,36 @@
        "n": 1,
        "kind": "walk",
        "where": "machines",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 5,
        "kind": "advisor",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     },
@@ -9048,25 +9180,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -9437,25 +9573,29 @@
        "n": 1,
        "kind": "walk",
        "where": "troubleshooting",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     }
@@ -9785,25 +9925,29 @@
        "n": 1,
        "kind": "walk",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -10133,25 +10277,29 @@
        "n": 1,
        "kind": "walk",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -10509,19 +10657,22 @@
        "n": 1,
        "kind": "walk",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "door",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     },
@@ -10557,25 +10708,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -10940,31 +11095,36 @@
        "n": 1,
        "kind": "walk",
        "where": "troubleshooting",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "troubleshooting",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "crib",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 4,
        "kind": "walk",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 5,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     },
@@ -10998,25 +11158,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -11344,19 +11508,22 @@
        "n": 1,
        "kind": "walk",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     },
@@ -11384,25 +11551,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -11785,25 +11956,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     },
@@ -11838,25 +12013,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -12193,25 +12372,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -12592,31 +12775,36 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "station",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 4,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 5,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     },
@@ -12650,31 +12838,36 @@
        "n": 1,
        "kind": "walk",
        "where": "materials",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "materials",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 5,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     }
@@ -13005,31 +13198,36 @@
        "n": 1,
        "kind": "walk",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 5,
        "kind": "crib",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     },
@@ -13057,25 +13255,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -13405,25 +13607,29 @@
        "n": 1,
        "kind": "walk",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "crib",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     }
@@ -13799,31 +14005,36 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 5,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     }
@@ -14207,31 +14418,36 @@
        "n": 1,
        "kind": "walk",
        "where": "procedure",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "procedure",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "station",
        "where": "procedure",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 4,
        "kind": "crib",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 5,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -14607,31 +14823,36 @@
        "n": 1,
        "kind": "walk",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 5,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     },
@@ -14663,25 +14884,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -15070,37 +15295,43 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 5,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 6,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -15452,31 +15683,36 @@
        "n": 1,
        "kind": "walk",
        "where": "procedure",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "procedure",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 5,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     }
@@ -15828,31 +16064,36 @@
        "n": 1,
        "kind": "walk",
        "where": "procedure",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "procedure",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 5,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     }
@@ -16211,25 +16452,29 @@
        "n": 1,
        "kind": "walk",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     },
@@ -16261,25 +16506,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -16642,25 +16891,29 @@
        "n": 1,
        "kind": "walk",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     },
@@ -16694,25 +16947,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -17070,19 +17327,22 @@
        "n": 1,
        "kind": "walk",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "door",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     },
@@ -17118,25 +17378,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -17510,19 +17774,22 @@
        "n": 1,
        "kind": "walk",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -17918,37 +18185,43 @@
        "n": 1,
        "kind": "walk",
        "where": "materials",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "materials",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "crib",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 4,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 5,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 6,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -18283,25 +18556,29 @@
        "n": 1,
        "kind": "walk",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     }
@@ -18631,25 +18908,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -19007,31 +19288,36 @@
        "n": 1,
        "kind": "walk",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 5,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -19388,25 +19674,29 @@
        "n": 1,
        "kind": "walk",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "crib",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     }
@@ -19770,25 +20060,29 @@
        "n": 1,
        "kind": "walk",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -20152,25 +20446,29 @@
        "n": 1,
        "kind": "walk",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -20498,19 +20796,22 @@
        "n": 1,
        "kind": "walk",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "door",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -20860,19 +21161,22 @@
        "n": 1,
        "kind": "walk",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -21248,25 +21552,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     },
@@ -21300,25 +21608,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -21682,25 +21994,29 @@
        "n": 1,
        "kind": "walk",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "crib",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     },
@@ -21734,25 +22050,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -22126,25 +22446,29 @@
        "n": 1,
        "kind": "walk",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -22504,25 +22828,29 @@
        "n": 1,
        "kind": "walk",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     },
@@ -22556,25 +22884,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -22936,19 +23268,22 @@
        "n": 1,
        "kind": "walk",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "door",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -23293,19 +23628,22 @@
        "n": 1,
        "kind": "walk",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -23635,25 +23973,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -24012,25 +24354,29 @@
        "n": 1,
        "kind": "walk",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "crib",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     }
@@ -24394,25 +24740,29 @@
        "n": 1,
        "kind": "walk",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     },
@@ -24446,25 +24796,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -24794,25 +25148,29 @@
        "n": 1,
        "kind": "walk",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -25147,25 +25505,29 @@
        "n": 1,
        "kind": "walk",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "station",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "crib",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     },
@@ -25191,19 +25553,22 @@
        "n": 1,
        "kind": "walk",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "station",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -25539,19 +25904,22 @@
        "n": 1,
        "kind": "walk",
        "where": "materials",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "station",
        "where": "materials",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -25887,31 +26255,36 @@
        "n": 1,
        "kind": "walk",
        "where": "procedure",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 5,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -26239,19 +26612,22 @@
        "n": 1,
        "kind": "walk",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "door",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -26581,25 +26957,29 @@
        "n": 1,
        "kind": "walk",
        "where": "procedure",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "station",
        "where": "procedure",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 3,
        "kind": "crib",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -26935,25 +27315,29 @@
        "n": 1,
        "kind": "walk",
        "where": "procedure",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "station",
        "where": "procedure",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 3,
        "kind": "crib",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -27288,31 +27672,36 @@
        "n": 1,
        "kind": "walk",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 5,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     }
@@ -27648,25 +28037,29 @@
        "n": 1,
        "kind": "walk",
        "where": "procedure",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "station",
        "where": "procedure",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 3,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -28001,25 +28394,29 @@
        "n": 1,
        "kind": "walk",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -28347,19 +28744,22 @@
        "n": 1,
        "kind": "walk",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -28694,25 +29094,29 @@
        "n": 1,
        "kind": "walk",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     }
@@ -29068,31 +29472,36 @@
        "n": 1,
        "kind": "walk",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 5,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     }
@@ -29464,31 +29873,36 @@
        "n": 1,
        "kind": "walk",
        "where": "machines",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "machines",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 5,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     },
@@ -29524,25 +29938,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -29872,25 +30290,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -30220,25 +30642,29 @@
        "n": 1,
        "kind": "walk",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "crib",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     }
@@ -30578,25 +31004,29 @@
        "n": 1,
        "kind": "walk",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -30944,31 +31374,36 @@
        "n": 1,
        "kind": "walk",
        "where": "procedure",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 5,
        "kind": "advisor",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     },
@@ -30996,25 +31431,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -31378,31 +31817,36 @@
        "n": 1,
        "kind": "walk",
        "where": "procedure",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "procedure",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 5,
        "kind": "advisor",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -31743,25 +32187,29 @@
        "n": 1,
        "kind": "walk",
        "where": "machines",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     }
@@ -32091,25 +32539,29 @@
        "n": 1,
        "kind": "walk",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -32437,19 +32889,22 @@
        "n": 1,
        "kind": "walk",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "door",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -32777,19 +33232,22 @@
        "n": 1,
        "kind": "walk",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -33119,25 +33577,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -33465,19 +33927,22 @@
        "n": 1,
        "kind": "walk",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -33807,25 +34272,29 @@
        "n": 1,
        "kind": "walk",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "crib",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     }
@@ -34155,25 +34624,29 @@
        "n": 1,
        "kind": "walk",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -34537,25 +35010,29 @@
        "n": 1,
        "kind": "walk",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -34883,19 +35360,22 @@
        "n": 1,
        "kind": "walk",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "door",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -35223,19 +35703,22 @@
        "n": 1,
        "kind": "walk",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -35599,25 +36082,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -35976,25 +36463,29 @@
        "n": 1,
        "kind": "walk",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "crib",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     }
@@ -36366,25 +36857,29 @@
        "n": 1,
        "kind": "walk",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -36714,25 +37209,29 @@
        "n": 1,
        "kind": "walk",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -37060,19 +37559,22 @@
        "n": 1,
        "kind": "walk",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "door",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -37430,19 +37932,22 @@
        "n": 1,
        "kind": "walk",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -37772,25 +38277,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -38120,25 +38629,29 @@
        "n": 1,
        "kind": "walk",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "crib",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     }
@@ -38501,31 +39014,36 @@
        "n": 1,
        "kind": "walk",
        "where": "machines",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "crew",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 5,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     }
@@ -38877,25 +39395,29 @@
        "n": 1,
        "kind": "walk",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "walkaround",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "sim",
        "where": "yard",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     },
@@ -38927,25 +39449,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -39275,25 +39801,29 @@
        "n": 1,
        "kind": "walk",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -39623,25 +40153,29 @@
        "n": 1,
        "kind": "walk",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -40015,19 +40549,22 @@
        "n": 1,
        "kind": "walk",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "door",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -40377,19 +40914,22 @@
        "n": 1,
        "kind": "walk",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -40741,25 +41281,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -41116,25 +41660,29 @@
        "n": 1,
        "kind": "walk",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "crib",
        "where": "tools",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       }
      ]
     },
@@ -41166,25 +41714,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -41548,25 +42100,29 @@
        "n": 1,
        "kind": "walk",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "layout",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     },
@@ -41600,25 +42156,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -41982,25 +42542,29 @@
        "n": 1,
        "kind": "walk",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "inspection",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     },
@@ -42033,25 +42597,29 @@
        "n": 1,
        "kind": "walk",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "placard",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 4,
        "kind": "advisor",
        "where": "safety",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -42380,19 +42948,22 @@
        "n": 1,
        "kind": "walk",
        "where": "leadership",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "station",
        "where": "leadership",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "strong"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -42785,19 +43356,22 @@
        "n": 1,
        "kind": "walk",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "coordination",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "door",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -43125,19 +43699,22 @@
        "n": 1,
        "kind": "walk",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "presence"
       },
       {
        "n": 2,
        "kind": "advisor",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       },
       {
        "n": 3,
        "kind": "advisor",
        "where": "documentation",
-       "ledger_class": "evidenceable"
+       "ledger_class": "evidenceable",
+       "strength": "act"
       }
      ]
     }
@@ -43174,6 +43751,12 @@
    "self-reported": 0,
    "not-recordable": 1332
   },
+  "evidenceable_items_by_strength": {
+   "strong": 144,
+   "act": 270,
+   "presence": 233,
+   "none": 0
+  },
   "items": 1979
  },
  "verifier": {
@@ -43200,7 +43783,9 @@
    "ppe-typed-for-room-without",
    "hall-marked-signed-off",
    "rubric-axis-invented-pass",
-   "stale-stamp"
+   "stale-stamp",
+   "strength-rollup-moved",
+   "step-strength-retyped"
   ]
  }
 }

@@ -3854,6 +3854,21 @@ A lesson is blocked only by a recording step whose episode lacks a reference the
 step carries; the crew episode records the crew's seat and muster, so a crew
 step is held to both.
 
+## How strong the evidence is
+
+An episode-backed step says a device wrote an episode, not that every episode
+says the same. The registry declares a strength per step kind, and the verifier
+prints the split next to its total: **strong** (graded by the page:
+{", ".join(f"`{k}`" for k in R["evidence_strength"]["kinds"]["strong"])}),
+**act** (a question asked or a point marked, nothing graded:
+{", ".join(f"`{k}`" for k in R["evidence_strength"]["kinds"]["act"])}) and
+**presence** (a device saw a room or an open panel:
+{", ".join(f"`{k}`" for k in R["evidence_strength"]["kinds"]["presence"])}). Of the
+{c["lessons"]} lessons, {c["lessons_with_a_strong_step"]} hold at least one strong
+step and {c["lessons_every_step_strong"]} hold nothing else; the other
+{c["lessons_strongest_act"] + c["lessons_presence_only"]} rest on acts and presence alone.
+The split changes what is reported, never what verifies.
+
 ## Check it offline
 
 On the pack's own fixture record (SCRIPTED, labelled not a learner):
@@ -3962,6 +3977,11 @@ they read first, and keeps as a file: this bundle sends it nowhere.
 3. **Choose the scopes** you share for - {len(con["scopes"])} of them:
 
 {scopes}
+
+   {up_first(con["activity"]["phrase"])} (the {", ".join(f"`{k}`" for k in con["activity"]["kinds"])} episodes) are not
+   scenario ids, control schemes or measured outcomes, so they leave the device
+   only in a package whose scope names `{con["activity"]["scope"]}`; without it the
+   page leaves them out of the file and the verifier refuses a package that carries them.
 
 4. **Accept the licence**: {con["license"]["name"]} (`{con["license"]["spdx"]}`),
    one licence for every package.

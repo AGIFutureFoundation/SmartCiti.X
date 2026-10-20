@@ -172,6 +172,34 @@ if (C !== null) {
   const partial = await C.buildContribution(training, identity, { ...consent, scope: ['robot-training'] }, meta, NOW);
   ok('[shipped] the scope in the package is what was ticked, ordered as the registry declares, and a partial scope verifies too',
     failsBy(partial).length === 0 && JSON.stringify(partial.consent.scope) === JSON.stringify(['robot-training']), [failsBy(partial).join()]);
+  /* HONEST: room movement, dwell times, quiz picks and tool picks leave the device only under the lesson-activity scope */
+  {
+    const ACT = data.consent.activity;
+    const actLog = [
+      shape('walk', { t: '2026-09-26T10:05:00.000Z', kind: 'walk', campus: scenario.campus, hall, where: 'safety', room: 'Safety Room' }),
+      shape('placard', { t: '2026-09-26T10:06:00.000Z', kind: 'placard', campus: scenario.campus, hall, where: 'safety', room: 'Safety Room', dwell_ms: 5200 }),
+      shape('station', { t: '2026-09-26T10:07:00.000Z', kind: 'station', campus: scenario.campus, hall, where: 'safety', station: 'st01', station_name: 'Test Station' }),
+      shape('crib', { t: '2026-09-26T10:08:00.000Z', kind: 'crib', campus: scenario.campus, hall, where: 'tools', crib: 'test-crib', crib_name: 'Test Crib', picks: 5 }),
+    ];
+    const mixed = [...training, ...actLog];
+    const without = await C.buildContribution(mixed, identity, consent, meta, NOW);
+    const withAct = await C.buildContribution(mixed, identity, { ...consent, scope: [...consent.scope, ACT.scope] }, meta, NOW);
+    ok('[shipped] without the lesson-activity scope the page leaves walk, placard, station and crib episodes out of the file (they stay on the device), and the package it builds verifies on every rule',
+      ACT.scope === 'lesson-activity' && ACT.kinds.slice().sort().join() === 'crib,placard,station,walk'
+      && JSON.stringify(without.dataset.episodes) === JSON.stringify(training) && failsBy(without).length === 0
+      && !without.dataset.episodes.some((e) => ACT.kinds.includes(e.kind)) && !('walk' in without.dataset.episode_counts_by_kind), [failsBy(without).join()]);
+    ok('[shipped] with lesson-activity ticked the same log carries all four activity kinds verbatim, the scope is in the package and the package verifies on every rule',
+      JSON.stringify(withAct.dataset.episodes) === JSON.stringify(mixed) && withAct.consent.scope.includes('lesson-activity') && failsBy(withAct).length === 0
+      && withAct.dataset.episode_counts_by_kind.walk === 1 && withAct.dataset.episode_counts_by_kind.crib === 1, [failsBy(withAct).join()]);
+    const broken = JSON.parse(JSON.stringify(withAct)); broken.consent.scope = broken.consent.scope.filter((x) => x !== ACT.scope); broken.digest.hex = V.digestOf(broken);
+    ok('[shipped] the package the page builds with the activity scope is refused by consent.scope alone when the scope is removed afterwards (the verifier, not only the page, holds the line)',
+      failsBy(broken).join() === 'consent.scope', [failsBy(broken).join()]);
+    const noMeta = await C.buildContribution(training, identity, consent, { ...meta, consent: { ...meta.consent, activity: undefined } }, NOW).then(() => null, (e) => e.message);
+    ok('[shipped] a meta that does not name the activity scope and its kinds stops the page (fail closed: it would not know what to hold back)', /meta\.consent\.activity must name the activity scope/.test(String(noMeta)));
+    ok('[shipped] the page lists the activity scope as its own tick box with the plain words room movement, dwell times, quiz picks and tool picks, unticked, and says activity episodes stay on the device without it',
+      /data-scope="lesson-activity"/.test(html) && html.includes('room movement, dwell times, quiz picks and tool picks') && !/data-scope="lesson-activity"[^>]*checked/.test(html)
+      && /stay on this device: tick /.test(html));
+  }
   const refuses = async (f) => { try { await f(); return null; } catch (e) { return e.message; } };
   ok('[shipped] the function refuses: an empty scope, a scope the registry does not declare, an unparseable granted_at, a log that is not an array, and a meta.wallet that is not an address',
     /no scope ticked/.test(await refuses(() => C.buildContribution(training, identity, { ...consent, scope: [] }, meta, NOW)))
@@ -290,19 +318,31 @@ if (C !== null) {
   const CC = ctx.contribCore(regs);
   const g2 = readJSON('contrib/fixture/v2/good.json');
   const meta = { tag_v2: ds.tag_v2, product: contribReg.product, pack_version: contribReg.pack_version, fields_v2: ds.fields_v2,
-    consent: { statement: contribReg.consent.statement, scopes: Object.keys(contribReg.consent.scopes).sort(), license: contribReg.consent.license.spdx },
+    consent: { statement: contribReg.consent.statement, scopes: Object.keys(contribReg.consent.scopes).sort(), license: contribReg.consent.license.spdx,
+      activity: { scope: contribReg.consent.activity.scope, kinds: contribReg.consent.activity.kinds, phrase: contribReg.consent.activity.phrase } },
     honesty: contribReg.honesty, digest_over: contribReg.digest.over };
   const now = new Date('2026-09-29T02:00:00.000Z');
-  const pkg = await ctx.buildPackageV2(g2.dataset.episodes, ['robot-training'], meta, now, CC);
+  const pkg = await ctx.buildPackageV2(g2.dataset.episodes, ['robot-training', 'lesson-activity'], meta, now, CC);
   const vr = V.verify(pkg);
   const fails = Object.entries(vr.tally).filter(([, t]) => t.fails.length).map(([k, t]) => k + ': ' + t.fails[0]);
   ok('[share] the page\'s tc-contribution/2 package verifies with node contrib/verify.mjs on every rule: episodes verbatim, claimed null, origin.classroom_mode false, the ticked scope only',
     fails.length === 0 && pkg.record === 'tc-contribution/2' && pkg.contributor.claimed === null && pkg.origin.classroom_mode === false
-    && JSON.stringify(pkg.consent.scope) === '["robot-training"]' && JSON.stringify(pkg.dataset.episodes) === JSON.stringify(g2.dataset.episodes), fails);
+    && JSON.stringify(pkg.consent.scope) === '["lesson-activity","robot-training"]' && JSON.stringify(pkg.dataset.episodes) === JSON.stringify(g2.dataset.episodes), fails);
   const refusedBy = async (eps, scope) => { try { await ctx.buildPackageV2(eps, scope, meta, now, CC); return ''; } catch (e) { return e.message; } };
   ok('[share] buildPackageV2 refuses: no scope ticked, an undeclared scope, no episodes, an episode of a kind no package carries',
     /no scope ticked/.test(await refusedBy(g2.dataset.episodes, [])) && /not declared/.test(await refusedBy(g2.dataset.episodes, ['marketing']))
     && /no episodes/.test(await refusedBy([], ['robot-training'])) && /cannot be shared/.test(await refusedBy([{ kind: 'joystick' }], ['robot-training'])));
+  {
+    const ACT = contribReg.consent.activity.kinds;
+    const lean = await ctx.buildPackageV2(g2.dataset.episodes, ['robot-training'], meta, now, CC);
+    const full = await ctx.buildPackageV2(g2.dataset.episodes, ['robot-training', 'lesson-activity'], meta, now, CC);
+    const onlyAct = await refusedBy(g2.dataset.episodes.filter((e) => ACT.includes(e.kind)), ['robot-training']);
+    const vf = (p) => Object.entries(V.verify(p).tally).filter(([, t]) => t.fails.length).map(([k]) => k);
+    ok('[share] buildPackageV2 holds walk, placard, station and crib back unless lesson-activity is ticked: the lean package carries none of them and verifies, the one with the scope carries every episode and verifies, and a selection of nothing else is refused by name',
+      lean.dataset.episodes.length === g2.dataset.episodes.filter((e) => !ACT.includes(e.kind)).length && !lean.dataset.episodes.some((e) => ACT.includes(e.kind)) && vf(lean).length === 0
+      && JSON.stringify(full.dataset.episodes) === JSON.stringify(g2.dataset.episodes) && full.consent.scope.includes('lesson-activity') && vf(full).length === 0
+      && /is not ticked; no episode is left to share/.test(onlyAct), [vf(lean).join(), vf(full).join(), onlyAct]);
+  }
   const DC = ctx.datashareCore(ds.cfg, async (s) => (await import('node:crypto')).createHash('sha256').update(s).digest('hex'));
   const A = DC.analyse(g2.dataset.episodes.map((episode) => ({ episode })));
   ok('[share] the page\'s analysis core runs over the same episodes and reports counts, rates and coverage gaps',

@@ -182,6 +182,14 @@ export function checkLedger(reg, inputs) {
   }
   check('ledger.rollups', JSON.stringify(need(R, 'items_by_ledger_class', 'rollups')) === JSON.stringify(cls), `rollups.items_by_ledger_class ${JSON.stringify(R.items_by_ledger_class)} != ${JSON.stringify(cls)}`);
   check('ledger.rollups', need(R, 'items', 'rollups') === cls.evidenceable + cls['self-reported'] + cls['not-recordable'], 'rollups.items does not sum');
+  // HONEST: the evidenceable items split by how strong the evidence behind each is (a seat binding is a sim, strong; a step takes its kind's declared strength)
+  const byStr = { strong: 0, act: 0, presence: 0, none: 0 };
+  for (const h of rows) {
+    byStr.strong += h.seats.length;
+    for (const l of h.lessons) for (const s of l.step_kinds) if (s.ledger_class === 'evidenceable') byStr[need(s, 'strength', l.lesson)]++;
+  }
+  check('ledger.rollups', JSON.stringify(need(R, 'evidenceable_items_by_strength', 'rollups')) === JSON.stringify(byStr), `rollups.evidenceable_items_by_strength ${JSON.stringify(R.evidenceable_items_by_strength)} != ${JSON.stringify(byStr)}`);
+  check('ledger.rollups', byStr.strong + byStr.act + byStr.presence + byStr.none === cls.evidenceable, 'rollups.evidenceable_items_by_strength does not sum to the evidenceable items');
   return tally;
 }
 
@@ -219,6 +227,7 @@ export function report(record) {
   const nHalls = need(R, 'halls', 'rollups'), nSigned = need(R, 'halls_signed_off', 'rollups');
   lines.push(`compliance report: ${touched.size} hall${touched.size === 1 ? '' : 's'} touched by this record (of ${nHalls}); ledger built ${REG.built}, stamp ${REG.source_stamp}`);
   const stat = { evidenced: 0, 'self-reported': 0, 'not-evidenced': 0 };
+  const byStrength = { strong: 0, act: 0, presence: 0, none: 0 };
   for (const [slug, whys] of touched) {
     const H = ledger[slug];
     lines.push('');
@@ -245,7 +254,9 @@ export function report(record) {
         else if (cls === 'evidenceable' && st.evidence !== null) verdict = 'evidenced';
         else if (cls === 'self-reported') verdict = 'self-reported (done is the learner\'s word)';
         else verdict = 'not-evidenced';
+        const strength = need(need(ske, st.kind, 'step_kind_evidence'), 'strength', st.kind);
         if (st.done) stat[verdict.startsWith('evidenced') ? 'evidenced' : verdict.startsWith('self') ? 'self-reported' : 'not-evidenced']++;
+        if (st.done && verdict === 'evidenced') { byStrength[strength]++; verdict = `evidenced (${strength})`; }
         lines.push(`    step ${st.step} ${st.kind} @${k ? k.where : '?'}: ${verdict}`);
       }
     }
@@ -255,7 +266,7 @@ export function report(record) {
       const S = seats[b.sim];
       lines.push(`  seat ${b.sim} (${S.name}): passed — evidenced by record.sims and a sim step episode; decided by the seat's rule: `
         + S.axes.map((a) => `${a.axis} ${a.pass}`).join(', ') + ' — the axes are the seat\'s rule in sims.json, not the record\'s evidence; the record carries passed only');
-      stat.evidenced++;
+      stat.evidenced++; byStrength.strong++;
     }
     lines.push(`  sign-off: ${H.signoff.claims_signoff ? 'claims practitioner sign-off' : 'UNSIGNED — this hall\'s content is ' + H.signoff.status_read} (${nSigned} of ${nHalls} halls signed off today, read through ${H.signoff.read_through}) — not-evidenced (a hall\'s fact, not the record\'s)`);
     stat['not-evidenced']++;
@@ -263,6 +274,7 @@ export function report(record) {
   }
   lines.push('');
   lines.push(`totals: ${stat.evidenced} evidenced, ${stat['self-reported']} self-reported, ${stat['not-evidenced']} not-evidenced items across the halls touched`);
+  lines.push(`evidenced by strength: ${byStrength.strong} strong (graded by the page), ${byStrength.act} act (a question asked or a point marked, nothing graded), ${byStrength.presence} presence (a device saw a room or an open panel)${byStrength.none ? `, ${byStrength.none} with no episode` : ''}; evidenced means a device wrote a record, not that the learner understood anything`);
   lines.push(`signature: ${base.signature.line}`);
   lines.push('this report is against the bundle\'s own rules, not any jurisdiction\'s; a signed record attests a key, not a person; nothing here is a certification or an inspection');
   return { lines, fails, halls: [...touched.keys()] };

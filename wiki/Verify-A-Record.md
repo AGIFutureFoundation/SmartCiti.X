@@ -63,7 +63,7 @@ ok ladder.prerequisite: checked 40, failing 0
 note sim.threshold: rigging-signals has no scalar threshold in sims.json; passed=true is taken from the record and not re-derived
 note sim.threshold: crane-lift has no scalar threshold in sims.json; passed=true is taken from the record and not re-derived
 signature: unsigned: this device only
-summary: 5 lessons complete, of which 5 fully evidence-backed (every step episode-backed); across them 23 episode-backed steps, 0 device-mark steps (none today; a device-local mark, not a recorded episode), 0 self-reported steps counted as done
+summary: 5 lessons complete, of which 5 fully evidence-backed (every step episode-backed); across them 23 episode-backed steps, of which 5 strong (graded: crib, sim, station), 11 act (asked or marked, nothing graded: advisor, crew, walkaround) and 7 presence (a device saw a room or an open panel: placard, walk); 4 of those lessons hold at least one strong step and 0 hold nothing else, 0 device-mark steps (none today; a device-local mark, not a recorded episode), 0 self-reported steps counted as done
 this verifies integrity since export and resolution against the bundle; a wallet signature, if any, proves that the holder of a key signed this digest at export - a key, not a person; nothing is written to any chain, nothing is anchored, and this is no accreditation
 ```
 
@@ -95,7 +95,7 @@ ok ladder.prerequisite: checked 40, failing 0
 note sim.threshold: rigging-signals has no scalar threshold in sims.json; passed=true is taken from the record and not re-derived
 note sim.threshold: crane-lift has no scalar threshold in sims.json; passed=true is taken from the record and not re-derived
 signature: unsigned: this device only
-summary: 5 lessons complete, of which 5 fully evidence-backed (every step episode-backed); across them 23 episode-backed steps, 0 device-mark steps (none today; a device-local mark, not a recorded episode), 0 self-reported steps counted as done
+summary: 5 lessons complete, of which 5 fully evidence-backed (every step episode-backed); across them 23 episode-backed steps, of which 5 strong (graded: crib, sim, station), 11 act (asked or marked, nothing graded: advisor, crew, walkaround) and 7 presence (a device saw a room or an open panel: placard, walk); 4 of those lessons hold at least one strong step and 0 hold nothing else, 0 device-mark steps (none today; a device-local mark, not a recorded episode), 0 self-reported steps counted as done
 this verifies integrity since export and resolution against the bundle; a wallet signature, if any, proves that the holder of a key signed this digest at export - a key, not a person; nothing is written to any chain, nothing is anchored, and this is no accreditation
 ```
 

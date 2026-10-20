@@ -581,10 +581,27 @@ _halls_in = {'path': 'pack/registry/halls.json',
              'sha256': hashlib.sha256(
                  (ROOT / 'pack' / 'registry' / 'halls.json').read_bytes()).hexdigest()}
 
+# HONEST: how strong the evidence behind each recording kind is. DECLARED once, in completion/registry/completion.json
+# (completion/build.py, fail closed); read here, never retyped, and only REPORTED: nothing below changes a count of what
+# is verifiable, partly verifiable or completable.
+COMPLETION_REG, _completion_in = _reg('completion/registry/completion.json')
+_ESTR = need(COMPLETION_REG, 'evidence_strength', 'completion/registry/completion.json')
+STRENGTH_LEVELS = list(need(_ESTR, 'levels', 'completion.json#evidence_strength'))
+STRENGTH_OF = {k: need(v, 'strength', 'completion.json#evidence_strength.by_kind[%s]' % k)
+               for k, v in need(_ESTR, 'by_kind', 'completion.json#evidence_strength').items()}
+STRENGTH_WHY = {k: need(v, 'why', 'completion.json#evidence_strength.by_kind[%s]' % k)
+                for k, v in need(_ESTR, 'by_kind', 'completion.json#evidence_strength').items()}
+for _k, _lvl in STRENGTH_OF.items():
+    if _lvl not in STRENGTH_LEVELS:
+        raise ValueError('evals: completion.json declares strength %r for %s, not one of %s' % (_lvl, _k, STRENGTH_LEVELS))
+
 _KINDS = need(LESSONS_REG, 'step_kinds', 'lessons/registry/lessons.json')
 RECORDING_KINDS = sorted(k for k in _KINDS
                          if need(_KINDS[k], 'records', 'lessons.json#step_kinds[%s]' % k) is not None)
 SILENT_KINDS = sorted(k for k in _KINDS if k not in RECORDING_KINDS)
+if sorted(STRENGTH_OF) != RECORDING_KINDS:
+    raise ValueError('evals: completion.json declares a strength for %s but lessons.json records an episode for %s'
+                     % (sorted(STRENGTH_OF), RECORDING_KINDS))
 _LESSONS = need(LESSONS_REG, 'lessons', 'lessons/registry/lessons.json')
 _EDGES = need(need(LESSONS_REG, 'ladder', 'lessons.json'), 'edges', 'lessons.json#ladder')
 _SIMS = need(SIMS_FULL, 'sims', 'sims/registry/sims.json')
@@ -650,6 +667,12 @@ for _lid in sorted(_LESSONS):
         'evidence_backed_steps': len(_rec),
         'self_reported_steps': len(_sil),
         'evidence_kinds': sorted({s['kind'] for s in _rec}),
+        'strong_steps': sum(1 for s in _rec if STRENGTH_OF[s['kind']] == 'strong'),
+        'act_steps': sum(1 for s in _rec if STRENGTH_OF[s['kind']] == 'act'),
+        'presence_steps': sum(1 for s in _rec if STRENGTH_OF[s['kind']] == 'presence'),
+        'strongest_evidence': ('strong' if any(STRENGTH_OF[s['kind']] == 'strong' for s in _rec)
+                               else 'act' if any(STRENGTH_OF[s['kind']] == 'act' for s in _rec)
+                               else 'presence' if _rec else 'none'),
         'silent_kinds': sorted({s['kind'] for s in _sil}),
         'sims_run': sorted({need(s, 'sim', 'a sim step of %s' % _lid)
                             for s in _steps if s['kind'] == 'sim'}),
@@ -742,7 +765,8 @@ _edges_into_unverifiable = sum(1 for a in _needs for b in _needs[a] if b not in 
 
 COMPLETION_EVIDENCE = {
     'inputs': {'lessons': _lessons_in, 'sims': _sims_in, 'campuses': _campuses_in,
-               'unions': _unions_in, 'halls': _halls_in, 'training': _training_match_in},
+               'unions': _unions_in, 'halls': _halls_in, 'training': _training_match_in,
+               'completion': _completion_in},
     'recording_kinds': RECORDING_KINDS,
     'silent_kinds': SILENT_KINDS,
     'matchability': MATCHABILITY,
@@ -759,6 +783,18 @@ COMPLETION_EVIDENCE = {
                        'episode now; a kind added later with a null field would '
                        'be silent again, whatever its name suggests.',
     'per_lesson': PER_LESSON,
+    # HONEST: "fully verifiable by episode" counts lessons whose every step writes an episode; it does not say how
+    # strong those episodes are. The split sits next to the total in the rollup and here, read from the declaration.
+    'evidence_strength': {
+        'declared_in': 'completion/registry/completion.json#evidence_strength',
+        'levels': {l: need(need(_ESTR, 'levels', 'completion.json#evidence_strength'), l, 'levels') for l in STRENGTH_LEVELS},
+        'by_kind': {k: {'strength': STRENGTH_OF[k], 'why': STRENGTH_WHY[k]} for k in RECORDING_KINDS},
+        'steps_by_kind': {k: sum(1 for l in _LESSONS.values() for st in l['steps'] if st['kind'] == k) for k in RECORDING_KINDS},
+        'steps_by_strength': {l: sum(1 for l2 in _LESSONS.values() for st in l2['steps']
+                                     if st['kind'] in STRENGTH_OF and STRENGTH_OF[st['kind']] == l) for l in STRENGTH_LEVELS},
+        'reported_only': 'strength is reported next to the totals and changes none of them: which lessons are '
+                         'verifiable, fully verifiable or completable is decided by the rules above, not by strength',
+    },
     'rollup': {
         'lessons': len(PER_LESSON),
         'steps': sum(v['steps'] for v in PER_LESSON.values()),
@@ -772,6 +808,15 @@ COMPLETION_EVIDENCE = {
         'not_completable': sum(1 for v in PER_LESSON.values() if not v['completable']),
         'fully_verifiable_by_episode': sum(1 for v in PER_LESSON.values()
                                            if v['fully_evidence_backed'] and v['completable']),
+        'fully_verifiable_with_a_strong_step': sum(1 for v in PER_LESSON.values()
+                                                   if v['fully_evidence_backed'] and v['completable'] and v['strong_steps'] > 0),
+        'fully_verifiable_strongest_is_act': sum(1 for v in PER_LESSON.values()
+                                                 if v['fully_evidence_backed'] and v['completable'] and v['strongest_evidence'] == 'act'),
+        'fully_verifiable_presence_only': sum(1 for v in PER_LESSON.values()
+                                              if v['fully_evidence_backed'] and v['completable'] and v['strongest_evidence'] == 'presence'),
+        'fully_verifiable_every_step_strong': sum(1 for v in PER_LESSON.values()
+                                                  if v['fully_evidence_backed'] and v['completable']
+                                                  and v['strong_steps'] == v['steps']),
         'fully_verifiable': len(_by_cls['full']),
         'partly_verifiable': len(_by_cls['partial']),
         'not_verifiable': len(_by_cls['none']),
@@ -812,7 +857,12 @@ COMPLETION_EVIDENCE = {
     },
     'means': 'a lesson is verifiable when at least one of its steps records an '
              'episode; fully verifiable when every step does. A self-reported '
-             'step is one the learner marks done and nothing else records.',
+             'step is one the learner marks done and nothing else records. '
+             'Fully verifiable says every step leaves an episode, not that the '
+             'episodes are equally strong: see evidence_strength and the rollup '
+             'fully_verifiable_with_a_strong_step, which counts the lessons that '
+             'hold at least one step the page grades (sim, station, crib); the '
+             'rest rest on a question asked, a point marked or a room entered.',
     'honest': 'this measures what the registries DECLARE, not what any learner '
               'did: no episode has been recorded and no seat has been run. '
               'Every count here is of steps and rules, and it says nothing '

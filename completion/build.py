@@ -166,6 +166,60 @@ for kind, spec in STEP_KINDS.items():
 RECORDING_KINDS = sorted(k for k, r in EVIDENCE_RULE.items() if r['class'] == 'episode-backed')
 SILENT_KINDS = sorted(k for k, r in EVIDENCE_RULE.items() if r['class'] != 'episode-backed')
 
+# ------------------------------------------------------ evidence strength ---
+# HONEST (wave 21 review): "episode-backed" says a device wrote an episode, not how much that episode says. Every
+# episode-backed kind therefore DECLARES a strength here, once, with the reason read off what its episode kind records
+# (training.json#episode_kinds[kind].granularity). Three levels, no more:
+#   strong   - the page GRADES the learner's answer or run against a key or rubric and records only on a pass.
+#   act      - a deliberate act of the learner (a question asked, a point marked) is recorded; nothing is graded.
+#   presence - only that a device saw the walker somewhere or a panel open; the learner need not have done anything.
+# No other level exists, a kind with no declaration stops the build, and a declaration for a kind that is not
+# episode-backed stops it too. Strength changes only what is REPORTED: no verifier rule reads it, nothing that passed
+# fails and nothing that failed passes. The self-reported / device-mark class stays the guard it is.
+STRENGTH_LEVELS = {
+    'strong': 'the page grades the learner\'s answer or run against a key or rubric and writes the episode only on a pass '
+              '(sim, station, crib). Still a device event: it does not say the learner was alone, unaided or did not retry',
+    'act': 'a deliberate act of the learner is recorded and nothing is graded: a fixed question asked, a point marked '
+           '(advisor, crew, walkaround). It says the act happened, not that the answer was understood or the point true',
+    'presence': 'only that a device saw the walker inside a room, or a placard panel left open for its dwell with the '
+                'walker in that room (walk, placard). The learner need not have done anything else',
+}
+EVIDENCE_STRENGTH = {
+    'sim': ('strong', 'a scored run: the seat\'s rubric rows are graded by the sim and the episode records the outcome '
+                      '(passed, rows); the step is held to the seat and scenario it names'),
+    'station': ('strong', 'a graded answer: the episode is written only when the station quiz is answered with the '
+                          'correct option, checked by the page against the station\'s own key. Wrong picks tried first '
+                          'are not recorded, so a quiz can be passed by trying every option'),
+    'crib': ('strong', 'a graded check: the episode is written only when the district crib check is finished with every '
+                       'pick right (picks at least the declared number). A failed run records nothing, so retries '
+                       'before the pass are invisible'),
+    'advisor': ('act', 'one fixed topic asked of the advisor and answered from a record or the advisor registry; '
+                       'nothing about the learner is graded - it records the question, not that the answer was understood'),
+    'crew': ('act', 'one fixed topic asked of one crew role while the seat ran; nothing is graded - it records the '
+                    'question, not that the answer was understood'),
+    'walkaround': ('act', 'one point marked by the learner; the sims registry itself says a point is not a score and not '
+                          'a gate, so this is a tick, not a graded outcome'),
+    'walk': ('presence', 'the walker\'s position entered the rectangle of one room; no path, no dwell, no act'),
+    'placard': ('presence', 'a placard panel stayed open for its dwell while the walker stood in the room; it does '
+                            'not say the placard was read'),
+}
+_ep_kinds = set(RECORDING_KINDS)
+if set(EVIDENCE_STRENGTH) != _ep_kinds:
+    raise KeyError('evidence strength: declared for ' + ', '.join(sorted(set(EVIDENCE_STRENGTH) - _ep_kinds) or ['(nothing extra)'])
+                   + ' but missing for ' + ', '.join(sorted(_ep_kinds - set(EVIDENCE_STRENGTH)) or ['(nothing)'])
+                   + ': every episode-backed step kind declares a strength, and only those')
+for _k, (_lvl, _why) in EVIDENCE_STRENGTH.items():
+    if _lvl not in STRENGTH_LEVELS:
+        raise KeyError(f'evidence strength: {_k} declares {_lvl!r}, not one of {sorted(STRENGTH_LEVELS)}')
+    if not _why.strip():
+        raise KeyError(f'evidence strength: {_k} declares no reason')
+for kind, r in EVIDENCE_RULE.items():
+    if kind in EVIDENCE_STRENGTH:
+        r['strength'], r['strength_why'] = EVIDENCE_STRENGTH[kind]
+    else:
+        r['strength'], r['strength_why'] = 'none', 'no episode is recorded for this class, so there is no evidence to grade'
+STRENGTH_KINDS = {lvl: sorted(k for k, (l, _w) in EVIDENCE_STRENGTH.items() if l == lvl) for lvl in STRENGTH_LEVELS}
+
 # ------------------------------------------------------------- per lesson ---
 PER_LESSON = {}
 tot_rec = tot_silent = 0
@@ -189,10 +243,27 @@ for lid, L in LESSON_MAP.items():
         'episode_backed_steps': by['episode-backed'],
         'device_mark_steps': by['device-mark'],
         'self_reported_steps': by['self-reported'],
+        'strong_steps': sum(1 for s in steps if s['kind'] in STRENGTH_KINDS['strong']),
+        'act_steps': sum(1 for s in steps if s['kind'] in STRENGTH_KINDS['act']),
+        'presence_steps': sum(1 for s in steps if s['kind'] in STRENGTH_KINDS['presence']),
         'needs': sorted(e['needs'] for e in LADDER if e['lesson'] == lid),
     }
     tot_rec += by['episode-backed']
     tot_silent += by['device-mark'] + by['self-reported']
+for _p in PER_LESSON.values():
+    _p['strongest'] = 'strong' if _p['strong_steps'] else 'act' if _p['act_steps'] else 'presence' if _p['presence_steps'] else 'none'
+    _p['every_step_strong'] = _p['steps'] > 0 and _p['strong_steps'] == _p['steps']
+STRENGTH_COUNTS = {
+    'steps_strong': sum(p['strong_steps'] for p in PER_LESSON.values()),
+    'steps_act': sum(p['act_steps'] for p in PER_LESSON.values()),
+    'steps_presence': sum(p['presence_steps'] for p in PER_LESSON.values()),
+    'lessons_every_step_strong': sum(1 for p in PER_LESSON.values() if p['every_step_strong']),
+    'lessons_with_a_strong_step': sum(1 for p in PER_LESSON.values() if p['strongest'] == 'strong'),
+    'lessons_strongest_act': sum(1 for p in PER_LESSON.values() if p['strongest'] == 'act'),
+    'lessons_presence_only': sum(1 for p in PER_LESSON.values() if p['strongest'] == 'presence'),
+}
+if STRENGTH_COUNTS['steps_strong'] + STRENGTH_COUNTS['steps_act'] + STRENGTH_COUNTS['steps_presence'] != tot_rec:
+    raise AssertionError('evidence strength: the strength split does not sum to the recording steps')
 counts = req(LESSONS, 'counts', 'lessons.json')
 assert tot_rec == req(counts, 'recording_steps', 'counts'), 'recording step count drifted from lessons.json'
 assert tot_silent == req(counts, 'silent_steps', 'counts'), 'silent step count drifted from lessons.json'
@@ -232,6 +303,7 @@ HONESTY = {
         'that a walk or placard episode means more than it says: it records that a device saw the walker\'s position inside a room, or a placard panel left open for its dwell with the walker in that room - not that anyone read, understood or took on what the placard requires, and not that the room exists outside this bundle',
         'that a self-reported step happened at all (no step kind is self-reported today; the rule stays so one that is added cannot carry evidence it does not have)',
         'that a station or crib episode means more than it says: it records that a device saw a correct pick on a station quiz, or a crib check finished with every pick right - not that the checklist was read, that the pick was not found by trying every option, that anything was learned or that the learner can name the tools. The marks in tc-progress (the record\'s `stations` and `tools` blocks) are device-local marks the halls keep for their own HUD; they feed no step',
+        'that every episode-backed step is equally strong evidence: of the step kinds, sim, station and crib are graded by the page (strong), advisor, crew and walkaround record a deliberate act with nothing graded (act), and walk and placard record only presence in a room (presence). A lesson counted as fully verifiable by episode may hold presence and act steps alone; the summary a verifier prints splits the steps by strength, and none of this changes what verifies',
         'that the seat was passed under supervision, or that any score means anything outside this bundle',
         'any accreditation, ticket, licence or credential; no hall, employer or authority has signed anything',
         'any duration of training, and no price is claimed',
@@ -707,11 +779,23 @@ registry = {
         'device-mark': 'no step kind today (station and crib were device marks until wave 21 and now write episodes): a mark in the device-local progress record, not a recorded episode. The class and the verifier branch for it stay, inert, so a kind added later that leaves only a mark cannot be called evidence-backed',
         'self-reported': 'no step kind today (walk and placard recorded nothing before wave 20 and now write episodes): done would be the learner\'s word. The class and its rules stay, so a kind added with no record cannot carry evidence it does not have',
     },
+    'evidence_strength': {
+        'levels': STRENGTH_LEVELS,
+        'kinds': STRENGTH_KINDS,
+        'by_kind': {k: {'strength': l, 'why': w} for k, (l, w) in EVIDENCE_STRENGTH.items()},
+        'reported_only': 'strength is reported next to every total and read by no verifier rule: it changes what a summary '
+                         'says, never what passes. An episode-backed step is still only a device event; the self-reported / '
+                         'device-mark classes stay the guard they were',
+        'headline': 'a lesson counted as fully verifiable by episode may rest on presence and act steps alone; '
+                    'lessons_with_a_strong_step says how many hold at least one graded step, lessons_every_step_strong '
+                    'how many hold nothing else',
+    },
     'evidence_rule': EVIDENCE_RULE,
     'recording_kinds': RECORDING_KINDS,
     'silent_kinds': SILENT_KINDS,
     'counts': {
         'lessons': len(PER_LESSON),
+        **STRENGTH_COUNTS,
         'recording_steps': tot_rec,
         'silent_steps': tot_silent,
         'episode_backed_steps': sum(p['episode_backed_steps'] for p in PER_LESSON.values()),

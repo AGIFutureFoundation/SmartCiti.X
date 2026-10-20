@@ -4,7 +4,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-29",
- "source_stamp": "ebc5ddf1f30546ee",
+ "source_stamp": "ea5a557714602806",
  "provenance": "DERIVED",
  "provenance_note": "record tags, kinds, privacy, licence and scopes are read from contrib/registry/contrib.json; env facts from it and robotics/registry/robotics.json; the split ratios, card template, best-practice list and intake limits are AUTHORED here",
  "honesty": {
@@ -22,7 +22,7 @@
    "tc-contribution/2"
   ],
   "intake_tag": "tc-contribution/2",
-  "contrib_source_stamp": "c457bdbd846feee9",
+  "contrib_source_stamp": "44eb89df287fbdb9",
   "robotics_schema": "tc-robotics/1",
   "robotics_contract_version": 1
  },
@@ -133,7 +133,7 @@
   "episodes": "[{id, kind, split, env|sim, actor, provenance: {package, index, t}}]",
   "splits": "{train: n, val: n, test: n}",
   "refused": "[{package, reason, detail}]",
-  "excluded": "{revoked_packages, revoked_episodes, duplicate_episodes}",
+  "excluded": "{revoked_packages, revoked_episodes, duplicate_episodes, activity_episodes_out_of_scope}",
   "digest": "SHA-256 over the canonical manifest without digest - so a card can name the exact manifest it describes"
  },
  "split": {
@@ -161,9 +161,21 @@
  "consent_scope": {
   "scopes": [
    "agent-training",
+   "lesson-activity",
    "robot-training"
   ],
-  "rule": "a dataset is built FOR one declared scope; a package is admitted only if its consent.scope includes it, otherwise it is refused by name (consent-scope)"
+  "rule": "a dataset is built FOR one declared scope; a package is admitted only if its consent.scope includes it, otherwise it is refused by name (consent-scope)",
+  "activity": {
+   "scope": "lesson-activity",
+   "kinds": [
+    "crib",
+    "placard",
+    "station",
+    "walk"
+   ],
+   "phrase": "room movement, dwell times, quiz picks and tool picks",
+   "rule": "an episode of kind crib, placard, station, walk (room movement, dwell times, quiz picks and tool picks) is admitted only into a dataset built for the lesson-activity scope; in a dataset built for any other scope it is left out and counted in excluded.activity_episodes_out_of_scope, even from a package whose consent.scope names both"
+  }
  },
  "revocation": {
   "file": "datashare/revocations.json",

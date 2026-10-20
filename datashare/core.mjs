@@ -35,6 +35,10 @@ function datashareCore(cfg, sha256hex) {
   const LICENCE = need(need(cfg, 'licence', 'datashare.json'), 'dataset_licence', 'datashare.json#licence');
   const COMPATIBLE = need(cfg.licence, 'compatible', 'datashare.json#licence');
   const SCOPES = need(need(cfg, 'consent_scope', 'datashare.json'), 'scopes', 'datashare.json#consent_scope');
+  /* HONEST: room movement, dwell times, quiz picks and tool picks are admitted only into the dataset built for the activity scope */
+  const ACT = need(need(cfg, 'consent_scope', 'datashare.json'), 'activity', 'datashare.json#consent_scope');
+  const ACT_SCOPE = need(ACT, 'scope', 'datashare.json#consent_scope.activity');
+  const ACT_KINDS = need(ACT, 'kinds', 'datashare.json#consent_scope.activity');
   const RATIOS = need(need(cfg, 'split', 'datashare.json'), 'ratios', 'datashare.json#split');
   const PRIV = need(cfg, 'privacy', 'datashare.json');
   const FORBIDDEN = new Map();
@@ -103,7 +107,7 @@ function datashareCore(cfg, sha256hex) {
     }
     const revokedP = new Set(revocations.packages), revokedE = new Set(revocations.episodes);
     const refused = [], admitted = [], seenPkg = new Set(), seenEp = new Map(), items = [];
-    const excluded = { revoked_packages: 0, revoked_episodes: 0, duplicate_episodes: 0 };
+    const excluded = { revoked_packages: 0, revoked_episodes: 0, duplicate_episodes: 0, activity_episodes_out_of_scope: 0 };
     const tagsSeen = new Set();
     for (const p of packages) {
       const name = need(p, 'name', 'package entry'), rec = need(p, 'record', name), verdict = need(p, 'verdict', name);
@@ -129,6 +133,7 @@ function datashareCore(cfg, sha256hex) {
       for (let i = 0; i < eps.length; i++) {
         const ep = eps[i];
         entry.episodes++;
+        if (ACT_KINDS.includes(need(ep, 'kind', name + ' episode')) && scope !== ACT_SCOPE) { excluded.activity_episodes_out_of_scope++; continue; }
         const id = await episodeId(ep);
         if (revokedE.has(id)) { excluded.revoked_episodes++; continue; }
         if (seenEp.has(id)) { excluded.duplicate_episodes++; seenEp.get(id).also_in.push(digest); continue; }

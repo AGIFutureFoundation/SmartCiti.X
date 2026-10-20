@@ -571,6 +571,33 @@ const r4 = (x) => Math.round(x * 1e4) / 1e4;
        && Object.keys(lessons).filter((id) => at(lessons[id], 'steps').some((s) => s.kind === 'station' || s.kind === 'crib')).every((id) => compl(id) && mine[id].cls === 'full')
        && at(r, 'fully_verifiable_by_episode') === Object.keys(lessons).length && at(r, 'self_reported_steps') === 0,
        'station and crib are matchable episode kinds, every lesson holding a station or crib step is completable and fully verifiable by episode, and no kind is silent');
+    // HONEST: evidence strength per kind is read from the completion declaration, recomputed per lesson from the steps, and
+    // reported next to the fully-verifiable total; it moves no verifiability count
+    const ES = at(ce, 'evidence_strength');
+    const STR = at(CMP, 'evidence_strength.by_kind');
+    const lvlOf = (k) => at(STR, `${k}.strength`);
+    const strongOnly = Object.keys(lessons).filter((id) => at(lessons[id], 'steps').every((s) => lvlOf(s.kind) === 'strong'));
+    const withStrong = Object.keys(lessons).filter((id) => compl(id) && mine[id].cls === 'full' && at(lessons[id], 'steps').some((s) => lvlOf(s.kind) === 'strong'));
+    ok(Object.keys(at(ES, 'by_kind')).sort().join() === Object.keys(STR).sort().join()
+       && Object.keys(STR).every((k) => at(ES, `by_kind.${k}.strength`) === lvlOf(k) && at(ES, `by_kind.${k}.why`) === at(STR, `${k}.why`))
+       && at(ES, 'declared_in') === 'completion/registry/completion.json#evidence_strength' && at(ce, 'inputs.completion.path') === 'completion/registry/completion.json'
+       && lvlOf('walk') === 'presence' && lvlOf('placard') === 'presence' && lvlOf('station') === 'strong' && lvlOf('crib') === 'strong' && lvlOf('sim') === 'strong',
+       'the strength per kind is the completion registry\'s own declaration (read, not typed): walk and placard presence, sim station crib strong, with the reason carried');
+    const stepsBy = {}, stepsByLvl = { strong: 0, act: 0, presence: 0 };
+    for (const l of Object.values(lessons)) for (const st of at(l, 'steps')) { stepsBy[st.kind] = (stepsBy[st.kind] || 0) + 1; stepsByLvl[lvlOf(st.kind)]++; }
+    ok(Object.keys(stepsBy).length === Object.keys(at(ES, 'steps_by_kind')).length && Object.keys(stepsBy).every((k) => at(ES, `steps_by_kind.${k}`) === stepsBy[k])
+       && Object.keys(stepsByLvl).every((l) => at(ES, `steps_by_strength.${l}`) === stepsByLvl[l]) && Object.keys(at(ES, 'steps_by_strength')).length === 3
+       && stepsByLvl.strong + stepsByLvl.act + stepsByLvl.presence === at(r, 'evidence_backed_steps'),
+       `steps per kind and per strength are recomputed from the lessons (strong ${stepsByLvl.strong}, act ${stepsByLvl.act}, presence ${stepsByLvl.presence}) and sum to the ${at(r, 'evidence_backed_steps')} evidence-backed steps`);
+    ok(at(r, 'fully_verifiable_with_a_strong_step') === withStrong.length
+       && at(r, 'fully_verifiable_every_step_strong') === strongOnly.length
+       && at(r, 'fully_verifiable_strongest_is_act') + at(r, 'fully_verifiable_presence_only') + at(r, 'fully_verifiable_with_a_strong_step') === at(r, 'fully_verifiable_by_episode')
+       && Object.keys(lessons).every((id) => at(pl[id], 'strong_steps') + at(pl[id], 'act_steps') + at(pl[id], 'presence_steps') === at(pl[id], 'evidence_backed_steps')
+         && at(pl[id], 'strong_steps') === at(lessons[id], 'steps').filter((s) => lvlOf(s.kind) === 'strong').length)
+       && at(r, 'fully_verifiable_by_episode') === Object.keys(lessons).length,
+       `of ${at(r, 'fully_verifiable_by_episode')} fully verifiable lessons, ${withStrong.length} hold a strong step and ${strongOnly.length} hold nothing else; the split sums to the total and the total is unchanged`);
+    ok(/not that the\s*episodes are equally strong|not that the episodes are equally strong/.test(at(ce, 'means').replace(/\s+/g, ' ')) && /hold at least one step the page grades/.test(at(ce, 'means').replace(/\s+/g, ' ')),
+       'the means text says fully verifiable is not equally strong and points at the lessons holding a graded step');
   }
 
   const pu = at(ce, 'per_union');

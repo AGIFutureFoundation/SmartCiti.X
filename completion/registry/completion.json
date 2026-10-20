@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-26",
- "source_stamp": "7fd7f5e54a843d02",
+ "source_stamp": "e31e5eaa3b3b20d7",
  "provenance": "DERIVED",
  "provenance_note": "every fact here is read from the registry that owns it and re-derivable by build.py; the fixture record is SCRIPTED and labelled as not a learner",
  "honesty": {
@@ -20,6 +20,7 @@
    "that a walk or placard episode means more than it says: it records that a device saw the walker's position inside a room, or a placard panel left open for its dwell with the walker in that room - not that anyone read, understood or took on what the placard requires, and not that the room exists outside this bundle",
    "that a self-reported step happened at all (no step kind is self-reported today; the rule stays so one that is added cannot carry evidence it does not have)",
    "that a station or crib episode means more than it says: it records that a device saw a correct pick on a station quiz, or a crib check finished with every pick right - not that the checklist was read, that the pick was not found by trying every option, that anything was learned or that the learner can name the tools. The marks in tc-progress (the record's `stations` and `tools` blocks) are device-local marks the halls keep for their own HUD; they feed no step",
+   "that every episode-backed step is equally strong evidence: of the step kinds, sim, station and crib are graded by the page (strong), advisor, crew and walkaround record a deliberate act with nothing graded (act), and walk and placard record only presence in a room (presence). A lesson counted as fully verifiable by episode may hold presence and act steps alone; the summary a verifier prints splits the steps by strength, and none of this changes what verifies",
    "that the seat was passed under supervision, or that any score means anything outside this bundle",
    "any accreditation, ticket, licence or credential; no hall, employer or authority has signed anything",
    "any duration of training, and no price is claimed"
@@ -126,6 +127,65 @@
   "device-mark": "no step kind today (station and crib were device marks until wave 21 and now write episodes): a mark in the device-local progress record, not a recorded episode. The class and the verifier branch for it stay, inert, so a kind added later that leaves only a mark cannot be called evidence-backed",
   "self-reported": "no step kind today (walk and placard recorded nothing before wave 20 and now write episodes): done would be the learner's word. The class and its rules stay, so a kind added with no record cannot carry evidence it does not have"
  },
+ "evidence_strength": {
+  "levels": {
+   "strong": "the page grades the learner's answer or run against a key or rubric and writes the episode only on a pass (sim, station, crib). Still a device event: it does not say the learner was alone, unaided or did not retry",
+   "act": "a deliberate act of the learner is recorded and nothing is graded: a fixed question asked, a point marked (advisor, crew, walkaround). It says the act happened, not that the answer was understood or the point true",
+   "presence": "only that a device saw the walker inside a room, or a placard panel left open for its dwell with the walker in that room (walk, placard). The learner need not have done anything else"
+  },
+  "kinds": {
+   "strong": [
+    "crib",
+    "sim",
+    "station"
+   ],
+   "act": [
+    "advisor",
+    "crew",
+    "walkaround"
+   ],
+   "presence": [
+    "placard",
+    "walk"
+   ]
+  },
+  "by_kind": {
+   "sim": {
+    "strength": "strong",
+    "why": "a scored run: the seat's rubric rows are graded by the sim and the episode records the outcome (passed, rows); the step is held to the seat and scenario it names"
+   },
+   "station": {
+    "strength": "strong",
+    "why": "a graded answer: the episode is written only when the station quiz is answered with the correct option, checked by the page against the station's own key. Wrong picks tried first are not recorded, so a quiz can be passed by trying every option"
+   },
+   "crib": {
+    "strength": "strong",
+    "why": "a graded check: the episode is written only when the district crib check is finished with every pick right (picks at least the declared number). A failed run records nothing, so retries before the pass are invisible"
+   },
+   "advisor": {
+    "strength": "act",
+    "why": "one fixed topic asked of the advisor and answered from a record or the advisor registry; nothing about the learner is graded - it records the question, not that the answer was understood"
+   },
+   "crew": {
+    "strength": "act",
+    "why": "one fixed topic asked of one crew role while the seat ran; nothing is graded - it records the question, not that the answer was understood"
+   },
+   "walkaround": {
+    "strength": "act",
+    "why": "one point marked by the learner; the sims registry itself says a point is not a score and not a gate, so this is a tick, not a graded outcome"
+   },
+   "walk": {
+    "strength": "presence",
+    "why": "the walker's position entered the rectangle of one room; no path, no dwell, no act"
+   },
+   "placard": {
+    "strength": "presence",
+    "why": "a placard panel stayed open for its dwell while the walker stood in the room; it does not say the placard was read"
+   }
+  },
+  "reported_only": "strength is reported next to every total and read by no verifier rule: it changes what a summary says, never what passes. An episode-backed step is still only a device event; the self-reported / device-mark classes stay the guard they were",
+  "headline": "a lesson counted as fully verifiable by episode may rest on presence and act steps alone; lessons_with_a_strong_step says how many hold at least one graded step, lessons_every_step_strong how many hold nothing else"
+ },
  "evidence_rule": {
   "walk": {
    "class": "episode-backed",
@@ -156,7 +216,9 @@
    "names_read_field": "room",
    "at_least": {},
    "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
-   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value; room is one of the step's names_read"
+   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value; room is one of the step's names_read",
+   "strength": "presence",
+   "strength_why": "the walker's position entered the rectangle of one room; no path, no dwell, no act"
   },
   "placard": {
    "class": "episode-backed",
@@ -191,7 +253,9 @@
     "dwell_ms": 5000
    },
    "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
-   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value; room is one of the step's names_read; dwell_ms is a finite number no smaller than the declared dwell"
+   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value; room is one of the step's names_read; dwell_ms is a finite number no smaller than the declared dwell",
+   "strength": "presence",
+   "strength_why": "a placard panel stayed open for its dwell while the walker stood in the room; it does not say the placard was read"
   },
   "station": {
    "class": "episode-backed",
@@ -225,7 +289,9 @@
    "names_read_field": "station_name",
    "at_least": {},
    "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
-   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value; room is one of the step's names_read"
+   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value; room is one of the step's names_read",
+   "strength": "strong",
+   "strength_why": "a graded answer: the episode is written only when the station quiz is answered with the correct option, checked by the page against the station's own key. Wrong picks tried first are not recorded, so a quiz can be passed by trying every option"
   },
   "crib": {
    "class": "episode-backed",
@@ -263,7 +329,9 @@
     "picks": 5
    },
    "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
-   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value; room is one of the step's names_read; dwell_ms is a finite number no smaller than the declared dwell"
+   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value; room is one of the step's names_read; dwell_ms is a finite number no smaller than the declared dwell",
+   "strength": "strong",
+   "strength_why": "a graded check: the episode is written only when the district crib check is finished with every pick right (picks at least the declared number). A failed run records nothing, so retries before the pass are invisible"
   },
   "walkaround": {
    "class": "episode-backed",
@@ -295,7 +363,9 @@
    "names_read_field": null,
    "at_least": {},
    "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
-   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value"
+   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value",
+   "strength": "act",
+   "strength_why": "one point marked by the learner; the sims registry itself says a point is not a score and not a gate, so this is a tick, not a graded outcome"
   },
   "sim": {
    "class": "episode-backed",
@@ -331,7 +401,9 @@
    "names_read_field": null,
    "at_least": {},
    "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
-   "rule": "ids.sim / ids.scenario: the evidence sim and scenario must be the step's own"
+   "rule": "ids.sim / ids.scenario: the evidence sim and scenario must be the step's own",
+   "strength": "strong",
+   "strength_why": "a scored run: the seat's rubric rows are graded by the sim and the episode records the outcome (passed, rows); the step is held to the seat and scenario it names"
   },
   "advisor": {
    "class": "episode-backed",
@@ -366,7 +438,9 @@
    "names_read_field": null,
    "at_least": {},
    "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
-   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value"
+   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value",
+   "strength": "act",
+   "strength_why": "one fixed topic asked of the advisor and answered from a record or the advisor registry; nothing about the learner is graded - it records the question, not that the answer was understood"
   },
   "crew": {
    "class": "episode-backed",
@@ -410,7 +484,9 @@
    "names_read_field": null,
    "at_least": {},
    "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
-   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value"
+   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value",
+   "strength": "act",
+   "strength_why": "one fixed topic asked of one crew role while the seat ran; nothing is graded - it records the question, not that the answer was understood"
   }
  },
  "recording_kinds": [
@@ -426,6 +502,13 @@
  "silent_kinds": [],
  "counts": {
   "lessons": 139,
+  "steps_strong": 65,
+  "steps_act": 270,
+  "steps_presence": 233,
+  "lessons_every_step_strong": 0,
+  "lessons_with_a_strong_step": 58,
+  "lessons_strongest_act": 81,
+  "lessons_presence_only": 0,
   "recording_steps": 568,
   "silent_steps": 0,
   "episode_backed_steps": 568,
@@ -449,7 +532,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "riggers-carry-under-control": {
    "hall": "riggers",
@@ -461,9 +549,14 @@
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 3,
+   "presence_steps": 1,
    "needs": [
     "riggers-first-card"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "crane-ops-read-the-chart": {
    "hall": "crane-ops",
@@ -475,9 +568,14 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 1,
    "needs": [
     "riggers-first-card"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "ironworkers-plan-out-loud": {
    "hall": "ironworkers",
@@ -489,9 +587,14 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 0,
+   "act_steps": 3,
+   "presence_steps": 1,
    "needs": [
     "riggers-carry-under-control"
-   ]
+   ],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "millwrights-shop-move": {
    "hall": "millwrights",
@@ -503,9 +606,14 @@
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 2,
    "needs": [
     "crane-ops-read-the-chart"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "welders-the-watch": {
    "hall": "welders",
@@ -517,7 +625,12 @@
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 3,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "boilermakers-get-them-out": {
    "hall": "boilermakers",
@@ -529,9 +642,14 @@
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 0,
+   "act_steps": 3,
+   "presence_steps": 2,
    "needs": [
     "welders-the-watch"
-   ]
+   ],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "operating-eng-locate-first": {
    "hall": "operating-eng",
@@ -543,7 +661,12 @@
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 3,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "demolition-stand-back": {
    "hall": "demolition",
@@ -555,9 +678,14 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
    "needs": [
     "operating-eng-locate-first"
-   ]
+   ],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "scaffold-read-the-tag": {
    "hall": "scaffold",
@@ -569,7 +697,12 @@
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "scaffold-build-in-order": {
    "hall": "scaffold",
@@ -581,9 +714,14 @@
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 2,
    "needs": [
     "scaffold-read-the-tag"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "waterproofers-flash-it-right": {
    "hall": "waterproofers",
@@ -595,9 +733,14 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 1,
    "needs": [
     "scaffold-build-in-order"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "bricklayers-gear-that-stays-on": {
    "hall": "bricklayers",
@@ -609,7 +752,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "bricklayers-grout-the-lift": {
    "hall": "bricklayers",
@@ -621,9 +769,14 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
    "needs": [
     "bricklayers-gear-that-stays-on"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "cement-masons-mind-the-weather": {
    "hall": "cement-masons",
@@ -635,9 +788,14 @@
    "episode_backed_steps": 6,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 2,
+   "act_steps": 1,
+   "presence_steps": 3,
    "needs": [
     "bricklayers-gear-that-stays-on"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "stone-carvers-hang-it-safely": {
    "hall": "stone-carvers",
@@ -649,9 +807,14 @@
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 1,
    "needs": [
     "bricklayers-gear-that-stays-on"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "tilesetters-start-underneath": {
    "hall": "tilesetters",
@@ -663,9 +826,14 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 2,
+   "act_steps": 1,
+   "presence_steps": 1,
    "needs": [
     "bricklayers-gear-that-stays-on"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "lathers-frame-for-the-next-trade": {
    "hall": "lathers",
@@ -677,7 +845,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 2,
+   "act_steps": 1,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "restore-point-the-joint": {
    "hall": "masonry-restore",
@@ -689,7 +862,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 2,
+   "act_steps": 1,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "restore-write-it-down": {
    "hall": "masonry-restore",
@@ -701,9 +879,14 @@
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 1,
    "needs": [
     "restore-point-the-joint"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "refractory-dry-it-slowly": {
    "hall": "refractory",
@@ -715,7 +898,12 @@
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 2,
+   "act_steps": 1,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "painters-contain-it": {
    "hall": "painters",
@@ -727,7 +915,12 @@
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "painters-lay-the-coat": {
    "hall": "painters",
@@ -739,9 +932,14 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
    "needs": [
     "painters-contain-it"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "hazmat-wash-and-decon": {
    "hall": "hazmat",
@@ -753,9 +951,14 @@
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 2,
    "needs": [
     "painters-contain-it"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "electricians-clip-in-first": {
    "hall": "electricians",
@@ -767,7 +970,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "glaziers-watch-the-line": {
    "hall": "glaziers",
@@ -779,9 +987,14 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
    "needs": [
     "electricians-clip-in-first"
-   ]
+   ],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "site-safety-make-it-normal": {
    "hall": "site-safety",
@@ -793,7 +1006,12 @@
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "surveyors-trust-the-control": {
    "hall": "surveyors",
@@ -805,7 +1023,12 @@
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "line-workers-find-the-fault": {
    "hall": "line-workers",
@@ -817,7 +1040,12 @@
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 3,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "hvacr-prove-the-sequence": {
    "hall": "hvacr",
@@ -829,7 +1057,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "fiber-splicers-keep-the-trace": {
    "hall": "fiber-splicers",
@@ -841,7 +1074,12 @@
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "carpenters-return-it-the-same": {
    "hall": "carpenters",
@@ -853,7 +1091,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "steel-erectors-land-it-on-the-bolts": {
    "hall": "steel-erectors",
@@ -865,10 +1108,15 @@
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 3,
+   "presence_steps": 1,
    "needs": [
     "riggers-carry-under-control",
     "riggers-first-card"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "port-crane-read-the-rope": {
    "hall": "port-crane",
@@ -880,9 +1128,14 @@
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 3,
+   "presence_steps": 1,
    "needs": [
     "riggers-carry-under-control"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "decking-walk-the-path-first": {
    "hall": "decking",
@@ -894,9 +1147,14 @@
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 2,
    "needs": [
     "riggers-first-card"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "tank-erectors-isolate-before-testing": {
    "hall": "tank-erectors",
@@ -908,9 +1166,14 @@
    "episode_backed_steps": 6,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 3,
+   "presence_steps": 2,
    "needs": [
     "boilermakers-get-them-out"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "piling-stand-the-rig-on-something": {
    "hall": "piling",
@@ -922,9 +1185,14 @@
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 2,
    "needs": [
     "riggers-carry-under-control"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "shoring-read-the-ground-again": {
    "hall": "shoring",
@@ -936,9 +1204,14 @@
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 3,
+   "presence_steps": 1,
    "needs": [
     "operating-eng-locate-first"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "laborers-stand-where-the-cab-can-see": {
    "hall": "laborers",
@@ -950,9 +1223,14 @@
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 0,
+   "act_steps": 3,
+   "presence_steps": 2,
    "needs": [
     "demolition-stand-back"
-   ]
+   ],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "teamsters-check-the-truck-before-the-load": {
    "hall": "teamsters",
@@ -964,7 +1242,12 @@
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "heavy-equip-listen-to-the-dash": {
    "hall": "heavy-equip",
@@ -976,9 +1259,14 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 1,
    "needs": [
     "teamsters-check-the-truck-before-the-load"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "marine-terminal-brief-the-lane": {
    "hall": "marine-terminal",
@@ -990,9 +1278,14 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 1,
    "needs": [
     "teamsters-check-the-truck-before-the-load"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "shipfitters-say-what-you-cannot-see": {
    "hall": "shipfitters",
@@ -1004,9 +1297,14 @@
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 2,
    "needs": [
     "welders-the-watch"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "fabricators-lay-it-out-then-prove-it": {
    "hall": "fabricators",
@@ -1018,9 +1316,14 @@
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 3,
+   "presence_steps": 1,
    "needs": [
     "shipfitters-say-what-you-cannot-see"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "pipeline-close-the-permit-properly": {
    "hall": "pipeline",
@@ -1032,9 +1335,14 @@
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 2,
    "needs": [
     "tank-erectors-isolate-before-testing"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "marine-pipe-know-when-to-come-out": {
    "hall": "marine-pipe",
@@ -1046,9 +1354,14 @@
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 2,
    "needs": [
     "pipeline-close-the-permit-properly"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "roofers-mind-the-edge-and-the-skylight": {
    "hall": "roofers",
@@ -1060,9 +1373,14 @@
    "episode_backed_steps": 6,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 3,
+   "presence_steps": 2,
    "needs": [
     "scaffold-read-the-tag"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "insulators-stay-inside-the-rails": {
    "hall": "insulators",
@@ -1074,9 +1392,14 @@
    "episode_backed_steps": 6,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 2,
+   "act_steps": 2,
+   "presence_steps": 2,
    "needs": [
     "electricians-clip-in-first"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "plasterers-pin-every-brace": {
    "hall": "plasterers",
@@ -1088,9 +1411,14 @@
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 3,
+   "presence_steps": 1,
    "needs": [
     "scaffold-build-in-order"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "firestop-write-down-what-you-sealed": {
    "hall": "firestop",
@@ -1102,9 +1430,14 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 0,
+   "act_steps": 3,
+   "presence_steps": 1,
    "needs": [
     "tilesetters-start-underneath"
-   ]
+   ],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "cladding-check-the-plank-you-stand-on": {
    "hall": "cladding",
@@ -1116,9 +1449,14 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 1,
    "needs": [
     "firestop-write-down-what-you-sealed"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "curtainwall-fuss-about-the-sills": {
    "hall": "curtainwall",
@@ -1130,9 +1468,14 @@
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 3,
+   "presence_steps": 1,
    "needs": [
     "cladding-check-the-plank-you-stand-on"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "window-glazing-let-the-ground-judge-it": {
    "hall": "window-glazing",
@@ -1144,9 +1487,14 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 1,
    "needs": [
     "glaziers-watch-the-line"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "sheetmetal-name-the-kit-before-you-climb": {
    "hall": "sheetmetal",
@@ -1158,9 +1506,14 @@
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 3,
+   "presence_steps": 1,
    "needs": [
     "fiber-splicers-keep-the-trace"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "machinists-move-the-job-without-marking-it": {
    "hall": "machinists",
@@ -1172,9 +1525,14 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 1,
    "needs": [
     "millwrights-shop-move"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "foundry-clear-the-runway-first": {
    "hall": "foundry",
@@ -1186,9 +1544,14 @@
    "episode_backed_steps": 6,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 2,
+   "act_steps": 2,
+   "presence_steps": 2,
    "needs": [
     "machinists-move-the-job-without-marking-it"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "pipefitters-safety-first-walk": {
    "hall": "pipefitters",
@@ -1200,7 +1563,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "elevator-tools-first-walk": {
    "hall": "elevator",
@@ -1212,7 +1580,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "drywall-layout-first-walk": {
    "hall": "drywall",
@@ -1224,7 +1597,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "flooring-inspection-first-walk": {
    "hall": "flooring",
@@ -1236,7 +1614,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "grounds-coordination-first-walk": {
    "hall": "grounds",
@@ -1248,7 +1631,12 @@
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "solar-documentation-first-walk": {
    "hall": "solar",
@@ -1260,7 +1648,12 @@
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "wind-safety-first-walk": {
    "hall": "wind",
@@ -1272,7 +1665,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "fire-sprinkler-tools-first-walk": {
    "hall": "fire-sprinkler",
@@ -1284,7 +1682,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "divers-layout-first-walk": {
    "hall": "divers",
@@ -1296,7 +1699,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "blasters-inspection-first-walk": {
    "hall": "blasters",
@@ -1308,7 +1716,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "miners-coordination-first-walk": {
    "hall": "miners",
@@ -1320,7 +1733,12 @@
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "smelter-documentation-first-walk": {
    "hall": "smelter",
@@ -1332,7 +1750,12 @@
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "toolmakers-safety-first-walk": {
    "hall": "toolmakers",
@@ -1344,7 +1767,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "platers-tools-first-walk": {
    "hall": "platers",
@@ -1356,7 +1784,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "substation-layout-first-walk": {
    "hall": "substation",
@@ -1368,7 +1801,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "cable-splicers-inspection-first-walk": {
    "hall": "cable-splicers",
@@ -1380,7 +1818,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "meter-techs-coordination-first-walk": {
    "hall": "meter-techs",
@@ -1392,7 +1835,12 @@
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "gas-distrib-documentation-first-walk": {
    "hall": "gas-distrib",
@@ -1404,7 +1852,12 @@
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "water-distrib-safety-first-walk": {
    "hall": "water-distrib",
@@ -1416,7 +1869,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "wastewater-tools-first-walk": {
    "hall": "wastewater",
@@ -1428,7 +1886,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "nuclear-layout-first-walk": {
    "hall": "nuclear",
@@ -1440,7 +1903,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "hydro-inspection-first-walk": {
    "hall": "hydro",
@@ -1452,7 +1920,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "geothermal-coordination-first-walk": {
    "hall": "geothermal",
@@ -1464,7 +1937,12 @@
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "battery-storage-documentation-first-walk": {
    "hall": "battery-storage",
@@ -1476,7 +1954,12 @@
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "ev-charging-safety-first-walk": {
    "hall": "ev-charging",
@@ -1488,7 +1971,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "hydrogen-tools-first-walk": {
    "hall": "hydrogen",
@@ -1500,7 +1988,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "transmission-layout-first-walk": {
    "hall": "transmission",
@@ -1512,7 +2005,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "district-energy-inspection-first-walk": {
    "hall": "district-energy",
@@ -1524,7 +2022,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "terrazzo-coordination-first-walk": {
    "hall": "terrazzo",
@@ -1536,7 +2039,12 @@
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "acoustic-documentation-first-walk": {
    "hall": "acoustic",
@@ -1548,7 +2056,12 @@
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "concrete-pump-safety-first-walk": {
    "hall": "concrete-pump",
@@ -1560,7 +2073,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "post-tension-tools-first-walk": {
    "hall": "post-tension",
@@ -1572,7 +2090,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "precast-layout-first-walk": {
    "hall": "precast",
@@ -1584,7 +2107,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "bas-controls-inspection-first-walk": {
    "hall": "bas-controls",
@@ -1596,7 +2124,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "fire-alarm-coordination-first-walk": {
    "hall": "fire-alarm",
@@ -1608,7 +2141,12 @@
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "security-sys-documentation-first-walk": {
    "hall": "security-sys",
@@ -1620,7 +2158,12 @@
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "network-cabling-safety-first-walk": {
    "hall": "network-cabling",
@@ -1632,7 +2175,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "data-center-tools-first-walk": {
    "hall": "data-center",
@@ -1644,7 +2192,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "instrumentation-layout-first-walk": {
    "hall": "instrumentation",
@@ -1656,7 +2209,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "plc-techs-inspection-first-walk": {
    "hall": "plc-techs",
@@ -1668,7 +2226,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "robotics-coordination-first-walk": {
    "hall": "robotics",
@@ -1680,7 +2243,12 @@
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "automation-int-documentation-first-walk": {
    "hall": "automation-int",
@@ -1692,7 +2260,12 @@
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "cleanroom-safety-first-walk": {
    "hall": "cleanroom",
@@ -1704,7 +2277,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "medical-gas-tools-first-walk": {
    "hall": "medical-gas",
@@ -1716,7 +2294,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "rail-track-layout-first-walk": {
    "hall": "rail-track",
@@ -1728,7 +2311,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "rail-signals-inspection-first-walk": {
    "hall": "rail-signals",
@@ -1740,7 +2328,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "catenary-coordination-first-walk": {
    "hall": "catenary",
@@ -1752,7 +2345,12 @@
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "transit-vehicle-documentation-first-walk": {
    "hall": "transit-vehicle",
@@ -1764,7 +2362,12 @@
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "aviation-ground-safety-first-walk": {
    "hall": "aviation-ground",
@@ -1776,7 +2379,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "airfield-tools-first-walk": {
    "hall": "airfield",
@@ -1788,7 +2396,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "fleet-diesel-layout-first-walk": {
    "hall": "fleet-diesel",
@@ -1800,7 +2413,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "bridge-inspect-inspection-first-walk": {
    "hall": "bridge-inspect",
@@ -1812,7 +2430,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "asbestos-coordination-first-walk": {
    "hall": "asbestos",
@@ -1824,7 +2447,12 @@
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "lead-abatement-documentation-first-walk": {
    "hall": "lead-abatement",
@@ -1836,7 +2464,12 @@
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "mold-remediation-safety-first-walk": {
    "hall": "mold-remediation",
@@ -1848,7 +2481,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "spill-response-tools-first-walk": {
    "hall": "spill-response",
@@ -1860,7 +2498,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "confined-space-layout-first-walk": {
    "hall": "confined-space",
@@ -1872,7 +2515,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "high-angle-inspection-first-walk": {
    "hall": "high-angle",
@@ -1884,7 +2532,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "industrial-clean-coordination-first-walk": {
    "hall": "industrial-clean",
@@ -1896,7 +2549,12 @@
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "survey-drone-documentation-first-walk": {
    "hall": "survey-drone",
@@ -1908,7 +2566,12 @@
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "m-adit-portal-site-walk": {
    "hall": "miners",
@@ -1920,7 +2583,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "m-hv-corridor-site-walk": {
    "hall": "transmission",
@@ -1932,7 +2600,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "m-rockfall-netting-site-walk": {
    "hall": "high-angle",
@@ -1944,7 +2617,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "m-snow-road-site-walk": {
    "hall": "operating-eng",
@@ -1956,7 +2634,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "m-wind-ridge-site-walk": {
    "hall": "wind",
@@ -1968,7 +2651,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "m-survey-control-site-walk": {
    "hall": "surveyors",
@@ -1980,7 +2668,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "f-line-clearance-site-walk": {
    "hall": "line-workers",
@@ -1992,7 +2685,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "f-trail-bridge-site-walk": {
    "hall": "carpenters",
@@ -2004,7 +2702,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "f-fuel-break-site-walk": {
    "hall": "grounds",
@@ -2016,7 +2719,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "f-timber-frame-site-walk": {
    "hall": "riggers",
@@ -2028,7 +2736,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "f-water-intake-site-walk": {
    "hall": "water-distrib",
@@ -2040,7 +2753,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "f-fire-lookout-site-walk": {
    "hall": "steel-erectors",
@@ -2052,7 +2770,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "c-river-intake-site-walk": {
    "hall": "hydro",
@@ -2064,7 +2787,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "c-pipeline-crossing-site-walk": {
    "hall": "pipeline",
@@ -2076,7 +2804,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "c-valve-vault-site-walk": {
    "hall": "confined-space",
@@ -2088,7 +2821,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "c-mesa-solar-site-walk": {
    "hall": "solar",
@@ -2100,7 +2838,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "c-quarry-bench-site-walk": {
    "hall": "blasters",
@@ -2112,7 +2855,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "d-levee-pump-site-walk": {
    "hall": "wastewater",
@@ -2124,7 +2872,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "d-terminal-berth-site-walk": {
    "hall": "marine-terminal",
@@ -2136,7 +2889,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "d-pile-trestle-site-walk": {
    "hall": "piling",
@@ -2148,7 +2906,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "d-outfall-dive-site-walk": {
    "hall": "divers",
@@ -2160,7 +2923,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "d-spill-boom-site-walk": {
    "hall": "spill-response",
@@ -2172,7 +2940,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "d-wind-staging-site-walk": {
    "hall": "crane-ops",
@@ -2184,7 +2957,12 @@
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   }
  },
  "sims": {

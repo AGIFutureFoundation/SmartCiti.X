@@ -122,6 +122,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
         identity of a key, not of a person; a key is held, lent and stolen. Nothing is on any chain.</li>
     <li><b>A PASS IS NOT AN ACCREDITATION.</b> A pass means the file is intact since export and every id in it exists in
         this bundle. Read the last line of every result.</li>
+    <li><b>A PASS DOES NOT SAY HOW STRONG THE EVIDENCE IS.</b> In a completion record, crib, sim, station steps are graded by the page (strong); advisor, crew, walkaround record a question asked or a point marked, nothing graded (act); placard, walk record only that a device saw a room or an open panel (presence). The summary line splits the episode-backed steps that way. A lesson can verify on acts and presence alone.</li>
+    <li><b>MOVEMENT TRAVELS ONLY UNDER ITS OWN SCOPE.</b> A contribution package carries room movement, dwell times, quiz picks and tool picks (crib, placard, station, walk episodes) only if its consent names <code>lesson-activity</code>; without it the package fails <code>consent.scope</code>.</li>
   </ul>
 </section>
 
@@ -172,7 +174,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-26",
- "source_stamp": "7fd7f5e54a843d02",
+ "source_stamp": "e31e5eaa3b3b20d7",
  "provenance": "DERIVED",
  "provenance_note": "every fact here is read from the registry that owns it and re-derivable by build.py; the fixture record is SCRIPTED and labelled as not a learner",
  "honesty": {
@@ -189,6 +191,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "that a walk or placard episode means more than it says: it records that a device saw the walker's position inside a room, or a placard panel left open for its dwell with the walker in that room - not that anyone read, understood or took on what the placard requires, and not that the room exists outside this bundle",
    "that a self-reported step happened at all (no step kind is self-reported today; the rule stays so one that is added cannot carry evidence it does not have)",
    "that a station or crib episode means more than it says: it records that a device saw a correct pick on a station quiz, or a crib check finished with every pick right - not that the checklist was read, that the pick was not found by trying every option, that anything was learned or that the learner can name the tools. The marks in tc-progress (the record's `stations` and `tools` blocks) are device-local marks the halls keep for their own HUD; they feed no step",
+   "that every episode-backed step is equally strong evidence: of the step kinds, sim, station and crib are graded by the page (strong), advisor, crew and walkaround record a deliberate act with nothing graded (act), and walk and placard record only presence in a room (presence). A lesson counted as fully verifiable by episode may hold presence and act steps alone; the summary a verifier prints splits the steps by strength, and none of this changes what verifies",
    "that the seat was passed under supervision, or that any score means anything outside this bundle",
    "any accreditation, ticket, licence or credential; no hall, employer or authority has signed anything",
    "any duration of training, and no price is claimed"
@@ -295,6 +298,65 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   "device-mark": "no step kind today (station and crib were device marks until wave 21 and now write episodes): a mark in the device-local progress record, not a recorded episode. The class and the verifier branch for it stay, inert, so a kind added later that leaves only a mark cannot be called evidence-backed",
   "self-reported": "no step kind today (walk and placard recorded nothing before wave 20 and now write episodes): done would be the learner's word. The class and its rules stay, so a kind added with no record cannot carry evidence it does not have"
  },
+ "evidence_strength": {
+  "levels": {
+   "strong": "the page grades the learner's answer or run against a key or rubric and writes the episode only on a pass (sim, station, crib). Still a device event: it does not say the learner was alone, unaided or did not retry",
+   "act": "a deliberate act of the learner is recorded and nothing is graded: a fixed question asked, a point marked (advisor, crew, walkaround). It says the act happened, not that the answer was understood or the point true",
+   "presence": "only that a device saw the walker inside a room, or a placard panel left open for its dwell with the walker in that room (walk, placard). The learner need not have done anything else"
+  },
+  "kinds": {
+   "strong": [
+    "crib",
+    "sim",
+    "station"
+   ],
+   "act": [
+    "advisor",
+    "crew",
+    "walkaround"
+   ],
+   "presence": [
+    "placard",
+    "walk"
+   ]
+  },
+  "by_kind": {
+   "sim": {
+    "strength": "strong",
+    "why": "a scored run: the seat's rubric rows are graded by the sim and the episode records the outcome (passed, rows); the step is held to the seat and scenario it names"
+   },
+   "station": {
+    "strength": "strong",
+    "why": "a graded answer: the episode is written only when the station quiz is answered with the correct option, checked by the page against the station's own key. Wrong picks tried first are not recorded, so a quiz can be passed by trying every option"
+   },
+   "crib": {
+    "strength": "strong",
+    "why": "a graded check: the episode is written only when the district crib check is finished with every pick right (picks at least the declared number). A failed run records nothing, so retries before the pass are invisible"
+   },
+   "advisor": {
+    "strength": "act",
+    "why": "one fixed topic asked of the advisor and answered from a record or the advisor registry; nothing about the learner is graded - it records the question, not that the answer was understood"
+   },
+   "crew": {
+    "strength": "act",
+    "why": "one fixed topic asked of one crew role while the seat ran; nothing is graded - it records the question, not that the answer was understood"
+   },
+   "walkaround": {
+    "strength": "act",
+    "why": "one point marked by the learner; the sims registry itself says a point is not a score and not a gate, so this is a tick, not a graded outcome"
+   },
+   "walk": {
+    "strength": "presence",
+    "why": "the walker's position entered the rectangle of one room; no path, no dwell, no act"
+   },
+   "placard": {
+    "strength": "presence",
+    "why": "a placard panel stayed open for its dwell while the walker stood in the room; it does not say the placard was read"
+   }
+  },
+  "reported_only": "strength is reported next to every total and read by no verifier rule: it changes what a summary says, never what passes. An episode-backed step is still only a device event; the self-reported / device-mark classes stay the guard they were",
+  "headline": "a lesson counted as fully verifiable by episode may rest on presence and act steps alone; lessons_with_a_strong_step says how many hold at least one graded step, lessons_every_step_strong how many hold nothing else"
+ },
  "evidence_rule": {
   "walk": {
    "class": "episode-backed",
@@ -325,7 +387,9 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "names_read_field": "room",
    "at_least": {},
    "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
-   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value; room is one of the step's names_read"
+   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value; room is one of the step's names_read",
+   "strength": "presence",
+   "strength_why": "the walker's position entered the rectangle of one room; no path, no dwell, no act"
   },
   "placard": {
    "class": "episode-backed",
@@ -360,7 +424,9 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     "dwell_ms": 5000
    },
    "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
-   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value; room is one of the step's names_read; dwell_ms is a finite number no smaller than the declared dwell"
+   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value; room is one of the step's names_read; dwell_ms is a finite number no smaller than the declared dwell",
+   "strength": "presence",
+   "strength_why": "a placard panel stayed open for its dwell while the walker stood in the room; it does not say the placard was read"
   },
   "station": {
    "class": "episode-backed",
@@ -394,7 +460,9 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "names_read_field": "station_name",
    "at_least": {},
    "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
-   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value; room is one of the step's names_read"
+   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value; room is one of the step's names_read",
+   "strength": "strong",
+   "strength_why": "a graded answer: the episode is written only when the station quiz is answered with the correct option, checked by the page against the station's own key. Wrong picks tried first are not recorded, so a quiz can be passed by trying every option"
   },
   "crib": {
    "class": "episode-backed",
@@ -432,7 +500,9 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     "picks": 5
    },
    "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
-   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value; room is one of the step's names_read; dwell_ms is a finite number no smaller than the declared dwell"
+   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value; room is one of the step's names_read; dwell_ms is a finite number no smaller than the declared dwell",
+   "strength": "strong",
+   "strength_why": "a graded check: the episode is written only when the district crib check is finished with every pick right (picks at least the declared number). A failed run records nothing, so retries before the pass are invisible"
   },
   "walkaround": {
    "class": "episode-backed",
@@ -464,7 +534,9 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "names_read_field": null,
    "at_least": {},
    "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
-   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value"
+   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value",
+   "strength": "act",
+   "strength_why": "one point marked by the learner; the sims registry itself says a point is not a score and not a gate, so this is a tick, not a graded outcome"
   },
   "sim": {
    "class": "episode-backed",
@@ -500,7 +572,9 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "names_read_field": null,
    "at_least": {},
    "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
-   "rule": "ids.sim / ids.scenario: the evidence sim and scenario must be the step's own"
+   "rule": "ids.sim / ids.scenario: the evidence sim and scenario must be the step's own",
+   "strength": "strong",
+   "strength_why": "a scored run: the seat's rubric rows are graded by the sim and the episode records the outcome (passed, rows); the step is held to the seat and scenario it names"
   },
   "advisor": {
    "class": "episode-backed",
@@ -535,7 +609,9 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "names_read_field": null,
    "at_least": {},
    "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
-   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value"
+   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value",
+   "strength": "act",
+   "strength_why": "one fixed topic asked of the advisor and answered from a record or the advisor registry; nothing about the learner is graded - it records the question, not that the answer was understood"
   },
   "crew": {
    "class": "episode-backed",
@@ -579,7 +655,9 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "names_read_field": null,
    "at_least": {},
    "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
-   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value"
+   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value",
+   "strength": "act",
+   "strength_why": "one fixed topic asked of one crew role while the seat ran; nothing is graded - it records the question, not that the answer was understood"
   }
  },
  "recording_kinds": [
@@ -595,6 +673,13 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
  "silent_kinds": [],
  "counts": {
   "lessons": 139,
+  "steps_strong": 65,
+  "steps_act": 270,
+  "steps_presence": 233,
+  "lessons_every_step_strong": 0,
+  "lessons_with_a_strong_step": 58,
+  "lessons_strongest_act": 81,
+  "lessons_presence_only": 0,
   "recording_steps": 568,
   "silent_steps": 0,
   "episode_backed_steps": 568,
@@ -618,7 +703,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "riggers-carry-under-control": {
    "hall": "riggers",
@@ -630,9 +720,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 3,
+   "presence_steps": 1,
    "needs": [
     "riggers-first-card"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "crane-ops-read-the-chart": {
    "hall": "crane-ops",
@@ -644,9 +739,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 1,
    "needs": [
     "riggers-first-card"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "ironworkers-plan-out-loud": {
    "hall": "ironworkers",
@@ -658,9 +758,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 0,
+   "act_steps": 3,
+   "presence_steps": 1,
    "needs": [
     "riggers-carry-under-control"
-   ]
+   ],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "millwrights-shop-move": {
    "hall": "millwrights",
@@ -672,9 +777,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 2,
    "needs": [
     "crane-ops-read-the-chart"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "welders-the-watch": {
    "hall": "welders",
@@ -686,7 +796,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 3,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "boilermakers-get-them-out": {
    "hall": "boilermakers",
@@ -698,9 +813,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 0,
+   "act_steps": 3,
+   "presence_steps": 2,
    "needs": [
     "welders-the-watch"
-   ]
+   ],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "operating-eng-locate-first": {
    "hall": "operating-eng",
@@ -712,7 +832,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 3,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "demolition-stand-back": {
    "hall": "demolition",
@@ -724,9 +849,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
    "needs": [
     "operating-eng-locate-first"
-   ]
+   ],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "scaffold-read-the-tag": {
    "hall": "scaffold",
@@ -738,7 +868,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "scaffold-build-in-order": {
    "hall": "scaffold",
@@ -750,9 +885,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 2,
    "needs": [
     "scaffold-read-the-tag"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "waterproofers-flash-it-right": {
    "hall": "waterproofers",
@@ -764,9 +904,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 1,
    "needs": [
     "scaffold-build-in-order"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "bricklayers-gear-that-stays-on": {
    "hall": "bricklayers",
@@ -778,7 +923,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "bricklayers-grout-the-lift": {
    "hall": "bricklayers",
@@ -790,9 +940,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
    "needs": [
     "bricklayers-gear-that-stays-on"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "cement-masons-mind-the-weather": {
    "hall": "cement-masons",
@@ -804,9 +959,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 6,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 2,
+   "act_steps": 1,
+   "presence_steps": 3,
    "needs": [
     "bricklayers-gear-that-stays-on"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "stone-carvers-hang-it-safely": {
    "hall": "stone-carvers",
@@ -818,9 +978,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 1,
    "needs": [
     "bricklayers-gear-that-stays-on"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "tilesetters-start-underneath": {
    "hall": "tilesetters",
@@ -832,9 +997,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 2,
+   "act_steps": 1,
+   "presence_steps": 1,
    "needs": [
     "bricklayers-gear-that-stays-on"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "lathers-frame-for-the-next-trade": {
    "hall": "lathers",
@@ -846,7 +1016,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 2,
+   "act_steps": 1,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "restore-point-the-joint": {
    "hall": "masonry-restore",
@@ -858,7 +1033,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 2,
+   "act_steps": 1,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "restore-write-it-down": {
    "hall": "masonry-restore",
@@ -870,9 +1050,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 1,
    "needs": [
     "restore-point-the-joint"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "refractory-dry-it-slowly": {
    "hall": "refractory",
@@ -884,7 +1069,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 2,
+   "act_steps": 1,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "painters-contain-it": {
    "hall": "painters",
@@ -896,7 +1086,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "painters-lay-the-coat": {
    "hall": "painters",
@@ -908,9 +1103,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
    "needs": [
     "painters-contain-it"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "hazmat-wash-and-decon": {
    "hall": "hazmat",
@@ -922,9 +1122,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 2,
    "needs": [
     "painters-contain-it"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "electricians-clip-in-first": {
    "hall": "electricians",
@@ -936,7 +1141,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "glaziers-watch-the-line": {
    "hall": "glaziers",
@@ -948,9 +1158,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
    "needs": [
     "electricians-clip-in-first"
-   ]
+   ],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "site-safety-make-it-normal": {
    "hall": "site-safety",
@@ -962,7 +1177,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "surveyors-trust-the-control": {
    "hall": "surveyors",
@@ -974,7 +1194,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "line-workers-find-the-fault": {
    "hall": "line-workers",
@@ -986,7 +1211,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 3,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "hvacr-prove-the-sequence": {
    "hall": "hvacr",
@@ -998,7 +1228,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "fiber-splicers-keep-the-trace": {
    "hall": "fiber-splicers",
@@ -1010,7 +1245,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "carpenters-return-it-the-same": {
    "hall": "carpenters",
@@ -1022,7 +1262,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "steel-erectors-land-it-on-the-bolts": {
    "hall": "steel-erectors",
@@ -1034,10 +1279,15 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 3,
+   "presence_steps": 1,
    "needs": [
     "riggers-carry-under-control",
     "riggers-first-card"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "port-crane-read-the-rope": {
    "hall": "port-crane",
@@ -1049,9 +1299,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 3,
+   "presence_steps": 1,
    "needs": [
     "riggers-carry-under-control"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "decking-walk-the-path-first": {
    "hall": "decking",
@@ -1063,9 +1318,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 2,
    "needs": [
     "riggers-first-card"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "tank-erectors-isolate-before-testing": {
    "hall": "tank-erectors",
@@ -1077,9 +1337,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 6,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 3,
+   "presence_steps": 2,
    "needs": [
     "boilermakers-get-them-out"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "piling-stand-the-rig-on-something": {
    "hall": "piling",
@@ -1091,9 +1356,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 2,
    "needs": [
     "riggers-carry-under-control"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "shoring-read-the-ground-again": {
    "hall": "shoring",
@@ -1105,9 +1375,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 3,
+   "presence_steps": 1,
    "needs": [
     "operating-eng-locate-first"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "laborers-stand-where-the-cab-can-see": {
    "hall": "laborers",
@@ -1119,9 +1394,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 0,
+   "act_steps": 3,
+   "presence_steps": 2,
    "needs": [
     "demolition-stand-back"
-   ]
+   ],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "teamsters-check-the-truck-before-the-load": {
    "hall": "teamsters",
@@ -1133,7 +1413,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "heavy-equip-listen-to-the-dash": {
    "hall": "heavy-equip",
@@ -1145,9 +1430,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 1,
    "needs": [
     "teamsters-check-the-truck-before-the-load"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "marine-terminal-brief-the-lane": {
    "hall": "marine-terminal",
@@ -1159,9 +1449,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 1,
    "needs": [
     "teamsters-check-the-truck-before-the-load"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "shipfitters-say-what-you-cannot-see": {
    "hall": "shipfitters",
@@ -1173,9 +1468,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 2,
    "needs": [
     "welders-the-watch"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "fabricators-lay-it-out-then-prove-it": {
    "hall": "fabricators",
@@ -1187,9 +1487,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 3,
+   "presence_steps": 1,
    "needs": [
     "shipfitters-say-what-you-cannot-see"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "pipeline-close-the-permit-properly": {
    "hall": "pipeline",
@@ -1201,9 +1506,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 2,
    "needs": [
     "tank-erectors-isolate-before-testing"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "marine-pipe-know-when-to-come-out": {
    "hall": "marine-pipe",
@@ -1215,9 +1525,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 2,
    "needs": [
     "pipeline-close-the-permit-properly"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "roofers-mind-the-edge-and-the-skylight": {
    "hall": "roofers",
@@ -1229,9 +1544,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 6,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 3,
+   "presence_steps": 2,
    "needs": [
     "scaffold-read-the-tag"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "insulators-stay-inside-the-rails": {
    "hall": "insulators",
@@ -1243,9 +1563,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 6,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 2,
+   "act_steps": 2,
+   "presence_steps": 2,
    "needs": [
     "electricians-clip-in-first"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "plasterers-pin-every-brace": {
    "hall": "plasterers",
@@ -1257,9 +1582,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 3,
+   "presence_steps": 1,
    "needs": [
     "scaffold-build-in-order"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "firestop-write-down-what-you-sealed": {
    "hall": "firestop",
@@ -1271,9 +1601,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 0,
+   "act_steps": 3,
+   "presence_steps": 1,
    "needs": [
     "tilesetters-start-underneath"
-   ]
+   ],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "cladding-check-the-plank-you-stand-on": {
    "hall": "cladding",
@@ -1285,9 +1620,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 1,
    "needs": [
     "firestop-write-down-what-you-sealed"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "curtainwall-fuss-about-the-sills": {
    "hall": "curtainwall",
@@ -1299,9 +1639,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 3,
+   "presence_steps": 1,
    "needs": [
     "cladding-check-the-plank-you-stand-on"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "window-glazing-let-the-ground-judge-it": {
    "hall": "window-glazing",
@@ -1313,9 +1658,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 1,
    "needs": [
     "glaziers-watch-the-line"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "sheetmetal-name-the-kit-before-you-climb": {
    "hall": "sheetmetal",
@@ -1327,9 +1677,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 5,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 3,
+   "presence_steps": 1,
    "needs": [
     "fiber-splicers-keep-the-trace"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "machinists-move-the-job-without-marking-it": {
    "hall": "machinists",
@@ -1341,9 +1696,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 1,
+   "act_steps": 2,
+   "presence_steps": 1,
    "needs": [
     "millwrights-shop-move"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "foundry-clear-the-runway-first": {
    "hall": "foundry",
@@ -1355,9 +1715,14 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 6,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
+   "strong_steps": 2,
+   "act_steps": 2,
+   "presence_steps": 2,
    "needs": [
     "machinists-move-the-job-without-marking-it"
-   ]
+   ],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "pipefitters-safety-first-walk": {
    "hall": "pipefitters",
@@ -1369,7 +1734,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "elevator-tools-first-walk": {
    "hall": "elevator",
@@ -1381,7 +1751,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "drywall-layout-first-walk": {
    "hall": "drywall",
@@ -1393,7 +1768,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "flooring-inspection-first-walk": {
    "hall": "flooring",
@@ -1405,7 +1785,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "grounds-coordination-first-walk": {
    "hall": "grounds",
@@ -1417,7 +1802,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "solar-documentation-first-walk": {
    "hall": "solar",
@@ -1429,7 +1819,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "wind-safety-first-walk": {
    "hall": "wind",
@@ -1441,7 +1836,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "fire-sprinkler-tools-first-walk": {
    "hall": "fire-sprinkler",
@@ -1453,7 +1853,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "divers-layout-first-walk": {
    "hall": "divers",
@@ -1465,7 +1870,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "blasters-inspection-first-walk": {
    "hall": "blasters",
@@ -1477,7 +1887,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "miners-coordination-first-walk": {
    "hall": "miners",
@@ -1489,7 +1904,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "smelter-documentation-first-walk": {
    "hall": "smelter",
@@ -1501,7 +1921,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "toolmakers-safety-first-walk": {
    "hall": "toolmakers",
@@ -1513,7 +1938,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "platers-tools-first-walk": {
    "hall": "platers",
@@ -1525,7 +1955,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "substation-layout-first-walk": {
    "hall": "substation",
@@ -1537,7 +1972,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "cable-splicers-inspection-first-walk": {
    "hall": "cable-splicers",
@@ -1549,7 +1989,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "meter-techs-coordination-first-walk": {
    "hall": "meter-techs",
@@ -1561,7 +2006,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "gas-distrib-documentation-first-walk": {
    "hall": "gas-distrib",
@@ -1573,7 +2023,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "water-distrib-safety-first-walk": {
    "hall": "water-distrib",
@@ -1585,7 +2040,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "wastewater-tools-first-walk": {
    "hall": "wastewater",
@@ -1597,7 +2057,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "nuclear-layout-first-walk": {
    "hall": "nuclear",
@@ -1609,7 +2074,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "hydro-inspection-first-walk": {
    "hall": "hydro",
@@ -1621,7 +2091,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "geothermal-coordination-first-walk": {
    "hall": "geothermal",
@@ -1633,7 +2108,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "battery-storage-documentation-first-walk": {
    "hall": "battery-storage",
@@ -1645,7 +2125,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "ev-charging-safety-first-walk": {
    "hall": "ev-charging",
@@ -1657,7 +2142,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "hydrogen-tools-first-walk": {
    "hall": "hydrogen",
@@ -1669,7 +2159,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "transmission-layout-first-walk": {
    "hall": "transmission",
@@ -1681,7 +2176,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "district-energy-inspection-first-walk": {
    "hall": "district-energy",
@@ -1693,7 +2193,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "terrazzo-coordination-first-walk": {
    "hall": "terrazzo",
@@ -1705,7 +2210,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "acoustic-documentation-first-walk": {
    "hall": "acoustic",
@@ -1717,7 +2227,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "concrete-pump-safety-first-walk": {
    "hall": "concrete-pump",
@@ -1729,7 +2244,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "post-tension-tools-first-walk": {
    "hall": "post-tension",
@@ -1741,7 +2261,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "precast-layout-first-walk": {
    "hall": "precast",
@@ -1753,7 +2278,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "bas-controls-inspection-first-walk": {
    "hall": "bas-controls",
@@ -1765,7 +2295,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "fire-alarm-coordination-first-walk": {
    "hall": "fire-alarm",
@@ -1777,7 +2312,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "security-sys-documentation-first-walk": {
    "hall": "security-sys",
@@ -1789,7 +2329,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "network-cabling-safety-first-walk": {
    "hall": "network-cabling",
@@ -1801,7 +2346,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "data-center-tools-first-walk": {
    "hall": "data-center",
@@ -1813,7 +2363,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "instrumentation-layout-first-walk": {
    "hall": "instrumentation",
@@ -1825,7 +2380,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "plc-techs-inspection-first-walk": {
    "hall": "plc-techs",
@@ -1837,7 +2397,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "robotics-coordination-first-walk": {
    "hall": "robotics",
@@ -1849,7 +2414,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "automation-int-documentation-first-walk": {
    "hall": "automation-int",
@@ -1861,7 +2431,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "cleanroom-safety-first-walk": {
    "hall": "cleanroom",
@@ -1873,7 +2448,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "medical-gas-tools-first-walk": {
    "hall": "medical-gas",
@@ -1885,7 +2465,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "rail-track-layout-first-walk": {
    "hall": "rail-track",
@@ -1897,7 +2482,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "rail-signals-inspection-first-walk": {
    "hall": "rail-signals",
@@ -1909,7 +2499,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "catenary-coordination-first-walk": {
    "hall": "catenary",
@@ -1921,7 +2516,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "transit-vehicle-documentation-first-walk": {
    "hall": "transit-vehicle",
@@ -1933,7 +2533,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "aviation-ground-safety-first-walk": {
    "hall": "aviation-ground",
@@ -1945,7 +2550,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "airfield-tools-first-walk": {
    "hall": "airfield",
@@ -1957,7 +2567,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "fleet-diesel-layout-first-walk": {
    "hall": "fleet-diesel",
@@ -1969,7 +2584,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "bridge-inspect-inspection-first-walk": {
    "hall": "bridge-inspect",
@@ -1981,7 +2601,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "asbestos-coordination-first-walk": {
    "hall": "asbestos",
@@ -1993,7 +2618,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "lead-abatement-documentation-first-walk": {
    "hall": "lead-abatement",
@@ -2005,7 +2635,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "mold-remediation-safety-first-walk": {
    "hall": "mold-remediation",
@@ -2017,7 +2652,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "spill-response-tools-first-walk": {
    "hall": "spill-response",
@@ -2029,7 +2669,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 1,
+   "act_steps": 1,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "strong",
+   "every_step_strong": false
   },
   "confined-space-layout-first-walk": {
    "hall": "confined-space",
@@ -2041,7 +2686,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "high-angle-inspection-first-walk": {
    "hall": "high-angle",
@@ -2053,7 +2703,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "industrial-clean-coordination-first-walk": {
    "hall": "industrial-clean",
@@ -2065,7 +2720,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "survey-drone-documentation-first-walk": {
    "hall": "survey-drone",
@@ -2077,7 +2737,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 1,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "m-adit-portal-site-walk": {
    "hall": "miners",
@@ -2089,7 +2754,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "m-hv-corridor-site-walk": {
    "hall": "transmission",
@@ -2101,7 +2771,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "m-rockfall-netting-site-walk": {
    "hall": "high-angle",
@@ -2113,7 +2788,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "m-snow-road-site-walk": {
    "hall": "operating-eng",
@@ -2125,7 +2805,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "m-wind-ridge-site-walk": {
    "hall": "wind",
@@ -2137,7 +2822,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "m-survey-control-site-walk": {
    "hall": "surveyors",
@@ -2149,7 +2839,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "f-line-clearance-site-walk": {
    "hall": "line-workers",
@@ -2161,7 +2856,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "f-trail-bridge-site-walk": {
    "hall": "carpenters",
@@ -2173,7 +2873,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "f-fuel-break-site-walk": {
    "hall": "grounds",
@@ -2185,7 +2890,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "f-timber-frame-site-walk": {
    "hall": "riggers",
@@ -2197,7 +2907,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "f-water-intake-site-walk": {
    "hall": "water-distrib",
@@ -2209,7 +2924,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "f-fire-lookout-site-walk": {
    "hall": "steel-erectors",
@@ -2221,7 +2941,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "c-river-intake-site-walk": {
    "hall": "hydro",
@@ -2233,7 +2958,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "c-pipeline-crossing-site-walk": {
    "hall": "pipeline",
@@ -2245,7 +2975,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "c-valve-vault-site-walk": {
    "hall": "confined-space",
@@ -2257,7 +2992,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "c-mesa-solar-site-walk": {
    "hall": "solar",
@@ -2269,7 +3009,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "c-quarry-bench-site-walk": {
    "hall": "blasters",
@@ -2281,7 +3026,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "d-levee-pump-site-walk": {
    "hall": "wastewater",
@@ -2293,7 +3043,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "d-terminal-berth-site-walk": {
    "hall": "marine-terminal",
@@ -2305,7 +3060,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "d-pile-trestle-site-walk": {
    "hall": "piling",
@@ -2317,7 +3077,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "d-outfall-dive-site-walk": {
    "hall": "divers",
@@ -2329,7 +3094,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "d-spill-boom-site-walk": {
    "hall": "spill-response",
@@ -2341,7 +3111,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   },
   "d-wind-staging-site-walk": {
    "hall": "crane-ops",
@@ -2353,7 +3128,12 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "episode_backed_steps": 4,
    "device_mark_steps": 0,
    "self_reported_steps": 0,
-   "needs": []
+   "strong_steps": 0,
+   "act_steps": 2,
+   "presence_steps": 2,
+   "needs": [],
+   "strongest": "act",
+   "every_step_strong": false
   }
  },
  "sims": {
@@ -27135,7 +27915,7 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-26",
- "source_stamp": "c457bdbd846feee9",
+ "source_stamp": "44eb89df287fbdb9",
  "provenance": "DERIVED",
  "provenance_note": "every fact here is read from the registry that owns it and re-derivable by build.py; the episode shapes are training/registry/training.json#episode_kinds verbatim; the fixture package is SCRIPTED and labelled as not a learner",
  "honesty": {
@@ -27145,7 +27925,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
    "every sim, scenario, hall and campus an episode names exists in this bundle at the stated pack version",
    "a trace, where attached, has no more samples than training/ caps and each sample has the declared keys",
    "the consent scope is a non-empty subset of the scopes this registry declares, the statement is this registry's and the licence is this registry's one licence",
-   "the counts the package states about itself (episodes by kind, traces attached, sims covered) recompute from its episodes"
+   "the counts the package states about itself (episodes by kind, traces attached, sims covered) recompute from its episodes",
+   "every walk, placard, station or crib episode (room movement, dwell times, quiz picks and tool picks) sits in a package whose consent.scope names lesson-activity; a package without that scope that carries one is refused by name"
   ],
   "does_not_prove": [
    "who the contributor is: contributor.claimed is a label this device stored, attested by this device only, and nothing checks it - unless a wallet signed, in which case it is the identity of a key, not of a person; a stolen key signs just as well",
@@ -27821,10 +28602,11 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   "classroom_from": "K-12 / classroom mode: recording and sharing are not offered at all"
  },
  "consent": {
-  "statement": "I share the training episodes in this package, recorded by this device, for the scopes named in consent.scope under the licence named in consent.license. I can withdraw by not sharing the file again; copies already given away are governed by that licence. Nothing in this package names me: it carries scenario ids, control schemes and measured outcomes, and the label or wallet address I chose to attach.",
+  "statement": "I share the training episodes in this package, recorded by this device, for the scopes named in consent.scope under the licence named in consent.license. I can withdraw by not sharing the file again; copies already given away are governed by that licence. Nothing in this package names me: it carries scenario ids, control schemes, measured outcomes and the fixed advisor topics, crew questions and walkaround points I picked, and the label or wallet address I chose to attach. It carries room movement, dwell times, quiz picks and tool picks only if consent.scope names lesson-activity.",
   "scopes": {
    "agent-training": "the episodes may be used to train, evaluate or benchmark a software agent (for example the ml-agents conversion the training pack describes); this bundle has trained none",
-   "robot-training": "the episodes may be used to train, evaluate or benchmark a controller for a physical robot; training/ says these are schematic single-machine simulators and no such controller should be trained on them for real equipment, and this bundle has trained none"
+   "robot-training": "the episodes may be used to train, evaluate or benchmark a controller for a physical robot; training/ says these are schematic single-machine simulators and no such controller should be trained on them for real equipment, and this bundle has trained none",
+   "lesson-activity": "the package may also carry room movement, dwell times, quiz picks and tool picks: which rooms I entered on foot, how long a placard panel stayed open, which station quiz I answered and which tool check I passed. These describe how I moved through the lessons, not how I operated a machine, and they are of little use for training an agent or a robot; without this scope a package carries none of them"
   },
   "license": {
    "spdx": "CC-BY-4.0",
@@ -27835,7 +28617,20 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   "revocable": true,
   "revocable_means": "revocable: true means the learner keeps the file and decides each time whether to hand it to anyone. Nothing here is uploaded, so there is nothing to recall from a server; a copy already given away is governed by the licence and by the recipient, not by this bundle.",
   "granted_at": "ISO-8601 string the page writes at the moment the export button is pressed with the boxes ticked; Date.parse must be finite. A device clock is not attested.",
-  "recorder_consent": "the recorder ships on, with a visible toggle: turning it off stops new episodes without touching ones already kept, and clearing them is a separate, deliberate action."
+  "recorder_consent": "the recorder ships on, with a visible toggle: turning it off stops new episodes without touching ones already kept, and clearing them is a separate, deliberate action.",
+  "activity": {
+   "scope": "lesson-activity",
+   "phrase": "room movement, dwell times, quiz picks and tool picks",
+   "kinds": [
+    "crib",
+    "placard",
+    "station",
+    "walk"
+   ],
+   "rule": "an episode of kind crib, placard, station, walk may sit in a package only if consent.scope names lesson-activity; otherwise the verifier fails consent.scope by name, and the contribute page leaves those episodes out of the package it builds",
+   "why_separate": "these kinds record room movement, dwell times, quiz picks and tool picks, not scenario ids, control schemes or measured outcomes, and are of little use for training an agent or a robot; a learner who shares a run for training has not thereby agreed to share where they walked",
+   "dataset_rule": "datashare/ admits these kinds into a dataset only when the dataset itself is built for the lesson-activity scope"
+  }
  },
  "episode_kinds": {
   "sim": {
@@ -27859,6 +28654,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
      "why": "{level, seed, scenario, steps, dt} - present ONLY when actor is scripted-reference: the closed level name, the integer seed of its fixed-seed generator, the scenario id, the number of control steps the run took, and the fixed step length when the run was headless (steps x dt is then its deterministic sim time - the `time` axis itself is wall-clock and informational) or null when a learner watched it at real time; absent on a human episode"
     }
    },
+   "requires_scope": null,
+   "requires_scope_why": "a scored run: scenario id, control scheme and measured outcome (the default package content)",
    "what": "one completed simulator run"
   },
   "advisor": {
@@ -27872,6 +28669,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     "answer_kind"
    ],
    "conditional_fields": {},
+   "requires_scope": null,
+   "requires_scope_why": "a fixed topic asked of an advisor: an id from a closed list, no free text",
    "what": "one advisor question asked and answered"
   },
   "crew": {
@@ -27888,6 +28687,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     "muster"
    ],
    "conditional_fields": {},
+   "requires_scope": null,
+   "requires_scope_why": "a fixed topic asked of a crew role: ids from closed lists, no free text",
    "what": "one crew role asked one question while its seat was running"
   },
   "walk": {
@@ -27900,6 +28701,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     "room"
    ],
    "conditional_fields": {},
+   "requires_scope": "lesson-activity",
+   "requires_scope_why": "room movement: which room of which hall the walker entered on foot",
    "what": "one lesson-target room entered on foot"
   },
   "placard": {
@@ -27913,6 +28716,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     "dwell_ms"
    ],
    "conditional_fields": {},
+   "requires_scope": "lesson-activity",
+   "requires_scope_why": "room movement and dwell time: which room, and how long its placard panel stayed open",
    "what": "one door placard panel opened and left open for its dwell"
   },
   "station": {
@@ -27926,6 +28731,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     "station_name"
    ],
    "conditional_fields": {},
+   "requires_scope": "lesson-activity",
+   "requires_scope_why": "a quiz pick: which training station quiz was answered correctly at its bench",
    "what": "one training station quiz answered correctly at its bench"
   },
   "crib": {
@@ -27940,6 +28747,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     "picks"
    ],
    "conditional_fields": {},
+   "requires_scope": "lesson-activity",
+   "requires_scope_why": "a tool pick: which district crib check was passed with every pick right",
    "what": "one district crib check passed"
   },
   "walkaround": {
@@ -27952,6 +28761,8 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     "point"
    ],
    "conditional_fields": {},
+   "requires_scope": null,
+   "requires_scope_why": "one pre-shift point marked: an id from the sims registry",
    "what": "one pre-shift walkaround point checked"
   }
  },
@@ -28135,6 +28946,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
     "file": "fixture/mutant-foreign-scope.json",
     "fails": "consent.scope"
    },
+   "activity-kinds-without-activity-scope": {
+    "file": "fixture/mutant-activity-kinds-without-activity-scope.json",
+    "fails": "consent.scope"
+   },
    "wrong-license": {
     "file": "fixture/mutant-wrong-license.json",
     "fails": "consent.license"
@@ -28196,6 +29011,10 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   "good": "fixture/v2/good.json",
   "dir_why": "a subdirectory, so the /1 fixture directory holds exactly good.json and the /1 mutants (the verify page and its test read it as the /1 set)",
   "mutants": {
+   "activity-kinds-without-activity-scope": {
+    "file": "fixture/v2/mutant-activity-kinds-without-activity-scope.json",
+    "fails": "consent.scope"
+   },
    "classroom-mode": {
     "file": "fixture/v2/mutant-classroom-mode.json",
     "fails": "origin.classroom"
@@ -28267,9 +29086,9 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
  },
  "counts": {
   "episode_kinds": 8,
-  "scopes": 2,
+  "scopes": 3,
   "rules": 21,
-  "mutants": 21,
+  "mutants": 22,
   "sims": 11,
   "halls": 111,
   "campuses": 10
@@ -34593,6 +35412,8 @@ function verify(record, sha256hex, recoverAddress) {
   const complete = new Map();
   const seen = new Set();
   let nComplete = 0, nFullyBacked = 0, nEpisode = 0, nDeviceMark = 0, nSelfReported = 0;
+  const byStrength = { strong: 0, act: 0, presence: 0 };
+  let nLessonsStrong = 0, nLessonsEveryStrong = 0;
   for (const L of lessons) {
     const lid = need(L, 'lesson', 'lesson entry');
     check('ids.lesson', lid in LESSONS && !seen.has(lid), `lesson ${lid} is not in lessons.json or is listed twice`);
@@ -34604,6 +35425,7 @@ function verify(record, sha256hex, recoverAddress) {
     complete.set(lid, isComplete === true);
     const steps = need(L, 'steps', lid);
     let allDone = steps.length > 0, selfHere = 0, epHere = 0, dmHere = 0;
+    const strHere = { strong: 0, act: 0, presence: 0 };
     const stepSeen = new Set();
     for (const S of steps) {
       const n = need(S, 'step', `${lid} step`);
@@ -34619,7 +35441,13 @@ function verify(record, sha256hex, recoverAddress) {
       if (!(kind in EVIDENCE_RULE) || !known_step) continue;
       const rule = EVIDENCE_RULE[kind];
       if (rule.class === 'episode-backed') {
-        if (done === true) epHere++;
+        if (done === true) {
+          epHere++;
+          /* evidence strength is declared per kind in the registry and only REPORTED here: no rule reads it */
+          const lvl = need(rule, 'strength', `evidence_rule.${kind}`);
+          if (!(lvl in strHere)) throw new Missing(`evidence_rule.${kind}.strength ${JSON.stringify(lvl)} is not strong, act or presence`);
+          strHere[lvl]++;
+        }
         check('step.recording-evidence', done !== true || (ev !== null && typeof ev === 'object'),
           `${lid} step ${n} (${kind}): a recording step claimed done without its episode`);
         if (done === true && ev !== null && typeof ev === 'object' && kind === 'sim') {
@@ -34678,7 +35506,12 @@ function verify(record, sha256hex, recoverAddress) {
     }
     check('lesson.complete-all-steps', isComplete !== true || (allDone && known !== null && steps.length === known.steps.length),
       `${lid}: complete with a step not done (or steps missing)`);
-    if (isComplete === true) { nComplete++; nEpisode += epHere; nDeviceMark += dmHere; nSelfReported += selfHere; if (selfHere === 0 && dmHere === 0) nFullyBacked++; }
+    if (isComplete === true) {
+      nComplete++; nEpisode += epHere; nDeviceMark += dmHere; nSelfReported += selfHere; if (selfHere === 0 && dmHere === 0) nFullyBacked++;
+      for (const l of Object.keys(byStrength)) byStrength[l] += strHere[l];
+      if (strHere.strong > 0) nLessonsStrong++;
+      if (strHere.strong > 0 && strHere.act === 0 && strHere.presence === 0 && epHere === steps.length) nLessonsEveryStrong++;
+    }
   }
 
   // sim.threshold — only when the registry states one
@@ -34701,7 +35534,8 @@ function verify(record, sha256hex, recoverAddress) {
       `${lid} is complete but its prerequisite ${needs} is not`);
   }
 
-  return { tally, notes, signature, summary: { nComplete, nFullyBacked, nEpisode, nDeviceMark, nSelfReported } };
+  return { tally, notes, signature, summary: { nComplete, nFullyBacked, nEpisode, nDeviceMark, nSelfReported, byStrength, nLessonsStrong, nLessonsEveryStrong,
+    strengthKinds: need(need(reg, 'evidence_strength', 'completion.json'), 'kinds', 'completion.json#evidence_strength') } };
 }
 
 // the browser's sha256 is async: compute the one digest verify() asks for
@@ -34735,7 +35569,10 @@ function report(result) {
   for (const n of notes) lines.push({ err: false, text: `note ${n}` });
   lines.push({ err: false, text: `signature: ${signature.line}` });
   lines.push({ err: false, text: `summary: ${summary.nComplete} lessons complete, of which ${summary.nFullyBacked} fully evidence-backed `
-    + `(every step episode-backed); across them ${summary.nEpisode} episode-backed steps, `
+    + `(every step episode-backed); across them ${summary.nEpisode} episode-backed steps, of which `
+    + `${summary.byStrength.strong} strong (graded: ${summary.strengthKinds.strong.join(', ')}), ${summary.byStrength.act} act (asked or marked, nothing graded: ${summary.strengthKinds.act.join(', ')}) `
+    + `and ${summary.byStrength.presence} presence (a device saw a room or an open panel: ${summary.strengthKinds.presence.join(', ')}); `
+    + `${summary.nLessonsStrong} of those lessons hold at least one strong step and ${summary.nLessonsEveryStrong} hold nothing else, `
     + `${summary.nDeviceMark} device-mark steps (none today; a device-local mark, not a recorded episode), `
     + `${summary.nSelfReported} self-reported steps counted as done` });
   lines.push({ err: false, text: LAST_LINE });
@@ -34834,6 +35671,7 @@ const GAUGES_ENUMERATED = need(TRACE_RULE, 'gauge_fields_enumerated', 'contrib.j
 const CONSENT_RULE = need(reg, 'consent', 'contrib.json');
 const CONSENT_STATEMENT = need(CONSENT_RULE, 'statement', 'contrib.json#consent');
 const SCOPES = Object.keys(need(CONSENT_RULE, 'scopes', 'contrib.json#consent'));
+const ACTIVITY_PHRASE = need(need(CONSENT_RULE, 'activity', 'contrib.json#consent'), 'phrase', 'contrib.json#consent.activity');
 const LICENSE = need(need(CONSENT_RULE, 'license', 'contrib.json#consent'), 'spdx', 'contrib.json#consent.license');
 const SIMS = need(simsReg, 'sims', 'sims.json');
 const HALL_SLUGS = new Set(need(hallsReg, 'halls', 'halls.json').map((h) => need(h, 'slug', 'hall')));
@@ -35099,6 +35937,12 @@ function verify(record, sha256hex, recoverAddress) {
     if (isWorld) { worldEpisode(ep, kind, w, check); continue; }
     if (!(kind in EPISODE_KINDS)) continue;
     const want = EPISODE_KINDS[kind].fields;
+    // HONEST: movement, dwell, quiz and tool picks travel only under the scope that names them (contrib.json#consent.activity)
+    const needScope = need(need(REG_KINDS, kind, 'contrib.json#episode_kinds'), 'requires_scope', `contrib.json#episode_kinds.${kind}`);
+    if (needScope !== null) {
+      check('consent.scope', Array.isArray(scope) && scope.includes(needScope),
+        `${w} (${kind}): a ${kind} episode carries ${ACTIVITY_PHRASE}, so consent.scope must name ${needScope}; it names ${JSON.stringify(scope)}`);
+    }
     const conditional = need(REG_KINDS[kind], 'conditional_fields', `contrib.json#episode_kinds.${kind}`);
     const have = Object.keys(ep);
     for (const f of have) check('episode.fields', want.includes(f), `${w} (${kind}): carries ${JSON.stringify(f)}, which a ${kind} episode does not record`);

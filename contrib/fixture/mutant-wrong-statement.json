@@ -13,6 +13,7 @@
   "granted_at": "2026-09-26T00:00:00Z",
   "scope": [
    "agent-training",
+   "lesson-activity",
    "robot-training"
   ],
   "revocable": true,
@@ -343,7 +344,8 @@
    "every sim, scenario, hall and campus an episode names exists in this bundle at the stated pack version",
    "a trace, where attached, has no more samples than training/ caps and each sample has the declared keys",
    "the consent scope is a non-empty subset of the scopes this registry declares, the statement is this registry's and the licence is this registry's one licence",
-   "the counts the package states about itself (episodes by kind, traces attached, sims covered) recompute from its episodes"
+   "the counts the package states about itself (episodes by kind, traces attached, sims covered) recompute from its episodes",
+   "every walk, placard, station or crib episode (room movement, dwell times, quiz picks and tool picks) sits in a package whose consent.scope names lesson-activity; a package without that scope that carries one is refused by name"
   ],
   "does_not_prove": [
    "who the contributor is: contributor.claimed is a label this device stored, attested by this device only, and nothing checks it - unless a wallet signed, in which case it is the identity of a key, not of a person; a stolen key signs just as well",
@@ -362,6 +364,6 @@
  "digest": {
   "alg": "SHA-256",
   "over": "canonical JSON of every top-level field except digest, with contributor.signature forced to null: keys sorted recursively, no whitespace, UTF-8",
-  "hex": "b610df0697c5d30a217c99d6ebcead8deebbca43f71bfef2fabe510ab6503132"
+  "hex": "6ad01440ceb501e2e2aaaf1b5d7bfb682d41cae83b0a1f500c4fb0a66e011827"
  }
 }

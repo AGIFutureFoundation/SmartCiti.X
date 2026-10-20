@@ -243,18 +243,51 @@ ID_SOURCES = {
 }
 
 # ----------------------------------------------------------------- consent ---
+# HONEST (wave 21 review): walk, placard, station and crib episodes are not scenario ids, control schemes or measured
+# outcomes. They say which rooms a learner entered on foot, how long a placard panel stayed open, which station quiz was
+# answered and which tool check was passed: movement, dwell and pick data, of little use for training a robot. So they are
+# left OUT of a shared package unless its consent.scope names this separate scope, whose text says so plainly. The kind ->
+# scope map is declared here and must cover every training episode kind (a new kind stops the build until it is classified).
+ACTIVITY_SCOPE = 'lesson-activity'
+ACTIVITY_PHRASE = 'room movement, dwell times, quiz picks and tool picks'
+KIND_SCOPE = {
+    'sim': None, 'advisor': None, 'crew': None, 'walkaround': None,
+    'walk': ACTIVITY_SCOPE, 'placard': ACTIVITY_SCOPE, 'station': ACTIVITY_SCOPE, 'crib': ACTIVITY_SCOPE,
+}
+KIND_SCOPE_WHY = {
+    'sim': 'a scored run: scenario id, control scheme and measured outcome (the default package content)',
+    'advisor': 'a fixed topic asked of an advisor: an id from a closed list, no free text',
+    'crew': 'a fixed topic asked of a crew role: ids from closed lists, no free text',
+    'walkaround': 'one pre-shift point marked: an id from the sims registry',
+    'walk': 'room movement: which room of which hall the walker entered on foot',
+    'placard': 'room movement and dwell time: which room, and how long its placard panel stayed open',
+    'station': 'a quiz pick: which training station quiz was answered correctly at its bench',
+    'crib': 'a tool pick: which district crib check was passed with every pick right',
+}
+if set(KIND_SCOPE) != set(EPISODE_KINDS) or set(KIND_SCOPE_WHY) != set(EPISODE_KINDS):
+    raise KeyError('sharing scope: training.json#episode_kinds has ' + ', '.join(sorted(EPISODE_KINDS))
+                   + ' but contrib/build.py classifies ' + ', '.join(sorted(KIND_SCOPE))
+                   + ': every episode kind declares whether it needs the ' + ACTIVITY_SCOPE + ' scope, and a new kind is not shared until it does')
+ACTIVITY_KINDS = sorted(k for k, v in KIND_SCOPE.items() if v == ACTIVITY_SCOPE)
+
 SCOPES = {
     'agent-training': 'the episodes may be used to train, evaluate or benchmark a software agent (for example the '
                       'ml-agents conversion the training pack describes); this bundle has trained none',
     'robot-training': 'the episodes may be used to train, evaluate or benchmark a controller for a physical robot; '
                       'training/ says these are schematic single-machine simulators and no such controller should be '
                       'trained on them for real equipment, and this bundle has trained none',
+    ACTIVITY_SCOPE: 'the package may also carry ' + ACTIVITY_PHRASE + ': which rooms I entered on foot, how long a '
+                    'placard panel stayed open, which station quiz I answered and which tool check I passed. These '
+                    'describe how I moved through the lessons, not how I operated a machine, and they are of little use '
+                    'for training an agent or a robot; without this scope a package carries none of them',
 }
 CONSENT_STATEMENT = ('I share the training episodes in this package, recorded by this device, for the scopes named '
                      'in consent.scope under the licence named in consent.license. I can withdraw by not sharing '
                      'the file again; copies already given away are governed by that licence. Nothing in this '
-                     'package names me: it carries scenario ids, control schemes and measured outcomes, and the '
-                     'label or wallet address I chose to attach.')
+                     'package names me: it carries scenario ids, control schemes, measured outcomes and the fixed '
+                     'advisor topics, crew questions and walkaround points I picked, and the label or wallet address '
+                     'I chose to attach. It carries ' + ACTIVITY_PHRASE + ' only if consent.scope names '
+                     + ACTIVITY_SCOPE + '.')
 LICENSE = {
     'spdx': 'CC-BY-4.0',
     'name': 'Creative Commons Attribution 4.0 International',
@@ -342,6 +375,8 @@ HONESTY = {
         'the consent scope is a non-empty subset of the scopes this registry declares, the statement is this '
         'registry\'s and the licence is this registry\'s one licence',
         'the counts the package states about itself (episodes by kind, traces attached, sims covered) recompute from its episodes',
+        'every walk, placard, station or crib episode (' + ACTIVITY_PHRASE + ') sits in a package whose consent.scope names '
+        + ACTIVITY_SCOPE + '; a package without that scope that carries one is refused by name',
     ],
     'does_not_prove': [
         'who the contributor is: contributor.claimed is a label this device stored, attested by this device only, '
@@ -581,6 +616,11 @@ def mutants(good):
     m['consent']['scope'] = ['agent-training', 'marketing']
     out['foreign-scope'] = ('consent.scope', stamp_digest(m))
 
+    # HONEST: a package carrying room movement, dwell, quiz picks or tool picks without the scope that names them
+    m = copy.deepcopy(good)
+    m['consent']['scope'] = [x for x in m['consent']['scope'] if x != ACTIVITY_SCOPE]
+    out['activity-kinds-without-activity-scope'] = ('consent.scope', stamp_digest(m))
+
     m = copy.deepcopy(good)
     m['consent']['license'] = 'CC0-1.0'
     out['wrong-license'] = ('consent.license', stamp_digest(m))
@@ -698,6 +738,8 @@ def mutants_v2(good):
     eps = lambda m: m['dataset']['episodes']
     wep = lambda m: next(e for e in eps(m) if e['kind'] in WORLD_KINDS)
 
+    m = copy.deepcopy(good); m['consent']['scope'] = [x for x in m['consent']['scope'] if x != ACTIVITY_SCOPE]
+    out['activity-kinds-without-activity-scope'] = ('consent.scope', stamp_digest(m))
     m = copy.deepcopy(good); m['origin']['classroom_mode'] = True
     out['classroom-mode'] = ('origin.classroom', stamp_digest(m))
     m = copy.deepcopy(good); del m['origin']
@@ -776,9 +818,24 @@ registry = {
         'granted_at': 'ISO-8601 string the page writes at the moment the export button is pressed with the boxes '
                       'ticked; Date.parse must be finite. A device clock is not attested.',
         'recorder_consent': req(TRAINING_HONESTY, 'consent', TRAINING_PATH + '#honesty'),
+        'activity': {
+            'scope': ACTIVITY_SCOPE,
+            'phrase': ACTIVITY_PHRASE,
+            'kinds': ACTIVITY_KINDS,
+            'rule': 'an episode of kind ' + ', '.join(ACTIVITY_KINDS) + ' may sit in a package only if consent.scope names '
+                    + ACTIVITY_SCOPE + '; otherwise the verifier fails consent.scope by name, and the contribute page '
+                    'leaves those episodes out of the package it builds',
+            'why_separate': 'these kinds record ' + ACTIVITY_PHRASE + ', not scenario ids, control schemes or measured '
+                            'outcomes, and are of little use for training an agent or a robot; a learner who shares a run '
+                            'for training has not thereby agreed to share where they walked',
+            'dataset_rule': 'datashare/ admits these kinds into a dataset only when the dataset itself is built for the '
+                            + ACTIVITY_SCOPE + ' scope',
+        },
     },
     'episode_kinds': {k: {'fields': FIELDS_BY_KIND[k],
                           'conditional_fields': CONDITIONAL[k] if k in CONDITIONAL else {},
+                          'requires_scope': KIND_SCOPE[k],
+                          'requires_scope_why': KIND_SCOPE_WHY[k],
                           'what': req(EPISODE_KINDS[k], 'what', f'{TRAINING_PATH}#episode_kinds.{k}')}
                       for k in EPISODE_KINDS},
     'actors': ACTORS,

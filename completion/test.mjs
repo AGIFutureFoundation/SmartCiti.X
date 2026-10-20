@@ -220,6 +220,70 @@ ok('the honest summary prints all three counts: episode-backed, device-mark and 
   && goodRun.summary.nSelfReported === good.lessons.filter((l) => l.complete)
     .flatMap((l) => l.steps).filter((s) => s.done && reg.evidence_rule[s.kind].class === 'self-reported').length);
 
+// ---- evidence strength by kind (HONEST): declared in the registry, reported next to every total, read by no rule ----
+const VV = await import('./verify.mjs');
+const STR = reg.evidence_strength;
+const recKinds = Object.keys(lessonsReg.step_kinds).filter((k) => lessonsReg.step_kinds[k].records !== null);
+ok('every episode-backed step kind declares exactly one strength (strong, act or presence) with a reason, and no other kind does',
+  JSON.stringify(Object.keys(STR.by_kind).sort()) === JSON.stringify(recKinds.slice().sort())
+  && Object.keys(STR.levels).sort().join() === 'act,presence,strong'
+  && Object.values(STR.by_kind).every((d) => d.strength in STR.levels && typeof d.why === 'string' && d.why.length > 20)
+  && recKinds.every((k) => reg.evidence_rule[k].strength === STR.by_kind[k].strength && reg.evidence_rule[k].strength_why === STR.by_kind[k].why)
+  && JSON.stringify(Object.values(STR.kinds).flat().sort()) === JSON.stringify(recKinds.slice().sort()));
+ok('walk and placard are presence and never strong; sim, station and crib are strong because the page grades them; advisor, crew and walkaround are act (nothing graded)',
+  STR.by_kind.walk.strength === 'presence' && STR.by_kind.placard.strength === 'presence'
+  && ['sim', 'station', 'crib'].every((k) => STR.by_kind[k].strength === 'strong')
+  && ['advisor', 'crew', 'walkaround'].every((k) => STR.by_kind[k].strength === 'act')
+  && /trying every option/.test(STR.by_kind.station.why) && /retries/.test(STR.by_kind.crib.why) && /not a score and not a gate/.test(STR.by_kind.walkaround.why));
+const stepsOf = (L) => lessonsReg.lessons[L].steps;
+ok('per lesson, strong + act + presence steps sum to the lesson\'s steps and strongest / every_step_strong recompute from lessons.json',
+  Object.entries(reg.lessons).every(([lid, p]) => {
+    const c = { strong: 0, act: 0, presence: 0 };
+    for (const st of stepsOf(lid)) c[STR.by_kind[st.kind].strength]++;
+    return p.strong_steps === c.strong && p.act_steps === c.act && p.presence_steps === c.presence
+      && c.strong + c.act + c.presence === p.steps
+      && p.strongest === (c.strong ? 'strong' : c.act ? 'act' : 'presence')
+      && p.every_step_strong === (c.strong === p.steps);
+  }));
+ok('the registry counts steps by strength and lessons by strongest step, recomputed from the lessons, and they sum to the recording steps and the lessons',
+  reg.counts.steps_strong + reg.counts.steps_act + reg.counts.steps_presence === reg.counts.recording_steps
+  && reg.counts.steps_strong === Object.values(reg.lessons).reduce((a, p) => a + p.strong_steps, 0)
+  && reg.counts.lessons_with_a_strong_step === Object.values(reg.lessons).filter((p) => p.strong_steps > 0).length
+  && reg.counts.lessons_every_step_strong === Object.values(reg.lessons).filter((p) => p.strong_steps === p.steps).length
+  && reg.counts.lessons_with_a_strong_step + reg.counts.lessons_strongest_act + reg.counts.lessons_presence_only === reg.counts.lessons);
+{
+  const doneBy = (lvl) => good.lessons.filter((l) => l.complete).flatMap((l) => l.steps)
+    .filter((s) => s.done && reg.evidence_rule[s.kind].strength === lvl).length;
+  const sm = goodRun.summary;
+  ok('the verifier summary splits the episode-backed steps by strength, the split sums to the total, and it matches a recount of the fixture',
+    sm.byStrength.strong === doneBy('strong') && sm.byStrength.act === doneBy('act') && sm.byStrength.presence === doneBy('presence')
+    && sm.byStrength.strong + sm.byStrength.act + sm.byStrength.presence === sm.nEpisode
+    && sm.nLessonsStrong === good.lessons.filter((l) => l.complete && l.steps.some((s) => reg.evidence_rule[s.kind].strength === 'strong')).length);
+  const line = VV.completionCore(Object.fromEntries(Object.entries(VV.REGISTRY_FILES).map(([k, p]) => [k, read('../' + p)]))).report(goodRun)
+    .map((l) => l.text).find((t) => t.startsWith('summary:'));
+  ok('the summary line a rep reads first prints the split next to the total: strong (graded), act (nothing graded) and presence, each with the kinds the registry lists, and the lessons holding a strong step',
+    new RegExp(`${sm.nEpisode} episode-backed steps, of which ${sm.byStrength.strong} strong \\(graded: crib, sim, station\\), ${sm.byStrength.act} act \\(.*advisor, crew, walkaround\\) and ${sm.byStrength.presence} presence \\(.*placard, walk\\)`).test(line)
+    && line.includes(`${sm.nLessonsStrong} of those lessons hold at least one strong step`));
+  // the strength is REPORTED, never decided: a registry that omits it or names an unknown level stops the verifier, and a
+  // reclassified kind moves only the summary split, never a rule result
+  const regsOf = () => Object.fromEntries(Object.entries(VV.REGISTRY_FILES).map(([k, p]) => [k, read('../' + p)]));
+  const runWith = (edit) => { const r = regsOf(); edit(r.completion); try { return { res: VV.completionCore(r).verify(good, (x) => createHash('sha256').update(Buffer.from(x, 'utf8')).digest('hex'), () => null) }; } catch (e) { return { err: e.message }; } };
+  const noStrength = runWith((c) => { delete c.evidence_rule.walk.strength; });
+  ok('a registry whose walk rule lost its strength stops the verifier by name (fail closed: no default strength)',
+    noStrength.err !== undefined && /evidence_rule\.walk lacks "strength"/.test(noStrength.err));
+  const badLevel = runWith((c) => { c.evidence_rule.walk.strength = 'strongest'; });
+  ok('a registry that gives a kind an unknown strength level stops the verifier by name',
+    badLevel.err !== undefined && /is not strong, act or presence/.test(badLevel.err));
+  const base = runWith(() => {});
+  const moved = runWith((c) => { c.evidence_rule.walk.strength = 'strong'; });
+  const walkDone = good.lessons.filter((l) => l.complete).flatMap((l) => l.steps).filter((s) => s.done && s.kind === 'walk').length;
+  const fails = (r) => Object.entries(r.res.tally).map(([k, t]) => k + ':' + t.fails.length).join();
+  ok('reclassifying a kind changes the reported split and nothing a rule decides: the tally is identical, only byStrength moves',
+    base.res !== undefined && moved.res !== undefined && fails(base) === fails(moved)
+    && moved.res.summary.byStrength.strong === base.res.summary.byStrength.strong + walkDone
+    && moved.res.summary.byStrength.presence === base.res.summary.byStrength.presence - walkDone && walkDone > 0);
+}
+
 const mutants = Object.entries(reg.fixture.mutants);
 ok('the builder wrote at least six mutants, each naming the rule it must fail', mutants.length >= 6
   && mutants.every(([, rule]) => reg.verifier.rules.includes(rule)));

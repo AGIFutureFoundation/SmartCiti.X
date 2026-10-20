@@ -486,6 +486,8 @@ const SCRAPE = `(() => {
   const at = (id, a) => { const e = document.getElementById(id); return e === null ? null : e.getAttribute(a); };
   const all = (sel, a) => [...document.querySelectorAll(sel)].map((e) => e.getAttribute(a));
   return {
+    completionState: at('completion-summary', 'data-completion'),
+    figs: Object.fromEntries([...document.querySelectorAll('#completion-summary [data-completion-fig]')].map((e) => [e.getAttribute('data-completion-fig'), e.textContent])),
     picked: at('picknote', 'data-picked-because'),
     sel: document.getElementById('hallpick').value,
     empty: at('emptynote', 'data-empty'),
@@ -629,6 +631,19 @@ if (!WANT_BROWSER) {
 
   /* ---- 3. THE CHECK THAT MATTERS MOST ---- */
   const seeded = await open(PAGE_URL, seedScript(0));
+  {
+    /* HONEST: the painted summary shows the strength split next to the total, from the same record */
+    const creg = JSON.parse(readText('completion/registry/completion.json'));
+    const lvlOf = (k) => creg.evidence_strength.by_kind[k].strength;
+    const tot = { strong: 0, act: 0, presence: 0 };
+    for (const L of Object.values(JSON.parse(readText('lessons/registry/lessons.json')).lessons)) for (const st of L.steps) tot[lvlOf(st.kind)]++;
+    const m = /^(\d+) \/ (\d+) \/ (\d+) of (\d+) \/ (\d+) \/ (\d+)$/.exec(String(seeded.figs['strength-steps']));
+    const ep = /^(\d+) of (\d+)$/.exec(String(seeded.figs['episode-steps']));
+    ok('[browser] the completion summary paints the evidence strength next to the totals: done and total steps per level (strong / act / presence) from the same record, summing to the episode-steps figure, with the totals the lessons registry gives, and the lessons holding a strong step',
+      seeded.completionState === 'present' && m !== null && ep !== null && +m[1] + +m[2] + +m[3] === +ep[1] && +m[4] + +m[5] + +m[6] === +ep[2]
+      && +m[4] === tot.strong && +m[5] === tot.act && +m[6] === tot.presence && /^\d+$/.test(String(seeded.figs['strong-lessons'])) && seeded.figs['evidence-backed'] !== undefined,
+      [JSON.stringify(seeded.figs), JSON.stringify(tot)]);
+  }
   const gatesSrc = readText(GATES_PATH);
   {
     const everyShut = seeded.gates.every((g) => g.pass === 'false');
@@ -808,7 +823,7 @@ if (!WANT_BROWSER) {
     const { createHash } = await import('node:crypto');
     const { writeFileSync, mkdirSync } = await import('node:fs');
     const meta = { product: data.product, pack_version: data.pack_version, step_kinds: data.step_kinds,
-      episode_kinds: data.episode_kinds, identity: 'test label', training_state: 'present', human_actor: data.human_actor };
+      episode_kinds: data.episode_kinds, evidence_strength: data.evidence_strength, identity: 'test label', training_state: 'present', human_actor: data.human_actor };
     ok('[shipped] the page carries training/registry/training.json#episode_kinds verbatim',
       JSON.stringify(data.episode_kinds) === JSON.stringify(trainingReg.episode_kinds));
     const NOW = new Date('2026-09-26T12:00:00.000Z');
@@ -954,8 +969,8 @@ if (!WANT_BROWSER) {
       && by['b-one-short'].steps.filter((s) => s.done).length === 2 && by['c-silent'].complete === false
       && by['c-silent'].steps[0].done === true && by['c-silent'].steps[1].done === false,
       [JSON.stringify(srec.lessons.map((l) => [l.lesson, l.complete, l.steps.map((s) => s.done)]))]);
-    const S = C.summarizeRecord(srec, data.step_kinds, data.episode_kinds);
-    const R = C.summarizeRecord(rec, data.step_kinds, data.episode_kinds);
+    const S = C.summarizeRecord(srec, data.step_kinds, data.episode_kinds, data.evidence_strength);
+    const R = C.summarizeRecord(rec, data.step_kinds, data.episode_kinds, data.evidence_strength);
     const recKinds = Object.keys(data.step_kinds).filter((k) => data.step_kinds[k].records !== null);
     ok('[shipped] the summary is computed from the record and keeps three counts apart by what '
       + 'stands behind a step: recorded-episode kinds (' + recKinds.join(', ') + ') done only where the '
@@ -976,6 +991,38 @@ if (!WANT_BROWSER) {
       && R.self_reported_steps_done === 0
       && R.episode_steps_done + R.device_mark_steps_done + R.self_reported_steps_done === R.steps_done,
       [JSON.stringify(S), JSON.stringify(R)]);
+    /* HONEST: the evidence strength split is next to every total, read from completion/registry/completion.json, and decides nothing */
+    {
+      const { readFileSync: rf } = await import('node:fs');
+      const creg = JSON.parse(rf(new URL('../completion/registry/completion.json', import.meta.url), 'utf8'));
+      const ES = data.evidence_strength;
+      ok('[shipped] the page carries the evidence strength per recording kind, verbatim from completion/registry/completion.json: walk and placard presence, sim station crib strong, advisor crew walkaround act',
+        JSON.stringify(ES.kinds) === JSON.stringify(creg.evidence_strength.kinds) && JSON.stringify(ES.levels) === JSON.stringify(creg.evidence_strength.levels)
+        && Object.keys(ES.by_kind).every((k) => ES.by_kind[k] === creg.evidence_strength.by_kind[k].strength) && Object.keys(ES.by_kind).sort().join() === recKinds.slice().sort().join()
+        && ES.by_kind.walk === 'presence' && ES.by_kind.placard === 'presence' && ES.by_kind.sim === 'strong' && ES.by_kind.station === 'strong' && ES.by_kind.crib === 'strong');
+      const sumOf = (o) => Object.values(o).reduce((a, b) => a + b, 0);
+      ok('[shipped] the summary splits the episode steps by strength next to the total: done and total per level sum to episode_steps_done and episode_steps, recomputed from the record',
+        sumOf(S.strength_done) === S.episode_steps_done && sumOf(S.strength_total) === S.episode_steps
+        && sumOf(R.strength_done) === R.episode_steps_done && sumOf(R.strength_total) === R.episode_steps
+        && ['strong', 'act', 'presence'].every((lvl) => R.strength_total[lvl] === allSteps.filter((s) => ES.by_kind[s.kind] === lvl).length
+          && R.strength_done[lvl] === allSteps.filter((s) => ES.by_kind[s.kind] === lvl && s.done).length)
+        && R.complete_with_strong <= R.complete && R.strength_kinds.strong.join() === ES.kinds.strong.join(), [JSON.stringify(R.strength_done), JSON.stringify(R.strength_total)]);
+      const noStr = (() => { try { C.summarizeRecord(srec, data.step_kinds, data.episode_kinds); return null; } catch (e) { return e.message; } })();
+      const badStr = (() => { try { C.summarizeRecord(srec, data.step_kinds, data.episode_kinds, { ...ES, by_kind: { ...ES.by_kind, walk: 'strongest' } }); return null; } catch (e) { return e.message; } })();
+      ok('[shipped] a summary asked for without the strength, or with a kind whose strength is not a declared level, throws by name (fail closed, no default)',
+        /needs the evidence strength/.test(String(noStr)) && /step kind walk records an episode but declares no known evidence strength/.test(String(badStr)));
+      const reclass = C.summarizeRecord(srec, data.step_kinds, data.episode_kinds, { ...ES, by_kind: { ...ES.by_kind, walk: 'strong' } });
+      ok('[shipped] reclassifying a kind moves only the strength split, never the done / complete / evidence-backed counts',
+        reclass.complete === S.complete && reclass.evidence_backed === S.evidence_backed && reclass.steps_done === S.steps_done && reclass.episode_steps_done === S.episode_steps_done);
+      const honest = rec.honesty.does_not_prove.find((x) => /not equally strong evidence/.test(x));
+      ok('[shipped] the exported record says in its own honesty that episode-backed steps are not equally strong, naming the kinds of each level from the registry',
+        honest !== undefined && ES.kinds.strong.every((k) => honest.includes(k)) && ES.kinds.presence.every((k) => honest.includes(k)) && /complete on presence and act steps alone/.test(honest));
+      ok('[shipped] the page source paints the strength rows (data-completion-fig strong-lessons and strength-steps), names strong / act / presence in its prose, and the export section says evidence-backed is not equally strong',
+        /'strong-lessons'/.test(html) && /'strength-steps'/.test(html) && /Evidence-backed means a device wrote an episode, not that all episodes say the same/.test(html)
+        && /Evidence-backed does not mean equally strong/.test(html)
+        && html.includes("S.strength_done.strong + ' / ' + S.strength_done.act + ' / ' + S.strength_done.presence + ' of ' + S.strength_total.strong + ' / '")
+        && html.includes("S.strength_total.act + ' / ' + S.strength_total.presence, 'strength-steps']"));
+    }
     /* wave 20: a walk or placard step is done only on the episode a device recorded for ITS room: hall and where equal the
        step's own, the room label is one of the step's names_read, and a placard's dwell_ms meets the declared floor. The
        floor and the names_read field are read from the embedded episode kinds, never typed here. */
@@ -1050,11 +1097,11 @@ if (!WANT_BROWSER) {
       noEvidence.lessons.every((l) => !l.complete && l.steps.every((s) => !s.done && s.evidence === null))
       && noEvidence.identity.claimed === null && Object.keys(noEvidence.sims).length === 0
       && Object.keys(noEvidence.tools).length === 0 && noEvidence.stations.length === 0
-      && C.summarizeRecord(noEvidence, data.step_kinds, data.episode_kinds).complete === 0
-      && C.summarizeRecord(noEvidence, data.step_kinds, data.episode_kinds).evidence_backed === 0
-      && C.summarizeRecord(noEvidence, data.step_kinds, data.episode_kinds).steps_done === 0
-      && C.summarizeRecord(noEvidence, data.step_kinds, data.episode_kinds).episode_steps_done === 0
-      && C.summarizeRecord(noEvidence, data.step_kinds, data.episode_kinds).device_mark_steps_done === 0);
+      && C.summarizeRecord(noEvidence, data.step_kinds, data.episode_kinds, data.evidence_strength).complete === 0
+      && C.summarizeRecord(noEvidence, data.step_kinds, data.episode_kinds, data.evidence_strength).evidence_backed === 0
+      && C.summarizeRecord(noEvidence, data.step_kinds, data.episode_kinds, data.evidence_strength).steps_done === 0
+      && C.summarizeRecord(noEvidence, data.step_kinds, data.episode_kinds, data.evidence_strength).episode_steps_done === 0
+      && C.summarizeRecord(noEvidence, data.step_kinds, data.episode_kinds, data.evidence_strength).device_mark_steps_done === 0);
     const sample = arg('sample');
     if (sample !== null) { mkdirSync(dirname(sample), { recursive: true }); writeFileSync(sample, JSON.stringify(rec, null, 1) + '\n'); }
 
@@ -1271,7 +1318,7 @@ if (!WANT_BROWSER) {
     if (!globalThis.crypto || !globalThis.crypto.subtle) globalThis.crypto = (await import('node:crypto')).webcrypto;
     const C = new Function(bm[1] + '\n' + cm[1] + '\nreturn { buildCompletionRecord, summarizeRecord, continuePoint };')();
     const meta = { product: data.product, pack_version: data.pack_version, step_kinds: data.step_kinds,
-      episode_kinds: data.episode_kinds, identity: null, training_state: 'absent', human_actor: data.human_actor };
+      episode_kinds: data.episode_kinds, evidence_strength: data.evidence_strength, identity: null, training_state: 'absent', human_actor: data.human_actor };
     const NOW = new Date('2026-09-26T12:00:00.000Z');
     const L = lessonsReg.lessons;
     const layerOf = {};
@@ -1280,7 +1327,7 @@ if (!WANT_BROWSER) {
     const courseOrder = keys.slice().sort((a, b) => (layerOf[a] - layerOf[b]) || (keys.indexOf(a) - keys.indexOf(b)));
     const run = async (prog) => {
       const rec = await C.buildCompletionRecord(prog, L, lessonsReg.ladder, meta, NOW, null);
-      const S = C.summarizeRecord(rec, data.step_kinds, data.episode_kinds);
+      const S = C.summarizeRecord(rec, data.step_kinds, data.episode_kinds, data.evidence_strength);
       return { pt: C.continuePoint(rec, L, lessonsReg.ladder, S.self_reported_kinds), S };
     };
     const empty = await run({});

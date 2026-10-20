@@ -12,12 +12,18 @@ they read first, and keeps as a file: this bundle sends it nowhere.
    recorded to `tc-training`, localStorage of the built 3D page.
 2. **Open [`web/trade_craft_contribute.html`](../web/trade_craft_contribute.html)** and read *Consent*. The statement, verbatim:
 
-   > I share the training episodes in this package, recorded by this device, for the scopes named in consent.scope under the licence named in consent.license. I can withdraw by not sharing the file again; copies already given away are governed by that licence. Nothing in this package names me: it carries scenario ids, control schemes and measured outcomes, and the label or wallet address I chose to attach.
+   > I share the training episodes in this package, recorded by this device, for the scopes named in consent.scope under the licence named in consent.license. I can withdraw by not sharing the file again; copies already given away are governed by that licence. Nothing in this package names me: it carries scenario ids, control schemes, measured outcomes and the fixed advisor topics, crew questions and walkaround points I picked, and the label or wallet address I chose to attach. It carries room movement, dwell times, quiz picks and tool picks only if consent.scope names lesson-activity.
 
-3. **Choose the scopes** you share for - 2 of them:
+3. **Choose the scopes** you share for - 3 of them:
 
    - `agent-training` - the episodes may be used to train, evaluate or benchmark a software agent (for example the ml-agents conversion the training pack describes); this bundle has trained none
    - `robot-training` - the episodes may be used to train, evaluate or benchmark a controller for a physical robot; training/ says these are schematic single-machine simulators and no such controller should be trained on them for real equipment, and this bundle has trained none
+   - `lesson-activity` - the package may also carry room movement, dwell times, quiz picks and tool picks: which rooms I entered on foot, how long a placard panel stayed open, which station quiz I answered and which tool check I passed. These describe how I moved through the lessons, not how I operated a machine, and they are of little use for training an agent or a robot; without this scope a package carries none of them
+
+   Room movement, dwell times, quiz picks and tool picks (the `crib`, `placard`, `station`, `walk` episodes) are not
+   scenario ids, control schemes or measured outcomes, so they leave the device
+   only in a package whose scope names `lesson-activity`; without it the
+   page leaves them out of the file and the verifier refuses a package that carries them.
 
 4. **Accept the licence**: Creative Commons Attribution 4.0 International (`CC-BY-4.0`),
    one licence for every package.
@@ -42,7 +48,7 @@ ok record.fields: checked 9, failing 0
 ok digest: checked 2, failing 0
 ok contributor.signature: checked 1, failing 0
 ok consent.statement: checked 1, failing 0
-ok consent.scope: checked 4, failing 0
+ok consent.scope: checked 9, failing 0
 ok consent.license: checked 1, failing 0
 ok consent.granted_at: checked 1, failing 0
 ok episode.kind: checked 10, failing 0

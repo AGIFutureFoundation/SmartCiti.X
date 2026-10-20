@@ -607,6 +607,14 @@ commit cannot name its own sha.
    with no rule loosened. Lessons fully verifiable by episode: 110 -> 139 of
    139; silent steps 34 -> 0. The station episode is proven in a browser run;
    the crib episode only by the vm behaviour test so far.
+   Evidence is not all equal, and the record says so: each step kind declares a
+   strength in `completion/` (strong: sim, station, crib, graded by the page;
+   act: advisor, crew, walkaround, asked or marked; presence: walk, placard).
+   Of the 139 lessons, 58 hold at least one strong step, 81 at most an act
+   step, 0 presence only; steps 65 strong, 270 act, 233 presence. Walk,
+   placard, station and crib episodes leave a device in a contribution package
+   only under the separately consented `lesson-activity` scope, whose text
+   names room movement, dwell times, quiz picks and tool picks.
 
 ### Exit criteria
 

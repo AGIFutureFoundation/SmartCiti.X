@@ -170,6 +170,18 @@ for (const [i, P] of PACKS.entries()) {
   const regs = Object.fromEntries(Object.entries(KINDS[i].files).map(([k, p]) => [k, REGS[p]]));
   CORE[P.pack] = new Function(CORE_SRC[P.pack] + '\nreturn ' + P.fn + ';')()(regs);
 }
+/* HONEST: the page says, above every result, that a pass does not say how strong the evidence is, and that movement travels only under its own scope */
+{
+  const ES = JSON.parse(R('completion/registry/completion.json')).evidence_strength.kinds;
+  const ACT = JSON.parse(R('contrib/registry/contrib.json')).consent.activity;
+  const lead = page.slice(page.indexOf('id="limits"'), page.indexOf('id="pick"'));
+  ok('[page] the limits block above every result says a pass does not say how strong the evidence is, naming the strong, act and presence kinds exactly as completion.json declares them',
+    /A PASS DOES NOT SAY HOW STRONG THE EVIDENCE IS/.test(lead) && lead.includes(ES.strong.join(', ') + ' steps are graded by the page (strong)')
+    && lead.includes(ES.act.join(', ') + ' record a question asked or a point marked, nothing graded (act)')
+    && lead.includes(ES.presence.join(', ') + ' record only that a device saw a room or an open panel (presence)') && /A lesson can verify on acts and presence alone/.test(lead));
+  ok('[page] the limits block says movement, dwell, quiz picks and tool picks travel only under the lesson-activity scope, from contrib.json',
+    ACT.scope === 'lesson-activity' && lead.includes(ACT.phrase) && lead.includes('<code>' + ACT.scope + '</code>') && lead.includes(ACT.kinds.join(', ') + ' episodes'));
+}
 async function pageRun(core, text) {
   let rec, res = null, thrown = null;
   try { rec = JSON.parse(text); res = await core.verifyAsync(rec, webcrypto.subtle, recover); } catch (e) { thrown = e; }

@@ -98,6 +98,26 @@ ok(refusedAs('v1-email.json') === 'privacy' && verdictOf(J('datashare/fixture/v1
 ok(refusedAs('v2-agent-only.json') === 'consent-scope', 'refused by name: a package whose consent scope does not include the dataset scope');
 ok(M.packages.map((p) => p.record).sort().join() === 'tc-contribution/1,tc-contribution/2,tc-contribution/2' && M.refused.length === 5,
   'admitted: the /1 fixture (old packages still build) and two /2 packages');
+// HONEST: room movement, dwell times, quiz picks and tool picks enter a dataset only when it is built for the lesson-activity scope
+{
+  const ACTK = CFG.consent_scope.activity.kinds;
+  const nAct = (names) => names.reduce((a, f) => a + J(f).dataset.episodes.filter((e) => ACTK.includes(e.kind)).length, 0);
+  const admittedNames = ['contrib/fixture/good.json', 'contrib/fixture/v2/good.json', 'datashare/fixture/v2-reexport.json'];
+  ok(CFG.consent_scope.activity.scope === 'lesson-activity' && ACTK.slice().sort().join() === 'crib,placard,station,walk' && CFG.consent_scope.scopes.includes('lesson-activity')
+    && /left out and counted in excluded\.activity_episodes_out_of_scope, even from a package whose consent\.scope names both/.test(CFG.consent_scope.activity.rule),
+    'registry: the dataset rule for the activity scope is declared (kinds read from contrib.json), and says even a package naming both scopes is held back');
+  ok(!M.episodes.some((e) => ACTK.includes(e.kind)) && M.excluded.activity_episodes_out_of_scope === nAct(admittedNames) && M.excluded.activity_episodes_out_of_scope > 0,
+    'a dataset built for robot-training carries no walk, placard, station or crib episode, and the manifest counts exactly those left out (' + M.excluded.activity_episodes_out_of_scope + ')');
+  const runA = cli(['--scope', 'agent-training', '--built-at', '2026-09-29T00:00:00Z', '--out', join(tmp, 'agent'), P('datashare/fixture/v2-agent-only.json')]);
+  const MA = JSON.parse(readFileSync(join(tmp, 'agent', 'manifest.json'), 'utf8'));
+  ok(runA.status === 0 && MA.packages.length === 1 && !MA.episodes.some((e) => ACTK.includes(e.kind)) && MA.excluded.activity_episodes_out_of_scope === nAct(['datashare/fixture/v2-agent-only.json']) && MA.episodes.length > 0,
+    'a package whose consent.scope names agent-training AND lesson-activity, built into an agent-training dataset, still leaves its activity episodes out');
+  const runL = cli(['--scope', 'lesson-activity', '--built-at', '2026-09-29T00:00:00Z', '--out', join(tmp, 'act'), P('contrib/fixture/v2/good.json')]);
+  const ML = JSON.parse(readFileSync(join(tmp, 'act', 'manifest.json'), 'utf8'));
+  ok(runL.status === 0 && ML.scope === 'lesson-activity' && ML.excluded.activity_episodes_out_of_scope === 0
+    && ACTK.every((k) => ML.episodes.some((e) => e.kind === k)) && ML.episodes.length === J('contrib/fixture/v2/good.json').dataset.episodes.length,
+    'a dataset built for lesson-activity admits the walk, placard, station and crib episodes (and the rest) of a package that names that scope, and excludes none');
+}
 ok(M.excluded.duplicate_episodes >= J('datashare/fixture/v2-reexport.json').dataset.episodes.length
   && M.packages.find((p) => p.digest === J('datashare/fixture/v2-reexport.json').digest.hex).admitted_episodes === 0
   && M.episodes.some((e) => e.also_in.includes(J('datashare/fixture/v2-reexport.json').digest.hex)),

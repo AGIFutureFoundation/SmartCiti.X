@@ -35,6 +35,21 @@ A lesson is blocked only by a recording step whose episode lacks a reference the
 step carries; the crew episode records the crew's seat and muster, so a crew
 step is held to both.
 
+## How strong the evidence is
+
+An episode-backed step says a device wrote an episode, not that every episode
+says the same. The registry declares a strength per step kind, and the verifier
+prints the split next to its total: **strong** (graded by the page:
+`crib`, `sim`, `station`),
+**act** (a question asked or a point marked, nothing graded:
+`advisor`, `crew`, `walkaround`) and
+**presence** (a device saw a room or an open panel:
+`placard`, `walk`). Of the
+139 lessons, 58 hold at least one strong
+step and 0 hold nothing else; the other
+81 rest on acts and presence alone.
+The split changes what is reported, never what verifies.
+
 ## Check it offline
 
 On the pack's own fixture record (SCRIPTED, labelled not a learner):
@@ -59,7 +74,7 @@ ok ladder.prerequisite: checked 40, failing 0
 note sim.threshold: rigging-signals has no scalar threshold in sims.json; passed=true is taken from the record and not re-derived
 note sim.threshold: crane-lift has no scalar threshold in sims.json; passed=true is taken from the record and not re-derived
 signature: unsigned: this device only
-summary: 5 lessons complete, of which 5 fully evidence-backed (every step episode-backed); across them 23 episode-backed steps, 0 device-mark steps (none today; a device-local mark, not a recorded episode), 0 self-reported steps counted as done
+summary: 5 lessons complete, of which 5 fully evidence-backed (every step episode-backed); across them 23 episode-backed steps, of which 5 strong (graded: crib, sim, station), 11 act (asked or marked, nothing graded: advisor, crew, walkaround) and 7 presence (a device saw a room or an open panel: placard, walk); 4 of those lessons hold at least one strong step and 0 hold nothing else, 0 device-mark steps (none today; a device-local mark, not a recorded episode), 0 self-reported steps counted as done
 this verifies integrity since export and resolution against the bundle; a wallet signature, if any, proves that the holder of a key signed this digest at export - a key, not a person; nothing is written to any chain, nothing is anchored, and this is no accreditation
 ```
 
@@ -77,6 +92,7 @@ Quoted from the registry at build time, never retyped:
 > - that a walk or placard episode means more than it says: it records that a device saw the walker's position inside a room, or a placard panel left open for its dwell with the walker in that room - not that anyone read, understood or took on what the placard requires, and not that the room exists outside this bundle
 > - that a self-reported step happened at all (no step kind is self-reported today; the rule stays so one that is added cannot carry evidence it does not have)
 > - that a station or crib episode means more than it says: it records that a device saw a correct pick on a station quiz, or a crib check finished with every pick right - not that the checklist was read, that the pick was not found by trying every option, that anything was learned or that the learner can name the tools. The marks in tc-progress (the record's `stations` and `tools` blocks) are device-local marks the halls keep for their own HUD; they feed no step
+> - that every episode-backed step is equally strong evidence: of the step kinds, sim, station and crib are graded by the page (strong), advisor, crew and walkaround record a deliberate act with nothing graded (act), and walk and placard record only presence in a room (presence). A lesson counted as fully verifiable by episode may hold presence and act steps alone; the summary a verifier prints splits the steps by strength, and none of this changes what verifies
 > - that the seat was passed under supervision, or that any score means anything outside this bundle
 > - any accreditation, ticket, licence or credential; no hall, employer or authority has signed anything
 > - any duration of training, and no price is claimed
