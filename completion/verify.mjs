@@ -238,6 +238,8 @@ function verify(record, sha256hex, recoverAddress) {
   const complete = new Map();
   const seen = new Set();
   let nComplete = 0, nFullyBacked = 0, nEpisode = 0, nDeviceMark = 0, nSelfReported = 0;
+  const byStrength = { strong: 0, act: 0, presence: 0 };
+  let nLessonsStrong = 0, nLessonsEveryStrong = 0;
   for (const L of lessons) {
     const lid = need(L, 'lesson', 'lesson entry');
     check('ids.lesson', lid in LESSONS && !seen.has(lid), `lesson ${lid} is not in lessons.json or is listed twice`);
@@ -249,6 +251,7 @@ function verify(record, sha256hex, recoverAddress) {
     complete.set(lid, isComplete === true);
     const steps = need(L, 'steps', lid);
     let allDone = steps.length > 0, selfHere = 0, epHere = 0, dmHere = 0;
+    const strHere = { strong: 0, act: 0, presence: 0 };
     const stepSeen = new Set();
     for (const S of steps) {
       const n = need(S, 'step', `${lid} step`);
@@ -264,7 +267,13 @@ function verify(record, sha256hex, recoverAddress) {
       if (!(kind in EVIDENCE_RULE) || !known_step) continue;
       const rule = EVIDENCE_RULE[kind];
       if (rule.class === 'episode-backed') {
-        if (done === true) epHere++;
+        if (done === true) {
+          epHere++;
+          /* evidence strength is declared per kind in the registry and only REPORTED here: no rule reads it */
+          const lvl = need(rule, 'strength', `evidence_rule.${kind}`);
+          if (!(lvl in strHere)) throw new Missing(`evidence_rule.${kind}.strength ${JSON.stringify(lvl)} is not strong, act or presence`);
+          strHere[lvl]++;
+        }
         check('step.recording-evidence', done !== true || (ev !== null && typeof ev === 'object'),
           `${lid} step ${n} (${kind}): a recording step claimed done without its episode`);
         if (done === true && ev !== null && typeof ev === 'object' && kind === 'sim') {
@@ -290,6 +299,20 @@ function verify(record, sha256hex, recoverAddress) {
             const got = need(ev, f, `${lid} step ${n} evidence`);
             check('step.episode-evidence', got === want, `${lid} step ${n}: episode ${f} ${JSON.stringify(got)} is not the step's ${JSON.stringify(want)}`);
           }
+          // wave 20: the room label a walk or placard episode records must be one the step itself names, and a numeric the
+          // episode records (a placard's dwell_ms) must meet the minimum the registry declares. Both are read from the
+          // evidence rule, fail closed (need), and are no more than equality plus a floor: nothing above is loosened.
+          const nrf = need(rule, 'names_read_field', `evidence_rule.${kind}`);
+          if (nrf !== null) {
+            const gotName = need(ev, nrf, `${lid} step ${n} evidence`);
+            check('step.episode-evidence', Array.isArray(known_step.names_read) && known_step.names_read.includes(gotName),
+              `${lid} step ${n}: episode ${nrf} ${JSON.stringify(gotName)} is not one of the step's names_read ${JSON.stringify(known_step.names_read)}`);
+          }
+          for (const [f, floor] of Object.entries(need(rule, 'at_least', `evidence_rule.${kind}`))) {
+            const gotNum = need(ev, f, `${lid} step ${n} evidence`);
+            check('step.episode-evidence', typeof gotNum === 'number' && Number.isFinite(gotNum) && gotNum >= floor,
+              `${lid} step ${n}: episode ${f} ${JSON.stringify(gotNum)} is not a finite number of at least the declared ${floor}`);
+          }
         }
       } else if (rule.class === 'device-mark' && done === true && ev !== null) {
         dmHere++;
@@ -309,7 +332,12 @@ function verify(record, sha256hex, recoverAddress) {
     }
     check('lesson.complete-all-steps', isComplete !== true || (allDone && known !== null && steps.length === known.steps.length),
       `${lid}: complete with a step not done (or steps missing)`);
-    if (isComplete === true) { nComplete++; nEpisode += epHere; nDeviceMark += dmHere; nSelfReported += selfHere; if (selfHere === 0 && dmHere === 0) nFullyBacked++; }
+    if (isComplete === true) {
+      nComplete++; nEpisode += epHere; nDeviceMark += dmHere; nSelfReported += selfHere; if (selfHere === 0 && dmHere === 0) nFullyBacked++;
+      for (const l of Object.keys(byStrength)) byStrength[l] += strHere[l];
+      if (strHere.strong > 0) nLessonsStrong++;
+      if (strHere.strong > 0 && strHere.act === 0 && strHere.presence === 0 && epHere === steps.length) nLessonsEveryStrong++;
+    }
   }
 
   // sim.threshold — only when the registry states one
@@ -332,7 +360,8 @@ function verify(record, sha256hex, recoverAddress) {
       `${lid} is complete but its prerequisite ${needs} is not`);
   }
 
-  return { tally, notes, signature, summary: { nComplete, nFullyBacked, nEpisode, nDeviceMark, nSelfReported } };
+  return { tally, notes, signature, summary: { nComplete, nFullyBacked, nEpisode, nDeviceMark, nSelfReported, byStrength, nLessonsStrong, nLessonsEveryStrong,
+    strengthKinds: need(need(reg, 'evidence_strength', 'completion.json'), 'kinds', 'completion.json#evidence_strength') } };
 }
 
 // the browser's sha256 is async: compute the one digest verify() asks for
@@ -366,8 +395,11 @@ function report(result) {
   for (const n of notes) lines.push({ err: false, text: `note ${n}` });
   lines.push({ err: false, text: `signature: ${signature.line}` });
   lines.push({ err: false, text: `summary: ${summary.nComplete} lessons complete, of which ${summary.nFullyBacked} fully evidence-backed `
-    + `(every step episode-backed); across them ${summary.nEpisode} episode-backed steps, `
-    + `${summary.nDeviceMark} device-mark steps (station/crib: a device-local mark, not a recorded episode), `
+    + `(every step episode-backed); across them ${summary.nEpisode} episode-backed steps, of which `
+    + `${summary.byStrength.strong} strong (graded: ${summary.strengthKinds.strong.join(', ')}), ${summary.byStrength.act} act (asked or marked, nothing graded: ${summary.strengthKinds.act.join(', ')}) `
+    + `and ${summary.byStrength.presence} presence (a device saw a room or an open panel: ${summary.strengthKinds.presence.join(', ')}); `
+    + `${summary.nLessonsStrong} of those lessons hold at least one strong step and ${summary.nLessonsEveryStrong} hold nothing else, `
+    + `${summary.nDeviceMark} device-mark steps (none today; a device-local mark, not a recorded episode), `
     + `${summary.nSelfReported} self-reported steps counted as done` });
   lines.push({ err: false, text: LAST_LINE });
   return lines;

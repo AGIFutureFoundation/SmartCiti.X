@@ -22,7 +22,7 @@
   },
   {
    "path": "courses/registry/courses.json",
-   "sha256": "fb45246055b5c7d7"
+   "sha256": "5811cd019bf5f6e8"
   },
   {
    "path": "tools/registry/toolcribs.json",
@@ -38,7 +38,7 @@
   },
   {
    "path": "hive/registry/hive.json",
-   "sha256": "8ea7563bca70a5f9"
+   "sha256": "e2b2ccae493b79e6"
   }
  ],
  "honesty": {

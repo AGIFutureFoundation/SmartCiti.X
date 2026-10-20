@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-22",
- "source_stamp": "5e942500dea821d6",
+ "source_stamp": "315e04416a1e2e1e",
  "contract": "this pack states no fact of its own. Every value in it is read out of another file at build time and carries the path and the locator it was read with, so a reader can resolve any entry back to its source and disagree with it there rather than here. Three questions are answered: what has been measured, what is declared and unbuilt, and where the known gaps are - plus the budgets those measurements govern, the suites that hold the assurance, and the questions this bundle records as open.",
  "honesty": {
   "status": "DERIVED: nothing in this registry was authored as a fact about the bundle. Every number is read from a named file through a named locator, and the suite re-resolves every pointer against the live file rather than trusting the value stored here.",
@@ -25,7 +25,7 @@
   "app_renderers_scanned": 38,
   "doc_renderers_scanned": 3,
   "builders_scanned": 76,
-  "suites_scanned": 151,
+  "suites_scanned": 155,
   "declared_unbuilt": 12,
   "declared_unbuilt_by_their_own_words": 2,
   "declared_unbuilt_not_drawn": 11,
@@ -38,13 +38,13 @@
   "budget_views": 6,
   "budget_currencies": 2,
   "budget_agreements": 7,
-  "suites_run": 152,
-  "suite_checks_declared": 7360,
+  "suites_run": 156,
+  "suite_checks_declared": 7794,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 459
+  "files_read": 467
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -1811,6 +1811,7 @@
     "hive/build.py",
     "lessons/build.py",
     "modules/build.py",
+    "training/build.py",
     "unionpaths/build.py",
     "worksites/build.py"
    ],
@@ -2045,20 +2046,24 @@
     "web/build_home.py",
     "web/build_interactive_map.py",
     "web/build_map.py",
-    "web/build_progress.py"
+    "web/build_progress.py",
+    "web/build_verify.py"
    ],
    "doc_renderers": [
     "wiki/build_wiki.py"
    ],
    "builders": [
     "compliance/build.py",
+    "evals/build.py",
     "worksites/build.py"
    ],
    "suites": [
+    "evals/test.mjs",
     "tasks/test.mjs",
     "web/test_home.mjs",
     "web/test_interactive.mjs",
     "web/test_map.mjs",
+    "web/test_progress.mjs",
     "web/test_verify.mjs"
    ],
    "own_pack": [
@@ -2088,7 +2093,8 @@
   "contrib/registry/contrib.json": {
    "app_renderers": [
     "web/build_contribute.py",
-    "web/build_home.py"
+    "web/build_home.py",
+    "web/build_verify.py"
    ],
    "doc_renderers": [
     "wiki/build_wiki.py"
@@ -2494,7 +2500,8 @@
    "builders": [
     "lessons/build.py",
     "spaces/build.py",
-    "surfaces/build.py"
+    "surfaces/build.py",
+    "training/build.py"
    ],
    "suites": [
     "lessons/test.mjs",
@@ -2638,6 +2645,7 @@
     "schools/test.mjs",
     "sessions/test.mjs",
     "tasks/test.mjs",
+    "training/test.mjs",
     "unionpaths/test.mjs",
     "web/test_3d.mjs",
     "web/test_geomap.mjs",
@@ -2741,11 +2749,15 @@
   },
   "modules/registry/modules.json": {
    "app_renderers": [
-    "web/build_courses.py"
+    "web/build_bayworld.py",
+    "web/build_courses.py",
+    "web/build_parishes.py",
+    "web/build_worksites.py"
    ],
    "doc_renderers": [],
    "builders": [],
    "suites": [
+    "web/test_modulelinks.mjs",
     "web/test_worldmodules.mjs"
    ],
    "own_pack": [
@@ -3692,6 +3704,7 @@
     "props/test.mjs",
     "schools/test.mjs",
     "spaces/test.mjs",
+    "training/test.mjs",
     "worksites/test.mjs"
    ],
    "own_pack": [
@@ -3755,7 +3768,8 @@
     "web/test_home.mjs",
     "web/test_spaces.mjs",
     "worksites/test.mjs",
-    "xr/test.mjs"
+    "xr/test.mjs",
+    "xr/test_session.mjs"
    ],
    "own_pack": [
     "surfaces/build.py",
@@ -3834,9 +3848,11 @@
     "spaces/build.py",
     "spatial/build.py",
     "tasks/build.py",
+    "training/build.py",
     "unionpaths/build.py"
    ],
    "suites": [
+    "completion/test.mjs",
     "completion/verify.mjs",
     "courses/test.mjs",
     "courses_roadmap/test.mjs",
@@ -3846,6 +3862,7 @@
     "spaces/test.mjs",
     "spatial/test.mjs",
     "tasks/test.mjs",
+    "training/test.mjs",
     "unionpaths/test.mjs",
     "web/test_3d.mjs"
    ],
@@ -4226,6 +4243,7 @@
     "tasks/test.mjs",
     "web/test_geomap.mjs",
     "web/test_home.mjs",
+    "web/test_modulelinks.mjs",
     "web/test_worksites.mjs"
    ],
    "own_pack": [
@@ -4516,6 +4534,7 @@
    "web/test_ladder.mjs",
    "web/test_lookkit.mjs",
    "web/test_map.mjs",
+   "web/test_modulelinks.mjs",
    "web/test_nav.mjs",
    "web/test_packs.mjs",
    "web/test_parishes.mjs",
@@ -4524,6 +4543,7 @@
    "web/test_programs.mjs",
    "web/test_progress.mjs",
    "web/test_quests.mjs",
+   "web/test_rendercull.mjs",
    "web/test_restokit.mjs",
    "web/test_restoscene.mjs",
    "web/test_robotics.mjs",
@@ -4538,6 +4558,7 @@
    "web/test_tqkit.mjs",
    "web/test_unions.mjs",
    "web/test_verify.mjs",
+   "web/test_watersk.mjs",
    "web/test_whitepaper.mjs",
    "web/test_wildkit.mjs",
    "web/test_wilds.mjs",
@@ -4548,7 +4569,8 @@
    "worksites/test.mjs",
    "worksites/verify.mjs",
    "world/test.mjs",
-   "xr/test.mjs"
+   "xr/test.mjs",
+   "xr/test_session.mjs"
   ],
   "why": "an app renderer is a page generator under web/ and what it reads is something a learner can stand in front of; a doc renderer is the wiki or the console and what it reads has been written ABOUT, which is not the same as built; a builder is another pack's build.py; and a suite reads a registry to check it, which is not consumption at all. This pack excludes itself from every one of the four, because it reads every registry in the tree by definition."
  },
@@ -5318,7 +5340,7 @@
    {
     "suite": "training/test.mjs",
     "pack": "training",
-    "readme_checks": 52,
+    "readme_checks": 101,
     "declared": true,
     "in_readme_table": true
    },
@@ -5521,7 +5543,7 @@
    {
     "suite": "evals/test.mjs",
     "pack": "evals",
-    "readme_checks": 75,
+    "readme_checks": 84,
     "declared": true,
     "in_readme_table": true
    },
@@ -5535,7 +5557,7 @@
    {
     "suite": "completion/test.mjs",
     "pack": "completion",
-    "readme_checks": 75,
+    "readme_checks": 123,
     "declared": true,
     "in_readme_table": true
    },
@@ -5549,21 +5571,21 @@
    {
     "suite": "compliance/test.mjs",
     "pack": "compliance",
-    "readme_checks": 65,
+    "readme_checks": 72,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "contrib/test.mjs",
     "pack": "contrib",
-    "readme_checks": 77,
+    "readme_checks": 88,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_contribute.mjs",
     "pack": "web",
-    "readme_checks": 40,
+    "readme_checks": 46,
     "declared": true,
     "in_readme_table": true
    },
@@ -5640,7 +5662,7 @@
    {
     "suite": "web/test_verify.mjs",
     "pack": "web",
-    "readme_checks": 65,
+    "readme_checks": 96,
     "declared": true,
     "in_readme_table": true
    },
@@ -5661,7 +5683,7 @@
    {
     "suite": "web/test_progress.mjs",
     "pack": "web",
-    "readme_checks": 49,
+    "readme_checks": 61,
     "declared": true,
     "in_readme_table": true
    },
@@ -5689,7 +5711,7 @@
    {
     "suite": "quests/test.mjs",
     "pack": "quests",
-    "readme_checks": 38,
+    "readme_checks": 40,
     "declared": true,
     "in_readme_table": true
    },
@@ -5948,7 +5970,7 @@
    {
     "suite": "datashare/test.mjs",
     "pack": "datashare",
-    "readme_checks": 71,
+    "readme_checks": 75,
     "declared": true,
     "in_readme_table": true
    },
@@ -6165,7 +6187,7 @@
    {
     "suite": "web/test_lookkit.mjs",
     "pack": "web",
-    "readme_checks": 67,
+    "readme_checks": 74,
     "declared": true,
     "in_readme_table": true
    },
@@ -6175,21 +6197,49 @@
     "readme_checks": 34,
     "declared": true,
     "in_readme_table": true
+   },
+   {
+    "suite": "web/test_modulelinks.mjs",
+    "pack": "web",
+    "readme_checks": 88,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "xr/test_session.mjs",
+    "pack": "xr",
+    "readme_checks": 82,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_rendercull.mjs",
+    "pack": "web",
+    "readme_checks": 21,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_watersk.mjs",
+    "pack": "web",
+    "readme_checks": 57,
+    "declared": true,
+    "in_readme_table": true
    }
   ],
-  "suites_run": 152,
-  "suites_declaring_a_count": 150,
+  "suites_run": 156,
+  "suites_declaring_a_count": 154,
   "suites_without_a_count": [
    "control/soak.mjs",
    "restoration/test_scenarios.mjs"
   ],
-  "declared_total": 7360,
-  "readme_headline": 7201,
-  "unaccounted_for": -159,
+  "declared_total": 7794,
+  "readme_headline": 7829,
+  "unaccounted_for": 35,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
   "max": 398,
-  "median": 41.0,
+  "median": 42.0,
   "thinnest": [
    {
     "suite": "ops/fuzz.mjs",
@@ -6234,12 +6284,12 @@
     "checks": 140
    },
    {
-    "suite": "respond/test.mjs",
-    "checks": 118
+    "suite": "completion/test.mjs",
+    "checks": 123
    },
    {
-    "suite": "worksites/test.mjs",
-    "checks": 116
+    "suite": "respond/test.mjs",
+    "checks": 118
    }
   ],
   "note": "a thin suite is not automatically a bad one - tools/ has 13 checks over a registry of twelve hand tools - but a thin suite over a large surface is where an unfound defect is most likely to be sitting, and this table is the only place the two are shown side by side."
@@ -6368,13 +6418,13 @@
   {
    "id": "xr.no-headset-has-ever-run-this",
    "kind": "unproved",
-   "asks": "four hand gestures, 25 joints and every hysteresis band are declared and proven against synthetic joint positions only; every XR contract is held at the source by regex, no session, mocked or real, has been driven in this tree, and a mocked-session harness is not claimed. Do they work on hardware?",
+   "asks": "four hand gestures, 25 joints and every hysteresis band are declared and proven against synthetic joint positions only; every XR contract is held at the source by regex, one seat is driven in a MOCKED session in headless Chromium that supplies controllers and no hand input source, and no session on a physical headset has been driven in this tree. Do they work on hardware?",
    "file": "guide/registry/guide.json",
    "anchors": {
     "from": "UNVERIFIED-ON-HARDWARE",
-    "to": "a mocked-session harness is not claimed."
+    "to": "so no gesture has been driven in any session, and no session on a physical headset has been driven in this tree."
    },
-   "quote": "UNVERIFIED-ON-HARDWARE: no headset has been available to this build, so not one of these gestures has been made by a real hand in a real session. The recogniser is proven against synthetic joint positions only; every XR contract is held at the source by regex; no session, mocked or real, has been driven in this tree, and a mocked-session harness is not claimed.",
+   "quote": "UNVERIFIED-ON-HARDWARE: no headset has been available to this build, so not one of these gestures has been made by a real hand in a real session. The recogniser is proven against synthetic joint positions only; every XR contract is held at the source by regex; a MOCKED session in headless Chromium drives one seat through its controllers but supplies no hand input source, so no gesture has been driven in any session, and no session on a physical headset has been driven in this tree.",
    "why_it_matters": "the largest unproved claim in the bundle, and the pack that makes it says so in its own status line rather than in a footnote. No amount of passing checks can close this one."
   },
   {
@@ -6850,6 +6900,7 @@
   "web/test_ladder.mjs",
   "web/test_lookkit.mjs",
   "web/test_map.mjs",
+  "web/test_modulelinks.mjs",
   "web/test_nav.mjs",
   "web/test_packs.mjs",
   "web/test_parishes.mjs",
@@ -6858,6 +6909,7 @@
   "web/test_programs.mjs",
   "web/test_progress.mjs",
   "web/test_quests.mjs",
+  "web/test_rendercull.mjs",
   "web/test_restokit.mjs",
   "web/test_restoscene.mjs",
   "web/test_robotics.mjs",
@@ -6872,6 +6924,7 @@
   "web/test_tqkit.mjs",
   "web/test_unions.mjs",
   "web/test_verify.mjs",
+  "web/test_watersk.mjs",
   "web/test_whitepaper.mjs",
   "web/test_wildkit.mjs",
   "web/test_wilds.mjs",
@@ -6894,7 +6947,12 @@
   "world/registry/world.json",
   "world/test.mjs",
   "xr/build.py",
+  "xr/mock_webxr.js",
   "xr/registry/devices.json",
-  "xr/test.mjs"
+  "xr/seat_batches.mjs",
+  "xr/seats_harness.mjs",
+  "xr/session_harness.mjs",
+  "xr/test.mjs",
+  "xr/test_session.mjs"
  ]
 }

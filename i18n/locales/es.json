@@ -324,6 +324,8 @@
   "wilds.legend": "Minimapa: los cuadrados naranjas son obras; un cuadrado con anillo tiene tareas simuladas.",
   "wilds.flora_honesty": "Flora del suelo: colocación AUTHORED de plantas nombradas de forma general según el bioma; no es un inventario, un mapa de especies ni un recuento.",
   "wilds.side_quest": "Misión secundaria",
+  "modlink.practice": "Módulo de práctica",
+  "wilds.practice_module": "Módulo de práctica",
   "wilds.toast.cache": "Encontraste un escondite oculto. El registro de misiones aún no está conectado a esta página, así que no se guarda nada.",
   "wilds.toast.trailhead": "Firmaste el libro del inicio del sendero. El registro de misiones aún no está conectado a esta página, así que no se guarda nada.",
   "wilds.not_on_globe": "No está en el globo",

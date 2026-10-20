@@ -98,6 +98,7 @@ APP_PATH = 'web/build_3d.py'
 LESSONS_PATH = 'lessons/registry/lessons.json'
 SESSIONS_PATH = 'sessions/registry/sessions.json'
 SESSIONS_VERIFY = 'sessions/verify.mjs'
+COMPLETION_PATH = 'completion/registry/completion.json'
 
 # Dependency order: a module's names must already be declared when the next
 # one's top-level code is evaluated.
@@ -134,6 +135,16 @@ manifest = load(MANIFEST_PATH)
 auth_reg = load(AUTH_PATH)
 training_reg = load(TRAINING_PATH)
 lessons_reg = load(LESSONS_PATH)
+# HONEST: how strong the evidence behind each episode kind is, declared once in completion/ and only read here. The
+# page reports the split next to every total; no step is ever done or undone by it.
+completion_reg = load(COMPLETION_PATH)
+_ES = need(completion_reg, 'evidence_strength', COMPLETION_PATH)
+EVIDENCE_STRENGTH = {
+    'levels': need(_ES, 'levels', COMPLETION_PATH + '#evidence_strength'),
+    'by_kind': {k: need(v, 'strength', f'{COMPLETION_PATH}#evidence_strength.by_kind.{k}')
+                for k, v in need(_ES, 'by_kind', COMPLETION_PATH + '#evidence_strength').items()},
+    'kinds': need(_ES, 'kinds', COMPLETION_PATH + '#evidence_strength'),
+}
 
 PACK_VERSION = need(manifest, 'pack_version', MANIFEST_PATH)
 PRODUCT = need(sims_reg, 'product', SIMS_PATH)
@@ -171,6 +182,12 @@ PACK_HONESTY = need(manifest, 'honesty', MANIFEST_PATH)
 LESSONS = need(lessons_reg, 'lessons', LESSONS_PATH)
 LADDER = need(lessons_reg, 'ladder', LESSONS_PATH)
 STEP_KINDS = need(lessons_reg, 'step_kinds', LESSONS_PATH)
+_REC_KINDS = sorted(k for k, v in STEP_KINDS.items() if need(v, 'records', f'{LESSONS_PATH}#step_kinds.{k}') is not None)
+if sorted(EVIDENCE_STRENGTH['by_kind']) != _REC_KINDS:
+    raise AssertionError(f'{COMPLETION_PATH}#evidence_strength.by_kind names {sorted(EVIDENCE_STRENGTH["by_kind"])}, '
+                         f'not the recording step kinds {_REC_KINDS}; every recording kind declares a strength')
+if any(l not in EVIDENCE_STRENGTH['levels'] for l in EVIDENCE_STRENGTH['by_kind'].values()):
+    raise AssertionError(f'{COMPLETION_PATH}#evidence_strength.by_kind names a strength level not in #levels')
 LESSONS_HONESTY = need(lessons_reg, 'honesty', LESSONS_PATH)
 for _lid, _l in LESSONS.items():
     for _st in need(_l, 'steps', f'{LESSONS_PATH}#lessons.{_lid}'):
@@ -599,6 +616,7 @@ DATA = {
     'lessons': LESSONS,
     'ladder': LADDER,
     'step_kinds': STEP_KINDS,
+    'evidence_strength': EVIDENCE_STRENGTH,
     'episode_kinds': need(training_reg, 'episode_kinds', TRAINING_PATH),
     'strands': STRANDS,
     'tiers': TIERS,
@@ -1814,19 +1832,24 @@ async function paintCompletion() {
     && typeof idv.address === 'string' && /^0x[0-9a-fA-F]{40}$/.test(idv.address)) ? idv.address : null;
   const training = rec.training.state === 'present' ? rec.training.value : null;
   const meta = { product: D.product, pack_version: D.pack_version, step_kinds: D.step_kinds,
-    episode_kinds: D.episode_kinds, identity: claimed, training_state: rec.training.state, human_actor: D.human_actor };
+    episode_kinds: D.episode_kinds, evidence_strength: D.evidence_strength, identity: claimed, training_state: rec.training.state, human_actor: D.human_actor };
   const record = await buildCompletionRecord(rec.progress.value, D.lessons, D.ladder, meta, new Date(), training);
-  const S = summarizeRecord(record, D.step_kinds, D.episode_kinds);
+  const S = summarizeRecord(record, D.step_kinds, D.episode_kinds, D.evidence_strength);
   paintContinue(continuePoint(record, D.lessons, D.ladder, S.self_reported_kinds));
   const figs = [
     ['lessons complete (every step done)', S.complete, 'complete-lessons'],
-    ['of which evidence-backed', S.evidence_backed, 'evidence-backed'],
+    ['of which evidence-backed (a device wrote an episode for every step; see the strength split below)', S.evidence_backed, 'evidence-backed'],
+    ['of which hold at least one strong step (graded: ' + S.strength_kinds.strong.join(', ') + ')', S.complete_with_strong, 'strong-lessons'],
     ['steps with a recorded episode kind (' + S.episode_kinds.join(', ') + '), done only where '
       + KEYS.progress + ' or ' + KEYS.training + ' holds that mark', S.episode_steps_done + ' of ' + S.episode_steps, 'episode-steps'],
-    ['steps with a device mark only (' + S.device_mark_kinds.join(', ') + ')',
-      S.device_mark_steps_done + ' of ' + S.device_mark_steps, 'device-mark-steps'],
-    ['self-reported / unrecorded steps (' + S.self_reported_kinds.join(', ') + ')',
-      S.self_reported_steps_done + ' of ' + S.self_reported_steps, 'self-reported-steps'],
+    ['episode steps done, by strength: strong (graded: ' + S.strength_kinds.strong.join(', ') + ') / act (asked or marked, nothing graded: '
+      + S.strength_kinds.act.join(', ') + ') / presence (a device saw a room or an open panel: ' + S.strength_kinds.presence.join(', ') + ')',
+      S.strength_done.strong + ' / ' + S.strength_done.act + ' / ' + S.strength_done.presence + ' of ' + S.strength_total.strong + ' / '
+      + S.strength_total.act + ' / ' + S.strength_total.presence, 'strength-steps'],
+    ...(S.device_mark_kinds.length ? [['steps with a device mark only (' + S.device_mark_kinds.join(', ') + ')',
+      S.device_mark_steps_done + ' of ' + S.device_mark_steps, 'device-mark-steps']] : []),
+    ...(S.self_reported_kinds.length ? [['self-reported / unrecorded steps (' + S.self_reported_kinds.join(', ') + ')',
+      S.self_reported_steps_done + ' of ' + S.self_reported_steps, 'self-reported-steps']] : []),
   ];
   const tb = elem('table'); const body = elem('tbody');
   for (const [k, v, key] of figs) {
@@ -1836,12 +1859,14 @@ async function paintCompletion() {
   }
   tb.appendChild(body); box.appendChild(tb);
   box.appendChild(elem('p', { text: (training === null
-    ? 'The training log under ' + KEYS.training + ' is ' + rec.training.state + ', so no advisor, crew or walkaround step is done here. '
+    ? 'The training log under ' + KEYS.training + ' is ' + rec.training.state + ', so no ' + S.episode_kinds.filter((k) => k !== 'sim').join(', ') + ' step is done here. '
     : '') + (S.episode_kinds_unmarked_here.length
     ? 'A ' + S.episode_kinds_unmarked_here.map((k) => k + ' step can never be matched: the 3D page records no ' + S.episode_kinds_missing_fields[k].join(', ') + ' in that episode').join('; ') + '. '
-    : '') + 'Nothing records ' + S.self_reported_kinds.join(', ') + ' steps at all; none of those is ever marked '
-    + 'done here and a lesson holding one cannot be complete. A device mark is a mark this device wrote, '
-    + 'not evidence. Identity: '
+    : '') + (S.self_reported_kinds.length ? 'Nothing records ' + S.self_reported_kinds.join(', ') + ' steps at all; none of those is ever marked '
+    + 'done here and a lesson holding one cannot be complete. ' : '') + 'A device mark is a mark this device wrote, '
+    + 'not evidence. Evidence-backed means a device wrote an episode, not that all episodes say the same: only strong steps '
+    + '(' + S.strength_kinds.strong.join(', ') + ') are graded by the page; act steps record a question asked or a point marked, '
+    + 'and presence steps (' + S.strength_kinds.presence.join(', ') + ') record only that a device saw a room or an open panel. Identity: '
     + (record.identity.claimed === null ? 'no label on this device' : record.identity.claimed)
     + ' — attested by this device only, unsigned. Digest ' + record.digest.hex.slice(0, 16) + '…' }));
   const download = (fresh, suffix) => {
@@ -1963,12 +1988,18 @@ COMPLETION_JS = r"""
    its evidence; nothing is marked done from nothing, and no number is
    invented for a field the record does not hold. */
 const COMPLETION_RECORD = 'tc-completion/1';
-/* the kinds whose evidence tc-progress can hold, and where it holds it */
-const EVIDENCED_KINDS = ['sim', 'station', 'crib'];
+/* the kinds whose evidence tc-progress can hold, and where it holds it. Station and crib were here until wave 21: they
+   write a training episode now (REF_FIELDS below) and tc-progress's station and tool marks feed no step. A kind that
+   leaves only a mark in tc-progress would be listed here again and counted as a device mark, never as an episode. */
+const EVIDENCED_KINDS = ['sim'];
 /* the reference a step of an episode kind carries, as lessons.json spells it;
    a training episode must equal every one of these AND the lesson's hall */
 const REF_FIELDS = { walkaround: ['sim', 'point'], advisor: ['advisor', 'topic', 'answer_kind'],
-  crew: ['crew', 'role', 'topic', 'answer_kind', 'seat', 'muster'] };
+  crew: ['crew', 'role', 'topic', 'answer_kind', 'seat', 'muster'], walk: ['where'], placard: ['where'],
+  station: ['where', 'station'], crib: ['where', 'crib'] };
+/* wave 20: an episode kind may also declare (training.json#episode_kinds[k]) a names_read_field - the episode field
+   whose value must be one of the step's own names_read - and at_least, a floor on a numeric field (a placard's
+   dwell_ms). Both are read from the registry that declares them, never retyped here. */
 /* an episode kind whose recorded fields do not cover the step's reference can
    never mark a step done; the missing fields are named, not skipped */
 function unmatchableKinds(episodeKinds) {
@@ -1977,6 +2008,9 @@ function unmatchableKinds(episodeKinds) {
     const fields = episodeKinds && episodeKinds[k] && Array.isArray(episodeKinds[k].fields) ? episodeKinds[k].fields : [];
     const missing = REF_FIELDS[k].filter((f) => !fields.includes(f));
     if (!fields.includes('hall')) missing.push('hall');
+    const ek = episodeKinds && episodeKinds[k] ? episodeKinds[k] : null;
+    if (ek && ek.names_read_field && !fields.includes(ek.names_read_field)) missing.push(ek.names_read_field);
+    if (ek && ek.at_least) for (const f of Object.keys(ek.at_least)) if (!fields.includes(f)) missing.push(f);
     if (missing.length) out[k] = missing;
   }
   return out;
@@ -1992,8 +2026,13 @@ function episodeEvidence(step, hall, training, meta, skipped) {
     if (!episodeTimeOk(ep)) { if (skipped) skipped.add(ep); continue; }
     if (ep.actor !== undefined && ep.actor !== meta.human_actor) continue;
     if (!REF_FIELDS[step.kind].every((f) => step[f] !== undefined && ep[f] === step[f])) continue;
+    const ek = meta.episode_kinds[step.kind];
+    if (ek.names_read_field && !(Array.isArray(step.names_read) && step.names_read.includes(ep[ek.names_read_field]))) continue;
+    if (ek.at_least && Object.keys(ek.at_least).some((f) => typeof ep[f] !== 'number' || !isFinite(ep[f]) || ep[f] < ek.at_least[f])) continue;
     const ev = { episode: step.kind, t: ep.t, hall };
     for (const f of REF_FIELDS[step.kind]) ev[f] = step[f];
+    if (ek.names_read_field) ev[ek.names_read_field] = ep[ek.names_read_field];
+    if (ek.at_least) for (const f of Object.keys(ek.at_least)) ev[f] = ep[f];
     return ev;
   }
   return null;
@@ -2049,8 +2088,6 @@ function canonicalJSON(v) {
 function stepEvidence(step, prog, hall, training, meta, skipped) {
   if (step.kind in REF_FIELDS) return episodeEvidence(step, hall, training, meta, skipped);
   const sims = (prog && typeof prog.sims === 'object' && prog.sims) ? prog.sims : {};
-  const tools = (prog && typeof prog.tools === 'object' && prog.tools) ? prog.tools : {};
-  const stations = (prog && Array.isArray(prog.stations)) ? prog.stations : [];
   if (step.kind === 'sim') {
     const rec = Object.prototype.hasOwnProperty.call(sims, step.sim) ? sims[step.sim] : null;
     if (!rec || typeof rec !== 'object') return null;
@@ -2066,17 +2103,9 @@ function stepEvidence(step, prog, hall, training, meta, skipped) {
     return { sim: step.sim, scenario: step.scenario,
       score: typeof src.score === 'number' ? src.score : null, passed: true };
   }
-  if (step.kind === 'station') {
-    return stations.includes(step.station) ? { station: step.station } : null;
-  }
-  if (step.kind === 'crib') {
-    const rec = Object.prototype.hasOwnProperty.call(tools, step.crib) ? tools[step.crib] : null;
-    if (!rec || typeof rec !== 'object' || rec.passed !== true) return null;
-    return { crib: step.crib, passed: true };
-  }
-  /* walk and placard record nothing anywhere; walkaround, advisor and crew
-     write episodes to the training log, which is not the record this is
-     built from, and the seat-level walkaround tally names no point */
+  /* every other kind writes nothing this function reads: the episode kinds are
+     matched from the training log above, which is not the record this is
+     built from */
   return null;
 }
 
@@ -2090,6 +2119,7 @@ async function buildCompletionRecord(prog, lessons, ladder, meta, now, training)
   if (!prog || typeof prog !== 'object' || Array.isArray(prog)) throw new Error('completion: no progress record');
   if (training !== null && !Array.isArray(training)) throw new Error('completion: training must be the episode array or null');
   if (!meta.episode_kinds || typeof meta.episode_kinds !== 'object') throw new Error('completion: meta.episode_kinds missing');
+  if (!meta.evidence_strength || typeof meta.evidence_strength.kinds !== 'object') throw new Error('completion: meta.evidence_strength missing; the record says how strong its evidence is');
   if (training === null && typeof meta.training_state !== 'string') throw new Error('completion: training is null and meta.training_state does not say why');
   const unmatchable = unmatchableKinds(meta.episode_kinds);
   const skipped = new Set();
@@ -2097,7 +2127,7 @@ async function buildCompletionRecord(prog, lessons, ladder, meta, now, training)
     if (!(e.lesson in lessons) || !(e.needs in lessons))
       throw new Error('completion: the ladder names a lesson that is not defined: ' + e.lesson + ' needs ' + e.needs);
   }
-  const silent = Object.keys(meta.step_kinds).filter((k) => meta.step_kinds[k].records === null);
+  const silent = Object.keys(meta.step_kinds).filter((k) => meta.step_kinds[k].records === null && !EVIDENCED_KINDS.includes(k));
   const fromTraining = Object.keys(REF_FIELDS).filter((k) => !(k in unmatchable));
 
   const out = [];
@@ -2146,7 +2176,7 @@ async function buildCompletionRecord(prog, lessons, ladder, meta, now, training)
     sims, tools, stations,
     honesty: {
       proves: [
-        'a step of kind sim, station or crib is marked done only where this device\'s progress record holds a pass for that seat, that station or that district crib; no step is marked done from nothing',
+        'a step of kind sim is marked done only where this device\'s progress record holds a pass for that seat; a station or crib step only where the training log holds a station or crib episode of that hall for that station or district (the marks in the progress record feed nothing); no step is marked done from nothing',
         'a lesson is complete only when every one of its steps is done',
         'the digest is SHA-256 over the canonical JSON of every other top-level field (identity.signature forced to null, because a signature is made over the digest), so an edit to any of them is detectable',
         ...(wallet === null ? [] : ['identity.signature, when filled, is an EIP-191 personal_sign by the wallet ' + wallet + ' over this digest: the holder of that key signed this digest at export - the identity of a key, not of a person']),
@@ -2156,7 +2186,9 @@ async function buildCompletionRecord(prog, lessons, ladder, meta, now, training)
           ? 'who did the work: the identity is a label this device stores and nobody has verified it, the signature is null, and anyone holding the device can edit the record it was built from'
           : 'who did the work: a wallet signature names a key, not a person - a key is held, lent and stolen - and anyone holding the device can edit the record it was built from',
         'anything on any blockchain: nothing is written to any chain, nothing is anchored, no transaction exists; a signature, if any, is computed in the browser and carried in this file',
-        'silent steps (' + silent.join(', ') + ') are recorded by nothing in this bundle, so they are never done here and no lesson that has one can be complete',
+        'every episode-backed step is not equally strong evidence: strong steps (' + meta.evidence_strength.kinds.strong.join(', ') + ') are graded by the page, act steps (' + meta.evidence_strength.kinds.act.join(', ') + ') record a question asked or a point marked with nothing graded, and presence steps (' + meta.evidence_strength.kinds.presence.join(', ') + ') record only that a device saw a room or an open panel; a lesson can be complete on presence and act steps alone',
+        ...(silent.length ? ['silent steps (' + silent.join(', ') + ') are recorded by nothing in this bundle, so they are never done here and no lesson that has one can be complete'] : []),
+        'a walk or placard step is done only on the episode a device recorded: a walker\'s position in the room, or a placard panel left open for its dwell with the walker in the room. That is a device event, not proof that anyone read, understood or took on what the placard requires',
         training === null
           ? 'the training log was ' + meta.training_state + ' on this device, so no ' + Object.keys(REF_FIELDS).join(', ') + ' step is done here'
           : 'a ' + fromTraining.join(', ') + ' step is done only where the training log holds an episode of that kind in the lesson\'s hall whose reference fields equal the step\'s own (' + fromTraining.map((k) => k + ': hall, ' + REF_FIELDS[k].join(', ')).join('; ') + '); a hall alone matches nothing',
@@ -2178,10 +2210,17 @@ async function buildCompletionRecord(prog, lessons, ladder, meta, now, training)
 
 /* the on-page figures, computed from a record and never typed. Three counts,
    named by what stands behind each step: an episode kind (step_kinds.records
-   != null: sim, advisor, crew, walkaround) counts only where tc-progress
-   actually holds that mark; a device mark only (station done, crib passed);
-   self-reported or unrecorded (walk, placard), which nothing writes anywhere. */
-function summarizeRecord(record, stepKinds, episodeKinds) {
+   != null: sim, advisor, crew, walkaround, walk, placard, station, crib) counts only where
+   tc-progress or the training log actually holds that mark (station and
+   crib, a correct quiz pick and a passed check, since wave 21); a device mark
+   only (no kind today); self-reported or unrecorded (no kind
+   today), which nothing writes anywhere. */
+function summarizeRecord(record, stepKinds, episodeKinds, strength) {
+  /* HONEST: strength is declared per episode kind in completion/ (read, fail closed) and only REPORTED here */
+  if (!strength || typeof strength.by_kind !== 'object' || typeof strength.kinds !== 'object' || typeof strength.levels !== 'object')
+    throw new Error('completion: summarizeRecord needs the evidence strength (by_kind, kinds, levels) the completion registry declares');
+  for (const k of Object.keys(stepKinds)) if (stepKinds[k].records !== null && !(strength.by_kind[k] in strength.levels))
+    throw new Error('completion: step kind ' + k + ' records an episode but declares no known evidence strength');
   const unmatchable = unmatchableKinds(episodeKinds);
   const epKinds = Object.keys(stepKinds).filter((k) => stepKinds[k].records !== null);
   const deviceKinds = Object.keys(stepKinds).filter((k) => stepKinds[k].records === null && EVIDENCED_KINDS.includes(k));
@@ -2190,7 +2229,18 @@ function summarizeRecord(record, stepKinds, episodeKinds) {
   const complete = record.lessons.filter((l) => l.complete);
   const evidenced = complete.filter((l) => l.steps.every((s) => s.evidence !== null));
   const isDoneOf = (kinds) => steps.filter((s) => kinds.includes(s.kind) && s.done && s.evidence !== null).length;
+  const strengthDone = {}, strengthTotal = {};
+  for (const lvl of Object.keys(strength.levels)) {
+    const ks = Object.keys(strength.by_kind).filter((k) => strength.by_kind[k] === lvl);
+    strengthDone[lvl] = isDoneOf(ks);
+    strengthTotal[lvl] = steps.filter((s) => ks.includes(s.kind)).length;
+  }
+  const completeWithStrong = complete.filter((l) => l.steps.some((s) => strength.by_kind[s.kind] === 'strong' && s.done && s.evidence !== null)).length;
   return {
+    strength_done: strengthDone,
+    strength_total: strengthTotal,
+    strength_kinds: strength.kinds,
+    complete_with_strong: completeWithStrong,
     lessons: record.lessons.length,
     complete: complete.length,
     evidence_backed: evidenced.length,
@@ -2512,7 +2562,11 @@ footer.page a{{margin-inline-end:10px}}
   <p class="why">A completion record is built here from the progress record under
      <code>{E(PROGRESS_KEY)}</code> and the lesson definitions in <code>{E(LESSONS_PATH)}</code>, and
      from nothing else. A step counts as done only where that record holds its evidence; a lesson is
-     complete only when every step is done. The record names what it proves and what it does not,
+     complete only when every step is done. Evidence-backed does not mean equally strong: the page grades
+     {E(', '.join(EVIDENCE_STRENGTH['kinds']['strong']))} steps (strong); {E(', '.join(EVIDENCE_STRENGTH['kinds']['act']))}
+     record a question asked or a point marked with nothing graded (act); {E(', '.join(EVIDENCE_STRENGTH['kinds']['presence']))}
+     record only that a device saw a room or an open panel (presence). Every total below is shown with that split.
+     The record names what it proves and what it does not,
      and carries a digest so an edit is detectable. It is attested by this device alone and signed
      by nobody — unless this device names an Ethereum wallet (<code>{E(WALLET_LABEL)}</code>, stored
      under <code>{E(IDENTITY_KEY)}</code> by the sign-in page), in which case the button below asks that

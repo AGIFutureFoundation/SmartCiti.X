@@ -2983,7 +2983,7 @@
   {
    "id": "training-recorder",
    "kind": "recorder",
-   "name": "training-data recorder - 4 episode kinds, device-local under tc-training",
+   "name": "training-data recorder - 8 episode kinds, device-local under tc-training",
    "registry": "training/registry/training.json",
    "transport": "in-page, no network",
    "anchored_at": "campus:treasure-island",

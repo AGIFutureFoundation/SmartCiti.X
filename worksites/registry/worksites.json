@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-26",
- "source_stamp": "ca18d283b7935e0f",
+ "source_stamp": "bda3130ecce5f81e",
  "authored_stamp": "4fc3c55d8b8e1198",
  "provenance": {
   "declarations": "AUTHORED (worksites/authored/*.json: id, title, job, place, crew, role unions, hand-off evidence, gates)",
@@ -261,7 +261,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "to_evidence": {
@@ -360,7 +362,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "verifiable": true,
@@ -387,7 +391,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "to_evidence": {
@@ -500,7 +506,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "verifiable": true,
@@ -527,7 +535,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "to_evidence": {
@@ -546,7 +556,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "verifiable": true,
@@ -743,7 +755,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "to_evidence": {
@@ -762,7 +776,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "verifiable": true,
@@ -789,7 +805,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "to_evidence": {
@@ -848,7 +866,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "verifiable": true,
@@ -875,7 +895,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "to_evidence": {
@@ -894,7 +916,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "verifiable": true,
@@ -967,7 +991,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "verifiable": true,
@@ -1192,7 +1218,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "to_evidence": {
@@ -1439,7 +1467,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "verifiable": true,
@@ -1466,7 +1496,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "to_evidence": {
@@ -1485,7 +1517,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "verifiable": true,
@@ -1512,7 +1546,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "to_evidence": {
@@ -1531,7 +1567,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "verifiable": true,
@@ -1731,7 +1769,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "to_evidence": {
@@ -1750,7 +1790,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "verifiable": true,
@@ -1777,7 +1819,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "to_evidence": {
@@ -1836,7 +1880,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "verifiable": true,
@@ -1863,7 +1909,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "to_evidence": {
@@ -2016,7 +2064,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "verifiable": true,
@@ -2462,7 +2512,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "verifiable": true,
@@ -2489,7 +2541,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "to_evidence": {
@@ -2508,7 +2562,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "verifiable": true,
@@ -2977,7 +3033,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "verifiable": true,
@@ -3004,7 +3062,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "to_evidence": {
@@ -3171,7 +3231,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "verifiable": false,
@@ -3644,7 +3706,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "to_evidence": {
@@ -3965,7 +4029,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "verifiable": true,
@@ -3992,7 +4058,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "to_evidence": {
@@ -4011,7 +4079,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "verifiable": true,
@@ -4456,7 +4526,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "to_evidence": {
@@ -4655,7 +4727,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "verifiable": true,
@@ -4682,7 +4756,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "to_evidence": {
@@ -4701,7 +4777,9 @@
        "crew",
        "role",
        "topic",
-       "answer_kind"
+       "answer_kind",
+       "seat",
+       "muster"
       ]
      },
      "verifiable": true,

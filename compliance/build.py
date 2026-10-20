@@ -196,9 +196,13 @@ LESSON_MAP = need(LESSONS, 'lessons', 'lessons')
 LEDGER_CLASSES = {
     'evidenceable': 'a tc-completion/1 record carries a mark the verifier checks against the registries: '
                     'a sim step\'s episode (sim, scenario, score, passed) and record.sims[id].passed; a walkaround or '
-                    'advisor episode; a station id in record.stations; a crib district in record.tools with passed',
-    'self-reported': 'a walk or placard step: the record carries done and no evidence; completion.json says done is the '
-                     'learner\'s word, so this ledger cannot treat it as evidenced',
+                    'advisor episode; a walk episode (which room the walker entered) or a placard episode (which room, '
+                    'and a panel left open for its declared dwell); a station id in record.stations; a crib district in '
+                    'record.tools with passed',
+    'self-reported': 'a step kind completion.json says records nothing at all: the record carries done and no evidence, '
+                     'and done is the learner\'s word, so this ledger cannot treat it as evidenced. No step kind is '
+                     'self-reported today (walk and placard write episodes now); the class and its rule stay '
+                     'so a kind added with no record cannot carry evidence it does not have',
     'not-recordable': 'the item is a fact of the bundle (a room\'s required PPE, a hung placard, a hall\'s sign-off '
                       'status, a rubric axis) or a step kind completion.json says it cannot evidence; no field of a '
                       'tc-completion/1 record carries it',
@@ -222,7 +226,10 @@ def step_kind_ledger_class(kind):
 STEP_KIND_EVIDENCE = {}
 for kind in STEP_KINDS:
     lc, why, cc = step_kind_ledger_class(kind)
-    STEP_KIND_EVIDENCE[kind] = {'ledger_class': lc, 'completion_class': cc, 'why': why}
+    # HONEST: how strong the evidence is, declared in completion.json (episode-backed kinds only), read not typed. It is
+    # shown next to the evidenced totals and decides no ledger class.
+    STEP_KIND_EVIDENCE[kind] = {'ledger_class': lc, 'completion_class': cc, 'why': why,
+                                'strength': need(need(EVIDENCE_RULE, kind, 'completion#evidence_rule'), 'strength', kind)}
 
 # --------------------------------------------------------------- seats ---
 SIM_MAP = need(SIMS, 'sims', 'sims')
@@ -260,6 +267,7 @@ for lid, L in LESSON_MAP.items():
 
 LEDGER = {}
 ITEM_TALLY = {'evidenceable': 0, 'self-reported': 0, 'not-recordable': 0}
+EVIDENCEABLE_BY_STRENGTH = {'strong': 0, 'act': 0, 'presence': 0, 'none': 0}
 for slug in HALL_ORDER:
     H = FIN_HALLS[slug]
     hazards = list(need(H, 'hazards', slug))
@@ -286,7 +294,9 @@ for slug in HALL_ORDER:
             'placard': plac,
             'evidence': {'ledger_class': 'not-recordable',
                          'why': 'the required PPE and the hung placard are facts of the bundle; a placard step in a lesson '
-                                'is self-reported (' + STEP_KIND_EVIDENCE['placard']['why'] + ')'},
+                                'is evidenced only as a placard panel left open for its declared dwell with the walker in '
+                                'this room (' + STEP_KIND_EVIDENCE['placard']['why'] + '): the record carries that and '
+                                'nothing that says the placard was read or its requirements met'},
         }
         ITEM_TALLY['not-recordable'] += 1
     hazard_rooms = [s for s in ROOM_STRANDS if rooms[s]['hazard_room']]
@@ -301,6 +311,7 @@ for slug in HALL_ORDER:
         seats.append({'sim': sid, 'skill_id': need(b, 'skill_id', f'{slug} binding'),
                       'every_axis_gates': SEATS[sid]['every_axis_gates'], 'gating_axes': SEATS[sid]['gating_axes']})
         ITEM_TALLY['evidenceable'] += 1
+        EVIDENCEABLE_BY_STRENGTH['strong'] += 1   # a seat binding is evidenced by a sim step episode, kind sim
 
     sign = SIGN_HALLS[slug]
     signoff = {
@@ -332,6 +343,8 @@ for slug in HALL_ORDER:
             lc = STEP_KIND_EVIDENCE[k]['ledger_class']
             step_classes[lc] = (step_classes[lc] if lc in step_classes else 0) + 1
             ITEM_TALLY[lc] += 1
+            if lc == 'evidenceable':
+                EVIDENCEABLE_BY_STRENGTH[STEP_KIND_EVIDENCE[k]['strength']] += 1
         lessons.append({
             'lesson': lid, 'title': need(L, 'title', lid), 'steps': len(steps),
             'rooms_walked': walked,
@@ -342,7 +355,8 @@ for slug in HALL_ORDER:
             'hazard_rooms_not_walked': not_walked,
             'steps_by_ledger_class': {k: (step_classes[k] if k in step_classes else 0) for k in LEDGER_CLASSES},
             'step_kinds': [{'n': need(s, 'n', lid), 'kind': need(s, 'kind', lid), 'where': need(s, 'where', lid),
-                            'ledger_class': STEP_KIND_EVIDENCE[need(s, 'kind', lid)]['ledger_class']} for s in steps],
+                            'ledger_class': STEP_KIND_EVIDENCE[need(s, 'kind', lid)]['ledger_class'],
+                            'strength': STEP_KIND_EVIDENCE[need(s, 'kind', lid)]['strength']} for s in steps],
         })
 
     LEDGER[slug] = {
@@ -386,10 +400,12 @@ ROLLUPS = {
     'seats_with_an_informational_axis': sum(1 for s in SEATS.values() if not s['every_axis_gates']),
     'seats_with_scalar_threshold': sum(1 for s in SEATS.values() if s['threshold'] is not None),
     'items_by_ledger_class': dict(ITEM_TALLY),
+    'evidenceable_items_by_strength': dict(EVIDENCEABLE_BY_STRENGTH),
     'items': sum(ITEM_TALLY.values()),
 }
 assert ROLLUPS['halls_with_hazards'] + ROLLUPS['halls_without_hazards'] == ROLLUPS['halls']
 assert ROLLUPS['seats_every_axis_gates'] + ROLLUPS['seats_with_an_informational_axis'] == ROLLUPS['seats']
+assert sum(EVIDENCEABLE_BY_STRENGTH.values()) == ITEM_TALLY['evidenceable'], 'evidenceable items by strength do not sum to the evidenceable items'
 assert ROLLUPS['halls_signed_off'] == 0, 'a hall claims sign-off: ROADMAP.md criterion 1 has moved; re-read it before shipping this ledger'
 
 # ---------------------------------------------------------------- fixture ---
@@ -408,10 +424,13 @@ def node_digest(record):
 
 GOOD = json.load(open(ROOT / PATHS['completion_fixture']))
 mut = copy.deepcopy(GOOD)
+# wave 20: a placard step is evidenced as an episode for ITS room, so the old mutant (a placard step carrying evidence when
+# placards were self-reported) is replaced by a placard step carrying the episode of ANOTHER room: this report inherits
+# completion's own rule and refuses it. The self-reported rule stays in verify.mjs and is mutation-proved in test.mjs.
 plac = next((lesson, st) for lesson in mut['lessons'] for st in lesson['steps'] if st['kind'] == 'placard' and st['done'])
-plac[1]['evidence'] = {'episode': 'placard', 't': BUILT + 'T03:00:00.000Z', 'hall': plac[0]['hall']}
+plac[1]['evidence']['where'] = 'not-the-room' if plac[1]['evidence']['where'] != 'not-the-room' else 'safety'
 mut['digest']['hex'] = node_digest(mut)
-MUTANTS = {'placard-claimed-evidenced': ('evidence.self-reported-carries-none', mut)}
+MUTANTS = {'placard-evidence-for-another-room': ('completion step.episode-evidence', mut)}
 
 REGISTRY = {
     'pack': 'smartcitix-trade-craft-academy-compliance',
@@ -438,7 +457,8 @@ REGISTRY = {
         'is_not': ['a code reference', 'a jurisdiction overlay', 'a certification', 'an inspection', 'an accreditation'],
         'signoff': 'no hall\'s content is signed off by a practitioner today (read through pack/hall_signoff.mjs); every hall inherits the global caveat',
         'signature': 'a signed record attests a key, not a person (completion.json#signature)',
-        'self_reported': 'a walk or placard step is the learner\'s word: it cannot be evidenced by any record',
+        'evidence_strength': 'evidenced does not mean equally strong: completion.json declares per step kind whether the evidence is strong (graded by the page), act (a question asked or a point marked) or presence (a device saw a room or an open panel); this ledger reports the split next to its evidenced totals and decides nothing by it',
+        'self_reported': 'no step kind is self-reported today: walk and placard write episodes now. A walk or placard episode records that a device saw the walker in a room, or a placard panel left open for its dwell; it never says the placard was read or that anything it requires was met, and the room requirement itself stays not-evidenced',
     },
     'placard_rule': PLACARD_STRUCTURE,
     'ledger_classes': LEDGER_CLASSES,
@@ -457,7 +477,7 @@ REGISTRY = {
                 'report': 'fixture/report.txt',
                 'mutants': {f'fixture/mutant-{n}.json': rule for n, (rule, _m) in MUTANTS.items()},
                 'registry_mutants_in_test': ['ppe-typed-for-room-without', 'hall-marked-signed-off',
-                                             'rubric-axis-invented-pass', 'stale-stamp']},
+                                             'rubric-axis-invented-pass', 'stale-stamp', 'strength-rollup-moved', 'step-strength-retyped']},
 }
 
 OUT.parent.mkdir(parents=True, exist_ok=True)

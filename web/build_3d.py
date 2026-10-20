@@ -1364,6 +1364,10 @@ DATA = json.dumps({
                  'trace': {'toggle_key': training_reg['trace']['toggle_key'],
                            'sample_hz': training_reg['trace']['sample_hz'],
                            'max_samples': training_reg['trace']['max_samples']},
+                 # wave 20: the walk/placard dwell and what those episodes do and do not prove
+                 'step_episodes': {'placard': {'dwell_ms': training_reg['step_episodes']['placard']['dwell_ms']},
+                                   'proves': training_reg['step_episodes']['proves'],
+                                   'does_not_prove': training_reg['step_episodes']['does_not_prove']},
                  'export_format': trim(training_reg['export_format'],
                      'consumer', 'not_a_demo_file', 'no_agent_trained'),
                  'kinds': trim(training_reg['episode_kinds'],
@@ -6244,9 +6248,14 @@ function openAdvisor(aid, topicId) {
        training/build.py counts the recorder's integration points against
        its declared episode kinds - and a call whose shape is decided at
        runtime is exactly the thing that count exists to refuse. */
+    /* CREW-EPISODE BEGIN: the seat and the muster are the crew's own entry
+       in the crews registry, copied verbatim into the episode, so a lesson
+       step that names a crew can be matched on every reference it carries. */
     if (tp && crew) recordEpisode({ kind: 'crew', campus: campusKey,
       hall: slug, crew: a.inCrew, role: aid.split(':')[1],
-      topic: topicId, answer_kind: tp.kind });
+      topic: topicId, answer_kind: tp.kind,
+      seat: crew.seat, muster: crew.muster });
+    /* CREW-EPISODE END */
     else if (tp) recordEpisode({ kind: 'advisor', campus: campusKey,
       hall: slug, advisor: aid, topic: topicId, answer_kind: tp.kind });
   }
@@ -7107,10 +7116,16 @@ XR_JS = r"""/* ------------------------------------------------------------- Web
    the SOURCE by regex (web/test_3d.mjs, meta/test.mjs), and the gesture
    recogniser is proven against synthetic joint positions fed straight
    through it (__tc3dHandProbe) - hand joints are read, hands are not
-   rendered. No session - mocked or real - has been driven in this tree; a
-   mocked WebXR session harness (three.js's WebXRManager under a fake
-   session, frame and input sources) is the next step and is NOT claimed.
-   Nobody has held a real hand up to these distances. */
+   rendered. */
+/* XR-SESSION BEGIN
+   One seat (the rigging signal call) is also driven end to end in a
+   MOCKED WebXR session in headless Chromium, by xr/test_session.mjs
+   --browser: three.js's WebXRManager over a fake session, frame and input
+   sources; controllers only, no hand input source.
+   No session on a physical headset has been driven in this tree.
+   Mocked half met, headset half not met.
+   Nobody has held a real hand up to these distances.
+   XR-SESSION END */
 let xrMode = null, vrSupported = false, arSupported = false, xrProbeNote = null;
 let xrBlend = 'opaque', xrFloor = true, xrWalk = false, xrWalkKey = null;
 const XR_LOCAL_EYE = 1.6;              // rig lift in a plain `local` space
@@ -7305,8 +7320,8 @@ const xrPad = { l: [0, 0], r: [0, 0], trig: false, lTrig: false, grip: false,
    Four gestures, read off WebXR Hand Input joints. Every distance, every
    release distance and every hold below is the guide registry's - AUTHORED,
    and stated there as authored: nobody has held a real headset up to these
-   numbers, and no session - mocked or real - has driven this layer in this
-   tree; the contracts are held at the source. What IS proven here is the shape: a gesture
+   numbers, and no session on a physical headset has driven this layer in
+   this tree; the contracts are held at the source. What IS proven here is the shape: a gesture
    fires on its threshold and releases on a separate, looser one, because a
    single threshold on a stop gesture chatters at the boundary and a stop
    that chatters is worse than no stop at all.
@@ -7669,8 +7684,8 @@ function xrQDrop(fps) {
     + (xrScaleIdx ? ' ' + t('xr.perfNextSession') : '');
   xrSay(xrQNote);
 }
-// what a harness could read and drive - no harness, mocked or real, has
-// driven this layer yet; this is the surface one would read
+// what a harness reads and drives: the MOCKED session harness (xr/session_harness.mjs)
+// reads this surface; no harness has run it on a physical headset
 window.__tc3dXR = {
   start: xrStart,
   end: () => renderer.xr.getSession()?.end(),
@@ -7690,7 +7705,57 @@ window.__tc3dXR = {
     head: camera.position.toArray().map((v) => Math.round(v * 1000) / 1000),
     eye: eyePos().toArray().map((v) => Math.round(v * 1000) / 1000),
     input: xrStat.lastInput }),
-};"""
+};
+/* XR-SEATS BEGIN
+   A read-and-advise hook for the MOCKED session harness (xr/session_harness.mjs,
+   --seats): it lets the harness put the other ten seats through the controller
+   map. `begin` builds a SCRIPTED coach for the seat now running - the same
+   reference policy and the same context the A button watches (opAttach) - but
+   it is never attached as opRun: `next` only RETURNS the keys and the Space
+   verb the policy would press for the seat's current gauges, and the harness
+   writes them onto the mocked controllers' thumbsticks, grip and trigger. The
+   seat then sees ordinary controller input through xrInput, so a result is a
+   run the controllers made, recorded as a human run on this device; the policy
+   behind the sticks is SCRIPTED, not a person. It adds no input the HUD's watch
+   button does not already have, and no physical headset has run any of it. */
+const xrCoach = { c: null, t: 0 };
+window.__tc3dCoach = {
+  begin(level = 'optimal', seed = 1) {
+    const def = D.sims.sims[curSimId], op = OPERATORS[curSimId];
+    if (!sim || !op || !def.operator.levels.includes(level)) return null;
+    const proc = def.operator.procedure, scenario = curScenario?.id ?? null;
+    // a fresh result panel: the last seat's must not read as this one's
+    document.getElementById('pbody').innerHTML = '';
+    document.body.classList.remove('open');
+    xrCoach.t = performance.now();
+    xrCoach.c = { sim: curSimId, level, seed, scenario, sweep: false, def, fixedDt: null,
+      P: curScenario?.params ?? {}, L: op.levels[level], m: { phase: 0 },
+      step: 0, dt: 1 / 60, result: null,
+      rng: opRng(curSimId + ':' + scenario + ':' + level + ':' + seed),
+      next() { this.m.phase++; },
+      goto(pid) { this.m.phase = proc.findIndex((p) => p.id === pid); },
+      get id() { return proc[this.m.phase]?.id ?? null; } };
+    return { sim: curSimId, scenario, level, phases: proc.length };
+  },
+  next() {
+    const c = xrCoach.c; if (!c || !sim) return null;
+    const now = performance.now(); c.dt = (now - xrCoach.t) / 1000; xrCoach.t = now;
+    const out = OPERATORS[c.sim].step(sim.gauges(), c) ?? {};
+    c.step++;
+    return { keys: OP_KEYS.filter((k) => out.keys && out.keys[k]), act: !!out.act, phase: c.id };
+  },
+  // the seat's own result panel is open and names this seat
+  done() {
+    const h = document.getElementById('pbody').querySelector('h2');
+    return !!sim && document.body.classList.contains('open') && !!h && h.textContent === D.sims.sims[curSimId].name;
+  },
+  state() {
+    const c = xrCoach.c;
+    return c ? { sim: c.sim, phase: c.id, phaseIdx: c.m.phase, phases: c.def.operator.procedure.length, step: c.step } : null;
+  },
+  end() { xrCoach.c = null; },
+};
+/* XR-SEATS END */"""
 
 page = '''<!doctype html>
 <html lang="en">
@@ -11077,6 +11142,9 @@ const PROPS = {
 
 /* ---------------------------------------------------------- the hall ---- */
 let hallGroup = null, beacons = [], floors = [], roomRects = [], curRoom = null;
+/* STEP-EPISODE BEGIN: the door placards of the hall being walked, and the placard panel that is open */
+let placardBoards = [], placardOpen = null;
+/* STEP-EPISODE END */
 // The hall's own solid fabric: shell walls and partition segments, as
 // axis-aligned rectangles in the hall's frame (a hall is not turned). Built
 // from the SAME runs that are drawn, so there is no opening you can see and
@@ -11716,6 +11784,7 @@ function buildHall(sg) {
   if (tqSt) { tqSt.dispose(); tqSt = null; tqAt = null; }   // its panel goes with the hall it stood in
   if (hallGroup) { scene.remove(hallGroup); disposeOf(hallGroup); }
   hallGroup = new THREE.Group(); beacons = []; floors = []; roomRects = []; curRoom = null;
+  /* STEP-EPISODE BEGIN */ placardBoards = []; placardOpen = null; /* STEP-EPISODE END */
   hallSolids = [];
   // Every material this hall builds for itself - wall faces, wainscots,
   // floors, luminaires - is deliberately left UNMARKED, because
@@ -12272,6 +12341,9 @@ function buildHall(sg) {
                      rx + rw / 2 - bw / 2 - .1);
       plac.position.set(bx2, BOARD_HEAD_M - bh2 / 2, rz + rd / 2 + .09);
       hallGroup.add(plac);
+      /* STEP-EPISODE BEGIN: the board knows which room it hangs in, so a click on it can open its panel */
+      plac.userData.placardStrand = r.strand; placardBoards.push(plac);
+      /* STEP-EPISODE END */
     }
 
     /* The hazard notice, where the room's OWN record names a hazard.
@@ -15252,11 +15324,12 @@ function walkStep(dt) {
       curRoom = room;
       markActiveLesson(room ? room.strand : null);
       if (room) {
+        /* STEP-EPISODE BEGIN */ stepWalkEntered(room); /* STEP-EPISODE END */
         const fin = D.finCat[D.finishes[slug][room.strand].surface];
         document.getElementById('hfocus').textContent =
           room.label + ' \u2014 ' + fin.name;
         document.getElementById('hint').textContent =
-          condLine(condOf(slug, room.strand));
+          condLine(condOf(slug, room.strand)) + stepPlacardHint(room.strand);
       } else {
         document.getElementById('hfocus').textContent = hallRec.focus;
         document.getElementById('hint').textContent = t('hint.walk');
@@ -15439,6 +15512,158 @@ function exportTraining() {
   return JSON.stringify({ pack: 'smartcitix-trade-craft-academy-training-data',
     exported: new Date().toISOString(), episodes: trainingLog });
 }
+
+/* STEP-EPISODE BEGIN (wave 20): the walk and placard episodes.
+   A lesson's walk and placard steps recorded nothing, so no lesson could be
+   completed from evidence. Two small events fix that without a new
+   storage key, toggle or cap:
+     walk    - the walker's own position enters the rectangle of a room that
+               a lesson step of kind walk names, in the hall being walked;
+     placard - that room's placard panel is opened (a click on the board, or
+               E in the room) and stays open, with the walker still in the
+               room, for D.training.step_episodes.placard.dwell_ms.
+   Which rooms count is READ from D.lessons for this hall - no other room is
+   recorded, so the rolling cap is not spent on footsteps. A probe stepping
+   the walker (wkSilent) records nothing, and an episode already in the log
+   for the same (kind, hall, room) is not added again. An episode proves a
+   device saw a position or an open panel; it does not prove anyone read or
+   understood anything (D.training.step_episodes.does_not_prove). */
+const PLACARD_DWELL_MS = D.training.step_episodes.placard.dwell_ms;
+function stepTargetStrands(kind) {
+  const out = new Set();
+  for (const L of Object.values(D.lessons.lessons))
+    if (L.hall === slug) for (const st of L.steps) if (st.kind === kind) out.add(st.where);
+  return out;
+}
+function stepLogged(kind, strand) {
+  return trainingLog.some((e) => e && e.kind === kind && e.hall === slug && e.where === strand);
+}
+function stepWalkEntered(room) {
+  if (wkSilent) return;
+  if (!stepTargetStrands('walk').has(room.strand) || stepLogged('walk', room.strand)) return;
+  recordEpisode({ kind: 'walk', campus: campusKey, hall: slug,
+    where: room.strand, room: room.label });
+}
+function stepPlacardHint(strand) {
+  return placardBoards.some((b) => b.userData.placardStrand === strand) ? ' \u00b7 E: placard' : '';
+}
+function openPlacard(strand) {
+  if (view !== 'hall' || !curRoom || curRoom.strand !== strand) return false;
+  const board = placardBoards.find((b) => b.userData.placardStrand === strand);
+  if (!board) return false;
+  board.getWorldPosition(_wp);
+  const rp = xrRig.position;
+  if (Math.hypot(_wp.x - rp.x, _wp.z - rp.z) > LKIND.placard.hide_beyond_m) return false;
+  const c = condOf(slug, strand), i = D.i18n[loc];
+  const esc = (x) => String(x).replace(/[&<>]/g,
+    (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[ch]));
+  document.getElementById('pbody').innerHTML = '<div data-placard="' + strand + '">'
+    + '<h2>' + esc(curRoom.label) + ' \u2014 door placard</h2>'
+    + '<span class="chip">' + esc(i.strands[strand]) + '</span>'
+    + '<h3>What this room is held to</h3><ul>'
+    + c.ppe.map((x) => '<li>' + esc(x) + '</li>').join('') + '</ul>'
+    + '<p style="color:var(--muted);font-size:13px">' + esc(condLine(c)) + '</p>'
+    + '<p class="src">conditions: DERIVED \u00b7 geometry: SCHEMATIC</p>'
+    + '<p class="src">' + esc(D.training.step_episodes.proves) + '</p>'
+    + '<p class="src">' + esc(D.training.step_episodes.does_not_prove) + '</p></div>';
+  placardOpen = { strand, ms: 0, done: false };
+  if (walkActive && plc.isLocked) plc.unlock();
+  document.body.classList.add('open');
+  return true;
+}
+function stepEpisodeTick(dt) {
+  if (!placardOpen) return;
+  const still = document.body.classList.contains('open') && view === 'hall'
+    && curRoom && curRoom.strand === placardOpen.strand
+    && document.querySelector('#pbody [data-placard="' + placardOpen.strand + '"]');
+  if (!still) { placardOpen = null; return; }
+  // a stalled frame or a hidden tab is not reading time: one frame counts at most a second (a device slow enough to
+  // render under one frame a second still accrues its dwell, because every frame it does render counts in full)
+  placardOpen.ms += Math.min(dt, 1) * 1000;
+  if (!placardOpen.done && placardOpen.ms >= PLACARD_DWELL_MS) {
+    placardOpen.done = true;
+    const strand = placardOpen.strand;
+    if (stepTargetStrands('placard').has(strand) && !stepLogged('placard', strand))
+      recordEpisode({ kind: 'placard', campus: campusKey, hall: slug,
+        where: strand, room: curRoom.label, dwell_ms: Math.round(placardOpen.ms) });
+  }
+}
+document.addEventListener('keydown', (e) => {
+  if (e.code === 'KeyE' && walkActive && view === 'hall' && curRoom && !sim
+      && !document.body.classList.contains('open')) openPlacard(curRoom.strand);
+});
+/* a harness hook, like __tc3dRooms: stand the walker in a room's middle and let the page's own room-entry step run, open a
+   room's placard through the page's own opener, and read what the recorder holds. It records nothing itself. */
+window.__tc3dStepEpisode = {
+  place: (strand) => {
+    const r = roomRects.find((q) => q.strand === strand);
+    if (!r) return null;
+    xrRig.position.x = (r.x0 + r.x1) / 2; xrRig.position.z = (r.z0 + r.z1) / 2;
+    walkStep(1 / 60);
+    return curRoom ? curRoom.strand : null;
+  },
+  open: (strand) => openPlacard(strand),
+  targets: () => ({ walk: [...stepTargetStrands('walk')], placard: [...stepTargetStrands('placard')] }),
+  boards: () => placardBoards.map((b) => b.userData.placardStrand),
+  log: () => trainingLog.map((e) => ({ ...e })),
+};
+/* STEP-EPISODE END */
+
+/* STATION-EPISODE BEGIN (wave 21): the station and crib episodes.
+   A lesson's station and crib steps left only a mark in the device-local progress record (tc-progress.stations and
+   tc-progress.tools), which is a mark and not an episode, so a lesson that held one could not be verified by episode.
+   Two small events fix that, written at the moment the page already writes that mark and with no new storage key,
+   toggle or cap:
+     station - the quiz of a training station, opened at its bench, is answered with its correct option;
+     crib    - the district crib check ends with every pick right.
+   Which stations and cribs count is READ from D.lessons for this hall - no other is recorded, so the rolling cap is not
+   spent on stations nobody's lesson asks for. A wrong pick or a failed check records nothing, and an episode already in
+   the log for the same station (or the same hall's crib) is not added again. An episode proves a device recorded a
+   correct pick or a passed check; it does not prove anyone read the checklist, understood it, or did not find the
+   answer by trying every option (D.training.step_episodes.does_not_prove). */
+function stationTargets() {
+  const out = new Set();
+  for (const L of Object.values(D.lessons.lessons))
+    if (L.hall === slug) for (const st of L.steps) if (st.kind === 'station') out.add(st.station);
+  return out;
+}
+function cribTargets() {
+  const out = new Set();
+  for (const L of Object.values(D.lessons.lessons))
+    if (L.hall === slug) for (const st of L.steps) if (st.kind === 'crib') out.add(st.crib);
+  return out;
+}
+function stationLogged(id) {
+  return trainingLog.some((e) => e && e.kind === 'station' && e.hall === slug && e.station === id);
+}
+function cribLogged(dk) {
+  return trainingLog.some((e) => e && e.kind === 'crib' && e.hall === slug && e.crib === dk);
+}
+function stationPicked(id) {
+  if (view !== 'hall') return;
+  const s = D.stations[id];
+  if (!s || !stationTargets().has(id) || stationLogged(id)) return;
+  recordEpisode({ kind: 'station', campus: campusKey, hall: slug,
+    where: s.strand, station: id, station_name: s.name });
+}
+function cribPassed(dk, picks) {
+  if (view !== 'hall') return;
+  const c = D.tools.cribs[dk];
+  if (!c || !cribTargets().has(dk) || cribLogged(dk)) return;
+  recordEpisode({ kind: 'crib', campus: campusKey, hall: slug,
+    where: 'tools', crib: dk, crib_name: c.name, picks: picks });
+}
+/* a harness hook, like __tc3dStepEpisode: open a station's panel or a crib's panel through the page's own openers (the
+   quiz and the drill are then answered by real clicks), and read what the recorder holds. It records nothing itself. */
+window.__tc3dStationEpisode = {
+  targets: () => ({ station: [...stationTargets()], crib: [...cribTargets()] }),
+  openStation: (id) => openStation(id),
+  openCrib: (dk) => openCrib(dk),
+  stationsHere: () => D.halls.find((x) => x.slug === slug).stations.slice(),
+  district: () => D.halls.find((x) => x.slug === slug).district,
+  log: () => trainingLog.map((e) => ({ ...e })),
+};
+/* STATION-EPISODE END */
 
 /* ---------------------------------------------- Orbis synthetic-training
    prompts. Text only, built locally from the union registry this page
@@ -16413,6 +16638,7 @@ function drillEnd() {
   rec.runs = (rec.runs ?? 0) + 1;
   if (passed) { rec.passed = true; rec.best = Math.min(rec.best ?? Infinity, secs); }
   prog.tools[curCrib] = rec; saveProg(); renderChrome();
+  /* STATION-EPISODE BEGIN */ if (passed) cribPassed(curCrib, drill.right); /* STATION-EPISODE END */
   if (view === 'hall') document.getElementById('hname').textContent =
     D.halls.find((x) => x.slug === slug).name + scoreChip();
   chime(passed); buzz(passed ? 160 : 80, .5);
@@ -16479,6 +16705,12 @@ function pickWith(ray) {
     if (wh?.object.userData.wapt !== undefined)
       return openWa(wh.object.userData.wapt);
   }
+  /* STEP-EPISODE BEGIN: a door placard answers a click, but only from a walker standing in its room */
+  if (view === 'hall' && placardBoards.length) {
+    const pbh = ray.intersectObjects(placardBoards, false)[0];
+    if (pbh && openPlacard(pbh.object.userData.placardStrand)) return;
+  }
+  /* STEP-EPISODE END */
   const ahit = ray.intersectObjects(advisorMeshes, true)[0];
   if (ahit) {
     let o = ahit.object;
@@ -16692,6 +16924,7 @@ document.addEventListener('click', (e) => {
       o.classList.toggle('ok', o.dataset.ok === '1'));
     if (opt.dataset.ok !== '1') opt.classList.add('bad');
     else if (curStation) { doneStations.add(curStation); saveProg();
+      /* STATION-EPISODE BEGIN */ stationPicked(curStation); /* STATION-EPISODE END */
       const el = document.getElementById('hname');
       const h = D.halls.find(x => x.slug === slug);
       if (view === 'hall') el.textContent = h.name + scoreChip(); } }
@@ -17304,6 +17537,7 @@ renderer.setAnimationLoop(() => {
     }
     traceStep(dt);
   }
+  /* STEP-EPISODE BEGIN */ stepEpisodeTick(dt); /* STEP-EPISODE END */
   stepEmote(dt);
   if (view === 'avatar' && !emo) idleBreath(avatarMesh, clock.elapsedTime, dt);
   if (!reduced) for (const b of fogBanks) {
@@ -18275,6 +18509,8 @@ _LK_SUBS = [
      'lookRenderer(renderer);   // LOOK-KIT\n'),
     ('for (const m of Object.values(mat)) m.userData.shared = true;\n',
      'for (const m of Object.values(mat)) m.userData.shared = true;\nlookMats(mat);   // LOOK-KIT\n'),
+    # wave 20: the per-view exposure (the network view is metered up; every other view keeps the page's number)
+    ('function xrRender() {\n', 'function xrRender() {\n  lookView(view);   // LOOK-KIT: the exposure of the view being drawn\n'),
 ]
 for _o, _n in _LK_SUBS:
     if page.count(_o) != 1:

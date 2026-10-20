@@ -54,11 +54,11 @@
     },
     {
      "path": "sims/registry/sims.json",
-     "sha256": "987a9d4812b4c73b"
+     "sha256": "1af48d2eed34ccb2"
     },
     {
      "path": "lessons/registry/lessons.json",
-     "sha256": "e905659b0a718ab6"
+     "sha256": "75e757b1c322727a"
     }
    ],
    "status": "SHIPPING",
@@ -92,11 +92,11 @@
     },
     {
      "path": "sims/registry/sims.json",
-     "sha256": "987a9d4812b4c73b"
+     "sha256": "1af48d2eed34ccb2"
     },
     {
      "path": "lessons/registry/lessons.json",
-     "sha256": "e905659b0a718ab6"
+     "sha256": "75e757b1c322727a"
     }
    ],
    "status": "SHIPPING",
@@ -130,11 +130,11 @@
     },
     {
      "path": "sims/registry/sims.json",
-     "sha256": "987a9d4812b4c73b"
+     "sha256": "1af48d2eed34ccb2"
     },
     {
      "path": "lessons/registry/lessons.json",
-     "sha256": "e905659b0a718ab6"
+     "sha256": "75e757b1c322727a"
     }
    ],
    "status": "SHIPPING",
@@ -168,11 +168,11 @@
     },
     {
      "path": "sims/registry/sims.json",
-     "sha256": "987a9d4812b4c73b"
+     "sha256": "1af48d2eed34ccb2"
     },
     {
      "path": "lessons/registry/lessons.json",
-     "sha256": "e905659b0a718ab6"
+     "sha256": "75e757b1c322727a"
     }
    ],
    "status": "SHIPPING",
@@ -206,11 +206,11 @@
     },
     {
      "path": "sims/registry/sims.json",
-     "sha256": "987a9d4812b4c73b"
+     "sha256": "1af48d2eed34ccb2"
     },
     {
      "path": "lessons/registry/lessons.json",
-     "sha256": "e905659b0a718ab6"
+     "sha256": "75e757b1c322727a"
     }
    ],
    "status": "SHIPPING",
@@ -244,11 +244,11 @@
     },
     {
      "path": "sims/registry/sims.json",
-     "sha256": "987a9d4812b4c73b"
+     "sha256": "1af48d2eed34ccb2"
     },
     {
      "path": "lessons/registry/lessons.json",
-     "sha256": "e905659b0a718ab6"
+     "sha256": "75e757b1c322727a"
     }
    ],
    "status": "SHIPPING",
@@ -282,11 +282,11 @@
     },
     {
      "path": "sims/registry/sims.json",
-     "sha256": "987a9d4812b4c73b"
+     "sha256": "1af48d2eed34ccb2"
     },
     {
      "path": "lessons/registry/lessons.json",
-     "sha256": "e905659b0a718ab6"
+     "sha256": "75e757b1c322727a"
     }
    ],
    "status": "SHIPPING",
@@ -320,11 +320,11 @@
     },
     {
      "path": "sims/registry/sims.json",
-     "sha256": "987a9d4812b4c73b"
+     "sha256": "1af48d2eed34ccb2"
     },
     {
      "path": "lessons/registry/lessons.json",
-     "sha256": "e905659b0a718ab6"
+     "sha256": "75e757b1c322727a"
     }
    ],
    "status": "SHIPPING",
@@ -358,11 +358,11 @@
     },
     {
      "path": "sims/registry/sims.json",
-     "sha256": "987a9d4812b4c73b"
+     "sha256": "1af48d2eed34ccb2"
     },
     {
      "path": "lessons/registry/lessons.json",
-     "sha256": "e905659b0a718ab6"
+     "sha256": "75e757b1c322727a"
     }
    ],
    "status": "SHIPPING",
@@ -396,11 +396,11 @@
     },
     {
      "path": "sims/registry/sims.json",
-     "sha256": "987a9d4812b4c73b"
+     "sha256": "1af48d2eed34ccb2"
     },
     {
      "path": "lessons/registry/lessons.json",
-     "sha256": "e905659b0a718ab6"
+     "sha256": "75e757b1c322727a"
     }
    ],
    "status": "SHIPPING",
@@ -426,11 +426,11 @@
     },
     {
      "path": "lessons/registry/lessons.json",
-     "sha256": "e905659b0a718ab6"
+     "sha256": "75e757b1c322727a"
     },
     {
      "path": "layers/registry/layers.json",
-     "sha256": "83842f1ae5f11c87"
+     "sha256": "83516ca7770ae016"
     }
    ],
    "status": "SHIPPING",
@@ -453,7 +453,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "4e39ef2629b65f2f"
+     "sha256": "0bd6fc84d3ced2eb"
     }
    ],
    "status": "SHIPPING",
@@ -477,7 +477,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "4e39ef2629b65f2f"
+     "sha256": "0bd6fc84d3ced2eb"
     }
    ],
    "status": "SHIPPING",
@@ -501,7 +501,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "4e39ef2629b65f2f"
+     "sha256": "0bd6fc84d3ced2eb"
     }
    ],
    "status": "SHIPPING",
@@ -525,7 +525,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "4e39ef2629b65f2f"
+     "sha256": "0bd6fc84d3ced2eb"
     }
    ],
    "status": "PROPOSED",
@@ -549,7 +549,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "4e39ef2629b65f2f"
+     "sha256": "0bd6fc84d3ced2eb"
     }
    ],
    "status": "SHIPPING",
@@ -573,7 +573,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "4e39ef2629b65f2f"
+     "sha256": "0bd6fc84d3ced2eb"
     }
    ],
    "status": "SHIPPING",
@@ -597,7 +597,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "4e39ef2629b65f2f"
+     "sha256": "0bd6fc84d3ced2eb"
     }
    ],
    "status": "SHIPPING",
@@ -624,7 +624,7 @@
     },
     {
      "path": "layers/registry/layers.json",
-     "sha256": "83842f1ae5f11c87"
+     "sha256": "83516ca7770ae016"
     }
    ],
    "status": "SHIPPING",
@@ -806,7 +806,7 @@
   },
   {
    "contents": {
-    "episode_kinds": 5,
+    "episode_kinds": 9,
     "practices": 13,
     "refusal_reasons": 7
    },
@@ -820,7 +820,7 @@
    "sources": [
     {
      "path": "datashare/registry/datashare.json",
-     "sha256": "d16df5f66369b82b"
+     "sha256": "edce1969b9e030b2"
     }
    ],
    "status": "SHIPPING",
@@ -841,7 +841,7 @@
    "sources": [
     {
      "path": "courses/registry/courses.json",
-     "sha256": "fb45246055b5c7d7"
+     "sha256": "5811cd019bf5f6e8"
     }
    ],
    "status": "SHIPPING",
@@ -863,7 +863,7 @@
    "sources": [
     {
      "path": "hive/registry/hive.json",
-     "sha256": "8ea7563bca70a5f9"
+     "sha256": "e2b2ccae493b79e6"
     }
    ],
    "status": "SHIPPING",

@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-26",
- "source_stamp": "ce6d57d59d759bcd",
+ "source_stamp": "ddcc426f832b4652",
  "provenance": "DERIVED",
  "provenance_note": "every fact here is read from the registry that owns it and re-derivable by build.py: the episode shapes from training/registry/training.json, the recording step kinds from lessons/registry/lessons.json, the fixture ids from sims/registry/sims.json. The gap is the ONE declared number. The fixture is SCRIPTED and labelled as not a learner",
  "honesty": {
@@ -70,9 +70,59 @@
     "crew",
     "role",
     "topic",
-    "answer_kind"
+    "answer_kind",
+    "seat",
+    "muster"
    ],
    "what": "one crew role asked one question while its seat was running"
+  },
+  "walk": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "room"
+   ],
+   "what": "one lesson-target room entered on foot"
+  },
+  "placard": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "room",
+    "dwell_ms"
+   ],
+   "what": "one door placard panel opened and left open for its dwell"
+  },
+  "station": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "station",
+    "station_name"
+   ],
+   "what": "one training station quiz answered correctly at its bench"
+  },
+  "crib": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "crib",
+    "crib_name",
+    "picks"
+   ],
+   "what": "one district crib check passed"
   },
   "walkaround": {
    "fields": [
@@ -131,17 +181,16 @@
  },
  "lesson_steps": {
   "records": {
+   "walk": "walk",
+   "placard": "placard",
+   "station": "station",
+   "crib": "crib",
    "walkaround": "walkaround",
    "sim": "sim",
    "advisor": "advisor",
    "crew": "crew"
   },
-  "silent": [
-   "crib",
-   "placard",
-   "station",
-   "walk"
-  ],
+  "silent": [],
   "from": "lessons/registry/lessons.json#step_kinds[kind].records",
   "rule": "could_advance names step KINDS a session holds an episode for; whether any lesson step is done is completion/'s question and is decided there against the step's own reference"
  },
@@ -251,7 +300,7 @@
    }
   },
   "sessions": 3,
-  "episodes": 9,
+  "episodes": 13,
   "boundaries": {
    "one_second_over": "session 1 -> 2: the pair is gap.ms + 1000 apart and splits",
    "one_second_short": "inside session 2: a pair gap.ms - 1000 apart stays together",
@@ -259,12 +308,12 @@
   }
  },
  "counts": {
-  "episode_kinds": 4,
-  "recording_step_kinds": 4,
-  "silent_step_kinds": 4,
+  "episode_kinds": 8,
+  "recording_step_kinds": 8,
+  "silent_step_kinds": 0,
   "rules": 7,
   "mutants": 10,
-  "fixture_episodes": 9,
+  "fixture_episodes": 13,
   "fixture_sessions": 3
  }
 }

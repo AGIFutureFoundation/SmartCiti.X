@@ -178,6 +178,20 @@ for p in ALL_FILES:
     REG_TAGS.append(f'<script type="application/json" data-registry="{html.escape(p)}">{txt}</script>')
 
 E = lambda s: html.escape(s, quote=False)
+# HONEST: the strength split and the shared-package scope, read from the registries that declare them and shown above
+# every result, so a pass is never read as stronger than the evidence behind it.
+_ES = need(json.loads(read('completion/registry/completion.json')), 'evidence_strength', 'completion.json')['kinds']
+_ACT = need(need(json.loads(read('contrib/registry/contrib.json')), 'consent', 'contrib.json'), 'activity', 'contrib.json#consent')
+STRENGTH_LI = (
+    '<li><b>A PASS DOES NOT SAY HOW STRONG THE EVIDENCE IS.</b> In a completion record, '
+    + E(', '.join(_ES['strong'])) + ' steps are graded by the page (strong); '
+    + E(', '.join(_ES['act'])) + ' record a question asked or a point marked, nothing graded (act); '
+    + E(', '.join(_ES['presence'])) + ' record only that a device saw a room or an open panel (presence). '
+    'The summary line splits the episode-backed steps that way. A lesson can verify on acts and presence alone.</li>')
+ACTIVITY_LI = (
+    '<li><b>MOVEMENT TRAVELS ONLY UNDER ITS OWN SCOPE.</b> A contribution package carries ' + E(_ACT['phrase'])
+    + ' (' + E(', '.join(_ACT['kinds'])) + ' episodes) only if its consent names <code>' + E(_ACT['scope'])
+    + '</code>; without it the package fails <code>consent.scope</code>.</li>')
 KINDS_JSON = json.dumps(KINDS, ensure_ascii=False, separators=(',', ':'))
 TAG_LIST = ', '.join(f'<code>{E(k["tag"])}</code>' for k in KINDS)
 CLI_LIST = ' and '.join(f'<code>node {E(k["verifier"])}</code>' for k in KINDS)
@@ -417,6 +431,8 @@ footer.page{{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30p
         identity of a key, not of a person; a key is held, lent and stolen. Nothing is on any chain.</li>
     <li><b>A PASS IS NOT AN ACCREDITATION.</b> A pass means the file is intact since export and every id in it exists in
         this bundle. Read the last line of every result.</li>
+    {STRENGTH_LI}
+    {ACTIVITY_LI}
   </ul>
 </section>
 

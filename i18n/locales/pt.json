@@ -324,6 +324,8 @@
   "wilds.legend": "Minimapa: os quadrados laranja são obras; um quadrado com anel tem tarefas simuladas.",
   "wilds.flora_honesty": "Flora rasteira: colocação AUTHORED de plantas nomeadas de forma geral por bioma – não é um levantamento, um mapa de espécies nem uma contagem.",
   "wilds.side_quest": "Missão secundária",
+  "modlink.practice": "Módulo de prática",
+  "wilds.practice_module": "Módulo de prática",
   "wilds.toast.cache": "Você encontrou um esconderijo. O registro de missões ainda não está ligado a esta página, então nada é gravado.",
   "wilds.toast.trailhead": "Você assinou o livro do início da trilha. O registro de missões ainda não está ligado a esta página, então nada é gravado.",
   "wilds.not_on_globe": "Fora do globo",

@@ -26,27 +26,24 @@ four stages: a lesson is the class and floor halves of the existing loop made wa
 
 | Kind | What it is | Stage | Records | Steps | Reads |
 |---|---|---|---|---|---|
-| **walk** | walk to a room of this hall | class | — | 141 | `web/interiors.py` |
-| **placard** | read the door placard of a room and take on what it requires | class | — | 92 | `surfaces/registry/finishes.json` |
-| **station** | take a training station at its bench | class | — | 12 | `stations/registry/stations.json` |
-| **crib** | run the district crib check at the pegboard | class | — | 22 | `tools/registry/toolcribs.json` |
+| **walk** | walk to a room of this hall | class | `walk` | 141 | `web/interiors.py` |
+| **placard** | read the door placard of a room and take on what it requires | class | `placard` | 92 | `surfaces/registry/finishes.json` |
+| **station** | take a training station at its bench | class | `station` | 12 | `stations/registry/stations.json` |
+| **crib** | run the district crib check at the pegboard | class | `crib` | 22 | `tools/registry/toolcribs.json` |
 | **walkaround** | walk one pre-shift point of a seat and mark it | floor | `walkaround` | 42 | `sims/registry/sims.json` |
 | **sim** | run one seat on the scenario its campus owns | floor | `sim` | 31 | `sims/registry/sims.json` |
 | **advisor** | ask the advisor who stands in this room one of its fixed topics | class | `advisor` | 205 | `agents/registry/advisors.json` |
 | **crew** | ask one role of the standing crew one of its fixed topics while the seat runs | floor | `crew` | 23 | `agents/registry/crews.json` |
 
-301 of the 568 steps write an episode to the
-device-local training log; the other 267 write nothing at all.
-The recording ones use 4 episode kinds `training/`
-already had and add 0 of their own. The 4
+568 of the 568 steps write an episode to the
+device-local training log; the other 0 write nothing at all.
+The recording ones use 8 episode kinds `training/`
+already had and add 0 of their own. The 0
 kinds that stay silent each say why:
 
-- **walk** — arriving somewhere is not an achievement, and a bundle that logged footsteps would be counting attendance while claiming to teach
-- **placard** — the placard states the room condition record; reading a record changes nothing and is nobody's score
-- **station** — a station mark lands in the device-local progress record the halls already keep; the training log holds simulator, advisor, crew and walkaround episodes and this pack adds no fifth kind to it
-- **crib** — the crib check is graded deterministically against the crib record and kept with the progress record, not as a training episode
 
-Finishing a lesson changes no score and is read by no grader. Four of the eight step kinds write an episode to the existing device-local training log; the other four write nothing at all, and the registry says which is which rather than leaving it to be discovered.
+
+Finishing a lesson changes no score and is read by no grader. The step kinds that write an episode write it to the existing device-local training log; every kind writes one since wave 21 (station and crib used to leave only a device mark in the progress record), and the registry says which kind writes which rather than leaving it to be discovered. A walk, placard, station or crib episode proves that a device recorded a position, an open panel, a correct quiz pick or a passed crib check, and nothing about competence.
 
 ## Spread thin on purpose
 

@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-26",
- "source_stamp": "6bdddfe5d0f1ed84",
+ "source_stamp": "44eb89df287fbdb9",
  "provenance": "DERIVED",
  "provenance_note": "every fact here is read from the registry that owns it and re-derivable by build.py; the episode shapes are training/registry/training.json#episode_kinds verbatim; the fixture package is SCRIPTED and labelled as not a learner",
  "honesty": {
@@ -13,7 +13,8 @@
    "every sim, scenario, hall and campus an episode names exists in this bundle at the stated pack version",
    "a trace, where attached, has no more samples than training/ caps and each sample has the declared keys",
    "the consent scope is a non-empty subset of the scopes this registry declares, the statement is this registry's and the licence is this registry's one licence",
-   "the counts the package states about itself (episodes by kind, traces attached, sims covered) recompute from its episodes"
+   "the counts the package states about itself (episodes by kind, traces attached, sims covered) recompute from its episodes",
+   "every walk, placard, station or crib episode (room movement, dwell times, quiz picks and tool picks) sits in a package whose consent.scope names lesson-activity; a package without that scope that carries one is refused by name"
   ],
   "does_not_prove": [
    "who the contributor is: contributor.claimed is a label this device stored, attested by this device only, and nothing checks it - unless a wallet signed, in which case it is the identity of a key, not of a person; a stolen key signs just as well",
@@ -89,7 +90,11 @@
    "kinds": [
     "advisor",
     "crew",
+    "crib",
+    "placard",
     "sim",
+    "station",
+    "walk",
     "walkaround"
    ],
    "fields_by_kind": "episode_kinds",
@@ -99,7 +104,11 @@
    "kinds": [
     "advisor",
     "crew",
+    "crib",
+    "placard",
     "sim",
+    "station",
+    "walk",
     "walkaround",
     "world-teleop"
    ],
@@ -681,10 +690,11 @@
   "classroom_from": "K-12 / classroom mode: recording and sharing are not offered at all"
  },
  "consent": {
-  "statement": "I share the training episodes in this package, recorded by this device, for the scopes named in consent.scope under the licence named in consent.license. I can withdraw by not sharing the file again; copies already given away are governed by that licence. Nothing in this package names me: it carries scenario ids, control schemes and measured outcomes, and the label or wallet address I chose to attach.",
+  "statement": "I share the training episodes in this package, recorded by this device, for the scopes named in consent.scope under the licence named in consent.license. I can withdraw by not sharing the file again; copies already given away are governed by that licence. Nothing in this package names me: it carries scenario ids, control schemes, measured outcomes and the fixed advisor topics, crew questions and walkaround points I picked, and the label or wallet address I chose to attach. It carries room movement, dwell times, quiz picks and tool picks only if consent.scope names lesson-activity.",
   "scopes": {
    "agent-training": "the episodes may be used to train, evaluate or benchmark a software agent (for example the ml-agents conversion the training pack describes); this bundle has trained none",
-   "robot-training": "the episodes may be used to train, evaluate or benchmark a controller for a physical robot; training/ says these are schematic single-machine simulators and no such controller should be trained on them for real equipment, and this bundle has trained none"
+   "robot-training": "the episodes may be used to train, evaluate or benchmark a controller for a physical robot; training/ says these are schematic single-machine simulators and no such controller should be trained on them for real equipment, and this bundle has trained none",
+   "lesson-activity": "the package may also carry room movement, dwell times, quiz picks and tool picks: which rooms I entered on foot, how long a placard panel stayed open, which station quiz I answered and which tool check I passed. These describe how I moved through the lessons, not how I operated a machine, and they are of little use for training an agent or a robot; without this scope a package carries none of them"
   },
   "license": {
    "spdx": "CC-BY-4.0",
@@ -695,7 +705,20 @@
   "revocable": true,
   "revocable_means": "revocable: true means the learner keeps the file and decides each time whether to hand it to anyone. Nothing here is uploaded, so there is nothing to recall from a server; a copy already given away is governed by the licence and by the recipient, not by this bundle.",
   "granted_at": "ISO-8601 string the page writes at the moment the export button is pressed with the boxes ticked; Date.parse must be finite. A device clock is not attested.",
-  "recorder_consent": "the recorder ships on, with a visible toggle: turning it off stops new episodes without touching ones already kept, and clearing them is a separate, deliberate action."
+  "recorder_consent": "the recorder ships on, with a visible toggle: turning it off stops new episodes without touching ones already kept, and clearing them is a separate, deliberate action.",
+  "activity": {
+   "scope": "lesson-activity",
+   "phrase": "room movement, dwell times, quiz picks and tool picks",
+   "kinds": [
+    "crib",
+    "placard",
+    "station",
+    "walk"
+   ],
+   "rule": "an episode of kind crib, placard, station, walk may sit in a package only if consent.scope names lesson-activity; otherwise the verifier fails consent.scope by name, and the contribute page leaves those episodes out of the package it builds",
+   "why_separate": "these kinds record room movement, dwell times, quiz picks and tool picks, not scenario ids, control schemes or measured outcomes, and are of little use for training an agent or a robot; a learner who shares a run for training has not thereby agreed to share where they walked",
+   "dataset_rule": "datashare/ admits these kinds into a dataset only when the dataset itself is built for the lesson-activity scope"
+  }
  },
  "episode_kinds": {
   "sim": {
@@ -719,6 +742,8 @@
      "why": "{level, seed, scenario, steps, dt} - present ONLY when actor is scripted-reference: the closed level name, the integer seed of its fixed-seed generator, the scenario id, the number of control steps the run took, and the fixed step length when the run was headless (steps x dt is then its deterministic sim time - the `time` axis itself is wall-clock and informational) or null when a learner watched it at real time; absent on a human episode"
     }
    },
+   "requires_scope": null,
+   "requires_scope_why": "a scored run: scenario id, control scheme and measured outcome (the default package content)",
    "what": "one completed simulator run"
   },
   "advisor": {
@@ -732,6 +757,8 @@
     "answer_kind"
    ],
    "conditional_fields": {},
+   "requires_scope": null,
+   "requires_scope_why": "a fixed topic asked of an advisor: an id from a closed list, no free text",
    "what": "one advisor question asked and answered"
   },
   "crew": {
@@ -743,10 +770,74 @@
     "crew",
     "role",
     "topic",
-    "answer_kind"
+    "answer_kind",
+    "seat",
+    "muster"
    ],
    "conditional_fields": {},
+   "requires_scope": null,
+   "requires_scope_why": "a fixed topic asked of a crew role: ids from closed lists, no free text",
    "what": "one crew role asked one question while its seat was running"
+  },
+  "walk": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "room"
+   ],
+   "conditional_fields": {},
+   "requires_scope": "lesson-activity",
+   "requires_scope_why": "room movement: which room of which hall the walker entered on foot",
+   "what": "one lesson-target room entered on foot"
+  },
+  "placard": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "room",
+    "dwell_ms"
+   ],
+   "conditional_fields": {},
+   "requires_scope": "lesson-activity",
+   "requires_scope_why": "room movement and dwell time: which room, and how long its placard panel stayed open",
+   "what": "one door placard panel opened and left open for its dwell"
+  },
+  "station": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "station",
+    "station_name"
+   ],
+   "conditional_fields": {},
+   "requires_scope": "lesson-activity",
+   "requires_scope_why": "a quiz pick: which training station quiz was answered correctly at its bench",
+   "what": "one training station quiz answered correctly at its bench"
+  },
+  "crib": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "crib",
+    "crib_name",
+    "picks"
+   ],
+   "conditional_fields": {},
+   "requires_scope": "lesson-activity",
+   "requires_scope_why": "a tool pick: which district crib check was passed with every pick right",
+   "what": "one district crib check passed"
   },
   "walkaround": {
    "fields": [
@@ -758,6 +849,8 @@
     "point"
    ],
    "conditional_fields": {},
+   "requires_scope": null,
+   "requires_scope_why": "one pre-shift point marked: an id from the sims registry",
    "what": "one pre-shift walkaround point checked"
   }
  },
@@ -813,9 +906,17 @@
     "answer_kind",
     "point",
     "controls",
-    "operator"
+    "operator",
+    "where",
+    "room",
+    "dwell_ms",
+    "station",
+    "station_name",
+    "crib",
+    "crib_name",
+    "picks"
    ],
-   "why": "this verifier resolves the ids that name a PLACE or a SEAT (sim, scenario, hall, campus). An advisor, a crew role, a topic, a walkaround point or a control scheme is carried verbatim and its shape is held to the episode field list; whether it names a real registry entry is not checked here and the verifier says so"
+   "why": "this verifier resolves the ids that name a PLACE or a SEAT (sim, scenario, hall, campus). An advisor, a crew role, a topic, a walkaround point, a control scheme, or the room (where, room) and dwell of a walk or placard episode, or the station or crib (station, crib, their names) and the picks of a station or crib episode, is carried verbatim and its shape is held to the episode field list; whether it names a real registry entry is not checked here and the verifier says so"
   }
  },
  "digest": {
@@ -933,6 +1034,10 @@
     "file": "fixture/mutant-foreign-scope.json",
     "fails": "consent.scope"
    },
+   "activity-kinds-without-activity-scope": {
+    "file": "fixture/mutant-activity-kinds-without-activity-scope.json",
+    "fails": "consent.scope"
+   },
    "wrong-license": {
     "file": "fixture/mutant-wrong-license.json",
     "fails": "consent.license"
@@ -977,7 +1082,11 @@
   "episodes": {
    "advisor": 1,
    "crew": 1,
+   "crib": 1,
+   "placard": 1,
    "sim": 3,
+   "station": 1,
+   "walk": 1,
    "walkaround": 1
   },
   "traces_attached": 1,
@@ -990,6 +1099,10 @@
   "good": "fixture/v2/good.json",
   "dir_why": "a subdirectory, so the /1 fixture directory holds exactly good.json and the /1 mutants (the verify page and its test read it as the /1 set)",
   "mutants": {
+   "activity-kinds-without-activity-scope": {
+    "file": "fixture/v2/mutant-activity-kinds-without-activity-scope.json",
+    "fails": "consent.scope"
+   },
    "classroom-mode": {
     "file": "fixture/v2/mutant-classroom-mode.json",
     "fails": "origin.classroom"
@@ -1050,16 +1163,20 @@
   "episodes": {
    "advisor": 1,
    "crew": 1,
+   "crib": 1,
+   "placard": 1,
    "sim": 3,
+   "station": 1,
+   "walk": 1,
    "walkaround": 1,
    "world-teleop": 2
   }
  },
  "counts": {
-  "episode_kinds": 4,
-  "scopes": 2,
+  "episode_kinds": 8,
+  "scopes": 3,
   "rules": 21,
-  "mutants": 21,
+  "mutants": 22,
   "sims": 11,
   "halls": 111,
   "campuses": 10

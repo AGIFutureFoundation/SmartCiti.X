@@ -29,6 +29,23 @@ in this bundle. One kind of episode per interaction:
                 never the words themselves, which the advisor registry
                 already owns.
   * walkaround - which point, on which seat.
+  * walk      - (wave 20) the learner's own position entered one room of one
+                hall that a lesson names as a walk target: which hall, which
+                strand, which room label. One event per (hall, room); no
+                coordinates, no path, no time spent. It proves a device saw
+                the walker inside that room's rectangle, nothing more.
+  * placard   - (wave 20) the door placard of one room was opened in the page's
+                placard panel and left open, with the learner still standing
+                in that room, for the declared dwell (STEP_EPISODES below).
+                It proves a panel stayed open for that long, not that anyone
+                read it, understood it or put anything on.
+  * station   - (wave 21) a training station's quiz was answered with its
+                correct option at the station's bench, for a station a lesson
+                step names. It proves a device recorded that pick, not that
+                the checklist was read or that anything was learned.
+  * crib      - (wave 21) the district crib check was finished with every pick
+                right, for a crib a lesson step names. It proves a device
+                recorded a passed check of the declared number of picks.
 
 TRACE. The finer-grained recorder, scoped to exactly what it is rather
 than promoted past it. While TRACE is on (its own
@@ -125,6 +142,11 @@ ACTORS = {
                           'the handle that replays it',
 }
 
+# wave 21: the crib check's number of picks is tools/'s own declaration, read here so the floor on a crib episode is
+# the one truth and not a second typed 5
+CRIB_PICKS = json.load(open(ROOT / 'tools/registry/toolcribs.json'))['drill']['picks']
+assert isinstance(CRIB_PICKS, int) and CRIB_PICKS > 0, 'tools/ must declare how many picks the crib check has'
+
 EPISODE_KINDS = {
     'sim': {
         'fields': ['t', 'kind', 'campus', 'hall', 'sim', 'scenario',
@@ -167,15 +189,86 @@ EPISODE_KINDS = {
     # a signalperson's answer and a rigger's are different evidence about
     # the same lift. So the crew and the role are recorded, not an
     # advisor id that would flatten both into one figure.
+    #
+    # `seat` and `muster` are recorded too (wave 20): both are read verbatim
+    # from the crew's own entry in agents/registry/crews.json at the moment of
+    # the exchange - the simulator seat the crew stands at and the room
+    # strand it musters in (both declared by that registry, not retyped). A lesson's crew step carries
+    # exactly these two as references, so without them in the episode the
+    # completion verifier could never match the step to an episode and no
+    # lesson that holds a crew step could be completed.
     'crew': {
         'fields': ['t', 'kind', 'campus', 'hall', 'crew', 'role', 'topic',
-                   'answer_kind'],
+                   'answer_kind', 'seat', 'muster'],
         'outcome_shape': None,
         'granularity': 'one exchange with one role of one crew: which crew '
                        'was standing, which role was asked, which fixed '
-                       'topic, and whether the answer was read from a '
-                       'record or written in the crews registry',
+                       'topic, which seat and muster strand that crew is '
+                       'bound to in the crews registry, '
+                       'and whether the answer was read from a record or '
+                       'written in the crews registry',
         'what': 'one crew role asked one question while its seat was running',
+    },
+    # WALK / PLACARD (wave 20). A lesson's walk and placard steps used to
+    # record nothing, so no lesson could be completed from evidence alone.
+    # These two kinds are recorded by the 3D page's STEP-EPISODE blocks.
+    # `where` is the strand id: the same word a lesson step carries in its own
+    # `where`, so the completion contract can match step to episode by the one
+    # name. A hall has exactly one room per strand, so (hall, where) names one
+    # room. `room` is that room's label as the page draws it, kept so the
+    # verifier can also check it against the step's own names_read.
+    'walk': {
+        'fields': ['t', 'kind', 'campus', 'hall', 'where', 'room'],
+        # the verifier and every page that matches a step to an episode read this: the episode's `room` must be one of
+        # the step's own names_read (the room label), on top of equality on hall and where
+        'names_read_field': 'room',
+        'outcome_shape': None,
+        'granularity': 'one event: the walker\'s position entered the rectangle '
+                       'of one room of one hall that a lesson names as a walk '
+                       'target. No coordinates, no path, no dwell: arriving is '
+                       'all it states',
+        'what': 'one lesson-target room entered on foot',
+    },
+    'placard': {
+        'fields': ['t', 'kind', 'campus', 'hall', 'where', 'room', 'dwell_ms'],
+        'names_read_field': 'room',
+        # the declared floor on a numeric this episode records: a placard episode with a dwell_ms below it matches no step.
+        # Read by completion/ (and its verifier) and by every page matcher from here, never retyped
+        'at_least': {'dwell_ms': 5000},
+        'outcome_shape': None,
+        'granularity': 'one event: the placard panel of one room stayed open '
+                       'for at least the declared dwell while the walker stood '
+                       'in that room. `dwell_ms` is the measured open time, '
+                       'floored at the declared minimum by construction',
+        'what': 'one door placard panel opened and left open for its dwell',
+    },
+    # STATION / CRIB (wave 21). A lesson's station and crib steps used to leave only a mark in the device-local
+    # progress record (tc-progress.stations, tc-progress.tools), which is a mark and not an episode, so a lesson
+    # that held one could not be fully verified by episode. These two kinds are recorded by the 3D page's
+    # STATION-EPISODE blocks, at the moment the page already writes that mark. `where` is the strand id the step
+    # carries in its own `where` (a station's strand; 'tools' for the crib, the room its pegboard hangs in), and
+    # `station` / `crib` are the very ids the step carries, so the completion contract can match step to episode
+    # on every reference the step has. The name fields are the display names the step lists in names_read.
+    'station': {
+        'fields': ['t', 'kind', 'campus', 'hall', 'where', 'station', 'station_name'],
+        'names_read_field': 'station_name',
+        'outcome_shape': None,
+        'granularity': 'one event: the quiz of one training station, opened at its bench, was answered with the '
+                       'correct option. Nothing about the other options picked first, the time taken or the '
+                       'checklist is kept: a correct pick is all it states',
+        'what': 'one training station quiz answered correctly at its bench',
+    },
+    'crib': {
+        'fields': ['t', 'kind', 'campus', 'hall', 'where', 'crib', 'crib_name', 'picks'],
+        'names_read_field': 'crib_name',
+        # the declared floor on a numeric this episode records: every pick of the check right. Read from
+        # tools/registry/toolcribs.json (drill.picks), never retyped; a crib episode below it matches no step.
+        'at_least': {'picks': CRIB_PICKS},
+        'outcome_shape': None,
+        'granularity': 'one event: the district crib check was finished with every one of its picks right. A '
+                       'failed run records nothing; `picks` is the number right, floored at the declared number '
+                       'of picks by construction',
+        'what': 'one district crib check passed',
     },
     'walkaround': {
         'fields': ['t', 'kind', 'campus', 'hall', 'sim', 'point'],
@@ -184,6 +277,53 @@ EPISODE_KINDS = {
                        'the sim registry already declares is not a gate',
         'what': 'one pre-shift walkaround point checked',
     },
+}
+
+# STEP_EPISODES (wave 20): the two declared numbers and the honesty of the walk/placard kinds. The page READS
+# these from the embedded registry (never retypes them); completion/ reads `placard.dwell_ms` into its evidence rule
+# and the verifier refuses a placard episode whose dwell_ms is below it.
+STEP_EPISODES = {
+    'placard': {
+        'dwell_ms': EPISODE_KINDS['placard']['at_least']['dwell_ms'],   # one truth: the episode kind's own floor
+        'dwell_why': 'a placard is a short board - the PPE a room lists, read one item to a line. Five seconds with '
+                     'the panel open and the walker in the room is long enough to read a board of that length and '
+                     'short enough that a learner who means to read it is never kept waiting. It is a floor on '
+                     'open time, not a measure of reading: nothing here can tell reading from looking away.',
+        'opened_by': 'clicking or tapping the door placard in the room, or pressing E while standing in a room '
+                     'that has one and within the label registry\'s declared read distance of it',
+        'range_m_from': 'labels/registry/labels.json#kinds.placard.hide_beyond_m (read, not retyped)',
+    },
+    'walk': {
+        'recorded_for': 'a room that a lesson step of kind walk names, in the hall the learner stands in - never for '
+                        'every room, so the rolling cap is not spent on footsteps',
+    },
+    'station': {
+        'recorded_for': 'a station that a lesson step of kind station names, in the hall the learner stands in, and only '
+                        'on a correct pick of its quiz: a wrong pick, a station no lesson names, or a station of another '
+                        'hall records nothing',
+        'recorded_with': 'the station id and name as stations/ spells them, and the strand of the room its bench stands in',
+    },
+    'crib': {
+        'recorded_for': 'the district crib that a lesson step of kind crib names, in the hall the learner stands in, and '
+                        'only when the check ends with every pick right: a failed run, or a crib no lesson of this hall '
+                        'names, records nothing',
+        'picks_from': 'tools/registry/toolcribs.json#drill.picks (read, not retyped); the episode records the picks right '
+                      'and is floored at that number',
+    },
+    'dedupe': 'one episode per (kind, hall, where) while an earlier one is still in the log: re-entering a room or '
+              're-opening a placard adds nothing, so a learner cannot pad the log and the log cannot crowd out the '
+              'simulator episodes it exists to keep. A station is deduped on its station id and a crib on its district, '
+              'for the same reason',
+    'headless': 'a scripted probe stepping the walker (wkSilent) records no walk or placard episode: only a walker '
+                'the learner is driving does',
+    'proves': 'that this device recorded the event it names: a walker\'s position inside a room\'s rectangle, a '
+              'panel open for a dwell with the walker in the room, a correct pick on a station quiz, or a crib check '
+              'finished with every pick right',
+    'does_not_prove': 'competence, attention, comprehension, that anybody read the sign or the checklist, that a station '
+                      'pick was not found by trying every option, that a crib pick was not guessed or learned by '
+                      'repetition, that the learner is the '
+                      'person named in an export, or that any real room or placard exists - the halls are '
+                      'SCHEMATIC. A lesson stays unverified general practice and certifies nobody',
 }
 
 # ROBOLAB (wave 11): WORLD episode kinds - teleop demonstrations of an AUTHORED robot embodiment in a world
@@ -405,6 +545,28 @@ if not BOOTSTRAP:
     # pack promises, not more integration points quietly grown elsewhere
     assert page.count('recordEpisode({') == len(EPISODE_KINDS), \
         'recordEpisode is called somewhere other than the declared kinds'
+    # wave 20: the walk and placard episodes are recorded inside anchored STEP-EPISODE blocks of the page, the dwell
+    # is READ from the embedded registry, a probe-driven walker records nothing, and each kind is one literal call
+    assert page.count('/* STEP-EPISODE BEGIN') >= 4 and page.count('/* STEP-EPISODE BEGIN') == page.count('/* STEP-EPISODE END'), \
+        'the walk and placard recorders must sit inside balanced STEP-EPISODE blocks'
+    assert 'D.training.step_episodes.placard.dwell_ms' in page, \
+        "the page's placard dwell must be read from the embedded registry"
+    assert f'"dwell_ms":{STEP_EPISODES["placard"]["dwell_ms"]}' in page, \
+        'the page embeds a placard dwell other than the declared one'
+    assert "if (wkSilent) return;" in page.split('function stepWalkEntered(')[1][:400], \
+        'a probe-driven walker must record no walk episode'
+    # wave 21: the station and crib episodes are recorded inside anchored STATION-EPISODE blocks, only for a station or
+    # crib a lesson step of this hall names, a station only on a correct pick and a crib only on a passed check
+    assert page.count('/* STATION-EPISODE BEGIN') >= 3 and page.count('/* STATION-EPISODE BEGIN') == page.count('/* STATION-EPISODE END'), \
+        'the station and crib recorders must sit inside balanced STATION-EPISODE blocks'
+    _sb = page.split('function stationPicked(')[1][:900]
+    assert "stationTargets().has(id)" in _sb and 'stationLogged(id)' in _sb, \
+        'a station episode must be recorded only for a lesson-target station, once'
+    _cb = page.split('function cribPassed(')[1][:900]
+    assert "cribTargets().has(dk)" in _cb and 'cribLogged(dk)' in _cb, \
+        'a crib episode must be recorded only for a lesson-target crib, once'
+    assert 'if (passed) cribPassed(curCrib, drill.right)' in page, \
+        'a crib episode must be recorded only from a passed check'
     # the sample rate and cap the page enforces are READ from this registry
     # as embedded in the page - one truth, not a second hand-typed pair - so
     # the check is that the page reads them, and that what it reads is ours
@@ -503,6 +665,7 @@ doc = {
     'honesty': HONESTY,
     'actors': ACTORS,
     'episode_kinds': EPISODE_KINDS,
+    'step_episodes': STEP_EPISODES,
     'storage': STORAGE,
     'trace': TRACE,
     'export_format': EXPORT_FORMAT,

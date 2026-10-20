@@ -9,10 +9,11 @@
   "signature": null
  },
  "consent": {
-  "statement": "I share the training episodes in this package, recorded by this device, for the scopes named in consent.scope under the licence named in consent.license. I can withdraw by not sharing the file again; copies already given away are governed by that licence. Nothing in this package names me: it carries scenario ids, control schemes and measured outcomes, and the label or wallet address I chose to attach.",
+  "statement": "I share the training episodes in this package, recorded by this device, for the scopes named in consent.scope under the licence named in consent.license. I can withdraw by not sharing the file again; copies already given away are governed by that licence. Nothing in this package names me: it carries scenario ids, control schemes, measured outcomes and the fixed advisor topics, crew questions and walkaround points I picked, and the label or wallet address I chose to attach. It carries room movement, dwell times, quiz picks and tool picks only if consent.scope names lesson-activity.",
   "granted_at": "2026-09-26T00:00:00Z",
   "scope": [
    "agent-training",
+   "lesson-activity",
    "robot-training"
   ],
   "revocable": true,
@@ -200,7 +201,45 @@
     "crew": "fixture-crew",
     "role": "fixture-role",
     "topic": "fixture-topic",
-    "answer_kind": "registry"
+    "answer_kind": "registry",
+    "seat": "fixture-seat",
+    "muster": "fixture-muster"
+   },
+   {
+    "t": "2026-09-26T03:00:06.000Z",
+    "kind": "walk",
+    "campus": "treasure-island",
+    "hall": "painters",
+    "where": "fixture-strand",
+    "room": "Fixture Room"
+   },
+   {
+    "t": "2026-09-26T03:00:07.000Z",
+    "kind": "placard",
+    "campus": "treasure-island",
+    "hall": "painters",
+    "where": "fixture-strand",
+    "room": "Fixture Room",
+    "dwell_ms": 5250
+   },
+   {
+    "t": "2026-09-26T03:00:08.000Z",
+    "kind": "station",
+    "campus": "treasure-island",
+    "hall": "painters",
+    "where": "fixture-strand",
+    "station": "fixture-station",
+    "station_name": "Fixture Station"
+   },
+   {
+    "t": "2026-09-26T03:00:09.000Z",
+    "kind": "crib",
+    "campus": "treasure-island",
+    "hall": "painters",
+    "where": "tools",
+    "crib": "fixture-crib",
+    "crib_name": "Fixture Crib",
+    "picks": 5
    },
    {
     "t": "2026-09-26T03:01:00.000Z",
@@ -429,7 +468,11 @@
   "episode_counts_by_kind": {
    "advisor": 1,
    "crew": 1,
+   "crib": 1,
+   "placard": 1,
    "sim": 3,
+   "station": 1,
+   "walk": 1,
    "walkaround": 1,
    "world-teleop": 2
   },
@@ -467,7 +510,45 @@
     "crew",
     "role",
     "topic",
-    "answer_kind"
+    "answer_kind",
+    "seat",
+    "muster"
+   ],
+   "walk": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "room"
+   ],
+   "placard": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "room",
+    "dwell_ms"
+   ],
+   "station": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "station",
+    "station_name"
+   ],
+   "crib": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "where",
+    "crib",
+    "crib_name",
+    "picks"
    ],
    "walkaround": [
     "t",
@@ -501,7 +582,8 @@
    "every sim, scenario, hall and campus an episode names exists in this bundle at the stated pack version",
    "a trace, where attached, has no more samples than training/ caps and each sample has the declared keys",
    "the consent scope is a non-empty subset of the scopes this registry declares, the statement is this registry's and the licence is this registry's one licence",
-   "the counts the package states about itself (episodes by kind, traces attached, sims covered) recompute from its episodes"
+   "the counts the package states about itself (episodes by kind, traces attached, sims covered) recompute from its episodes",
+   "every walk, placard, station or crib episode (room movement, dwell times, quiz picks and tool picks) sits in a package whose consent.scope names lesson-activity; a package without that scope that carries one is refused by name"
   ],
   "does_not_prove": [
    "who the contributor is: contributor.claimed is a label this device stored, attested by this device only, and nothing checks it - unless a wallet signed, in which case it is the identity of a key, not of a person; a stolen key signs just as well",
@@ -520,6 +602,6 @@
  "digest": {
   "alg": "SHA-256",
   "over": "canonical JSON of every top-level field except digest, with contributor.signature forced to null: keys sorted recursively, no whitespace, UTF-8",
-  "hex": "5e01a98a81b9eb63c8b36eab65c80a91e27a5f72f940b6922af5ac60f70104ba"
+  "hex": "994f6443af6442c12ac9e22b3278c3057e2410bfb2ae9e8490c876852e24a0fc"
  }
 }

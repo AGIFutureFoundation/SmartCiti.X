@@ -236,6 +236,10 @@ embedded = json.dumps(REG, sort_keys=True).replace('</', '<\\/')
 JS_LABELS = {k: TRAW('wilds.' + k) for k in ('mode.overview', 'mode.walk', 'pace', 'pace.walk', 'pace.run', 'pace.fast',
                                              'toast.cache', 'toast.trailhead', 'side_quest', 'flyover')}
 _USED.update('wilds.' + k for k in JS_LABELS)
+# MODULE-LINK BEGIN (wave 20, MODULE-LINK): the wilds site panel's "Practice module" label and link (web/modulelinks.py)
+JS_LABELS['practice_module'] = TRAW('wilds.practice_module')
+_USED.add('wilds.practice_module')
+# MODULE-LINK END
 labels_json = json.dumps(JS_LABELS, ensure_ascii=False, sort_keys=True).replace('</', '<\\/')
 site_task_counts = json.dumps({s['id']: len(TASKS_BY_SITE[s['id']]) for w in REG['worlds'] for s in w['sites']}
                               if TASK_STATE == 'wired' else {}, sort_keys=True)
@@ -1588,6 +1592,10 @@ if page.count('__WILDS_I18N__') != 1:
     raise SystemExit('build_wilds: the i18n catalogue placeholder must appear exactly once')
 page = page.replace('__WILDS_I18N__', json.dumps(I18N_CAT, ensure_ascii=False, sort_keys=True).replace('</', '<\\/'))
 
+# MODULE-LINK BEGIN (wave 20, MODULE-LINK): each world's site panel links to its world module (web/modulelinks.py)
+import modulelinks  # noqa: E402
+page = modulelinks.wilds_page(page, ROOT)
+# MODULE-LINK END
 # search and link-preview head tags (web/seo.py): head region only
 page = apply_seo(page, PAGE, 'The wilds \u2014 SmartCiti.X : Trade Craft Academy',
                  f'Walk {c["worlds"]} authored exterior worlds, {c["area_km2"]} km\u00b2 in all, with trade work sites '

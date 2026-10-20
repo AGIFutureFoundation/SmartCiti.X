@@ -208,7 +208,10 @@ PAYLOAD = json.dumps({
     'record_tag': RECORD_TAG,
     'keys': {'training': TRAINING_KEY, 'identity': IDENTITY_KEY},
     'consent': {'statement': CONSENT_STATEMENT, 'scopes': sorted(SCOPES.keys()), 'license': LICENSE_SPDX,
-                'revocable': True},
+                'revocable': True,
+                'activity': {'scope': need(need(CONSENT, 'activity', CONTRIB_PATH + '#consent'), 'scope', CONTRIB_PATH + '#consent.activity'),
+                             'kinds': list(need(need(CONSENT, 'activity', CONTRIB_PATH + '#consent'), 'kinds', CONTRIB_PATH + '#consent.activity')),
+                             'phrase': need(need(CONSENT, 'activity', CONTRIB_PATH + '#consent'), 'phrase', CONTRIB_PATH + '#consent.activity')}},
     'fields_by_kind': FIELDS_BY_KIND,
     'trace_max_samples': TRACE_MAX,
     'digest_over': need(DIGEST_RULE, 'over', CONTRIB_PATH + '#digest'),
@@ -300,6 +303,14 @@ function countEpisodes(episodes) {
   return { episode_counts_by_kind: sorted, traces_attached: traces, sims_covered: [...sims].sort(), samples };
 }
 
+/* HONEST: room movement, dwell times, quiz picks and tool picks (the activity kinds) leave this device only inside a package
+   whose consent.scope names the activity scope; without it they are left out of the file, never carried silently. */
+function splitByActivity(episodes, scope, activity) {
+  if (!activity || typeof activity.scope !== 'string' || !Array.isArray(activity.kinds)) throw new Error('contrib: meta.consent.activity must name the activity scope and its kinds');
+  if (scope.includes(activity.scope)) return { kept: episodes, left_out: [] };
+  return { kept: episodes.filter((e) => !activity.kinds.includes(e.kind)), left_out: episodes.filter((e) => activity.kinds.includes(e.kind)) };
+}
+
 async function buildContribution(training, identity, consent, meta, now) {
   if (!Array.isArray(training) || !training.every((e) => e !== null && typeof e === 'object' && !Array.isArray(e)))
     throw new Error('contrib: the training log must be an array of episode objects; nothing is exported from a record that cannot be read');
@@ -315,6 +326,8 @@ async function buildContribution(training, identity, consent, meta, now) {
     throw new Error('contrib: meta.wallet must be an address or absent; a package is never attested to a wallet it cannot name');
   const wallet = typeof meta.wallet === 'string' ? meta.wallet : null;
   const label = (identity && typeof identity === 'object' && typeof identity.label === 'string') ? identity.label : null;
+  const split = splitByActivity(training, consent.scope, meta.consent.activity);
+  training = split.kept;
   const c = countEpisodes(training);
   const record = {
     record: meta.record_tag,
@@ -447,7 +460,12 @@ function refresh() {
   else if (!Array.isArray(rec.training.value)) sayE('Nothing to export: the training log is not an array.', 'no-log');
   else if (rec.training.value.some((e) => !e || typeof e !== 'object' || !(e.kind in D.fields_by_kind))) sayE('This log holds episodes of a kind a ' + D.record_tag + ' package cannot carry (robotics world episodes). Use Share data below: it exports ' + DS_TAG + ' packages.', 'needs-v2');
   else if (ticked().length === 0) sayE('Tick at least one scope to build a package. No scope, no consent, no package.', 'no-scope');
-  else sayE('Ready: ' + rec.training.value.length + ' episode(s) under scope ' + ticked().join(', ') + '. The file is downloaded to this device and sent nowhere.', 'ready');
+  else {
+    const sp = splitByActivity(rec.training.value, ticked(), D.consent.activity);
+    sayE('Ready: ' + sp.kept.length + ' episode(s) under scope ' + ticked().join(', ') + '.'
+      + (sp.left_out.length ? ' ' + sp.left_out.length + ' episode(s) of room movement, dwell times, quiz picks and tool picks stay on this device: tick ' + D.consent.activity.scope + ' to include them.' : '')
+      + ' The file is downloaded to this device and sent nowhere.', 'ready');
+  }
   if (walletAddress === null) {
     sbtn.hidden = true; sbtn.disabled = true;
     sayS('No wallet identity is stored under ' + KEYS.identity + ' on this device, so no signature is offered: a package exported here stays unsigned and says so.', 'no-wallet-identity');
@@ -623,6 +641,10 @@ DS_CLASSIC = CONTRIB_CORE_JS + '\n' + 'function authCore() {\n' + AUTH_CORE_JS +
 async function buildPackageV2(episodes, scope, meta, now, contrib) {
   if (!Array.isArray(episodes) || episodes.length === 0) throw new Error('datashare: no episodes selected, no package');
   if (!Array.isArray(scope) || scope.length === 0) throw new Error('datashare: no scope ticked for this package, no consent, no package');
+  /* HONEST: movement, dwell, quiz and tool picks go into a package only under the scope that names them; otherwise they stay out */
+  if (!meta.consent.activity || typeof meta.consent.activity.scope !== 'string' || !Array.isArray(meta.consent.activity.kinds)) throw new Error('datashare: meta.consent.activity must name the activity scope and its kinds');
+  if (!scope.includes(meta.consent.activity.scope)) episodes = episodes.filter((e) => !(e && typeof e === 'object' && meta.consent.activity.kinds.includes(e.kind)));
+  if (episodes.length === 0) throw new Error('datashare: every selected episode is room movement, dwell times, quiz picks or tool picks and ' + meta.consent.activity.scope + ' is not ticked; no episode is left to share');
   for (const s of scope) if (!meta.consent.scopes.includes(s)) throw new Error('datashare: scope ' + JSON.stringify(s) + ' is not declared');
   for (const e of episodes) if (!e || typeof e !== 'object' || !(e.kind in meta.fields_v2)) throw new Error('datashare: an episode of kind ' + JSON.stringify(e && e.kind) + ' cannot be shared under ' + meta.tag_v2);
   const c = countEpisodes(episodes);
@@ -677,7 +699,8 @@ function startShare() {
   const DC = datashareCore(S.cfg, sha256hex);
   const contribReg = S.regs.contrib;
   const meta = { tag_v2: S.tag_v2, product: contribReg.product, pack_version: contribReg.pack_version, fields_v2: S.fields_v2,
-    consent: { statement: contribReg.consent.statement, scopes: Object.keys(contribReg.consent.scopes).sort(), license: contribReg.consent.license.spdx },
+    consent: { statement: contribReg.consent.statement, scopes: Object.keys(contribReg.consent.scopes).sort(), license: contribReg.consent.license.spdx,
+      activity: { scope: contribReg.consent.activity.scope, kinds: contribReg.consent.activity.kinds, phrase: contribReg.consent.activity.phrase } },
     honesty: contribReg.honesty, digest_over: contribReg.digest.over };
 
   /* the local store: IndexedDB when it opens, else this tab's memory - and the page says which */
@@ -753,7 +776,8 @@ function startShare() {
       built.push({ name: 'exported-' + pkg.digest.hex.slice(0, 12) + '.json', record: pkg, verdict: v });
       download(JSON.stringify(pkg, null, 1), 'tc-contribution-v2-' + pkg.digest.hex.slice(0, 12) + '.json', 'application/json');
       for (const b of scopeBoxes) b.checked = false;   // opt-in is per package: the next one starts unticked
-      say('shareStatus', 'Exported one package: ' + pkg.dataset.episodes.length + ' episode(s), scope ' + pkg.consent.scope.join(', ') + ', digest ' + pkg.digest.hex.slice(0, 16) + '…, verified in this page. It was downloaded, not sent.', 'exported');
+      const heldBack = rows.length - pkg.dataset.episodes.length;
+      say('shareStatus', 'Exported one package: ' + pkg.dataset.episodes.length + ' episode(s)' + (heldBack ? ' (' + heldBack + ' of room movement, dwell times, quiz picks and tool picks held back: ' + meta.consent.activity.scope + ' was not ticked)' : '') + ', scope ' + pkg.consent.scope.join(', ') + ', digest ' + pkg.digest.hex.slice(0, 16) + '…, verified in this page. It was downloaded, not sent.', 'exported');
     } catch (e) { say('shareStatus', 'Not exported: ' + String(e && e.message), 'refused'); }
   };
 

@@ -2,7 +2,7 @@
  "pack": "modules",
  "schema": "tc-modules/1",
  "built": "2026-10-12",
- "source_stamp": "d30b183cc4b3c58aed9ff79b6fed263358a4f6706c1d41cc9147fe4546d636d8",
+ "source_stamp": "3625725c80f62e80c58241f118fb93fd599345282a7542bcf0fbcd4dc9894564",
  "sources": [
   "lessons/registry/lessons.json",
   "training/registry/training.json",
@@ -53,9 +53,9 @@
    "wilds-world": 4,
    "robot-yard": 1
   },
-  "steps": 191,
+  "steps": 178,
   "steps_by_kind": {
-   "advisor": 59,
+   "advisor": 46,
    "crew": 35,
    "placard": 23,
    "sim": 14,
@@ -243,7 +243,7 @@
     },
     {
      "kind": "station",
-     "records": null,
+     "records": "station",
      "station": "st005",
      "station_name": "Rigging & Material Handling",
      "note": "reads the plan out: weight, radius, hitch, path, and who stands where",
@@ -940,7 +940,7 @@
     },
     {
      "kind": "station",
-     "records": null,
+     "records": "station",
      "station": "st003",
      "station_name": "Scaffold & Fall Protection",
      "note": "inspects, tags the bay, and says out loud who may now stand on it",
@@ -1172,7 +1172,7 @@
     },
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Induction is the room that decides whether you are allowed near the others, so start there.",
@@ -1187,29 +1187,8 @@
      "n": 8
     },
     {
-     "kind": "advisor",
-     "records": "advisor",
-     "stage": "class",
-     "reads": "agents/registry/advisors.json",
-     "note": "Ask what the room requires rather than copying whoever walked in ahead of you.",
-     "where": "safety",
-     "advisor": "safety-steward",
-     "topic": "ppe",
-     "answer_kind": "read",
-     "do": "Ask the Safety steward in the Induction & PPE: \"What do I need on in here?\"",
-     "names_read": [
-      "Induction & PPE",
-      "Safety steward",
-      "What do I need on in here?"
-     ],
-     "lesson": "laborers-stand-where-the-cab-can-see",
-     "lesson_step": 3,
-     "hall": "laborers",
-     "n": 9
-    },
-    {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Setting out and control points live here, and so does the habit of trusting a mark only as far as it was proved.",
@@ -1221,28 +1200,7 @@
      "lesson": "operating-eng-locate-first",
      "lesson_step": 1,
      "hall": "operating-eng",
-     "n": 10
-    },
-    {
-     "kind": "advisor",
-     "records": "advisor",
-     "stage": "class",
-     "reads": "agents/registry/advisors.json",
-     "note": "Ask what the control actually is before you work off something painted near it.",
-     "where": "layout",
-     "advisor": "layout-hand",
-     "topic": "control",
-     "answer_kind": "say",
-     "do": "Ask the Layout hand in the Layout Floor: \"What is a control point?\"",
-     "names_read": [
-      "Layout Floor",
-      "Layout hand",
-      "What is a control point?"
-     ],
-     "lesson": "operating-eng-locate-first",
-     "lesson_step": 2,
-     "hall": "operating-eng",
-     "n": 11
+     "n": 9
     }
    ],
    "greeter": {
@@ -1436,7 +1394,7 @@
    "steps": [
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Induction is the room that decides whether you are allowed near the others, so start there.",
@@ -1451,29 +1409,8 @@
      "n": 1
     },
     {
-     "kind": "advisor",
-     "records": "advisor",
-     "stage": "class",
-     "reads": "agents/registry/advisors.json",
-     "note": "Ask what the room requires rather than copying whoever walked in ahead of you.",
-     "where": "safety",
-     "advisor": "safety-steward",
-     "topic": "ppe",
-     "answer_kind": "read",
-     "do": "Ask the Safety steward in the Induction & PPE: \"What do I need on in here?\"",
-     "names_read": [
-      "Induction & PPE",
-      "Safety steward",
-      "What do I need on in here?"
-     ],
-     "lesson": "laborers-stand-where-the-cab-can-see",
-     "lesson_step": 3,
-     "hall": "laborers",
-     "n": 2
-    },
-    {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Setting out lives here, which makes this the right room to be pedantic in.",
@@ -1485,28 +1422,7 @@
      "lesson": "surveyors-trust-the-control",
      "lesson_step": 1,
      "hall": "surveyors",
-     "n": 3
-    },
-    {
-     "kind": "advisor",
-     "records": "advisor",
-     "stage": "class",
-     "reads": "agents/registry/advisors.json",
-     "note": "Ask what control is, then ask how you would know if it had moved.",
-     "where": "layout",
-     "advisor": "layout-hand",
-     "topic": "control",
-     "answer_kind": "say",
-     "do": "Ask the Layout hand in the Layout Floor: \"What is a control point?\"",
-     "names_read": [
-      "Layout Floor",
-      "Layout hand",
-      "What is a control point?"
-     ],
-     "lesson": "surveyors-trust-the-control",
-     "lesson_step": 3,
-     "hall": "surveyors",
-     "n": 4
+     "n": 2
     }
    ],
    "greeter": {
@@ -1590,7 +1506,7 @@
    "steps": [
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Induction is the room that decides whether you are allowed near the others, so start there.",
@@ -1603,27 +1519,6 @@
      "lesson_step": 1,
      "hall": "laborers",
      "n": 1
-    },
-    {
-     "kind": "advisor",
-     "records": "advisor",
-     "stage": "class",
-     "reads": "agents/registry/advisors.json",
-     "note": "Ask what the room requires rather than copying whoever walked in ahead of you.",
-     "where": "safety",
-     "advisor": "safety-steward",
-     "topic": "ppe",
-     "answer_kind": "read",
-     "do": "Ask the Safety steward in the Induction & PPE: \"What do I need on in here?\"",
-     "names_read": [
-      "Induction & PPE",
-      "Safety steward",
-      "What do I need on in here?"
-     ],
-     "lesson": "laborers-stand-where-the-cab-can-see",
-     "lesson_step": 3,
-     "hall": "laborers",
-     "n": 2
     }
    ],
    "greeter": {
@@ -1705,7 +1600,7 @@
    "steps": [
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Induction is the room that decides whether you are allowed near the others, so start there.",
@@ -1718,27 +1613,6 @@
      "lesson_step": 1,
      "hall": "laborers",
      "n": 1
-    },
-    {
-     "kind": "advisor",
-     "records": "advisor",
-     "stage": "class",
-     "reads": "agents/registry/advisors.json",
-     "note": "Ask what the room requires rather than copying whoever walked in ahead of you.",
-     "where": "safety",
-     "advisor": "safety-steward",
-     "topic": "ppe",
-     "answer_kind": "read",
-     "do": "Ask the Safety steward in the Induction & PPE: \"What do I need on in here?\"",
-     "names_read": [
-      "Induction & PPE",
-      "Safety steward",
-      "What do I need on in here?"
-     ],
-     "lesson": "laborers-stand-where-the-cab-can-see",
-     "lesson_step": 3,
-     "hall": "laborers",
-     "n": 2
     }
    ],
    "greeter": {
@@ -1944,7 +1818,7 @@
     },
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Setting out and control points live here, and so does the habit of trusting a mark only as far as it was proved.",
@@ -1959,29 +1833,8 @@
      "n": 8
     },
     {
-     "kind": "advisor",
-     "records": "advisor",
-     "stage": "class",
-     "reads": "agents/registry/advisors.json",
-     "note": "Ask what the control actually is before you work off something painted near it.",
-     "where": "layout",
-     "advisor": "layout-hand",
-     "topic": "control",
-     "answer_kind": "say",
-     "do": "Ask the Layout hand in the Layout Floor: \"What is a control point?\"",
-     "names_read": [
-      "Layout Floor",
-      "Layout hand",
-      "What is a control point?"
-     ],
-     "lesson": "operating-eng-locate-first",
-     "lesson_step": 2,
-     "hall": "operating-eng",
-     "n": 9
-    },
-    {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Induction is the room that decides whether you are allowed near the others, so start there.",
@@ -1993,32 +1846,11 @@
      "lesson": "laborers-stand-where-the-cab-can-see",
      "lesson_step": 1,
      "hall": "laborers",
-     "n": 10
-    },
-    {
-     "kind": "advisor",
-     "records": "advisor",
-     "stage": "class",
-     "reads": "agents/registry/advisors.json",
-     "note": "Ask what the room requires rather than copying whoever walked in ahead of you.",
-     "where": "safety",
-     "advisor": "safety-steward",
-     "topic": "ppe",
-     "answer_kind": "read",
-     "do": "Ask the Safety steward in the Induction & PPE: \"What do I need on in here?\"",
-     "names_read": [
-      "Induction & PPE",
-      "Safety steward",
-      "What do I need on in here?"
-     ],
-     "lesson": "laborers-stand-where-the-cab-can-see",
-     "lesson_step": 3,
-     "hall": "laborers",
-     "n": 11
+     "n": 9
     },
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Setting out lives here, which makes this the right room to be pedantic in.",
@@ -2030,28 +1862,7 @@
      "lesson": "surveyors-trust-the-control",
      "lesson_step": 1,
      "hall": "surveyors",
-     "n": 12
-    },
-    {
-     "kind": "advisor",
-     "records": "advisor",
-     "stage": "class",
-     "reads": "agents/registry/advisors.json",
-     "note": "Ask what control is, then ask how you would know if it had moved.",
-     "where": "layout",
-     "advisor": "layout-hand",
-     "topic": "control",
-     "answer_kind": "say",
-     "do": "Ask the Layout hand in the Layout Floor: \"What is a control point?\"",
-     "names_read": [
-      "Layout Floor",
-      "Layout hand",
-      "What is a control point?"
-     ],
-     "lesson": "surveyors-trust-the-control",
-     "lesson_step": 3,
-     "hall": "surveyors",
-     "n": 13
+     "n": 10
     }
    ],
    "greeter": {
@@ -2135,7 +1946,7 @@
    "steps": [
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Setting out and control points live here, and so does the habit of trusting a mark only as far as it was proved.",
@@ -2150,29 +1961,8 @@
      "n": 1
     },
     {
-     "kind": "advisor",
-     "records": "advisor",
-     "stage": "class",
-     "reads": "agents/registry/advisors.json",
-     "note": "Ask what the control actually is before you work off something painted near it.",
-     "where": "layout",
-     "advisor": "layout-hand",
-     "topic": "control",
-     "answer_kind": "say",
-     "do": "Ask the Layout hand in the Layout Floor: \"What is a control point?\"",
-     "names_read": [
-      "Layout Floor",
-      "Layout hand",
-      "What is a control point?"
-     ],
-     "lesson": "operating-eng-locate-first",
-     "lesson_step": 2,
-     "hall": "operating-eng",
-     "n": 2
-    },
-    {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Induction is the room that decides whether you are allowed near the others, so start there.",
@@ -2184,28 +1974,7 @@
      "lesson": "laborers-stand-where-the-cab-can-see",
      "lesson_step": 1,
      "hall": "laborers",
-     "n": 3
-    },
-    {
-     "kind": "advisor",
-     "records": "advisor",
-     "stage": "class",
-     "reads": "agents/registry/advisors.json",
-     "note": "Ask what the room requires rather than copying whoever walked in ahead of you.",
-     "where": "safety",
-     "advisor": "safety-steward",
-     "topic": "ppe",
-     "answer_kind": "read",
-     "do": "Ask the Safety steward in the Induction & PPE: \"What do I need on in here?\"",
-     "names_read": [
-      "Induction & PPE",
-      "Safety steward",
-      "What do I need on in here?"
-     ],
-     "lesson": "laborers-stand-where-the-cab-can-see",
-     "lesson_step": 3,
-     "hall": "laborers",
-     "n": 4
+     "n": 2
     }
    ],
    "greeter": {
@@ -2285,7 +2054,7 @@
    "steps": [
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Induction is the room that decides whether you are allowed near the others, so start there.",
@@ -2298,27 +2067,6 @@
      "lesson_step": 1,
      "hall": "laborers",
      "n": 1
-    },
-    {
-     "kind": "advisor",
-     "records": "advisor",
-     "stage": "class",
-     "reads": "agents/registry/advisors.json",
-     "note": "Ask what the room requires rather than copying whoever walked in ahead of you.",
-     "where": "safety",
-     "advisor": "safety-steward",
-     "topic": "ppe",
-     "answer_kind": "read",
-     "do": "Ask the Safety steward in the Induction & PPE: \"What do I need on in here?\"",
-     "names_read": [
-      "Induction & PPE",
-      "Safety steward",
-      "What do I need on in here?"
-     ],
-     "lesson": "laborers-stand-where-the-cab-can-see",
-     "lesson_step": 3,
-     "hall": "laborers",
-     "n": 2
     }
    ],
    "greeter": {
@@ -2396,7 +2144,7 @@
    "steps": [
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Induction is the room that decides whether you are allowed near the others, so start there.",
@@ -2409,27 +2157,6 @@
      "lesson_step": 1,
      "hall": "laborers",
      "n": 1
-    },
-    {
-     "kind": "advisor",
-     "records": "advisor",
-     "stage": "class",
-     "reads": "agents/registry/advisors.json",
-     "note": "Ask what the room requires rather than copying whoever walked in ahead of you.",
-     "where": "safety",
-     "advisor": "safety-steward",
-     "topic": "ppe",
-     "answer_kind": "read",
-     "do": "Ask the Safety steward in the Induction & PPE: \"What do I need on in here?\"",
-     "names_read": [
-      "Induction & PPE",
-      "Safety steward",
-      "What do I need on in here?"
-     ],
-     "lesson": "laborers-stand-where-the-cab-can-see",
-     "lesson_step": 3,
-     "hall": "laborers",
-     "n": 2
     }
    ],
    "greeter": {
@@ -2542,7 +2269,7 @@
    "steps": [
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -2558,7 +2285,7 @@
     },
     {
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -2617,7 +2344,7 @@
     },
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -2633,7 +2360,7 @@
     },
     {
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -2692,7 +2419,7 @@
     },
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -2708,7 +2435,7 @@
     },
     {
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -2767,7 +2494,7 @@
     },
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -2783,7 +2510,7 @@
     },
     {
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -2842,7 +2569,7 @@
     },
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -2858,7 +2585,7 @@
     },
     {
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -2917,7 +2644,7 @@
     },
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -2933,7 +2660,7 @@
     },
     {
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -3111,7 +2838,7 @@
    "steps": [
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -3127,7 +2854,7 @@
     },
     {
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -3186,7 +2913,7 @@
     },
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -3202,7 +2929,7 @@
     },
     {
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -3261,7 +2988,7 @@
     },
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -3277,7 +3004,7 @@
     },
     {
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -3336,7 +3063,7 @@
     },
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -3352,7 +3079,7 @@
     },
     {
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -3411,7 +3138,7 @@
     },
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -3427,7 +3154,7 @@
     },
     {
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -3486,7 +3213,7 @@
     },
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -3502,7 +3229,7 @@
     },
     {
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -3667,7 +3394,7 @@
    "steps": [
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -3683,7 +3410,7 @@
     },
     {
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -3742,7 +3469,7 @@
     },
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -3758,7 +3485,7 @@
     },
     {
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -3817,7 +3544,7 @@
     },
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -3833,7 +3560,7 @@
     },
     {
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -3892,7 +3619,7 @@
     },
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -3908,7 +3635,7 @@
     },
     {
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -3967,7 +3694,7 @@
     },
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -3983,7 +3710,7 @@
     },
     {
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -4159,7 +3886,7 @@
    "steps": [
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -4175,7 +3902,7 @@
     },
     {
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -4234,7 +3961,7 @@
     },
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -4250,7 +3977,7 @@
     },
     {
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -4309,7 +4036,7 @@
     },
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -4325,7 +4052,7 @@
     },
     {
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -4384,7 +4111,7 @@
     },
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -4400,7 +4127,7 @@
     },
     {
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -4459,7 +4186,7 @@
     },
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -4475,7 +4202,7 @@
     },
     {
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",
@@ -4534,7 +4261,7 @@
     },
     {
      "kind": "walk",
-     "records": null,
+     "records": "walk",
      "stage": "class",
      "reads": "web/interiors.py",
      "note": "Before anybody goes out to the site, start where the rules for the work are posted, because outdoors there is no door to post them on.",
@@ -4550,7 +4277,7 @@
     },
     {
      "kind": "placard",
-     "records": null,
+     "records": "placard",
      "stage": "class",
      "reads": "surfaces/registry/finishes.json",
      "note": "Take on what the sign asks here, since out on the terrain nobody will hang one for you.",

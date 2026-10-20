@@ -377,8 +377,11 @@ CONTROLS = {s: [c['action'] for c in SIMS[s]['controls']] for s in SIMS}
 
 
 def ep_crew(sec, hall, role, topic):
+    # seat and muster are the crew's own entry in crews.json, as the page records them (training/ crew episode)
+    crew = need(CREWS, 'crane-lift-crew', 'crews.json')
     return {'t': f'{T0}{sec:02d}.000Z', 'kind': 'crew', 'campus': FIX_CAMPUS, 'hall': hall, 'crew': 'crane-lift-crew',
-            'role': role, 'topic': topic, 'answer_kind': 'say'}
+            'role': role, 'topic': topic, 'answer_kind': 'say',
+            'seat': need(crew, 'seat', 'crews.json#crane-lift-crew'), 'muster': need(crew, 'muster', 'crews.json#crane-lift-crew')}
 
 
 def ep_sim(sec, hall, sim, scenario, passed=True):

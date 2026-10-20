@@ -39,22 +39,22 @@ The registries it reads through the lesson pack:
 
 ## The 8 step kinds
 
-301 of the 568 steps write an episode to the
-device-local training log; the other 267 write nothing at all,
+568 of the 568 steps write an episode to the
+device-local training log; the other 0 write nothing at all,
 and each silent kind says why rather than leaving the blank to be discovered.
 
 | Kind | What it is | Stage | Steps | Records | Reads |
 |---|---|---|---|---|---|
-| **walk** | walk to a room of this hall | class | 141 | records nothing — arriving somewhere is not an achievement, and a bundle that logged footsteps would be counting attendance while claiming to teach | `web/interiors.py` |
-| **placard** | read the door placard of a room and take on what it requires | class | 92 | records nothing — the placard states the room condition record; reading a record changes nothing and is nobody's score | `surfaces/registry/finishes.json` |
-| **station** | take a training station at its bench | class | 12 | records nothing — a station mark lands in the device-local progress record the halls already keep; the training log holds simulator, advisor, crew and walkaround episodes and this pack adds no fifth kind to it | `stations/registry/stations.json` |
-| **crib** | run the district crib check at the pegboard | class | 22 | records nothing — the crib check is graded deterministically against the crib record and kept with the progress record, not as a training episode | `tools/registry/toolcribs.json` |
+| **walk** | walk to a room of this hall | class | 141 | writes a `walk` episode | `web/interiors.py` |
+| **placard** | read the door placard of a room and take on what it requires | class | 92 | writes a `placard` episode | `surfaces/registry/finishes.json` |
+| **station** | take a training station at its bench | class | 12 | writes a `station` episode | `stations/registry/stations.json` |
+| **crib** | run the district crib check at the pegboard | class | 22 | writes a `crib` episode | `tools/registry/toolcribs.json` |
 | **walkaround** | walk one pre-shift point of a seat and mark it | floor | 42 | writes a `walkaround` episode | `sims/registry/sims.json` |
 | **sim** | run one seat on the scenario its campus owns | floor | 31 | writes a `sim` episode | `sims/registry/sims.json` |
 | **advisor** | ask the advisor who stands in this room one of its fixed topics | class | 205 | writes an `advisor` episode | `agents/registry/advisors.json` |
 | **crew** | ask one role of the standing crew one of its fixed topics while the seat runs | floor | 23 | writes a `crew` episode | `agents/registry/crews.json` |
 
-The page itself records nothing of its own: nothing about opening, reading or abandoning a lesson is recorded. The only episodes that reach the training log are the four the step kinds already declare, written by the recorder that was already writing them. The step
+The page itself records nothing of its own: nothing about opening, reading or abandoning a lesson is recorded. The only episodes that reach the training log are the eight the step kinds declare, written by the recorder that was already writing them. The step
 checkboxes are a tally in the open tab — the built page contains no
 `localStorage` call at all — so closing the tab loses the marks, which is the
 correct behaviour for a mark that was never anybody's score.
@@ -66,8 +66,8 @@ declared and unbuilt. `lessons/registry/lessons.json` was on it for one
 computed reason: no page generator under `web/` named the path, so nothing a
 learner opens read it. The wiki described the pack; nothing drew it.
 
-**Declared-and-unbuilt is now 5 entries, down from
-6**, and the lessons registry is the entry that left.
+**Declared-and-unbuilt is now 12 entries, down from
+13**, and the lessons registry is the entry that left.
 
 It left the way that register says entries leave — by satisfying the condition
 each entry carries in its own `drops_off_when` field: *a page generator under
@@ -77,14 +77,14 @@ backlog found it there, and the entry was gone on the next build of `rnd/`.
 **No honesty flag was deleted to close it.** In the register's own words:
 a pack that gets wired up drops off declared_unbuilt on the next build of this file, because the entry is computed from whether a renderer names its registry path - not from a note here saying it is unbuilt.
 
-The 5 registries still on that list are still on it, and this page
+The 12 registries still on that list are still on it, and this page
 claims nothing about them.
 
 ## What a lesson is not
 
 - **Not a certificate.** no lesson here certifies anybody, qualifies anybody or permits anybody to do anything. Completing every lesson in this registry would leave a learner with exactly the standing they started with. Where a trade has a real ticket, that ticket is issued by a jurisdiction, an employer or a hall, and this bundle is none of those and speaks for none of them.
 - **Not a gate.** a lesson unlocks nothing. No step is locked behind another, the ladder is guidance about a sensible order rather than a permission system, and the assessment gate that schools/ declares stays exactly where it is: an unaided verification run that no lesson, station hour or simulator seat substitutes for.
-- **Not scored.** finishing a lesson changes no score and is read by no grader. Four of the eight step kinds write an episode to the existing device-local training log; the other four write nothing at all, and the registry says which is which rather than leaving it to be discovered.
+- **Not scored.** finishing a lesson changes no score and is read by no grader. The step kinds that write an episode write it to the existing device-local training log; every kind writes one since wave 21 (station and crib used to leave only a device mark in the progress record), and the registry says which kind writes which rather than leaving it to be discovered. A walk, placard, station or crib episode proves that a device recorded a position, an open panel, a correct quiz pick or a passed crib check, and nothing about competence.
 - **Not reviewed.** unverified general practice. These lessons were written to be argued with, corrected and replaced by journey-level practitioners from the halls they name - the same standing the module pack, the recovered stations and the simulator seats already carry, and for the same reason: nobody who does this work for a living has reviewed a line of it yet.
 - **Not a curriculum.** this is a set deliberately spread thin: 139 lessons across 111 of 111 halls, one in every one of the 45 halls a simulator seat is bound to and one composed first walk in every hall without a seat that the rule could walk honestly (0 refused), out of 1,221 rooms. It demonstrates the shape a lesson takes in this bundle. It is not a curriculum, it does not cover a trade, and no hall is finished because one of its rooms now has a lesson standing in it.
 - **Provenance.** AUTHORED: every sentence in this pack was written here, by us. 56 lessons were written by hand, one hall at a time, step by step; the other 83 are composed by one rule in lessons/build.py from 7 arcs written here - 60 first walks, one per room an advisor stands in, and 23 walks before a WILDS site from one more arc, whose site title and world are read from wilds/registry/wilds.json, where the terrain is AUTHORED, not a surveyed place - so their step order, title and why are marked DERIVED and carry authoring "rule" - the rule reads the hall name and focus from the roster and adds no fact of its own. Nothing is fetched and no model runs behind any of it.

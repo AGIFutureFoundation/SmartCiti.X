@@ -1,7 +1,7 @@
 {
  "digest": {
   "alg": "SHA-256",
-  "hex": "46588ee453e5b779dcac6ee899ab96991d13533f6e3b100ea5691c3a7d9e788f",
+  "hex": "2ec9efc52a3147cb6eccdac0ad7884da2d2e4bda83065de5e8ecf652bc392673",
   "over": "canonical JSON of every top-level field except digest, with identity.signature forced to null: keys sorted recursively, no whitespace, UTF-8"
  },
  "exported_at": "2026-09-26T00:00:00Z",
@@ -10,8 +10,10 @@
    "who the learner is: identity.claimed is typed by the person, attested by this device only, and nothing checks it - unless a wallet signed, in which case it is the identity of a key, not of a person; a stolen key signs just as well",
    "anything on any blockchain: a wallet signature is computed in the browser and carried in the file; nothing is written to any chain, nothing is anchored, and no one can look it up",
    "that the device was honest: a record can be written by hand and will verify if it is internally consistent",
-   "that a self-reported step (walk, placard) happened at all",
-   "a station or crib mark is a device-local mark, not a recorded episode",
+   "that a walk or placard episode means more than it says: it records that a device saw the walker's position inside a room, or a placard panel left open for its dwell with the walker in that room - not that anyone read, understood or took on what the placard requires, and not that the room exists outside this bundle",
+   "that a self-reported step happened at all (no step kind is self-reported today; the rule stays so one that is added cannot carry evidence it does not have)",
+   "that a station or crib episode means more than it says: it records that a device saw a correct pick on a station quiz, or a crib check finished with every pick right - not that the checklist was read, that the pick was not found by trying every option, that anything was learned or that the learner can name the tools. The marks in tc-progress (the record's `stations` and `tools` blocks) are device-local marks the halls keep for their own HUD; they feed no step",
+   "that every episode-backed step is equally strong evidence: of the step kinds, sim, station and crib are graded by the page (strong), advisor, crew and walkaround record a deliberate act with nothing graded (act), and walk and placard record only presence in a room (presence). A lesson counted as fully verifiable by episode may hold presence and act steps alone; the summary a verifier prints splits the steps by strength, and none of this changes what verifies",
    "that the seat was passed under supervision, or that any score means anything outside this bundle",
    "any accreditation, ticket, licence or credential; no hall, employer or authority has signed anything",
    "any duration of training, and no price is claimed"

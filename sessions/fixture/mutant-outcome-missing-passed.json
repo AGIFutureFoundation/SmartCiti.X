@@ -140,6 +140,42 @@
    }
   },
   {
+   "t": "2026-09-26T03:00:20.000Z",
+   "kind": "walk",
+   "campus": "treasure-island",
+   "hall": "painters",
+   "where": "fixture-strand",
+   "room": "Fixture Room"
+  },
+  {
+   "t": "2026-09-26T03:00:40.000Z",
+   "kind": "placard",
+   "campus": "treasure-island",
+   "hall": "painters",
+   "where": "fixture-strand",
+   "room": "Fixture Room",
+   "dwell_ms": 5250
+  },
+  {
+   "t": "2026-09-26T03:00:50.000Z",
+   "kind": "station",
+   "campus": "treasure-island",
+   "hall": "painters",
+   "where": "fixture-strand",
+   "station": "fixture-station",
+   "station_name": "Fixture Station"
+  },
+  {
+   "t": "2026-09-26T03:01:00.000Z",
+   "kind": "crib",
+   "campus": "treasure-island",
+   "hall": "painters",
+   "where": "tools",
+   "crib": "fixture-crib",
+   "crib_name": "Fixture Crib",
+   "picks": 5
+  },
+  {
    "t": "2026-09-26T03:04:00.000Z",
    "kind": "advisor",
    "campus": "treasure-island",
@@ -201,7 +237,9 @@
    "crew": "fixture-crew",
    "role": "fixture-role",
    "topic": "fixture-topic",
-   "answer_kind": "registry"
+   "answer_kind": "registry",
+   "seat": "fixture-seat",
+   "muster": "fixture-muster"
   },
   {
    "t": "2026-09-26T04:04:30.000Z",
@@ -335,10 +373,14 @@
     "start": "2026-09-26T03:00:00.000Z",
     "end": "2026-09-26T03:04:00.000Z",
     "wall_ms": 240000,
-    "episodes": 4,
+    "episodes": 8,
     "by_kind": {
      "walkaround": 1,
+     "walk": 1,
+     "placard": 1,
+     "station": 1,
      "sim": 2,
+     "crib": 1,
      "advisor": 1
     },
     "halls": [
@@ -368,6 +410,10 @@
     "traces": 1,
     "samples": 4,
     "could_advance": {
+     "walk": true,
+     "placard": true,
+     "station": true,
+     "crib": true,
      "walkaround": true,
      "sim": true,
      "advisor": true,
@@ -411,6 +457,10 @@
     "traces": 0,
     "samples": 0,
     "could_advance": {
+     "walk": false,
+     "placard": false,
+     "station": false,
+     "crib": false,
      "walkaround": false,
      "sim": true,
      "advisor": false,
@@ -453,6 +503,10 @@
     "traces": 0,
     "samples": 0,
     "could_advance": {
+     "walk": false,
+     "placard": false,
+     "station": false,
+     "crib": false,
      "walkaround": false,
      "sim": true,
      "advisor": false,
@@ -462,10 +516,14 @@
   ],
   "rollups": {
    "sessions": 3,
-   "episodes": 9,
+   "episodes": 13,
    "by_kind": {
     "walkaround": 1,
+    "walk": 1,
+    "placard": 1,
+    "station": 1,
     "sim": 6,
+    "crib": 1,
     "advisor": 1,
     "crew": 1
    },

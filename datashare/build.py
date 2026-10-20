@@ -141,10 +141,20 @@ LICENCE_RULE = {
     'attribution': 'unsigned packages are attributed as "unsigned package <digest16>"; contributor.claimed is never '
                    'copied into a dataset, because a label a person typed may be their name',
 }
+ACTIVITY = req(CONSENT, 'activity', CONTRIB_PATH + '#consent')
 SCOPE_RULE = {
     'scopes': SCOPES,
     'rule': 'a dataset is built FOR one declared scope; a package is admitted only if its consent.scope includes it, '
             'otherwise it is refused by name (consent-scope)',
+    'activity': {
+        'scope': req(ACTIVITY, 'scope', CONTRIB_PATH + '#consent.activity'),
+        'kinds': list(req(ACTIVITY, 'kinds', CONTRIB_PATH + '#consent.activity')),
+        'phrase': req(ACTIVITY, 'phrase', CONTRIB_PATH + '#consent.activity'),
+        'rule': 'an episode of kind ' + ', '.join(req(ACTIVITY, 'kinds', CONTRIB_PATH + '#consent.activity')) + ' (room movement, '
+                'dwell times, quiz picks and tool picks) is admitted only into a dataset built for the '
+                + req(ACTIVITY, 'scope', CONTRIB_PATH + '#consent.activity') + ' scope; in a dataset built for any other scope it is '
+                'left out and counted in excluded.activity_episodes_out_of_scope, even from a package whose consent.scope names both',
+    },
 }
 REVOCATION = {
     'file': 'datashare/revocations.json',
@@ -178,7 +188,7 @@ MANIFEST_SHAPE = {
     'episodes': '[{id, kind, split, env|sim, actor, provenance: {package, index, t}}]',
     'splits': '{train: n, val: n, test: n}',
     'refused': '[{package, reason, detail}]',
-    'excluded': '{revoked_packages, revoked_episodes, duplicate_episodes}',
+    'excluded': '{revoked_packages, revoked_episodes, duplicate_episodes, activity_episodes_out_of_scope}',
     'digest': 'SHA-256 over the canonical manifest without digest - so a card can name the exact manifest it describes',
 }
 
@@ -340,7 +350,7 @@ def restamp(rec):
 GOOD1 = load('contrib/fixture/good.json')
 GOOD2 = load('contrib/fixture/v2/good.json')
 FIXTURES = {}
-m = copy.deepcopy(GOOD2); m['consent']['scope'] = ['agent-training']
+m = copy.deepcopy(GOOD2); m['consent']['scope'] = ['agent-training', ACTIVITY['scope']]
 FIXTURES['v2-agent-only'] = ('consent-scope when built for robot-training; admitted for agent-training', restamp(m))
 m = copy.deepcopy(GOOD1)
 next(e for e in m['dataset']['episodes'] if e['kind'] == 'sim' and 'trace' in e['outcome'])['outcome']['trace'][0]['gauges']['email'] = 'someone@example.org'

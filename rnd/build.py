@@ -1289,10 +1289,13 @@ question(
     'unproved',
     'four hand gestures, 25 joints and every hysteresis band are declared and '
     'proven against synthetic joint positions only; every XR contract is held '
-    'at the source by regex, no session, mocked or real, has been driven in '
-    'this tree, and a mocked-session harness is not claimed. Do they work on '
-    'hardware?',
-    GUIDE, 'UNVERIFIED-ON-HARDWARE', 'a mocked-session harness is not claimed.',
+    'at the source by regex, one seat is driven in a MOCKED session in '
+    'headless Chromium that supplies controllers and no hand input source, '
+    'and no session on a physical headset has been driven in this tree. Do '
+    'they work on hardware?',
+    GUIDE, 'UNVERIFIED-ON-HARDWARE',
+    'so no gesture has been driven in any session, and no session on a '
+    'physical headset has been driven in this tree.',
     'the largest unproved claim in the bundle, and the pack that makes it '
     'says so in its own status line rather than in a footnote. No amount of '
     'passing checks can close this one.')

@@ -14,11 +14,16 @@
 const QUEST_STORE = 'tc-quests';
 const QUEST_KINDS_FINDABLE = ['treasure', 'egg'];
 const QUEST_KONAMI = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-const EVIDENCED_KINDS = ['sim', 'station', 'crib'];
+/* station and crib write a training episode since wave 21 (REF_FIELDS below); only a kind that leaves nothing but a mark in tc-progress would be listed here */
+const EVIDENCED_KINDS = ['sim'];
 /* the reference a step of an episode kind carries, as lessons.json spells it;
    a training episode must equal every one of these AND the lesson's hall */
 const REF_FIELDS = { walkaround: ['sim', 'point'], advisor: ['advisor', 'topic', 'answer_kind'],
-  crew: ['crew', 'role', 'topic', 'answer_kind', 'seat', 'muster'] };
+  crew: ['crew', 'role', 'topic', 'answer_kind', 'seat', 'muster'], walk: ['where'], placard: ['where'],
+  station: ['where', 'station'], crib: ['where', 'crib'] };
+/* wave 20: an episode kind may also declare (training.json#episode_kinds[k]) a names_read_field - the episode field
+   whose value must be one of the step's own names_read - and at_least, a floor on a numeric field (a placard's
+   dwell_ms). Both are read from the registry that declares them, never retyped here. */
 /* an episode kind whose recorded fields do not cover the step's reference can
    never mark a step done; the missing fields are named, not skipped */
 function unmatchableKinds(episodeKinds) {
@@ -27,6 +32,9 @@ function unmatchableKinds(episodeKinds) {
     const fields = episodeKinds && episodeKinds[k] && Array.isArray(episodeKinds[k].fields) ? episodeKinds[k].fields : [];
     const missing = REF_FIELDS[k].filter((f) => !fields.includes(f));
     if (!fields.includes('hall')) missing.push('hall');
+    const ek = episodeKinds && episodeKinds[k] ? episodeKinds[k] : null;
+    if (ek && ek.names_read_field && !fields.includes(ek.names_read_field)) missing.push(ek.names_read_field);
+    if (ek && ek.at_least) for (const f of Object.keys(ek.at_least)) if (!fields.includes(f)) missing.push(f);
     if (missing.length) out[k] = missing;
   }
   return out;
@@ -42,8 +50,13 @@ function episodeEvidence(step, hall, training, meta, skipped) {
     if (!episodeTimeOk(ep)) { if (skipped) skipped.add(ep); continue; }
     if (ep.actor !== undefined && ep.actor !== meta.human_actor) continue;
     if (!REF_FIELDS[step.kind].every((f) => step[f] !== undefined && ep[f] === step[f])) continue;
+    const ek = meta.episode_kinds[step.kind];
+    if (ek.names_read_field && !(Array.isArray(step.names_read) && step.names_read.includes(ep[ek.names_read_field]))) continue;
+    if (ek.at_least && Object.keys(ek.at_least).some((f) => typeof ep[f] !== 'number' || !isFinite(ep[f]) || ep[f] < ek.at_least[f])) continue;
     const ev = { episode: step.kind, t: ep.t, hall };
     for (const f of REF_FIELDS[step.kind]) ev[f] = step[f];
+    if (ek.names_read_field) ev[ek.names_read_field] = ep[ek.names_read_field];
+    if (ek.at_least) for (const f of Object.keys(ek.at_least)) ev[f] = ep[f];
     return ev;
   }
   return null;
@@ -52,8 +65,6 @@ function episodeEvidence(step, hall, training, meta, skipped) {
 function stepEvidence(step, prog, hall, training, meta, skipped) {
   if (step.kind in REF_FIELDS) return episodeEvidence(step, hall, training, meta, skipped);
   const sims = (prog && typeof prog.sims === 'object' && prog.sims) ? prog.sims : {};
-  const tools = (prog && typeof prog.tools === 'object' && prog.tools) ? prog.tools : {};
-  const stations = (prog && Array.isArray(prog.stations)) ? prog.stations : [];
   if (step.kind === 'sim') {
     const rec = Object.prototype.hasOwnProperty.call(sims, step.sim) ? sims[step.sim] : null;
     if (!rec || typeof rec !== 'object') return null;
@@ -69,17 +80,9 @@ function stepEvidence(step, prog, hall, training, meta, skipped) {
     return { sim: step.sim, scenario: step.scenario,
       score: typeof src.score === 'number' ? src.score : null, passed: true };
   }
-  if (step.kind === 'station') {
-    return stations.includes(step.station) ? { station: step.station } : null;
-  }
-  if (step.kind === 'crib') {
-    const rec = Object.prototype.hasOwnProperty.call(tools, step.crib) ? tools[step.crib] : null;
-    if (!rec || typeof rec !== 'object' || rec.passed !== true) return null;
-    return { crib: step.crib, passed: true };
-  }
-  /* walk and placard record nothing anywhere; walkaround, advisor and crew
-     write episodes to the training log, which is not the record this is
-     built from, and the seat-level walkaround tally names no point */
+  /* every other kind writes nothing this function reads: the episode kinds are
+     matched from the training log above, which is not the record this is
+     built from */
   return null;
 }
 

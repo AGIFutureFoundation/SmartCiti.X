@@ -80,7 +80,12 @@ for (const [k, r] of Object.entries(comp.evidence_rule)) {
   const exp = r.class === 'self-reported' ? 'self-reported' : r.class === 'device-mark' ? 'evidenceable' : (r.evidenceable ? 'evidenceable' : 'not-recordable');
   ok(`step kind ${k}: completion class ${r.class} -> ledger ${exp}`, e.completion_class === r.class && e.ledger_class === exp);
 }
-ok('walk and placard are self-reported; the registry says they cannot be evidenced', REG.step_kind_evidence.walk.ledger_class === 'self-reported' && REG.step_kind_evidence.placard.ledger_class === 'self-reported' && REG.honesty.self_reported.includes('cannot be evidenced'));
+ok('walk and placard are evidenceable since wave 20 (episode-backed), no step kind is self-reported, and the registry says a walk or placard episode never says the placard was read',
+  REG.step_kind_evidence.walk.ledger_class === 'evidenceable' && REG.step_kind_evidence.placard.ledger_class === 'evidenceable'
+  && REG.step_kind_evidence.walk.completion_class === 'episode-backed' && REG.step_kind_evidence.placard.completion_class === 'episode-backed'
+  && !Object.values(REG.step_kind_evidence).some((v) => v.ledger_class === 'self-reported')
+  && /no step kind is self-reported today/.test(REG.honesty.self_reported) && /never says the placard was read/.test(REG.honesty.self_reported)
+  && Object.values(REG.halls).every((h) => Object.values(h.rooms).every((r) => /nothing that says the placard was read/.test(r.evidence.why))));
 
 // seats: every axis carries sims.json's rule; gating axes counted
 const sims = readJ(PATHS.sims).sims;
@@ -111,7 +116,7 @@ for (const f of ['compliance/build.py', 'compliance/verify.mjs']) {
 }
 
 // no typed count: the ledger's own totals never appear as literals in the builder or verifier
-const counts = [...new Set(Object.values(REG.rollups).filter((v) => typeof v === 'number' && v > 1).concat(Object.values(c)))];
+const counts = [...new Set(Object.values(REG.rollups).filter((v) => typeof v === 'number' && v > 1).concat(Object.values(c).filter((v) => typeof v === 'number' && v > 1)))];  // a zero count (no self-reported item now) is not a typed figure: 0 and 1 are excluded for every count alike
 for (const f of ['compliance/build.py', 'compliance/verify.mjs']) {
   const src = readFileSync(join(ROOT, f), 'utf8').replace(/#.*|\/\/.*|\/\*[\s\S]*?\*\/|"""[\s\S]*?"""/g, '');
   const typed = counts.filter((v) => new RegExp(`(?<![\\w.])${v}(?![\\w.])`).test(src));
@@ -132,7 +137,40 @@ for (const [file, rule] of Object.entries(REG.fixture.mutants)) {
   ok(`mutant ${file} fails ${rule}`, r.fails.some((f) => f.startsWith(rule + ':')) && r.lines.length === 0);
 }
 
+// the self-reported rule is kept strict even though no kind is self-reported now: declare one in memory (walk, which the
+// fixture completes with an episode) and the rule must bite. REG is restored at once.
+{
+  const keep = REG.step_kind_evidence.walk.ledger_class;
+  REG.step_kind_evidence.walk.ledger_class = 'self-reported';
+  let r;
+  try { r = report(good); } finally { REG.step_kind_evidence.walk.ledger_class = keep; }
+  ok('evidence.self-reported-carries-none still bites: a kind declared self-reported that carries evidence fails by that rule', r.fails.some((f) => f.startsWith('evidence.self-reported-carries-none:')) && r.lines.length === 0);
+}
 // registry mutants: each fails the named rule through checkLedger
+// HONEST: the ledger's evidenced items are split by the strength completion.json declares per kind, read and never typed
+{
+  const CE = readJ(PATHS.completion).evidence_rule;
+  ok('every step kind of the ledger carries the strength completion.json declares for it (walk and placard presence, sim station crib strong, advisor crew walkaround act)',
+    Object.entries(REG.step_kind_evidence).every(([k, v]) => v.strength === CE[k].strength)
+    && REG.step_kind_evidence.walk.strength === 'presence' && REG.step_kind_evidence.placard.strength === 'presence'
+    && REG.step_kind_evidence.sim.strength === 'strong' && REG.step_kind_evidence.advisor.strength === 'act');
+  const by = { strong: 0, act: 0, presence: 0, none: 0 };
+  for (const h of Object.values(REG.halls)) { by.strong += h.seats.length; for (const l of h.lessons) for (const s of l.step_kinds) if (s.ledger_class === 'evidenceable') by[CE[s.kind].strength]++; }
+  ok(`evidenceable items by strength recomputed from the ledger and the declaration (${JSON.stringify(by)}) equal the rollup and sum to the ${REG.rollups.items_by_ledger_class.evidenceable} evidenceable items`,
+    JSON.stringify(REG.rollups.evidenceable_items_by_strength) === JSON.stringify(by) && by.strong + by.act + by.presence + by.none === REG.rollups.items_by_ledger_class.evidenceable);
+  const rep = readFileSync(new URL('./fixture/report.txt', import.meta.url), 'utf8');
+  ok('the report a rep reads prints the strength next to each evidenced step and a totals line that splits evidenced into strong, act and presence, summing to the evidenced total',
+    /step \d+ walk @\S+: evidenced \(presence\)/.test(rep) && /step \d+ sim @\S+: evidenced \(strong\)/.test(rep) && /step \d+ advisor @\S+: evidenced \(act\)/.test(rep)
+    && (() => { const t = rep.match(/totals: (\d+) evidenced/), b = rep.match(/evidenced by strength: (\d+) strong .*?, (\d+) act .*?, (\d+) presence /); return t && b && +b[1] + +b[2] + +b[3] === +t[1]; })()
+    && /evidenced means a device wrote a record, not that the learner understood anything/.test(rep));
+  // the split in the totals line is recounted from the report's own lines: every step line says its strength and each passed seat is a sim (strong)
+  const lines = rep.split('\n');
+  const cnt = (lvl) => lines.filter((l) => l.includes(`: evidenced (${lvl})`)).length;
+  const seatsPassed = lines.filter((l) => /^  seat \S+ \(.*\): passed /.test(l)).length;
+  const bm = rep.match(/evidenced by strength: (\d+) strong .*?, (\d+) act .*?, (\d+) presence /);
+  ok('the strength split in the totals line equals a recount of the report: strong = evidenced sim, station and crib step lines plus the passed seats; act and presence = their step lines',
+    bm !== null && +bm[1] === cnt('strong') + seatsPassed && +bm[2] === cnt('act') && +bm[3] === cnt('presence') && seatsPassed > 0, [String(bm), cnt('strong'), seatsPassed]);
+}
 const mut = {};
 let m = clone(REG);
 { // a PPE item typed into a room whose finishes derive none
@@ -145,6 +183,8 @@ m = clone(REG); m.halls[Object.keys(m.halls)[0]].signoff.claims_signoff = true; 
 m = clone(REG); { const sid = Object.keys(m.seats)[0]; m.seats[sid].axes[0].pass = '>= 50'; mut['rubric-axis-invented-pass'] = ['ledger.rubric', m, sid]; }
 m = clone(REG); m.stamps.finishes = '0000000000000000'; mut['stale-stamp'] = ['ledger.stamps', m, 'finishes'];
 m = clone(REG); m.rollups.halls_signed_off = 1; mut['rollup-typed'] = ['ledger.rollups', m, 'halls_signed_off'];
+m = clone(REG); m.rollups.evidenceable_items_by_strength.strong -= 1; m.rollups.evidenceable_items_by_strength.presence += 1; mut['strength-rollup-moved'] = ['ledger.rollups', m, 'evidenceable_items_by_strength'];
+m = clone(REG); { const h = Object.values(m.halls).find((x) => x.lessons.length); h.lessons[0].step_kinds[0].strength = 'strong'; h.lessons[0].step_kinds[0].ledger_class = 'evidenceable'; mut['step-strength-retyped'] = ['ledger.rollups', m, 'a step kind\'s strength typed in the ledger']; }
 for (const [name, [rule, reg, where]] of Object.entries(mut)) {
   const t = checkLedger(reg, null);
   ok(`registry mutant ${name} (${where}) fails ${rule}: ${t[rule].fails[0]}`, t[rule].fails.length > 0);

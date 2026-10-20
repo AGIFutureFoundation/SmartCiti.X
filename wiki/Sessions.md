@@ -31,17 +31,17 @@ On the pack's own fixture log (*fixture - not a learner*):
 $ node sessions/verify.mjs sessions/fixture/log.json
 input: training export labelled "fixture - not a learner"; gap 1800000 ms (30 minutes is this pack's own choice, not a standard: a seat run here is a few minutes and an exchange is seconds, so half an hour of silence is long enough that a break, a re-read placard or a slow seat entry does not cut one sitting in two, and short enough that an evening and the next morning never merge. It is the ONE declared number in this pack; every other figure is computed from the log)
 ok input.shape: checked 2, failing 0
-ok episode.t: checked 9, failing 0
-ok episode.kind: checked 15, failing 0
+ok episode.t: checked 13, failing 0
+ok episode.kind: checked 19, failing 0
 ok episode.outcome: checked 74, failing 0
 ok sessions.gap: checked 1, failing 0
 ok sessions.claimed: checked 1, failing 0
 ok rollups.claimed: checked 1, failing 0
 session  start                     end                       wall       eps  sim  adv  crew  walk  seats                          traces  could-advance
-      1  2026-09-26T03:00:00.000Z  2026-09-26T03:04:00.000Z   0h04m00s    4    2    1     0     1  airless-sprayer 1/2 best 61.5       1  walkaround,sim,advisor
+      1  2026-09-26T03:00:00.000Z  2026-09-26T03:04:00.000Z   0h04m00s    8    2    1     0     1  airless-sprayer 1/2 best 61.5       1  walk,placard,station,crib,walkaround,sim,advisor
       2  2026-09-26T03:34:01.000Z  2026-09-26T04:04:30.000Z   0h30m29s    3    2    0     1     0  airless-sprayer 1/1 best 55 (+1 scripted)      0  sim,crew
       3  2026-09-26T06:04:30.000Z  2026-09-26T06:06:30.000Z   0h02m00s    2    2    0     0     0  boom-lift 1/2 best 90               0  sim
-rollups: 3 session(s), 9 episode(s), total wall 0h36m29s, longest session #2 at 0h30m29s, 1 trace(s) holding 4 sample(s)
+rollups: 3 session(s), 13 episode(s), total wall 0h36m29s, longest session #2 at 0h30m29s, 1 trace(s) holding 4 sample(s)
 seat time: not recordable - a sim episode carries no duration, so 6 sim episode(s) are counted instead; traced span 0h00m03s is a lower bound from ~1 Hz samples where a trace is attached; scripted sim time 6s is steps x dt of headless reference runs, not the learner's
 seat airless-sprayer: 2/3 passed (67%), longest pass streak 2, current 2, best time 55
 seat boom-lift: 1/2 passed (50%), longest pass streak 1, current 1, best time 90

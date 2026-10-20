@@ -29,5 +29,5 @@ export default {
   "status": "NOT DEPLOYED and OFF by default; tested only against a mocked R2 bucket (datashare/test.mjs)",
   "logs": "nothing: no body, no header, no address"
  },
- "source_stamp": "ebc5ddf1f30546ee"
+ "source_stamp": "ea5a557714602806"
 };

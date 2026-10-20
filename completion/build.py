@@ -74,11 +74,18 @@ HALL_SLUGS = [req(h, 'slug', 'hall') for h in req(HALLS, 'halls', 'halls.json')]
 # ------------------------------------------------------------ evidence rule ---
 # What a done step can be backed by is a property of its KIND, read from the
 # lessons registry. A kind that writes a training episode is 'episode-backed'
-# (the only class this bundle calls evidence-backed). Two silent kinds
-# (station, crib) leave a DEVICE MARK in the local progress record the page
-# keeps - a mark, not a recorded episode - so an export can carry that mark as
-# 'device-mark'. The other two silent kinds leave nothing at all, and a done
-# mark on them is the learner's word: 'self-reported'.
+# (the only class this bundle calls evidence-backed). Station and crib
+# left, until wave 21, a DEVICE MARK in the local progress
+# record the page keeps - a mark, not a recorded episode - so an export could
+# carry that mark as 'device-mark'. Since wave 21 station and crib write a
+# training episode of their own and are episode-backed like every other
+# recording kind, so NO step kind is a device mark today. The class, its
+# evidence shape and the verifier's branch for it stay on purpose, and are
+# inert: they exist so a kind added later that leaves only a mark in
+# tc-progress is classed as exactly that and never as evidence-backed. A silent
+# kind with no mark at all would be 'self-reported'. The tc-progress marks
+# themselves (stations, tools) are still kept for the halls' own HUD and still
+# exported as the record's `stations` and `tools` blocks; they feed no step.
 PROGRESS_RECORD_KINDS = {
     'station': {'evidence': {'station': 'station id'}, 'from': 'tc-progress.stations'},
     'crib': {'evidence': {'crib': 'district', 'passed': 'bool'}, 'from': 'tc-progress.tools[district].passed'},
@@ -98,6 +105,11 @@ for kind, spec in STEP_KINDS.items():
     if records is not None:
         ep_fields = req(req(EPISODE_KINDS, records, 'training.json#episode_kinds'), 'fields', f'episode_kinds.{records}')
         refs = sorted(STEP_REFS[kind] | {'hall'})  # the lesson's hall is a reference of every step
+        # wave 20: an episode that records `where` (the strand id a walk or placard step carries in its own `where`)
+        # makes the step's `where` a reference too, so (hall, where) names one room. Read from training.json, so a
+        # kind whose episode records no `where` (advisor, crew, sim, walkaround) is held to exactly what it was.
+        if 'where' in ep_fields:
+            refs = sorted(set(refs) | {'where'})
         checkable = [f for f in refs if f in ep_fields]
         not_checkable = [f for f in refs if f not in ep_fields]
         if kind == 'sim':
@@ -106,6 +118,16 @@ for kind, spec in STEP_KINDS.items():
         else:
             shape = {'episode': kind, 't': 'ISO-8601 string (the page writes new Date().toISOString()); Date.parse must be finite', **{f: f'the step\'s own {f}, verbatim' for f in checkable}}
             rule = 'step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step\'s own value'
+            if 'names_read_field' in EPISODE_KINDS[records]:
+                shape['room'] = 'one of the step\'s own names_read (the room label as the page draws it)'
+                rule += '; room is one of the step\'s names_read'
+            if 'at_least' in EPISODE_KINDS[records]:
+                shape['dwell_ms'] = 'a finite number at least the declared dwell (training.json#episode_kinds.placard.at_least.dwell_ms)'
+                rule += '; dwell_ms is a finite number no smaller than the declared dwell'
+        if 'names_read_field' in EPISODE_KINDS[records]:
+            assert EPISODE_KINDS[records]['names_read_field'] in ep_fields, f'{records}: names_read_field is not one of its fields'
+        if 'at_least' in EPISODE_KINDS[records]:
+            assert all(f in ep_fields for f in EPISODE_KINDS[records]['at_least']), f'{records}: at_least names a field the episode lacks'
         # evidenceable: every reference the step carries is recorded by its
         # episode. A kind with any unrecorded reference cannot be evidenced by
         # this bundle, so a done step of that kind is refused, not trusted.
@@ -118,6 +140,12 @@ for kind, spec in STEP_KINDS.items():
                                  + ' and '.join(f'no {f}' for f in not_checkable)),
             'evidence_shape': shape, 'episode_fields': ep_fields,
             'checkable': checkable, 'not_checkable': not_checkable,
+            # wave 20, both read from training.json, both enforced by the verifier on top of equality: the room label the
+            # episode records must be one of the step's own names_read; a numeric the episode records must meet the minimum
+            # training.json declares for it (a placard panel left open for at least its dwell). {} / null when the kind
+            # records neither, which is every kind but walk and placard.
+            'names_read_field': req(EPISODE_KINDS[records], 'names_read_field', f'episode_kinds.{records}') if 'names_read_field' in EPISODE_KINDS[records] else None,
+            'at_least': dict(req(EPISODE_KINDS[records], 'at_least', f'episode_kinds.{records}')) if 'at_least' in EPISODE_KINDS[records] else {},
             'not_checkable_why': 'the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them',
             'rule': rule,
         }
@@ -137,6 +165,60 @@ for kind, spec in STEP_KINDS.items():
 
 RECORDING_KINDS = sorted(k for k, r in EVIDENCE_RULE.items() if r['class'] == 'episode-backed')
 SILENT_KINDS = sorted(k for k, r in EVIDENCE_RULE.items() if r['class'] != 'episode-backed')
+
+# ------------------------------------------------------ evidence strength ---
+# HONEST (wave 21 review): "episode-backed" says a device wrote an episode, not how much that episode says. Every
+# episode-backed kind therefore DECLARES a strength here, once, with the reason read off what its episode kind records
+# (training.json#episode_kinds[kind].granularity). Three levels, no more:
+#   strong   - the page GRADES the learner's answer or run against a key or rubric and records only on a pass.
+#   act      - a deliberate act of the learner (a question asked, a point marked) is recorded; nothing is graded.
+#   presence - only that a device saw the walker somewhere or a panel open; the learner need not have done anything.
+# No other level exists, a kind with no declaration stops the build, and a declaration for a kind that is not
+# episode-backed stops it too. Strength changes only what is REPORTED: no verifier rule reads it, nothing that passed
+# fails and nothing that failed passes. The self-reported / device-mark class stays the guard it is.
+STRENGTH_LEVELS = {
+    'strong': 'the page grades the learner\'s answer or run against a key or rubric and writes the episode only on a pass '
+              '(sim, station, crib). Still a device event: it does not say the learner was alone, unaided or did not retry',
+    'act': 'a deliberate act of the learner is recorded and nothing is graded: a fixed question asked, a point marked '
+           '(advisor, crew, walkaround). It says the act happened, not that the answer was understood or the point true',
+    'presence': 'only that a device saw the walker inside a room, or a placard panel left open for its dwell with the '
+                'walker in that room (walk, placard). The learner need not have done anything else',
+}
+EVIDENCE_STRENGTH = {
+    'sim': ('strong', 'a scored run: the seat\'s rubric rows are graded by the sim and the episode records the outcome '
+                      '(passed, rows); the step is held to the seat and scenario it names'),
+    'station': ('strong', 'a graded answer: the episode is written only when the station quiz is answered with the '
+                          'correct option, checked by the page against the station\'s own key. Wrong picks tried first '
+                          'are not recorded, so a quiz can be passed by trying every option'),
+    'crib': ('strong', 'a graded check: the episode is written only when the district crib check is finished with every '
+                       'pick right (picks at least the declared number). A failed run records nothing, so retries '
+                       'before the pass are invisible'),
+    'advisor': ('act', 'one fixed topic asked of the advisor and answered from a record or the advisor registry; '
+                       'nothing about the learner is graded - it records the question, not that the answer was understood'),
+    'crew': ('act', 'one fixed topic asked of one crew role while the seat ran; nothing is graded - it records the '
+                    'question, not that the answer was understood'),
+    'walkaround': ('act', 'one point marked by the learner; the sims registry itself says a point is not a score and not '
+                          'a gate, so this is a tick, not a graded outcome'),
+    'walk': ('presence', 'the walker\'s position entered the rectangle of one room; no path, no dwell, no act'),
+    'placard': ('presence', 'a placard panel stayed open for its dwell while the walker stood in the room; it does '
+                            'not say the placard was read'),
+}
+_ep_kinds = set(RECORDING_KINDS)
+if set(EVIDENCE_STRENGTH) != _ep_kinds:
+    raise KeyError('evidence strength: declared for ' + ', '.join(sorted(set(EVIDENCE_STRENGTH) - _ep_kinds) or ['(nothing extra)'])
+                   + ' but missing for ' + ', '.join(sorted(_ep_kinds - set(EVIDENCE_STRENGTH)) or ['(nothing)'])
+                   + ': every episode-backed step kind declares a strength, and only those')
+for _k, (_lvl, _why) in EVIDENCE_STRENGTH.items():
+    if _lvl not in STRENGTH_LEVELS:
+        raise KeyError(f'evidence strength: {_k} declares {_lvl!r}, not one of {sorted(STRENGTH_LEVELS)}')
+    if not _why.strip():
+        raise KeyError(f'evidence strength: {_k} declares no reason')
+for kind, r in EVIDENCE_RULE.items():
+    if kind in EVIDENCE_STRENGTH:
+        r['strength'], r['strength_why'] = EVIDENCE_STRENGTH[kind]
+    else:
+        r['strength'], r['strength_why'] = 'none', 'no episode is recorded for this class, so there is no evidence to grade'
+STRENGTH_KINDS = {lvl: sorted(k for k, (l, _w) in EVIDENCE_STRENGTH.items() if l == lvl) for lvl in STRENGTH_LEVELS}
 
 # ------------------------------------------------------------- per lesson ---
 PER_LESSON = {}
@@ -161,10 +243,27 @@ for lid, L in LESSON_MAP.items():
         'episode_backed_steps': by['episode-backed'],
         'device_mark_steps': by['device-mark'],
         'self_reported_steps': by['self-reported'],
+        'strong_steps': sum(1 for s in steps if s['kind'] in STRENGTH_KINDS['strong']),
+        'act_steps': sum(1 for s in steps if s['kind'] in STRENGTH_KINDS['act']),
+        'presence_steps': sum(1 for s in steps if s['kind'] in STRENGTH_KINDS['presence']),
         'needs': sorted(e['needs'] for e in LADDER if e['lesson'] == lid),
     }
     tot_rec += by['episode-backed']
     tot_silent += by['device-mark'] + by['self-reported']
+for _p in PER_LESSON.values():
+    _p['strongest'] = 'strong' if _p['strong_steps'] else 'act' if _p['act_steps'] else 'presence' if _p['presence_steps'] else 'none'
+    _p['every_step_strong'] = _p['steps'] > 0 and _p['strong_steps'] == _p['steps']
+STRENGTH_COUNTS = {
+    'steps_strong': sum(p['strong_steps'] for p in PER_LESSON.values()),
+    'steps_act': sum(p['act_steps'] for p in PER_LESSON.values()),
+    'steps_presence': sum(p['presence_steps'] for p in PER_LESSON.values()),
+    'lessons_every_step_strong': sum(1 for p in PER_LESSON.values() if p['every_step_strong']),
+    'lessons_with_a_strong_step': sum(1 for p in PER_LESSON.values() if p['strongest'] == 'strong'),
+    'lessons_strongest_act': sum(1 for p in PER_LESSON.values() if p['strongest'] == 'act'),
+    'lessons_presence_only': sum(1 for p in PER_LESSON.values() if p['strongest'] == 'presence'),
+}
+if STRENGTH_COUNTS['steps_strong'] + STRENGTH_COUNTS['steps_act'] + STRENGTH_COUNTS['steps_presence'] != tot_rec:
+    raise AssertionError('evidence strength: the strength split does not sum to the recording steps')
 counts = req(LESSONS, 'counts', 'lessons.json')
 assert tot_rec == req(counts, 'recording_steps', 'counts'), 'recording step count drifted from lessons.json'
 assert tot_silent == req(counts, 'silent_steps', 'counts'), 'silent step count drifted from lessons.json'
@@ -201,8 +300,10 @@ HONESTY = {
         'who the learner is: identity.claimed is typed by the person, attested by this device only, and nothing checks it - unless a wallet signed, in which case it is the identity of a key, not of a person; a stolen key signs just as well',
         'anything on any blockchain: a wallet signature is computed in the browser and carried in the file; nothing is written to any chain, nothing is anchored, and no one can look it up',
         'that the device was honest: a record can be written by hand and will verify if it is internally consistent',
-        'that a self-reported step (walk, placard) happened at all',
-        'a station or crib mark is a device-local mark, not a recorded episode',
+        'that a walk or placard episode means more than it says: it records that a device saw the walker\'s position inside a room, or a placard panel left open for its dwell with the walker in that room - not that anyone read, understood or took on what the placard requires, and not that the room exists outside this bundle',
+        'that a self-reported step happened at all (no step kind is self-reported today; the rule stays so one that is added cannot carry evidence it does not have)',
+        'that a station or crib episode means more than it says: it records that a device saw a correct pick on a station quiz, or a crib check finished with every pick right - not that the checklist was read, that the pick was not found by trying every option, that anything was learned or that the learner can name the tools. The marks in tc-progress (the record\'s `stations` and `tools` blocks) are device-local marks the halls keep for their own HUD; they feed no step',
+        'that every episode-backed step is equally strong evidence: of the step kinds, sim, station and crib are graded by the page (strong), advisor, crew and walkaround record a deliberate act with nothing graded (act), and walk and placard record only presence in a room (presence). A lesson counted as fully verifiable by episode may hold presence and act steps alone; the summary a verifier prints splits the steps by strength, and none of this changes what verifies',
         'that the seat was passed under supervision, or that any score means anything outside this bundle',
         'any accreditation, ticket, licence or credential; no hall, employer or authority has signed anything',
         'any duration of training, and no price is claimed',
@@ -324,7 +425,29 @@ def stamp_digest(record):
 # Computed, so a lesson that stops being completable drops out by itself.
 ROOT_LESSON = next(lid for lid, p in PER_LESSON.items() if p['completable'] and not p['needs'])
 NEXT_LESSON = next(lid for lid, p in PER_LESSON.items() if p['completable'] and p['needs'] == [ROOT_LESSON])
-COMPLETE = [ROOT_LESSON, NEXT_LESSON]
+# Since the crew episode records `seat` and `muster` (training/), a lesson that
+# holds a crew step is completable too, and the fixture proves that path with a
+# done crew step: the first completable lesson with a crew step that needs
+# nothing. Computed, not named.
+CREW_LESSON = next(lid for lid, p in PER_LESSON.items()
+                   if p['completable'] and not p['needs'] and lid != ROOT_LESSON
+                   and any(st['kind'] == 'crew' for st in LESSON_MAP[lid]['steps']))
+COMPLETE = [ROOT_LESSON, NEXT_LESSON, CREW_LESSON]
+# wave 20: the fixture also completes one lesson that holds a placard step (first completable, needs nothing, not already in)
+if not any(st['kind'] == 'placard' for lid in COMPLETE for st in LESSON_MAP[lid]['steps']):
+    COMPLETE.append(next(lid for lid, p in PER_LESSON.items()
+                         if p['completable'] and not p['needs'] and lid not in COMPLETE
+                         and any(st['kind'] == 'placard' for st in LESSON_MAP[lid]['steps'])))
+# wave 21: and one lesson that holds a station step and one that holds a crib step, so the fixture proves both new kinds
+for _kind in ('station', 'crib'):
+    if not any(st['kind'] == _kind for lid in COMPLETE for st in LESSON_MAP[lid]['steps']):
+        COMPLETE.append(next(lid for lid, p in PER_LESSON.items()
+                             if p['completable'] and not p['needs'] and lid not in COMPLETE
+                             and any(st['kind'] == _kind for st in LESSON_MAP[lid]['steps'])))
+STATION_LESSON = next(lid for lid in COMPLETE if any(st['kind'] == 'station' for st in LESSON_MAP[lid]['steps']))
+CRIB_LESSON = next(lid for lid in COMPLETE if any(st['kind'] == 'crib' for st in LESSON_MAP[lid]['steps']))
+PLACARD_LESSON = next(lid for lid in COMPLETE if any(st['kind'] == 'placard' for st in LESSON_MAP[lid]['steps']))
+WALK_LESSON = next(lid for lid in COMPLETE if any(st['kind'] == 'walk' for st in LESSON_MAP[lid]['steps']))
 PARTIAL = {'scaffold-read-the-tag': 2}  # first N steps done, the rest not
 for lid in COMPLETE:
     assert PER_LESSON[lid]['completable'], f'fixture: {lid} is not completable'
@@ -339,14 +462,15 @@ def evidence_for(step, done, hall):
     if kind == 'sim':
         n_gated = sum(1 for a in SIM_RULES[step['sim']]['rubric_axes'] if a['pass'] != 'informational')
         return {'sim': step['sim'], 'scenario': step['scenario'], 'score': n_gated, 'passed': True}
-    if kind == 'station':
-        return {'station': step['station']}
-    if kind == 'crib':
-        return {'crib': step['crib'], 'passed': True}
-    if kind in ('walkaround', 'advisor', 'crew'):
+    if kind in RECORDING_KINDS and kind != 'sim':
         ev = {'episode': kind, 't': f'{BUILT}T03:00:{step["n"]:02d}.000Z'}
         for f in EVIDENCE_RULE[kind]['checkable']:
             ev[f] = hall if f == 'hall' else step[f]
+        if EVIDENCE_RULE[kind]['names_read_field']:
+            ev[EVIDENCE_RULE[kind]['names_read_field']] = step['names_read'][0]
+        for f, minimum in EVIDENCE_RULE[kind]['at_least'].items():
+            # a placard's dwell sits above its floor; a crib's picks sit exactly at it (every pick right)
+            ev[f] = minimum + 250 if f == 'dwell_ms' else minimum
         return ev
     return None
 
@@ -456,14 +580,157 @@ def mutants(good):
     st['evidence']['t'] = 'yesterday'
     out['episode-t-unparseable'] = ('step.episode-evidence', stamp_digest(m))
 
+    # the crew step is held to every reference it carries, seat and muster
+    # included. A wrong value fails the episode-evidence rule; an episode that
+    # lacks the field altogether (what the crew episode wrote before it
+    # recorded them) is refused as a missing field, the verifier's fail-closed
+    # reading, never defaulted. Each breaks exactly one rule.
+    for name, how in (('crew-done-wrong-seat', 'wrong'), ('crew-done-wrong-muster', 'wrong'),
+                      ('crew-done-no-seat', 'drop'), ('crew-done-no-muster', 'drop')):
+        field = 'seat' if name.endswith('seat') else 'muster'
+        m = copy.deepcopy(good)
+        crew_n = next(st['n'] for st in LESSON_MAP[CREW_LESSON]['steps'] if st['kind'] == 'crew')
+        entry = next(x for x in find_lesson(m, CREW_LESSON)['steps'] if x['step'] == crew_n)
+        assert entry['done'] and entry['evidence'][field], f'fixture: the crew step must be done with a {field}'
+        if how == 'wrong':
+            entry['evidence'][field] = 'not-the-' + field
+        else:
+            del entry['evidence'][field]
+        out[name] = ('step.episode-evidence' if how == 'wrong' else 'record.fields', stamp_digest(m))
+
+    # wave 20: walk and placard are held to the room they name and, for a placard, to the dwell. Each breaks exactly one rule.
+    def step_entry(m, lid, kind):
+        n = next(st['n'] for st in LESSON_MAP[lid]['steps'] if st['kind'] == kind)
+        entry = next(x for x in find_lesson(m, lid)['steps'] if x['step'] == n)
+        assert entry['done'] and entry['evidence'], f'fixture: the {kind} step of {lid} must be done with evidence'
+        return entry
+
     m = copy.deepcopy(good)
-    crew_lid, crew_step = next((lid, st) for lid, L in LESSON_MAP.items() for st in L['steps'] if st['kind'] == 'crew')
-    entry = next(x for x in find_lesson(m, crew_lid)['steps'] if x['step'] == crew_step['n'])
-    entry['done'] = True
-    entry['evidence'] = {'episode': 'crew', 't': f'{BUILT}T03:00:{crew_step["n"]:02d}.000Z', 'hall': LESSON_MAP[crew_lid]['hall'],
-                         'crew': crew_step['crew'], 'role': crew_step['role'], 'topic': crew_step['topic'],
-                         'answer_kind': crew_step['answer_kind']}
-    out['crew-done-unrecordable'] = ('step.episode-evidence', stamp_digest(m))
+    e = step_entry(m, WALK_LESSON, 'walk')
+    e['evidence']['where'] = 'not-a-strand' if e['evidence']['where'] != 'not-a-strand' else 'safety'
+    out['walk-done-wrong-room'] = ('step.episode-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, WALK_LESSON, 'walk')
+    e['evidence']['room'] = 'Somewhere Else'
+    out['walk-done-wrong-room-label'] = ('step.episode-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, WALK_LESSON, 'walk')
+    del e['evidence']['where']
+    out['walk-done-no-where'] = ('record.fields', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, WALK_LESSON, 'walk')
+    e['evidence']['episode'] = 'placard'
+    out['walk-done-as-placard'] = ('step.episode-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, PLACARD_LESSON, 'placard')
+    e['evidence']['dwell_ms'] = EVIDENCE_RULE['placard']['at_least']['dwell_ms'] - 1
+    out['placard-done-dwell-too-short'] = ('step.episode-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, PLACARD_LESSON, 'placard')
+    e['evidence']['dwell_ms'] = '9999'
+    out['placard-done-dwell-not-a-number'] = ('step.episode-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, PLACARD_LESSON, 'placard')
+    del e['evidence']['dwell_ms']
+    out['placard-done-no-dwell'] = ('record.fields', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, PLACARD_LESSON, 'placard')
+    e['evidence']['hall'] = next(h for h in HALL_SLUGS if h != e['evidence']['hall'])
+    out['placard-done-wrong-hall'] = ('step.episode-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, PLACARD_LESSON, 'placard')
+    e['evidence'] = None
+    out['placard-done-without-evidence'] = ('step.recording-evidence', stamp_digest(m))
+
+    # wave 21: station and crib are held to the station / district they name, to the room, the name the step lists and,
+    # for a crib, to every pick right. Each breaks exactly one rule.
+    m = copy.deepcopy(good)
+    e = step_entry(m, STATION_LESSON, 'station')
+    e['evidence']['station'] = next(i for i in STATION_IDS if i != e['evidence']['station'])
+    out['station-done-wrong-station'] = ('step.episode-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, STATION_LESSON, 'station')
+    e['evidence']['station_name'] = 'Some Other Station'
+    out['station-done-wrong-station-name'] = ('step.episode-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, STATION_LESSON, 'station')
+    e['evidence']['where'] = 'not-a-strand'
+    out['station-done-wrong-room'] = ('step.episode-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, STATION_LESSON, 'station')
+    e['evidence']['hall'] = next(h for h in HALL_SLUGS if h != e['evidence']['hall'])
+    out['station-done-wrong-hall'] = ('step.episode-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, STATION_LESSON, 'station')
+    e['evidence']['episode'] = 'walk'
+    out['station-done-as-walk'] = ('step.episode-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, STATION_LESSON, 'station')
+    del e['evidence']['station']
+    out['station-done-no-station'] = ('record.fields', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, STATION_LESSON, 'station')
+    e['evidence'] = {'station': e['evidence']['station']}   # the old device mark: not an episode, no longer enough
+    out['station-done-device-mark-only'] = ('record.fields', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, STATION_LESSON, 'station')
+    e['evidence'] = None
+    out['station-done-without-evidence'] = ('step.recording-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, CRIB_LESSON, 'crib')
+    e['evidence']['crib'] = next(d for d in CRIB_MAP if d != e['evidence']['crib'])
+    out['crib-done-wrong-district'] = ('step.episode-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, CRIB_LESSON, 'crib')
+    e['evidence']['crib_name'] = 'Some Other Crib'
+    out['crib-done-wrong-crib-name'] = ('step.episode-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, CRIB_LESSON, 'crib')
+    e['evidence']['picks'] = EVIDENCE_RULE['crib']['at_least']['picks'] - 1
+    out['crib-done-picks-too-few'] = ('step.episode-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, CRIB_LESSON, 'crib')
+    e['evidence']['picks'] = str(EVIDENCE_RULE['crib']['at_least']['picks'])
+    out['crib-done-picks-not-a-number'] = ('step.episode-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, CRIB_LESSON, 'crib')
+    del e['evidence']['picks']
+    out['crib-done-no-picks'] = ('record.fields', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, CRIB_LESSON, 'crib')
+    e['evidence']['where'] = 'safety'
+    out['crib-done-wrong-room'] = ('step.episode-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, CRIB_LESSON, 'crib')
+    e['evidence'] = {'crib': e['evidence']['crib'], 'passed': True}   # the old device mark: not an episode, no longer enough
+    out['crib-done-device-mark-only'] = ('record.fields', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    e = step_entry(m, CRIB_LESSON, 'crib')
+    e['evidence'] = None
+    out['crib-done-without-evidence'] = ('step.recording-evidence', stamp_digest(m))
 
     m = copy.deepcopy(good)
     m['lessons'].append({'lesson': 'no-such-lesson', 'hall': HALL_SLUGS[0], 'complete': False, 'steps': []})
@@ -509,14 +776,26 @@ registry = {
     'signature': SIGNATURE_RULE,
     'evidence_classes': {
         'episode-backed': 'the step kind records a training episode; only this class is called evidence-backed',
-        'device-mark': 'station or crib: a mark in the device-local progress record, not a recorded episode',
-        'self-reported': 'walk or placard: no mark at all; done is the learner\'s word',
+        'device-mark': 'no step kind today (station and crib were device marks until wave 21 and now write episodes): a mark in the device-local progress record, not a recorded episode. The class and the verifier branch for it stay, inert, so a kind added later that leaves only a mark cannot be called evidence-backed',
+        'self-reported': 'no step kind today (walk and placard recorded nothing before wave 20 and now write episodes): done would be the learner\'s word. The class and its rules stay, so a kind added with no record cannot carry evidence it does not have',
+    },
+    'evidence_strength': {
+        'levels': STRENGTH_LEVELS,
+        'kinds': STRENGTH_KINDS,
+        'by_kind': {k: {'strength': l, 'why': w} for k, (l, w) in EVIDENCE_STRENGTH.items()},
+        'reported_only': 'strength is reported next to every total and read by no verifier rule: it changes what a summary '
+                         'says, never what passes. An episode-backed step is still only a device event; the self-reported / '
+                         'device-mark classes stay the guard they were',
+        'headline': 'a lesson counted as fully verifiable by episode may rest on presence and act steps alone; '
+                    'lessons_with_a_strong_step says how many hold at least one graded step, lessons_every_step_strong '
+                    'how many hold nothing else',
     },
     'evidence_rule': EVIDENCE_RULE,
     'recording_kinds': RECORDING_KINDS,
     'silent_kinds': SILENT_KINDS,
     'counts': {
         'lessons': len(PER_LESSON),
+        **STRENGTH_COUNTS,
         'recording_steps': tot_rec,
         'silent_steps': tot_silent,
         'episode_backed_steps': sum(p['episode_backed_steps'] for p in PER_LESSON.values()),

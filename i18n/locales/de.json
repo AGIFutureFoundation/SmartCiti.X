@@ -324,6 +324,8 @@
   "wilds.legend": "Minikarte: orange Quadrate sind Arbeitsstellen; ein umrandetes Quadrat hat simulierte Aufgaben.",
   "wilds.flora_honesty": "Bodenflora: AUTHORED Platzierung allgemein benannter Pflanzen nach Biom – keine Erhebung, keine Artenkarte und keine Zählung.",
   "wilds.side_quest": "Nebenquest",
+  "modlink.practice": "Übungsmodul",
+  "wilds.practice_module": "Übungsmodul",
   "wilds.toast.cache": "Du hast ein Versteck gefunden. Das Questbuch ist mit dieser Seite noch nicht verbunden, daher wird nichts gespeichert.",
   "wilds.toast.trailhead": "Du hast das Buch am Wegbeginn unterschrieben. Das Questbuch ist mit dieser Seite noch nicht verbunden, daher wird nichts gespeichert.",
   "wilds.not_on_globe": "Nicht auf dem Globus",

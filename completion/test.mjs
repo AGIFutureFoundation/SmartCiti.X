@@ -139,13 +139,42 @@ ok('every silent kind carries the reason lessons.json gives for writing nothing'
   reg.silent_kinds.every((k) => reg.evidence_rule[k].why_no_episode === lessonsReg.step_kinds[k].why_no_episode));
 ok('the recording / silent step counts equal those of lessons.json',
   reg.counts.recording_steps === lessonsReg.counts.recording_steps && reg.counts.silent_steps === lessonsReg.counts.silent_steps);
-ok('station and crib are device-mark, walk and placard self-reported, and neither is called evidence-backed',
-  reg.evidence_rule.station.class === 'device-mark' && reg.evidence_rule.crib.class === 'device-mark'
-  && reg.evidence_rule.walk.class === 'self-reported' && reg.evidence_rule.placard.class === 'self-reported'
-  && /not a recorded episode/.test(reg.evidence_classes['device-mark'])
+const trainingReg0 = read('../training/registry/training.json');
+ok('walk and placard are episode-backed since wave 20, station and crib since wave 21: every kind is episode-backed, none is a device mark or self-reported, and both classes stay declared (inert) so a kind added with only a mark cannot be called evidence-backed',
+  ['walk', 'placard', 'station', 'crib'].every((k) => reg.evidence_rule[k].class === 'episode-backed' && reg.evidence_rule[k].records === k)
+  && reg.silent_kinds.length === 0 && reg.counts.silent_steps === 0 && reg.counts.device_mark_steps === 0
+  && !Object.values(reg.evidence_rule).some((r) => r.class === 'self-reported' || r.class === 'device-mark')
+  && /no step kind today/.test(reg.evidence_classes['self-reported'])
+  && /no step kind today/.test(reg.evidence_classes['device-mark']) && /not a recorded episode/.test(reg.evidence_classes['device-mark'])
+  && /inert/.test(reg.evidence_classes['device-mark'])
   && /only this class is called evidence-backed/.test(reg.evidence_classes['episode-backed']));
-ok('honesty says a station or crib mark is a device-local mark, not a recorded episode',
-  reg.honesty.does_not_prove.includes('a station or crib mark is a device-local mark, not a recorded episode'));
+ok('a walk or placard step is matched on the hall and the step\'s own where (the strand, so one room), read from training.json: both episodes record where and room, and the rule says so',
+  ['walk', 'placard'].every((k) => trainingReg0.episode_kinds[k].fields.includes('where') && trainingReg0.episode_kinds[k].fields.includes('room')
+    && reg.evidence_rule[k].checkable.includes('where') && reg.evidence_rule[k].checkable.includes('hall')
+    && reg.evidence_rule[k].names_read_field === 'room' && reg.evidence_rule[k].not_checkable.length === 0 && reg.evidence_rule[k].evidenceable === true)
+  && /room is one of the step's names_read/.test(reg.evidence_rule.walk.rule));
+ok('a placard step is held to the declared dwell: at_least.dwell_ms is training.json#episode_kinds.placard.at_least.dwell_ms, the one truth step_episodes also reads (read, not typed) and walk is held to no floor',
+  reg.evidence_rule.placard.at_least.dwell_ms === trainingReg0.episode_kinds.placard.at_least.dwell_ms && trainingReg0.episode_kinds.placard.at_least.dwell_ms === trainingReg0.step_episodes.placard.dwell_ms && trainingReg0.step_episodes.placard.dwell_ms > 0
+  && Object.keys(reg.evidence_rule.walk.at_least).length === 0
+  && ['advisor', 'crew', 'sim', 'walkaround'].every((k) => reg.evidence_rule[k].names_read_field === null && Object.keys(reg.evidence_rule[k].at_least).length === 0));
+ok('every walk and placard step of every lesson carries a where that names a strand, and every one has exactly one name in names_read (the room)',
+  Object.values(lessonsReg.lessons).flatMap((L) => L.steps).filter((s) => s.kind === 'walk' || s.kind === 'placard')
+    .every((s) => typeof s.where === 'string' && Array.isArray(s.names_read) && s.names_read.length === 1));
+ok('honesty says what a station or crib episode does not mean, and that the tc-progress marks are device-local and feed no step',
+  reg.honesty.does_not_prove.some((x) => /station or crib episode means more than it says/.test(x) && /not that the checklist was read/.test(x)
+    && /found by trying every option/.test(x) && /feed no step/.test(x)));
+ok('a station step is matched on the hall, the step\'s where (the strand of its bench) and its station id, a crib step on the hall, where (tools) and its district, both read from training.json; names are one of names_read; the crib is floored at the declared picks',
+  trainingReg0.episode_kinds.station.fields.includes('station') && trainingReg0.episode_kinds.crib.fields.includes('crib')
+  && ['station', 'crib'].every((k) => ['hall', 'where', k].every((f) => reg.evidence_rule[k].checkable.includes(f))
+    && reg.evidence_rule[k].not_checkable.length === 0 && reg.evidence_rule[k].evidenceable === true)
+  && reg.evidence_rule.station.names_read_field === 'station_name' && reg.evidence_rule.crib.names_read_field === 'crib_name'
+  && Object.keys(reg.evidence_rule.station.at_least).length === 0
+  && reg.evidence_rule.crib.at_least.picks === trainingReg0.episode_kinds.crib.at_least.picks
+  && trainingReg0.episode_kinds.crib.at_least.picks === read('../tools/registry/toolcribs.json').drill.picks);
+ok('every station and crib step of every lesson carries the ids its episode records and names_read holds the display name its episode records first',
+  Object.values(lessonsReg.lessons).flatMap((L) => L.steps).filter((s) => s.kind === 'station' || s.kind === 'crib')
+    .every((s) => typeof s.where === 'string' && (s.kind === 'station' ? typeof s.station === 'string' : s.where === 'tools' && typeof s.crib === 'string')
+      && Array.isArray(s.names_read) && s.names_read.length >= 2));
 ok('per lesson, the episode-backed, device-mark and self-reported counts sum to the lesson\'s steps',
   Object.entries(reg.lessons).every(([lid, p]) => p.episode_backed_steps + p.device_mark_steps + p.self_reported_steps === p.steps
     && p.recording_steps === p.episode_backed_steps
@@ -191,6 +220,70 @@ ok('the honest summary prints all three counts: episode-backed, device-mark and 
   && goodRun.summary.nSelfReported === good.lessons.filter((l) => l.complete)
     .flatMap((l) => l.steps).filter((s) => s.done && reg.evidence_rule[s.kind].class === 'self-reported').length);
 
+// ---- evidence strength by kind (HONEST): declared in the registry, reported next to every total, read by no rule ----
+const VV = await import('./verify.mjs');
+const STR = reg.evidence_strength;
+const recKinds = Object.keys(lessonsReg.step_kinds).filter((k) => lessonsReg.step_kinds[k].records !== null);
+ok('every episode-backed step kind declares exactly one strength (strong, act or presence) with a reason, and no other kind does',
+  JSON.stringify(Object.keys(STR.by_kind).sort()) === JSON.stringify(recKinds.slice().sort())
+  && Object.keys(STR.levels).sort().join() === 'act,presence,strong'
+  && Object.values(STR.by_kind).every((d) => d.strength in STR.levels && typeof d.why === 'string' && d.why.length > 20)
+  && recKinds.every((k) => reg.evidence_rule[k].strength === STR.by_kind[k].strength && reg.evidence_rule[k].strength_why === STR.by_kind[k].why)
+  && JSON.stringify(Object.values(STR.kinds).flat().sort()) === JSON.stringify(recKinds.slice().sort()));
+ok('walk and placard are presence and never strong; sim, station and crib are strong because the page grades them; advisor, crew and walkaround are act (nothing graded)',
+  STR.by_kind.walk.strength === 'presence' && STR.by_kind.placard.strength === 'presence'
+  && ['sim', 'station', 'crib'].every((k) => STR.by_kind[k].strength === 'strong')
+  && ['advisor', 'crew', 'walkaround'].every((k) => STR.by_kind[k].strength === 'act')
+  && /trying every option/.test(STR.by_kind.station.why) && /retries/.test(STR.by_kind.crib.why) && /not a score and not a gate/.test(STR.by_kind.walkaround.why));
+const stepsOf = (L) => lessonsReg.lessons[L].steps;
+ok('per lesson, strong + act + presence steps sum to the lesson\'s steps and strongest / every_step_strong recompute from lessons.json',
+  Object.entries(reg.lessons).every(([lid, p]) => {
+    const c = { strong: 0, act: 0, presence: 0 };
+    for (const st of stepsOf(lid)) c[STR.by_kind[st.kind].strength]++;
+    return p.strong_steps === c.strong && p.act_steps === c.act && p.presence_steps === c.presence
+      && c.strong + c.act + c.presence === p.steps
+      && p.strongest === (c.strong ? 'strong' : c.act ? 'act' : 'presence')
+      && p.every_step_strong === (c.strong === p.steps);
+  }));
+ok('the registry counts steps by strength and lessons by strongest step, recomputed from the lessons, and they sum to the recording steps and the lessons',
+  reg.counts.steps_strong + reg.counts.steps_act + reg.counts.steps_presence === reg.counts.recording_steps
+  && reg.counts.steps_strong === Object.values(reg.lessons).reduce((a, p) => a + p.strong_steps, 0)
+  && reg.counts.lessons_with_a_strong_step === Object.values(reg.lessons).filter((p) => p.strong_steps > 0).length
+  && reg.counts.lessons_every_step_strong === Object.values(reg.lessons).filter((p) => p.strong_steps === p.steps).length
+  && reg.counts.lessons_with_a_strong_step + reg.counts.lessons_strongest_act + reg.counts.lessons_presence_only === reg.counts.lessons);
+{
+  const doneBy = (lvl) => good.lessons.filter((l) => l.complete).flatMap((l) => l.steps)
+    .filter((s) => s.done && reg.evidence_rule[s.kind].strength === lvl).length;
+  const sm = goodRun.summary;
+  ok('the verifier summary splits the episode-backed steps by strength, the split sums to the total, and it matches a recount of the fixture',
+    sm.byStrength.strong === doneBy('strong') && sm.byStrength.act === doneBy('act') && sm.byStrength.presence === doneBy('presence')
+    && sm.byStrength.strong + sm.byStrength.act + sm.byStrength.presence === sm.nEpisode
+    && sm.nLessonsStrong === good.lessons.filter((l) => l.complete && l.steps.some((s) => reg.evidence_rule[s.kind].strength === 'strong')).length);
+  const line = VV.completionCore(Object.fromEntries(Object.entries(VV.REGISTRY_FILES).map(([k, p]) => [k, read('../' + p)]))).report(goodRun)
+    .map((l) => l.text).find((t) => t.startsWith('summary:'));
+  ok('the summary line a rep reads first prints the split next to the total: strong (graded), act (nothing graded) and presence, each with the kinds the registry lists, and the lessons holding a strong step',
+    new RegExp(`${sm.nEpisode} episode-backed steps, of which ${sm.byStrength.strong} strong \\(graded: crib, sim, station\\), ${sm.byStrength.act} act \\(.*advisor, crew, walkaround\\) and ${sm.byStrength.presence} presence \\(.*placard, walk\\)`).test(line)
+    && line.includes(`${sm.nLessonsStrong} of those lessons hold at least one strong step`));
+  // the strength is REPORTED, never decided: a registry that omits it or names an unknown level stops the verifier, and a
+  // reclassified kind moves only the summary split, never a rule result
+  const regsOf = () => Object.fromEntries(Object.entries(VV.REGISTRY_FILES).map(([k, p]) => [k, read('../' + p)]));
+  const runWith = (edit) => { const r = regsOf(); edit(r.completion); try { return { res: VV.completionCore(r).verify(good, (x) => createHash('sha256').update(Buffer.from(x, 'utf8')).digest('hex'), () => null) }; } catch (e) { return { err: e.message }; } };
+  const noStrength = runWith((c) => { delete c.evidence_rule.walk.strength; });
+  ok('a registry whose walk rule lost its strength stops the verifier by name (fail closed: no default strength)',
+    noStrength.err !== undefined && /evidence_rule\.walk lacks "strength"/.test(noStrength.err));
+  const badLevel = runWith((c) => { c.evidence_rule.walk.strength = 'strongest'; });
+  ok('a registry that gives a kind an unknown strength level stops the verifier by name',
+    badLevel.err !== undefined && /is not strong, act or presence/.test(badLevel.err));
+  const base = runWith(() => {});
+  const moved = runWith((c) => { c.evidence_rule.walk.strength = 'strong'; });
+  const walkDone = good.lessons.filter((l) => l.complete).flatMap((l) => l.steps).filter((s) => s.done && s.kind === 'walk').length;
+  const fails = (r) => Object.entries(r.res.tally).map(([k, t]) => k + ':' + t.fails.length).join();
+  ok('reclassifying a kind changes the reported split and nothing a rule decides: the tally is identical, only byStrength moves',
+    base.res !== undefined && moved.res !== undefined && fails(base) === fails(moved)
+    && moved.res.summary.byStrength.strong === base.res.summary.byStrength.strong + walkDone
+    && moved.res.summary.byStrength.presence === base.res.summary.byStrength.presence - walkDone && walkDone > 0);
+}
+
 const mutants = Object.entries(reg.fixture.mutants);
 ok('the builder wrote at least six mutants, each naming the rule it must fail', mutants.length >= 6
   && mutants.every(([, rule]) => reg.verifier.rules.includes(rule)));
@@ -200,7 +293,13 @@ ok('the on-disk signature mutants are there: a typed-in string, a wrong scheme, 
     .every((f) => reg.fixture.mutants[f] === 'identity.signature'));
 ok('the required mutations are among them, including episode-wrong-kind and episode-wrong-point',
   REQUIRED.every((r) => mutants.some(([, rule]) => rule === r))
-  && ['fixture/mutant-episode-wrong-kind.json', 'fixture/mutant-episode-wrong-point.json', 'fixture/mutant-crew-done-unrecordable.json', 'fixture/mutant-episode-t-unparseable.json'].every((f) => reg.fixture.mutants[f] === 'step.episode-evidence'));
+  && ['fixture/mutant-episode-wrong-kind.json', 'fixture/mutant-episode-wrong-point.json', 'fixture/mutant-crew-done-wrong-seat.json', 'fixture/mutant-crew-done-wrong-muster.json', 'fixture/mutant-episode-t-unparseable.json'].every((f) => reg.fixture.mutants[f] === 'step.episode-evidence')
+  && ['fixture/mutant-crew-done-no-seat.json', 'fixture/mutant-crew-done-no-muster.json'].every((f) => reg.fixture.mutants[f] === 'record.fields'));
+ok('the walk and placard mutants are among them, each naming the rule it must fail',
+  ['walk-done-wrong-room', 'walk-done-wrong-room-label', 'walk-done-as-placard', 'placard-done-dwell-too-short', 'placard-done-dwell-not-a-number', 'placard-done-wrong-hall']
+    .every((n) => reg.fixture.mutants[`fixture/mutant-${n}.json`] === 'step.episode-evidence')
+  && ['walk-done-no-where', 'placard-done-no-dwell'].every((n) => reg.fixture.mutants[`fixture/mutant-${n}.json`] === 'record.fields')
+  && reg.fixture.mutants['fixture/mutant-placard-done-without-evidence.json'] === 'step.recording-evidence');
 const trainingReg = read('../training/registry/training.json');
 ok('per recording kind, checkable and not-checkable step references are read from training.json episode fields',
   reg.recording_kinds.every((k) => {
@@ -215,8 +314,24 @@ ok('evidenceable per recording kind recomputes from lessons.json step references
     for (const L of Object.values(lessonsReg.lessons)) for (const st of L.steps) if (st.kind === k) for (const f of Object.keys(st)) if (!STEP_META.has(f)) refs.add(f);
     const ep = trainingReg.episode_kinds[lessonsReg.step_kinds[k].records].fields;
     return [...refs].every((f) => ep.includes(f)) === reg.evidence_rule[k].evidenceable;
-  }) && reg.evidence_rule.crew.evidenceable === false && /no muster and no seat|no seat and no muster/.test(reg.evidence_rule.crew.evidenceable_why)
-  && ['advisor', 'walkaround', 'sim'].every((k) => reg.evidence_rule[k].evidenceable === true));
+  }) && ['advisor', 'walkaround', 'sim', 'crew'].every((k) => reg.evidence_rule[k].evidenceable === true));
+ok('a crew step is evidenceable and held to seat and muster: both are fields of the crew episode, both are checkable, none is not-checkable',
+  trainingReg.episode_kinds.crew.fields.includes('seat') && trainingReg.episode_kinds.crew.fields.includes('muster')
+  && reg.evidence_rule.crew.checkable.includes('seat') && reg.evidence_rule.crew.checkable.includes('muster')
+  && reg.evidence_rule.crew.not_checkable.length === 0
+  && reg.evidence_rule.crew.evidence_shape.seat && reg.evidence_rule.crew.evidence_shape.muster
+  && Object.values(lessonsReg.lessons).flatMap((L) => L.steps).filter((s) => s.kind === 'crew')
+    .every((s) => reg.evidence_rule.crew.checkable.every((f) => f === 'hall' || f in s)));
+ok('every lesson is completable now and none is blocked: the count is derived from the evidence rule, and no step kind is non-evidenceable',
+  reg.counts.lessons_completable === reg.counts.lessons && reg.counts.lessons_not_completable === 0
+  && Object.values(reg.lessons).every((p) => p.completable && p.not_completable_why === null)
+  && reg.recording_kinds.every((k) => reg.evidence_rule[k].evidenceable === true));
+ok('the fixture has a crew step done with an episode carrying the step\'s own crew, role, topic, answer_kind, seat and muster',
+  good.lessons.some((l) => l.complete && l.steps.some((s) => {
+    const st = lessonsReg.lessons[l.lesson].steps.find((k) => k.n === s.step);
+    return s.kind === 'crew' && s.done && s.evidence.episode === 'crew' && s.evidence.hall === l.hall
+      && ['crew', 'role', 'topic', 'answer_kind', 'seat', 'muster'].every((f) => st[f] !== undefined && s.evidence[f] === st[f]);
+  })));
 ok('a lesson is completable exactly when none of its steps is of a non-evidenceable kind, and the count is derived',
   Object.entries(reg.lessons).every(([lid, p]) => p.completable
     === lessonsReg.lessons[lid].steps.every((st) => reg.evidence_rule[st.kind].class !== 'episode-backed' || reg.evidence_rule[st.kind].evidenceable))
@@ -228,6 +343,18 @@ ok('the fixture has a walkaround step done with a matching episode (kind, ISO-86
   good.lessons.some((l) => l.steps.some((s) => s.kind === 'walkaround' && s.done && s.evidence.episode === 'walkaround'
     && typeof s.evidence.t === 'string' && Number.isFinite(Date.parse(s.evidence.t)) && s.evidence.hall === l.hall
     && s.evidence.point === lessonsReg.lessons[l.lesson].steps.find((k) => k.n === s.step).point)));
+ok('the fixture completes a lesson with a walk step and a lesson with a placard step, each done with its episode: where, room from names_read, and for a placard a dwell at the floor or above',
+  ['walk', 'placard'].every((k) => good.lessons.some((l) => l.complete && l.steps.some((s) => {
+    const st = lessonsReg.lessons[l.lesson].steps.find((q) => q.n === s.step);
+    return s.kind === k && s.done && s.evidence.episode === k && s.evidence.hall === l.hall && s.evidence.where === st.where
+      && st.names_read.includes(s.evidence.room) && (k === 'walk' || s.evidence.dwell_ms >= reg.evidence_rule.placard.at_least.dwell_ms);
+  }))));
+ok('the fixture completes a lesson with a station step and a lesson with a crib step, each done with its episode: where, id, the name from names_read, and for a crib every pick right',
+  ['station', 'crib'].every((k) => good.lessons.some((l) => l.complete && l.steps.some((s) => {
+    const st = lessonsReg.lessons[l.lesson].steps.find((q) => q.n === s.step);
+    return s.kind === k && s.done && s.evidence.episode === k && s.evidence.hall === l.hall && s.evidence.where === st.where && s.evidence[k] === st[k]
+      && st.names_read.includes(s.evidence[k + '_name']) && (k === 'station' || s.evidence.picks >= reg.evidence_rule.crib.at_least.picks);
+  }))));
 for (const [file, rule] of mutants) {
   const m = read('./' + file);
   let failedRules;

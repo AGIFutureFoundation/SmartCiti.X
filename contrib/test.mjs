@@ -64,12 +64,29 @@ ok('the training source is training.json#storage.key, its cap, and the export_fo
   && JSON.stringify(reg.training_source.export_format_this_wraps) === JSON.stringify(trainingReg.export_format)
   && reg.honesty.no_agent_trained === trainingReg.export_format.no_agent_trained
   && reg.honesty.anonymous === trainingReg.honesty.anonymous);
-ok('consent: a fixed statement, exactly two declared scopes (agent-training, robot-training), ONE licence with an SPDX id and a why, revocable true with what that means',
+ok('consent: a fixed statement, exactly three declared scopes (agent-training, robot-training and the separate lesson-activity), ONE licence with an SPDX id and a why, revocable true with what that means',
   typeof reg.consent.statement === 'string' && reg.consent.statement.length > 80
-  && JSON.stringify(Object.keys(reg.consent.scopes).sort()) === JSON.stringify(['agent-training', 'robot-training'])
+  && JSON.stringify(Object.keys(reg.consent.scopes).sort()) === JSON.stringify(['agent-training', 'lesson-activity', 'robot-training'])
   && /^[A-Za-z0-9.-]+$/.test(reg.consent.license.spdx) && reg.consent.license.why.length > 80 && /never per record/.test(reg.consent.license.why)
   && reg.consent.revocable === true && /keeps the file/.test(reg.consent.revocable_means) && /Nothing here is uploaded/.test(reg.consent.revocable_means)
   && reg.consent.recorder_consent === trainingReg.honesty.consent);
+// HONEST: movement, dwell, quiz picks and tool picks are not scenario ids, control schemes or measured outcomes. They travel
+// only under a separately named scope whose text says so plainly, and a package that carries them without it is refused.
+{
+  const ACT = reg.consent.activity;
+  const act = Object.keys(trainingReg.episode_kinds).filter((k) => reg.episode_kinds[k].requires_scope !== null);
+  ok('the activity scope is separate and named plainly: walk, placard, station and crib require lesson-activity, every other kind requires nothing, and the scope text says room movement, dwell times, quiz picks and tool picks',
+    ACT.scope === 'lesson-activity' && ACT.phrase === 'room movement, dwell times, quiz picks and tool picks'
+    && JSON.stringify(act.sort()) === JSON.stringify(['crib', 'placard', 'station', 'walk']) && JSON.stringify(ACT.kinds) === JSON.stringify(act)
+    && act.every((k) => reg.episode_kinds[k].requires_scope === 'lesson-activity' && reg.episode_kinds[k].requires_scope_why.length > 20)
+    && Object.keys(trainingReg.episode_kinds).filter((k) => !act.includes(k)).every((k) => reg.episode_kinds[k].requires_scope === null)
+    && reg.consent.scopes['lesson-activity'].includes(ACT.phrase) && /without this scope a package carries none of them/.test(reg.consent.scopes['lesson-activity']));
+  ok('the consent statement every package carries no longer claims only scenario ids, control schemes and measured outcomes: it names the advisor, crew and walkaround picks and says movement, dwell, quiz and tool picks travel only if consent.scope names lesson-activity',
+    reg.consent.statement.includes(ACT.phrase) && reg.consent.statement.includes('only if consent.scope names lesson-activity')
+    && /advisor topics, crew questions and walkaround points/.test(reg.consent.statement) && !/it carries scenario ids, control schemes and measured outcomes, and the/.test(reg.consent.statement));
+  ok('the registry says each activity kind is carried only under that scope, in honesty and in the consent block (the dataset rule too)',
+    reg.honesty.proves.some((x) => /walk, placard, station or crib/.test(x) && /lesson-activity/.test(x)) && /otherwise the verifier fails consent\.scope/.test(ACT.rule) && /dataset itself is built for the lesson-activity scope/.test(ACT.dataset_rule));
+}
 ok('the digest rule is SHA-256 over canonical JSON of every field except digest, with contributor.signature forced to null, and says why',
   reg.digest.alg === 'SHA-256' && /keys sorted recursively, no whitespace, UTF-8/.test(reg.digest.over)
   && /contributor\.signature forced to null/.test(reg.digest.over) && /OVER the digest, made after it/.test(reg.digest.excludes_signature_why)
@@ -134,7 +151,7 @@ ok('the fixture\'s counts are what the verifier recomputes: episodes by kind, tr
   && good.dataset.traces_attached === run.summary.traces && JSON.stringify(good.dataset.sims_covered) === JSON.stringify(run.summary.sims)
   && run.summary.samples === good.dataset.episodes.filter((e) => e.kind === 'sim' && e.outcome.trace).reduce((s, e) => s + e.outcome.trace.length, 0)
   && JSON.stringify(reg.fixture.episodes) === JSON.stringify(good.dataset.episode_counts_by_kind));
-ok('the fixture\'s consent is the registry\'s: statement verbatim, both scopes, the one licence, revocable, a granted_at that parses',
+ok('the fixture\'s consent is the registry\'s: statement verbatim, every scope, the one licence, revocable, a granted_at that parses',
   good.consent.statement === reg.consent.statement && JSON.stringify(good.consent.scope) === JSON.stringify(Object.keys(reg.consent.scopes).sort())
   && good.consent.license === reg.consent.license.spdx && good.consent.revocable === true && Number.isFinite(Date.parse(good.consent.granted_at)));
 ok('every sim, scenario, hall and campus the fixture names resolves in sims.json, halls.json and campuses.json',
@@ -161,7 +178,10 @@ ok('mutant bad-digest is refused by the digest rule before anything else is beli
 {
   const r = spawnSync(process.execPath, [fileURLToPath(url('./verify.mjs')), fileURLToPath(url('./fixture/good.json'))], { encoding: 'utf8' });
   ok('the CLI on the fixture exits 0, prints counts (episodes by kind, traces, samples, sims covered) and the honest last line',
-    r.status === 0 && /^summary: 6 episodes \(advisor 1, crew 1, sim 3, walkaround 1\), 1 trace\(s\) attached holding 4 samples, 2 sim\(s\) covered/m.test(r.stdout)
+    r.status === 0 && (() => { const eps = JSON.parse(readFileSync(fileURLToPath(url('./fixture/good.json')), 'utf8')).dataset.episodes, by = {};
+      for (const e of eps) by[e.kind] = (e.kind in by ? by[e.kind] : 0) + 1;
+      const kinds = Object.keys(by).sort().map((k) => k + ' ' + by[k]).join(', ');
+      return r.stdout.includes('summary: ' + eps.length + ' episodes (' + kinds + '), 1 trace(s) attached holding 4 samples, 2 sim(s) covered'); })()
     && r.stdout.trim().split('\n').pop() === LAST_LINE, [r.stdout.split('\n').slice(-3).join(' | ')]);
 }
 
@@ -194,12 +214,42 @@ const otherKey = JSON.parse(JSON.stringify(signed)); otherKey.contributor.signat
 const badMsg = JSON.parse(JSON.stringify(signed)); badMsg.contributor.signature.message += ' '; badMsg.contributor.signature.sig = signPersonal(key.d, badMsg.contributor.signature.message);
 const swapped = JSON.parse(JSON.stringify(signed)); swapped.contributor.signature.address = other.address; swapped.contributor.claimed = other.address; swapped.digest.hex = digestOf(swapped);
 const wrongScheme = JSON.parse(JSON.stringify(signed)); wrongScheme.contributor.signature.scheme = 'eip712-typed-data';
-const scopeAfter = JSON.parse(JSON.stringify(signed)); scopeAfter.consent.scope = ['agent-training']; scopeAfter.digest.hex = digestOf(scopeAfter);
+const scopeAfter = JSON.parse(JSON.stringify(signed)); scopeAfter.consent.scope = ['agent-training', 'lesson-activity']; scopeAfter.digest.hex = digestOf(scopeAfter);
 ok('and it is refused by name when tampered: one bit flipped, another key, another message, the address swapped, the wrong scheme - each fails contributor.signature alone',
   [bitFlip, otherKey, badMsg, swapped, wrongScheme].every((r) => failsBy(r).join() === 'contributor.signature'),
   [bitFlip, otherKey, badMsg, swapped, wrongScheme].map((r) => failsBy(r).join()));
 ok('a consent scope narrowed AFTER signing (digest restamped) fails contributor.signature: the scope is inside the signed message',
   failsBy(scopeAfter).join() === 'contributor.signature', [failsBy(scopeAfter).join()]);
+// HONEST (mutation-proved): drop the scope and each activity kind alone is refused by consent.scope and by nothing else; with the
+// scope, or with those episodes left out, the same package verifies on every rule
+{
+  const restamp = (m) => {
+    const by = {};
+    for (const e of m.dataset.episodes) by[e.kind] = (by[e.kind] || 0) + 1;
+    m.dataset.episode_counts_by_kind = Object.fromEntries(Object.keys(by).sort().map((k) => [k, by[k]]));
+    m.digest.hex = digestOf(m); return m; };
+  const withoutScope = (m) => { m.consent.scope = m.consent.scope.filter((x) => x !== 'lesson-activity'); return m; };
+  for (const kind of ['walk', 'placard', 'station', 'crib']) {
+    const m = JSON.parse(JSON.stringify(good));
+    m.dataset.episodes = m.dataset.episodes.filter((e) => e.kind === kind || !['walk', 'placard', 'station', 'crib'].includes(e.kind));
+    restamp(withoutScope(m));
+    const f = failsBy(m);
+    const m2 = JSON.parse(JSON.stringify(m)); m2.consent.scope = [...m2.consent.scope, 'lesson-activity'].sort(); restamp(m2);
+    ok(`a package with a ${kind} episode and no lesson-activity scope fails consent.scope and nothing else; the same package with the scope verifies on every rule`,
+      f.join() === 'consent.scope' && failsBy(m2).length === 0, [f.join(), failsBy(m2).join()]);
+  }
+  const noAct = JSON.parse(JSON.stringify(good));
+  noAct.dataset.episodes = noAct.dataset.episodes.filter((e) => !['walk', 'placard', 'station', 'crib'].includes(e.kind));
+  restamp(withoutScope(noAct));
+  ok('a default package (sim, advisor, crew, walkaround episodes only, no lesson-activity scope) verifies on every rule: the activity scope is only required by the kinds that need it',
+    failsBy(noAct).length === 0 && noAct.dataset.episodes.length === good.dataset.episodes.filter((e) => !['walk', 'placard', 'station', 'crib'].includes(e.kind)).length, [failsBy(noAct).join()]);
+  const V = await import('./verify.mjs');
+  const regs = Object.fromEntries(Object.entries(V.REGISTRY_FILES).map(([k, p]) => [k, JSON.parse(readFileSync(fileURLToPath(url('../' + p)), 'utf8'))]));
+  const lost = JSON.parse(JSON.stringify(regs)); delete lost.contrib.episode_kinds.walk.requires_scope;
+  let thrown = null; try { V.contribCore(lost).verify(good, (x) => createHash('sha256').update(Buffer.from(x, 'utf8')).digest('hex'), () => null); } catch (e) { thrown = e.message; }
+  ok('a contrib registry that loses a kind\'s requires_scope stops the verifier by name instead of defaulting it to no scope (fail closed)',
+    thrown !== null && /episode_kinds\.walk lacks "requires_scope"/.test(thrown), [String(thrown)]);
+}
 const edited = JSON.parse(JSON.stringify(signed)); edited.dataset.traces_attached = 0; edited.dataset.episodes[1].outcome = { passed: true, rows: [] };
 const restamped = JSON.parse(JSON.stringify(edited)); restamped.digest.hex = digestOf(restamped);
 ok('an episode edited under a valid signature fails digest (the bytes moved); restamping the digest to hide it moves the failure to contributor.signature (the signed message names the old digest)',

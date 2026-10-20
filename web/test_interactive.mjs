@@ -176,6 +176,10 @@ ok(`[registry] lessons/steps counts recompute (${Object.keys(LESSONS).length} le
   const counts = new Set([Object.keys(LESSONS).length, nSteps, EDGES.length, C_COUNTS.lessons_completable,
     C_COUNTS.lessons_not_completable, C_COUNTS.episode_backed_steps, C_COUNTS.device_mark_steps,
     C_COUNTS.self_reported_steps, C_COUNTS.recording_steps, C_COUNTS.silent_steps].map(String));
+  /* a count that is zero (no lesson is blocked once the crew episode records seat and muster) cannot be told
+     from the literal 0 in `=== 0`, `i = 0` and `[0]`, so it is not a typed-figure candidate; the blocked
+     figure is still held by section 5, which recomputes it per lesson from evidence_rule */
+  counts.delete('0');
   const fnBody = (name) => {
     const i = JS.indexOf(`function ${name}(`);
     if (i < 0) return null;

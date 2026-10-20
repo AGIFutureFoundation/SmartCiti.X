@@ -150,6 +150,7 @@ const GAUGES_ENUMERATED = need(TRACE_RULE, 'gauge_fields_enumerated', 'contrib.j
 const CONSENT_RULE = need(reg, 'consent', 'contrib.json');
 const CONSENT_STATEMENT = need(CONSENT_RULE, 'statement', 'contrib.json#consent');
 const SCOPES = Object.keys(need(CONSENT_RULE, 'scopes', 'contrib.json#consent'));
+const ACTIVITY_PHRASE = need(need(CONSENT_RULE, 'activity', 'contrib.json#consent'), 'phrase', 'contrib.json#consent.activity');
 const LICENSE = need(need(CONSENT_RULE, 'license', 'contrib.json#consent'), 'spdx', 'contrib.json#consent.license');
 const SIMS = need(simsReg, 'sims', 'sims.json');
 const HALL_SLUGS = new Set(need(hallsReg, 'halls', 'halls.json').map((h) => need(h, 'slug', 'hall')));
@@ -415,6 +416,12 @@ function verify(record, sha256hex, recoverAddress) {
     if (isWorld) { worldEpisode(ep, kind, w, check); continue; }
     if (!(kind in EPISODE_KINDS)) continue;
     const want = EPISODE_KINDS[kind].fields;
+    // HONEST: movement, dwell, quiz and tool picks travel only under the scope that names them (contrib.json#consent.activity)
+    const needScope = need(need(REG_KINDS, kind, 'contrib.json#episode_kinds'), 'requires_scope', `contrib.json#episode_kinds.${kind}`);
+    if (needScope !== null) {
+      check('consent.scope', Array.isArray(scope) && scope.includes(needScope),
+        `${w} (${kind}): a ${kind} episode carries ${ACTIVITY_PHRASE}, so consent.scope must name ${needScope}; it names ${JSON.stringify(scope)}`);
+    }
     const conditional = need(REG_KINDS[kind], 'conditional_fields', `contrib.json#episode_kinds.${kind}`);
     const have = Object.keys(ep);
     for (const f of have) check('episode.fields', want.includes(f), `${w} (${kind}): carries ${JSON.stringify(f)}, which a ${kind} episode does not record`);

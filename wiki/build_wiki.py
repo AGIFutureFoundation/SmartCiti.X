@@ -1234,6 +1234,21 @@ cross-checked on every build. This pack cites it; it does not claim it.
 |---|---|---|---|
 {krows}
 
+## Walk and placard episodes: a position and a panel, nothing more
+
+Two kinds exist so a lesson's walk and placard steps can be matched to something a
+device recorded instead of the learner's word. A `walk` episode is one event: the
+walker's own position entered the rectangle of a room a lesson names as a walk target
+({training['step_episodes']['walk']['recorded_for']}). A `placard` episode is one event: that
+room's placard panel stayed open, with the walker still in the room, for at least
+**{training['step_episodes']['placard']['dwell_ms']} ms** — {training['step_episodes']['placard']['dwell_why']}
+Opened by {training['step_episodes']['placard']['opened_by']}.
+
+- **De-duplicated.** {training['step_episodes']['dedupe']}
+- **Probes record nothing.** {training['step_episodes']['headless']}
+- **Proves.** {training['step_episodes']['proves']}.
+- **Does not prove.** {training['step_episodes']['does_not_prove']}.
+
 ## Who drove the seat: `actor`, and the SCRIPTED tier
 
 A `sim` episode names its actor. `human` is a learner at the keys — every
@@ -3802,6 +3817,8 @@ def page_completion_record():
     shown, argv, inputs = cmd_completion()
     rules = ' · '.join(f'`{r}`' for r in R['verifier']['rules'])
     c = R['counts']
+    _blocked = sorted(k for k, v in R['evidence_rule'].items() if v['class'] == 'episode-backed' and not v['evidenceable'])
+    blocked_why = ('a ' + ', '.join(_blocked) + ' step is of a kind its episode does not fully record') if _blocked else 'no step kind is blocked'
     return f'''# The completion record
 
 A completion record is a `{R["record_tag"]}` file a learner exports from the
@@ -3832,8 +3849,25 @@ the learner's device.
 
 `{R["verifier"]["run"]}` applies {len(R["verifier"]["rules"])} rules: {rules}.
 Of the registry's {c["lessons"]} lessons, {c["lessons_completable"]} can be
-completed from recorded evidence and {c["lessons_not_completable"]} cannot (a
-crew step no single device can record).
+completed from recorded evidence and {c["lessons_not_completable"]} cannot ({blocked_why}).
+A lesson is blocked only by a recording step whose episode lacks a reference the
+step carries; the crew episode records the crew's seat and muster, so a crew
+step is held to both.
+
+## How strong the evidence is
+
+An episode-backed step says a device wrote an episode, not that every episode
+says the same. The registry declares a strength per step kind, and the verifier
+prints the split next to its total: **strong** (graded by the page:
+{", ".join(f"`{k}`" for k in R["evidence_strength"]["kinds"]["strong"])}),
+**act** (a question asked or a point marked, nothing graded:
+{", ".join(f"`{k}`" for k in R["evidence_strength"]["kinds"]["act"])}) and
+**presence** (a device saw a room or an open panel:
+{", ".join(f"`{k}`" for k in R["evidence_strength"]["kinds"]["presence"])}). Of the
+{c["lessons"]} lessons, {c["lessons_with_a_strong_step"]} hold at least one strong
+step and {c["lessons_every_step_strong"]} hold nothing else; the other
+{c["lessons_strongest_act"] + c["lessons_presence_only"]} rest on acts and presence alone.
+The split changes what is reported, never what verifies.
 
 ## Check it offline
 
@@ -3943,6 +3977,11 @@ they read first, and keeps as a file: this bundle sends it nowhere.
 3. **Choose the scopes** you share for - {len(con["scopes"])} of them:
 
 {scopes}
+
+   {up_first(con["activity"]["phrase"])} (the {", ".join(f"`{k}`" for k in con["activity"]["kinds"])} episodes) are not
+   scenario ids, control schemes or measured outcomes, so they leave the device
+   only in a package whose scope names `{con["activity"]["scope"]}`; without it the
+   page leaves them out of the file and the verifier refuses a package that carries them.
 
 4. **Accept the licence**: {con["license"]["name"]} (`{con["license"]["spdx"]}`),
    one licence for every package.
@@ -4103,8 +4142,10 @@ bundle's own registries require of a hall and its rooms beside what a
 3. **Read each hall the record touches**: its hazards, every room's required
    protective equipment and placard, the record's lessons step by step, the
    seats, and the hall's sign-off status.
-4. **Read the class on every line** - {cls}. A walk or placard step is the
-   learner's word and is reported as such.
+4. **Read the class on every line** - {cls}. A walk or placard step is
+   evidenced only as a device event - a walker's position in the room, or a
+   placard panel left open for its dwell with the walker in the room - and the
+   report never says the placard was read or its requirements met.
 5. **Read the totals line and the last line.** The ledger names no
    jurisdiction; a real deployment brings its own.
 
