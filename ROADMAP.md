@@ -626,6 +626,12 @@ commit cannot name its own sha.
    land meshes of streamed-out parishes keep a stale relief patch in memory
    (not drawn); the audit judges in-scene meshes only, and the stale patch is
    an open item.
+   The default stays off by decision, after one `eval_parishes --part=1` run
+   each way on an idle machine (load 0.5 off, 2.5 on): with relief on, the
+   worst row (22051 border) costs 316.7 ms against 266.7 ms off, and that row
+   is over its 166.6 ms limit either way; the flat-ground rows, which judge the
+   default page, would have to hand the default to the newer rule. Revisit
+   when the 22051 border row passes with relief off.
 8. **Walk and placard steps record episodes** — *shipped, the landing after
    `d8094b8`.* A walk episode when the walker enters a room a lesson names, a
    placard episode when its panel stays open for its dwell; both matched by
