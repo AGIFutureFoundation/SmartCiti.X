@@ -24,3 +24,9 @@ await p.selectOption('#flySel', 'oakland'); await p.waitForTimeout(9000);
 await p.waitForTimeout(3000); const after = await p.evaluate(() => window.__geomap());
 console.log(JSON.stringify({ before, after: after.hillshade, zoom: after.zoom, center: after.center, reqs, errs }));
 if (shot) await p.screenshot({ path: shot }); await b.close();
+// the round reads rc and FAIL lines, so a page error or a hillshade that never loads must fail the run
+const fail = (why) => { console.log(`FAIL geomap_probe: ${why}`); process.exitCode = 1; };
+if (errs.length) fail(`${errs.length} page error(s)`);
+if (!reqs.length) fail('no hillshade file was requested after the fly');
+if (!(after.hillshade && after.hillshade.added && after.hillshade.added.length)) fail('no hillshade layer was added after the fly');
+if (!process.exitCode) console.log('  ok geomap_probe: hillshade loaded after the fly, no page errors');

@@ -80,7 +80,7 @@ for (const s of SCRIPTS.filter((x) => x.endsWith('.sh'))) {
   const r = spawnSync('bash', ['-n', join(ROOT, s)], { encoding: 'utf8' });
   check(r.status === 0, `${s} parses as bash`);
 }
-const BAD = [new RegExp('/t' + 'mp\\b'), new RegExp('scratch' + 'pad', 'i'), new RegExp('claude' + '-0'), new RegExp('\\$S' + 'P\\b'), new RegExp('/home' + '/user'), new RegExp('/o' + 'pt/')];
+const BAD = [new RegExp('/t' + 'mp\\b'), new RegExp('scratch' + 'pad', 'i'), new RegExp('claude' + '-0', 'i'), new RegExp('/r' + 'oot/'), new RegExp('/U' + 'sers/'), new RegExp('\\$S' + 'P\\b'), new RegExp('/home' + '/user'), new RegExp('/o' + 'pt/')];
 const toolFiles = walk('tools', 3).filter((f) => !/\.(json|png|jpg)$/.test(f));
 check(toolFiles.length > 5, `scanned ${toolFiles.length} files under tools/ for machine-local paths`);
 for (const f of toolFiles) {
@@ -91,9 +91,12 @@ for (const f of toolFiles) {
 const ROUND = text('tools/landing/browser_round.sh');
 check(/CHROMIUM_LOCK/.test(ROUND) && /flock 9/.test(ROUND) && /flock -u 9/.test(ROUND), 'browser_round.sh takes and releases one chromium lock around every run');
 check(/\$\{TMPDIR:\?/.test(ROUND), 'browser_round.sh refuses to guess a lock path: TMPDIR or CHROMIUM_LOCK must be set');
-check(/^\. "\$RUNS"$/m.test(ROUND) && /kill \$SRV/.test(ROUND), 'browser_round.sh sources the runs file and stops its own server by PID');
+check(/^\. "\$RUNS"$/m.test(ROUND) && /^trap 'kill "\$SRV"[^']*' EXIT INT TERM$/m.test(ROUND), 'browser_round.sh sources the runs file and stops its own server by PID on every exit path');
+check(/Serving HTTP/.test(ROUND) && /kill -0 "\$SRV"/.test(ROUND) && !/^sleep \d+$/m.test(ROUND), 'browser_round.sh waits until its own server says it is serving, and stops if it never binds');
+check(!/mkdir -p \$O|cd \$T|>>? ?\$O|>\$LOCK|timeout \$to/.test(ROUND), 'browser_round.sh quotes the tree, outdir and lock paths, so a path with a space stays one word');
 const RUNS = text('tools/landing/browser_runs.sh').split('\n').filter((l) => l.startsWith('run '));
 check(RUNS.length >= 8, `the default round has ${RUNS.length} run lines`);
+check(RUNS.every((l) => !/\$[BTO]\b/.test(l.replace(/"[^"]*"/g, ''))), 'every run line quotes its $B, $T and $O');
 for (const l of RUNS) {
   const w = l.split(/\s+/);
   check(/^\d+$/.test(w[2]) && Number(w[2]) <= 900, `run ${w[1]}: a numeric timeout of at most 900 s`);

@@ -13,6 +13,10 @@ const check = (cond, m) => { if (cond) ok(m); else { fails++; console.log('FAIL 
 const sha = (p) => createHash('sha256').update(readFileSync(p)).digest('hex');
 
 const REG = JSON.parse(readFileSync(join(HERE, 'registry', 'media.json'), 'utf8'));
+// Text may not carry links either; binaries are scanned without the link pattern, since a container
+// format may legitimately name a schema URL, and with a key pattern long enough not to fire on noise.
+const LEAK = /rk_|https?:\/\/|\/tmp|claude|anthropic|scratch/i;
+const LEAK_BYTES = /rk_[0-9a-f]{16}|\/tmp\/|\/home\/|\/root\/|scratchpad|claude|anthropic/i;
 const SHOTS = JSON.parse(readFileSync(join(HERE, 'shots.json'), 'utf8'));
 const LIB = JSON.parse(readFileSync(join(HERE, 'library.json'), 'utf8'));
 const stampSrc = Buffer.concat(['shots.json', 'record.mjs', 'encode.py', 'build.py', 'library.json']
@@ -106,6 +110,8 @@ for (const s of REG.stills) {
   check(existsSync(join(ROOT, s.source.page)) && s.caption.length > 30 && !/\n/.test(s.caption) && s.caption.includes(s.source.page),
     `still ${s.id}: a one-line caption naming its page ${s.source.page}, which exists`);
   check(b && b.length < 200 * 1024, `still ${s.id}: ${b && b.length} bytes is under 200 KB`);
+  check(!LEAK.test(s.caption), `still ${s.id}: the caption holds no key, link, internal path or model name`);
+  check(b && !LEAK_BYTES.test(b.toString('latin1')), `still ${s.id}: the image bytes (metadata included) hold no key, internal path or model name`);
 }
 const EX = REG.explainer;
 check(EX && EX.provenance === EXPLAINER_SENTENCE && LIB.explainer.provenance === EXPLAINER_SENTENCE,
@@ -126,7 +132,10 @@ check(isJpeg(readFileSync(join(ROOT, EX.files.poster.path))) && pdim[0] === 1280
 const caps = readFileSync(join(ROOT, EX.files.captions.path), 'utf8');
 const capLines = caps.split('\n').filter((x) => x.trim());
 check(capLines.length === EX.caption_lines && capLines.length >= 10, `explainer: the captions file carries ${capLines.length} lines, as registered`);
-check(!/rk_|https?:\/\/|\/tmp|claude|anthropic|scratch/i.test(caps), 'explainer: the captions hold no key, link, internal path or model name');
+check(!LEAK.test(caps), 'explainer: the captions hold no key, link, internal path or model name');
+for (const kind of ['mp4', 'poster']) {
+  check(!LEAK_BYTES.test(readFileSync(join(ROOT, EX.files[kind].path)).toString('latin1')), `explainer ${kind}: the bytes (metadata included) hold no key, internal path or model name`);
+}
 check(/No AI model/.test(caps) && /unverified general practice/.test(caps) && /not partners or affiliates/.test(caps),
   'explainer: the captions carry the standing honesty lines (no AI model, unverified practice, not partners)');
 check(EX.figures_note.includes('not refreshed'), 'explainer: says its spoken figures are those of the capture commit, not refreshed');

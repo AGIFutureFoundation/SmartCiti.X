@@ -165,16 +165,16 @@ a timeout and a command, and `$B` is the local base URL.
 
 | Run | Timeout | Command |
 |---|---|---|
-| `smoke` | 900 s | `node web/smoke.mjs --base=$B --root=$T` |
-| `test_robotics` | 180 s | `node web/test_robotics.mjs --browser=$B/web` |
-| `test_hudkit` | 180 s | `env HUD_BASE=$B/web/ node web/test_hudkit.mjs --browser` |
-| `relief_parish` | 120 s | `node web/eval_relief.mjs $B/web/trade_craft_parishes.html --name=parish` |
-| `relief_bay` | 120 s | `node web/eval_relief.mjs $B/web/trade_craft_bay.html --name=bay` |
-| `eval_parishes` | 240 s | `env PARISHES_URL=$B/web/trade_craft_parishes.html node web/eval_parishes.mjs` |
-| `eval_bayworld` | 180 s | `env BAY_URL=$B/web/trade_craft_bay.html node web/eval_bayworld.mjs` |
-| `eval_wilds` | 180 s | `env WILDS_URL=$B/web/trade_craft_wilds.html node web/eval_wilds.mjs` |
-| `geomap_probe` | 90 s | `node tools/landing/geomap_hillshade_probe.mjs $B/web/trade_craft_geomap.html $O/geomap.png` |
-| `eval_styles` | 600 s | `node web/eval_styles.mjs --base=$B --root=$T` |
+| `smoke` | 900 s | `node web/smoke.mjs "--base=$B" "--root=$T"` |
+| `test_robotics` | 180 s | `node web/test_robotics.mjs "--browser=$B/web"` |
+| `test_hudkit` | 180 s | `env "HUD_BASE=$B/web/" node web/test_hudkit.mjs --browser` |
+| `relief_parish` | 120 s | `node web/eval_relief.mjs "$B/web/trade_craft_parishes.html" --name=parish` |
+| `relief_bay` | 120 s | `node web/eval_relief.mjs "$B/web/trade_craft_bay.html" --name=bay` |
+| `eval_parishes` | 240 s | `env "PARISHES_URL=$B/web/trade_craft_parishes.html" node web/eval_parishes.mjs` |
+| `eval_bayworld` | 180 s | `env "BAY_URL=$B/web/trade_craft_bay.html" node web/eval_bayworld.mjs` |
+| `eval_wilds` | 180 s | `env "WILDS_URL=$B/web/trade_craft_wilds.html" node web/eval_wilds.mjs` |
+| `geomap_probe` | 90 s | `node tools/landing/geomap_hillshade_probe.mjs "$B/web/trade_craft_geomap.html" "$O/geomap.png"` |
+| `eval_styles` | 600 s | `node web/eval_styles.mjs "--base=$B" "--root=$T"` |
 
 ## What keeps it honest
 
