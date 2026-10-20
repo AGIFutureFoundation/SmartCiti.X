@@ -2,7 +2,9 @@
 
 The scripts used to land a batch of work on `main` with as little waiting and
 as few tokens as possible. They contain no path from any one machine: every
-location is an argument or an environment variable. The protocol they serve is
+location is an argument or an environment variable. (The browser suites the
+default round calls under `web/` are older and still name this container's
+Playwright and Chromium paths; the round runs as written only where those exist.) The protocol they serve is
 written out in plain words on the wiki page
 [Build-and-Landing](../../wiki/Build-and-Landing.md), which is generated from
 these files.
@@ -12,7 +14,7 @@ these files.
 | `rebuild_all.sh <tree>` | Runs every builder of the tree, in dependency order, and prints `REBUILT`. Run it **twice**. A builder that exists but is not named in it fails `test.mjs`, unless the suite lists it with a reason. |
 | `browser_round.sh <tree> <outdir> <port> [runs-file]` | Serves the tree on a local port and runs the browser suites one at a time, each under one chromium lock (`CHROMIUM_LOCK`, or `$TMPDIR/chromium.lock`). Writes one log per run and a `round.txt` summary into `<outdir>`. |
 | `browser_runs.sh` | The default round: one `run <name> <timeout-seconds> <command...>` line per run, sourced by `browser_round.sh`. Copy it, edit it, and pass the copy as the fourth argument for a different round. |
-| `geomap_hillshade_probe.mjs` | The one-page probe the default round runs on the geomap (flies to a campus, reports which hillshade files loaded). |
+| `geomap_hillshade_probe.mjs` | The one-page probe the default round runs on the geomap (flies to a campus, reports which hillshade files loaded). It finds Playwright through `PLAYWRIGHT_MODULE`, the local package or the global one, and the browser through `CHROMIUM_PATH` or Playwright's own lookup. |
 | `readme_fix.py <tree> <verify-output> [rows.json]` | Moves every count typed in `README.md` (each suite row and the headline) to the count a `verify_all.sh` run printed. `rows.json` is optional one-off wording: `{ "<suite>": "<row text with %s for the count>" }`. |
 | `test.mjs` | The drift guard: `node tools/landing/test.mjs`. |
 
@@ -34,7 +36,7 @@ column 0. It fails when
 
 - a builder (`*/build.py`, `*/*/build.py`, `*/build_*.py`, `web/build_*.py`) exists on disk but is not run by `rebuild_all.sh` and is not on the skip list, each entry of which carries its reason;
 - the script names a builder that no longer exists, or the order it relies on (the wiki last, the SBOM before the pages) is changed;
-- a file under `tools/` holds a machine-local path (a scratch directory, a temporary directory, a home directory);
+- a file under `tools/` holds a machine-local path (a scratch directory, a temporary directory, a home directory, an install under `/opt`);
 - a script is not executable or does not parse;
 - `readme_fix.py` stops doing what is written above, tested on a copy.
 

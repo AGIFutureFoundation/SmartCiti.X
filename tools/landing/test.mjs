@@ -80,13 +80,13 @@ for (const s of SCRIPTS.filter((x) => x.endsWith('.sh'))) {
   const r = spawnSync('bash', ['-n', join(ROOT, s)], { encoding: 'utf8' });
   check(r.status === 0, `${s} parses as bash`);
 }
-const BAD = [new RegExp('/t' + 'mp\\b'), new RegExp('scratch' + 'pad', 'i'), new RegExp('claude' + '-0'), new RegExp('\\$S' + 'P\\b'), new RegExp('/home' + '/user')];
+const BAD = [new RegExp('/t' + 'mp\\b'), new RegExp('scratch' + 'pad', 'i'), new RegExp('claude' + '-0'), new RegExp('\\$S' + 'P\\b'), new RegExp('/home' + '/user'), new RegExp('/o' + 'pt/')];
 const toolFiles = walk('tools', 3).filter((f) => !/\.(json|png|jpg)$/.test(f));
 check(toolFiles.length > 5, `scanned ${toolFiles.length} files under tools/ for machine-local paths`);
 for (const f of toolFiles) {
   const t = text(f);
   const hit = BAD.map((re) => re.exec(t)).find(Boolean);
-  check(!hit, `${f}: no scratch, temp-dir or home path${hit ? ' (found ' + hit[0] + ')' : ''}`);
+  check(!hit, `${f}: no scratch, temp-dir, home or /opt path${hit ? ' (found ' + hit[0] + ')' : ''}`);
 }
 const ROUND = text('tools/landing/browser_round.sh');
 check(/CHROMIUM_LOCK/.test(ROUND) && /flock 9/.test(ROUND) && /flock -u 9/.test(ROUND), 'browser_round.sh takes and releases one chromium lock around every run');
