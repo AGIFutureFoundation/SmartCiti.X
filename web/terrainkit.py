@@ -228,6 +228,44 @@ TERRAIN_JS = TERRAIN_JS.replace('/* TERRAIN_KIT:END */', _RELIEF_OVERVIEW_JS + '
     'terrainPatch, terrainSeat,', 'terrainPatch, terrainOverviewPark, terrainSeat,', 1)
 # GROUND2 END relief-overview
 
+# RELIEF BEGIN relief-aware (wave 22): the relief-aware ground rule, added BESIDE the flat-ground rule (every land vertex at
+# y = 0), not in place of it. Pure (no THREE, no DOM): meshes are plain {geometry, userData: {elevFlat, elevMerged}}.
+# Flat part of a land mesh: y == 0 exactly (the old rule). Patch part (merged after the flat vertices): on the lattice and
+# y == lattice height + lift within tol, never under the flat land. A mesh drawing its flat geometry (relief off, or parked
+# in the overview) is judged by the old rule alone. The emitted JS carries only the neutral RELIEF-AWARE name.
+_RELIEF_AWARE_JS = r"""/* RELIEF-AWARE: judge land meshes against the relief lattice. meshes: iterable of {geometry: {attributes: {position: {array}}},
+   userData: {elevFlat, elevMerged}}. Flat vertices must be exactly y = 0; patch vertices (the tail after the flat ones) must
+   stand on the lattice at height + lift (+- tol) and never under 0. Returns counts; every *Bad / below must be 0. */
+function terrainGroundAudit(meshes, lat, lift, tol) {
+  const c = lat.cell, bad = []; let merged = 0, flatOnly = 0, flatVerts = 0, patchVerts = 0, flatBad = 0, patchBad = 0, offLattice = 0, below = 0, maxDev = 0;
+  for (const m of meshes) {
+    let mb = 0, md = 0, first = null;
+    const a = m.geometry.attributes.position.array, u = m.userData || {};
+    const isMerged = !!(u.elevMerged && m.geometry === u.elevMerged && u.elevFlat);
+    const nFlat = isMerged ? u.elevFlat.attributes.position.array.length : a.length;
+    if (isMerged) merged++; else flatOnly++;
+    for (let i = 0; i < a.length; i += 3) {
+      if (i < nFlat) { flatVerts++; if (a[i + 1] !== 0) flatBad++; continue; }
+      patchVerts++;
+      const gi = Math.round(a[i] / c), gj = Math.round(a[i + 2] / c);
+      if (Math.abs(a[i] / c - gi) > 1e-3 || Math.abs(a[i + 2] / c - gj) > 1e-3) { offLattice++; continue; }
+      const dev = Math.abs(a[i + 1] - (lat.at(gi, gj) + lift));
+      if (dev > maxDev) maxDev = dev;
+      if (dev > md) md = dev;
+      if (dev > tol) { patchBad++; mb++; if (!first) first = { x: a[i], z: a[i + 2], y: +a[i + 1].toFixed(3), want: +(lat.at(gi, gj) + lift).toFixed(3) }; }
+      if (a[i + 1] < 0) below++;
+    }
+    if (mb && bad.length < 4) bad.push({ mesh: u.parish ? (u.parish.id || String(u.parish)) : null, inScene: !!m.parent, visible: m.visible !== false, patchBad: mb, maxDev: +md.toFixed(3), first });
+  }
+  return { merged, flatOnly, flatVerts, patchVerts, flatBad, patchBad, offLattice, below, maxDev: +maxDev.toFixed(5), bad };
+}
+"""
+if TERRAIN_JS.count('/* TERRAIN_KIT:END */') != 1 or TERRAIN_JS.count('terrainOverviewPark, terrainSeat,') != 1:
+    raise SystemExit('terrainkit: relief-aware anchors (TERRAIN_KIT:END, export list) must occur exactly once')
+TERRAIN_JS = TERRAIN_JS.replace('/* TERRAIN_KIT:END */', _RELIEF_AWARE_JS + '/* TERRAIN_KIT:END */', 1).replace(
+    'terrainOverviewPark, terrainSeat,', 'terrainGroundAudit, terrainOverviewPark, terrainSeat,', 1)
+# RELIEF END relief-aware
+
 EXPORTS = re.findall(r'export \{([^}]*)\}', TERRAIN_JS)[0].replace('\n', ' ').split(',')
 EXPORTS = [e.strip() for e in EXPORTS if e.strip()]
 BEGIN, END = '/* TERRAIN_KIT:BEGIN', '/* TERRAIN_KIT:END */'

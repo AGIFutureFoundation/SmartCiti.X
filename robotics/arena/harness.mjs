@@ -51,7 +51,7 @@ export function loadArena(root = ROOT) {
 /* policy version = sha256[:16] of what decides its actions: the policy block (+ SIM_CORE for scripted, + weights for bc) */
 export function policyVersions(A, ids) {
   const v = {};
-  for (const id of ids) v[id] = sha(id + '\n' + A.block + (id === 'scripted' ? A.core : '') + (id === 'bc' ? JSON.stringify(bcModel(A).weights) : '')).slice(0, 16);
+  for (const id of ids) v[id] = sha(id + '\n' + A.block + (id === 'scripted' ? A.core : '') + (A.Policies.MODEL_POLICIES.includes(id) ? JSON.stringify(modelOf(A, id).weights) : '')).slice(0, 16);
   return v;
 }
 /* integer micro-units -> the float weights the policy block's forward() reads */
@@ -59,11 +59,13 @@ export function decodeWeights(w) {
   const d = (a) => a.map((x) => x / w.scale);
   return { in: w.in, hidden: w.hidden, out: w.out, W1: d(w.W1), b1: d(w.b1), W2: d(w.W2), b2: d(w.b2) };
 }
-function bcModel(A) {
-  const m = A.models && A.models.models.find((x) => x.policy === 'bc');
-  if (!m) throw new Error('arena: policy bc needs a trained model in robotics/arena/registry/models.json');
+function modelOf(A, id) {
+  const m = A.models && A.models.models.find((x) => x.policy === id);
+  if (!m) throw new Error('arena: policy ' + id + ' needs a trained model in robotics/arena/registry/models.json');
   return m;
 }
+const bcModel = (A) => modelOf(A, 'bc');   // the first model; its split is the split of every model (checked by the tests)
+const modelFor = (A, id) => A.Policies.MODEL_POLICIES.includes(id) ? decodeWeights(modelOf(A, id).weights) : null;
 export function seedList(A, which) {
   const all = Object.values(A.reg.envs).find((e) => e.runner === 'robokit').seeds;
   if (which === 'all' || which === undefined) return all.slice();
@@ -75,14 +77,14 @@ export function seedList(A, which) {
 /* one episode of `policy` on (env, level, seed) */
 export function runOne(A, policy, env, level, seed, timing) {
   const emb = A.reg.embodiments[env.embodiments[0]];
-  const ctx = { RoboCore: A.RoboCore, env, seed, level, model: policy === 'bc' ? decodeWeights(bcModel(A).weights) : null };
+  const ctx = { RoboCore: A.RoboCore, env, seed, level, model: modelFor(A, policy) };
   const act = A.Policies.make(policy, ctx), t0 = timing ? performance.now() : 0;
   const st = A.RoboCore.reset(env, emb, seed, level);
   let path = 0;
   while (!st.done) { const e0 = st.e, n0 = st.n; A.RoboCore.step(st, act(st)); path += Math.hypot(st.e - e0, st.n - n0); }
   const cw = env.reward.find((r) => r.term === 'collision').weight;
   const row = [policy, env.id, level, seed, st.done !== 'cap' ? 1 : 0, st.step, r2(path), Math.round(st.terms.collision / cw), r3(st.ret)];
-  return timing ? { row, ms: performance.now() - t0 } : { row };
+  return timing ? { row, collected: st.collected, ms: performance.now() - t0 } : { row, collected: st.collected };
 }
 
 /* seeded percentile bootstrap of the mean (deterministic: fixed resample stream) */
@@ -115,23 +117,40 @@ export function summarise(runs, ids, P) {
   return S;
 }
 
+/* items binned in the bin tasks (litter sort), per policy: the number criterion 'bins something' reads. `rows` are
+ * [policy, env, level, seed, items binned, items on the field]; success (all items binned) stays the headline in `runs`. */
+export function sortSummary(rows, ids, P) {
+  const S = {};
+  for (const id of ids) {
+    const R = rows.filter((r) => r[0] === id), by = {};
+    for (const r of R) { const b = by[r[2]] = by[r[2]] || { episodes: 0, binned: 0, total: 0, with_any: 0 }; b.episodes++; b.binned += r[4]; b.total += r[5]; b.with_any += r[4] > 0 ? 1 : 0; }
+    S[id] = { episodes: R.length, items_binned: R.reduce((a, r) => a + r[4], 0), items_total: R.reduce((a, r) => a + r[5], 0),
+      episodes_with_any: R.filter((r) => r[4] > 0).length, binned_per_episode: { mean: R.length ? r4(mean(R.map((r) => r[4]))) : null, ci95: bootstrap(R.map((r) => r[4]), P) },
+      share_of_items: { mean: R.length ? r4(R.reduce((a, r) => a + r[4], 0) / R.reduce((a, r) => a + r[5], 0)) : null,
+        ci95: bootstrap(R.map((r) => r[4] / r[5]), P) }, by_level: by };
+  }
+  return S;
+}
+
 export function runArena(A, opt = {}) {
   const ids = opt.policies || A.Policies.ORDER;
   for (const id of ids) if (!A.Policies.CARDS[id]) throw new Error('arena: policy ' + id + ' has no card');
   const seeds = seedList(A, opt.seeds), envs = Object.values(A.reg.envs).filter((e) => e.runner === 'robokit' && (!opt.envs || opt.envs.includes(e.id)));
   for (const e of envs) for (const s of seeds) if (!e.seeds.includes(s)) throw new Error('arena: seed ' + s + ' is not declared for ' + e.id);
-  const tasks = [], runs = [], timing = {};
+  const tasks = [], runs = [], timing = {}, sortRows = [];
   for (const e of envs) for (const lv of e.curriculum.levels) if (!opt.levels || opt.levels.includes(lv.level)) tasks.push({ env: e.id, level: lv.level, name: lv.name });
   for (const id of ids) { let ms = 0, k = 0;
-    for (const t of tasks) for (const s of seeds) { const o = runOne(A, id, A.reg.envs[t.env], t.level, s, opt.timing); runs.push(o.row); if (opt.timing) { ms += o.ms; k++; } }
+    for (const t of tasks) for (const s of seeds) { const o = runOne(A, id, A.reg.envs[t.env], t.level, s, opt.timing); runs.push(o.row); if (A.reg.envs[t.env].objects.bin) sortRows.push([id, t.env, t.level, s, o.collected, A.reg.envs[t.env].objects.litter]); if (opt.timing) { ms += o.ms; k++; } }
     if (opt.timing) timing[id] = { runs: k, ms_per_run: r2(ms / k) }; }
   const excluded = Object.values(A.reg.envs).filter((e) => e.runner !== 'robokit').map((e) => ({ env: e.id, runner: e.runner,
     reason: 'no headless runner: this seat\'s SCRIPTED operator runs inside the 3D page\'s simulator, which the harness cannot step in Node' }));
   const summary = summarise(runs, ids, A.Policies);
-  const cards = Object.fromEntries(ids.map((id) => [id, id === 'bc' ? { ...A.Policies.CARDS.bc, ...bcModel(A).card } : A.Policies.CARDS[id]]));
+  const cards = Object.fromEntries(ids.map((id) => [id, A.Policies.MODEL_POLICIES.includes(id) ? { ...A.Policies.CARDS[id], ...modelOf(A, id).card } : A.Policies.CARDS[id]]));
   const out = { harness: HARNESS, policies: ids, policy_versions: policyVersions(A, ids), cards, seeds, tasks, excluded,
     bootstrap: BOOT, columns: ['policy', 'env', 'level', 'seed', 'success', 'steps', 'path_m', 'collisions', 'return'], runs, summary };
   out.results_sha256 = sha(JSON.stringify([out.policy_versions, seeds, tasks, runs, summary]));
+  out.sort = { what: 'items binned in the litter-sort task (every level), per policy; derived from the same runs', columns: ['policy', 'env', 'level', 'seed', 'binned', 'items'], rows: sortRows, summary: sortSummary(sortRows, ids, A.Policies) };
+  out.sort_sha256 = sha(JSON.stringify([out.results_sha256, out.sort]));
   if (opt.timing) out.timing = { what: 'wall time per run on this machine (varies by machine and load; NOT part of results_sha256)', ...timing };
   return out;
 }
@@ -141,9 +160,9 @@ let CACHED = null;
 const arena = (reg) => { CACHED = CACHED || loadArena(); return reg ? { ...CACHED, reg } : CACHED; };
 /* every policy the arena can run now (bc only when its pinned weights are present), with version and card kind */
 export function policies(reg) {
-  const A = arena(reg), ids = A.Policies.ORDER.filter((id) => id !== 'bc' || (A.models && A.models.models.some((m) => m.policy === 'bc')));
+  const A = arena(reg), ids = A.Policies.ORDER.filter((id) => !A.Policies.MODEL_POLICIES.includes(id) || (A.models && A.models.models.some((m) => m.policy === id)));
   const v = policyVersions(A, ids);
-  return ids.map((id) => ({ id, version: v[id], provenance: A.Policies.CARDS[id].kind, card: id === 'bc' ? { ...A.Policies.CARDS.bc, ...bcModel(A).card } : A.Policies.CARDS[id] }));
+  return ids.map((id) => ({ id, version: v[id], provenance: A.Policies.CARDS[id].kind, card: A.Policies.MODEL_POLICIES.includes(id) ? { ...A.Policies.CARDS[id], ...modelOf(A, id).card } : A.Policies.CARDS[id] }));
 }
 export function tasks(reg) {
   return Object.values(arena(reg).reg.envs).filter((e) => e.runner === 'robokit').map((e) => ({ env: e.id, levels: e.curriculum.levels.map((l) => l.level), seeds: e.seeds.slice() }));
@@ -155,7 +174,7 @@ export function runEpisode(reg, { policy, env, level, seed }) {
   const tr = JSON.parse(readFileSync(join(ROOT, 'training/registry/training.json'), 'utf8'));
   const T = { kind: tr.world_episode_kinds['world-teleop'], world_teleop: tr.world_teleop };
   const emb = A.reg.embodiments[E.embodiments[0]];
-  const act = A.Policies.make(policy, { RoboCore: A.RoboCore, env: E, seed, level, model: policy === 'bc' ? decodeWeights(bcModel(A).weights) : null });
+  const act = A.Policies.make(policy, { RoboCore: A.RoboCore, env: E, seed, level, model: modelFor(A, policy) });
   const st = A.RoboCore.reset(E, emb, seed, level), every = Math.round(1 / (T.world_teleop.sample_hz * E.episode_cap.dt_s)), samples = [];
   while (!st.done) { const a = act(st); if (st.step % every === 0 && samples.length < T.world_teleop.max_samples) samples.push(A.RoboCore.sample(st, a)); A.RoboCore.step(st, a); }
   return { ...A.RoboCore.episode(st, policy === 'scripted' ? 'scripted-reference' : 'arena-' + policy, 'lab', samples, T), level };

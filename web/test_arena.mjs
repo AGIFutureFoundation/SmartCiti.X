@@ -26,18 +26,22 @@ ok('the page carries the model-arena section, its data and its script (neutral m
   sec.includes('id="model-arena" data-model-arena') && ajs.length > 2000 && adata && /<script id="model-arena-js">/.test(page) && (page.match(/id="model-arena"/g) || []).length === 1);
 ok('the policy block on the page is robotics/arena/policies.js verbatim (the code the harness measured)',
   POLBLOCK.length > 3000 && page.includes(POLBLOCK) && between(page, '/* MODEL_ARENA_POLICIES:BEGIN', '/* MODEL_ARENA_POLICIES:END */') === POLBLOCK);
-ok('the BC weights on the page are the model registry\'s, and match their sha256 pin', () => {
-  const m = MD.models.find((x) => x.policy === 'bc');
-  return JSON.stringify(adata.bc) === JSON.stringify(m.weights) && adata.bc_sha256 === m.weights_sha256
-    && createHash('sha256').update(JSON.stringify(adata.bc)).digest('hex') === m.weights_sha256; });
+ok('the BC weights on the page, one set per model (bc and bcg), are the model registry\'s, and match their sha256 pins', () =>
+  MD.models.length === 2 && JSON.stringify(Object.keys(adata.models).sort()) === JSON.stringify(MD.models.map((m) => m.policy).sort())
+  && MD.models.every((m) => JSON.stringify(adata.models[m.policy]) === JSON.stringify(m.weights) && adata.models_sha256[m.policy] === m.weights_sha256
+    && createHash('sha256').update(JSON.stringify(adata.models[m.policy])).digest('hex') === m.weights_sha256));
 ok('the leaderboard is the registry\'s measured table, row for row (rank, policy, success rate, win rate), and says which seeds', () => {
   const rows = [...sec.matchAll(/data-arena-rank="(\d+)" data-arena-policy="([a-z]+)"[\s\S]*?data-arena-success="([0-9.]+)"[\s\S]*?data-arena-win="([0-9.]+)"/g)];
   return rows.length === AR.leaderboard.rows.length && rows.every((r, i) => { const b = AR.leaderboard.rows[i];
     return +r[1] === b.rank && r[2] === b.policy && +r[3] === b.success_rate.mean && +r[4] === b.win_vs_ref.rate; })
     && sec.includes('seeds ' + AR.leaderboard.seeds.join(', ')) && AR.leaderboard.table === 'held_out'; });
-ok('every policy that plays has a card on the page; the BC card is the exact honest sentence', () =>
+ok('every policy that plays has a card on the page; each BC card is the exact honest sentence (both models)', () =>
   adata.policies.every((p) => sec.includes(`data-arena-card="${p}"`) && adata.cards[p] && adata.cards[p].kind)
-  && sec.includes(MD.models[0].card.what.replace(/'/g, '&#x27;')) && JSON.stringify(adata.policies) === JSON.stringify(AR.tables.held_out.policies));
+  && MD.models.every((m) => sec.includes(m.card.what.replace(/'/g, '&#x27;'))) && JSON.stringify(adata.policies) === JSON.stringify(AR.tables.held_out.policies));
+ok('the page prints the litter-sort items-binned table of the held-out seeds, one row per policy, numbers copied from the registry (the second policy included, whatever its number is)', () => {
+  const rows = [...sec.matchAll(/data-arena-binned-policy="([a-z]+)"><td>[^<]*<\/td><td data-arena-binned="(\d+)">(\d+) \/ (\d+)<\/td><td data-arena-binned-mean="([0-9.]+)">/g)], S = AR.tables.held_out.sort.summary;
+  return rows.length === AR.tables.held_out.policies.length && rows.length === 5 && rows.every((r) => S[r[1]] && +r[2] === S[r[1]].items_binned && +r[3] === S[r[1]].items_binned && +r[4] === S[r[1]].items_total && +r[5] === S[r[1]].binned_per_episode.mean)
+    && rows.some((r) => r[1] === 'bcg') && sec.includes('id="arena-binned"'); });
 ok('the arena script stores and sends nothing (no storage, no network APIs)', !/localStorage|sessionStorage|indexedDB|fetch\s*\(|XMLHttpRequest|sendBeacon|WebSocket/.test(ajs + POLBLOCK));
 ok('no language-model claim in the arena section (only "None is a language model" / "not a language model" may name one)',
   !/language model|\bLLM\b|\bGPT\b|chatbot/i.test(sec.replace(/None is a language model|not a language model/g, '')));
@@ -60,7 +64,7 @@ ok('the arena schedule matches the page script (same seeded formula) and covers 
   let cmp = 0, same = 0;
   for (let m = 0; m < 12; m++) { const s = sched(m), env = reg.envs[s.env], emb = reg.embodiments[env.embodiments[0]];
     for (const p of adata.policies) { const r = rows.get([p, s.env, s.level, s.seed].join('|')); if (!r) continue;
-      const act = AP.make(p, { RoboCore: RC, env, seed: s.seed, level: s.level, model: dec(adata.bc) }), st = RC.reset(env, emb, s.seed, s.level);
+      const act = AP.make(p, { RoboCore: RC, env, seed: s.seed, level: s.level, model: adata.models[p] ? dec(adata.models[p]) : null }), st = RC.reset(env, emb, s.seed, s.level);
       while (!st.done) RC.step(st, act(st));
       cmp++; if ((st.done !== 'cap' ? 1 : 0) === r[4] && st.step === r[5] && Math.abs(st.ret - r[8]) < 0.0006) same++; } }
   ok(`the page's code reproduces the harness's measured row for every match policy with a row (${same}/${cmp} over the first 12 matches)`, cmp >= 30 && same === cmp);
@@ -87,7 +91,7 @@ if (barg) {
       const t1 = await pg.evaluate(() => ({ m: window.__modelArena.match(), st: window.__modelArena.states().map((s) => s.steps), rows: document.querySelectorAll('#arena-score tbody tr').length,
         task: document.getElementById('arena-task').textContent, playing: window.__modelArena.playing() }));
       ok(`browser ${vp.n}: the arena runs by itself - every policy steps in one shared match (${t0.st} -> ${t1.st}), ${t1.rows} scoreboard rows, task "${t1.task}"`,
-        t1.playing && t1.st.every((x, i) => x > t0.st[i] || t1.m > t0.m) && t1.rows === 4 && t1.task.length > 5);
+        t1.playing && t1.st.every((x, i) => x > t0.st[i] || t1.m > t0.m) && t1.rows === AR.tables.held_out.policies.length && t1.task.length > 5);
       const run = await pg.evaluate(() => { const a = window.__modelArena; a.pause(); const m0 = a.match(); let ends = 0; for (let k = 0; k < 60 && ends < 3; k++) ends += a.step(100);
         return { m0, m: a.match(), tally: a.tally(), board: document.querySelectorAll('#arena-board tbody tr').length, store: Object.keys(localStorage).sort() }; });
       const played = Object.values(run.tally).map((x) => x.played);
@@ -101,7 +105,7 @@ if (barg) {
       ok(`browser ${vp.n}: a whole live match in the page equals the harness's measured rows (${fin && fin.task.env} L${fin && fin.task.level} seed ${fin && fin.task.seed}, ${withRow.length} policies with a row)`,
         withRow.length >= 3 && withRow.every((x) => { const r = rowOf(x.policy); return (x.success ? 1 : 0) === r[4] && x.steps === r[5] && Math.abs(x.ret - r[8]) < 0.0006; }), fin);
       const px = await pg.evaluate(() => { const c = document.getElementById('arena-world'), d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let n = 0;
-        const C = [[0x39, 0x87, 0xe5], [0xd9, 0x59, 0x26], [0x19, 0x9e, 0x70]];   // scripted, greedy, bc (robots share the spawn at a match start)
+        const C = [[0x39, 0x87, 0xe5], [0xd9, 0x59, 0x26], [0x19, 0x9e, 0x70], [0xb0, 0x7c, 0xf0]];   // scripted, greedy, bc, bcg (robots share the spawn at a match start)
         for (let i = 0; i < d.length; i += 4) if (C.some((c) => d[i] === c[0] && d[i + 1] === c[1] && d[i + 2] === c[2])) n++; return n; });
       ok(`browser ${vp.n}: the shared world is drawn with the policies' robots in it (${px} px of their colours)`, px > 20);
       ok(`browser ${vp.n}: no request leaves the page's origin (${reqs.length})`, reqs.filter((u) => !/fonts\.(googleapis|gstatic)\.com/.test(u)).length === 0, reqs);

@@ -2,7 +2,7 @@
  "pack": "smartcitix-trade-craft-academy-tasks",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "built": "2026-09-16",
- "source_stamp": "c70709a5f462e53d",
+ "source_stamp": "fb45a3d06481e4a4",
  "builder_stamp": "bf868fa9d7bbc318",
  "sources": {
   "sims/registry/sims.json": "1af48d2eed34ccb2",
@@ -11,7 +11,7 @@
   "restoration/registry/restoration.json": "55f41bf50df7d918",
   "wilds/registry/wilds.json": "52696e6eab718377",
   "lessons/registry/lessons.json": "75e757b1c322727a",
-  "spaces/registry/spaces.json": "9cbb827c54bc4a6a",
+  "spaces/registry/spaces.json": "4df3c8ad7bc6643a",
   "pack/registry/halls.json": "3807e54afe6abfe6",
   "unions/registry/campuses.json": "80eef152a4cb9d76",
   "restoration/registry/scenarios.json": "cde5368260c2d61f"

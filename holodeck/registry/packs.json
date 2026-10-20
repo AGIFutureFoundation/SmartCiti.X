@@ -430,7 +430,7 @@
     },
     {
      "path": "layers/registry/layers.json",
-     "sha256": "83516ca7770ae016"
+     "sha256": "35c51f7c96ae1d2c"
     }
    ],
    "status": "SHIPPING",
@@ -453,7 +453,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "0bd6fc84d3ced2eb"
+     "sha256": "0d9fa81b235efee4"
     }
    ],
    "status": "SHIPPING",
@@ -477,7 +477,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "0bd6fc84d3ced2eb"
+     "sha256": "0d9fa81b235efee4"
     }
    ],
    "status": "SHIPPING",
@@ -501,7 +501,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "0bd6fc84d3ced2eb"
+     "sha256": "0d9fa81b235efee4"
     }
    ],
    "status": "SHIPPING",
@@ -525,7 +525,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "0bd6fc84d3ced2eb"
+     "sha256": "0d9fa81b235efee4"
     }
    ],
    "status": "PROPOSED",
@@ -549,7 +549,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "0bd6fc84d3ced2eb"
+     "sha256": "0d9fa81b235efee4"
     }
    ],
    "status": "SHIPPING",
@@ -573,7 +573,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "0bd6fc84d3ced2eb"
+     "sha256": "0d9fa81b235efee4"
     }
    ],
    "status": "SHIPPING",
@@ -597,7 +597,7 @@
    "sources": [
     {
      "path": "layers/registry/paths.json",
-     "sha256": "0bd6fc84d3ced2eb"
+     "sha256": "0d9fa81b235efee4"
     }
    ],
    "status": "SHIPPING",
@@ -624,7 +624,7 @@
     },
     {
      "path": "layers/registry/layers.json",
-     "sha256": "83516ca7770ae016"
+     "sha256": "35c51f7c96ae1d2c"
     }
    ],
    "status": "SHIPPING",
@@ -797,7 +797,7 @@
    "sources": [
     {
      "path": "robotics/registry/robotics.json",
-     "sha256": "404c0eaf05ee733d"
+     "sha256": "48eb823416f6d205"
     }
    ],
    "status": "SHIPPING",
@@ -820,7 +820,7 @@
    "sources": [
     {
      "path": "datashare/registry/datashare.json",
-     "sha256": "edce1969b9e030b2"
+     "sha256": "2de8af8052b249be"
     }
    ],
    "status": "SHIPPING",
@@ -863,7 +863,7 @@
    "sources": [
     {
      "path": "hive/registry/hive.json",
-     "sha256": "e2b2ccae493b79e6"
+     "sha256": "73ec14088d08d224"
     }
    ],
    "status": "SHIPPING",

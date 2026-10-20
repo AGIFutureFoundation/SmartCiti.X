@@ -83,7 +83,7 @@ Quoted from the registry at build time, never retyped:
 
 `spaces/registry/spaces.json#honesty.status`:
 
-> declared, not yet walkable: an AUTHORED proposal composed from this bundle's own assets; nothing here is built into the 3D world, no dimension is a measurement of a real venue, and no duration, price or accreditation is stated
+> declared, walkable in the 3D page: an AUTHORED proposal composed from this bundle's own assets, drawn in the room of its strand by the link trade_craft_3d.html?space=<id>; props and furniture are drawn from their registry recipes, seats, stations, cribs and signs as marker pads; no dimension is a measurement of a real venue, and no duration, price or accreditation is stated
 
 ---
 

@@ -613,13 +613,13 @@ ok('a probe silences the footfalls it drives: hundreds of thousands of '
   && /if \(foot !== wkFoot\) \{ wkFoot = foot; if \(!wkSilent\) footfall\(speed \/ RUN_MS\); \}/
        .test(fn('strideStep'))
   // every probe that drives walkStep in a loop silences it and restores it:
-  // the walk probe, the campus solidity test and the hall test
+  // the walk probe, the campus solidity test, the hall test and the space walk
   && (() => {
-    const drivers = (src.match(/window\.__tc3d(WalkProbe|SolidTest|HallTest)\b/g)
+    const drivers = (src.match(/window\.__tc3d(WalkProbe|SolidTest|HallTest|SpaceWalk)\b/g)
                      ?? []).length;
     const on = (src.match(/const wasSilent = wkSilent; wkSilent = true;/g) ?? []).length;
     const off = (src.match(/wkSilent = wasSilent;/g) ?? []).length;
-    return drivers === 3 && on === 3 && off === 3;
+    return drivers === 4 && on === 4 && off === 4;
   })());
 ok('the walk probe leaves the page exactly as it found it, so measuring the '
   + 'walker cannot move it',

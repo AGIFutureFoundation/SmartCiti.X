@@ -437,6 +437,28 @@ ok(`the one h1 on each of ${H1_IS_NAV.length} pages is the page's own nav label,
     && /nav\.sitenav\[data-more\]:not\(:hover\):not\(:focus-within\)::before\{content:attr\(data-more\) " \u25BE" \/ "";[^}]*pointer-events:none\}/.test(h));
 }
 
+/* ------------------------------- the spaces and contribute pages are linked -- */
+// v3.7 exit criterion 6: the spaces page and the contribute page are reachable from the home page and from the map
+// page by a real link (resolved relative to the page carrying it), and each links home. The links come from the one
+// nav declaration, so this holds on every page that carries the nav; the front door and the map are named here.
+{
+  const SPACES = 'web/trade_craft_spaces.html', CONTRIB = 'web/trade_craft_contribute.html';
+  const resolveFrom = (page, href) => posix.normalize(posix.join(posix.dirname(page), href.split('#')[0].split('?')[0]));
+  const linksOf = (page) => new Set([...readFileSync(join(ROOT, page), 'utf8').matchAll(/<a\b[^>]*\bhref="([^"#][^"]*)"/g)]
+    .map((m) => resolveFrom(page, m[1])));
+  const want = [['index.html', SPACES], ['index.html', CONTRIB], ['web/trade_craft_map.html', SPACES], ['web/trade_craft_map.html', CONTRIB],
+    ['web/trade_craft_interactive.html', SPACES], ['web/trade_craft_interactive.html', CONTRIB]];
+  const missingLink = want.filter(([from, to]) => !linksOf(from).has(to)).map(([from, to]) => `${from} does not link ${to}`);
+  ok('home, map and interactive map each link the spaces page and the contribute page (links resolve to those files)',
+    missingLink.length === 0 && existsSync(join(ROOT, SPACES)) && existsSync(join(ROOT, CONTRIB)), missingLink);
+  const back = [SPACES, CONTRIB].filter((p) => !linksOf(p).has('index.html')).map((p) => `${p} does not link home`);
+  ok('the spaces page and the contribute page each link home, so a visitor can leave and return', back.length === 0, back);
+  const inbound = Object.keys(PAGES).filter((p) => p !== SPACES && existsSync(join(ROOT, p)) && linksOf(p).has(SPACES));
+  const inbound2 = Object.keys(PAGES).filter((p) => p !== CONTRIB && existsSync(join(ROOT, p)) && linksOf(p).has(CONTRIB));
+  ok(`the spaces page is linked from other pages (${inbound.length}) and the contribute page too (${inbound2.length}), and the nav declares both`,
+    inbound.length >= 3 && inbound2.length >= 3 && SPACES in PAGES && CONTRIB in PAGES, { inbound: inbound.length, inbound2: inbound2.length });
+}
+
 if (bad) {
   console.error(`web/test_nav: ${bad} FAILED, ${n} passed`);
   process.exit(1);

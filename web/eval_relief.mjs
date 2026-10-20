@@ -14,6 +14,8 @@
  */
 import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
 import { loadavg } from 'node:os';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -78,13 +80,86 @@ export async function reliefRow(browser, url, opts = {}) {
   return row;
 }
 
+/* RELIEF_AWARE:BEGIN wave 22 - the relief-aware ground rule, added BESIDE the flat-ground rule (the eval_parishes /
+   eval_bayworld rows that read stats().groundY are untouched). Every view of the page is opened with ?relief=off and with
+   ?relief=on and judged by the rule that fits its side:
+     off  the FLAT rule, verbatim in meaning: stats().groundY (every land vertex at y = 0) and the audit finds no patch;
+     on   the RELIEF-AWARE rule: land vertices that are not patch stand at y = 0, patch vertices stand on the relief lattice
+          at height + lift (+- 2 mm) and never under 0 (elev.groundAudit); the drawn camera stands the declared eye height
+          above the ground under it (elev.eyeAudit); the overview parks the patch, so there the flat rule holds again;
+     both draw calls and triangles inside the page's own declared BASE ceilings (read from the sibling eval's source, never
+          copied or retuned): the Bay overview triangle rows are among them.
+   Frame time is printed beside the load average and is information here (a software-rendered frame is load-bound; the
+   sibling eval keeps judging it). */
+export function declaredBase(url) {
+  const bay = /trade_craft_bay/.test(url);
+  const src = readFileSync(fileURLToPath(new URL(bay ? './eval_bayworld.mjs' : './eval_parishes.mjs', import.meta.url)), 'utf8');
+  const grab = (re, what) => { const m = src.match(re); if (!m) throw new Error('eval_relief: cannot read ' + what + ' from the sibling eval'); return m[1]; };
+  const BASE = new Function('return (' + grab(/^const BASE = (\{[\s\S]*?^\});/m, 'BASE') + ')')();
+  const PROBE = new Function('return ' + grab(/^const PROBE = (\[[^\]]*\])/m, 'PROBE'))();
+  const H = grab(/^const (CALL_HEADROOM[^;]*);/m, 'headroom constants');
+  const [ch, th, mh] = ['CALL_HEADROOM', 'TRI_HEADROOM', 'MS_HEADROOM'].map((k) => +H.match(new RegExp(k + ' = ([0-9.]+)'))[1]);
+  return { BASE, PROBE, CALL_HEADROOM: ch, TRI_HEADROOM: th, MS_HEADROOM: mh, bay };
+}
+export async function reliefAwareRow(browser, url, opts = {}) {
+  const errors = [], U = reliefUrls(url), B = declaredBase(url);
+  const row = { probe: 'relief-aware', url: url.replace(/^.*\/web\//, 'web/'), probes: B.PROBE, off: [], on: [], fails: [], load: loadavg().map((v) => +v.toFixed(2)) };
+  const fail = (m) => row.fails.push(m);
+  for (const side of ['off', 'on']) {
+    const page = await openAt(browser, U[side], errors);
+    if (side === 'on') await page.waitForFunction(() => { const p = window.__parishes.elev.probe(1); return p.demLoaded || p.demFailed; }, null, { timeout: 25000 }).catch(() => {});
+    for (const pid of B.PROBE) for (const v of ['origin', 'border', 'overview']) {
+      await page.evaluate(([name, id]) => window.__parishes.view(name, id), [v, pid]);
+      await page.waitForFunction(() => window.__parishes.stats().pending === 0, null, { timeout: 15000 }).catch(() => {});
+      await sleep(side === 'on' ? 900 : 350);
+      const times = (await page.evaluate(() => window.__parishes.frameTimes(6))).sort((a, b) => a - b);
+      const r = await page.evaluate(() => { const P = window.__parishes, st = P.stats(); return { st: { calls: st.calls, tris: st.triangles, groundY: st.groundY, pending: st.pending, landMeshes: st.landMeshes, loaded: st.loaded.length }, ga: P.elev.groundAudit(), ea: P.elev.eyeAudit() }; });
+      const base = B.BASE[pid] && B.BASE[pid][v], ms = +times[Math.floor(times.length / 2)].toFixed(1);
+      const o = { id: pid, view: v, calls: r.st.calls, tris: r.st.tris, ms, load1: +loadavg()[0].toFixed(2), flatRule: r.st.groundY, merged: r.ga.merged, patchVerts: r.ga.patchVerts, flatBad: r.ga.flatBad, patchBad: r.ga.patchBad, offLattice: r.ga.offLattice, below: r.ga.below, maxDev: r.ga.maxDev, eye: v === 'overview' ? null : r.ea.above, fails: [] };
+      const f = (m) => o.fails.push(m);
+      if (!base) f('no declared target for ' + pid + ' ' + v);
+      else {
+        if (r.st.calls > Math.ceil(base.calls * B.CALL_HEADROOM)) f(`calls ${r.st.calls} > ${Math.ceil(base.calls * B.CALL_HEADROOM)}`);
+        if (r.st.tris > base.tris * B.TRI_HEADROOM) f(`tris ${r.st.tris} > ${Math.round(base.tris * B.TRI_HEADROOM)}`);
+        o.msCeiling = +(base.ms * B.MS_HEADROOM).toFixed(1); o.msOver = ms > o.msCeiling;   // information: load-bound, judged by the sibling eval
+      }
+      if (r.st.pending !== 0) f(`${r.st.pending} chunks pending`);
+      if (r.st.landMeshes !== r.st.loaded) f(`${r.st.landMeshes} land meshes for ${r.st.loaded} loaded`);
+      if (r.ga.flatBad || r.ga.patchBad || r.ga.offLattice || r.ga.below) f(`ground audit: flat-bad ${r.ga.flatBad}, patch-bad ${r.ga.patchBad}, off-lattice ${r.ga.offLattice}, under-0 ${r.ga.below}, max dev ${r.ga.maxDev} m ${JSON.stringify(r.ga.bad)}`);
+      if (side === 'off') {
+        if (!r.st.groundY) f('FLAT rule: a land mesh vertex is not at y = 0 with relief off');
+        if (r.ga.patchVerts) f(`relief off but ${r.ga.patchVerts} patch vertices exist`);
+        if (v !== 'overview' && Math.abs(r.ea.above - r.ea.eyeH) > 0.01) f(`camera ${r.ea.above} m above flat ground, want ${r.ea.eyeH}`);
+      } else if (v === 'overview') {
+        if (!r.ga.overview || r.ga.merged || !r.st.groundY) f(`overview must draw the flat land (parked ${r.ga.overview}, merged meshes ${r.ga.merged}, flat rule ${r.st.groundY})`);
+      } else if (!r.ea.riding && Math.abs(r.ea.above - r.ea.eyeH) > 0.15) f(`camera ${r.ea.above} m above the ground under it, want ${r.ea.eyeH} +- 0.15`);
+      if (o.fails.length) fail(`${side} ${pid} ${v}: ${o.fails.join('; ')}`);
+      row[side].push(o);
+    }
+    await page.close();
+  }
+  const drawn = row.on.filter((o) => o.view !== 'overview' && o.patchVerts > 0);
+  if (!drawn.length) fail('no walk view drew a relief patch with relief on (nothing was judged by the relief-aware rule)');
+  row.patchViews = drawn.length; row.load2 = loadavg().map((v) => +v.toFixed(2));
+  if (errors.length) fail(`page errors: ${errors.slice(0, 3).join(' | ')}`);
+  row.errors = errors.length;
+  return row;
+}
+/* RELIEF_AWARE:END */
+
 if (process.argv[1] && process.argv[1].endsWith('eval_relief.mjs')) {
   const url = process.argv[2], shots = (process.argv.find((a) => a.startsWith('--shots=')) || '').slice(8) || null;
   const name = (process.argv.find((a) => a.startsWith('--name=')) || '--name=page').slice(7);
   const browser = await chromium.launch({ executablePath: CHROME, args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
-  const row = await reliefRow(browser, url, { shots, name });
+  const T0 = Date.now(), row = await reliefRow(browser, url, { shots, name }), T1 = Date.now();
+  const aware = process.argv.includes('--no-aware') ? null : await reliefAwareRow(browser, url, { name });
   await browser.close();
   console.log(JSON.stringify(row, null, 1));
+  if (aware) for (const k of ['off', 'on']) for (const o of aware[k]) console.log(`${o.fails.length ? 'FAIL' : '  ok'} relief-aware ${k} ${o.id} ${o.view}: calls ${o.calls} tris ${o.tris} ms ${o.ms}${o.msOver ? ' (over ' + o.msCeiling + ', load-bound info)' : ''} load1 ${o.load1} flatRule ${o.flatRule} merged ${o.merged} patchVerts ${o.patchVerts} flatBad ${o.flatBad} patchBad ${o.patchBad} dev ${o.maxDev} eye ${o.eye}${o.fails.length ? ' :: ' + o.fails.join('; ') : ''}`);
+  console.log(`  -- browser time: relief row ${((T1 - T0) / 1000).toFixed(0)} s, relief-aware row ${((Date.now() - T1) / 1000).toFixed(0)} s (each run under the 90 s allowance only if the sum is <= 90)`);
+  if (aware) console.log(`  -- relief-aware load ${aware.load.join('/')} -> ${aware.load2.join('/')}, walk views with a patch ${aware.patchViews}, page errors ${aware.errors}`);
+  const nfail = row.fails.length + (aware ? aware.fails.length : 0);
   console.log(row.fails.length ? `FAIL relief (${name}): ${row.fails.length}` : `  ok relief (${name})`);
-  process.exit(row.fails.length ? 1 : 0);
+  if (aware) console.log(aware.fails.length ? `FAIL relief-aware (${name}): ${aware.fails.length}` : `  ok relief-aware (${name})`);
+  process.exit(nfail ? 1 : 0);
 }

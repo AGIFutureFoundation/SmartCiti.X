@@ -456,7 +456,8 @@ registries' own; none is typed here from memory.
   episode records `seat` and `muster` (`training/`), or the lesson step stops
   carrying them (`lessons/`). Not a verifier problem. (At the 2026-09-26 pass; carried to
   v3.7, workstream 2: 23 of 139 lessons then, 0 since `d8094b8`.)
-- No page links to the spaces or contribute pages yet.
+- No page links to the spaces or contribute pages yet. (Stale when written: the site navigation on every page has
+  linked both since `91f34b8`; the wave 22 landing added checks for it in `web/test_nav.mjs`.)
 - The map layers' labels on two surfaces are registry field paths, and the
   XR HUD's 15 new keys are machine-drafted in seven locales, as those catalogs
   already declare.
@@ -518,6 +519,8 @@ commit's message, none typed here from memory.
 - **No LLM trained.** The one trained model is a 468-weight cloned policy on
   SCRIPTED episodes; it scores 0.423 against the reference's 0.592 on held-out
   seeds and never learned grip timing. Omega Hive and Omega Claw are SCRIPTED.
+  (At that pass. v3.7 workstream 5 added a second cloned policy in wave 22;
+  still no language model.)
 - **No session on a physical headset has been driven.** One seat is driven in a MOCKED session
   in headless Chromium; every other WebXR contract is still held at the source
   by regex. Hand joints are proven against synthetic positions only.
@@ -562,7 +565,18 @@ commit cannot name its own sha.
    added a seat harness (`--browser --seats=A..H`): load-chart and scaffold-bay
    reached completion in one MOCKED session (scaffold-bay with one failing
    gauge check, not diagnosed), crane-lift reached its key state only, and the
-   other seven seats have not been run. No physical headset has run any of it.
+   other seven seats have not been run. Wave 22 measured all eleven seats in
+   MOCKED sessions (headless Chromium, software GL, load average 4.5 to 6.4,
+   5 to 18 session frames per second): four reached their own result panel
+   from the controllers with a Passed verdict (rigging signal call, load chart,
+   scaffold bay, tower crane lift); the overhead crane reached its panel with a
+   retry verdict (sway 0.99 m against 0.6); six reached key state only
+   (pressure washer, airless sprayer, weld bead, boom lift, forklift run,
+   excavator trench) and ran out of wall clock at that frame rate. The scaffold
+   bay's failing gauge check was the harness and is fixed without weakening it.
+   The seat physics steps on the raw frame time while the reference runs were
+   tuned at 1/60 s; that is the likely cause of the crane's retry, not yet
+   proven. No physical headset has run any of it.
 2. **Crew episodes record seat and muster** — *shipped, `d8094b8`.* The
    crew episode in `training/` records the two fields the completion verifier
    asks for, so the 23 lessons with a crew step can complete. The lessons are
@@ -577,23 +591,41 @@ commit cannot name its own sha.
    load 3-4 and fails at load 5 and above; the 22103 rows fail at load 3-4 as
    they did at `83db20b`. Wave 21 skips the water plane when no water can be
    seen from the eye (one draw call fewer on inland views); its frame-time
-   effect is not yet measured. No ceiling was moved.
+   effect is not yet measured. No ceiling was moved. Wave 22 committed the
+   luminance eval (`web/eval_look.mjs`): it holds the shares on the 3D scene
+   with the page's overlays hidden, against `83db20b` measured in the same
+   harness, and reports the whole frame beside it.
 4. **Module links inside the worlds** — *shipped, `d8094b8` and wave 21.* Each of the
    16 world modules is reachable from the world it teaches (keyboard and
    pointer), extending the doors of v3.6. *Landing commit:* `d8094b8`: 13 of the
    16 (8 Bay restoration sites, 4 wilds worlds, the robot yard); wave 21
    linked the 3 worksite-district modules from the work sites page, the Bay
    restoration panels and the parish and Bay campus doors: 16 of 16.
-5. **A learned policy that bins something** — *planned, not started.* The
+5. **A learned policy that bins something** — *met, wave 22.* The
    cloned policy never learned grip timing, so it bins nothing in litter sort.
-   A second carded policy is measured on the same held-out seeds with its
-   interval, and the registry reports it whatever the number is.
-6. **Spaces walkable and linked** — *planned, not started.* The six custom
-   training spaces are declared, not walkable (v3.5), and the spaces and
-   contribute pages are linked from no other page.
-7. **Relief on, honestly** — *planned, not started.* Replace the flat-ground
-   rule's reason to keep relief off with a measured relief-aware rule, added
-   beside the old one rather than in place of it.
+   A second carded policy (`bcg`, an MLP 26-32-4: the first model's 24
+   features plus two that expose the gap to the gripper's reach, and a
+   class-weighted grip head) is trained on SCRIPTED episodes of seeds 1 to 10
+   only; its width, epochs and features were chosen on seeds 1-6 against 7-10,
+   and the held-out seeds were run once, after fitting. It ties its scripted
+   teacher on items binned and does not beat it; the teacher caps what it can
+   reach. Not a language model, no learner's data.
+6. **Spaces walkable and linked** — *partly met, wave 22.* The six custom
+   training spaces were declared, not walkable (v3.5). They now open in the 3D
+   page by `?space=<id>&hall=<slug>`, placed as AUTHORED designs in the room of
+   their strand; a walker driven by the page's own walk step reached the room
+   in each of the 10 (space, hall) pairs in a browser, and the every-room hall
+   test held on 4 of them. Seats, stations, cribs and signs are marker pads,
+   not solid. The pages were already linked from every page's site
+   navigation (since `91f34b8`); the wave 22 landing checks it.
+7. **Relief on, honestly** — *met by measured runs, wave 22; relief stays
+   off by default.* A relief-aware ground rule sits beside the flat one: flat
+   vertices at exactly 0, relief patches on the lattice and never below 0, the
+   camera at eye height over the ground under it, the overview flat. The flat
+   rows are unedited and still judge the default page. A live run found that
+   land meshes of streamed-out parishes keep a stale relief patch in memory
+   (not drawn); the audit judges in-scene meshes only, and the stale patch is
+   an open item.
 8. **Walk and placard steps record episodes** — *shipped, the landing after
    `d8094b8`.* A walk episode when the walker enters a room a lesson names, a
    placard episode when its panel stays open for its dwell; both matched by
@@ -624,14 +656,14 @@ the suite or eval that proves it; a name marked *proposed* is fixed at landing.
 
 | # | Exit criterion | Proved by | State |
 | --- | --- | --- | --- |
-| 1 | A fake `XRSession` enters and leaves on the 3D page in headless Chromium: the rig moves and the camera does not, `local-floor` falls back to `local`, snap turn and the controller map reach every one of the 11 seats' key state, the wrist panel reads the dash's gauges, ending the session restores the camera and the sky | a mocked-session browser suite (`xr/test_session.mjs --browser`; its browser half is not in `verify_all.sh`), plus `meta/test.mjs` changing its "no session driven" claim to "mocked session driven, no headset", with a mutation that breaks each contract failing by name | partly met: 3 of 11 seats seen in a MOCKED session (rigging signal call, load-chart, scaffold-bay complete; scaffold-bay with one failing check); crane-lift key state; seven not run |
+| 1 | A fake `XRSession` enters and leaves on the 3D page in headless Chromium: the rig moves and the camera does not, `local-floor` falls back to `local`, snap turn and the controller map reach every one of the 11 seats' key state, the wrist panel reads the dash's gauges, ending the session restores the camera and the sky | a mocked-session browser suite (`xr/test_session.mjs --browser`; its browser half is not in `verify_all.sh`), plus `meta/test.mjs` changing its "no session driven" claim to "mocked session driven, no headset", with a mutation that breaks each contract failing by name | partly met: 11 of 11 seats measured in MOCKED sessions at 5 to 18 frames per second (load 4.5 to 6.4): 4 Passed (rigging signal call, load chart, scaffold bay, tower crane lift), overhead crane a retry verdict, 6 key state only; no physical headset |
 | 2 | `lessons_not_completable` is 0 of 139 (23 today) while every crew step still records an episode, and an episode missing seat or muster still fails the verifier | `node completion/test.mjs`, `node training/test.mjs`, `node lessons/test.mjs`, and `evals/registry/evals.json#completion_evidence` | shipped, `d8094b8`: 0 of 139 not completable |
 | 3a | `eval_parishes` part 1 reports 0 rows over a declared limit on 22051, 22071 and 22103, with the load average printed beside every frame row, and the `BASE` table and the three headroom constants in the eval byte-equal to `83db20b` | `node web/eval_parishes.mjs --part=1` (a browser eval; frame rows), and a check pinning the `BASE` table and the headroom constants (*proposed*, added with the change; `web/test_evalparts.mjs` does not pin them today) | not met: 22051 border passes at load 3-4 and fails at 5+; 22103 rows fail at load 3-4, as at `83db20b`; no ceiling moved |
-| 3b | Mean frame luminance of the 3D network view is inside [40, 215] with the clipped and crushed shares no worse than at `83db20b`, and draw calls and triangles equal (204 and 5,254) | a committed browser luminance eval over the four 3D pages (*proposed:* `web/eval_look.mjs`), `web/test_lookkit.mjs` | met by measured runs (network 28.2 -> 52.2, campus 36.2 -> 50.1, draw calls and triangles equal); the proposed luminance eval is not committed |
+| 3b | Mean frame luminance of the 3D network view is inside [40, 215] with the clipped and crushed shares no worse than at `83db20b`, and draw calls and triangles equal (204 and 5,254) | a committed browser luminance eval over the four 3D pages (*proposed:* `web/eval_look.mjs`), `web/test_lookkit.mjs` | met on the scene, wave 22, by `web/eval_look.mjs` (overlays hidden, `83db20b` measured in the same harness): network scene mean 23.8 -> 54.4, campus 40.6 -> 57.0, clipped 0 px at both commits, crushed 20.26% -> 0.001% (network); draw calls and triangles 203 and 5,252 at both commits (the 204 and 5,254 above came from the wave 20 method). Whole frame, report only: 120 and 109 px clipped, all of it the top bar's white text, the same at `83db20b` |
 | 4 | Every one of the 16 modules is linked from a place inside its world, every link resolves to a registry id, and each is reachable by keyboard | `node web/test_worldmodules.mjs`, `node web/test_access.mjs` (counts raised, never lowered), `node modules/test.mjs` | shipped: 16 of 16 modules linked from a place |
-| 5 | A second carded policy has a held-out interval on seeds 11 to 20 in `robotics/arena/registry`, `trained_models` equals the models registry's count, every honesty line still says no language model is trained | `node robotics/arena/test.mjs`, `node web/test_arena.mjs`, `node robotics/test.mjs` | planned |
-| 6 | The six spaces load in the 3D page and a walker reaches each one's rooms, and the home or map page links both pages | `node web/test_spaces.mjs` (a walkability check added to it), `node web/test_nav.mjs` | planned |
-| 7 | `eval_relief` passes both off and on with 0 rows failing, no existing flat-ground row edited, and the Bay overview triangle rows inside their ceilings | `node web/eval_relief.mjs` for the parish and Bay pages | planned |
+| 5 | A second carded policy has a held-out interval on seeds 11 to 20 in `robotics/arena/registry`, `trained_models` equals the models registry's count, every honesty line still says no language model is trained | `node robotics/arena/test.mjs`, `node web/test_arena.mjs`, `node robotics/test.mjs` | met, wave 22: held-out seeds 11 to 20 (n = 130), success `bcg` 0.608 [0.523, 0.692] against the SCRIPTED reference 0.592 [0.515, 0.677] and the first policy 0.423 [0.339, 0.508]; paired win rate against the reference 0.258 [0.204, 0.315]; litter sort items binned 97 of 160, equal to the reference's 97, against 0 for the first policy; full litter-sort success at levels 1-3 is 0 for all three; `trained_models` 2 equals the models registry; no language model trained |
+| 6 | The six spaces load in the 3D page and a walker reaches each one's rooms, and the home or map page links both pages | `node web/test_spaces.mjs` (a walkability check added to it), `node web/test_nav.mjs` | partly met, wave 22: 10 of 10 (space, hall) pairs walked to their room in a browser (`web/browser_spaces.mjs`, not in `verify_all.sh`), the every-room test held on 4; both pages linked from every page |
+| 7 | `eval_relief` passes both off and on with 0 rows failing, no existing flat-ground row edited, and the Bay overview triangle rows inside their ceilings | `node web/eval_relief.mjs` for the parish and Bay pages | met by measured runs, wave 22: off and on pass on both pages, 0 rows failing, flat rows unedited; Bay overview triangles 2,981 / 3,199 / 1,452 inside their ceilings; frame rows at load 5 to 8 printed, not judged; relief default stays off |
 | 8 | Totals hold: `verify_all.sh` exits zero with the check count at least the 7,201 of `83db20b`, and each new row above has a mutation that fails by name | `./verify_all.sh`, `node brand/figures.mjs .`, `node brand/lint.mjs .`, `node roadmap/test.mjs` | continuous |
 
 A row is flipped at landing by replacing "pending" in its workstream with

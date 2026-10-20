@@ -8,8 +8,9 @@ demonstration, what is and is not trained, and links to the worlds and the Contr
 Every chrome word comes from the robo.* i18n keys (8 locales, Arabic right-to-left). Env / embodiment names, units
 and honesty lines are registry data, shown verbatim. Figures are computed from the registry at build time; the
 reference-policy results table is computed in the reader's browser from the same deterministic core the test runs.
-ARENA BEGIN (wave 18): the page prints the registry's trained_models count, which is the model arena's one small
-behaviour-cloning policy (robotics/arena/), trained on SCRIPTED episodes - not a language model, not on learner data.
+ARENA BEGIN (wave 18, extended wave 22): the page prints the registry's trained_models count, which is the model arena's
+small behaviour-cloning policies (robotics/arena/: the first, and a second with a class-weighted grip head), trained on
+SCRIPTED episodes - not a language model, not on learner data.
 ARENA END
 Classroom / K-12 mode (?classroom=1 or ?class=...) offers no recording and no export.
 """
@@ -56,7 +57,7 @@ PAGE_KEYS += ['robo.h.chart', 'robo.chart.note', 'robo.chart.total', 'robo.h.rep
               'robo.rp.exact', 'robo.rp.held', 'robo.rp.none', 'robo.bench.reach']
 # ---- ARENA BEGIN (wave 18): the model-arena i18n keys (chrome words of the arena section; 8 locales) ---------------------
 PAGE_KEYS += ['robo.h.arena', 'robo.arena.note', 'robo.arena.match', 'robo.arena.task', 'robo.arena.pause', 'robo.arena.resume',
-              'robo.arena.speed', 'robo.arena.live', 'robo.arena.board', 'robo.arena.policy', 'robo.arena.kind',
+              'robo.arena.speed', 'robo.arena.live', 'robo.arena.board', 'robo.arena.binned', 'robo.arena.binned.col', 'robo.arena.binned.mean', 'robo.arena.policy', 'robo.arena.kind',
               'robo.arena.success', 'robo.arena.win', 'robo.arena.wins', 'robo.arena.cards', 'robo.arena.class', 'robo.arena.progress']
 # ---- ARENA END ------------------------------------------------------------------------------------------------------------
 KEYS = PAGE_KEYS + robo_i18n_keys()
@@ -569,8 +570,9 @@ _AR = json.loads((ROOT / 'robotics/arena/registry/arena.json').read_text())
 _AM = json.loads((ROOT / 'robotics/arena/registry/models.json').read_text())
 _POL = (ROOT / 'robotics/arena/policies.js').read_text()
 _POL = _POL[_POL.index('/* MODEL_ARENA_POLICIES:BEGIN'):_POL.index('/* MODEL_ARENA_POLICIES:END */') + len('/* MODEL_ARENA_POLICIES:END */')]
-_BC = [m for m in _AM['models'] if m['policy'] == 'bc']
-if len(_BC) != 1 or _hl.sha256(json.dumps(_BC[0]['weights'], separators=(',', ':')).encode()).hexdigest() != _BC[0]['weights_sha256']:
+_MODELS = {m['policy']: m for m in _AM['models']}
+if sorted(_MODELS) != ['bc', 'bcg'] or len(_MODELS) != len(_AM['models']) or any(
+        _hl.sha256(json.dumps(m['weights'], separators=(',', ':')).encode()).hexdigest() != m['weights_sha256'] for m in _MODELS.values()):
     raise RoboticsPageError('build_robotics: the arena BC weights are missing or do not match their sha256 pin')
 _LB = _AR['leaderboard']
 for _k in ('table', 'seeds', 'rows'):
@@ -586,12 +588,18 @@ _board = ''.join(
     f'<td><span class="tag">{E(r["kind"])}</span></td><td data-arena-success="{r["success_rate"]["mean"]}">{_ci(r["success_rate"])}</td>'
     f'<td data-arena-win="{r["win_vs_ref"]["rate"]}">{_ci({"mean": r["win_vs_ref"]["rate"], "ci95": r["win_vs_ref"]["ci95"]})}</td><td>{r["n"]}</td></tr>'
     for r in _LB['rows'])
+_SORT = _HO['sort']['summary']
+_binned = ''.join(
+    f'<tr data-arena-binned-policy="{E(p)}"><td>{E(_AR["cards"][p]["name"])}</td><td data-arena-binned="{_SORT[p]["items_binned"]}">{_SORT[p]["items_binned"]} / {_SORT[p]["items_total"]}</td>'
+    f'<td data-arena-binned-mean="{_SORT[p]["binned_per_episode"]["mean"]}">{_ci(_SORT[p]["binned_per_episode"])}</td></tr>'
+    for p in _HO['policies'])
 _cards = ''.join(f'<li data-arena-card="{E(pid)}"><b>{E(c["name"])}</b> <span class="tag">{E(c["kind"])}</span> {E(c["what"])}. '
                  f'<span class="muted">{E(c["not"])}.</span></li>' for pid, c in _AR['cards'].items())
 _ARENA_DATA = {
     'policies': _HO['policies'], 'cards': {k: {'name': v['name'], 'kind': v['kind']} for k, v in _AR['cards'].items()},
     'tasks': [[t['env'], t['level']] for t in _AR['tables']['all_seeds']['tasks']], 'seeds': _AR['tables']['all_seeds']['seeds'],
-    'bc': _BC[0]['weights'], 'bc_sha256': _BC[0]['weights_sha256'], 'stamp': _AR['source_stamp'],
+    'models': {k: m['weights'] for k, m in _MODELS.items()}, 'models_sha256': {k: m['weights_sha256'] for k, m in _MODELS.items()},
+    'stamp': _AR['source_stamp'],
 }
 ARENA_HTML = (
     '<section class="box" aria-labelledby="robo-h-arena" id="model-arena" data-model-arena>'
@@ -610,9 +618,11 @@ ARENA_HTML = (
     f'{E(_LB["order"])}</p><div class="tw"><table id="arena-board"><thead><tr><th>#</th><th>{T("robo.arena.policy")}</th>'
     f'<th>{T("robo.arena.kind")}</th><th>{T("robo.arena.success")}</th><th>{T("robo.arena.win")}</th><th>n</th></tr></thead>'
     f'<tbody>{_board}</tbody></table></div>'
+    f'<h3>{T("robo.arena.binned")}</h3><div class="tw"><table id="arena-binned"><thead><tr><th>{T("robo.arena.policy")}</th><th>{T("robo.arena.binned.col")}</th>'
+    f'<th>{T("robo.arena.binned.mean")}</th></tr></thead><tbody>{_binned}</tbody></table></div>'
     f'<h3>{T("robo.arena.cards")}</h3><ul id="arena-cards">{_cards}</ul>'
     f'<p class="muted">robotics/arena/registry/arena.json · {E(_AR["schema"])} · stamp <code>{E(_AR["source_stamp"])}</code> · '
-    f'BC weights sha256 <code>{E(_BC[0]["weights_sha256"][:16])}</code></p></section>')
+    + ' · '.join(f'{E(k)} weights sha256 <code>{E(m["weights_sha256"][:16])}</code>' for k, m in _MODELS.items()) + '</p></section>')
 ARENA_JS = _POL + r'''
 /* MODEL_ARENA:BEGIN - live matches: every carded policy on the same seeded task, side by side in one shared world */
 (function () {
@@ -621,9 +631,10 @@ ARENA_JS = _POL + r'''
   var R = data.robo, I = JSON.parse(document.getElementById('robo-i18n').textContent), P = window.__roboPage || { locale: 'en', classroom: false };
   var t = function (k) { var L = I[P.locale] || I.en; return L.strings[k] || I.en.strings[k] || k; };
   var $ = function (s) { return document.getElementById(s); };
-  var d = function (a) { return a.map(function (x) { return x / A.bc.scale; }); };
-  var W = { in: A.bc.in, hidden: A.bc.hidden, out: A.bc.out, W1: d(A.bc.W1), b1: d(A.bc.b1), W2: d(A.bc.W2), b2: d(A.bc.b2) };
-  var COL = { scripted: '#3987e5', greedy: '#d95926', random: '#93a3a6', bc: '#199e70' };
+  var dec = function (w) { var d = function (a) { return a.map(function (x) { return x / w.scale; }); };
+    return { in: w.in, hidden: w.hidden, out: w.out, W1: d(w.W1), b1: d(w.b1), W2: d(w.W2), b2: d(w.b2) }; };
+  var W = {}; Object.keys(A.models).forEach(function (k) { W[k] = dec(A.models[k]); });
+  var COL = { scripted: '#3987e5', greedy: '#d95926', random: '#93a3a6', bc: '#199e70', bcg: '#b07cf0' };
   var match = 0, cur = null, sts = [], acts = [], trails = [], playing = true, speed = 4, acc = 0, last = 0, hold = 0, lastRes = null;
   function snap() { return sts.map(function (st, i) { return { policy: A.policies[i], steps: st.step, done: st.done, success: st.done ? st.done !== 'cap' : null, ret: Math.round(st.ret * 1000) / 1000, collected: st.collected }; }); }
   var tally = {}; A.policies.forEach(function (p) { tally[p] = { wins: 0, ties: 0, played: 0 }; });
@@ -634,7 +645,7 @@ ARENA_JS = _POL + r'''
   function start() {
     cur = schedule(match); var env = R.envs[cur.env], emb = R.embodiments[env.embodiments[0]];
     sts = A.policies.map(function () { return RoboCore.reset(env, emb, cur.seed, cur.level); });
-    acts = A.policies.map(function (p) { return ArenaPolicies.make(p, { RoboCore: RoboCore, env: env, seed: cur.seed, level: cur.level, model: W }); });
+    acts = A.policies.map(function (p) { return ArenaPolicies.make(p, { RoboCore: RoboCore, env: env, seed: cur.seed, level: cur.level, model: W[p] || null }); });
     trails = A.policies.map(function () { return [[0, 0]]; });
     $('arena-match').textContent = String(match + 1);
     $('arena-task').textContent = env.name + ' · L' + cur.level + ' · seed ' + cur.seed;

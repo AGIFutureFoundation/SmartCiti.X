@@ -27,8 +27,16 @@ from the registry that owns each fact:
     per prop, one draw call per pooled material); a kind that declares no
     figure is listed as not-estimated by name.
 
-None of these spaces is built into the 3D world. They are declared, not yet
-walkable, and no dimension here is a measurement of a real venue.
+Walkability (wave 22): each space stands in the 3D page, in the room of its
+strand, by the deep link web/trade_craft_3d.html?space=<id>&hall=<slug>. The
+`walk` block records, per serving hall, that room's grid rectangle, which way
+the footprint turns to fit it, and a door-graph path from the building's open
+front to it, by the same rule web/build_3d.py planDoors() cuts doorways (one
+door per shared edge, one in each room's frontage). The path is DERIVED here and
+recomputed independently by spaces/test.mjs; what the walker actually does is
+proved in a browser by web/browser_spaces.mjs. Placement is AUTHORED: the
+footprint is centred in the room, and no dimension is a measurement of a real
+venue.
 """
 import hashlib
 import json
@@ -42,10 +50,14 @@ from interiors import plan_for, ROOMS  # noqa: E402  (read only)
 
 KINDS = ('prop', 'furniture', 'seat', 'station', 'crib', 'sign')
 ROTATIONS = (0, 90, 180, 270)
-NOT_WALKABLE = ('declared, not yet walkable: an AUTHORED proposal composed '
-                'from this bundle\'s own assets; nothing here is built into '
-                'the 3D world, no dimension is a measurement of a real venue, '
-                'and no duration, price or accreditation is stated')
+WALKABLE = 'declared, walkable in the 3D page'
+WALKABLE_NOTE = ('declared, walkable in the 3D page: an AUTHORED proposal composed '
+                 'from this bundle\'s own assets, drawn in the room of its strand by '
+                 'the link trade_craft_3d.html?space=<id>; props and furniture are '
+                 'drawn from their registry recipes, seats, stations, cribs and signs '
+                 'as marker pads; no dimension is a measurement of a real venue, '
+                 'and no duration, price or accreditation is stated')
+SPACE_PARAM = 'space'   # the 3D page's query parameter, and the page builder's
 
 
 def load(rel):
@@ -129,6 +141,80 @@ def room_envelope(slug, strand):
             return {'hall': slug, 'strand': strand, 'label': r['label'],
                     'w_m': r['w'] * UNIT_M, 'd_m': r['h'] * UNIT_M}
     raise KeyError(f'{slug} plan has no room for strand {strand}')
+
+
+def plan_rooms(slug):
+    """Every room of this hall's plan in grid units, in plan order - the
+    rectangles web/build_3d.py turns into roomRects."""
+    per_level = manifest['ledger']['slots_per_level'] * manifest['ledger']['variants_per_lesson']
+    states = {k: v * per_level for k, v in hall_level_states(slug).items()}
+    plan = plan_for(HALL_BY_SLUG[slug], states)
+    return [{'strand': r['strand'], 'label': r['label'], 'x': r['x'], 'y': r['y'],
+             'w': r['w'], 'h': r['h']} for r in plan['rooms']]
+
+
+def door_graph(rooms):
+    """The doorway graph of web/build_3d.py planDoors(): one door on every
+    shared edge (rooms touching along a vertical or horizontal line with a
+    positive overlap), and one in the frontage of every room on the open front
+    (y == 0). Returns (adjacency by strand, strands that open on the front)."""
+    adj = {r['strand']: set() for r in rooms}
+    for i, a in enumerate(rooms):
+        for b in rooms[i + 1:]:
+            side = ((a['x'] + a['w'] == b['x'] or b['x'] + b['w'] == a['x'])
+                    and min(a['y'] + a['h'], b['y'] + b['h']) > max(a['y'], b['y']))
+            back = ((a['y'] + a['h'] == b['y'] or b['y'] + b['h'] == a['y'])
+                    and min(a['x'] + a['w'], b['x'] + b['w']) > max(a['x'], b['x']))
+            if side or back:
+                adj[a['strand']].add(b['strand'])
+                adj[b['strand']].add(a['strand'])
+    return adj, [r['strand'] for r in rooms if r['y'] == 0]
+
+
+def route(rooms, target):
+    """Fewest-door path from the open front to `target`: the list of strands,
+    entry room first. None when the room cannot be reached."""
+    adj, front = door_graph(rooms)
+    best = None
+    for start in front:
+        prev, queue = {start: None}, [start]
+        for cur in queue:
+            for nxt in sorted(adj[cur]):
+                if nxt not in prev:
+                    prev[nxt] = cur
+                    queue.append(nxt)
+        if target in prev:
+            path, cur = [], target
+            while cur is not None:
+                path.append(cur)
+                cur = prev[cur]
+            path.reverse()
+            if best is None or len(path) < len(best):
+                best = path
+    return best
+
+
+def walk_for(id_, decl_strand, W, D, unions_):
+    """Per serving hall: the room, the turn of the footprint, the door route."""
+    halls_out = []
+    for slug in unions_:
+        rooms = plan_rooms(slug)
+        room = next(r for r in rooms if r['strand'] == decl_strand)
+        w_m, d_m = room['w'] * UNIT_M, room['h'] * UNIT_M
+        if W <= w_m and D <= d_m:
+            orient = 'direct'
+        elif D <= w_m and W <= d_m:
+            orient = 'transposed'
+        else:
+            raise KeyError(f'{slug}: a {W}x{D} m space does not fit the {room["label"]} ({w_m}x{d_m} m)')
+        path = route(rooms, decl_strand)
+        if path is None:
+            raise KeyError(f'{slug}: the {room["label"]} cannot be reached from the open front by any door')
+        halls_out.append({'hall': slug, 'room': room, 'room_m': {'w': w_m, 'd': d_m},
+                          'orient': orient, 'route': path, 'doors_passed': len(path),
+                          'reachable': True,
+                          'href': f'trade_craft_3d.html?{SPACE_PARAM}={id_}&hall={slug}'})
+    return halls_out
 
 
 def hazards_for(strand, floor, wall):
@@ -309,7 +395,12 @@ def build_space(path):
         'counts': {'items': len(items), 'by_kind': by_kind,
                    'footprint_known': sum(1 for r in items if r['footprint'] is not None),
                    'footprint_unknown': sum(1 for r in items if r['footprint'] is None)},
-        'status': 'declared, not yet walkable',
+        'walk': {'halls': walk_for(decl['id'], decl['strand'], W, D, decl['unions']),
+                 'placement': ('AUTHORED: the footprint is centred in the room; "transposed" turns '
+                               'the declaration a quarter turn (x and y swap, rotation + 90) to fit; '
+                               'the route is DERIVED from the plan'),
+                 'provenance': 'DERIVED'},
+        'status': WALKABLE,
         'provenance': {'declaration': 'AUTHORED', 'names': 'DERIVED', 'fits_in': 'DERIVED',
                        'footprints': 'DERIVED', 'ppe': 'DERIVED', 'cost': 'DERIVED'},
         'source': where,
@@ -335,9 +426,9 @@ def main():
         'pack_version': manifest['pack_version'],
         'source_stamp': stamp,
         'authored_stamp': authored_stamp,
-        'status': 'declared, not yet walkable',
+        'status': WALKABLE,
         'honesty': {
-            'status': NOT_WALKABLE,
+            'status': WALKABLE_NOTE,
             'composed_only_from': sorted(set(REGISTRY_OF.values())) + [
                 'surfaces/registry/finishes.json#catalogue',
                 'surfaces/registry/finishes.json#wall_catalogue'],
@@ -353,12 +444,19 @@ def main():
             'footprints': ('an item with no size_m in its registry is recorded as footprint '
                            'unknown and its overlap is not checked; nothing is assumed'),
             'not_stated': 'no duration, price, accreditation or venue',
+            'walk': ('walkable means: the 3D page draws the space in the room of its strand and a '
+                     'walker can reach that room by the doorways the plan cuts; a seat, station, '
+                     'crib or sign is a marker pad, not the asset, and no marker is solid'),
         },
         'provenance': {'declarations': 'AUTHORED', 'everything_else': 'DERIVED',
                        'colours': 'AUTHORED (surfaces catalogue, copied by id)'},
         'units': {'metres': 'x, y are the item centre from the space\'s bottom-left corner; '
                             'rotation in degrees, 90/270 swap the footprint axes',
                   'grid_unit_m': UNIT_M},
+        'walk_param': SPACE_PARAM,
+        'plans': {slug: plan_rooms(slug) for slug in sorted({w['hall'] for s in spaces for w in s['walk']['halls']})},
+        'plans_note': ('the rooms of each serving hall in grid units (3 m), in plan order, as '
+                       'web/interiors.py plan_for lays them out; the walk routes are searched over these'),
         'kinds': list(KINDS),
         'registry_of': REGISTRY_OF,
         'counts': {
@@ -375,6 +473,9 @@ def main():
             'tris': sum(s['cost']['tris'] for s in spaces),
             'draw_calls': sum(s['cost']['draw_calls'] for s in spaces),
             'area_m2': r3(sum(s['footprint_m']['area_m2'] for s in spaces)),
+            'walk_links': sum(len(s['walk']['halls']) for s in spaces),
+            'walk_reachable': sum(1 for s in spaces for w in s['walk']['halls'] if w['reachable']),
+            'walk_transposed': sum(1 for s in spaces for w in s['walk']['halls'] if w['orient'] == 'transposed'),
         },
         'unions_served': unions_served,
         'ppe_items': ppe_items,

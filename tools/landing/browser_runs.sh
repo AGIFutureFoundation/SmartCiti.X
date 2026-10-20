@@ -10,5 +10,8 @@ run relief_bay 120 node web/eval_relief.mjs "$B/web/trade_craft_bay.html" --name
 run eval_parishes 240 env "PARISHES_URL=$B/web/trade_craft_parishes.html" node web/eval_parishes.mjs
 run eval_bayworld 180 env "BAY_URL=$B/web/trade_craft_bay.html" node web/eval_bayworld.mjs
 run eval_wilds 180 env "WILDS_URL=$B/web/trade_craft_wilds.html" node web/eval_wilds.mjs
+run eval_look 120 env "LOOK_BASE=$B" node web/eval_look.mjs
+run spaces_a 90 node web/browser_spaces.mjs "$B/web/trade_craft_3d.html" --pairs=0-4
+run spaces_b 90 node web/browser_spaces.mjs "$B/web/trade_craft_3d.html" --deep=scaffold-court --pairs=5-9 --halltest=flipped-classroom:electricians
 run geomap_probe 90 node tools/landing/geomap_hillshade_probe.mjs "$B/web/trade_craft_geomap.html" "$O/geomap.png"
 run eval_styles 600 node web/eval_styles.mjs "--base=$B" "--root=$T"

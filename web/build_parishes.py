@@ -2379,6 +2379,25 @@ function elevOverview(over) {
 """, 1)
 JS = JS.replace(_RO_CALL, '  elevOverview(over);   // RELIEF-OVERVIEW: park / restore the relief patch before it follows the eye\n' + _RO_CALL, 1)
 # GROUND2 END relief-overview
+# RELIEF BEGIN relief-aware (wave 22): the relief-aware ground rule beside the flat-ground one. window.__parishes.elev gets
+# groundAudit() (terrainGroundAudit over the land meshes: flat vertices at y = 0, patch vertices on the lattice at height +
+# lift, none under 0) and eyeAudit() (the drawn camera stands EYE[mode] above the ground under it). Page JS names only RELIEF-AWARE.
+_RA_DEF = "  if (r.dropped) E.cellKey = '';   // a land mesh changed while parked: elevRefresh rebuilds the patch this frame\n}\n"
+_RA_API = '  elev: { probe: (n) => elevProbe(n), refresh: () => elevRefresh(eye.x, eye.z, true),\n'
+if JS.count(_RA_DEF) != 1 or JS.count(_RA_API) != 1:
+    raise BuildError('build_parishes: RELIEF-AWARE anchors (elevOverview end, elev API head) must occur exactly once')
+JS = JS.replace(_RA_DEF, _RA_DEF + r"""/* RELIEF-AWARE: the ground rule that holds with relief on AND off (beside the flat y = 0 rule, which still holds off / parked) */
+function elevGroundAudit() {
+  const E = elevSync(), all = [...landMesh.values()], drawn = all.filter((m) => m.parent), a = terrainGroundAudit(drawn, E.lat, E.R.lift_m, 0.002);   // judged: the land meshes in the scene (a streamed-out parish's mesh is not drawn)
+  return { on: E.on, overview: elevOver, notInScene: all.length - drawn.length, ...a };
+}
+function elevEyeAudit() {
+  const E = elevSync(), p = camera.position, g = E.on ? E.lat.height(p.x, p.z) : 0;
+  return { on: E.on, mode, riding: !!riding, camY: +p.y.toFixed(3), ground: +g.toFixed(3), above: +(p.y - g).toFixed(3), eyeH: EYE[mode], avY: av ? +av.y.toFixed(3) : null };
+}
+""", 1)
+JS = JS.replace(_RA_API, _RA_API + '    groundAudit: () => elevGroundAudit(), eyeAudit: () => elevEyeAudit(),\n', 1)
+# RELIEF END relief-aware
 # WORLDHD BEGIN world-tex (wave 17, WORLDHD·High-res Worlds): SURFACE DETAIL BY DEVICE TIER on the walkable worlds.
 # The ground, the streets and the kit buildings are flat colours (the ground: one 2048 px atlas over a whole parish, a few
 # metres per texel at your feet). On a GPU that can afford it the page now multiplies world-space detail textures over

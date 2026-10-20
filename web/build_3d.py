@@ -1221,6 +1221,241 @@ _task_places = max(len({(r['place']['kind'], r['place']['id']) for r in v
 assert len(_q_seat) + 1 + _task_places + 16 <= QCAP3D, (
     f'task layer: {len(_q_seat)} seats + 1 green + {_task_places} task places + 16 meteors overflow the pool of {QCAP3D}')
 
+# CUSTOM-SPACE-WALK BEGIN (wave 22): the custom spaces (spaces/registry), drawn on request by ?space=<id>&hall=<slug>.
+# Read whole and fail closed: a hall the page does not lay out, a prop or furniture id the page's prop table
+# does not hold, or a space whose walk block lacks a serving hall stops the build by name. The page draws only
+# what the registry declares; placement (centred in the room) is AUTHORED and stated on the page.
+_sp_reg = json.load(open(ROOT / 'spaces/registry/spaces.json'))
+_sp_slugs = {h['slug'] for h in HALLS}
+_sp_props = {p['id'] for p in props_reg['props']} | {q['id'] for q in INTERIOR_KIT['pieces']}
+SPACES_3D = {'param': _sp_reg['walk_param'], 'floorY': 0.41, 'spaces': {}}
+for _s in _sp_reg['spaces']:
+    _where = f"spaces/registry/spaces.json#{_s['id']}"
+    assert [w['hall'] for w in _s['walk']['halls']] == [u['slug'] for u in _s['unions']], f'{_where}: walk halls are not its unions'
+    for _w in _s['walk']['halls']:
+        assert _w['hall'] in _sp_slugs, f"{_where}: hall {_w['hall']} is not a hall this page lays out"
+        assert _w['reachable'] is True, f"{_where}: {_w['hall']} is not reachable"
+    for _it in _s['items']:
+        if _it['kind'] in ('prop', 'furniture'):
+            assert _it['id'] in _sp_props, f"{_where}: {_it['kind']} {_it['id']} is not in the page's prop table"
+    SPACES_3D['spaces'][_s['id']] = {
+        'id': _s['id'], 'title': _s['title'], 'purpose': _s['purpose'], 'strand': _s['strand'],
+        'w': _s['footprint_m']['w'], 'd': _s['footprint_m']['d'], 'floor': _s['floor']['color'],
+        'halls': [w['hall'] for w in _s['walk']['halls']],
+        'orient': {w['hall']: w['orient'] for w in _s['walk']['halls']},
+        'route': {w['hall']: w['route'] for w in _s['walk']['halls']},
+        'ppe': _s['ppe']['required'],
+        'items': [{'k': i['kind'], 'id': i['id'], 'name': i['name'], 'x': i['x'], 'y': i['y'], 'r': i['rotation'],
+                   'fp': ([i['footprint']['w'], i['footprint']['d']] if i['footprint'] else None)} for i in _s['items']],
+    }
+SPACES_JS = r"""/* CUSTOM-SPACE-WALK: the custom training spaces, drawn into the room of their strand.
+   A space is an AUTHORED declaration (spaces/authored), composed only from this bundle's own assets and fitted
+   to the room web/interiors.py lays out for its strand in every serving hall. ?space=<id>&hall=<slug> opens the
+   hall and draws the space in that room, in place of the room's stock props. A prop or a piece of furniture is
+   drawn from its registry recipe through the page's own prop path (pooled or instanced, solid where the registry
+   gives a footprint); a seat, station, crib or sign has no footprint or recipe in its registry, so it stands as a
+   marker pad and a post, and is NOT solid. The footprint is centred in the room; no dimension is a measurement
+   of a real venue. */
+const SP3 = D.spaces3d;
+let spStat = null, spPool = null, spFloorMat = null;
+const SP_PAD = { seat: ['steel', 1.2], station: ['post', 1.4], crib: ['wood', 1.0], sign: ['paint', 1.8] };
+const spaceWanted = (hallSlug, strand) =>
+  (spaceActive && spaceActive.hall === hallSlug && SP3.spaces[spaceActive.id].strand === strand)
+    ? SP3.spaces[spaceActive.id] : null;
+function spaceReset() { spStat = null; spPool = new Map(); }
+/* A declared item may stand in a doorway (the declaration knows nothing of where the plan cuts its doors), and a
+   solid there would seal the rooms behind it. The doorway lanes of the room - each opening, a body width wider each
+   side and two metres deep - are found from the same cuts the partitions were drawn around, and a piece whose
+   footprint reaches one is drawn all the same but is not solid. Counted, and said on the panel. */
+function spaceLanes(doors, rx, rz, rw, rd) {
+  const x0 = rx - rw / 2, x1 = rx + rw / 2, zF = rz - rd / 2, zB = rz + rd / 2, L = 2.0, M = BODY_R + .1;
+  const out = [];
+  for (const [c, d] of doors.get('x@' + x0.toFixed(2)) || []) if (d > zF && c < zB) out.push([x0, x0 + L, Math.max(c - M, zF), Math.min(d + M, zB)]);
+  for (const [c, d] of doors.get('x@' + x1.toFixed(2)) || []) if (d > zF && c < zB) out.push([x1 - L, x1, Math.max(c - M, zF), Math.min(d + M, zB)]);
+  for (const [c, d] of doors.get('z@' + zF.toFixed(2)) || []) if (d > x0 && c < x1) out.push([Math.max(c - M, x0), Math.min(d + M, x1), zF, zF + L]);
+  for (const [c, d] of doors.get('z@' + zB.toFixed(2)) || []) if (d > x0 && c < x1) out.push([Math.max(c - M, x0), Math.min(d + M, x1), zB - L, zB]);
+  return out;
+}
+function spaceStand(h, r, sp, rx, rz, rw, rd, doors) {
+  const lanes = spaceLanes(doors, rx, rz, rw, rd);
+  const turned = sp.orient[h.slug] === 'transposed';
+  const dw = turned ? sp.d : sp.w, dd = turned ? sp.w : sp.d;
+  const x0 = rx - dw / 2, z0 = rz - dd / 2, y0 = SP3.floorY;
+  spStat = { id: sp.id, hall: h.slug, strand: r.strand, label: r.label, turned,
+             room: { x0: rx - rw / 2, x1: rx + rw / 2, z0: rz - rd / 2, z1: rz + rd / 2, rx, rz },
+             footprint: { x0, x1: x0 + dw, z0, z1: z0 + dd },
+             drawn: { prop: 0, furniture: 0 }, markers: 0, solids: 0, ghosts: 0, lanes: lanes.length, tris: 0 };
+  // the space's own floor finish, one thin slab over the room's floor: unmarked, so it is freed with the hall
+  spFloorMat = new THREE.MeshStandardMaterial({ color: new THREE.Color(sp.floor), roughness: .85 });
+  const slab = new THREE.Mesh(boxGeo(dw, .03, dd), spFloorMat);
+  slab.position.set(rx, y0 - .015, rz); slab.receiveShadow = true; slab.name = 'space-floor-' + sp.id;
+  hallGroup.add(slab);
+  const pose = new THREE.Matrix4();
+  for (const it of sp.items) {
+    const hx = x0 + (turned ? it.y : it.x), hz = z0 + (turned ? it.x : it.y);
+    const deg = (it.r + (turned ? 90 : 0)) % 360;
+    if (it.k === 'prop' || it.k === 'furniture') {
+      const p = PROP_BY_ID.get(it.id);
+      if (!p) throw new Error('space ' + sp.id + ' places ' + it.id + ', which the prop table does not hold');
+      pose.makeRotationY(deg * Math.PI / 180).setPosition(hx, 0, hz);   // a recipe carries its own base_y_m
+      if (p.merges === 'pooled')
+        (propPool.get(propMat(p.material)) ?? propPool.set(propMat(p.material), []).get(propMat(p.material)))
+          .push(propGeo(p).clone().applyMatrix4(pose));
+      else if (p.merges === 'instanced')
+        (propInst.get(p.id) ?? propInst.set(p.id, []).get(p.id)).push(pose.clone());
+      else throw new Error('space prop ' + p.id + ' asks to merge as ' + p.merges);
+      spStat.drawn[it.k]++; spStat.tris += p.tris;
+      if (it.fp) {
+        const fw = (turned ? it.fp[1] : it.fp[0]) / 2, fd = (turned ? it.fp[0] : it.fp[1]) / 2;
+        if (lanes.some(([xa, xb, za, zb]) => hx + fw > xa && hx - fw < xb && hz + fd > za && hz - fd < zb)) spStat.ghosts++;
+        else { wallRect(hx, hz, fw, fd); spStat.solids++; }
+      }
+    } else {
+      const [mname, ph] = SP_PAD[it.k];
+      const m2 = mat[mname];
+      const pad = new THREE.BoxGeometry(1, .03, 1).translate(hx, y0 + .015, hz);
+      const post = new THREE.BoxGeometry(.12, ph, .12).translate(hx, y0 + ph / 2, hz);
+      (spPool.get(m2) ?? spPool.set(m2, []).get(m2)).push(pad, post);
+      spStat.markers++;
+    }
+  }
+  const lb = label(sp.title, 'AUTHORED space', .3, { kind: 'route' });
+  lb.position.set(rx, 2.7, rz); hallGroup.add(lb);
+}
+function spaceFlush(g) {
+  if (spPool && spPool.size) flushParts(spPool, g);
+  spPool = null;
+  spacePanel();
+}
+// the panel: what this space is, where it stands, how a walker gets there, and what it is not
+function spacePanel() {
+  let el = document.getElementById('spacePanel');
+  const sp = spStat && SP3.spaces[spStat.id];
+  if (!sp) { if (el) el.style.display = 'none'; return; }
+  if (!el) {
+    el = document.createElement('div'); el.id = 'spacePanel';
+    el.setAttribute('role', 'region'); el.setAttribute('aria-label', 'Custom training space');
+    Object.assign(el.style, { position: 'fixed', right: '16px', top: '168px', maxWidth: 'min(320px, calc(100vw - 32px))', maxHeight: 'calc(100vh - 190px)', overflowY: 'auto',
+      zIndex: 20, padding: '10px 12px', borderRadius: '8px', background: 'rgba(12,17,19,.88)', color: '#E8EDEC',
+      font: '12px/1.45 system-ui, sans-serif', border: '1px solid rgba(232,237,236,.25)' });
+    document.body.appendChild(el);
+  }
+  el.style.display = '';
+  el.textContent = '';
+  const add = (tag, text, css) => { const n2 = document.createElement(tag); n2.textContent = text; if (css) n2.style.cssText = css; el.appendChild(n2); return n2; };
+  add('div', 'AUTHORED space · ' + sp.title, 'font-weight:700;font-size:13px');
+  add('div', sp.purpose, 'margin:4px 0');
+  const via = sp.route[spStat.hall].map((s2) => D.i18n[loc].strands[s2] ?? s2).join(' → ');
+  add('div', 'Stands in the ' + spStat.label + ' of ' + hallRec.name + '. From the open front: ' + via + '.');
+  add('div', spStat.drawn.prop + ' props and ' + spStat.drawn.furniture + ' furniture pieces drawn from their recipes; '
+    + spStat.markers + ' seats, stations, cribs and signs stand as marker pads (not solid).', 'margin-top:4px');
+  if (spStat.ghosts) add('div', spStat.ghosts + ' of them stand in a doorway lane and are not solid, so the rooms behind them stay reachable.', 'margin-top:4px');
+  add('div', 'PPE (derived): ' + sp.ppe.join(', ') + '.', 'margin-top:4px');
+  add('div', 'A declared proposal, not a measured venue.', 'margin-top:4px;opacity:.8');
+  const a = add('a', 'All custom spaces', 'display:inline-block;margin-top:6px;color:#8fd4dc');
+  a.href = 'trade_craft_spaces.html';
+}
+function spaceFocus() {
+  if (!spStat || view !== 'hall') return;
+  const R = spStat.room;
+  controls.target.set(R.rx, 1, R.rz);
+  camera.position.set(R.rx, 13, R.z0 - 9);
+  controls.update();
+}
+window.__tc3dSpace = () => spStat && {
+  id: spStat.id, hall: spStat.hall, strand: spStat.strand, label: spStat.label, turned: spStat.turned,
+  drawn: { ...spStat.drawn }, markers: spStat.markers, solids: spStat.solids, ghosts: spStat.ghosts, lanes: spStat.lanes, tris: spStat.tris,
+  room: { ...spStat.room }, footprint: { ...spStat.footprint },
+  walkerRoom: curRoom ? curRoom.strand : null, route: SP3.spaces[spStat.id].route[spStat.hall].slice() };
+// a harness (and the spaces page's own links, by URL) can open any declared space in any hall that serves it
+window.__tc3dSpaceLoad = (id, hall) => {
+  const sp = Object.hasOwn(SP3.spaces, id) ? SP3.spaces[id] : null;
+  if (!sp || !sp.halls.includes(hall)) throw new Error('no space ' + id + ' in hall ' + hall);
+  spaceActive = { id, hall };
+  showHall(hall);
+  spaceFocus();
+  return window.__tc3dSpace();
+};
+/* A walker, not a teleport: from the spot walkSpawn() gives (outside the open front) to the middle of the space's
+   room, by a route found over the hall's real solids (the ones walkStep pushes the body out of, space items
+   included), driven through walkStep itself. Reports every room entered, in order, and whether the walker stands
+   in the space's room at the end. */
+window.__tc3dSpaceWalk = (maxSeconds = 240, cell = .4) => {
+  if (view !== 'hall' || !spStat || !hallSolids.length) return { skipped: 'no space in a hall' };
+  const DEP = hallRec.depth * U, W = 12 * U, rects = hallSolids[0].rects;
+  let margin = .15;       // the route keeps this far clear of what walkStep would push against; narrowed only if no cell of the room is reached
+  const blocked = (x, z) => rects.some((b) => Math.abs(x - b.u) < b.hw + BODY_R + margin && Math.abs(z - b.v) < b.hd + BODY_R + margin);
+  const nx = Math.floor(W / cell), nz = Math.floor((DEP + 30) / cell), z00 = -DEP / 2 - 28;
+  const cellAt = (i, j) => [-W / 2 + (i + .5) * cell, z00 + (j + .5) * cell];
+  const idx = (x, z) => [Math.floor((x + W / 2) / cell), Math.floor((z - z00) / cell)];
+  const [sx, sz] = walkSpawn();
+  const R = spStat.room;
+  const goal = [R.rx, R.rz];
+  // flood from where the walker stands, over every free cell, then take the reached cell of the room nearest its middle
+  const [si, sj] = idx(sx, sz);
+  let prev, q, best = null;
+  for (const mg of [.15, .05, 0]) {
+  margin = mg;
+  prev = new Int32Array(nx * nz).fill(-2); prev[sj * nx + si] = -1;
+  q = [sj * nx + si];
+  for (let h2 = 0; h2 < q.length; h2++) {
+    const k = q[h2], i = k % nx, j = (k - i) / nx;
+    for (const [di, dj] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+      const i2 = i + di, j2 = j + dj;
+      if (i2 < 0 || j2 < 0 || i2 >= nx || j2 >= nz) continue;
+      const k2 = j2 * nx + i2;
+      if (prev[k2] !== -2) continue;
+      const [x, z] = cellAt(i2, j2);
+      if (blocked(x, z)) continue;
+      prev[k2] = k; q.push(k2);
+    }
+  }
+  best = null;
+  for (const k of q) {
+    const [x, z] = cellAt(k % nx, (k - k % nx) / nx);
+    if (x < R.x0 + .5 || x > R.x1 - .5 || z < R.z0 + .5 || z > R.z1 - .5) continue;
+    const d2 = (x - goal[0]) ** 2 + (z - goal[1]) ** 2;
+    if (!best || d2 < best[0]) best = [d2, k % nx, (k - k % nx) / nx];
+  }
+  if (best) break;
+  }
+  if (!best) return { reached: false, why: 'no cell of the room is reachable over the solids', rooms: [], flooded: q.length, margin };
+  const [, gi, gj] = best;
+  const cells = [];
+  for (let k = gj * nx + gi; k >= 0; k = prev[k]) cells.push(k);
+  cells.reverse();
+  // way-points: every cell of the route (a chord across a corner could meet a jamb)
+  const pts = cells.map((k) => cellAt(k % nx, (k - k % nx) / nx));
+  const p0 = xrRig.position.clone(), r0 = xrRig.rotation.y;
+  const wasKeys = { ...keys }, wasF = wkF, wasS = wkS, wasRoom = curRoom;
+  const wasSilent = wkSilent; wkSilent = true;
+  xrRig.position.set(sx, EYE_H, sz); camera.rotation.set(0, 0, 0); xrRig.updateMatrixWorld(true);
+  wkF = wkS = 0;
+  for (const k of Object.keys(keys)) delete keys[k];
+  keys.KeyW = true;
+  const dt = 1 / 60, cap = Math.round(maxSeconds / dt), rooms = [];
+  let steps = 0, breaches = 0, wp = 0;
+  while (wp < pts.length && steps < cap) {
+    const dx = pts[wp][0] - xrRig.position.x, dz = pts[wp][1] - xrRig.position.z;
+    if (Math.hypot(dx, dz) < .25) { wp++; continue; }
+    xrRig.rotation.y = Math.atan2(-dx, -dz);
+    xrRig.updateMatrixWorld(true);
+    walkStep(dt); steps++;
+    const x = xrRig.position.x, z = xrRig.position.z;
+    for (const b of rects) if (Math.abs(x - b.u) < b.hw && Math.abs(z - b.v) < b.hd) { breaches++; break; }
+    const cr = curRoom ? curRoom.strand : null;
+    if (cr && rooms[rooms.length - 1] !== cr) rooms.push(cr);
+  }
+  const end = curRoom ? curRoom.strand : null;
+  const out = { reached: end === spStat.strand && wp >= pts.length, end, rooms, steps, breaches, waypoints: pts.length, at: wp, margin,
+                seconds: +(steps * dt).toFixed(1), x: +xrRig.position.x.toFixed(2), z: +xrRig.position.z.toFixed(2) };
+  for (const k of Object.keys(keys)) delete keys[k];
+  Object.assign(keys, wasKeys);
+  xrRig.position.copy(p0); xrRig.rotation.y = r0; wkF = wasF; wkS = wasS; wkSilent = wasSilent; curRoom = wasRoom;
+  return out;
+};
+"""
+# CUSTOM-SPACE-WALK END
 DATA = json.dumps({
     'quest3d': QUEST3D,
     'tasks3d': TASK3D,
@@ -1605,6 +1840,9 @@ DATA = json.dumps({
     'exteriorKit': EXTERIOR_KIT,
     'sceneKit': SCENE_KIT,
     # SCENES END
+    # CUSTOM-SPACE-WALK BEGIN
+    'spaces3d': SPACES_3D,
+    # CUSTOM-SPACE-WALK END
     'i18n': I18N,
 }, ensure_ascii=False, separators=(',', ':'))
 
@@ -8190,6 +8428,13 @@ D.avatars.tradeapes.apes = D.avatars.tradeapes.apes.map((a) => ({
   ...a, name: 'TradeApe ' + a.code,
   cfg: { ...D.avatars.defaults, ...a.d, crew: a.hall } }));
 const params = new URLSearchParams(location.search);
+/* CUSTOM-SPACE-WALK BEGIN: ?space=<id> names one declared training space (spaces/registry); the hall is the one the link
+   names when that hall serves the space, else the space's first serving hall. An unknown id opens nothing. */
+const spaceDeep = Object.hasOwn(D.spaces3d.spaces, params.get('space')) ? params.get('space') : null;
+if (spaceDeep && !D.spaces3d.spaces[spaceDeep].halls.includes(params.get('hall')))
+  params.set('hall', D.spaces3d.spaces[spaceDeep].halls[0]);
+let spaceActive = spaceDeep ? { id: spaceDeep, hall: params.get('hall') } : null;
+/* CUSTOM-SPACE-WALK END */
 let loc = D.i18n[params.get('lang')] ? params.get('lang') : 'en';
 let slug = D.halls.some(h => h.slug === params.get('hall')) ? params.get('hall') : 'bricklayers';
 /* ?sim=<slug> - a deep link straight into one training seat, so the front
@@ -11619,6 +11864,9 @@ __EXTERIOR_KIT_JS__
 /* SCENE-KIT BEGIN (wave 17) */
 __SCENE_KIT_JS__
 /* SCENE-KIT END */
+/* CUSTOM-SPACE-WALK BEGIN */
+__SPACES_JS__
+/* CUSTOM-SPACE-WALK END */
 // the hall's own price, and the ceiling it was held to - both read, neither
 // typed: the ceiling comes out of web/eval_scene.mjs at build time
 window.__tc3dHall = () => hallCost && { ...hallCost, by: { ...hallCost.by } };
@@ -11973,6 +12221,7 @@ function buildHall(sg) {
                byProp: {}, skipped: [], pooledCalls: 0, instancedCalls: 0 };
   /* DRESSING BEGIN (wave 16 B1) */ const bdRooms = []; /* DRESSING END */
   /* INTERIOR-KIT BEGIN (wave 17) */ ikReset(sg); /* INTERIOR-KIT END */
+  /* CUSTOM-SPACE-WALK BEGIN */ spaceReset(); /* CUSTOM-SPACE-WALK END */
   // the trade's fixture benches, pooled across all eleven rooms
   const benchPool = new Map(), benchTop = partCollector(benchPool);
   // the room luminaires, one material per distinct illuminance in the record
@@ -12163,6 +12412,7 @@ function buildHall(sg) {
     // the district's tool crib hangs in the tools room, on the right
     // partition; its board and chest reserve that run before a prop asks
     const reserved = r.strand === 'tools' ? [buildCrib(h, rx, rz, rw, rd)] : [];
+    /* CUSTOM-SPACE-WALK BEGIN */ const spHere = spaceWanted(h.slug, r.strand); if (spHere) spaceStand(h, r, spHere, rx, rz, rw, rd, doors); else /* CUSTOM-SPACE-WALK END */
     placeRoomProps(h, r, rx, rz, rw, rd, doors, benches, rc.ppe,
                    (rw - floor.geometry.parameters.width) / 2, reserved);
     const luxN = Math.max(0, Math.min(1, (rc.lux - 200) / 800));
@@ -12388,6 +12638,7 @@ function buildHall(sg) {
   flushParts(lumPool, hallGroup, false);      // a lamp does not shadow itself
   flushProps(hallGroup);
   /* INTERIOR-KIT BEGIN (wave 17) */ ikFlush(hallGroup); /* INTERIOR-KIT END */
+  /* CUSTOM-SPACE-WALK BEGIN */ spaceFlush(hallGroup); /* CUSTOM-SPACE-WALK END */
 
   /* THE WAY OUT, AND WHERE YOU GO WHEN YOU TAKE IT.
 
@@ -17148,7 +17399,7 @@ document.getElementById('lang').addEventListener('change', (e) => {
 function syncURL() {
   history.replaceState(null, '', view === 'region' ? `?lang=${loc}`
     : view === 'campus' ? `?campus=${campusKey}&lang=${loc}`
-    : `?hall=${slug}&lang=${loc}`);
+    : `?hall=${slug}&lang=${loc}` /* CUSTOM-SPACE-WALK BEGIN */ + (spaceActive && spaceActive.hall === slug ? `&space=${spaceActive.id}` : '') /* CUSTOM-SPACE-WALK END */);
 }
 addEventListener('resize', () => {
   camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix();
@@ -17166,6 +17417,7 @@ bootMark('view');
 { const ask = skyBoot.ask; BOOT.skyAsks = skyBoot.n; skyBoot = null;
   if (!ask) throw new Error('boot: no view asked for a sky'); setSky(ask[0], ask[1]); }
 bootMark('skyDrawn');
+/* CUSTOM-SPACE-WALK BEGIN */ if (spaceDeep) spaceFocus(); /* CUSTOM-SPACE-WALK END */
 /* ...and then, if the link named a seat, take it. This runs AFTER the view
    above so the seat opens onto a world that is already standing: startSim()
    hides whichever group that call built and reads campusKey for the
@@ -18071,6 +18323,9 @@ page = page.replace('__INTERIOR_KIT_JS__', INTERIOR_KIT_JS, 1)
 page = page.replace('__EXTERIOR_KIT_JS__', EXTERIOR_KIT_JS, 1)
 page = page.replace('__SCENE_KIT_JS__', SCENE_KIT_JS, 1)
 # SCENES END
+# CUSTOM-SPACE-WALK BEGIN
+page = page.replace('__SPACES_JS__', SPACES_JS, 1)
+# CUSTOM-SPACE-WALK END
 page = page.replace('__ADVISOR_JS__', ADVISOR_JS)
 page = page.replace('__GROUND_TRUTH_JS__', GROUND_TRUTH_JS)
 page = page.replace('__QUEST_CSS__', QUEST_CSS)

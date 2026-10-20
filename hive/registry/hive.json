@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "name": "Omega Hive",
  "schema": "hive/1",
- "source_stamp": "7540559cd4f1f0df",
+ "source_stamp": "cd55115e2982993c",
  "sources": {
   "advisors": "agents/registry/advisors.json",
   "crews": "agents/registry/crews.json",
@@ -14,7 +14,7 @@
  "source_stamps": {
   "agents/registry/advisors.json": "c092920c23e8fd7b",
   "agents/registry/crews.json": "c092920c23e8fd7b",
-  "npcs/registry/npcs.json": "4f905f28bd98b4f1",
+  "npcs/registry/npcs.json": "594fe3d0b6907225",
   "avatars/registry/avatars.json": "27ed9dcaa71507d8"
  },
  "honesty": {

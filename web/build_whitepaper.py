@@ -420,10 +420,22 @@ if TRAINED and HAVE_ARENA:
     model = load(R['models'])['models']
     if len(model) != V(r('arena', '/counts/trained_models')):
         raise Missing('build_whitepaper: models.json and arena.json disagree on trained models')
-    mid = model[0]['id']
-    card = ''.join(f'<div><dt>{E(k.replace("_", " "))}</dt><dd>{N(r("models", f"/models/[id={mid}]/card/{k}"), tag="span", cls="")}</dd></div>'
-                   for k in model[0]['card'])
-    body += (f' One is trained: {N(r("models", f"/models/[id={mid}]/card/what"), cls="")}. It is compared below with the SCRIPTED '
+    cards = ''
+    for m_ in model:
+        mid = m_['id']
+        card = ''.join(f'<div><dt>{E(k.replace("_", " "))}</dt><dd>{N(r("models", f"/models/[id={mid}]/card/{k}"), tag="span", cls="")}</dd></div>'
+                       for k in m_['card'])
+        cards += f'<dl class="bccard" data-card="{E(mid)}">{card}</dl>'
+    whats = '; '.join(N(r("models", f"/models/[id={m_['id']}]/card/what"), cls="") for m_ in model)
+    # items binned in litter sort (the measure the second policy was built for), copied from the arena's learned_vs_reference
+    lv = load(R['arena'])['learned_vs_reference']
+    brow = []
+    for row in lv['rows']:
+        q = lambda f: r('arena', f'/learned_vs_reference/rows/[policy={row["policy"]}]/{f}')  # noqa: E731
+        brow.append([N(q('policy')), N(q('kind')), N(q('items_binned')) + ' / ' + N(q('items_total')),
+                     N(q('binned_per_episode/mean')) + ' [' + N(q('binned_per_episode/ci95/0')) + ', ' + N(q('binned_per_episode/ci95/1')) + ']',
+                     N(q('episodes_with_any')) + ' / ' + N(q('episodes'))])
+    body += (f' Trained here: {whats}. They are compared below with the SCRIPTED '
              f'reference, a SCRIPTED greedy policy and a random baseline on the held-out seeds, measured at build time; '
              f'intervals are bootstrap confidence intervals at level {N(r("arena", "/tables/held_out/bootstrap/level"))} '
              f'over {N(r("arena", "/tables/held_out/bootstrap/resamples"))} resamples, and the win rate is paired against '
@@ -433,8 +445,12 @@ if TRAINED and HAVE_ARENA:
              + f'<p class="muted">Held-out seeds: {N(r("arena", "/leaderboard/seeds"), "len")}; tasks: '
                f'{N(r("arena", "/tables/held_out/tasks"), "len")}; environments excluded, each with its reason: '
                f'{N(r("arena", "/tables/held_out/excluded"), "len")}.</p>'
-             + '<h3>The trained policy\'s card, verbatim</h3>'
-             + f'<dl class="bccard" data-card="{E(mid)}">{card}</dl>'
+             + '<h3>Litter sort: items binned on the held-out seeds</h3>'
+             + '<p>Success in litter sort means every item binned, which the SCRIPTED reference itself seldom manages at the first three '
+               'levels, so items binned is the measure for the learned policies. Numbers are copied from the arena registry, whatever they are.</p>'
+             + table(['Policy', 'Kind', 'Items binned', 'Per episode, mean [interval]', 'Episodes binning any'], brow)
+             + '<h3>The trained policies\' cards, verbatim</h3>'
+             + cards
              + Q(r('arena', '/honesty/not_llm')))
 else:
     body += (' There is no trained model to compare, so no model comparison is claimed.</p>')

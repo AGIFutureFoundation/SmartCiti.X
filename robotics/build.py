@@ -320,24 +320,25 @@ HONESTY = {
             'mode offers neither recording nor sharing.',
 }
 
-# ---- ARENA BEGIN (wave 18): the one model trained in this repo --------------------------------------------------------
-# robotics/arena/train.mjs trains a small behaviour-cloning (BC) MLP in Node on SCRIPTED reference episodes of the TRAIN
-# seeds and pins its weights in robotics/arena/registry/models.json; the arena compares it on held-out TEST seeds. The
-# count and the honesty line are READ from that registry (fail closed): trained_models = its TRAINED models, each with
-# the exact BC card. Nothing is trained on learner data, and no language model is trained or used.
+# ---- ARENA BEGIN (wave 18, extended wave 22): the models trained in this repo ------------------------------------------
+# robotics/arena/train.mjs trains small behaviour-cloning (BC) MLPs in Node on SCRIPTED reference episodes of the TRAIN
+# seeds (the first, and a second with a class-weighted grip head) and pins their weights in
+# robotics/arena/registry/models.json; the arena compares them on held-out TEST seeds. The count and the honesty line
+# are READ from that registry (fail closed): trained_models = its TRAINED models, each with the exact BC card. Nothing is trained on learner data, and no language model is trained or used.
 ARENA_MODELS_PATH = ROOT / 'robotics/arena/registry/models.json'
 need(ARENA_MODELS_PATH.exists(), 'robotics/arena/registry/models.json missing - trained_models is read from it')
 ARENA_TRAINED = [m for m in json.loads(ARENA_MODELS_PATH.read_text())['models'] if m['provenance'] == 'TRAINED']
 for _m in ARENA_TRAINED:
-    need(_m['card']['what'] == f"a small behaviour-cloning policy trained on {_m['train']['episodes']} SCRIPTED episodes; "
-                                "not a language model; not trained on any learner's data", f'robotics: model {_m["id"]} lacks the honest BC card')
+    need(re.fullmatch(r"a small behaviour-cloning policy( with a class-weighted grip head)? trained on " + str(_m['train']['episodes'])
+                      + r" SCRIPTED episodes; not a language model; not trained on any learner's data", _m['card']['what']) is not None,
+         f'robotics: model {_m["id"]} lacks the honest BC card')
     need(hashlib.sha256(json.dumps(_m['weights'], separators=(',', ':')).encode()).hexdigest() == _m['weights_sha256'],
          f'robotics: model {_m["id"]} weights do not match their sha256 pin')
 HONESTY['trained'] = ("NOTHING HAS BEEN TRAINED ON ANY LEARNER'S DATA, and no language model is trained or used here. "
-                      f"{len(ARENA_TRAINED)} model has been trained in this repo, at build time by robotics/arena/train.mjs: "
+                      f"{len(ARENA_TRAINED)} model{'s have' if len(ARENA_TRAINED) != 1 else ' has'} been trained in this repo, at build time by robotics/arena/train.mjs: "
                       + '; '.join(m['card']['what'] for m in ARENA_TRAINED)
-                      + '. Its weights are sha256-pinned in robotics/arena/registry/models.json, and robotics/arena/harness.mjs '
-                        'compares it with the SCRIPTED reference on seeds it never saw. No model has been trained on any human '
+                      + '. Their weights are sha256-pinned in robotics/arena/registry/models.json, and robotics/arena/harness.mjs '
+                        'compares them with the SCRIPTED reference on seeds they never saw. No model has been trained on any human '
                         '(world-teleop or sim) episode.')
 # ---- ARENA END ----------------------------------------------------------------------------------------------------------
 
@@ -386,5 +387,5 @@ OUT.write_text(json.dumps(doc, indent=1, ensure_ascii=False) + '\n')
 print('robotics: reference benchmark (policy ' + BENCH['policy_version'] + ', seeds ' + str(len(SEEDS)) + '): '
       + ', '.join(f"{eid} L1 {v['levels']['1']['success']}/{v['levels']['1']['runs']}" for eid, v in BENCH['per_env'].items()))
 print(f"robotics: {doc['counts']['envs']} env specs ({doc['counts']['robokit_envs']} robokit, "
-      f"{doc['counts']['sim_seat_envs']} sim-seat), {len(EMBODIMENTS)} AUTHORED embodiments, {doc['counts']['trained_models']} trained model (arena BC) "
+      f"{doc['counts']['sim_seat_envs']} sim-seat), {len(EMBODIMENTS)} AUTHORED embodiments, {doc['counts']['trained_models']} trained models (arena BC) "
       f"(source stamp {stamp})")
