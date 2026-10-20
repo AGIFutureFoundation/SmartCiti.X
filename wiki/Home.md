@@ -246,6 +246,10 @@ phrased against the learner's own parish.
   the four-stage flipped loop, grade bands, 4 proposed districts and live units
 - [Upgrade-Candidates](Upgrade-Candidates.md) — what the sibling repositories
   offer the Academy, from a reviewed survey
+- [Media-and-Builds](Media-and-Builds.md) — every built page, the b-roll, the
+  stills and the explainer video, and the commits that landed each wave
+- [Build-and-Landing](Build-and-Landing.md) — how a batch of work is frozen,
+  rebuilt, verified and landed, and the team's token rules
 
 ## Honesty
 
