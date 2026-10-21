@@ -293,7 +293,8 @@ function terrainHeldAudit(meshes) {
     const isMerged = !!(u.elevMerged && g === u.elevMerged), isParked = !!u.elevParked, isStale = !!(u.elevMerged && !isMerged && !isParked);
     const flatLen = u.elevFlat ? u.elevFlat.attributes.position.array.length : a.length;
     let nf = 0; for (let i = 1; i < a.length; i += 3) if (a[i] !== 0) { nf = 1; break; }
-    const pv = isMerged ? (a.length - flatLen) / 3 : isParked ? (u.elevParked.attributes.position.array.length - flatLen) / 3 : 0;
+    const patchOf = (pg) => Math.max(0, (pg.attributes.position.array.length - flatLen) / 3);   // a stale reference's patch counts too
+    const pv = isMerged ? patchOf(g) : isParked ? patchOf(u.elevParked) : isStale ? patchOf(u.elevMerged) : 0;
     held++; verts += a.length / 3; patchVerts += pv; if (isMerged) merged++; if (isParked) parked++; if (isStale) stale++; nonFlat += nf;
     for (const k of Object.keys(g.attributes)) bytes += g.attributes[k].array ? g.attributes[k].array.byteLength : 0;
     if (g.index && g.index.array) bytes += g.index.array.byteLength;

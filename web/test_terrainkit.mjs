@@ -236,7 +236,7 @@ check('[kit] no "real elevation" claim for AUTHORED relief', !/AUTHORED[^.\n]{0,
   const fm = mk('merged');
   check('[held] a held mesh with a merged patch is bad, and its stale patch vertices are counted', H([fm]).bad === 1 && H([fm]).merged === 1 && H([fm]).patchVerts === 50, H([fm]));
   check('[held] a held mesh with a parked patch (left the scene in the overview) is bad', (() => { const a = H([mk('parked')]); return a.bad === 1 && a.parked === 1 && a.patchVerts === 50; })());
-  check('[held] a held mesh with a stale patch reference is bad', (() => { const a = H([mk('stale')]); return a.bad === 1 && a.stale === 1; })());
+  check('[held] a held mesh with a stale patch reference is bad, and its stale patch vertices are counted (not 0)', (() => { const a = H([mk('stale')]); return a.bad === 1 && a.stale === 1 && a.patchVerts === 50; })());
   check('[held] a held mesh with a raised vertex is bad (the flat rule holds for held meshes too)', (() => { const m = mk('flat'); m.geometry.attributes.position.array[4] = 0.5; const a = H([m]); return a.bad === 1 && a.nonFlat === 1; })());
   check('[held] a flat held mesh is clean and its geometry bytes are counted', (() => { const a = H([mk('flat')]); return a.bad === 0 && a.held === 1 && a.bytes === 4 * 3 * 4 + 4 * 3 * 4 + 4 * 4 && a.patchVerts === 0; })());
   check('[held] the audit says which mesh is bad (bounded list)', (() => { const a = H([mk('merged'), mk('parked'), mk('flat')]); return a.list.length === 2 && a.list[0].mesh === 'p' && a.list[0].merged && a.bad === 2; })());

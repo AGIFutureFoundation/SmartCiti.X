@@ -175,7 +175,7 @@ export async function reliefStreamRow(browser, url, opts = {}) {
   let other = null;
   const ids = await page.evaluate(() => window.__parishes.ids());   // the declared probes first, then any other parish of the page
   for (const c of [...B.PROBE.slice(1), ...ids.filter((i) => !B.PROBE.includes(i))]) { await go(c); const t = await page.evaluate((a) => window.__parishes.stats().loaded.includes(a), A); if (!t) { other = c; break; } }
-  if (!other) { fail('no probe parish streams ' + A + ' out'); row.other = null; await page.close(); return row; }
+  if (!other) { fail('no probe parish streams ' + A + ' out'); row.other = null; row.peakHeldPatchVerts = 0; row.peakHeldBytes = 0; row.releasedVerts = 0; row.errors = errors.length; await page.close(); return row; }
   row.A = A; row.other = other;
   for (let k = 1; k <= cycles; k++) {
     await go(other); await snap(`cycle ${k}: ${other} (A streamed out)`, other);
