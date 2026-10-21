@@ -221,5 +221,51 @@ check('[kit] no "real elevation" claim for AUTHORED relief', !/AUTHORED[^.\n]{0,
   check('[aware] the Bay overview triangle ceilings are the declared ones (06001 3,295 x 1.5 = 4,943; 06081 1,320 x 1.5 = 1,980)', Math.round(bay.BASE['06001'].overview.tris * bay.TRI_HEADROOM) === 4943 && Math.round(bay.BASE['06081'].overview.tris * bay.TRI_HEADROOM) === 1980, bay.BASE);
 }
 
+// [held] RELIEF-HELD (wave 23): a land mesh leaving the scene releases its relief patch; the audit also judges the meshes
+// that are held but NOT in the scene (each must be flat). Wave 22 measured 965-6,569 stale patch vertices held that way.
+{
+  const geo = (verts, tag) => { const pos = new Float32Array(verts * 3); return { tag, disposed: 0, dispose() { this.disposed++; }, attributes: { position: { array: pos }, normal: { array: new Float32Array(verts * 3) } }, index: { array: new Uint32Array(verts) } }; };
+  const mk = (kind, scene = false) => {   // kind: flat | merged | parked | stale
+    const flat = geo(4, 'flat'), patch = kind === 'flat' ? null : geo(4 + 50, 'patch');
+    if (patch) for (let i = 1; i < patch.attributes.position.array.length; i += 3) if (i > 12) patch.attributes.position.array[i] = 3;
+    const m = { geometry: kind === 'merged' ? patch : flat, parent: scene ? {} : null, userData: { parish: { id: 'p' }, elevFlat: flat, elevMerged: patch, elevParked: kind === 'parked' ? patch : null } };
+    if (kind === 'stale') m.geometry = geo(7, 'cut');   // cutWater swapped the geometry: the merged reference is stale
+    return m;
+  };
+  const H = (ms) => T.terrainHeldAudit(ms), R = (m) => T.terrainRelease(m);
+  const fm = mk('merged');
+  check('[held] a held mesh with a merged patch is bad, and its stale patch vertices are counted', H([fm]).bad === 1 && H([fm]).merged === 1 && H([fm]).patchVerts === 50, H([fm]));
+  check('[held] a held mesh with a parked patch (left the scene in the overview) is bad', (() => { const a = H([mk('parked')]); return a.bad === 1 && a.parked === 1 && a.patchVerts === 50; })());
+  check('[held] a held mesh with a stale patch reference is bad', (() => { const a = H([mk('stale')]); return a.bad === 1 && a.stale === 1; })());
+  check('[held] a held mesh with a raised vertex is bad (the flat rule holds for held meshes too)', (() => { const m = mk('flat'); m.geometry.attributes.position.array[4] = 0.5; const a = H([m]); return a.bad === 1 && a.nonFlat === 1; })());
+  check('[held] a flat held mesh is clean and its geometry bytes are counted', (() => { const a = H([mk('flat')]); return a.bad === 0 && a.held === 1 && a.bytes === 4 * 3 * 4 + 4 * 3 * 4 + 4 * 4 && a.patchVerts === 0; })());
+  check('[held] the audit says which mesh is bad (bounded list)', (() => { const a = H([mk('merged'), mk('parked'), mk('flat')]); return a.list.length === 2 && a.list[0].mesh === 'p' && a.list[0].merged && a.bad === 2; })());
+  const r1 = R(fm);
+  check('[held] release: flat geometry back, patch disposed once, merged reference cleared, vertices counted', fm.geometry === fm.userData.elevFlat && fm.userData.elevMerged === null && r1.released === 1 && r1.verts === 50 && fm.userData.elevFlat.disposed === 0, r1);
+  check('[held] a released mesh passes the held audit', H([fm]).bad === 0 && H([fm]).patchVerts === 0);
+  const pm = mk('parked'), patchG = pm.userData.elevParked, r2 = R(pm);
+  check('[held] release of a parked patch disposes it and clears the park + merged references', patchG.disposed === 1 && pm.userData.elevParked === null && pm.userData.elevMerged === null && pm.geometry === pm.userData.elevFlat && r2.verts === 50, r2);
+  check('[held] leaving the overview does NOT bring a released patch back onto a held mesh', (() => { T.terrainOverviewPark([pm], false); return pm.geometry === pm.userData.elevFlat && H([pm]).bad === 0; })());
+  const sm = mk('stale'), cutG = sm.geometry, r3 = R(sm);
+  check('[held] release of a stale reference clears it without touching the replaced geometry', sm.userData.elevMerged === null && sm.geometry === cutG && r3.released === 0, r3);
+  const flatM = mk('flat'), g0 = flatM.geometry, r4 = R(flatM);
+  check('[held] release of a flat mesh (relief off, or never patched) changes nothing', flatM.geometry === g0 && r4.released === 0 && r4.verts === 0 && g0.disposed === 0);
+  check('[held] releasing twice is safe (the patch is disposed once)', (() => { const m = mk('merged'), pg = m.geometry; R(m); R(m); return pg.disposed === 1; })());
+  check('[held] a mesh with no userData is refused by name', throwsLike(() => T.terrainRelease({ geometry: geo(4) }), /release mesh/));
+  check('[held] both functions are exported by the kit', typeof T.terrainRelease === 'function' && typeof T.terrainHeldAudit === 'function');
+  for (const [name, file] of [['parish', 'trade_craft_parishes.html'], ['bay', 'trade_craft_bay.html']]) {
+    const html = readFileSync(join(HERE, file), 'utf8');
+    check(`[held] ${name}: a parish streaming out releases its relief patch BEFORE the mesh leaves the scene`, /if \(!want\.has\(id\)\) \{ elevRelease\(landMesh\.get\(id\)\); scene\.remove\(landMesh\.get\(id\)\); loaded\.delete\(id\);/.test(html));
+    check(`[held] ${name}: elevRelease acts only with relief on and counts what it frees`, /function elevRelease\(m\) \{\n  if \(!m \|\| !ELEV_ST \|\| !ELEV_ST\.on\) return;\n  const r = terrainRelease\(m\);/.test(html) && /ELEV_ST\.releasedVerts = /.test(html));
+    check(`[held] ${name}: elev.groundAudit also judges the held meshes that are not in the scene`, /const held = terrainHeldAudit\(all\.filter\(\(m\) => !m\.parent\)\)/.test(html) && /\.\.\.a, held, heldBad: held\.bad,/.test(html));
+    check(`[held] ${name}: the in-scene audit and the flat-ground stat are kept as they were`, /drawn = all\.filter\(\(m\) => m\.parent\), a = terrainGroundAudit\(drawn, E\.lat, E\.R\.lift_m, 0\.002\)/.test(html) && html.includes("groundY: [...landMesh.values()].every((m) => { const a = m.geometry.attributes.position.array;"));
+    check(`[held] ${name}: page JS carries the neutral RELIEF-HELD name, no team codename`, html.includes('RELIEF-HELD') && !/relief-held|wave 23/.test(html));
+    check(`[held] ${name}: relief stays OFF by default (the switch is still ?relief=on)`, html.includes("/[?&]relief=on\\b/.test(location.search)") );
+  }
+  const rel = readFileSync(join(HERE, 'eval_relief.mjs'), 'utf8');
+  check('[held] eval_relief fails a held-but-not-in-scene land mesh that carries a patch (both sides of the relief-aware row)', /if \(r\.ga\.heldBad\) f\(`held-but-not-in-scene land meshes:/.test(rel) && /heldBad: r\.ga\.heldBad/.test(rel));
+  check('[held] eval_relief has the stream row: out, back in, every held mesh audited, run alone with --stream', /export async function reliefStreamRow/.test(rel) && /process\.argv\.includes\('--stream'\)/.test(rel) && /held meshes, \$\{r\.ga\.held\.patchVerts\} stale patch vertices/.test(rel) && /re-entry drew no relief patch/.test(rel));
+}
+
 if (fails) { console.log(`FAIL test_terrainkit: ${fails} failed`); process.exit(1); }
 console.log('test_terrainkit: all checks ok');

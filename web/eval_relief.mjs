@@ -115,7 +115,7 @@ export async function reliefAwareRow(browser, url, opts = {}) {
       const times = (await page.evaluate(() => window.__parishes.frameTimes(6))).sort((a, b) => a - b);
       const r = await page.evaluate(() => { const P = window.__parishes, st = P.stats(); return { st: { calls: st.calls, tris: st.triangles, groundY: st.groundY, pending: st.pending, landMeshes: st.landMeshes, loaded: st.loaded.length }, ga: P.elev.groundAudit(), ea: P.elev.eyeAudit() }; });
       const base = B.BASE[pid] && B.BASE[pid][v], ms = +times[Math.floor(times.length / 2)].toFixed(1);
-      const o = { id: pid, view: v, calls: r.st.calls, tris: r.st.tris, ms, load1: +loadavg()[0].toFixed(2), flatRule: r.st.groundY, merged: r.ga.merged, patchVerts: r.ga.patchVerts, flatBad: r.ga.flatBad, patchBad: r.ga.patchBad, offLattice: r.ga.offLattice, below: r.ga.below, maxDev: r.ga.maxDev, eye: v === 'overview' ? null : r.ea.above, fails: [] };
+      const o = { id: pid, view: v, calls: r.st.calls, tris: r.st.tris, ms, load1: +loadavg()[0].toFixed(2), flatRule: r.st.groundY, merged: r.ga.merged, patchVerts: r.ga.patchVerts, flatBad: r.ga.flatBad, patchBad: r.ga.patchBad, held: r.ga.held.held, heldBad: r.ga.heldBad, heldPatchVerts: r.ga.held.patchVerts, heldBytes: r.ga.held.bytes, offLattice: r.ga.offLattice, below: r.ga.below, maxDev: r.ga.maxDev, eye: v === 'overview' ? null : r.ea.above, fails: [] };
       const f = (m) => o.fails.push(m);
       if (!base) f('no declared target for ' + pid + ' ' + v);
       else {
@@ -126,6 +126,7 @@ export async function reliefAwareRow(browser, url, opts = {}) {
       if (r.st.pending !== 0) f(`${r.st.pending} chunks pending`);
       if (r.st.landMeshes !== r.st.loaded) f(`${r.st.landMeshes} land meshes for ${r.st.loaded} loaded`);
       if (r.ga.flatBad || r.ga.patchBad || r.ga.offLattice || r.ga.below) f(`ground audit: flat-bad ${r.ga.flatBad}, patch-bad ${r.ga.patchBad}, off-lattice ${r.ga.offLattice}, under-0 ${r.ga.below}, max dev ${r.ga.maxDev} m ${JSON.stringify(r.ga.bad)}`);
+      if (r.ga.heldBad) f(`held-but-not-in-scene land meshes: ${r.ga.held.merged} merged, ${r.ga.held.parked} parked, ${r.ga.held.stale} stale, ${r.ga.held.nonFlat} not flat, ${r.ga.held.patchVerts} stale patch vertices ${JSON.stringify(r.ga.held.list)}`);   // wave 23: a streamed-out parish keeps no relief patch
       if (side === 'off') {
         if (!r.st.groundY) f('FLAT rule: a land mesh vertex is not at y = 0 with relief off');
         if (r.ga.patchVerts) f(`relief off but ${r.ga.patchVerts} patch vertices exist`);
@@ -147,15 +148,66 @@ export async function reliefAwareRow(browser, url, opts = {}) {
 }
 /* RELIEF_AWARE:END */
 
+/* RELIEF_STREAM:BEGIN wave 23 - stream a parish out and back in with ?relief=on and audit EVERY held land mesh (in the scene
+   or not). Per step: the held-mesh audit (each held mesh not in the scene must be flat: no merged patch, nothing parked, no
+   stale reference), the in-scene relief-aware audit, geometry bytes held, vertices of patch still held, JS heap (information).
+   The A parish is walked to, then a probe that is NOT its neighbour, then back, for `cycles` rounds. */
+export async function reliefStreamRow(browser, url, opts = {}) {
+  const errors = [], U = reliefUrls(url), B = declaredBase(url), cycles = opts.cycles || 2;
+  const row = { probe: 'relief-stream', url: url.replace(/^.*\/web\//, 'web/'), steps: [], fails: [], load: loadavg().map((v) => +v.toFixed(2)) };
+  const fail = (m) => row.fails.push(m);
+  const page = await openAt(browser, U.on, errors);
+  await page.waitForFunction(() => { const p = window.__parishes.elev.probe(1); return p.demLoaded || p.demFailed; }, null, { timeout: 25000 }).catch(() => {});
+  const settle = async () => { await page.waitForFunction(() => window.__parishes.stats().pending === 0, null, { timeout: 15000 }).catch(() => {}); await sleep(900); };
+  const snap = async (label, pid) => {
+    const r = await page.evaluate(([l]) => { const P = window.__parishes; P.elev.refresh(); const ga = P.elev.groundAudit(), st = P.stats(), h = performance.memory ? performance.memory.usedJSHeapSize : null;
+      return { label: l, loaded: st.loaded, landMeshes: st.landMeshes, ga, heap: h }; }, [label]);
+    const o = { label, pid, loaded: r.loaded.length, inScene: r.ga.merged + r.ga.flatOnly, held: r.ga.held.held, heldMerged: r.ga.held.merged, heldParked: r.ga.held.parked, heldStale: r.ga.held.stale, heldNonFlat: r.ga.held.nonFlat,
+      heldPatchVerts: r.ga.held.patchVerts, heldBytes: r.ga.held.bytes, released: r.ga.released, releasedVerts: r.ga.releasedVerts, mergedInScene: r.ga.merged, patchVertsInScene: r.ga.patchVerts, flatBad: r.ga.flatBad, patchBad: r.ga.patchBad, offLattice: r.ga.offLattice, below: r.ga.below, maxDev: r.ga.maxDev, heapMB: r.heap === null ? null : +(r.heap / 1048576).toFixed(1), loadedIds: r.loaded };
+    if (r.ga.heldBad) fail(`${label}: ${r.ga.held.merged} merged + ${r.ga.held.parked} parked + ${r.ga.held.stale} stale + ${r.ga.held.nonFlat} not-flat held meshes, ${r.ga.held.patchVerts} stale patch vertices ${JSON.stringify(r.ga.held.list)}`);
+    if (r.ga.flatBad || r.ga.patchBad || r.ga.offLattice || r.ga.below) fail(`${label}: in-scene audit flat-bad ${r.ga.flatBad}, patch-bad ${r.ga.patchBad}, off-lattice ${r.ga.offLattice}, under-0 ${r.ga.below}, max dev ${r.ga.maxDev} m ${JSON.stringify(r.ga.bad)}`);
+    row.steps.push(o); return o;
+  };
+  const go = async (pid) => { await page.evaluate((id) => window.__parishes.view('origin', id), pid); await settle(); };
+  const A = B.PROBE[0];
+  await go(A); const s0 = await snap('A first visit', A);
+  if (!s0.mergedInScene) fail('the A parish drew no relief patch (nothing to stream out)');
+  let other = null;
+  const ids = await page.evaluate(() => window.__parishes.ids());   // the declared probes first, then any other parish of the page
+  for (const c of [...B.PROBE.slice(1), ...ids.filter((i) => !B.PROBE.includes(i))]) { await go(c); const t = await page.evaluate((a) => window.__parishes.stats().loaded.includes(a), A); if (!t) { other = c; break; } }
+  if (!other) { fail('no probe parish streams ' + A + ' out'); row.other = null; await page.close(); return row; }
+  row.A = A; row.other = other;
+  for (let k = 1; k <= cycles; k++) {
+    await go(other); await snap(`cycle ${k}: ${other} (A streamed out)`, other);
+    await go(A); const back = await snap(`cycle ${k}: back in ${A}`, A);
+    if (!back.mergedInScene) fail(`cycle ${k}: re-entry drew no relief patch for ${A}`);
+  }
+  const outs = row.steps.filter((o) => /streamed out/.test(o.label)); row.peakHeldPatchVerts = Math.max(0, ...row.steps.map((o) => o.heldPatchVerts)); row.peakHeldBytes = Math.max(0, ...row.steps.map((o) => o.heldBytes));
+  row.releasedVerts = row.steps[row.steps.length - 1].releasedVerts;
+  if (!outs.some((o) => o.held > 0)) fail('no land mesh was held out of the scene after streaming out (nothing was audited)');
+  if (errors.length) fail(`page errors: ${errors.slice(0, 3).join(' | ')}`);
+  row.errors = errors.length; await page.close();
+  return row;
+}
+/* RELIEF_STREAM:END */
+
 if (process.argv[1] && process.argv[1].endsWith('eval_relief.mjs')) {
   const url = process.argv[2], shots = (process.argv.find((a) => a.startsWith('--shots=')) || '').slice(8) || null;
   const name = (process.argv.find((a) => a.startsWith('--name=')) || '--name=page').slice(7);
-  const browser = await chromium.launch({ executablePath: CHROME, args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
+  const browser = await chromium.launch({ executablePath: CHROME, args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--enable-precise-memory-info'] });
+  if (process.argv.includes('--stream')) {   // wave 23: only the stream-out / back-in row
+    const sr = await reliefStreamRow(browser, url, { name }); await browser.close();
+    for (const o of sr.steps) console.log(`${'  ok'} stream ${o.label}: loaded ${o.loaded} [${o.loadedIds.join(',')}] in-scene merged ${o.mergedInScene} patchVerts ${o.patchVertsInScene} | held ${o.held} merged ${o.heldMerged} parked ${o.heldParked} stale ${o.heldStale} nonFlat ${o.heldNonFlat} heldPatchVerts ${o.heldPatchVerts} heldBytes ${o.heldBytes} | released ${o.released} (${o.releasedVerts} verts) | patchBad ${o.patchBad} dev ${o.maxDev} | heap ${o.heapMB} MB`);
+    console.log(`  -- A ${sr.A} other ${sr.other} peak held patch vertices ${sr.peakHeldPatchVerts}, peak held geometry bytes ${sr.peakHeldBytes}, load ${sr.load.join('/')}`);
+    for (const f of sr.fails) console.log('FAIL relief-stream ' + f);
+    console.log(sr.fails.length ? `FAIL relief-stream (${name}): ${sr.fails.length}` : `  ok relief-stream (${name})`);
+    process.exit(sr.fails.length ? 1 : 0);
+  }
   const T0 = Date.now(), row = await reliefRow(browser, url, { shots, name }), T1 = Date.now();
   const aware = process.argv.includes('--no-aware') ? null : await reliefAwareRow(browser, url, { name });
   await browser.close();
   console.log(JSON.stringify(row, null, 1));
-  if (aware) for (const k of ['off', 'on']) for (const o of aware[k]) console.log(`${o.fails.length ? 'FAIL' : '  ok'} relief-aware ${k} ${o.id} ${o.view}: calls ${o.calls} tris ${o.tris} ms ${o.ms}${o.msOver ? ' (over ' + o.msCeiling + ', load-bound info)' : ''} load1 ${o.load1} flatRule ${o.flatRule} merged ${o.merged} patchVerts ${o.patchVerts} flatBad ${o.flatBad} patchBad ${o.patchBad} dev ${o.maxDev} eye ${o.eye}${o.fails.length ? ' :: ' + o.fails.join('; ') : ''}`);
+  if (aware) for (const k of ['off', 'on']) for (const o of aware[k]) console.log(`${o.fails.length ? 'FAIL' : '  ok'} relief-aware ${k} ${o.id} ${o.view}: calls ${o.calls} tris ${o.tris} held ${o.held} heldBad ${o.heldBad} ms ${o.ms}${o.msOver ? ' (over ' + o.msCeiling + ', load-bound info)' : ''} load1 ${o.load1} flatRule ${o.flatRule} merged ${o.merged} patchVerts ${o.patchVerts} flatBad ${o.flatBad} patchBad ${o.patchBad} dev ${o.maxDev} eye ${o.eye}${o.fails.length ? ' :: ' + o.fails.join('; ') : ''}`);
   console.log(`  -- browser time: relief row ${((T1 - T0) / 1000).toFixed(0)} s, relief-aware row ${((Date.now() - T1) / 1000).toFixed(0)} s (each run under the 90 s allowance only if the sum is <= 90)`);
   if (aware) console.log(`  -- relief-aware load ${aware.load.join('/')} -> ${aware.load2.join('/')}, walk views with a patch ${aware.patchViews}, page errors ${aware.errors}`);
   const nfail = row.fails.length + (aware ? aware.fails.length : 0);

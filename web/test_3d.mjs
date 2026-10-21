@@ -3396,4 +3396,82 @@ ok('campus street furniture is SOLID: every lamp standard and bench is recorded 
 }
 /* POLISH w16 END */
 
+/* FIXED-STEP w23 BEGIN - the seat and the scripted operator step on a fixed 1/60 s, whatever the frame time */
+{
+  const a = builtPage.indexOf('/* FIXED-STEP BEGIN (wave 23)\n'), b = builtPage.indexOf('/* FIXED-STEP END */', a);
+  const blk = a < 0 || b < 0 ? '' : builtPage.slice(a, b);
+  const code = strip(blk);
+  const loopAt = builtPage.indexOf('renderer.setAnimationLoop(() => {');
+  const loop = strip(builtPage.slice(loopAt, builtPage.indexOf('\n});', loopAt)));
+  ok('the frame loop hands the live seat to fsSeatFrame(dt) inside an anchored FIXED-STEP block and no longer steps it on the raw frame time: no sim.update(dt) and no opStep(dt) left in the loop',
+    loopAt > 0 && /if \(sim && !opHeadless\) fsSeatFrame\(dt\);/.test(loop) && !/sim\.update\(dt\)/.test(loop) && !/opStep\(dt\)/.test(loop)
+    && /\/\* FIXED-STEP BEGIN \(wave 23\)[^\n]*\*\/\s*\n\s*if \(sim && !opHeadless\) fsSeatFrame\(dt\);\s*\n\s*\/\* FIXED-STEP END \*\//.test(builtPage));
+  ok('the step is 1/60 s, the same step the headless sweep, the single headless run and the hook default use, and a frame may run at most 30 of them (half a second of seat time)',
+    /const FS_STEP = 1 \/ 60;/.test(code) && /const FS_MAX = 30;/.test(code)
+    && /const seeds = o\.seeds \?\? \[1\], dt = o\.dt \?\? 1 \/ 60, maxSec/.test(builtPage)
+    && /o\.dt \?\? 1 \/ 60, o\.maxSec \?\? 400, o\.every \?\? 0\)/.test(builtPage));
+  ok('the headless sweep keeps its own fixed-dt path: opRunHeadless still calls opStep(dt); sim.update(dt) itself, with the dt it was given, and never goes through the accumulator',
+    /opStep\(dt\); sim\.update\(dt\); traceStep\(dt\); n\+\+;/.test(strip(fn('opRunHeadless'))) && !/fsAdvance|fsSeatFrame/.test(strip(fn('opRunHeadless'))));
+  ok('the accumulator reads no input: the keys, the thumbstick adapter and the trigger are sampled once per frame by code outside the block, so the same input holds for every step of the frame',
+    blk.length > 500 && !/\bkeys\b|xrInput|xrPad|sim\.action|gamepad/.test(code));
+  // lift the block and drive it: the page's own accumulator, with the seat's collaborators stubbed
+  const mk = () => {
+    const log = { updates: [], ops: [], traces: [], dashes: 0, seq: [] };
+    const st = { sim: null, opRun: null };
+    const f = new Function('st', 'log', `
+      const D = { sims: { sims: { s: {} } } }; const curSimId = 's';
+      const opStep = (h) => { log.ops.push(h); log.seq.push('op'); }, traceStep = (h) => { log.traces.push(h); };
+      const setDash = () => { log.dashes++; }, setXRDash = () => {};
+      let sim = null, opRun = null;
+      ${blk}
+      return { fsAdvance, fsSeatFrame, FS_STEP, FS_MAX, setSim(x) { sim = x; }, setOp(x) { opRun = x; } };`);
+    const api = f(st, log);
+    const mkSim = () => ({ update: (h) => { log.updates.push(h); log.seq.push('up'); }, gauges: () => ({}) });
+    return { api, log, mkSim };
+  };
+  const run = (seq) => { const t = mk(); const s = t.mkSim(); t.api.setSim(s); t.api.setOp({}); for (const dt of seq) t.api.fsSeatFrame(dt); return t; };
+  const near = (x, y, e = 1) => Math.abs(x - y) <= e;
+  let lcg = 7; const rnd = () => (lcg = (lcg * 1664525 + 1013904223) >>> 0) / 4294967296;
+  const fps = (n, secs) => Array.from({ length: Math.round(n * secs) }, () => 1 / n);
+  const frames = { 60: fps(60, 10), 120: fps(120, 10), 30: fps(30, 10), 18: fps(18, 10), 12: fps(12, 10), 5: fps(5, 10), 3: fps(3, 10) };
+  const jit = []; for (let t = 0; t < 10;) { const d = 1 / 18 + rnd() * (1 / 5 - 1 / 18); jit.push(d); t += d; }
+  const jitSecs = jit.reduce((x, y) => x + y, 0);
+  const R = Object.fromEntries(Object.entries(frames).map(([k, q]) => [k, run(q)]));
+  const Rj = run(jit);
+  ok('the seat takes exactly the same number of fixed steps for the same seat time at 120, 60, 30, 18, 12, 5 and 3 frames a second (10 s: 600 steps, give or take the one carried in the remainder), and the same for a 5 to 18 fps jitter',
+    Object.values(R).every((t) => near(t.log.updates.length, 600)) && near(Rj.log.updates.length, Math.round(jitSecs * 60)));
+  ok('every step the seat and the operator take is exactly 1/60 s, at every frame rate, and the operator is stepped once per seat step, before it, with the same step',
+    Object.values(R).concat([Rj]).every((t) => t.log.updates.every((h) => h === 1 / 60) && t.log.ops.length === t.log.updates.length && t.log.traces.length === t.log.updates.length
+      && t.log.seq.every((x, i) => x === (i % 2 ? 'up' : 'op'))));
+  const k = mk(); k.api.setSim(k.mkSim());
+  const nCap = k.api.fsSeatFrame(5);
+  const nNext = k.api.fsSeatFrame(1 / 60);
+  ok('a stall is capped, not spiralled: a 5 s frame runs exactly 30 steps and drops the rest, and the next ordinary frame then runs one step, not a backlog',
+    nCap === 30 && k.log.updates.length === 31 && nNext === 1);
+  const k2 = mk(); k2.api.setSim(k2.mkSim());
+  k2.api.fsSeatFrame(5.0 + 0.01);
+  ok('when the cap is hit the fraction of a step is still carried: a stall that is 30.6 steps long leaves the 0.6 for the next frame',
+    k2.api.fsSeatFrame(0.4 / 60) === 1);
+  const k3 = mk(); k3.api.setSim(k3.mkSim());
+  let early = 0; for (let i = 0; i < 3; i++) early += k3.api.fsSeatFrame(0.4 / 60);
+  ok('the remainder is carried between frames: three frames of 0.4 of a step make one step (on the third), not zero and not three',
+    early === 1 && k3.log.updates.length === 1);
+  const k4 = mk(); const s4 = k4.mkSim(); k4.api.setSim(s4); k4.api.fsSeatFrame(0.9 / 60);
+  const s5 = k4.mkSim(); k4.api.setSim(s5); const n5 = k4.api.fsSeatFrame(0.2 / 60);
+  ok('a new seat starts with an empty accumulator: the time left over from the last seat is not spent in the next one',
+    n5 === 0 && k4.log.updates.length === 0);
+  const k5 = mk(); k5.api.setSim(k5.mkSim()); k5.api.setOp(null);
+  k5.api.fsSeatFrame(0.1);
+  ok('without a scripted operator the seat still steps on the fixed step and the operator is never called; with no seat the frame does nothing',
+    k5.log.updates.length === 6 && k5.log.ops.length === 0 && mk().api.fsSeatFrame(1) === 0);
+  const k6 = mk(); const s6 = k6.mkSim(); let torn = 0;
+  s6.update = (h) => { k6.log.updates.push(h); if (++torn === 2) k6.api.setSim(null); };
+  k6.api.setSim(s6); k6.api.fsSeatFrame(0.2);
+  ok('a seat torn down in the middle of a frame stops the frame: no step is taken on a seat that is gone and the dash is not read from it',
+    k6.log.updates.length === 2 && k6.log.dashes === 0);
+  ok('the page exposes one frame of the live seat as __tc3dSim.frame(dt), the same call the render loop makes, so a harness can feed it any frame-time sequence',
+    /frame: \(dt\) => fsSeatFrame\(dt\)/.test(builtPage) && /window\.__tc3dSim = \{[\s\S]{0,1800}frame: \(dt\) => fsSeatFrame\(dt\)/.test(builtPage));
+}
+/* FIXED-STEP w23 END */
+
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);
