@@ -589,7 +589,11 @@ commit cannot name its own sha.
    verdict (2 cones, one 1.9 s stall); the boom lift and airless sprayer did
    not finish inside their caps; the excavator reached key state as declared.
    The scripted coach still reads its input once per frame, so a low frame rate
-   still hurts the driver, not the physics. Displays above 60 Hz now see the
+   still hurts the driver, not the physics. The coach time caps in
+   `xr/seat_batches.mjs` (overhead crane 45 s against a 47 s reference run;
+   boom lift 50 s) are left as committed: a longer cap is a product decision
+   about how long a task may take, made by the project owner, not by the
+   harness. Displays above 60 Hz now see the
    seat step at 60 Hz, which may judder in a headset; not yet measured. No
    physical headset has run any of it.
 2. **Crew episodes record seat and muster** — *shipped, `d8094b8`.* The
@@ -625,7 +629,7 @@ commit cannot name its own sha.
    and the held-out seeds were run once, after fitting. It ties its scripted
    teacher on items binned and does not beat it; the teacher caps what it can
    reach. Not a language model, no learner's data.
-6. **Spaces walkable and linked** — *met for walking, wave 23.* The six custom
+6. **Spaces walkable and linked** — *met for walking by a scripted walker on a planned route, wave 23.* The six custom
    training spaces were declared, not walkable (v3.5). They now open in the 3D
    page by `?space=<id>&hall=<slug>`, placed as AUTHORED designs in the room of
    their strand; a walker driven by the page's own walk step reached the room
@@ -696,7 +700,7 @@ the suite or eval that proves it; a name marked *proposed* is fixed at landing.
 | 3b | Mean frame luminance of the 3D network view is inside [40, 215] with the clipped and crushed shares no worse than at `83db20b`, and draw calls and triangles equal (204 and 5,254) | a committed browser luminance eval over the four 3D pages (*proposed:* `web/eval_look.mjs`), `web/test_lookkit.mjs` | met on the scene, wave 22, by `web/eval_look.mjs` (overlays hidden, `83db20b` measured in the same harness): network scene mean 23.8 -> 54.4, campus 40.6 -> 57.0, clipped 0 px at both commits, crushed 20.26% -> 0.001% (network); draw calls and triangles 203 and 5,252 at both commits (the 204 and 5,254 above came from the wave 20 method). Whole frame, report only: 120 and 109 px clipped, all of it the top bar's white text, the same at `83db20b`. The wave 20 figures (28.2 -> 52.2) were whole-frame reads by an earlier method; the wave 22 figures are scene-only reads in `web/eval_look.mjs`. They are two baselines, not one series |
 | 4 | Every one of the 16 modules is linked from a place inside its world, every link resolves to a registry id, and each is reachable by keyboard | `node web/test_worldmodules.mjs`, `node web/test_access.mjs` (counts raised, never lowered), `node modules/test.mjs` | shipped: 16 of 16 modules linked from a place |
 | 5 | A second carded policy has a held-out interval on seeds 11 to 20 in `robotics/arena/registry`, `trained_models` equals the models registry's count, every honesty line still says no language model is trained | `node robotics/arena/test.mjs`, `node web/test_arena.mjs`, `node robotics/test.mjs` | met, wave 22: held-out seeds 11 to 20 (n = 130), success `bcg` 0.608 [0.523, 0.692] against the SCRIPTED reference 0.592 [0.515, 0.677] and the first policy 0.423 [0.339, 0.508]; paired win rate against the reference 0.258 [0.204, 0.315]; litter sort items binned 97 of 160, equal to the reference's 97, against 0 for the first policy; full litter-sort success at levels 1-3 is 0 for all three; `trained_models` 2 equals the models registry; no language model trained |
-| 6 | The six spaces load in the 3D page and a walker reaches each one's rooms, and the home or map page links both pages | `node web/test_spaces.mjs` (a walkability check added to it), `node web/test_nav.mjs` | met for walking, wave 23: in a browser a walker driven by the page's own walk step reached the room of the space in each of the 10 (space, hall) pairs through the doorways the plan cuts, with no step inside a wall, and the every-room hall test held on all 10 with the space standing; the walk follows a route planned over the page's solids, not a person at a keyboard; both pages linked from every page; `web/browser_spaces.mjs` is not in `verify_all.sh` |
+| 6 | The six spaces load in the 3D page and a walker reaches each one's rooms, and the home or map page links both pages | `node web/test_spaces.mjs` (a walkability check added to it), `node web/test_nav.mjs` | met for walking by a scripted walker on a planned route, wave 23: in a browser a walker driven by the page's own walk step reached the room of the space in each of the 10 (space, hall) pairs through the doorways the plan cuts, with no step inside a wall, and the every-room hall test held on all 10 with the space standing; the walk follows a route planned over the page's solids, not a person at a keyboard; both pages linked from every page; `web/browser_spaces.mjs` is not in `verify_all.sh` |
 | 7 | `eval_relief` passes both off and on with 0 rows failing, no existing flat-ground row edited, and the Bay overview triangle rows inside their ceilings | `node web/eval_relief.mjs` for the parish and Bay pages | met by measured runs, wave 22: off and on pass on both pages, 0 rows failing, flat rows unedited; Bay overview triangles 2,981 / 3,199 / 1,452 inside their ceilings; frame rows at load 5 to 8 printed, not judged; relief default stays off |
 | 8 | Totals hold: `verify_all.sh` exits zero with the check count at least the 7,201 of `83db20b`, and each new row above has a mutation that fails by name | `./verify_all.sh`, `node brand/figures.mjs .`, `node brand/lint.mjs .`, `node roadmap/test.mjs` | continuous |
 
