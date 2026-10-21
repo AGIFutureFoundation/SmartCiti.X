@@ -2398,6 +2398,24 @@ function elevEyeAudit() {
 """, 1)
 JS = JS.replace(_RA_API, _RA_API + '    groundAudit: () => elevGroundAudit(), eyeAudit: () => elevEyeAudit(),\n', 1)
 # RELIEF END relief-aware
+# RELIEF BEGIN relief-held (wave 23): the relief patch is released when a land mesh streams out of the scene (wave 22 measured
+# 965-6,569 stale patch vertices, up to 12 m off, held on the meshes of streamed-out parishes), and groundAudit() now also
+# judges the meshes that are held but not in the scene (each must be flat: no patch, nothing parked, every vertex at y = 0).
+# Re-entry gets a fresh patch from elevRefresh (E.ver changes when the loaded set changes). Page JS names only RELIEF-HELD.
+_RH_STREAM = "for (const id of [...loaded]) if (!want.has(id)) { scene.remove(landMesh.get(id)); loaded.delete(id); changed = true; }"
+_RH_AUDIT = "  return { on: E.on, overview: elevOver, notInScene: all.length - drawn.length, ...a };\n"
+_RH_EYE = "avY: av ? +av.y.toFixed(3) : null };\n}\n"
+if JS.count(_RH_STREAM) != 1 or JS.count(_RH_AUDIT) != 1 or JS.count(_RH_EYE) != 1:
+    raise BuildError('build_parishes: RELIEF-HELD anchors (streamParishes stream-out line, elevGroundAudit return, elevEyeAudit end) must occur exactly once')
+JS = JS.replace(_RH_STREAM, "for (const id of [...loaded]) if (!want.has(id)) { elevRelease(landMesh.get(id)); scene.remove(landMesh.get(id)); loaded.delete(id); changed = true; }", 1)
+JS = JS.replace(_RH_AUDIT, "  const held = terrainHeldAudit(all.filter((m) => !m.parent));   // RELIEF-HELD: held but not in the scene - each must be flat\n  return { on: E.on, overview: elevOver, notInScene: all.length - drawn.length, ...a, held, heldBad: held.bad, released: E.released || 0, releasedVerts: E.releasedVerts || 0 };\n", 1)
+JS = JS.replace(_RH_EYE, _RH_EYE + r"""/* RELIEF-HELD: a land mesh leaving the scene gives its relief patch back (flat geometry restored, patch disposed) */
+function elevRelease(m) {
+  if (!m || !ELEV_ST || !ELEV_ST.on) return;
+  const r = terrainRelease(m); if (r.released) { ELEV_ST.released = (ELEV_ST.released || 0) + r.released; ELEV_ST.releasedVerts = (ELEV_ST.releasedVerts || 0) + r.verts; }
+}
+""", 1)
+# RELIEF END relief-held
 # WORLDHD BEGIN world-tex (wave 17, WORLDHD·High-res Worlds): SURFACE DETAIL BY DEVICE TIER on the walkable worlds.
 # The ground, the streets and the kit buildings are flat colours (the ground: one 2048 px atlas over a whole parish, a few
 # metres per texel at your feet). On a GPU that can afford it the page now multiplies world-space detail textures over

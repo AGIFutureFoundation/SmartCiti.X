@@ -17549,6 +17549,7 @@ window.__tc3dSim = {
     } finally { opViewRestore(before); }
   },
   sweep: opSweep,
+  /* FIXED-STEP BEGIN */ frame: (dt) => fsSeatFrame(dt), /* FIXED-STEP END */   // one frame of the live seat, as the render loop steps it
   state: () => opRun ? { sim: opRun.sim, scenario: opRun.scenario, level: opRun.level,
     seed: opRun.seed, step: opRun.step, phase: opRun.id, sweep: opRun.sweep,
     result: opRun.result } : null,
@@ -17762,6 +17763,51 @@ __GUIDE_JS__
 __XR_JS__
 
 __QUEST3D_JS__
+/* FIXED-STEP BEGIN (wave 23)
+   The seat's physics and the scripted operator are tuned at a fixed 1/60 s: the
+   reference runs and the headless sweep (opRunHeadless, dt = 1/60) step exactly
+   that. The frame loop used to hand them the raw frame time, so a device at 5 to
+   18 frames a second ran the same seat on a step up to twelve times longer, and
+   a stall of a second or two ran it in one lump: the seat's verdict then
+   depended on the device. Now the frame time goes into an accumulator and the
+   seat takes whole steps of FS_STEP out of it. The input read once per frame
+   (keys, a controller's thumbstick, the trigger) holds for every step of that
+   frame. The fraction of a step left over is carried to the next frame. A frame
+   never runs more than FS_MAX steps (half a second of seat time): a longer
+   stall - a tab put to sleep, a shader compile - drops the whole steps that do
+   not fit, so a slow device does not fall further behind with every frame. */
+const FS_STEP = 1 / 60;
+const FS_MAX = 30;
+let fsAcc = 0, fsSeat = null;
+function fsAdvance(dt, stepFn) {
+  fsAcc += dt > 0 && isFinite(dt) ? dt : 0;
+  let n = 0;
+  while (fsAcc >= FS_STEP - 1e-9 && n < FS_MAX) {
+    fsAcc -= FS_STEP; n++;
+    if (stepFn(FS_STEP) === false) break;
+  }
+  if (fsAcc < 0) fsAcc = 0;
+  if (fsAcc >= FS_STEP - 1e-9) fsAcc %= FS_STEP;
+  return n;
+}
+function fsSeatFrame(dt) {
+  if (!sim) return 0;
+  if (sim !== fsSeat) { fsSeat = sim; fsAcc = 0; }       // a new seat starts with an empty accumulator
+  const n = fsAdvance(dt, (h) => {
+    if (!sim) return false;
+    if (opRun) opStep(h);
+    sim.update(h);
+    traceStep(h);
+    return true;
+  });
+  if (sim && sim.gauges) {
+    const gv = sim.gauges();
+    setDash(D.sims.sims[curSimId], gv);
+    setXRDash(D.sims.sims[curSimId], gv);
+  }
+  return n;
+}
+/* FIXED-STEP END */
 const clock = new THREE.Clock();
 renderer.setAnimationLoop(() => {
   const dt = clock.getDelta();
@@ -17779,16 +17825,9 @@ renderer.setAnimationLoop(() => {
   // also stepped here; a seat the scripted operator drives at real time
   // gets its inputs from opStep() before the physics step, exactly where
   // a keypress would already be waiting in `keys`
-  if (sim && !opHeadless) {
-    if (opRun) opStep(dt);
-    sim.update(dt);
-    if (sim.gauges) {
-      const gv = sim.gauges();
-      setDash(D.sims.sims[curSimId], gv);
-      setXRDash(D.sims.sims[curSimId], gv);
-    }
-    traceStep(dt);
-  }
+  /* FIXED-STEP BEGIN (wave 23): the seat and the operator step on a fixed 1/60 s, never on the frame time */
+  if (sim && !opHeadless) fsSeatFrame(dt);
+  /* FIXED-STEP END */
   /* STEP-EPISODE BEGIN */ stepEpisodeTick(dt); /* STEP-EPISODE END */
   stepEmote(dt);
   if (view === 'avatar' && !emo) idleBreath(avatarMesh, clock.elapsedTime, dt);

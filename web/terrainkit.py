@@ -265,6 +265,50 @@ if TERRAIN_JS.count('/* TERRAIN_KIT:END */') != 1 or TERRAIN_JS.count('terrainOv
 TERRAIN_JS = TERRAIN_JS.replace('/* TERRAIN_KIT:END */', _RELIEF_AWARE_JS + '/* TERRAIN_KIT:END */', 1).replace(
     'terrainOverviewPark, terrainSeat,', 'terrainGroundAudit, terrainOverviewPark, terrainSeat,', 1)
 # RELIEF END relief-aware
+# RELIEF BEGIN relief-held (wave 23): a land mesh that streams out of the scene must not keep its relief patch. Measured in
+# wave 22 with ?relief=on: 965 to 6,569 stale patch vertices (up to 12 m off) stayed on the meshes of streamed-out parishes.
+# Decision: RELEASE the patch when the mesh leaves the scene (flat geometry back, patch disposed, memory returned), and the
+# next elevRefresh builds a fresh one on re-entry - cheaper than re-validating a patch against a lattice that may have
+# restarted while the mesh was away. terrainHeldAudit judges the meshes that are held but NOT in the scene: each must be
+# flat (no merged patch, no parked patch, no stale reference, every vertex at y = 0). Pure (no THREE, no DOM). The emitted
+# JS carries only the neutral RELIEF-HELD name.
+_RELIEF_HELD_JS = r"""/* RELIEF-HELD: release a leaving land mesh's relief patch; audit the held meshes. meshes: {geometry, userData: {elevFlat,
+   elevMerged, elevParked}}. terrainRelease(m) puts the flat geometry back and disposes the patch (merged or parked). */
+function terrainRelease(m) {
+  const u = terrainNeed(m, 'userData', 'release mesh'), flat = u.elevFlat, flatLen = flat ? flat.attributes.position.array.length : 0;
+  let released = 0, verts = 0;
+  const drop = (g) => { if (!g || g === flat) return; verts += Math.max(0, (g.attributes.position.array.length - flatLen) / 3); released++; if (g.dispose) g.dispose(); };
+  if (u.elevParked) { drop(u.elevParked); if (u.elevMerged === u.elevParked) u.elevMerged = null; u.elevParked = null; }
+  if (u.elevMerged) {
+    if (m.geometry === u.elevMerged && flat) { m.geometry = flat; drop(u.elevMerged); }
+    else if (u.elevMerged.dispose && u.elevMerged !== m.geometry) u.elevMerged.dispose();   // already replaced (cutWater): nothing left to count
+    u.elevMerged = null;
+  }
+  return { released, verts };
+}
+function terrainHeldAudit(meshes) {
+  let held = 0, merged = 0, parked = 0, stale = 0, nonFlat = 0, bad = 0, verts = 0, patchVerts = 0, bytes = 0; const list = [];
+  for (const m of meshes) {
+    const u = m.userData || {}, g = m.geometry, a = g.attributes.position.array;
+    const isMerged = !!(u.elevMerged && g === u.elevMerged), isParked = !!u.elevParked, isStale = !!(u.elevMerged && !isMerged && !isParked);
+    const flatLen = u.elevFlat ? u.elevFlat.attributes.position.array.length : a.length;
+    let nf = 0; for (let i = 1; i < a.length; i += 3) if (a[i] !== 0) { nf = 1; break; }
+    const patchOf = (pg) => Math.max(0, (pg.attributes.position.array.length - flatLen) / 3);   // a stale reference's patch counts too
+    const pv = isMerged ? patchOf(g) : isParked ? patchOf(u.elevParked) : isStale ? patchOf(u.elevMerged) : 0;
+    held++; verts += a.length / 3; patchVerts += pv; if (isMerged) merged++; if (isParked) parked++; if (isStale) stale++; nonFlat += nf;
+    for (const k of Object.keys(g.attributes)) bytes += g.attributes[k].array ? g.attributes[k].array.byteLength : 0;
+    if (g.index && g.index.array) bytes += g.index.array.byteLength;
+    if (isMerged || isParked || isStale || nf) bad++;   // meshes, not findings: a merged patch is also raised
+    if ((isMerged || isParked || isStale || nf) && list.length < 4) list.push({ mesh: u.parish ? (u.parish.id || String(u.parish)) : null, merged: isMerged, parked: isParked, stale: isStale, nonFlat: !!nf, patchVerts: pv });
+  }
+  return { held, merged, parked, stale, nonFlat, verts, patchVerts, bytes, bad, list };
+}
+"""
+if TERRAIN_JS.count('/* TERRAIN_KIT:END */') != 1 or TERRAIN_JS.count('terrainGroundAudit, terrainOverviewPark,') != 1:
+    raise SystemExit('terrainkit: relief-held anchors (TERRAIN_KIT:END, export list) must occur exactly once')
+TERRAIN_JS = TERRAIN_JS.replace('/* TERRAIN_KIT:END */', _RELIEF_HELD_JS + '/* TERRAIN_KIT:END */', 1).replace(
+    'terrainGroundAudit, terrainOverviewPark,', 'terrainGroundAudit, terrainHeldAudit, terrainOverviewPark, terrainRelease,', 1)
+# RELIEF END relief-held
 
 EXPORTS = re.findall(r'export \{([^}]*)\}', TERRAIN_JS)[0].replace('\n', ' ').split(',')
 EXPORTS = [e.strip() for e in EXPORTS if e.strip()]

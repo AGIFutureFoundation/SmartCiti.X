@@ -174,8 +174,11 @@ a timeout and a command, and `$B` is the local base URL.
 | `eval_bayworld` | 180 s | `env "BAY_URL=$B/web/trade_craft_bay.html" node web/eval_bayworld.mjs` |
 | `eval_wilds` | 180 s | `env "WILDS_URL=$B/web/trade_craft_wilds.html" node web/eval_wilds.mjs` |
 | `eval_look` | 120 s | `env "LOOK_BASE=$B" node web/eval_look.mjs` |
-| `spaces_a` | 90 s | `node web/browser_spaces.mjs "$B/web/trade_craft_3d.html" --pairs=0-4` |
-| `spaces_b` | 90 s | `node web/browser_spaces.mjs "$B/web/trade_craft_3d.html" --deep=scaffold-court --pairs=5-9 --halltest=flipped-classroom:electricians` |
+| `spaces_a` | 90 s | `node web/browser_spaces.mjs "$B/web/trade_craft_3d.html" --pairs=0-1 --halltest=crane-sim-bay:riggers` |
+| `spaces_b` | 90 s | `node web/browser_spaces.mjs "$B/web/trade_craft_3d.html" --deep=electrical-lab --pairs=2-4 --halltest=flipped-classroom:carpenters,flipped-classroom:electricians` |
+| `spaces_c` | 90 s | `node web/browser_spaces.mjs "$B/web/trade_craft_3d.html" --deep=rigging-yard --pairs=5-6 --halltest=rigging-yard:ironworkers` |
+| `spaces_d` | 90 s | `node web/browser_spaces.mjs "$B/web/trade_craft_3d.html" --deep=scaffold-court --pairs=7-9 --halltest=scaffold-court:carpenters,welding-bay:welders` |
+| `relief_stream` | 120 s | `node web/eval_relief.mjs "$B/web/trade_craft_bay.html" --name=bay --stream` |
 | `geomap_probe` | 90 s | `node tools/landing/geomap_hillshade_probe.mjs "$B/web/trade_craft_geomap.html" "$O/geomap.png"` |
 | `eval_styles` | 600 s | `node web/eval_styles.mjs "--base=$B" "--root=$T"` |
 
