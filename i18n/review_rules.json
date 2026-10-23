@@ -1,0 +1,153 @@
+{
+  "schema": 1,
+  "about": "The rules that decide a review row's priority. build_review.py (Python) and test_review.mjs (JavaScript) both read this file, so the rule has one source. The first rule that matches wins, in the order: priority 1 by key, priority 1 by English text, priority 2, priority 3. Patterns use only syntax common to Python re and JavaScript RegExp. A key-name rule fires for the segments in p1_key_segments at any length, and for p1_key_segments_sentences_only only when the English has p1_key_sentence_min_words words or more (so the label \"Play\" is not a safety line). The structural sections (districts, tracks, strands, tiers, bands, modalities, states) are vocabulary and are priority 2 whatever they say.",
+  "p1_key_segments": [
+    "honesty",
+    "honest",
+    "hon",
+    "disclaimer",
+    "notcert",
+    "unv",
+    "authored",
+    "proposed",
+    "not",
+    "unNote",
+    "k12Note",
+    "not_money",
+    "not_saved",
+    "nostore",
+    "notice",
+    "slowNotice",
+    "takedown",
+    "privacy",
+    "consent",
+    "trafficnote",
+    "cert",
+    "flora_honesty",
+    "unverified"
+  ],
+  "p1_text_rules": [
+    {
+      "id": "provenance_label",
+      "flags": "",
+      "min_words": 1,
+      "pattern": "\\b(PROPOSED|SCRIPTED|AUTHORED|MOCKED|RECORDED|DERIVED|SCHEMATIC)\\b",
+      "why": "carries a provenance label from the glossary"
+    },
+    {
+      "id": "not_a_credential",
+      "flags": "i",
+      "min_words": 1,
+      "pattern": "\\b(certif\\w*|credential\\w*|accredit\\w*|licen[cs]\\w*|endorse\\w*|qualif(y|ies|ied)|sign-off)\\b",
+      "why": "says what does or does not count as a certificate, credential, licence or endorsement"
+    },
+    {
+      "id": "no_ai_model",
+      "flags": "i",
+      "min_words": 1,
+      "pattern": "\\b(AI model|language model|no AI|not trained|machine-drafted|machine translation)\\b",
+      "why": "says whether an AI or language model is involved"
+    },
+    {
+      "id": "not_real_unverified",
+      "flags": "i",
+      "min_words": 1,
+      "pattern": "\\b(unverified|not (a |an )?(real|verified|surveyed|official|accredited|affiliated|medical|dental|legal)|no agreement|invented|made-up|illustrative)\\b",
+      "why": "says the content is not real, verified, official or agreed"
+    },
+    {
+      "id": "device_privacy",
+      "flags": "i",
+      "min_words": 1,
+      "pattern": "\\b(on this device|on your device|on your own device|this device only|device only|on-device|never leaves|not stored|nothing is (uploaded|sent)|not (be )?saved|opt-in|no (server|accounts|location)|privacy|consent|never (stor\\w+|sent|saved|enters?|leaves)|nothing (is |you type|yet)|not live|this site never|stays in this browser)\\b",
+      "why": "says where data is kept or what is sent or stored, what is not live, or concerns consent or privacy"
+    },
+    {
+      "id": "notice_takedown",
+      "flags": "i",
+      "min_words": 1,
+      "pattern": "\\b(takedown|take-down|removal request|slower than real time|not affected)\\b",
+      "why": "a notice or takedown line that a reader acts on"
+    },
+    {
+      "id": "play_or_simulation_only",
+      "flags": "i",
+      "min_words": 1,
+      "pattern": "\\b(simulat\\w+ only|play only|is play|are play|real hardware|real robot)\\b",
+      "why": "says the activity is play or simulation, not real"
+    },
+    {
+      "id": "safety_sentence",
+      "flags": "i",
+      "min_words": 4,
+      "pattern": "\\b(safety|hazards?|danger\\w*|emergency|injur\\w+)\\b",
+      "why": "a sentence (four words or more) about safety or hazards; a one-word label does not count"
+    }
+  ],
+  "p2_prefixes": [
+    "nav",
+    "ui",
+    "hud",
+    "view",
+    "hint",
+    "ux",
+    "language",
+    "figures",
+    "unit"
+  ],
+  "p2_sections": [
+    "districts",
+    "tracks",
+    "strands",
+    "tiers",
+    "bands",
+    "modalities",
+    "states"
+  ],
+  "p2_short_label_max_words": 3,
+  "p2_sentence_punctuation": "[.!?;:]",
+  "glossary": [
+    {
+      "term": "SCRIPTED",
+      "stays_english": true,
+      "meaning": "Behaviour or wording fixed in advance by a rule or a registry; no AI model produced it."
+    },
+    {
+      "term": "AUTHORED",
+      "stays_english": true,
+      "meaning": "Written or placed by a person or a fixed rule for this game; not measured from the real world."
+    },
+    {
+      "term": "RECORDED",
+      "stays_english": true,
+      "meaning": "Taken from a real record or measurement that exists in the project's data."
+    },
+    {
+      "term": "DERIVED",
+      "stays_english": true,
+      "meaning": "Computed from recorded data by a stated rule."
+    },
+    {
+      "term": "MOCKED",
+      "stays_english": true,
+      "meaning": "A stand-in that imitates something real and is not the real thing."
+    },
+    {
+      "term": "PROPOSED",
+      "stays_english": true,
+      "meaning": "An idea or partner that is not agreed or built; no agreement exists."
+    },
+    {
+      "term": "SCHEMATIC",
+      "stays_english": true,
+      "meaning": "A simplified diagram-style drawing, not to scale and not a survey."
+    }
+  ],
+  "glossary_policy": "These terms are fixed labels. The same capitalised word appears in the project's data, its other pages and its automated checks, so it stays in English, in capitals, exactly as written. Translate the sentence around it; do not translate the label. If you believe a translated label would serve readers better, say so in the notes column and keep the English label in the corrected text.",
+  "p1_key_segments_sentences_only": [
+    "play",
+    "playhere",
+    "play_note"
+  ],
+  "p1_key_sentence_min_words": 4
+}

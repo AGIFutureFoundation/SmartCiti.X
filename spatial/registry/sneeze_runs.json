@@ -1,0 +1,343 @@
+{
+  "about": "Runs of the Sneeze world tiles by people who had Sneeze or Artemis, as REPORTED by them (not tamper-proof). Written only by spatial/sneeze_kit/ingest.py. The status tables below are a function of the runs: \"proposed\" until a run observed it, then \"observed in <engine> <version>\"; no stronger word is ever written. With run_count 0 nothing has been loaded in Sneeze or Artemis.",
+  "field_status": [
+    {
+      "field": "manifest.Container",
+      "registry_status": "documented",
+      "run_ids": [],
+      "status": "documented"
+    },
+    {
+      "field": "manifest.Services",
+      "registry_status": "documented",
+      "run_ids": [],
+      "status": "documented"
+    },
+    {
+      "field": "manifest.Modules[].sUrl",
+      "registry_status": "documented",
+      "run_ids": [],
+      "status": "documented"
+    },
+    {
+      "field": "manifest.Modules[].sHash",
+      "registry_status": "documented",
+      "run_ids": [],
+      "status": "documented"
+    },
+    {
+      "field": "manifest.Data.Scene",
+      "registry_status": "documented",
+      "run_ids": [],
+      "status": "documented"
+    },
+    {
+      "field": "node.Head.Self",
+      "registry_status": "documented",
+      "run_ids": [],
+      "status": "documented"
+    },
+    {
+      "field": "node.Name",
+      "registry_status": "documented",
+      "run_ids": [],
+      "status": "documented"
+    },
+    {
+      "field": "node.Resource.sReference",
+      "registry_status": "documented",
+      "run_ids": [],
+      "status": "documented"
+    },
+    {
+      "field": "node.Transform.Position",
+      "registry_status": "documented",
+      "run_ids": [],
+      "status": "documented"
+    },
+    {
+      "field": "node.aChildren",
+      "registry_status": "documented",
+      "run_ids": [],
+      "status": "documented"
+    },
+    {
+      "field": "tile.glb_2_0_binary",
+      "registry_status": "documented",
+      "run_ids": [],
+      "status": "documented"
+    },
+    {
+      "field": "tile.axes_y_up_to_z_up",
+      "registry_status": "documented",
+      "run_ids": [],
+      "status": "documented"
+    },
+    {
+      "field": "manifest.unsigned_plain_json",
+      "registry_status": "documented",
+      "run_ids": [],
+      "status": "documented"
+    },
+    {
+      "field": "manifest.Modules[0].sUrl = the stock map module on the RP1 CDN",
+      "registry_status": "documented",
+      "run_ids": [],
+      "status": "documented"
+    },
+    {
+      "field": "manifest.Data.Anchors (GeoPose sidecar)",
+      "observed_means": "the engine loaded a manifest that carries the Data.Anchors block without error; it does NOT mean the engine uses the block",
+      "registry_status": "proposed",
+      "run_ids": [],
+      "status": "proposed"
+    },
+    {
+      "field": "manifest.Data.Provenance (sidecar)",
+      "observed_means": "the engine loaded a manifest that carries the Data.Provenance block without error; it does NOT mean the engine uses the block",
+      "registry_status": "proposed",
+      "run_ids": [],
+      "status": "proposed"
+    },
+    {
+      "field": "world horizontal axes are east/north (ENU)",
+      "observed_means": "in a loaded multi-tile manifest every tile appeared and sat where its recorded east/north offset puts it relative to the first tile, as seen on screen",
+      "registry_status": "proposed",
+      "run_ids": [],
+      "status": "proposed"
+    },
+    {
+      "field": "GeoPose anchor consumed by any Sneeze component",
+      "observed_means": "the person saw the engine use Data.Anchors (place the world by it, display it or log it)",
+      "registry_status": "proposed",
+      "run_ids": [],
+      "status": "proposed"
+    },
+    {
+      "field": "attaching one manifest to another (child fabrics)",
+      "observed_means": "cannot be observed with the manifests built here",
+      "registry_status": "proposed",
+      "run_ids": [],
+      "status": "proposed"
+    },
+    {
+      "field": "camera / render scale at 10-100 km tile extents",
+      "observed_means": "a tile at least 10 km across appeared and the person judged its size to match the checklist table",
+      "registry_status": "proposed",
+      "run_ids": [],
+      "status": "proposed"
+    },
+    {
+      "field": "a tile this size loads inside Sneeze's frame budget",
+      "observed_means": "the largest tile appeared and the camera stayed smooth on one person's machine in one run",
+      "registry_status": "proposed",
+      "run_ids": [],
+      "status": "proposed"
+    },
+    {
+      "field": "signing (JWS, X.509 chain)",
+      "observed_means": "cannot be observed with the manifests built here (none is signed)",
+      "registry_status": "proposed",
+      "run_ids": [],
+      "status": "proposed"
+    }
+  ],
+  "manifest_status": [
+    {
+      "id": "parishes",
+      "run_ids": [],
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+    },
+    {
+      "id": "bayarea",
+      "run_ids": [],
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+    },
+    {
+      "id": "wilds-mountain",
+      "run_ids": [],
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+    },
+    {
+      "id": "wilds-forest",
+      "run_ids": [],
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+    },
+    {
+      "id": "wilds-canyon",
+      "run_ids": [],
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+    },
+    {
+      "id": "wilds-delta",
+      "run_ids": [],
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+    },
+    {
+      "id": "campus-treasure-island",
+      "run_ids": [],
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+    },
+    {
+      "id": "campus-oakland",
+      "run_ids": [],
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+    },
+    {
+      "id": "campus-new-orleans",
+      "run_ids": [],
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+    }
+  ],
+  "run_count": 0,
+  "runs": [],
+  "runs_on_the_recorded_build": 0,
+  "schema": "smartcitix-sneeze-runs/1",
+  "tile_status": [
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "parish-22005"
+    },
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "parish-22051"
+    },
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "parish-22057"
+    },
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "parish-22063"
+    },
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "parish-22071"
+    },
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "parish-22075"
+    },
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "parish-22087"
+    },
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "parish-22089"
+    },
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "parish-22093"
+    },
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "parish-22095"
+    },
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "parish-22103"
+    },
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "parish-22105"
+    },
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "parish-22109"
+    },
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "county-06001"
+    },
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "county-06013"
+    },
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "county-06041"
+    },
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "county-06055"
+    },
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "county-06075"
+    },
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "county-06081"
+    },
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "county-06085"
+    },
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "county-06095"
+    },
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "county-06097"
+    },
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "wild-mountain"
+    },
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "wild-forest"
+    },
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "wild-canyon"
+    },
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "wild-delta"
+    },
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "campus-treasure-island"
+    },
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "campus-oakland"
+    },
+    {
+      "checks": {},
+      "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser",
+      "tile": "campus-new-orleans"
+    }
+  ]
+}

@@ -4439,6 +4439,7 @@ SITE_GROUPS = [
         'trade_craft_quests', 'trade_craft_worksites', 'trade_craft_spaces']),
     ('Maps and records', 'the maps, the learner\'s own record and how it is checked', [
         'trade_craft_interactive', 'trade_craft_geomap', 'trade_craft_map', 'trade_craft_fabric',
+        'trade_craft_swarm',  # SWARM (wave 25)
         'trade_craft_progress', 'trade_craft_verify', 'trade_craft_contribute', 'trade_craft_signin',
         'trade_craft_dashboard']),
     ('About', 'the front door and the pages that explain the project', [

@@ -8,6 +8,7 @@
 set -e
 cd "$1"
 for p in unions pack geo sims tools stations surfaces avatars kit props terrain sky world labels agents training guide restoration roadmap orbis meta spatial xr parcels ei respond venue protocols auth spaces; do python3 $p/build.py >/dev/null; done
+python3 spatial/sneeze_kit/ingest.py --recompute >/dev/null
 python3 lessons/build.py >/dev/null
 python3 schools/build.py >/dev/null
 python3 courses/build.py >/dev/null
@@ -60,5 +61,6 @@ python3 compliance/build.py >/dev/null; python3 evals/build.py >/dev/null
 python3 web/build_home.py >/dev/null
 python3 rnd/build.py >/dev/null
 [ -f web/build_whitepaper.py ] && python3 web/build_whitepaper.py >/dev/null && python3 web/build_seo.py >/dev/null
+python3 i18n/build_review.py >/dev/null
 python3 wiki/build_wiki.py >/dev/null
 echo REBUILT

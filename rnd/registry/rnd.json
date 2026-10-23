@@ -21,11 +21,11 @@
   "measured_elsewhere": 51,
   "computed_from_registry": 12,
   "measured_source_files": 11,
-  "registries_scanned": 104,
-  "app_renderers_scanned": 38,
+  "registries_scanned": 105,
+  "app_renderers_scanned": 39,
   "doc_renderers_scanned": 3,
   "builders_scanned": 78,
-  "suites_scanned": 158,
+  "suites_scanned": 161,
   "declared_unbuilt": 16,
   "declared_unbuilt_by_their_own_words": 2,
   "declared_unbuilt_not_drawn": 15,
@@ -38,13 +38,13 @@
   "budget_views": 6,
   "budget_currencies": 2,
   "budget_agreements": 7,
-  "suites_run": 161,
-  "suite_checks_declared": 8725,
+  "suites_run": 164,
+  "suite_checks_declared": 9206,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 497
+  "files_read": 507
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -1767,6 +1767,25 @@
    "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
   },
   {
+   "registry": "spatial/registry/sneeze_runs.json",
+   "pack": "spatial",
+   "reasons": [
+    "no page generator under web/ names this path, so nothing a learner opens reads it",
+    "and nothing outside its own pack names it either - not a builder, not the wiki, not another pack's suite; inside it, spatial/sneeze_kit/_common.py, spatial/sneeze_kit/ingest.py, spatial/test_sneeze_kit.mjs does"
+   ],
+   "says": null,
+   "read_by_app_renderers": [],
+   "read_by_doc_renderers": [],
+   "read_by_builders": [],
+   "read_by_suites": [],
+   "read_by_its_own_pack": [
+    "spatial/sneeze_kit/_common.py",
+    "spatial/sneeze_kit/ingest.py",
+    "spatial/test_sneeze_kit.mjs"
+   ],
+   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
+  },
+  {
    "registry": "spatial/registry/tiles.json",
    "pack": "spatial",
    "reasons": [
@@ -1782,27 +1801,12 @@
    "read_by_suites": [],
    "read_by_its_own_pack": [
     "spatial/build.py",
+    "spatial/sneeze_kit/_common.py",
+    "spatial/sneeze_kit/ingest.py",
+    "spatial/sneeze_kit/preflight.py",
+    "spatial/sneeze_kit/template.py",
+    "spatial/test_sneeze_kit.mjs",
     "spatial/test_tiles.mjs"
-   ],
-   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
-  },
-  {
-   "registry": "swarm/registry/swarm.json",
-   "pack": "swarm",
-   "reasons": [
-    "no page generator under web/ names this path, so nothing a learner opens reads it",
-    "and nothing outside its own pack names it either - not a builder, not the wiki, not another pack's suite; inside it, swarm/build.py, swarm/optimise.mjs, swarm/router.mjs, swarm/test.mjs does"
-   ],
-   "says": null,
-   "read_by_app_renderers": [],
-   "read_by_doc_renderers": [],
-   "read_by_builders": [],
-   "read_by_suites": [],
-   "read_by_its_own_pack": [
-    "swarm/build.py",
-    "swarm/optimise.mjs",
-    "swarm/router.mjs",
-    "swarm/test.mjs"
    ],
    "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
   },
@@ -3784,6 +3788,17 @@
     "spatial/tiles.py"
    ]
   },
+  "spatial/registry/sneeze_runs.json": {
+   "app_renderers": [],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [],
+   "own_pack": [
+    "spatial/sneeze_kit/_common.py",
+    "spatial/sneeze_kit/ingest.py",
+    "spatial/test_sneeze_kit.mjs"
+   ]
+  },
   "spatial/registry/som.json": {
    "app_renderers": [
     "web/build_fabric.py"
@@ -3812,6 +3827,11 @@
    "suites": [],
    "own_pack": [
     "spatial/build.py",
+    "spatial/sneeze_kit/_common.py",
+    "spatial/sneeze_kit/ingest.py",
+    "spatial/sneeze_kit/preflight.py",
+    "spatial/sneeze_kit/template.py",
+    "spatial/test_sneeze_kit.mjs",
     "spatial/test_tiles.mjs"
    ]
   },
@@ -3918,10 +3938,14 @@
    ]
   },
   "swarm/registry/swarm.json": {
-   "app_renderers": [],
+   "app_renderers": [
+    "web/build_swarm.py"
+   ],
    "doc_renderers": [],
    "builders": [],
-   "suites": [],
+   "suites": [
+    "web/test_swarm.mjs"
+   ],
    "own_pack": [
     "swarm/build.py",
     "swarm/optimise.mjs",
@@ -4492,6 +4516,7 @@
    "web/build_seo.py",
    "web/build_smiles.py",
    "web/build_spaces.py",
+   "web/build_swarm.py",
    "web/build_unions.py",
    "web/build_verify.py",
    "web/build_whitepaper.py",
@@ -4630,6 +4655,7 @@
    "hive/test.mjs",
    "holodeck/test.mjs",
    "i18n/test.mjs",
+   "i18n/test_review.mjs",
    "kit/test.mjs",
    "labels/test.mjs",
    "landcover/test.mjs",
@@ -4670,6 +4696,7 @@
    "smiles/test.mjs",
    "spaces/test.mjs",
    "spatial/test.mjs",
+   "spatial/test_sneeze_kit.mjs",
    "spatial/test_tiles.mjs",
    "stations/test.mjs",
    "surfaces/test.mjs",
@@ -4727,6 +4754,7 @@
    "web/test_smiles.mjs",
    "web/test_smileskit.mjs",
    "web/test_spaces.mjs",
+   "web/test_swarm.mjs",
    "web/test_terrainkit.mjs",
    "web/test_tqkit.mjs",
    "web/test_unions.mjs",
@@ -5427,6 +5455,13 @@
     "in_readme_table": true
    },
    {
+    "suite": "i18n/test_review.mjs",
+    "pack": "i18n",
+    "readme_checks": 171,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
     "suite": "stations/test.mjs",
     "pack": "stations",
     "readme_checks": 27,
@@ -5707,6 +5742,13 @@
     "in_readme_table": true
    },
    {
+    "suite": "spatial/test_sneeze_kit.mjs",
+    "pack": "spatial",
+    "readme_checks": 233,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
     "suite": "geoplay/test.mjs",
     "pack": "geoplay",
     "readme_checks": 64,
@@ -5717,6 +5759,13 @@
     "suite": "swarm/test.mjs",
     "pack": "swarm",
     "readme_checks": 139,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_swarm.mjs",
+    "pack": "web",
+    "readme_checks": 74,
     "declared": true,
     "in_readme_table": true
    },
@@ -6430,24 +6479,24 @@
    {
     "suite": "tools/landing/test.mjs",
     "pack": "tools",
-    "readme_checks": 297,
+    "readme_checks": 300,
     "declared": true,
     "in_readme_table": true
    }
   ],
-  "suites_run": 161,
-  "suites_declaring_a_count": 159,
+  "suites_run": 164,
+  "suites_declaring_a_count": 162,
   "suites_without_a_count": [
    "control/soak.mjs",
    "restoration/test_scenarios.mjs"
   ],
-  "declared_total": 8725,
-  "readme_headline": 8760,
+  "declared_total": 9206,
+  "readme_headline": 9241,
   "unaccounted_for": 35,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
   "max": 457,
-  "median": 44,
+  "median": 45.0,
   "thinnest": [
    {
     "suite": "ops/fuzz.mjs",
@@ -6481,23 +6530,23 @@
    },
    {
     "suite": "tools/landing/test.mjs",
-    "checks": 297
+    "checks": 300
+   },
+   {
+    "suite": "spatial/test_sneeze_kit.mjs",
+    "checks": 233
    },
    {
     "suite": "media/test.mjs",
     "checks": 226
    },
    {
+    "suite": "i18n/test_review.mjs",
+    "checks": 171
+   },
+   {
     "suite": "web/test_worksites.mjs",
     "checks": 151
-   },
-   {
-    "suite": "npcs/test.mjs",
-    "checks": 146
-   },
-   {
-    "suite": "web/test_parishes.mjs",
-    "checks": 140
    }
   ],
   "note": "a thin suite is not automatically a bad one - tools/ has 13 checks over a registry of twelve hand tools - but a thin suite over a large surface is where an unfound defect is most likely to be sitting, and this table is the only place the two are shown side by side."
@@ -6838,6 +6887,7 @@
   "i18n/locales/pt.json",
   "i18n/locales/zh.json",
   "i18n/test.mjs",
+  "i18n/test_review.mjs",
   "kit/build.py",
   "kit/registry/kit.json",
   "kit/test.mjs",
@@ -7013,9 +7063,16 @@
   "spatial/registry/drops_geopose.json",
   "spatial/registry/fabric.json",
   "spatial/registry/geopose.json",
+  "spatial/registry/sneeze_runs.json",
   "spatial/registry/som.json",
   "spatial/registry/tiles.json",
+  "spatial/sneeze_kit/_common.py",
+  "spatial/sneeze_kit/ingest.py",
+  "spatial/sneeze_kit/preflight.py",
+  "spatial/sneeze_kit/serve.py",
+  "spatial/sneeze_kit/template.py",
   "spatial/test.mjs",
+  "spatial/test_sneeze_kit.mjs",
   "spatial/test_tiles.mjs",
   "spatial/tiles.py",
   "spatial/wilds_heights.mjs",
@@ -7103,6 +7160,7 @@
   "web/build_seo.py",
   "web/build_smiles.py",
   "web/build_spaces.py",
+  "web/build_swarm.py",
   "web/build_unions.py",
   "web/build_verify.py",
   "web/build_whitepaper.py",
@@ -7157,6 +7215,7 @@
   "web/test_smiles.mjs",
   "web/test_smileskit.mjs",
   "web/test_spaces.mjs",
+  "web/test_swarm.mjs",
   "web/test_terrainkit.mjs",
   "web/test_tqkit.mjs",
   "web/test_unions.mjs",
