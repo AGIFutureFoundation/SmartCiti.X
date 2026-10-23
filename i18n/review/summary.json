@@ -7,8 +7,9 @@
    "keys": 1789,
    "out_of_date": 0,
    "p1": 218,
-   "p2": 1074,
-   "p3": 497,
+   "p1_checked_by_native": 0,
+   "p2": 1073,
+   "p3": 498,
    "status_would_be": "machine-drafted, pending native review",
    "translation_status": "machine-drafted, pending native review"
   },
@@ -17,8 +18,9 @@
    "keys": 1789,
    "out_of_date": 0,
    "p1": 218,
-   "p2": 1074,
-   "p3": 497,
+   "p1_checked_by_native": 0,
+   "p2": 1073,
+   "p3": 498,
    "status_would_be": "machine-drafted, pending native review",
    "translation_status": "machine-drafted, pending native review"
   },
@@ -27,8 +29,9 @@
    "keys": 1789,
    "out_of_date": 0,
    "p1": 218,
-   "p2": 1074,
-   "p3": 497,
+   "p1_checked_by_native": 0,
+   "p2": 1073,
+   "p3": 498,
    "status_would_be": "machine-drafted, pending native review",
    "translation_status": "machine-drafted, pending native review"
   },
@@ -37,8 +40,9 @@
    "keys": 1789,
    "out_of_date": 0,
    "p1": 218,
-   "p2": 1074,
-   "p3": 497,
+   "p1_checked_by_native": 0,
+   "p2": 1073,
+   "p3": 498,
    "status_would_be": "machine-drafted, pending native review",
    "translation_status": "machine-drafted, pending native review"
   },
@@ -47,8 +51,9 @@
    "keys": 1789,
    "out_of_date": 0,
    "p1": 218,
-   "p2": 1074,
-   "p3": 497,
+   "p1_checked_by_native": 0,
+   "p2": 1073,
+   "p3": 498,
    "status_would_be": "machine-drafted, pending native review",
    "translation_status": "machine-drafted, pending native review"
   },
@@ -57,8 +62,9 @@
    "keys": 1789,
    "out_of_date": 0,
    "p1": 218,
-   "p2": 1074,
-   "p3": 497,
+   "p1_checked_by_native": 0,
+   "p2": 1073,
+   "p3": 498,
    "status_would_be": "machine-drafted, pending native review",
    "translation_status": "machine-drafted, pending native review"
   },
@@ -67,8 +73,9 @@
    "keys": 1789,
    "out_of_date": 0,
    "p1": 218,
-   "p2": 1074,
-   "p3": 497,
+   "p1_checked_by_native": 0,
+   "p2": 1073,
+   "p3": 498,
    "status_would_be": "machine-drafted, pending native review",
    "translation_status": "machine-drafted, pending native review"
   }
@@ -78,6 +85,6 @@
  ],
  "pages_scanned": 38,
  "schema": 1,
- "source_stamp": "8d5a783bdd809c32a822cd5ce8c9646dfddc900445f233477c5605a9b5ac9eda",
+ "source_stamp": "6245c60e4e4cda9fe3a4c4b1423eb7986329c7f80e2165f79fe869429e43659e",
  "sources_scanned": 309
 }

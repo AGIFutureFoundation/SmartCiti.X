@@ -598,6 +598,42 @@ keeps('a field looked for but not seen', (r) => { setField(r, 'GeoPose anchor co
   ok('--screens: a declared hash with no file in the folder -> refused', x.code === 1 && /no file with sha256/.test(x.err) && x.runs === null);
 }
 
+// ---- the reader of this repository cannot open a screenshot: say so where a reader looks
+const STATEMENT = 'An observed run is a statement by a named person; its screenshots stay with that person and are recorded here only by hash, so a reader cannot see them from this repository.';
+const flat = (s) => s.replace(/\s+/g, ' ');
+ok('the checklist carries the plain sentence that an observed run is a named person\'s statement with screenshots held only by hash', flat(text('CHECKLIST.md')).includes(STATEMENT));
+ok('the results schema description carries it', flat(schema.description).includes(STATEMENT));
+ok('the registry file sneeze_runs.json carries it in its honesty line', flat(J(RUNS).about).includes(STATEMENT));
+ok('tiles.json carries it as an honesty line (written by the builder) and the wiki page prints it', flat(tiles.honesty.observed_runs).includes(STATEMENT) && flat(readFileSync(join(ROOT, 'wiki', 'Spatial-Fabric.md'), 'utf8')).includes(STATEMENT));
+{
+  const withUrl = (u) => { const r = goodRun(); r.screenshots_url = u; return r; };
+  const a1 = ingest(withUrl('https://example.org/shots/run-1'));
+  const d = a1.runs;
+  ok('an optional https screenshots_url is accepted and shown beside every status the run supports (fields and manifests), not on the others',
+    a1.code === 0 && d.field_status.filter((f) => f.screenshots_published_at).map((f) => f.field).sort().join('|') === d.field_status.filter((f) => f.status !== f.registry_status).map((f) => f.field).sort().join('|')
+    && d.field_status.find((f) => f.field.startsWith('world horizontal')).screenshots_published_at[0] === 'https://example.org/shots/run-1'
+    && d.manifest_status.find((m) => m.id === 'parishes').screenshots_published_at[0] === 'https://example.org/shots/run-1' && !('screenshots_published_at' in d.manifest_status.find((m) => m.id === 'bayarea')));
+  ok('without the URL nothing is shown (the field is not required)', !('screenshots_url' in good.runs.runs[0].run) && good.runs.field_status.every((f) => !('screenshots_published_at' in f)));
+  for (const [name, u] of [['plain http', 'http://example.org/s'], ['an email address', 'someone@example.org'], ['mailto', 'mailto:someone@example.org'], ['an https URL carrying user@', 'https://someone@example.org/s'], ['a file path', 'file:///shots'], ['a space', 'https://example.org/a b'], ['empty', '']]) {
+    const x = ingest(withUrl(u));
+    ok(`screenshots_url refused: ${name}`, x.code === 1 && x.runs === null && /screenshots_url/.test(x.err));
+  }
+}
+
+{
+  // --dry-run must write nothing, for --recompute as for a run
+  const rc = join(TMP, 'dry_rc.json');
+  const doc = J(good.rp); doc.field_status.find((f) => f.field.startsWith('signing')).status = 'claimed'; writeFileSync(rc, JSON.stringify(doc));
+  const before = readFileSync(rc);
+  const r = py('ingest.py', ['--recompute', '--dry-run', '--runs', rc]);
+  ok('--dry-run --recompute reports "would change" and leaves the file byte-for-byte as it was', r.code === 0 && /would change; nothing written/.test(r.out) && readFileSync(rc).equals(before));
+  const missing = join(TMP, 'dry_none.json');
+  const r2 = py('ingest.py', ['--recompute', '--dry-run', '--runs', missing]);
+  ok('--dry-run --recompute does not create a missing runs file either', r2.code === 0 && /would change/.test(r2.out) && !existsSync(missing));
+  const clean = join(TMP, 'dry_clean.json'); py('ingest.py', ['--recompute', '--runs', clean]);
+  ok('--dry-run --recompute on an up-to-date file says "would be unchanged"', /would be unchanged/.test(py('ingest.py', ['--recompute', '--dry-run', '--runs', clean]).out));
+}
+
 // ---- the stored file cannot be edited into a claim
 {
   const rp = good.rp;

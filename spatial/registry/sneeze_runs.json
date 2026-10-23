@@ -1,5 +1,5 @@
 {
-  "about": "Runs of the Sneeze world tiles by people who had Sneeze or Artemis, as REPORTED by them (not tamper-proof). Written only by spatial/sneeze_kit/ingest.py. The status tables below are a function of the runs: \"proposed\" until a run observed it, then \"observed in <engine> <version>\"; no stronger word is ever written. With run_count 0 nothing has been loaded in Sneeze or Artemis.",
+  "about": "An observed run is a statement by a named person; its screenshots stay with that person and are recorded here only by hash, so a reader cannot see them from this repository. Runs of the Sneeze world tiles by people who had Sneeze or Artemis, as REPORTED by them (not tamper-proof). Written only by spatial/sneeze_kit/ingest.py. The status tables below are a function of the runs: \"proposed\" until a run observed it, then \"observed in <engine> <version>\"; no stronger word is ever written. With run_count 0 nothing has been loaded in Sneeze or Artemis.",
   "field_status": [
     {
       "field": "manifest.Container",

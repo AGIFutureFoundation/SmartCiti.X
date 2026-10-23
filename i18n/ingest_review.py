@@ -13,7 +13,7 @@ What it does, only if EVERY filled row passes (all or nothing; nothing is writte
     both still match, so a later English or text change makes the verdict out of date.
   - translation_status (and reviewer / reviewed_at) are recomputed from the ledger:
         no current verdict   machine-drafted, pending native review
-        N of M current       machine-drafted; N of M keys checked by a native speaker
+        N of M current       machine-drafted; N of M keys checked by a native speaker, S of P safety and honesty lines
         all M current        reviewed
 A key is never marked reviewed without a verdict. A row with no verdict, no corrected text and
 no notes is simply untouched. A row with ANY of those but no verdict is refused. --strict also
@@ -72,6 +72,9 @@ def check_correction(row, en_t, dr_t, terms):
     out = []
     if not c:
         return ['verdict fix but no corrected text']
+    if row['corrected'][:1] in L.FORMULA_LEADERS or c[:1] in L.FORMULA_LEADERS:
+        out.append('corrected text starts with a character a spreadsheet would run as a formula '
+                   f'({c[:1]!r}); reword it, the next sheet build would refuse the catalog')
     if re.search(r'[\x00-\x08\x0b-\x1f]', c) or '\n' in c:
         out.append('corrected text contains a line break or control character')
     if L.norm(c) == L.norm(dr_t):
@@ -189,7 +192,8 @@ def finish(root, locale, cat, en_flat, ledger, dry):
     cur, stale, unknown = L.review_counts(en_flat, cat_flat, ledger)
     if unknown:
         raise L.ReviewError(f'ledger names keys the catalog does not have: {unknown[:5]}')
-    cat['translation_status'] = L.status_for(cur, len(en_flat))
+    s1, p1 = L.p1_counts(en_flat, cat_flat, ledger, L.load_rules(root))
+    cat['translation_status'] = L.status_for(cur, len(en_flat), s1, p1)
     who, when = L.reviewer_fields(en_flat, cat_flat, ledger)
     cat.pop('reviewer', None)
     cat.pop('reviewed_at', None)

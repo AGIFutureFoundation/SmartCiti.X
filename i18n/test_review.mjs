@@ -76,8 +76,9 @@ function priorityOf(id, english) {
   if (n <= rules.p2_short_label_max_words && !new RegExp(rules.p2_sentence_punctuation).test(english)) return 2;
   return 3;
 }
-function statusFor(cur, total) {
-  return cur <= 0 ? PENDING : cur >= total ? 'reviewed' : `machine-drafted; ${cur} of ${total} keys checked by a native speaker`;
+function statusFor(cur, total, s1, p1) {
+  return cur <= 0 ? PENDING : cur >= total ? 'reviewed'
+    : `machine-drafted; ${cur} of ${total} keys checked by a native speaker, ${s1} of ${p1} safety and honesty lines`;
 }
 function ledgerOf(root, l) {
   const p = join(root, 'i18n', 'review', `${l}.ledger.json`);
@@ -86,12 +87,13 @@ function ledgerOf(root, l) {
 // the status a catalog MUST carry, recomputed from its ledger with the English source (JS side of the contract)
 function expectedStatus(en, cat, ledger) {
   const E = flatten(en), C = flatten(cat);
-  let cur = 0; const names = new Set(), dates = [];
+  let cur = 0, s1 = 0, p1 = 0; const names = new Set(), dates = [];
   for (const [id, t] of E) {
-    const e = ledger.entries[id];
-    if (e && e.en_sha === sha(t) && e.text_sha === sha(C.get(id))) { cur++; names.add(e.reviewed_by); dates.push(e.reviewed_at); }
+    const e = ledger.entries[id], safety = priorityOf(id, t) === 1;
+    if (safety) p1++;
+    if (e && e.en_sha === sha(t) && e.text_sha === sha(C.get(id))) { cur++; if (safety) s1++; names.add(e.reviewed_by); dates.push(e.reviewed_at); }
   }
-  return { cur, total: E.size, status: statusFor(cur, E.size), reviewer: [...names].sort().join(', '), at: dates.sort().at(-1) };
+  return { cur, s1, p1, total: E.size, status: statusFor(cur, E.size, s1, p1), reviewer: [...names].sort().join(', '), at: dates.sort().at(-1) };
 }
 
 // ============================================================ real sheets ===
@@ -207,6 +209,8 @@ for (const l of NON_EN) {
   const sum = JSON.parse(readFileSync(join(HERE, 'review/summary.json'), 'utf8'));
   check(NON_EN.every((l) => sum.locales[l]?.keys === EN.size && sum.locales[l].p1 === sheets[l].rows.filter((r) => r.priority === '1').length
     && sum.locales[l].p1 + sum.locales[l].p2 + sum.locales[l].p3 === EN.size), 'summary.json counts equal the sheets: keys and priority 1/2/3 per locale');
+  check(NON_EN.every((l) => sum.locales[l].p1_checked_by_native === expectedStatus(en, load(l), ledgerOf(ROOT, l)).s1 && sum.locales[l].checked_by_native === expectedStatus(en, load(l), ledgerOf(ROOT, l)).cur),
+    'summary.json records how many keys and how many safety and honesty (priority 1) keys have a current verdict, equal to the ledgers');
   check(/^[0-9a-f]{64}$/.test(sum.source_stamp) && sum.files_read > 200, `summary.json carries a sha256 source_stamp over every file the build read (${sum.files_read} files)`);
   const c = py(['i18n/build_review.py', '--check']);
   check(c.status === 0, `build_review.py --check is current (${(c.status ? c.stderr : c.stdout).trim().slice(0, 140)})`);
@@ -308,9 +312,9 @@ check(Object.keys(led.entries).sort().join() === 'strings.honesty.demo,strings.n
   && led.entries['strings.nav.home'].verdict === 'fix' && led.entries['strings.nav.home'].was === 'Startseite'
   && led.entries['strings.honesty.demo'].verdict === 'ok' && led.entries['strings.honesty.demo'].reviewed_by === 'T.R.' && led.entries['strings.honesty.demo'].reviewed_at === '2026-10-01',
   'round trip: the ledger records exactly the two keys given a verdict, with reviewer, date, verdict and the replaced draft');
-check(deAfter.translation_status === 'machine-drafted; 2 of 10 keys checked by a native speaker' && deAfter.reviewer === 'T.R.' && deAfter.reviewed_at === '2026-10-01'
+check(deAfter.translation_status === 'machine-drafted; 2 of 10 keys checked by a native speaker, 1 of 2 safety and honesty lines' && deAfter.reviewer === 'T.R.' && deAfter.reviewed_at === '2026-10-01'
   && validateCatalog('de', deAfter).length === 0 && PARTIAL_STATUS_RE.test(deAfter.translation_status),
-  'round trip: translation_status is "machine-drafted; 2 of 10 keys checked by a native speaker" with reviewer and date, and catalog.mjs validates it');
+  'round trip: translation_status is "machine-drafted; 2 of 10 keys checked by a native speaker, 1 of 2 safety and honesty lines" with reviewer and date, and catalog.mjs validates it');
 {
   const want = expectedStatus(FIX_EN, deAfter, led);
   check(want.cur === 2 && want.status === deAfter.translation_status, 'round trip: the JavaScript recount of the ledger (sha256 of English and text) agrees with the Python status');
@@ -330,8 +334,8 @@ check(rows2.find((x) => x.key === 'strings.nav.home').status === 'fix by T.R. on
   writeFileSync(join(st, 'i18n/locales/de.json'), dump(dec));
   const s = py(['i18n/ingest_review.py', '--sync', 'de', '--root', st], st);
   const after2 = JSON.parse(read(st, 'i18n/locales/de.json'));
-  check(s.status === 0 && after2.translation_status === 'machine-drafted; 1 of 10 keys checked by a native speaker',
-    'staleness: when the English or the text changes after a verdict, that verdict stops counting (2 -> 1 of 10) and --sync restates the status');
+  check(s.status === 0 && after2.translation_status === 'machine-drafted; 1 of 10 keys checked by a native speaker, 0 of 2 safety and honesty lines',
+    'staleness: when the English or the text changes after a verdict, that verdict stops counting (2 -> 1 of 10, the safety line 1 -> 0 of 2) and --sync restates the status');
   const bs = buildFix(st);
   check(sheetRows(bs.text).rows.find((x) => x.key === 'strings.honesty.demo').status.startsWith('review out of date'), 'staleness: the rebuilt sheet marks that row "review out of date"');
 }
@@ -341,19 +345,35 @@ check(rows2.find((x) => x.key === 'strings.nav.home').status === 'fix by T.R. on
   const enc = JSON.parse(read(st, 'i18n/locales/en.json')); enc.strings['nav.home'] = 'Home page';
   writeFileSync(join(st, 'i18n/locales/en.json'), dump(enc));
   const s = py(['i18n/ingest_review.py', '--sync', 'de', '--root', st], st);
-  check(s.status === 0 && JSON.parse(read(st, 'i18n/locales/de.json')).translation_status === 'machine-drafted; 1 of 10 keys checked by a native speaker',
+  check(s.status === 0 && JSON.parse(read(st, 'i18n/locales/de.json')).translation_status === 'machine-drafted; 1 of 10 keys checked by a native speaker, 1 of 2 safety and honesty lines',
     'staleness: when only the English source changes, the verdict on that key stops counting (2 -> 1 of 10)');
 }
 // nine of ten is still not "reviewed"
 {
   const nine = copy('nine'); cpSync(fx, nine, { recursive: true });
-  const todo = rows2.filter((x) => x.status === 'not reviewed').slice(1);
+  const todo = rows2.filter((x) => x.status === 'not reviewed').slice(0, -1);
   const e9 = Object.fromEntries(todo.map((x) => [x.key, ['ok']]));
   const r9 = ingest(nine, fill(b2.text, e9), ['--reviewer', 'Q.Z.', '--date', '2026-10-02']);
   const d9 = JSON.parse(read(nine, 'i18n/locales/de.json'));
-  check(r9.status === 0 && d9.translation_status === 'machine-drafted; 9 of 10 keys checked by a native speaker' && d9.reviewer === 'Q.Z., T.R.',
-    'nine of ten keys with a verdict is "machine-drafted; 9 of 10 keys checked by a native speaker", not "reviewed"');
+  check(r9.status === 0 && d9.translation_status === 'machine-drafted; 9 of 10 keys checked by a native speaker, 2 of 2 safety and honesty lines' && d9.reviewer === 'Q.Z., T.R.',
+    'nine of ten keys with a verdict is "machine-drafted; 9 of 10 keys checked by a native speaker, 2 of 2 safety and honesty lines", not "reviewed"');
 }
+// checking only interface labels leaves the safety and honesty lines at zero, and the status says so
+{
+  const ui = copy('uionly'); cpSync(base, ui, { recursive: true });
+  const r0 = ingest(ui, fill(buildFix(ui).text, { 'strings.nav.home': ['ok'], 'tracks.0': ['ok'] }));
+  const d0 = JSON.parse(read(ui, 'i18n/locales/de.json'));
+  check(r0.status === 0 && d0.translation_status === 'machine-drafted; 2 of 10 keys checked by a native speaker, 0 of 2 safety and honesty lines' && !/reviewed/.test(d0.translation_status),
+    'checking only interface labels reads "2 of 10 keys, 0 of 2 safety and honesty lines", and the part-checked wording never contains "reviewed"');
+}
+check([
+  ['machine-drafted; 3 of 10 keys checked by a native speaker, 4 of 2 safety and honesty lines'],
+  ['machine-drafted; 1 of 10 keys checked by a native speaker, 2 of 2 safety and honesty lines'],
+  ['machine-drafted; 9 of 10 keys checked by a native speaker, 0 of 3 safety and honesty lines'],
+  ['machine-drafted; 3 of 10 keys checked by a native speaker'],
+].every(([st]) => validateCatalog('x', { translation_status: st, reviewer: 'AB', reviewed_at: '2026-10-01' }).length > 0)
+  && validateCatalog('x', { translation_status: 'machine-drafted; 3 of 10 keys checked by a native speaker, 1 of 2 safety and honesty lines', reviewer: 'AB', reviewed_at: '2026-10-01' }).length === 0,
+  'catalog.mjs refuses impossible safety-and-honesty counts (more than the keys checked, more than the lines, too few non-safety keys) and the old wording without them');
 // finishing every key makes the catalog "reviewed", with every reviewer named
 {
   const edits = {};
@@ -377,6 +397,8 @@ const refusals = [
   ['fix that loses a {placeholder}', { 'strings.demo.count': ['fix', 'Hallen offen'] }, /placeholders differ/],
   ['fix that changes the markup', { 'strings.demo.rich': ['fix', 'Lies dies zuerst, bitte.'] }, /markup differs/],
   ['fix that drops a glossary label', { 'strings.demo.term': ['fix', 'VERFASST nach Regel, zum Spielen.'] }, /glossary label AUTHORED/],
+  ...[['=', 'equals'], ['+', 'plus'], ['-', 'minus'], ['@', 'at sign'], ['\t', 'tab'], ['\r', 'carriage return']].map(([ch, nm]) =>
+    [`a fix whose text starts with a ${nm} (a spreadsheet formula leader)`, { 'strings.nav.home': ['fix', `${ch}Startseite neu`] }, /starts with a character a spreadsheet would run as a formula/]),
   ['an email address in the notes', { 'strings.nav.home': ['ok', '', 'mail me at a.b@example.org'] }, /email address/],
 ];
 for (const [name, edits, re, extraRow] of refusals) {

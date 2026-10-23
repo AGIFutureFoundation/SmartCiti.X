@@ -10,7 +10,8 @@ contract from the JavaScript side.
 
 The status is derived, never typed: it is "machine-drafted, pending native
 review" until a native speaker has given a verdict on at least one key, then
-"machine-drafted; N of M keys checked by a native speaker", then "reviewed"
+"machine-drafted; N of M keys checked by a native speaker, S of P safety and honesty
+lines" (S of the P priority-1 keys), then "reviewed"
 only when every key has a current verdict. (The partial wording avoids the
 substring "reviewed" on purpose: rnd/ counts a catalog as a reviewed locale
 when its status contains that word, and a part-reviewed catalog is not one.)
@@ -29,7 +30,7 @@ ROOT = HERE.parent
 PENDING = 'machine-drafted, pending native review'
 SOURCE = 'source language'
 REVIEWED = 'reviewed'
-PARTIAL_RE = re.compile(r'^machine-drafted; (\d+) of (\d+) keys checked by a native speaker$')
+PARTIAL_RE = re.compile(r'^machine-drafted; (\d+) of (\d+) keys checked by a native speaker, (\d+) of (\d+) safety and honesty lines$')
 
 META_FIELDS = ('locale', 'language', 'english_name', 'dir', 'translation_status', 'reviewer', 'reviewed_at')
 COLUMNS = ['key', 'english', 'draft', 'appears_in', 'priority', 'why', 'status',
@@ -189,12 +190,25 @@ def review_counts(en_flat, cat_flat, ledger):
     return cur, stale, unknown
 
 
-def status_for(current, total):
+def p1_counts(en_flat, cat_flat, ledger, rules):
+    """(safety and honesty keys with a current verdict, all safety and honesty keys)."""
+    done = total = 0
+    for k, (_, en_t) in en_flat.items():
+        if priority_of(k, en_t, rules)[0] != 1:
+            continue
+        total += 1
+        if entry_state(ledger['entries'].get(k), en_t, cat_flat[k][1]) == 'current':
+            done += 1
+    return done, total
+
+
+def status_for(current, total, p1_done, p1_total):
     if current <= 0:
         return PENDING
     if current >= total:
         return REVIEWED
-    return f'machine-drafted; {current} of {total} keys checked by a native speaker'
+    return (f'machine-drafted; {current} of {total} keys checked by a native speaker, '
+            f'{p1_done} of {p1_total} safety and honesty lines')
 
 
 def reviewer_fields(en_flat, cat_flat, ledger):

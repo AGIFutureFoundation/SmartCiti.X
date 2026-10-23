@@ -223,6 +223,14 @@ const COLS = ['campuses', 'cells', 'anchors', 'sites', 'claw', 'advisors', 'crew
 {
   ok('[shipped] the site nav is present and marks this page current', /href="trade_craft_swarm.html" aria-current="page"/.test(page));
   ok('[registry] web/sitenav.py declares the page once, in the Maps group, with the nav.page.swarm label', /\('nav\.group\.maps', \[[\s\S]*?\('web\/trade_craft_swarm\.html', 'nav\.page\.swarm'\)[\s\S]*?\]\),\s*\('nav\.group\.records'/.test(SITENAV) && (SITENAV.match(/trade_craft_swarm\.html/g) ?? []).length === 1);
+  {
+    const en = I.en.strings, titleTxt = unesc((page.match(/<title>([^<]*)<\/title>/) ?? [])[1] ?? ''), h1 = textOf((bodyHtml.match(/<h1[^>]*>[\s\S]*?<\/h1>/) ?? [''])[0]);
+    const navLink = (bodyHtml.match(/<a [^>]*href="trade_craft_swarm\.html"[^>]*>([\s\S]*?)<\/a>/) ?? [])[1] ?? '';
+    const empty = Object.keys(I).filter((l) => typeof I[l].strings['swarm.nav'] !== 'string' || !I[l].strings['swarm.nav'].trim());
+    ok('[shipped] the nav label, the page title and the h1 each say "simulated" in English, and the nav label is non-empty in all eight catalogs',
+      /simulated/i.test(readFileSync(join(ROOT, 'i18n/locales/en.json'), 'utf8').match(/"nav\.page\.swarm": "([^"]*)"/)?.[1] ?? '') && /simulated/i.test(textOf(navLink)) && /simulated/i.test(titleTxt) && /simulated/i.test(h1) && /simulated/i.test(en['swarm.nav'])
+      && ['ar', 'de', 'en', 'es', 'fr', 'hi', 'pt', 'zh'].every((l) => (readFileSync(join(ROOT, `i18n/locales/${l}.json`), 'utf8').match(/"nav\.page\.swarm": "([^"]+)"/)?.[1] ?? '').trim().length > 0) && empty.length === 0, [navLink, titleTxt, h1]);
+  }
   ok('[shipped] one <title>, one description, a canonical URL, and one h1', (page.match(/<title>/g) ?? []).length === 1 && /<meta name="description" content="[^"]{20,160}"/.test(page) && /<link rel="canonical"/.test(page) && (page.match(/<h1[ >]/g) ?? []).length === 1);
   ok('[shipped] one main landmark; the map is a labelled region; every button has text; every control has a label',
     (bodyHtml.match(/<main /g) ?? []).length === 1 && /id="swarm-map" role="region" aria-label="[^"]{20,}"/.test(bodyHtml)
@@ -298,6 +306,8 @@ if (SC !== null) {
     C('b22', 'robot.litter-pickup', { cells: ['9q'] }, { hardware: 'rover-1' }), C('b23', 'robot.litter-pickup', { cells: ['9q'] }, { hardware: 'simulated' }), C('b24', 'robot.litter-pickup', { cells: ['9q'] }, { mode: 'live' }),
     C('b25', 'robot.litter-pickup', { cells: ['9q'] }, { operator: 'a person' }), C('b26', 'robot.litter-pickup', { cells: ['9q'] }, { params: { level: 1, ros_topic: '/cmd_vel' } }), C('b27', 'robot.litter-pickup', { cells: ['tcp:10.0.0.1'] }),
     C('b28', 'robot.litter-pickup', { cells: ['9q'] }, { targets: ['ros2:/robot'] }), C('b29', 'robot.litter-pickup', { cells: ['9q'] }, { mode: 5 }), { ...C('b30', 'robot.litter-pickup', { cells: ['9q'] }), device: { ip: '10.0.0.5' } },
+    C('m1', 'robot.litter-pickup', { cells: ['9q'] }, { mode: null }), C('m2', 'robot.litter-pickup', { cells: ['9q'] }, { mode: ['dry-run'] }), C('m3', 'robot.litter-pickup', { cells: ['9q'] }, { mode: { x: 1 } }), C('m4', 'robot.litter-pickup', { cells: ['9q'] }, { mode: 'dry-run-'.repeat(8) }),
+    C('m5', 'robot.litter-pickup', { cells: ['9q'] }, { mode: 'dry-run' }), { ...C('m6', 'robot.litter-pickup', { cells: ['9q'] }), mode: undefined }, [{ mode: 1 }],
     C('b31', 'robot.litter-pickup', { polygon: [[37.77, -122.30], [37.77, -122.24], [37.83, -122.24], [37.83, -122.30], [37.77, -122.30]] }),
   ];
   cmds.push(...bad);
@@ -316,6 +326,7 @@ if (SC !== null) {
     if (b.status === 'routed') routed++; else if (b.status === 'held') held++; else if (b.status === 'refused') refused++;
     targetsSeen += b.resolved.targets.length;
     const mism = [];
+    if (canon(SC.commandHead(JSON.parse(JSON.stringify(c)), a.region)) !== canon({ ...b.command, sha256: undefined })) mism.push('command head');
     if (a.status !== b.status) mism.push(`status ${a.status} vs ${b.status}`);
     if (canon(a.refusal) !== canon(b.refusal)) mism.push('refusal');
     if (canon(a.resolved) !== canon(b.resolved)) mism.push('resolved');

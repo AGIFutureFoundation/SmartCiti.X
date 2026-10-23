@@ -7,7 +7,7 @@ You do not need to be an expert. You need the repository, Python 3.8 or newer, N
 - **Artemis**, RP1's native browser built on Sneeze (download link: the "Install" step of Example 01 in the Sneeze docs, <https://raw.githubusercontent.com/MetaversalCorp/SneezeDoc/main/docs/examples/01-stool.md>), or
 - **Sneeze** built from <https://github.com/MetaversalCorp/Sneeze> inside some host application you already have. Sneeze is an engine library, not an app; how your host accepts a fabric address is up to the host.
 
-Everything you report is recorded as *reported by you*, with your name, the date and the engine version. Say "untested" or "fail" whenever that is what happened. A run full of "fail" is as useful as a run full of "pass".
+**An observed run is a statement by a named person; its screenshots stay with that person and are recorded here only by hash, so a reader cannot see them from this repository.** Everything you report is recorded as *reported by you*, with your name, the date and the engine version. Say "untested" or "fail" whenever that is what happened. A run full of "fail" is as useful as a run full of "pass".
 
 ## 1. Build the tiles
 
@@ -95,7 +95,7 @@ Take at least one per manifest you opened, plus one per `observed` field. Get ea
 - macOS: `shasum -a 256 shot.png`
 - Windows: `certutil -hashfile shot.png SHA256`
 
-List them in `screenshots[]` (`sha256` and a one-line `caption`), and refer to the hash from the tile, manifest or field they support. The images themselves are **not** stored in the repository; send them separately to whoever ingests the run.
+List them in `screenshots[]` (`sha256` and a one-line `caption`), and refer to the hash from the tile, manifest or field they support. The images themselves are **not** stored in the repository; send them separately to whoever ingests the run. If you publish them somewhere (a gist, a repository, a web page), put the `https://` address in `screenshots_url` and it is shown beside the result; without it nobody reading this repository can look at them. Never put an email address there.
 
 ## 9. Fill in who, when, what
 

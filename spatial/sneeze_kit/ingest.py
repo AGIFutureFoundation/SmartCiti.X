@@ -39,6 +39,7 @@ import _common as C  # noqa: E402
 RUNS_SCHEMA = 'smartcitix-sneeze-runs/1'
 EARLIEST = datetime.date(2026, 6, 15)   # Sneeze was introduced on this date (tiles.json / the wiki cite the press release)
 MIN_EVIDENCE = 10
+OBSERVED_RUN_STATEMENT = 'An observed run is a statement by a named person; its screenshots stay with that person and are recorded here only by hash, so a reader cannot see them from this repository.'
 BIG_TILE_KM = 10.0                      # the proposed-field row speaks of 10-100 km extents
 
 
@@ -362,6 +363,9 @@ def derive(tiles, records):
         else:
             st = 'proposed'
         row = {'field': name, 'registry_status': table[name], 'status': st, 'run_ids': ids}
+        urls = sorted({r['run']['screenshots_url'] for r in good if r['run_id'] in ids and r['run'].get('screenshots_url')})
+        if urls:
+            row['screenshots_published_at'] = urls
         if table[name] == 'proposed' and name in OBSERVED_MEANS:
             row['observed_means'] = OBSERVED_MEANS[name]
         fields.append(row)
@@ -375,7 +379,11 @@ def derive(tiles, records):
         for r in good:
             if any(mo['id'] == m['id'] and mo['loaded'] != 'untested' for mo in r['run']['manifests']):
                 ids.append(r['run_id'])
-        mans.append({'id': m['id'], 'status': '; '.join(parts) if parts else m['status'], 'run_ids': sorted(ids)})
+        row = {'id': m['id'], 'status': '; '.join(parts) if parts else m['status'], 'run_ids': sorted(ids)}
+        urls = sorted({r['run']['screenshots_url'] for r in good if r['run_id'] in ids and r['run'].get('screenshots_url')})
+        if urls:
+            row['screenshots_published_at'] = urls
+        mans.append(row)
     tl = []
     for t in tiles['tiles']:
         checks = {}
@@ -397,7 +405,7 @@ def document(tiles, records):
     good = [r for r in records if r['build_match']]
     return {
         'schema': RUNS_SCHEMA,
-        'about': 'Runs of the Sneeze world tiles by people who had Sneeze or Artemis, as REPORTED by them (not tamper-proof). '
+        'about': OBSERVED_RUN_STATEMENT + ' Runs of the Sneeze world tiles by people who had Sneeze or Artemis, as REPORTED by them (not tamper-proof). '
                  'Written only by spatial/sneeze_kit/ingest.py. The status tables below are a function of the runs: '
                  '"proposed" until a run observed it, then "observed in <engine> <version>"; no stronger word is ever written. '
                  'With run_count 0 nothing has been loaded in Sneeze or Artemis.',
@@ -475,7 +483,12 @@ def main(argv=None):
     if a.recompute:
         for r in records:
             r['field_outcomes'] = field_outcomes(r['run'], tiles, r['build_match'])
-        write_atomic(runs_path, document(tiles, records))
+        doc = document(tiles, records)
+        if a.dry_run:
+            same = runs_path.is_file() and C.load_json(runs_path) == doc
+            print(f'dry run: {runs_path.name} ({len(records)} run(s)) ' + ('would be unchanged' if same else 'would change') + '; nothing written')
+            return 0
+        write_atomic(runs_path, doc)
         print(f'recomputed {runs_path.name}: {len(records)} run(s)')
         return 0
     if not a.run:

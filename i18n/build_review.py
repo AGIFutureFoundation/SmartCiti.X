@@ -444,9 +444,10 @@ def main():
         cur, stale, unknown = L.review_counts(en_flat, cat_flat, ledgers[l])
         if unknown:
             raise SystemExit(f'build_review: {l} ledger names keys the catalog no longer has: {unknown[:5]}')
-        summary['locales'][l] = {**counts, 'checked_by_native': cur, 'out_of_date': stale,
+        s1, p1 = L.p1_counts(en_flat, cat_flat, ledgers[l], rules)
+        summary['locales'][l] = {**counts, 'checked_by_native': cur, 'p1_checked_by_native': s1, 'out_of_date': stale,
                                  'translation_status': cat['translation_status'],
-                                 'status_would_be': L.status_for(cur, len(rows))}
+                                 'status_would_be': L.status_for(cur, len(rows), s1, p1)}
         sheets[l] = (rows, counts, cat)
     new_summary = json.dumps(summary, indent=1, sort_keys=True) + '\n'
     sp = root / 'i18n' / 'review' / 'summary.json'

@@ -171,12 +171,36 @@ node i18n/test_review.mjs                                           # the contra
   reviewer is a name or initials: no email address is published.
 - **`translation_status` is derived from the ledger**, never typed: no
   current verdict = `machine-drafted, pending native review`; N of M =
-  `machine-drafted; N of M keys checked by a native speaker` (with `reviewer`
-  and `reviewed_at` in the catalog); every key = `reviewed`. A verdict counts only
+  `machine-drafted; N of M keys checked by a native speaker, S of P safety and
+  honesty lines` (with `reviewer` and `reviewed_at` in the catalog; P is the
+  number of priority-1 keys under `review_rules.json`, S how many of them hold
+  a current verdict, so a catalog whose interface labels were checked but not
+  its safety lines says `0 of P`); every key = `reviewed`. A verdict counts only
   while the English source and the reviewed text are unchanged, so a later edit
   makes it "out of date" and the count drops. When keys are added to a catalog
   that already holds verdicts, run `ingest_review.py --sync <locale>` so M is
   restated. The part-checked wording avoids the word "reviewed" on purpose:
   `rnd/` counts a catalog as a reviewed locale when its status contains it.
 - After an ingest, run the page builders again: the pages embed the catalogs.
+
+### Manual steps today (there is no hosted download)
+
+1. A maintainer runs `python3 i18n/build_review.py` and takes
+   `dist/review/<locale>.csv` (or `.html`) from the working tree: `dist/` is
+   not published, so nothing links to these files.
+2. The maintainer sends the file to the reviewer by hand and gets the filled
+   file back by hand.
+3. The maintainer runs `python3 i18n/ingest_review.py <file> --reviewer "<name or
+   initials the reviewer gave>"`, rebuilds, and commits the corrected catalog,
+   the ledger and `summary.json`.
+
+### Open decision: who confirms a reviewer is a native speaker
+
+Not decided. Before any catalog may read `reviewed`, the project must decide
+who confirms that a reviewer is a native speaker of that language, and how that
+confirmation is recorded. Until then a verdict records only the name or
+initials the reviewer gives and the date: it is not evidence of the reviewer's
+language, qualification or identity, and the wording "checked by a native
+speaker" describes what the reviewer says they are, not something the
+repository has verified.
 <!-- L10N END -->

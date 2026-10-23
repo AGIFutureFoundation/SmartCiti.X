@@ -294,6 +294,14 @@ PREVIEW_TAIL = '''
   return outcome();
 }
 '''
+COMMAND_HEAD = """// the command head of an audit row, as the router records it (the hash is the one field left out)
+function commandHead(cmd, region) {
+  const o = cmd && typeof cmd === 'object';
+  return { id: o && typeof cmd.id === 'string' ? cmd.id.slice(0, 64) : null, capability: o && typeof cmd.capability === 'string' ? cmd.capability.slice(0, 64) : null,
+    region_kind: region ? region.kind : null, region_cells: region && region.kind === 'cells' ? region.cells : null,
+    mode: o && 'mode' in cmd ? (typeof cmd.mode === 'string' ? cmd.mode.slice(0, 32) : '(not a string)') : 'dry-run' };
+}
+globalThis.SwarmCore = Object.freeze({ previewCommand, commandHead, bounds, encode, realHardwareSignals, REAL_HARDWARE_REFUSAL });"""
 CORE_JS = '\n'.join([
     '/* SWARM-CORE BEGIN: the router\'s own region and resolution code, copied byte for byte; no DOM, no network, no storage */',
     verbatim('swarm/geohash.mjs', GEOHASH_SRC),
@@ -301,7 +309,7 @@ CORE_JS = '\n'.join([
     verbatim('swarm/router.mjs (refusal constant)', R_REFUSAL),
     verbatim('swarm/router.mjs (region parser)', R_PARSE),
     PREVIEW_HEAD + verbatim('swarm/router.mjs (resolution steps 1-3)', R_STEPS) + PREVIEW_TAIL,
-    'globalThis.SwarmCore = Object.freeze({ previewCommand, bounds, encode, realHardwareSignals, REAL_HARDWARE_REFUSAL });',
+    COMMAND_HEAD,
     '/* SWARM-CORE END */',
 ])
 # the verbatim slices sit inside previewCommand's function body: BEGIN/END marker lines are comments, so they are safe there
@@ -494,11 +502,9 @@ PAGE_JS = r'''/* SWARM-PAGE BEGIN: the swarm map and the region panel; nothing s
     return { type: 'FeatureCollection', features: fs.filter(Boolean) };
   }
   function auditPreview(cmd, r) {
-    var c = cmd && typeof cmd === 'object' ? cmd : {};
     return {
       schema: 'swarm-audit/1 (preview: not a row)',
-      command: { id: typeof c.id === 'string' ? c.id.slice(0, 64) : null, capability: typeof c.capability === 'string' ? c.capability.slice(0, 64) : null,
-        region_kind: r.region ? r.region.kind : null, region_cells: r.region && r.region.kind === 'cells' ? r.region.cells : null, mode: typeof c.mode === 'string' ? c.mode.slice(0, 32) : 'dry-run' },
+      command: C.commandHead(cmd, r.region),
       status: r.status, refusal: r.refusal, resolved: r.resolved, results: r.results,
       provenance: { kind: 'SCRIPTED', model: null, simulation_only: true, real_hardware: 'refused', network: false, registry_stamp: D.core.source_stamp }
     };

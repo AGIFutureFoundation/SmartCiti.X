@@ -1602,6 +1602,7 @@ Campuses without halls get no tile, because nothing is stood up there:
 ### What is not claimed
 
 - {up_first(TH["not_loaded"])}
+- {up_first(TH["observed_runs"])}
 - {up_first(TH["build_output"])}
 - {up_first(TH["axes"])}
 - {up_first(TH["geopose_is_a_sidecar"])}

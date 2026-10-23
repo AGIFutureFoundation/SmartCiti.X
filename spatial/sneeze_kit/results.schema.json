@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "A recorded run of the Sneeze world tiles in Sneeze or Artemis",
-  "description": "One person, one date, one engine version, one machine. Filled in by hand from template.py's output and read by ingest.py, which checks every rule here AND the rules the schema cannot express (see ingest.py). Observations use pass / fail / untested / not_applicable; leave 'untested' for anything you did not look at. Screenshots are referenced by sha256 only; the images are not stored in the repository.",
+  "description": "One person, one date, one engine version, one machine. Filled in by hand from template.py's output and read by ingest.py, which checks every rule here AND the rules the schema cannot express (see ingest.py). Observations use pass / fail / untested / not_applicable; leave 'untested' for anything you did not look at. Screenshots are referenced by sha256 only; the images are not stored in the repository. An observed run is a statement by a named person; its screenshots stay with that person and are recorded here only by hash, so a reader cannot see them from this repository.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema", "person", "date", "engine", "os", "build", "preflight", "serve", "manifests", "screenshots"],
@@ -109,6 +109,7 @@
         }
       }
     },
+    "screenshots_url": {"type": "string", "pattern": "^https://[^\\s@]+$", "maxLength": 300, "description": "optional: an https address where you published the screenshots, so a reader can open them. Not an email address, no user@ part"},
     "notes": {"type": "string", "maxLength": 4000}
   }
 }

@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-26",
- "source_stamp": "e0dfb638a71c1cde",
+ "source_stamp": "f70f20672cf7d578",
  "source_stamp_covers": [
   "spatial/build.py",
   "spatial/tiles.py",
@@ -3116,6 +3116,7 @@
  "honesty": {
   "what_sneeze_loads": "from the Sneeze project's own repository and docs (each fact with its URL in `verified`): a fabric is an MSF manifest fetched by URL - JSON, signed (JWS) or plain - that names WebAssembly modules and a Data block; a node's Resource.sReference is fetched by URL and a GLB (magic \"glTF\") or glTF JSON is parsed as glTF. These tiles are such GLB files and the manifests follow the shape of the project's example docs 01 and 02 and no other.",
   "not_loaded": "no tile and no manifest here has been opened in Sneeze, Artemis or any other metaverse browser, and nothing was run: this is a reading of documentation and source. The only checks are this bundle's own, by the bytes.",
+  "observed_runs": "An observed run is a statement by a named person; its screenshots stay with that person and are recorded here only by hash, so a reader cannot see them from this repository. If a run names where its screenshots are published, that address is shown beside the status.",
   "documentation_status": "the Sneeze docs are the implementer's own and say parts are unfinished (the host functions by which a module builds the scene are \"partially implemented\"); they are not an OMBI or MSF standard, and this pack does not call them one. They also disagree with each other in places: the example manifests spell the lighting block \"Primary\" while the scene notes read \"primary\", and the MSF page describes services as a list while the module notes describe a name-keyed object - so the manifests here carry no Primary block and no services.",
   "map_module": "a manifest does nothing without a module that reads Data.Scene. The only one the docs name is the stock map.wasm, hosted on RP1's CDN in the docs; the manifests point at that URL, which this build could not reach (the egress proxy refused it), so the module is not vendored and no hash is pinned. The docs tell publishers to host their own copy rather than depend on RP1's server: whoever deploys these must do that and, if they want the integrity check, add its sha256.",
   "unsigned": "the manifests are plain unsigned JSON. The docs call that convenient while learning but not the preferred way to publish, say a browser may stop accepting it, and say it carries no identity at all. Signing needs a private key and a certificate chain from a named human operator; none is held and none is invented here.",
