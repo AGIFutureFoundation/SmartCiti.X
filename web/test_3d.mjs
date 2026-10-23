@@ -989,7 +989,7 @@ ok('the radius is quantised before it is used, so the texel grid the snap '
   && /Math\.round\(want \/ SUN_R_STEP\) \* SUN_R_STEP/.test(fn('trackSun')));
 ok('trackSun() runs after everything that can move the camera and before the '
   + 'frame is drawn, not at the top of the loop a frame behind it',
-  /\n  trackSun\(\);\n  xrRender\(\);/.test(src));
+  /\n  trackSun\(\);\n(?:  \/\* SEAT-INTERP BEGIN[^\n]*\*\/\n  siApply\(\);\n  try \{ )?(?:  )?xrRender\(\);/.test(src));
 ok('trackSun() is never called at module top level: walkActive is a `let` '
   + 'declared further down, so an eager call throws on its temporal dead zone',
   !/\n(?:const [A-Za-z_]+ = )?trackSun\(\);\n(?!  )/.test(src.replace(/\n  trackSun\(\);/g, '')));
@@ -3248,7 +3248,7 @@ ok('phone HUD: under 640 px the bar is ONE row that scrolls sideways (no wrap, n
     /const BOOT = \{ module: Math\.round\(performance\.now\(\)\), frames: \[\] \};/.test(code) && /window\.__tc3dBoot = \(\) => \(\{ \.\.\.BOOT \}\);/.test(code)
     && ['data', 'lights', 'sky', 'surfaces', 'chrome', 'view', 'ready'].every((k, i, a) => i === 0 || code.indexOf(`bootMark('${a[i - 1]}')`) < code.indexOf(`bootMark('${k}')`))
     && /bootMark\('ready'\);\nwindow\.__tc3d = \(\) => \(\{/.test(src)
-    && /xrRender\(\);\s*if \(!\('frame1' in BOOT\)\) \{ bootMark\('frame1'\); BOOT\.programs = renderer\.info\.programs\.length; \}/.test(code));
+    && /xrRender\(\);(?: \} finally \{ siRestore\(\); \})?\s*if \(!\('frame1' in BOOT\)\) \{ bootMark\('frame1'\); BOOT\.programs = renderer\.info\.programs\.length; \}/.test(code));
   ok('boot sky: while the module builds setSky() only records the request (no canvas, no PMREM); right after the first view stands, and before window.__tc3d, the LAST request is drawn once with its own arguments (a view that asked for none stops the boot)',
     /let skyBoot = \{ ask: null, n: 0 \};\s*function setSky\(stops, opts = \{\}\) \{\s*if \(skyBoot\) \{ skyBoot\.ask = \[stops, opts\]; skyBoot\.n\+\+; return; \}/.test(code)
     && /else showRegion\(\);\s*bootMark\('view'\);\s*\{ const ask = skyBoot\.ask; BOOT\.skyAsks = skyBoot\.n; skyBoot = null;\s*if \(!ask\) throw new Error\('boot: no view asked for a sky'\); setSky\(ask\[0\], ask\[1\]\); \}\s*bootMark\('skyDrawn'\);/.test(code)
@@ -3404,8 +3404,8 @@ ok('campus street furniture is SOLID: every lamp standard and bench is recorded 
   const loopAt = builtPage.indexOf('renderer.setAnimationLoop(() => {');
   const loop = strip(builtPage.slice(loopAt, builtPage.indexOf('\n});', loopAt)));
   ok('the frame loop hands the live seat to fsSeatFrame(dt) inside an anchored FIXED-STEP block and no longer steps it on the raw frame time: no sim.update(dt) and no opStep(dt) left in the loop',
-    loopAt > 0 && /if \(sim && !opHeadless\) fsSeatFrame\(dt\);/.test(loop) && !/sim\.update\(dt\)/.test(loop) && !/opStep\(dt\)/.test(loop)
-    && /\/\* FIXED-STEP BEGIN \(wave 23\)[^\n]*\*\/\s*\n\s*if \(sim && !opHeadless\) fsSeatFrame\(dt\);\s*\n\s*\/\* FIXED-STEP END \*\//.test(builtPage));
+    loopAt > 0 && /if \(sim && !opHeadless\) fsSeatFrame\(dt\); else slowIdle\(\);/.test(loop) && !/sim\.update\(dt\)/.test(loop) && !/opStep\(dt\)/.test(loop)
+    && /\/\* FIXED-STEP BEGIN \(wave 23\)[^\n]*\*\/\s*\n\s*if \(sim && !opHeadless\) fsSeatFrame\(dt\); else slowIdle\(\);\s*\n\s*\/\* FIXED-STEP END \*\//.test(builtPage));
   ok('the step is 1/60 s, the same step the headless sweep, the single headless run and the hook default use, and a frame may run at most 30 of them (half a second of seat time)',
     /const FS_STEP = 1 \/ 60;/.test(code) && /const FS_MAX = 30;/.test(code)
     && /const seeds = o\.seeds \?\? \[1\], dt = o\.dt \?\? 1 \/ 60, maxSec/.test(builtPage)
@@ -3422,6 +3422,8 @@ ok('campus street furniture is SOLID: every lamp standard and bench is recorded 
       const D = { sims: { sims: { s: {} } } }; const curSimId = 's';
       const opStep = (h) => { log.ops.push(h); log.seq.push('op'); }, traceStep = (h) => { log.traces.push(h); };
       const setDash = () => { log.dashes++; }, setXRDash = () => {};
+      // the blocks that follow FIXED-STEP (SLOW-NOTICE, SEAT-INTERP) are stubbed here and tested on their own below
+      const siReset = () => {}, siBefore = () => {}, siAfter = () => {}, slowTick = () => {}, slowReset = () => {};
       let sim = null, opRun = null;
       ${blk}
       return { fsAdvance, fsSeatFrame, FS_STEP, FS_MAX, setSim(x) { sim = x; }, setOp(x) { opRun = x; } };`);
@@ -3473,5 +3475,309 @@ ok('campus street furniture is SOLID: every lamp standard and bench is recorded 
     /frame: \(dt\) => fsSeatFrame\(dt\)/.test(builtPage) && /window\.__tc3dSim = \{[\s\S]{0,1800}frame: \(dt\) => fsSeatFrame\(dt\)/.test(builtPage));
 }
 /* FIXED-STEP w23 END */
+
+/* AUDIO-GESTURE w24 BEGIN - no audio context before the page has had a gesture (the ?sim= deep link opens a seat with none) */
+{
+  const a = builtPage.indexOf('/* AUDIO-GESTURE BEGIN (wave 24)'), b = builtPage.indexOf('/* AUDIO-GESTURE END */', a);
+  const blk = a < 0 || b < 0 ? '' : builtPage.slice(a, b);
+  const code = strip(blk);
+  ok('the seat sound sits in an anchored AUDIO-GESTURE block that waits on navigator.userActivation.hasBeenActive and on a pointerdown or keydown',
+    blk.length > 0 && /navigator\.userActivation/.test(code) && /hasBeenActive/.test(code) && /'pointerdown', 'keydown'/.test(code));
+  const sIn = builtPage.indexOf('\nfunction startSim('), sOut = builtPage.indexOf('\n}\n', sIn);
+  const startSimBody = strip(builtPage.slice(sIn, sOut));
+  ok('startSim hands the sound to seatSound(def) and never creates the audio context itself: no acEnsure(), engineStart() or beeperEnsure() in its body',
+    sIn > 0 && /seatSound\(def\)/.test(startSimBody) && !/acEnsure\(|engineStart\(|beeperEnsure\(/.test(startSimBody));
+  const ensureCalls = (strip(builtPage).match(/\bacEnsure\(\)/g) || []).length;
+  ok('the audio context has exactly three makers - its own definition, the gesture-gated seat sound and the first pointerdown on the canvas - so a new caller has to be added to this check',
+    ensureCalls === 3);
+  const run = (activated) => {
+    const log = []; const listeners = {};
+    const env = { sim: {}, curSimId: 'x', seatSoundWait: null, D: { sims: { sims: { x: { audio: { engine: 'diesel', alerts: ['reverse-beeper'] } } } } } };
+    const mkFn = new Function('navigator', 'addEventListener', 'acEnsure', 'engineStart', 'beeperEnsure', 'env',
+      'let seatSoundWait = null; const sim = env.sim, curSimId = env.curSimId, D = env.D;\n' + code.replace(/^\s*let seatSoundWait = null;/m, '') + '\nreturn { seatSound, stop: () => { seatSoundWait = null; } };');
+    const api = mkFn({ userActivation: activated === null ? undefined : { hasBeenActive: activated } },
+      (ev, fn) => { (listeners[ev] ||= []).push(fn); }, () => log.push('ctx'), (k) => log.push('engine:' + k), () => log.push('beeper'), env);
+    return { log, listeners, api, def: env.D.sims.sims.x };
+  };
+  const cold = run(false); cold.api.seatSound(cold.def);
+  ok('a seat opened with no gesture yet (userActivation.hasBeenActive false) creates no context and no engine, and waits on pointerdown and keydown',
+    cold.log.length === 0 && cold.listeners.pointerdown?.length === 1 && cold.listeners.keydown?.length === 1);
+  cold.listeners.pointerdown[0]();
+  ok('the first gesture then makes the context, starts the seat engine and the reverse beeper, once',
+    cold.log.join() === 'ctx,engine:diesel,beeper');
+  cold.listeners.keydown[0]();
+  ok('the second listener fires nothing further (the sound starts once)', cold.log.length === 3);
+  const warm = run(true); warm.api.seatSound(warm.def);
+  ok('a seat opened from a click (hasBeenActive true) starts its sound at once, as before, and registers no listener',
+    warm.log.join() === 'ctx,engine:diesel,beeper' && !warm.listeners.pointerdown);
+  const old = run(null); old.api.seatSound(old.def);
+  ok('a browser without userActivation starts the sound at once (the old behaviour) rather than never',
+    old.log.join() === 'ctx,engine:diesel,beeper');
+  const gone = run(false); gone.api.seatSound(gone.def); gone.api.stop(); gone.listeners.keydown[0]();
+  ok('a seat that was left before the first gesture starts no sound (engineStop clears the wait)', gone.log.length === 0);
+  ok('engineStop clears the pending wait', /function engineStop\(\) \{\s*seatSoundWait = null;/.test(code === '' ? '' : strip(builtPage)));
+}
+/* AUDIO-GESTURE w24 END */
+
+/* SEATS w24 BEGIN - the slow-device notice, and the blend between physics steps for displays above 60 Hz */
+{
+  const cut = (head, tail) => { const a = builtPage.indexOf(head); const b = a < 0 ? -1 : builtPage.indexOf(tail, a); return a < 0 || b < 0 ? '' : builtPage.slice(a, b); };
+  const fixed = cut('/* FIXED-STEP BEGIN (wave 23)\n', '/* FIXED-STEP END */');
+  const slow = cut('/* SLOW-NOTICE BEGIN (wave 24)\n', '/* SLOW-NOTICE END */');
+  const interp = cut('/* SEAT-INTERP BEGIN (wave 24)\n', '/* SEAT-INTERP END */');
+  const slowCode = strip(slow), interpCode = strip(interp), fixedCode = strip(fixed);
+  const loopAt = builtPage.indexOf('renderer.setAnimationLoop(() => {');
+  const loop = builtPage.slice(loopAt, builtPage.indexOf('\n});', loopAt));
+  const KEY = 'sim.slowNotice';
+  const SENTENCE = 'This device is running the seat slower than real time. Movement and pass or fail marks are not affected; the elapsed time shown follows the wall clock.';
+
+  /* ---- the notice: words, markup, wiring ---- */
+  const I = JSON.parse(builtPage.match(/<script id="data" type="application\/json">([\s\S]*?)<\/script>/)[1]).i18n;
+  const locs = Object.keys(I);
+  ok('SLOW-NOTICE: the sentence is a key (sim.slowNotice) in all 8 locales, the English is the declared sentence word for word, and each of the 7 others is a real translation (not the English text, not empty)',
+    locs.length === 8 && I.en.strings[KEY] === SENTENCE
+    && locs.filter((l) => l !== 'en').every((l) => typeof I[l].strings[KEY] === 'string' && I[l].strings[KEY].length > 20 && I[l].strings[KEY] !== SENTENCE));
+  ok('SLOW-NOTICE: the sentence makes no unconditional claim about the result: no "result is not affected" in English, and it says what is untouched (movement, pass or fail marks) and what is not (the elapsed time, which is the wall clock: every seat\'s time row is informational and read from performance.now, never a pass gate)',
+    !/result is not affected|your result/i.test(I.en.strings[KEY]) && /Movement and pass or fail marks are not affected/.test(I.en.strings[KEY]) && /wall clock/.test(I.en.strings[KEY])
+    && /time: \{ v: 0, txt: st\.t0 \? \(\(performance\.now\(\) - st\.t0\)/.test(src)
+    && Object.values(JSON.parse(readFileSync(new URL('../sims/registry/sims.json', import.meta.url), 'utf8')).sims).every((d) => d.rubric.filter((r) => r.axis === 'time').every((r) => r.pass === 'informational')));
+  ok('SLOW-NOTICE: the key is carried by the locale catalogs themselves (i18n/locales/*.json), which stay machine-drafted, pending native review: nothing claims a review',
+    ['en', 'es', 'fr', 'de', 'pt', 'zh', 'hi', 'ar'].every((l) => { const c = JSON.parse(readFileSync(new URL(`../i18n/locales/${l}.json`, import.meta.url), 'utf8')); return c.strings[KEY] === I[l].strings[KEY] && (l === 'en' || c.translation_status === 'machine-drafted, pending native review'); }));
+  const mk0 = builtPage.indexOf('<div id="slowNote"');
+  const markup = mk0 < 0 ? '' : builtPage.slice(mk0, builtPage.indexOf('<!-- SLOW-NOTICE END -->', mk0));
+  ok('SLOW-NOTICE: the notice is a polite, atomic status region (role=status, aria-live=polite, aria-atomic) that is in the page from the start, so a screen reader reads it when its text is set; the text itself is empty until then and is not hard-coded in the markup',
+    /<div id="slowNote" role="status" aria-live="polite" aria-atomic="true">/.test(markup) && /<span id="slowTxt"><\/span>/.test(markup) && !markup.includes('slower'));
+  ok('SLOW-NOTICE: it can be reached and closed from the keyboard: the close control is a real <button type="button"> (Tab reaches it, Enter and Space press it), its name is the page\'s own translated "close" (ui.close) and it shows a visible focus ring',
+    /<button id="slowX" type="button">/.test(markup) && /x\.setAttribute\('aria-label', t\('ui\.close'\)\)/.test(slowCode) && /#slowNote button:focus-visible\{outline:2px solid var\(--mark\)/.test(builtPage)
+    && locs.every((l) => typeof I[l].strings['ui.close'] === 'string'));
+  ok('SLOW-NOTICE: it is not conveyed by colour alone (a clock glyph leads the line), it is hidden with the hidden attribute (not opacity) when there is nothing to say, and it never captures the pointer outside its own box',
+    /#slowNote \.sn::before\{content:"\\25f7"/.test(builtPage) && /#slowNote \.sn\[hidden\]\{display:none\}/.test(builtPage) && /#slowNote\{[^}]*pointer-events:none/.test(builtPage));
+  ok('SLOW-NOTICE: the glyph is decoration, not speech: it is generated content with an empty alternative text (content: "..." / ""), so a screen reader reads the sentence and not "white circle with upper right quadrant"; a browser that does not know the alternative-text form drops that line and keeps the plain glyph before it',
+    /#slowNote \.sn::before\{content:"\\25f7";content:"\\25f7" \/ "";/.test(builtPage));
+  ok('SLOW-NOTICE: the status region stands early in the page, before the toolbar and the HUD, so Tab reaches the close button within a few presses of the site navigation instead of after the whole page (measured in the mocked-session run: 65 presses when it stood last)',
+    builtPage.indexOf('<div id="slowNote"') > 0 && builtPage.indexOf('<div id="slowNote"') < builtPage.indexOf('<div id="bar">') && builtPage.indexOf('<div id="slowNote"') < builtPage.indexOf('<div id="hud">')
+    && builtPage.indexOf('<div id="slowNote"') > builtPage.indexOf('<main id="main">'));
+  ok('SLOW-NOTICE: in a headset, where the page HUD cannot be seen, the same sentence goes on the wrist panel while the notice is up and is dropped when it is gone',
+    /if \(slowShown && !slowDismissed\) xrHudSprite\('slow', t\('sim\.slowNotice'\)/.test(strip(fn('xrHudLines'))) && /else xrHudDrop\('slow'\);/.test(strip(fn('xrHudLines'))));
+  ok('SLOW-NOTICE: the notice is cosmetic: its block reaches no physics, operator, input or score (no sim.update, opStep, keys, simResults, recordEpisode), and nothing outside it and the wrist-panel line reads its state',
+    slow.length > 800 && !/sim\.update|opStep|\bkeys\b|simResults|recordEpisode|prog\.|localStorage/.test(slowCode)
+    && (builtPage.match(/\bslow(Shown|Left|Dismissed|Hits)\b/g) || []).length === (slow.match(/\bslow(Shown|Left|Dismissed|Hits)\b/g) || []).length + 2);
+  ok('SLOW-NOTICE: the accumulator reports a drop only when whole steps did not fit under the cap, the frame hands that to slowTick, and a frame with no seat clears the notice (slowIdle)',
+    /fsDropped = !gone && fsAcc >= FS_STEP - 1e-9;/.test(fixedCode) && /slowTick\(dt, fsDropped\);/.test(fixedCode) && /fsSeatFrame\(dt\); else slowIdle\(\);/.test(strip(loop)));
+
+  /* ---- the notice, driven through the page's own accumulator ---- */
+  const els = () => { const e = {}; const mk = (id) => (e[id] = { id, hidden: id !== 'slowNote', textContent: '', attrs: {}, on: {}, setAttribute(k, v) { this.attrs[k] = v; }, addEventListener(ev, f) { this.on[ev] = f; } }); ['slowBox', 'slowTxt', 'slowX'].forEach(mk); return e; };
+  const mkSlow = () => {
+    const E = els(); const st = { sim: { update() {}, gauges: () => ({}) } };
+    const f = new Function('E', 'T', 'st', `
+      const document = { getElementById: (id) => E[id] || null };
+      const t = (k) => T[k] ?? k;
+      const opStep = () => {}, traceStep = () => {}, setDash = () => {}, setXRDash = () => {};
+      const D = { sims: { sims: { s: {} } } }; const curSimId = 's';
+      const siReset = () => {}, siBefore = () => {}, siAfter = () => {};
+      let sim = st.sim, opRun = null;
+      ${fixed}\n${slow}
+      return { fsSeatFrame, slowIdle, slowState, newSeat() { sim = { update() {}, gauges: () => ({}) }; } };`);
+    return { E, api: f(E, { [KEY]: SENTENCE, 'ui.close': 'Close' }, st) };
+  };
+  { const { E, api } = mkSlow();
+    api.fsSeatFrame(0.6);
+    const one = api.slowState();
+    ok('SLOW-NOTICE: one stalled frame on its own (a sleeping tab, a shader compile) does not raise the notice: it takes two capped frames within 5 s',
+      one.shown === false && one.hits === 1 && E.slowBox.hidden === true && E.slowTxt.textContent === '');
+    api.fsSeatFrame(0.6);
+    const two = api.slowState();
+    ok('SLOW-NOTICE: the second capped frame shows it: the sentence is in the status region, un-hidden, and the close button is named',
+      two.shown && two.visible && E.slowTxt.textContent === SENTENCE && E.slowBox.hidden === false && E.slowX.attrs['aria-label'] === 'Close');
+    for (let i = 0; i < 150; i++) api.fsSeatFrame(1 / 60);          // 2.5 s of a healthy device
+    const mid = api.slowState();
+    for (let i = 0; i < 40; i++) api.fsSeatFrame(1 / 60);           // 0.67 s more: 3.17 s since the last capped frame
+    const gone = api.slowState();
+    ok('SLOW-NOTICE: it holds for 3 s after the last capped frame (still up at 2.5 s) and is gone once the device has caught up: hidden, the status text emptied',
+      mid.shown && !gone.shown && !gone.visible && E.slowTxt.textContent === '' && E.slowBox.hidden === true);
+    api.fsSeatFrame(0.6); api.fsSeatFrame(0.6);
+    const again = api.slowState();
+    E.slowX.on.click();
+    const closed = api.slowState();
+    api.fsSeatFrame(0.6);
+    const still = api.slowState();
+    for (let i = 0; i < 200; i++) api.fsSeatFrame(1 / 60);
+    api.fsSeatFrame(0.6); api.fsSeatFrame(0.6);
+    const back = api.slowState();
+    ok('SLOW-NOTICE: pressing close hides it and keeps it hidden while the device stays slow; once it has cleared on its own it can come back',
+      again.visible && closed.dismissed && !closed.visible && still.shown && !still.visible && back.visible && !back.dismissed);
+    api.fsSeatFrame(0.6); api.fsSeatFrame(0.6);
+    api.slowIdle();
+    ok('SLOW-NOTICE: leaving the seat (no seat in the frame loop) clears it at once, and a new seat starts without it',
+      api.slowState().shown === false && E.slowBox.hidden === true);
+    api.fsSeatFrame(0.6); api.fsSeatFrame(0.6); api.newSeat(); api.fsSeatFrame(1 / 60);
+    ok('SLOW-NOTICE: a seat started while it was up begins with the notice cleared and its counters reset',
+      api.slowState().shown === false && api.slowState().hits === 0);
+  }
+  { const { api } = mkSlow(); const shown = [];
+    for (const fps of [120, 60, 30, 18, 12, 8, 5, 3, 2.5]) { api.slowIdle(); for (let i = 0; i < fps * 8; i++) api.fsSeatFrame(1 / fps); shown.push(api.slowState().shown); }
+    ok('SLOW-NOTICE: a device that keeps up never sees it: 120, 60, 30, 18, 12, 8, 5, 3 and 2.5 frames a second are all run in real time by the accumulator (a frame up to half a second long is 30 whole steps), so none raises it',
+      shown.every((s) => s === false));
+    const { api: a2 } = mkSlow(); for (let i = 0; i < 6; i++) a2.fsSeatFrame(1);
+    const { api: a3 } = mkSlow(); a3.fsSeatFrame(Number.NaN); a3.fsSeatFrame(-3); a3.fsSeatFrame(Infinity);
+    ok('SLOW-NOTICE: a seat that runs at one frame a second (steps dropped every frame) raises it; a nonsense frame time (NaN, negative, infinite) raises nothing and breaks nothing',
+      a2.slowState().shown === true && a3.slowState().shown === false && a3.slowState().hits === 0);
+  }
+
+  /* ---- the blend: wiring ---- */
+  ok('SEAT-INTERP: the draw is bracketed in the frame loop - siApply() after trackSun() and before the draw, siRestore() in a finally right after it - and nothing else draws',
+    /trackSun\(\);\s*\/\* SEAT-INTERP BEGIN[^\n]*\*\/\s*siApply\(\);\s*try \{ xrRender\(\); \} finally \{ siRestore\(\); \}\s*\/\* SEAT-INTERP END \*\//.test(loop)
+    && (strip(src).match(/renderer\.render\(/g) || []).length === 2 && /function xrRender\(\)/.test(src));
+  ok('SEAT-INTERP: the snapshots are taken around the frame\'s LAST step only (siBefore before it, siAfter after it), inside the accumulator\'s callback, after the operator and the seat have been stepped with the unchanged fixed step',
+    /if \(last\) siBefore\(\);\s*if \(opRun\) opStep\(h\);\s*sim\.update\(h\);\s*traceStep\(h\);\s*if \(last && sim\) siAfter\(\);/.test(fixedCode)
+    && /stepFn\(FS_STEP, fsAcc < FS_STEP - 1e-9 \|\| n >= FS_MAX\)/.test(fixedCode));
+  ok('SEAT-INTERP: the block never writes what the seat reads back - no write to position, quaternion, rotation or scale of any object - it only reads them and composes the draw matrix; it switches matrixAutoUpdate off for the draw and puts the saved value back',
+    interp.length > 1500 && !/\.(position|quaternion|rotation|scale)(\.(set|copy|lerp|add|sub|multiply|x|y|z|w|slerp)\b[^;=]*=[^=]|\.(set|copy|lerp|add|sub|multiply|slerp|applyQuaternion|setFromEuler)\()/.test(interpCode.replace(/=\s*(o|p|q|s)\.\w+/g, ''))
+    && !/\.(position|quaternion|rotation|scale)\s*=[^=]/.test(interpCode) && /o\.matrixAutoUpdate = false;/.test(interpCode) && /siList\[siMoved\[m\]\]\.matrixAutoUpdate = siSaved\[m\];/.test(interpCode)
+    && /o\.matrix\.compose\(_siP, _siQa, _siS\);/.test(interpCode));
+  ok('SEAT-INTERP: alpha is the accumulator\'s remainder over the step (fsAcc / FS_STEP, clamped 0..1), the blend is prev + (cur - prev) * alpha with a slerp for the rotation, and a jump over one metre or one radian in a step is a placement shown at once',
+    /const a = Math\.min\(1, Math\.max\(0, fsAcc \/ FS_STEP\)\);/.test(interpCode) && /siPrev\[j\] \+ \(siCur\[j\] - siPrev\[j\]\) \* a/.test(interpCode) && /_siQa\.slerp\(_siQb, a\);/.test(interpCode)
+    && /SI_JUMP_M = 1\.0, SI_JUMP_RAD = 1\.0/.test(interpCode) && /> SI_JUMP_M \* SI_JUMP_M\) continue;/.test(interpCode) && /> SI_JUMP_RAD\) continue;/.test(interpCode));
+  ok('SEAT-INTERP: it fails safe - if the snapshot code ever throws it records siDead and switches itself off, and the seat then runs exactly as it did before; and a second apply is refused while one is still on',
+    /catch \(e\) \{ siDead = String/.test(interpCode) && (interpCode.match(/siDead/g) || []).length >= 6 && /if \(!on \|\| !siReady \|\| siApplied \|\| siDead/.test(interpCode));
+  ok('SEAT-INTERP: the page exposes the blend to a harness read-only: __tc3dSim.pose(on) (the drawn world positions with or without it), interp(), slow() and gauges()',
+    /pose: \(on\) => siPose\(on\)/.test(builtPage) && /interp: \(v\) => \{ if \(v !== undefined\) siOn = !!v; return siOn; \}/.test(builtPage) && /slow: \(\) => slowState\(\)/.test(builtPage) && /gauges: \(\) => \(sim && sim\.gauges \? sim\.gauges\(\) : null\)/.test(builtPage));
+
+  /* ---- the blend, run: the page's own accumulator + blend on a small seat built from real three.js objects ---- */
+  const THREE = await import('./vendor/three.module.min.js');
+  const mkSeat = (opts = {}) => {
+    const group = new THREE.Group(), mover = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1)), spin = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1)), fixedBox = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1));
+    const lineGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]), line = new THREE.Line(lineGeo);
+    group.add(mover, spin, fixedBox, line); fixedBox.position.set(5, 0, 0);
+    const scene = new THREE.Scene(); scene.add(group);
+    const camera = new THREE.PerspectiveCamera(), xrRig = new THREE.Group(); scene.add(xrRig);
+    const renderer = { xr: { isPresenting: !!opts.xr } };
+    const hist = [0]; let teleportAt = opts.teleportAt ?? -1, stepN = 0;
+    const seat = { group, gauges: () => ({ x: mover.position.x }),
+      update(h) {
+        stepN++;
+        mover.position.x += 1.2 * h;                              // 1.2 m/s: 0.02 m a step
+        if (stepN === teleportAt) mover.position.x += 5;
+        spin.rotation.y += 0.6 * h; spin.position.z = Math.sin(stepN * 0.05);
+        const arr = lineGeo.attributes.position.array; arr[3] = mover.position.x; arr[4] = 2; arr[5] = spin.position.z; lineGeo.attributes.position.needsUpdate = true;
+        if (renderer.xr.isPresenting) { xrRig.position.x += 0.5 * h; xrRig.rotation.y += 0.1 * h; } else { camera.position.x += 0.5 * h; camera.position.y = 1.7; camera.lookAt(mover.position.x, 0, 0); }
+        hist.push(mover.position.x);
+      } };
+    const st = { sim: seat };
+    const f = new Function('THREE', 'st', 'renderer', 'camera', 'xrRig', `
+      const opStep = () => {}, traceStep = () => {}, setDash = () => {}, setXRDash = () => {}, t = (k) => k;
+      const D = { sims: { sims: { s: {} } } }; const curSimId = 's';
+      const document = { getElementById: () => null };
+      let sim = st.sim, opRun = null;
+      ${fixed}\n${slow}\n${interp}
+      return { fsSeatFrame, siApply, siRestore, siPose, state: () => ({ siDead, siReady, siApplied, siMoved: siMoved.length }), setSim(x) { sim = x; }, setOn(v) { siOn = v; }, kill() { siDead = 'x'; } };`);
+    const api = f(THREE, st, renderer, camera, xrRig);
+    const all = () => { const o = []; group.traverse((x) => o.push(x)); o.push(camera, xrRig); return o; };
+    const trueState = () => all().map((x) => [x.position.x, x.position.y, x.position.z, x.quaternion.x, x.quaternion.y, x.quaternion.z, x.quaternion.w, x.rotation.x, x.rotation.y, x.rotation.z, x.scale.x, x.scale.y, x.scale.z, x.matrixAutoUpdate]).flat().concat(Array.from(lineGeo.attributes.position.array));
+    const draw = (blend) => {       // what the render loop does around renderer.render
+      const applied = blend ? api.siApply() : false;
+      scene.updateMatrixWorld(); camera.updateMatrixWorld(); xrRig.updateMatrixWorld(true);
+      const s = { x: mover.matrixWorld.elements[12], ry: spin.matrixWorld.elements[0], cam: camera.matrixWorld.elements[12], rig: xrRig.matrixWorld.elements[12], line: lineGeo.attributes.position.array[3], applied };
+      if (blend) api.siRestore();
+      return s;
+    };
+    return { api, seat, mover, spin, group, camera, xrRig, lineGeo, line, scene, hist, trueState, draw, renderer };
+  };
+  const seqOf = (hz, secs = 4) => Array.from({ length: Math.round(hz * secs) }, () => 1 / hz);
+  { // the physics is bit-identical with the blend in the loop
+    let bad = 0, frames = 0, applied = 0;
+    const rates = [120, 90, 72, 60, 30, 12, 8];
+    for (const hz of rates) {
+      const A = mkSeat(), B = mkSeat();
+      for (const dt of seqOf(hz)) {
+        A.api.fsSeatFrame(dt); const s = A.draw(true); if (s.applied) applied++;
+        B.api.fsSeatFrame(dt); B.draw(false);
+        const ta = A.trueState(), tb = B.trueState(); frames++;
+        if (ta.length !== tb.length || ta.some((v, i) => !Object.is(v, tb[i]))) bad++;
+        if (!Object.is(A.seat.gauges().x, B.seat.gauges().x)) bad++;
+      }
+      if (A.hist.length !== B.hist.length || A.hist.some((v, i) => !Object.is(v, B.hist[i]))) bad++;
+    }
+    ok(`SEAT-INTERP: with the blend applied and undone around every draw, every object's position, quaternion, rotation, scale and matrixAutoUpdate, the rope buffer, the camera and the gauges are bit-identical to a run with no blend at all - ${frames} frames at 120, 90, 72, 60, 30, 12 and 8 Hz, ${applied} of them drawn blended`,
+      bad === 0 && applied > frames * 0.4);
+  }
+  { // alpha, the blend itself
+    const S = mkSeat(); let worst = 0, n = 0, alphas = [];
+    for (const dt of seqOf(120, 2)) {
+      S.api.fsSeatFrame(dt); const cur = S.hist[S.hist.length - 1], prev = S.hist.length > 1 ? S.hist[S.hist.length - 2] : cur;  // hist[0] is the start position
+      const p = S.api.siPose(true); if (!p || !p.applied || !p.pts.length) continue;
+      const aWant = p.alpha, want = prev + (cur - prev) * aWant;
+      const got = p.pts.map((q) => q[1]).reduce((b, v) => (Math.abs(v - want) < Math.abs(b - want) ? v : b), 1e9);
+      worst = Math.max(worst, Math.abs(got - want)); n++; alphas.push(aWant);
+    }
+    ok(`SEAT-INTERP: the drawn position is exactly prev + (cur - prev) * alpha, alpha = remainder over the step (worst error ${worst.toExponential(1)} m over ${n} frames at 120 Hz; alpha spans ${Math.min(...alphas).toFixed(2)} to ${Math.max(...alphas).toFixed(2)})`,
+      n > 100 && worst < 1e-9 && Math.min(...alphas) >= 0 && Math.max(...alphas) < 1);
+  }
+  { // judder: variance of the per-frame step of the drawn position, off against on
+    const varOf = (v) => { const m = v.reduce((a, b) => a + b, 0) / v.length; return v.reduce((a, b) => a + (b - m) ** 2, 0) / v.length; };
+    const res = {};
+    for (const hz of [72, 90, 120]) {
+      const off = [], on = [], eoff = [], eon = [];
+      const S = mkSeat(), T = mkSeat();
+      for (const dt of seqOf(hz, 3)) { S.api.fsSeatFrame(dt); const a = S.draw(false); off.push(a.x); eoff.push(a.cam); T.api.fsSeatFrame(dt); const b = T.draw(true); on.push(b.x); eon.push(b.cam); }
+      const stp = (a) => a.slice(Math.ceil(hz * 0.5)).map((v, i, b) => (i ? v - b[i - 1] : 0)).slice(1);
+      res[hz] = [varOf(stp(off)), varOf(stp(on)), varOf(stp(eoff)), varOf(stp(eon))];
+    }
+    ok(`SEAT-INTERP: judder falls - the variance of the per-frame step of the drawn position (m^2) goes ${[72, 90, 120].map((h) => `${h} Hz ${res[h][0].toExponential(1)} -> ${res[h][1].toExponential(1)}`).join(', ')}, and the eye's likewise; the blend is at least 50 times smoother at every rate`,
+      [72, 90, 120].every((h) => res[h][0] > 0 && res[h][1] * 50 < res[h][0] && res[h][3] * 50 < res[h][2]));
+  }
+  { // restore, jumps, lines, XR rig, seat change, fail-safe
+    const S = mkSeat(); let ok1 = true, nOn = 0;
+    for (const dt of seqOf(90, 1)) {
+      S.api.fsSeatFrame(dt); const was = S.mover.matrixAutoUpdate, on = S.api.siApply();
+      const during = S.mover.matrixAutoUpdate;
+      S.api.siRestore();
+      const m = S.mover.matrix.clone(), w = new THREE.Matrix4().compose(S.mover.position, S.mover.quaternion, S.mover.scale);
+      if (on) nOn++;
+      if (!(was === true && (on ? during === false : during === true) && S.mover.matrixAutoUpdate === true && m.equals(w))) ok1 = false;
+    }
+    const A = mkSeat();
+    for (const dt of seqOf(90, 0.5)) { A.api.fsSeatFrame(dt); A.draw(true); }
+    ok('SEAT-INTERP: after the draw every object has its own matrixAutoUpdate back and its local matrix is recomposed from its true position, rotation and scale (nothing stale is left for the next reader of a world matrix); while the blend is on the object is off auto-update', ok1 && nOn > 20 && A.mover.matrixAutoUpdate === true);
+    const L = mkSeat(); let lineOk = true, lineBlend = false;
+    for (const dt of seqOf(120, 1)) {
+      L.api.fsSeatFrame(dt); const arr = L.lineGeo.attributes.position.array;
+      const trueArr = Array.from(arr); L.api.siApply(); const during = Array.from(arr); L.api.siRestore();
+      if (!Array.from(arr).every((v, i) => Object.is(v, trueArr[i]))) lineOk = false;
+      if (during.some((v, i) => v !== trueArr[i])) lineBlend = true;
+    }
+    ok('SEAT-INTERP: a rope or cable buffer is blended for the draw and put back byte for byte from the saved copy', lineOk && lineBlend);
+    const J2 = mkSeat({ teleportAt: 30 }); let smeared = false, sawJump = false;
+    for (const dt of seqOf(120, 1)) {
+      J2.api.fsSeatFrame(dt);
+      if (J2.hist.length >= 30) { const cur = J2.hist[J2.hist.length - 1], prev = J2.hist[J2.hist.length - 2]; const p = J2.api.siPose(true); if (Math.abs(cur - prev) > 1) { sawJump = true; if (p.pts.some((q) => q[1] > prev + 0.05 && q[1] < cur - 0.05)) smeared = true; } }
+    }
+    ok('SEAT-INTERP: a jump of 5 m in one step (a placement) is shown at once, never smeared across the frames between: the mover does not appear anywhere between the old and the new place', sawJump && !smeared);
+    const X = mkSeat({ xr: true }); let rigBlend = 0, camStill = true, rigBack = true;
+    for (const dt of seqOf(120, 1)) {
+      X.api.fsSeatFrame(dt); const before = X.xrRig.position.x, s = X.draw(true);
+      // the rig's drawn world position is the blend; its own position is the true one and is untouched by the draw
+      if (s.applied && Math.abs(s.rig - X.xrRig.position.x) > 1e-7) rigBlend++;
+      if (X.xrRig.position.x !== before || X.xrRig.matrixAutoUpdate !== true) rigBack = false;
+      if (X.camera.position.x !== 0) camStill = false;
+    }
+    ok('SEAT-INTERP: in a headset the XR rig carries the blend (its drawn position differs from its true one on the frames between steps) and the camera (the headset\'s own pose) is never touched; the rig\'s true position and auto-update come back after every draw', rigBlend > 20 && camStill && rigBack);
+    const N = mkSeat(); for (const dt of seqOf(90, 0.3)) N.api.fsSeatFrame(dt);
+    const N2 = mkSeat(); N.api.setSim(N2.seat); N.api.fsSeatFrame(0.4 / 60); const afterNew = N.api.state(), blendNew = N.api.siApply();
+    ok('SEAT-INTERP: a new seat starts with no snapshot (nothing of the last seat is blended into the next), and the first frames before its first step draw the true state', afterNew.siReady === false && afterNew.siMoved === 0 && blendNew === false);
+    const K = mkSeat(); K.group.traverse = () => { throw new Error('boom'); };
+    let steps = 0; const upd = K.seat.update; K.seat.update = (h) => { steps++; upd(h); };
+    let threw = null; try { for (const dt of seqOf(60, 0.5)) K.api.fsSeatFrame(dt); } catch (e) { threw = String(e && e.message || e); }
+    const ks = K.api.state();
+    ok('SEAT-INTERP: when the snapshot code throws it switches itself off (siDead) and the seat keeps stepping: 30 steps in half a second, no blend applied, no exception reaches the frame', threw === null && ks.siDead === 'boom' && Math.abs(steps - 30) <= 1 && K.api.siApply() === false);
+    const Z = mkSeat(); Z.api.setOn(false); let anyApplied = false;
+    for (const dt of seqOf(120, 0.5)) { Z.api.fsSeatFrame(dt); if (Z.api.siApply()) anyApplied = true; Z.api.siRestore(); }
+    ok('SEAT-INTERP: the switch is real - with the blend off nothing is applied (siApply refuses) and the draw sees the true state, which is how a harness measures the judder it removes', !anyApplied && Z.draw(false).applied === false);
+    const D2 = mkSeat(); D2.api.fsSeatFrame(1 / 60); D2.api.fsSeatFrame(1 / 120); D2.api.siApply(); D2.api.siApply();   // a second apply before a restore must not stack
+    D2.api.siRestore(); D2.api.siRestore();
+    ok('SEAT-INTERP: apply twice and restore twice leaves the seat as it was (the second apply is refused while the first is still on, so blends never stack; a draw that throws is still undone by the finally around it)', D2.mover.matrixAutoUpdate === true && D2.api.state().siApplied === false);
+  }
+}
+/* SEATS w24 END */
 
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);

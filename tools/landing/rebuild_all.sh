@@ -33,6 +33,7 @@ python3 wildlife/build.py >/dev/null; python3 wildlife/make_eggs.py >/dev/null
 python3 smiles/build.py >/dev/null
 python3 flora/build.py >/dev/null
 python3 quests/build.py >/dev/null
+python3 geoplay/build.py >/dev/null
 python3 npcs/build.py >/dev/null
 python3 hive/build.py >/dev/null
 python3 unionpaths/build.py >/dev/null
@@ -41,7 +42,8 @@ python3 classroom/build.py >/dev/null
 python3 programs/build.py >/dev/null
 python3 reactor/build.py >/dev/null
 python3 campusplan/build.py >/dev/null
-python3 robotics/build.py >/dev/null; [ -f robotics/arena/build.py ] && python3 robotics/arena/build.py >/dev/null; [ -f robotics/claw/build.py ] && python3 robotics/claw/build.py >/dev/null; python3 training/build.py >/dev/null
+python3 robotics/build.py >/dev/null; [ -f robotics/arena/build.py ] && python3 robotics/arena/build.py >/dev/null; [ -f robotics/claw/build.py ] && python3 robotics/claw/build.py >/dev/null; python3 training/build.py >/dev/null; python3 robotics/ros/build.py >/dev/null
+python3 swarm/build.py >/dev/null
 [ -f modules/build.py ] && python3 modules/build.py >/dev/null
 python3 contrib/build.py >/dev/null; python3 datashare/build.py >/dev/null
 python3 facades/build.py >/dev/null

@@ -1,0 +1,126 @@
+{
+ "pack": "smartcitix-trade-craft-academy-spatial-fabric-drops",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "source_stamp": "b9892f4001eebfba",
+ "encoding": "OGC GeoPose 1.0 Basic-YPR, OGC 21-056r11, application/geopose+json",
+ "media_type": "application/geopose+json",
+ "crs": "WGS84 (EPSG:4326)",
+ "honesty": {
+  "geopose": "Same encoding and the same placeholder rule as spatial/registry/geopose.json: every pose is {position: {lat, lon, h}, orientation: {yaw, pitch, roll}}; h = 0.0 and yaw = pitch = roll = 0 are placeholders beside an explicit UNKNOWN sidecar, never measurements. These poses locate public map points for a game; the build writes them from geoplay/registry/geoplay.json and no learner position is ever written.",
+  "not_in_geopose_json": "These are kept in their own file so the 89 poses of geopose.json and their counts stay exactly as spatial/build.py counts them."
+ },
+ "counts": {
+  "poses": 4
+ },
+ "poses": [
+  {
+   "subject": {
+    "kind": "training-drop-stop",
+    "id": "stop-new-orleans-university-of-new-orleans",
+    "name": "University of New Orleans",
+    "campus": "new-orleans",
+    "ref": "training-drop-stop:stop-new-orleans-university-of-new-orleans"
+   },
+   "geopose": {
+    "position": {
+     "lat": 30.0288,
+     "lon": -90.0664,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "geo/registry/campuses_geo.json#anchors.new-orleans[University of New Orleans]",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   }
+  },
+  {
+   "subject": {
+    "kind": "training-drop-stop",
+    "id": "stop-new-orleans-suno",
+    "name": "SUNO",
+    "campus": "new-orleans",
+    "ref": "training-drop-stop:stop-new-orleans-suno"
+   },
+   "geopose": {
+    "position": {
+     "lat": 30.0421,
+     "lon": -90.033,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "geo/registry/campuses_geo.json#anchors.new-orleans[SUNO]",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   }
+  },
+  {
+   "subject": {
+    "kind": "training-drop-stop",
+    "id": "stop-herons-head",
+    "name": "Heron's Head Park Shoreline Resilience Project (Phases 1 and 2)",
+    "campus": "treasure-island",
+    "ref": "training-drop-stop:stop-herons-head"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.7355,
+     "lon": -122.3803,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "restoration/registry/restoration.json#sites[herons-head]",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   }
+  },
+  {
+   "subject": {
+    "kind": "training-drop-stop",
+    "id": "stop-candlestick-point",
+    "name": "Candlestick Point Stewardship Project (Phases 1 and 2)",
+    "campus": "treasure-island",
+    "ref": "training-drop-stop:stop-candlestick-point"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.718,
+     "lon": -122.375,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "restoration/registry/restoration.json#sites[candlestick-point]",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   }
+  }
+ ]
+}

@@ -1,0 +1,844 @@
+{
+ "pack": "geoplay",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "source_stamp": "b9892f4001eebfba",
+ "reads": [
+  "geo/registry/campuses_geo.json",
+  "restoration/registry/restoration.json",
+  "tasks/registry/tasks.json",
+  "lessons/registry/lessons.json",
+  "spatial/registry/geopose.json",
+  "unions/registry/campuses.json",
+  "geoplay/source/rules.json"
+ ],
+ "honesty": {
+  "play": "Training drops are play. Unlocking one, like a coin or a badge, is never evidence of anything and enters no completion record; the tasks and lessons they open are unverified general practice, simulated, and certify nobody.",
+  "no_hosting": "A drop is pinned to a public place by rule. The place hosts nothing, has agreed to nothing and is not a partner: every partner here stays PROPOSED.",
+  "privacy": "The page may ask the device for its position, only after you press the button. The position is read on the device, compared with the pins on the device, shown as a distance on the device and then forgotten: it is not stored, not written to any storage, and not sent anywhere. Reloading the page forgets which drops you opened.",
+  "siting": "A stop is the registry's own map point for a public place; it is not a surveyed entrance and no address is recorded. A human must visit and confirm a place before any drop is offered outside this map.",
+  "provenance": "Each stop keeps the coordinate provenance word of the registry it was read from (RECORDED / DERIVED / AUTHORED); each pairing of a task to a stop is DERIVED by the rule in geoplay/build.py, with no content written here.",
+  "safety_more": "Use public paths and sidewalks only, keep well back from water edges, rail and construction, and go in daylight. A drop is a game marker: the pin is the registry's map point for the place, not a surveyed entrance, and nothing here asks you to go anywhere. If the pin is not safe to reach, use the manual pick from where you are."
+ },
+ "safety_line": "Stay aware of your surroundings; do not enter roads or private property.",
+ "takedown": "A place that does not want a stop here can ask for it to be withdrawn by opening an issue at github.com/AGIFutureFoundation/SmartCiti.X; it is removed at the next build.",
+ "unlock_note": "Unlocking opens the task; it is not a credit or a record.",
+ "shoreline_note": "Not yet checked on site - use the manual pick if the pin is at the water's edge",
+ "withdrawn": [],
+ "rules": {
+  "radius_m": {
+   "min": 50,
+   "max": 150,
+   "by_class": {
+    "public-park": 75,
+    "public-university": 120
+   },
+   "why": "A phone's position is good to tens of metres at best and the registry's pin is a map point, not a surveyed entrance, so a radius under 50 m would be a promise the data cannot keep; over 150 m would unlock a drop from another street."
+  },
+  "accuracy_max_m": 100,
+  "max_drops_per_stop": 5,
+  "classes": {
+   "public-university": {
+    "label": "public university or college campus",
+    "must_state": "public",
+    "must_name_one_of": [
+     "university",
+     "college"
+    ],
+    "tasks_from": "campus"
+   },
+   "public-park": {
+    "label": "public park or state recreation area",
+    "org_must_match": [
+     "Port of San Francisco",
+     "California State Parks"
+    ],
+    "name_must_match": [
+     "Park",
+     "Point"
+    ],
+    "ground": "upland",
+    "category": "habitat-restoration",
+    "tasks_from": "restoration-site"
+   }
+  },
+  "deny_words": [
+   "airport",
+   "bridge",
+   "cleanup",
+   "furnace",
+   "highway",
+   "home",
+   "laboratory",
+   "levee",
+   "marsh",
+   "museum",
+   "naval",
+   "pier",
+   "plant",
+   "pond",
+   "ponds",
+   "port",
+   "refinery",
+   "residence",
+   "shipyard",
+   "station",
+   "superfund",
+   "tunnel",
+   "wetland",
+   "wetlands"
+  ],
+  "task_places_on_globe": [
+   "campus",
+   "restoration-site"
+  ]
+ },
+ "ar": {
+  "status": "PROPOSED",
+  "claim": "No AR camera view is built. A WebXR immersive-ar view of a drop is PROPOSED only: it needs a device and browser that report support for the session, which this build has not verified on any phone, so no page here asks for the camera."
+ },
+ "geopose": {
+  "file": "spatial/registry/drops_geopose.json",
+  "encoding": "OGC GeoPose 1.0 Basic-YPR, OGC 21-056r11, application/geopose+json",
+  "media_type": "application/geopose+json",
+  "crs": "WGS84 (EPSG:4326)"
+ },
+ "counts": {
+  "withdrawn": 0,
+  "stops_not_checked_on_site": 4,
+  "shoreline_stops": 3,
+  "stops": 4,
+  "drops": 19,
+  "stops_by_class": {
+   "public-university": 2,
+   "public-park": 2
+  },
+  "campuses_with_stops": 2,
+  "unpinned_public_places": 9,
+  "refused": 67,
+  "anchors_read": 69,
+  "restoration_sites_read": 11,
+  "tasks_on_globe_launchable": 40,
+  "tasks_pinned": 19,
+  "lessons_linked": 3,
+  "geoposes": 4
+ },
+ "stops": [
+  {
+   "id": "stop-new-orleans-university-of-new-orleans",
+   "name": "University of New Orleans",
+   "class": "public-university",
+   "campus": "new-orleans",
+   "lat": 30.0288,
+   "lng": -90.0664,
+   "coordinate_provenance": "RECORDED",
+   "source_ref": "geo/registry/campuses_geo.json#anchors.new-orleans[University of New Orleans]",
+   "source_text": "Locator.X build_data_nola.py pois, Apache-2.0",
+   "public_basis": "Public research university on the Lake Pontchartrain shore; home to naval architecture and marine engineering.",
+   "radius_m": 120,
+   "site_check": "not checked on site",
+   "shoreline": true,
+   "drops": [
+    {
+     "id": "drop-sim-crane-lift-nola-wharf",
+     "task": "sim-crane-lift-nola-wharf",
+     "title": "Tower Crane Lift: Crescent wharf lift",
+     "task_kind": "sim-scenario",
+     "task_place": {
+      "kind": "campus",
+      "id": "new-orleans",
+      "campus": "new-orleans"
+     },
+     "provenance": "DERIVED",
+     "lessons": []
+    },
+    {
+     "id": "drop-sim-excavator-trench-nola-below-sea",
+     "task": "sim-excavator-trench-nola-below-sea",
+     "title": "Excavator Trench Cut: Below-sea trench",
+     "task_kind": "sim-scenario",
+     "task_place": {
+      "kind": "campus",
+      "id": "new-orleans",
+      "campus": "new-orleans"
+     },
+     "provenance": "DERIVED",
+     "lessons": []
+    },
+    {
+     "id": "drop-sim-forklift-run-nola-dock",
+     "task": "sim-forklift-run-nola-dock",
+     "title": "Forklift Yard Run: Wharf dock set",
+     "task_kind": "sim-scenario",
+     "task_place": {
+      "kind": "campus",
+      "id": "new-orleans",
+      "campus": "new-orleans"
+     },
+     "provenance": "DERIVED",
+     "lessons": []
+    },
+    {
+     "id": "drop-sim-weld-bead-nola-tank-seam",
+     "task": "sim-weld-bead-nola-tank-seam",
+     "title": "Weld Bead Run: Tank shell seam",
+     "task_kind": "sim-scenario",
+     "task_place": {
+      "kind": "campus",
+      "id": "new-orleans",
+      "campus": "new-orleans"
+     },
+     "provenance": "DERIVED",
+     "lessons": []
+    },
+    {
+     "id": "drop-sim-scaffold-bay-nola-storm-bay",
+     "task": "sim-scaffold-bay-nola-storm-bay",
+     "title": "Scaffold Bay Build: Storm-hardening bay",
+     "task_kind": "sim-scenario",
+     "task_place": {
+      "kind": "campus",
+      "id": "new-orleans",
+      "campus": "new-orleans"
+     },
+     "provenance": "DERIVED",
+     "lessons": []
+    }
+   ],
+   "geopose_ref": "training-drop-stop:stop-new-orleans-university-of-new-orleans"
+  },
+  {
+   "id": "stop-new-orleans-suno",
+   "name": "SUNO",
+   "class": "public-university",
+   "campus": "new-orleans",
+   "lat": 30.0421,
+   "lng": -90.033,
+   "coordinate_provenance": "RECORDED",
+   "source_ref": "geo/registry/campuses_geo.json#anchors.new-orleans[SUNO]",
+   "source_text": "Locator.X build_data_nola.py pois, Apache-2.0",
+   "public_basis": "Southern University at New Orleans - public historically Black university in Pontchartrain Park.",
+   "radius_m": 120,
+   "site_check": "not checked on site",
+   "shoreline": false,
+   "drops": [
+    {
+     "id": "drop-sim-rigging-signals-nola-wind-card",
+     "task": "sim-rigging-signals-nola-wind-card",
+     "title": "Rigging Signal Call: River-wind card",
+     "task_kind": "sim-scenario",
+     "task_place": {
+      "kind": "campus",
+      "id": "new-orleans",
+      "campus": "new-orleans"
+     },
+     "provenance": "DERIVED",
+     "lessons": []
+    },
+    {
+     "id": "drop-sim-load-chart-nola-barge-list",
+     "task": "sim-load-chart-nola-barge-list",
+     "title": "Load Chart Judgment: Barge transfer list",
+     "task_kind": "sim-scenario",
+     "task_place": {
+      "kind": "campus",
+      "id": "new-orleans",
+      "campus": "new-orleans"
+     },
+     "provenance": "DERIVED",
+     "lessons": []
+    },
+    {
+     "id": "drop-sim-airless-sprayer-nola-shotgun-finish",
+     "task": "sim-airless-sprayer-nola-shotgun-finish",
+     "title": "Airless Paint Sprayer Finish: Shotgun house finish coat",
+     "task_kind": "sim-scenario",
+     "task_place": {
+      "kind": "campus",
+      "id": "new-orleans",
+      "campus": "new-orleans"
+     },
+     "provenance": "DERIVED",
+     "lessons": []
+    },
+    {
+     "id": "drop-sim-boom-lift-nola-storm-shutters",
+     "task": "sim-boom-lift-nola-storm-shutters",
+     "title": "Boom Lift Basket Work: Storm-shutter run",
+     "task_kind": "sim-scenario",
+     "task_place": {
+      "kind": "campus",
+      "id": "new-orleans",
+      "campus": "new-orleans"
+     },
+     "provenance": "DERIVED",
+     "lessons": []
+    },
+    {
+     "id": "drop-sim-overhead-crane-nola-boatshed-engine",
+     "task": "sim-overhead-crane-nola-boatshed-engine",
+     "title": "Overhead Crane Shop Move: Boat-shed engine move",
+     "task_kind": "sim-scenario",
+     "task_place": {
+      "kind": "campus",
+      "id": "new-orleans",
+      "campus": "new-orleans"
+     },
+     "provenance": "DERIVED",
+     "lessons": []
+    }
+   ],
+   "geopose_ref": "training-drop-stop:stop-new-orleans-suno"
+  },
+  {
+   "id": "stop-herons-head",
+   "name": "Heron's Head Park Shoreline Resilience Project (Phases 1 and 2)",
+   "class": "public-park",
+   "campus": "treasure-island",
+   "lat": 37.7355,
+   "lng": -122.3803,
+   "coordinate_provenance": "AUTHORED",
+   "source_ref": "restoration/registry/restoration.json#sites[herons-head]",
+   "source_text": "restoration/registry/restoration.json https://www.sfbayrestore.org/projects/herons-head-park-shoreline-resilience-project-phases-1-and-2",
+   "public_basis": "operated by Port of San Francisco; Literacy for Environmental Justice; shoreline & green infrastructure",
+   "radius_m": 75,
+   "site_check": "not checked on site",
+   "shoreline": true,
+   "drops": [
+    {
+     "id": "drop-crew-herons-head-shoreline-cut",
+     "task": "crew-herons-head-shoreline-cut",
+     "title": "Shoreline drainage cut, Heron's Head",
+     "task_kind": "crew-handoff",
+     "task_place": {
+      "kind": "restoration-site",
+      "id": "herons-head",
+      "campus": "treasure-island"
+     },
+     "provenance": "DERIVED",
+     "lessons": [
+      "laborers-stand-where-the-cab-can-see",
+      "operating-eng-locate-first",
+      "shoring-read-the-ground-again"
+     ]
+    },
+    {
+     "id": "drop-resto-herons-head",
+     "task": "resto-herons-head",
+     "title": "Heron's Head Park Shoreline Resilience Project (Phases 1 and 2)",
+     "task_kind": "restoration-walk",
+     "task_place": {
+      "kind": "restoration-site",
+      "id": "herons-head",
+      "campus": "treasure-island"
+     },
+     "provenance": "DERIVED",
+     "lessons": []
+    },
+    {
+     "id": "drop-resto-sim-herons-head-shoreline-resilience",
+     "task": "resto-sim-herons-head-shoreline-resilience",
+     "title": "Shoreline resilience - living shoreline and green infrastructure placement - Heron's Head Park Shoreline Resilience Project (Phases 1 and 2)",
+     "task_kind": "resto-scenario",
+     "task_place": {
+      "kind": "restoration-site",
+      "id": "herons-head",
+      "campus": "treasure-island"
+     },
+     "provenance": "DERIVED",
+     "lessons": []
+    },
+    {
+     "id": "drop-resto-sim-herons-head-wq-stormwater",
+     "task": "resto-sim-herons-head-wq-stormwater",
+     "title": "Stormwater capture - inspecting a green-infrastructure cell - Heron's Head Park Shoreline Resilience Project (Phases 1 and 2)",
+     "task_kind": "resto-scenario",
+     "task_place": {
+      "kind": "restoration-site",
+      "id": "herons-head",
+      "campus": "treasure-island"
+     },
+     "provenance": "DERIVED",
+     "lessons": []
+    }
+   ],
+   "geopose_ref": "training-drop-stop:stop-herons-head"
+  },
+  {
+   "id": "stop-candlestick-point",
+   "name": "Candlestick Point Stewardship Project (Phases 1 and 2)",
+   "class": "public-park",
+   "campus": "treasure-island",
+   "lat": 37.718,
+   "lng": -122.375,
+   "coordinate_provenance": "AUTHORED",
+   "source_ref": "restoration/registry/restoration.json#sites[candlestick-point]",
+   "source_text": "restoration/registry/restoration.json https://www.sfbayrestore.org/projects/candlestick-point-stewardship-project-phase-1-and-2",
+   "public_basis": "operated by California State Parks; community stewardship partners; shoreline stewardship",
+   "radius_m": 75,
+   "site_check": "not checked on site",
+   "shoreline": true,
+   "drops": [
+    {
+     "id": "drop-resto-candlestick-point",
+     "task": "resto-candlestick-point",
+     "title": "Candlestick Point Stewardship Project (Phases 1 and 2)",
+     "task_kind": "restoration-walk",
+     "task_place": {
+      "kind": "restoration-site",
+      "id": "candlestick-point",
+      "campus": "treasure-island"
+     },
+     "provenance": "DERIVED",
+     "lessons": []
+    },
+    {
+     "id": "drop-resto-sim-candlestick-point-trash-cleanup",
+     "task": "resto-sim-candlestick-point-trash-cleanup",
+     "title": "Shoreline trash clean-up - Candlestick Point Stewardship Project (Phases 1 and 2)",
+     "task_kind": "resto-scenario",
+     "task_place": {
+      "kind": "restoration-site",
+      "id": "candlestick-point",
+      "campus": "treasure-island"
+     },
+     "provenance": "DERIVED",
+     "lessons": []
+    },
+    {
+     "id": "drop-resto-sim-candlestick-point-native-planting",
+     "task": "resto-sim-candlestick-point-native-planting",
+     "title": "Native planting and plant propagation - Candlestick Point Stewardship Project (Phases 1 and 2)",
+     "task_kind": "resto-scenario",
+     "task_place": {
+      "kind": "restoration-site",
+      "id": "candlestick-point",
+      "campus": "treasure-island"
+     },
+     "provenance": "DERIVED",
+     "lessons": []
+    },
+    {
+     "id": "drop-resto-sim-candlestick-point-habitat-monitoring",
+     "task": "resto-sim-candlestick-point-habitat-monitoring",
+     "title": "Habitat monitoring - photo-points, plots and records - Candlestick Point Stewardship Project (Phases 1 and 2)",
+     "task_kind": "resto-scenario",
+     "task_place": {
+      "kind": "restoration-site",
+      "id": "candlestick-point",
+      "campus": "treasure-island"
+     },
+     "provenance": "DERIVED",
+     "lessons": []
+    },
+    {
+     "id": "drop-resto-sim-candlestick-point-wq-trash-capture",
+     "task": "resto-sim-candlestick-point-wq-trash-capture",
+     "title": "Trash capture device inspection - Candlestick Point Stewardship Project (Phases 1 and 2)",
+     "task_kind": "resto-scenario",
+     "task_place": {
+      "kind": "restoration-site",
+      "id": "candlestick-point",
+      "campus": "treasure-island"
+     },
+     "provenance": "DERIVED",
+     "lessons": []
+    }
+   ],
+   "geopose_ref": "training-drop-stop:stop-candlestick-point"
+  }
+ ],
+ "unpinned": [
+  {
+   "ref": "anchor:houston:university-of-houston",
+   "name": "University of Houston",
+   "campus": "houston",
+   "reason": "public campus passes the rule, but tasks/registry/tasks.json puts no campus-level task on the globe for this campus"
+  },
+  {
+   "ref": "anchor:chicago:university-of-illinois-chicago",
+   "name": "University of Illinois Chicago",
+   "campus": "chicago",
+   "reason": "public campus passes the rule, but tasks/registry/tasks.json puts no campus-level task on the globe for this campus"
+  },
+  {
+   "ref": "anchor:seattle:university-of-washington",
+   "name": "University of Washington",
+   "campus": "seattle",
+   "reason": "public campus passes the rule, but tasks/registry/tasks.json puts no campus-level task on the globe for this campus"
+  },
+  {
+   "ref": "anchor:pittsburgh:community-college-of-allegheny-county",
+   "name": "Community College of Allegheny County",
+   "campus": "pittsburgh",
+   "reason": "public campus passes the rule, but tasks/registry/tasks.json puts no campus-level task on the globe for this campus"
+  },
+  {
+   "ref": "anchor:denver:colorado-school-of-mines",
+   "name": "Colorado School of Mines",
+   "campus": "denver",
+   "reason": "public campus passes the rule, but tasks/registry/tasks.json puts no campus-level task on the globe for this campus"
+  },
+  {
+   "ref": "anchor:denver:community-college-of-denver",
+   "name": "Community College of Denver",
+   "campus": "denver",
+   "reason": "public campus passes the rule, but tasks/registry/tasks.json puts no campus-level task on the globe for this campus"
+  },
+  {
+   "ref": "anchor:miami:miami-dade-college",
+   "name": "Miami Dade College",
+   "campus": "miami",
+   "reason": "public campus passes the rule, but tasks/registry/tasks.json puts no campus-level task on the globe for this campus"
+  },
+  {
+   "ref": "anchor:detroit:wayne-state-university",
+   "name": "Wayne State University",
+   "campus": "detroit",
+   "reason": "public campus passes the rule, but tasks/registry/tasks.json puts no campus-level task on the globe for this campus"
+  },
+  {
+   "ref": "anchor:detroit:wayne-county-community-college-district",
+   "name": "Wayne County Community College District",
+   "campus": "detroit",
+   "reason": "public campus passes the rule, but tasks/registry/tasks.json puts no campus-level task on the globe for this campus"
+  }
+ ],
+ "refused": [
+  {
+   "ref": "anchor:treasure-island:san-francisco",
+   "name": "San Francisco",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:treasure-island:emeryville",
+   "name": "Emeryville",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:treasure-island:oakland",
+   "name": "Oakland",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:treasure-island:tiburon",
+   "name": "Tiburon",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:treasure-island:albany",
+   "name": "Albany",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:treasure-island:berkeley",
+   "name": "Berkeley",
+   "reason": "the registry record does not state that the place is public"
+  },
+  {
+   "ref": "anchor:treasure-island:sausalito",
+   "name": "Sausalito",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:treasure-island:el-cerrito",
+   "name": "El Cerrito",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:treasure-island:piedmont",
+   "name": "Piedmont",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:treasure-island:richmond",
+   "name": "Richmond",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:treasure-island:alameda",
+   "name": "Alameda",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:treasure-island:daly-city",
+   "name": "Daly City",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:treasure-island:orinda",
+   "name": "Orinda",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:treasure-island:mill-valley",
+   "name": "Mill Valley",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:treasure-island:south-san-francisco",
+   "name": "South San Francisco",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:treasure-island:san-leandro",
+   "name": "San Leandro",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:treasure-island:san-rafael",
+   "name": "San Rafael",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:oakland:emeryville",
+   "name": "Emeryville",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:oakland:piedmont",
+   "name": "Piedmont",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:oakland:alameda",
+   "name": "Alameda",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:oakland:berkeley",
+   "name": "Berkeley",
+   "reason": "the registry record does not state that the place is public"
+  },
+  {
+   "ref": "anchor:oakland:albany",
+   "name": "Albany",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:oakland:orinda",
+   "name": "Orinda",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:oakland:el-cerrito",
+   "name": "El Cerrito",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:oakland:san-francisco",
+   "name": "San Francisco",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:oakland:san-leandro",
+   "name": "San Leandro",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:oakland:richmond",
+   "name": "Richmond",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:oakland:lafayette",
+   "name": "Lafayette",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:oakland:tiburon",
+   "name": "Tiburon",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:oakland:sausalito",
+   "name": "Sausalito",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:oakland:castro-valley",
+   "name": "Castro Valley",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:oakland:south-san-francisco",
+   "name": "South San Francisco",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:oakland:walnut-creek",
+   "name": "Walnut Creek",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:oakland:daly-city",
+   "name": "Daly City",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:new-orleans:tulane-university",
+   "name": "Tulane University",
+   "reason": "the registry record does not state that the place is public"
+  },
+  {
+   "ref": "anchor:new-orleans:xavier-university",
+   "name": "Xavier University",
+   "reason": "the registry record does not state that the place is public"
+  },
+  {
+   "ref": "anchor:new-orleans:delgado-community-college",
+   "name": "Delgado Community College",
+   "reason": "the registry record does not state that the place is public"
+  },
+  {
+   "ref": "anchor:new-orleans:loyola-university",
+   "name": "Loyola University",
+   "reason": "the registry record does not state that the place is public"
+  },
+  {
+   "ref": "anchor:new-orleans:dillard-university",
+   "name": "Dillard University",
+   "reason": "the registry record does not state that the place is public"
+  },
+  {
+   "ref": "anchor:houston:port-of-houston-authority",
+   "name": "Port of Houston Authority",
+   "reason": "its name or source names a restricted or non-campus place type: port"
+  },
+  {
+   "ref": "anchor:houston:san-jacinto-college",
+   "name": "San Jacinto College",
+   "reason": "the registry record does not state that the place is public"
+  },
+  {
+   "ref": "anchor:houston:houston-community-college",
+   "name": "Houston Community College",
+   "reason": "the registry record does not state that the place is public"
+  },
+  {
+   "ref": "anchor:chicago:chicago-union-station",
+   "name": "Chicago Union Station",
+   "reason": "its name or source names a restricted or non-campus place type: station"
+  },
+  {
+   "ref": "anchor:chicago:navy-pier",
+   "name": "Navy Pier",
+   "reason": "its name or source names a restricted or non-campus place type: pier"
+  },
+  {
+   "ref": "anchor:chicago:richard-j-daley-college",
+   "name": "Richard J. Daley College",
+   "reason": "the registry record does not state that the place is public"
+  },
+  {
+   "ref": "anchor:seattle:port-of-seattle",
+   "name": "Port of Seattle",
+   "reason": "its name or source names a restricted or non-campus place type: pier, port"
+  },
+  {
+   "ref": "anchor:seattle:museum-of-flight",
+   "name": "Museum of Flight",
+   "reason": "its name or source names a restricted or non-campus place type: airport, museum"
+  },
+  {
+   "ref": "anchor:seattle:south-seattle-college",
+   "name": "South Seattle College",
+   "reason": "the registry record does not state that the place is public"
+  },
+  {
+   "ref": "anchor:pittsburgh:port-of-pittsburgh-commission",
+   "name": "Port of Pittsburgh Commission",
+   "reason": "its name or source names a restricted or non-campus place type: port"
+  },
+  {
+   "ref": "anchor:pittsburgh:carnegie-mellon-university",
+   "name": "Carnegie Mellon University",
+   "reason": "the registry record does not state that the place is public"
+  },
+  {
+   "ref": "anchor:pittsburgh:carrie-blast-furnaces-national-historic-landmark",
+   "name": "Carrie Blast Furnaces National Historic Landmark",
+   "reason": "its name or source names a restricted or non-campus place type: furnace, plant"
+  },
+  {
+   "ref": "anchor:denver:national-renewable-energy-laboratory",
+   "name": "National Renewable Energy Laboratory",
+   "reason": "its name or source names a restricted or non-campus place type: laboratory"
+  },
+  {
+   "ref": "anchor:denver:denver-union-station",
+   "name": "Denver Union Station",
+   "reason": "its name or source names a restricted or non-campus place type: station"
+  },
+  {
+   "ref": "anchor:miami:portmiami",
+   "name": "PortMiami",
+   "reason": "not a university or college campus (a city or other place)"
+  },
+  {
+   "ref": "anchor:miami:noaa-atlantic-oceanographic-and-meteorological-laboratory",
+   "name": "NOAA Atlantic Oceanographic and Meteorological Laboratory",
+   "reason": "its name or source names a restricted or non-campus place type: laboratory"
+  },
+  {
+   "ref": "anchor:miami:university-of-miami",
+   "name": "University of Miami",
+   "reason": "the registry record does not state that the place is public"
+  },
+  {
+   "ref": "anchor:detroit:detroit-wayne-county-port-authority",
+   "name": "Detroit/Wayne County Port Authority",
+   "reason": "its name or source names a restricted or non-campus place type: port"
+  },
+  {
+   "ref": "anchor:detroit:the-henry-ford",
+   "name": "The Henry Ford",
+   "reason": "its name or source names a restricted or non-campus place type: museum"
+  },
+  {
+   "ref": "restoration-site:east-oakland-youth",
+   "name": "Bay Restoration: Youth Engagement and Service Learning in East Oakland",
+   "reason": "its operator is not a named public park authority in the rules"
+  },
+  {
+   "ref": "restoration-site:alviso-shoreline",
+   "name": "Alviso Shoreline Habitat Restoration",
+   "reason": "its name or habitat names a restricted or non-park place type: marsh"
+  },
+  {
+   "ref": "restoration-site:south-bay-salt-ponds",
+   "name": "South Bay Salt Pond Restoration — ecotone levee (Phase 1)",
+   "reason": "its name or habitat names a restricted or non-park place type: levee, marsh, pond"
+  },
+  {
+   "ref": "restoration-site:montezuma-wetlands",
+   "name": "Montezuma Tidal and Seasonal Wetlands Restoration Project",
+   "reason": "its name or habitat names a restricted or non-park place type: wetland, wetlands"
+  },
+  {
+   "ref": "restoration-site:american-canyon",
+   "name": "American Canyon Wetlands Restoration Plan",
+   "reason": "its name or habitat names a restricted or non-park place type: wetland, wetlands"
+  },
+  {
+   "ref": "restoration-site:straw-north-bay",
+   "name": "Restoring Wetland-Upland Transition Zone Habitat in the North Bay with STRAW",
+   "reason": "its name or habitat names a restricted or non-park place type: wetland"
+  },
+  {
+   "ref": "restoration-site:spartina-removal",
+   "name": "San Francisco Estuary Invasive Spartina Removal",
+   "reason": "not pinned: the registry holds no single point for it"
+  },
+  {
+   "ref": "restoration-site:hunters-point-shipyard",
+   "name": "Hunters Point Naval Shipyard — EPA Superfund Site (Bayview-Hunters Point)",
+   "reason": "the registry marks it not walkable: an actively litigated federal cleanup site is not something this platform can responsibly present as a place to stroll"
+  },
+  {
+   "ref": "restoration-site:treasure-island-nsti",
+   "name": "Former Naval Station Treasure Island (NSTI) — Navy BRAC cleanup site (Treasure Island)",
+   "reason": "the registry marks it not walkable: an active federal cleanup site with unresolved radiological criteria is not something this platform can responsibly present as a place to stroll"
+  }
+ ]
+}

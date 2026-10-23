@@ -67,6 +67,7 @@ restoration = json.load(open(ROOT / 'restoration/registry/restoration.json'))
 geopose = json.load(open(ROOT / 'spatial/registry/geopose.json'))
 fabric = json.load(open(ROOT / 'spatial/registry/fabric.json'))
 som = json.load(open(ROOT / 'spatial/registry/som.json'))
+spatial_tiles = json.load(open(ROOT / 'spatial/registry/tiles.json'))
 guide = json.load(open(ROOT / 'guide/registry/guide.json'))
 sky = json.load(open(ROOT / 'sky/registry/sky.json'))
 lessons = json.load(open(ROOT / 'lessons/registry/lessons.json'))
@@ -163,7 +164,7 @@ content graph and details:
 | **Orbis synthetic-training prompts** (text only, no network) | a deterministic prompt for every one of the {orbis['modules']} union modules, built for a hosted video model this build never calls — a separate, clearly-labelled AI-SYNTHESIZED stream from the real episode log above | [Orbis-Synthetic-Training](Orbis-Synthetic-Training.md) |
 | **The network roadmap** ({len(roadmap['built_campuses'])} built, {len(roadmap['candidates'])} candidates) | the path from {len(roadmap['built_campuses'])} built campuses to {roadmap['target']} walkable worlds — two honest provenance tiers, and the real checklist a candidate has to clear to become built | [Roadmap](Roadmap.md) |
 | **Metaverse layer** (`meta/registry/metaverse.json`) | The interchange contract: {len(meta["baseline"]["standards"])} open standards claimed ({", ".join(s["id"] for s in meta["baseline"]["standards"])}), {len(meta["baseline"]["not_claimed"])} honestly not, avatar and hall .glb export, learner-local import | [Metaverse-Layer](Metaverse-Layer.md) |
-| **Spatial fabric** (`spatial/registry/`) | The Academy as a self-hosted OMBI-sense spatial fabric: {geopose["counts"]["total"]} OGC GeoPose 1.0 poses ({geopose["counts"]["campuses"]} campuses, {geopose["counts"]["anchors"]} anchors, {geopose["counts"]["restoration_sites"]} restoration sites; height and heading zero-with-UNKNOWN), a fabric manifest and a SOM-shaped scene graph with {len(som["root"]["branches"]) - 1} external origins — GeoPose claimed, the OMBI shapes honestly not | [Spatial-Fabric](Spatial-Fabric.md) |
+| **Spatial fabric** (`spatial/registry/`) | The Academy as a self-hosted OMBI-sense spatial fabric: {geopose["counts"]["total"]} OGC GeoPose 1.0 poses ({geopose["counts"]["campuses"]} campuses, {geopose["counts"]["anchors"]} anchors, {geopose["counts"]["restoration_sites"]} restoration sites; height and heading zero-with-UNKNOWN), a fabric manifest and a SOM-shaped scene graph with {len(som["root"]["branches"]) - 1} external origins — GeoPose claimed, the OMBI shapes honestly not — plus {len(spatial_tiles["tiles"])} glTF 2.0 world tiles and {len(spatial_tiles["manifests"])} plain-JSON manifests shaped after the Sneeze project's own docs, every undocumented field proposed and none loaded in a browser | [Spatial-Fabric](Spatial-Fabric.md) |
 | **City records** (`parcels/registry/parcels.json`) | The source contract for the three campus regions\' own parcel and building-footprint authorities ({sum(set(s["records"] for s in parcels["sources"].values())):,} records published upstream), plus the public-domain federal orthoimagery both maps draw | [City-Records](City-Records.md) |
 | **Network geomap** (`web/trade_craft_geomap.html`) | The geo registry on a real WGS84 map (MapLibre, no basemap tiles): campuses, {n_anchors} anchors ({n_rec} RECORDED, {n_auth} AUTHORED), great-circle routes, city frames at their own provenance | [Campus-Map](Campus-Map.md) |
 | **Bay Restoration** (`restoration/registry/restoration.json`) | {len(restoration['sites'])} real, independently-run San Francisco Bay sites across two categories ({sum(1 for s in restoration['sites'] if s['category'] == 'habitat-restoration')} habitat-restoration, {sum(1 for s in restoration['sites'] if s['category'] == 'environmental-monitoring')} environmental-monitoring — Hunters Point Naval Shipyard, a real, litigated federal Superfund site, and Former Naval Station Treasure Island, a real Navy BRAC cleanup that is not NPL-listed, both pinned but never walkable) — {sum(1 for s in restoration['sites'] if s['pin'])} mapped, {sum(1 for s in restoration['sites'] if s['walkable'])} walkable — bridged to {len(restoration['tracks'])} field-skill tracks bound to real skill_ids already in this bundle's graph — not a SmartCiti.X program | [Bay-Restoration](Bay-Restoration.md) |
@@ -1534,6 +1535,87 @@ def page_spatial():
     srcs = '\n'.join(
         f"- {s['what']}" + (f" — {s['url']}" if s.get('url') else '')
         + f" *({s['provenance']})*" for s in fabric['sources'])
+    T = spatial_tiles
+    TH = T['honesty']
+    vrow = '\n'.join(f"| `{v['id']}` | {v['fact']} | {v['url']} |" for v in T['verified'])
+    frow = '\n'.join(
+        f"| `{f['field']}` | **{f['status']}** | "
+        + (', '.join(f"`{i}`" for i in f['verified_ids']) if f['verified_ids'] else 'none read') + ' |'
+        for f in T['field_status'])
+    trow = '\n'.join(
+        f"| `{t['id']}` | {t['name']} | {t['provenance']} | "
+        + ', '.join(f"{l['name']} {l['provenance']}" for l in t['layers'])
+        + f" | {t['bytes']:,} | "
+        + (f"{t['anchor']['geopose']['position']['lat']}, {t['anchor']['geopose']['position']['lon']} "
+           f"({t['anchor']['provenance']['position_horizontal']})" if t['anchor'] else 'none: not on the globe')
+        + ' |'
+        for t in T['tiles'])
+    mrow = '\n'.join(f"| `{m['file']}` | {m['title']} | {len(m['tiles'])} | {m['bytes']:,} |" for m in T['manifests'])
+    nrow2 = '\n'.join(f"- **{c['name']}** ({c['campus']}): {c['why']}" for c in T['campuses_without_tile'])
+    tile_section = f"""## World tiles for Sneeze (proposed, not loaded anywhere)
+
+Sneeze is the open-source (Apache 2.0) engine under the Open Metaverse
+Browser Initiative's browser; RP1's Artemis is built on it. `spatial/` now
+also writes the GIS-based worlds as **{len(T["tiles"])} glTF 2.0 binary tiles**
+({T["budget"]["total_bytes"]:,} bytes) built on demand by `python3 spatial/build.py` into `dist/sneeze/tiles/` (not committed, not served by the Pages site; the registry holds each sha256), with
+**{len(T["manifests"])} plain-JSON manifests** beside them
+(`spatial/registry/tiles.json` is the registry; `spatial/test_tiles.mjs` holds
+every tile by its bytes). Every field below is either *documented* by the Sneeze
+project's own repository or *proposed*.
+
+### What Sneeze verifiably loads
+
+Read from the project's own repository and docs; nothing was run. {up_first(TH["documentation_status"])}
+
+| Id | Fact | Source |
+|---|---|---|
+{vrow}
+
+### The tiles
+
+{up_first(TH["geometry"])}
+
+| Tile | Region | Provenance (weakest layer) | Layers | Bytes | Anchor (GeoPose position) |
+|---|---|---|---|---|---|
+{trow}
+
+Campuses without halls get no tile, because nothing is stood up there:
+
+{nrow2}
+
+### The manifests
+
+{up_first(TH["unsigned"])}
+
+{up_first(TH["map_module"])}
+
+| File | World | Tiles | Bytes |
+|---|---|---|---|
+{mrow}
+
+### Documented or proposed, field by field
+
+| Field | Status | Verified facts it rests on |
+|---|---|---|
+{frow}
+
+### What is not claimed
+
+- {up_first(TH["not_loaded"])}
+- {up_first(TH["build_output"])}
+- {up_first(TH["axes"])}
+- {up_first(TH["geopose_is_a_sidecar"])}
+- {up_first(TH["wilds_not_on_globe"])}
+- {up_first(TH["scale"])}
+- {up_first(TH["rights"])}
+
+The older "Not claimed" section above predates this reading: it records that
+the OMBI deck's manifest, SOM and RMAP texts were not reachable from the earlier
+build. The Sneeze project's own docs describe an MSF manifest and a Scene
+Object Model for *its engine*; that is documentation of one implementation, not
+an OMBI standard, and it is what the tiles above follow.
+
+"""
     return f'''# The spatial fabric
 
 A *spatial fabric*, in the sense the Metaverse Standards Forum's Open
@@ -1624,7 +1706,7 @@ build and the suite both assert: {som["invariants"]["per_branch_ownership"]}
 |---|---|---|
 {orow}
 
-## Not loaded in any browser
+{tile_section}## Not loaded in any browser
 
 {H["not_loaded_in_any_browser"]}
 

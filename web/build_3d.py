@@ -844,6 +844,9 @@ for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
             'yard.name', 'yard.seats',
             'sim.start', 'sim.operator', 'sim.results', 'sim.pass', 'sim.retry',
             'sim.sound', 'sim.view', 'sim.choose', 'progress.local',
+            # SLOW-NOTICE BEGIN (wave 24): the slow-device notice in the seat HUD
+            'sim.slowNotice',
+            # SLOW-NOTICE END
             'city.note', 'avatar.title', 'chapters.hall',
             'honesty.taxonomy', 'honesty.content',
             'xr.ended', 'xr.unavailable', 'xr.noNavigatorXr', 'xr.banner',
@@ -1942,7 +1945,27 @@ function engineSet(load) {  // 0..1 - throttle / hoist activity / arc heat
   engine.osc.frequency.setTargetAtTime(base * (1 + load * 1.6), ac.currentTime, .08);
   engine.g.gain.setTargetAtTime(.05 + load * .13, ac.currentTime, .1);
 }
+/* AUDIO-GESTURE BEGIN (wave 24): a browser starts no audio before the page has had a gesture. A seat opened by a
+   ?sim= deep link has had none, so its sound waits for the first pointer or key press instead of making a context
+   the browser refuses and logs about. Opened from a click, the sound starts at once, as before. */
+let seatSoundWait = null;
+function seatSound(def) {
+  const go = () => {
+    if (seatSoundWait !== go || !sim || D.sims.sims[curSimId] !== def) return;
+    seatSoundWait = null;
+    acEnsure(); engineStart(def.audio.engine === 'diesel' ? 'diesel'
+      : def.audio.engine === 'arc' ? 'arc'
+      : def.audio.engine === 'electric-hydraulic' ? 'electric' : 'hoist');
+    if (def.audio.alerts.includes('reverse-beeper')) beeperEnsure();
+  };
+  seatSoundWait = go;
+  const ua = navigator.userActivation;
+  if (!ua || ua.hasBeenActive) go();
+  else for (const ev of ['pointerdown', 'keydown']) addEventListener(ev, go, { once: true, capture: true });
+}
+/* AUDIO-GESTURE END */
 function engineStop() {
+  seatSoundWait = null;
   if (engine) { engine.osc.stop(); engine = null; }
   if (beeper) { beeper.o.stop(); beeper = null; }
 }
@@ -2230,10 +2253,7 @@ function startSim(simId, scenarioId) {
   // the XR rig while presenting, so every seat is operable in-session
   controls.autoRotate = false;
   setSimView(def.view_modes[0]);
-  acEnsure(); engineStart(def.audio.engine === 'diesel' ? 'diesel'
-    : def.audio.engine === 'arc' ? 'arc'
-    : def.audio.engine === 'electric-hydraulic' ? 'electric' : 'hoist');
-  if (def.audio.alerts.includes('reverse-beeper')) beeperEnsure();
+  /* AUDIO-GESTURE BEGIN */ seatSound(def); /* AUDIO-GESTURE END */
   initDash(def);
   document.getElementById('hname').textContent =
     def.name + ' \\u2014 ' + D.halls.find(x => x.slug === slug).name;
@@ -7868,6 +7888,10 @@ function xrHudLines(force) {
   const op = xrOpStatus();
   if (op) xrHudSprite('op', op, null, .04, false).position.set(0, 0, 0);
   else xrHudDrop('op');
+  /* SLOW-NOTICE BEGIN (wave 24): the same sentence on the wrist panel, where the page's own HUD cannot be seen */
+  if (slowShown && !slowDismissed) xrHudSprite('slow', t('sim.slowNotice'), null, .035, false).position.set(0, .12, 0);
+  else xrHudDrop('slow');
+  /* SLOW-NOTICE END */
 }
 
 /* ---- the draw: passthrough, and the headset's own quality ladder ------ */
@@ -8069,6 +8093,19 @@ select{background:var(--panel);color:var(--ink);border:1px solid var(--rule);
 #dash .g.warn .gv{color:var(--crit)}
 /* warning is shape AND colour, never colour alone (colourblind-safe) */
 #dash .g.warn .gl::before{content:"\\25b2  ";color:var(--crit)}
+/* SLOW-NOTICE BEGIN (wave 24): a calm status line over the dash; a clock glyph carries it as well as the colour */
+#slowNote{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:7;
+  max-width:min(92vw,560px);pointer-events:none}
+#slowNote .sn{display:flex;align-items:center;gap:10px;pointer-events:auto;
+  background:color-mix(in oklab, var(--sunk) 94%, transparent);border:1px solid var(--rule);
+  border-inline-start:3px solid var(--mark);border-radius:8px;padding:6px 10px;
+  color:var(--ink);font-size:12px;line-height:1.4}
+#slowNote .sn[hidden]{display:none}
+#slowNote .sn::before{content:"\\25f7";content:"\\25f7" / "";color:var(--mark);font-size:15px}
+#slowNote button{min-width:24px;min-height:24px;padding:0 6px;background:transparent;color:var(--ink);
+  border:1px solid var(--rule);border-radius:6px;font:inherit;cursor:pointer}
+#slowNote button:focus-visible{outline:2px solid var(--mark);outline-offset:2px}
+/* SLOW-NOTICE END */
 /* the minimap: the campus from above, you as the amber arrow */
 #mm{position:fixed;right:14px;top:62px;z-index:5;border:1px solid var(--rule);
   border-radius:9px;width:150px;height:150px}
@@ -8280,6 +8317,9 @@ body.tc-theme-canvas #panel a.tc-btn{min-block-size:40px;padding:8px 16px}
 __NAV__<main id="main">
 <p id="pkicker" class="vh" lang="en" dir="ltr">SmartCiti.X : Trade Craft Academy</p>
 <h1 id="ptitle" class="vh">__H1_TEXT__</h1>
+<!-- SLOW-NOTICE BEGIN: a polite status region; its text is set only while the seat runs slower than real time. It stands early in the page so that Tab reaches its close button within a few presses instead of after the whole toolbar -->
+<div id="slowNote" role="status" aria-live="polite" aria-atomic="true"><span class="sn" id="slowBox" hidden><span id="slowTxt"></span><button id="slowX" type="button">×</button></span></div>
+<!-- SLOW-NOTICE END -->
 __EGG_HOOKS__
 <script>
 // the nav's folded row, measured (see --navh in the stylesheet)
@@ -17549,7 +17589,10 @@ window.__tc3dSim = {
     } finally { opViewRestore(before); }
   },
   sweep: opSweep,
-  /* FIXED-STEP BEGIN */ frame: (dt) => fsSeatFrame(dt), /* FIXED-STEP END */   // one frame of the live seat, as the render loop steps it
+  /* FIXED-STEP BEGIN */ frame: (dt) => fsSeatFrame(dt),
+  // read-only views for a harness: the slow notice's state, the seat's own gauges, the drawn pose (with or without the blend)
+  slow: () => slowState(), gauges: () => (sim && sim.gauges ? sim.gauges() : null), pose: (on) => siPose(on),
+  interp: (v) => { if (v !== undefined) siOn = !!v; return siOn; }, /* FIXED-STEP END */   // one frame of the live seat, as the render loop steps it
   state: () => opRun ? { sim: opRun.sim, scenario: opRun.scenario, level: opRun.level,
     seed: opRun.seed, step: opRun.step, phase: opRun.id, sweep: opRun.sweep,
     result: opRun.result } : null,
@@ -17778,28 +17821,34 @@ __QUEST3D_JS__
    not fit, so a slow device does not fall further behind with every frame. */
 const FS_STEP = 1 / 60;
 const FS_MAX = 30;
-let fsAcc = 0, fsSeat = null;
+let fsAcc = 0, fsSeat = null, fsDropped = false;
 function fsAdvance(dt, stepFn) {
   fsAcc += dt > 0 && isFinite(dt) ? dt : 0;
-  let n = 0;
+  let n = 0, gone = false;
   while (fsAcc >= FS_STEP - 1e-9 && n < FS_MAX) {
     fsAcc -= FS_STEP; n++;
-    if (stepFn(FS_STEP) === false) break;
+    // the second argument says whether this is the last step the frame will take
+    if (stepFn(FS_STEP, fsAcc < FS_STEP - 1e-9 || n >= FS_MAX) === false) { gone = true; break; }
   }
   if (fsAcc < 0) fsAcc = 0;
+  // whole steps that did not fit under the cap are dropped: the seat has fallen behind real time
+  fsDropped = !gone && fsAcc >= FS_STEP - 1e-9;
   if (fsAcc >= FS_STEP - 1e-9) fsAcc %= FS_STEP;
   return n;
 }
 function fsSeatFrame(dt) {
   if (!sim) return 0;
-  if (sim !== fsSeat) { fsSeat = sim; fsAcc = 0; }       // a new seat starts with an empty accumulator
-  const n = fsAdvance(dt, (h) => {
+  if (sim !== fsSeat) { fsSeat = sim; fsAcc = 0; siReset(); slowReset(); }       // a new seat starts with an empty accumulator
+  const n = fsAdvance(dt, (h, last) => {
     if (!sim) return false;
+    if (last) siBefore();                                // read-only: the state the last step starts from
     if (opRun) opStep(h);
     sim.update(h);
     traceStep(h);
+    if (last && sim) siAfter();                          // read-only: the state it leaves
     return true;
   });
+  slowTick(dt, fsDropped);
   if (sim && sim.gauges) {
     const gv = sim.gauges();
     setDash(D.sims.sims[curSimId], gv);
@@ -17808,6 +17857,166 @@ function fsSeatFrame(dt) {
   return n;
 }
 /* FIXED-STEP END */
+
+/* SLOW-NOTICE BEGIN (wave 24)
+   The accumulator above drops whole steps when one frame brings more than FS_MAX of them. That is the one
+   moment the seat falls behind real time, and the learner is told so in words, calmly: a short sentence in the
+   seat HUD (a polite status region, so a screen reader reads it once) and on the wrist panel in a headset.
+   Nothing here is read by the physics, the operator or a rubric: the notice changes what is shown and nothing
+   else. A lone stall - a tab put to sleep, a shader compile - must not raise it, so it takes two capped frames
+   within SLOW_WINDOW_S. It stays SLOW_HOLD_S after the last capped frame and is gone when the device has caught
+   up. The close button is a real button (Tab reaches it, Enter or Space presses it) and holds the notice
+   back until it has cleared on its own. */
+const SLOW_HITS = 2, SLOW_WINDOW_S = 5, SLOW_HOLD_S = 3;
+let slowLeft = 0, slowWin = 0, slowHits = 0, slowShown = false, slowDismissed = false;
+function slowSet(on) {
+  slowShown = on;
+  const box = document.getElementById('slowBox'), txt = document.getElementById('slowTxt');
+  if (!box || !txt) return;
+  if (!on) { slowDismissed = false; box.hidden = true; txt.textContent = ''; return; }
+  const x = document.getElementById('slowX');
+  x.setAttribute('aria-label', t('ui.close'));
+  txt.textContent = t('sim.slowNotice');
+  box.hidden = slowDismissed;
+}
+function slowTick(dt, dropped) {
+  const d = dt > 0 && isFinite(dt) ? dt : 0;
+  if (slowWin > 0) { slowWin -= d; if (slowWin <= 0) { slowWin = 0; slowHits = 0; } }
+  if (dropped) {
+    if (slowWin <= 0) { slowWin = SLOW_WINDOW_S; slowHits = 0; }
+    if (++slowHits >= SLOW_HITS) slowLeft = SLOW_HOLD_S;
+  } else if (slowLeft > 0) slowLeft = Math.max(0, slowLeft - d);
+  if ((slowLeft > 0) !== slowShown) slowSet(slowLeft > 0);
+}
+function slowReset() { slowLeft = 0; slowWin = 0; slowHits = 0; if (slowShown) slowSet(false); }
+function slowIdle() { if (slowShown || slowLeft || slowHits) slowReset(); }
+function slowState() {
+  const txt = document.getElementById('slowTxt'), box = document.getElementById('slowBox');
+  return { shown: slowShown, dismissed: slowDismissed, visible: !!box && !box.hidden, hits: slowHits,
+    left: +slowLeft.toFixed(3), text: txt ? txt.textContent : null };
+}
+document.getElementById('slowX')?.addEventListener('click', () => {
+  slowDismissed = true;
+  const box = document.getElementById('slowBox'); if (box) box.hidden = true;
+});
+/* SLOW-NOTICE END */
+
+/* SEAT-INTERP BEGIN (wave 24)
+   The seat steps at 60 Hz whatever the display runs at, so on a 72, 90 or 120 Hz headset some frames
+   carry a physics step and some do not, and anything that moves would judder. The draw therefore shows the
+   BLEND of the state before the frame's last step and the state after it, by alpha = the accumulator's
+   remainder over the step. The physics never sees the blend:
+   - the blend is written only into each moving object's local MATRIX, for the draw call alone, with the
+     object's matrixAutoUpdate switched off and restored in the same loop turn; position, quaternion, rotation
+     and scale - everything the seat reads back - are never written here, and the world matrices are
+     recomputed from them as soon as the draw is done;
+   - the line buffers of a rope or cable are blended the same way and put back from the saved copy;
+   - the two snapshots are READ-ONLY copies taken around the frame's last step.
+   Blended: the local transform of every object in the seat's group, the line vertices, and the pose that
+   carries the eye (the camera on a desktop, the XR rig in a headset). Not blended: visibility, colour,
+   materials, geometry rewritten by a seat, anything spawned during the step - those show the latest state. A
+   jump of more than a metre or a radian in one step is a placement, not a motion, and is shown at once. The
+   cost is one step (at most 16.7 ms) of display lag. If the snapshot code ever throws, it switches itself
+   off and the seat runs as it did before. */
+let siOn = true, siReady = false, siApplied = false, siDead = null;
+const SI_JUMP_M = 1.0, SI_JUMP_RAD = 1.0;
+const siList = [], siMoved = [], siSaved = [], siLines = [];
+let siPrev = new Float64Array(0), siCur = new Float64Array(0);
+const _siP = new THREE.Vector3(), _siS = new THREE.Vector3(), _siQa = new THREE.Quaternion(), _siQb = new THREE.Quaternion();
+function siReset() { siReady = false; siMoved.length = 0; siList.length = 0; siLines.length = 0; }
+function siSnap(buf) {
+  const n = siList.length;
+  if (buf.length < n * 10) buf = new Float64Array(n * 10 + 512);
+  for (let i = 0, j = 0; i < n; i++, j += 10) {
+    const o = siList[i], p = o.position, q = o.quaternion, s = o.scale;
+    buf[j] = p.x; buf[j + 1] = p.y; buf[j + 2] = p.z;
+    buf[j + 3] = q.x; buf[j + 4] = q.y; buf[j + 5] = q.z; buf[j + 6] = q.w;
+    buf[j + 7] = s.x; buf[j + 8] = s.y; buf[j + 9] = s.z;
+  }
+  return buf;
+}
+function siBefore() {
+  if (siDead) return;
+  try {
+    siReady = false; siList.length = 0; siLines.length = 0;
+    sim.group.traverse((o) => {
+      siList.push(o);
+      const a = o.isLine && o.geometry && o.geometry.attributes && o.geometry.attributes.position;
+      if (a && a.array.length <= 1024) siLines.push({ attr: a, prev: Float32Array.from(a.array), cur: null, moved: false });
+    });
+    siList.push(renderer.xr.isPresenting ? xrRig : camera);
+    siPrev = siSnap(siPrev);
+  } catch (e) { siDead = String(e && e.message || e); siReady = false; }
+}
+function siAfter() {
+  if (siDead) return;
+  try {
+    siCur = siSnap(siCur); siMoved.length = 0;
+    for (let i = 0, j = 0; i < siList.length; i++, j += 10) {
+      let d = false;
+      for (let k = 0; k < 10; k++) if (siPrev[j + k] !== siCur[j + k]) { d = true; break; }
+      if (!d) continue;
+      const dx = siCur[j] - siPrev[j], dy = siCur[j + 1] - siPrev[j + 1], dz = siCur[j + 2] - siPrev[j + 2];
+      if (dx * dx + dy * dy + dz * dz > SI_JUMP_M * SI_JUMP_M) continue;
+      const dot = Math.abs(siPrev[j + 3] * siCur[j + 3] + siPrev[j + 4] * siCur[j + 4] + siPrev[j + 5] * siCur[j + 5] + siPrev[j + 6] * siCur[j + 6]);
+      if (2 * Math.acos(Math.min(1, dot)) > SI_JUMP_RAD) continue;
+      siMoved.push(i);
+    }
+    for (const L of siLines) {
+      const ar = L.attr.array;
+      L.moved = ar.length === L.prev.length; L.cur = Float32Array.from(ar);
+      if (L.moved) { let d = false; for (let k = 0; k < ar.length; k++) if (ar[k] !== L.prev[k]) { d = true; break; } L.moved = d; }
+    }
+    siReady = true;
+  } catch (e) { siDead = String(e && e.message || e); siReady = false; }
+}
+function siApply(on = siOn) {
+  if (!on || !siReady || siApplied || siDead || !sim || sim !== fsSeat) return false;
+  try {
+    const a = Math.min(1, Math.max(0, fsAcc / FS_STEP));
+    siApplied = true; siSaved.length = 0;
+    for (let m = 0; m < siMoved.length; m++) {
+      const i = siMoved[m], j = i * 10, o = siList[i];
+      _siP.set(siPrev[j] + (siCur[j] - siPrev[j]) * a, siPrev[j + 1] + (siCur[j + 1] - siPrev[j + 1]) * a, siPrev[j + 2] + (siCur[j + 2] - siPrev[j + 2]) * a);
+      _siS.set(siPrev[j + 7] + (siCur[j + 7] - siPrev[j + 7]) * a, siPrev[j + 8] + (siCur[j + 8] - siPrev[j + 8]) * a, siPrev[j + 9] + (siCur[j + 9] - siPrev[j + 9]) * a);
+      _siQa.set(siPrev[j + 3], siPrev[j + 4], siPrev[j + 5], siPrev[j + 6]);
+      _siQb.set(siCur[j + 3], siCur[j + 4], siCur[j + 5], siCur[j + 6]);
+      _siQa.slerp(_siQb, a);
+      siSaved.push(o.matrixAutoUpdate);
+      o.matrixAutoUpdate = false;
+      o.matrix.compose(_siP, _siQa, _siS);
+      o.matrixWorldNeedsUpdate = true;
+    }
+    for (const L of siLines) if (L.moved && L.attr.array.length === L.prev.length) {
+      const ar = L.attr.array;
+      for (let k = 0; k < ar.length; k++) ar[k] = L.prev[k] + (L.cur[k] - L.prev[k]) * a;
+      L.attr.needsUpdate = true;
+    }
+    return true;
+  } catch (e) { siDead = String(e && e.message || e); siRestore(); return false; }
+}
+function siRestore() {
+  if (!siApplied) return;
+  siApplied = false;
+  for (let m = 0; m < siSaved.length; m++) siList[siMoved[m]].matrixAutoUpdate = siSaved[m];
+  for (const L of siLines) if (L.moved && L.cur && L.attr.array.length === L.cur.length) { L.attr.array.set(L.cur); L.attr.needsUpdate = true; }
+  if (sim) sim.group.updateMatrixWorld(true);
+  (renderer.xr.isPresenting ? xrRig : camera).updateMatrixWorld(true);
+}
+// the drawn pose, with or without the blend, for a harness: world positions of what moved in the last step and of the eye
+function siPose(on = siOn) {
+  if (!sim || sim !== fsSeat) return null;
+  const used = siApply(on);
+  sim.group.updateMatrixWorld(true);
+  const eyeObj = renderer.xr.isPresenting ? xrRig : camera;
+  eyeObj.updateMatrixWorld(true);
+  const pts = siMoved.map((i) => { const e = siList[i].matrixWorld.elements; return [siList[i].id, e[12], e[13], e[14]]; });
+  const e = eyeObj.matrixWorld.elements;
+  const out = { alpha: fsAcc / FS_STEP, applied: used, moved: siMoved.length, dead: siDead, eye: [e[12], e[13], e[14]], pts };
+  if (used) siRestore();
+  return out;
+}
+/* SEAT-INTERP END */
 const clock = new THREE.Clock();
 renderer.setAnimationLoop(() => {
   const dt = clock.getDelta();
@@ -17826,7 +18035,7 @@ renderer.setAnimationLoop(() => {
   // gets its inputs from opStep() before the physics step, exactly where
   // a keypress would already be waiting in `keys`
   /* FIXED-STEP BEGIN (wave 23): the seat and the operator step on a fixed 1/60 s, never on the frame time */
-  if (sim && !opHeadless) fsSeatFrame(dt);
+  if (sim && !opHeadless) fsSeatFrame(dt); else slowIdle();
   /* FIXED-STEP END */
   /* STEP-EPISODE BEGIN */ stepEpisodeTick(dt); /* STEP-EPISODE END */
   stepEmote(dt);
@@ -17860,7 +18069,10 @@ renderer.setAnimationLoop(() => {
   // drawn. Placed at the top of the loop it would read last frame's camera
   // and the box would lag the view by one frame at every turn.
   trackSun();
-  xrRender();
+  /* SEAT-INTERP BEGIN (wave 24): the draw sees the blend of the last two physics states; nothing else does */
+  siApply();
+  try { xrRender(); } finally { siRestore(); }
+  /* SEAT-INTERP END */
   if (!('frame1' in BOOT)) { bootMark('frame1'); BOOT.programs = renderer.info.programs.length; }
   // and the next few frames, each with the programs compiled so far: a slow second frame is a compile, not a draw
   else if (BOOT.frames.length < 12) BOOT.frames.push([Math.round(performance.now()), renderer.info.programs.length, qLevel]);

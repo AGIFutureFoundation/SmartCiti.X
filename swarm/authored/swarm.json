@@ -1,0 +1,64 @@
+{
+  "schema": "swarm-authored/1",
+  "name": "Omega Swarm",
+  "provenance": "AUTHORED",
+  "note": "Everything in this file is written by hand. The builder derives the rest (clusters, cells, members, gate targets) from the registries and fails if a derived value disagrees with a value written here.",
+  "cell_scheme": {
+    "name": "geohash",
+    "precision": 5,
+    "alphabet": "0123456789bcdefghjkmnpqrstuvwxyz",
+    "campus_ring": 1,
+    "why": "Geohash is a public-domain, prefix-addressed grid, so a coarser cell string names every cell below it and a cell set can be written by hand. Precision 5 is a cell about 4.9 km by 4.9 km at the equator (narrower in longitude further north): small enough that a campus and its neighbours are different cells, large enough that a hive has a handful of cells, not thousands. Each campus also owns the ring of cells around its own cell, so a fence drawn around a campus finds its hive even where no anchor is recorded."
+  },
+  "cluster_rule": {
+    "name": "single-linkage",
+    "max_km": 100,
+    "why": "Campuses within 100 km of each other (a metro area) share one hive; a campus further than that from every other has its own. Measured with the haversine distance between the campus GeoPose positions."
+  },
+  "hives": {
+    "bay-area": {"name": "Bay Area hive", "campuses": ["oakland", "treasure-island"]},
+    "new-orleans": {"name": "New Orleans hive", "campuses": ["new-orleans"]},
+    "houston": {"name": "Houston hive", "campuses": ["houston"]},
+    "chicago": {"name": "Chicago hive", "campuses": ["chicago"]},
+    "seattle": {"name": "Seattle hive", "campuses": ["seattle"]},
+    "pittsburgh": {"name": "Pittsburgh hive", "campuses": ["pittsburgh"]},
+    "denver": {"name": "Denver hive", "campuses": ["denver"]},
+    "miami": {"name": "Miami hive", "campuses": ["miami"]},
+    "detroit": {"name": "Detroit hive", "campuses": ["detroit"]}
+  },
+  "parish_rule": {
+    "max_km_from_hive_home": 150,
+    "why": "A Hive parish guide stands at the centre of its parish outline (the middle of the outline's bounding box, DERIVED). The parish joins the nearest hive, and the build fails if that hive's home campus is more than this far away."
+  },
+  "robots_per_campus": {"rover.wheeled": 2, "arm.on-base": 2, "rov.survey": 2},
+  "robot_placement_rule": "A simulated robot stands at one pose of its own campus (the campus, its anchors and its restoration sites), chosen by sha256('<robot id>:place') mod the number of eligible poses; a survey ROV prefers a restoration site when its campus has one. A placement is a position in a schematic simulation, not a statement that any robot exists there.",
+  "capabilities": {
+    "robot.litter-pickup": {"kind": "robot", "env": "world.litter-pickup", "summary": "Simulated rover runs the litter-pickup arena task in dry-run."},
+    "robot.litter-sort": {"kind": "robot", "env": "world.litter-sort", "summary": "Simulated arm runs the litter-sort arena task in dry-run."},
+    "robot.rov-survey": {"kind": "robot", "env": "world.rov-survey", "summary": "Simulated ROV runs the monitoring-survey arena task in dry-run."},
+    "robot.gate-drive": {"kind": "robot", "env": "world.gate-drive", "summary": "Simulated rover runs the gate-drive arena task in dry-run. The task is the forklift-run bay-yard lane, so the safety gate holds it."},
+    "software.schedule-tournament": {"kind": "software", "role": "claw:scheduler", "summary": "The hive's Scheduler reports the tournament queue it builds.",
+      "payload": {"queue_runs": "robotics/claw/registry/claw.json#tournament.queue_size", "policies": "robotics/claw/registry/claw.json#counts.policies", "tasks": "robotics/claw/registry/claw.json#counts.tasks"}},
+    "software.audit-dataset": {"kind": "software", "role": "claw:steward", "summary": "The hive's Data Steward reports the robot-learning dataset's own audit numbers.",
+      "payload": {"samples": "robotics/claw/registry/claw.json#dataset.samples", "duplicates": "robotics/claw/registry/claw.json#dataset.duplicates", "digest": "robotics/claw/registry/claw.json#dataset.digest"}},
+    "software.advise-visitor": {"kind": "software", "role": "advisor:guide", "summary": "The hive's Orientation guide offers its quoted greeting line.",
+      "payload": {"greeting": "agents/registry/advisors.json#advisors.guide.greeting"}}
+  },
+  "dry_run": {
+    "policy": "scripted",
+    "epoch_ms": 1767225600000,
+    "epoch_note": "A fixed instant (2026-01-01T00:00:00Z) handed to the safety gate as 'now' so a dry run reads no clock and gives the same answer every time.",
+    "max_targets": 128
+  },
+  "region_limits": {"max_vertices": 64, "max_cells": 256, "cell_min_length": 1, "cell_max_length": 9},
+  "real_hardware": {
+    "operators": [],
+    "refusal": "real hardware needs a named human operator; none is configured",
+    "rule": "No code in swarm/ sends anything to a robot or a device. The router has no real-hardware path at all, so naming an operator does not open one: a command that names real hardware, a live mode, an operator or a target outside this registry is refused with the sentence above."
+  },
+  "optimise": {
+    "max_km": 60,
+    "task_kinds": ["robot.litter-pickup", "robot.litter-sort", "robot.rov-survey", "robot.gate-drive"],
+    "task_rule": "One training-task slot per cell that holds a campus, anchor or restoration-site pose. Its kind is task_kinds[sha256('<cell>:task')[:8] mod 4]. A robot can only take a task whose capability names its own embodiment, and only within max_km of the cell centre."
+  }
+}

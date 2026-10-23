@@ -50,6 +50,8 @@ import sys
 
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
+sys.path.insert(0, str(HERE))
+import tiles as world_tiles  # the glTF world tiles (spatial/tiles.py)
 
 # One bundle version, read from the manifest rather than typed here (this
 # pack had drifted to 1.0.0 while ROADMAP said 3.2.0 was unified everywhere).
@@ -229,7 +231,14 @@ HONESTY = {
                                  'training recorder) at the flagship campus is '
                                  'a DESIGN decision unions/registry/campuses.json '
                                  'owns (flagship: true on exactly one campus), '
-                                 'not a fact about where anything physically is.',
+                                 'not a fact about where anything physically is. '
+                                 'The one exception is the world tiles: '
+                                 'the world tiles are real .glb files, built on '
+                                 'demand by python3 spatial/build.py into '
+                                 'dist/sneeze/ (not committed, not served by the '
+                                 'Pages site; spatial/registry/tiles.json holds '
+                                 'their sha256), and still not loaded in any '
+                                 'browser.',
     'external_origins': 'every other operator this fabric points at - a '
                         'restoration site\'s own organization, the US Navy, '
                         'EPA Region 9 and California DTSC at Hunters Point, '
@@ -297,6 +306,16 @@ SOURCES = [
             'RP1-Launches-Artemis-the-Worlds-First-Native-Metaverse-Browser',
      'provenance': 'AUTHORED from public press; this fabric has not been '
                    'loaded in it'},
+    {'what': 'Sneeze engine source and docs, Metaversal Corp (Open Metaverse '
+             'Browser Initiative): README, scene and MSF module notes, '
+             'GltfMesh.cpp, and the SneezeDoc fabric-loading, MSF, scene and '
+             'example 01-03 pages - the primary sources for what Sneeze loads',
+     'url': 'https://github.com/MetaversalCorp/Sneeze',
+     'repo': 'github.com/MetaversalCorp/Sneeze and github.com/MetaversalCorp/SneezeDoc '
+             '(Apache-2.0); every URL read is in spatial/registry/tiles.json#verified',
+     'provenance': 'AUTHORED from the project\'s own repository and docs, read by hand on 2026-10-22 '
+                   '(the build fetches nothing); docs only, nothing was run, and omb.wiki and '
+                   'cdn.rp1.com were not reachable'},
     {'what': 'OGC GeoPose 1.0 Data Exchange Standard, OGC 21-056r11, '
              'Basic-YPR and Basic-Quaternion JSON encodings, media type '
              'application/geopose+json',
@@ -413,6 +432,13 @@ for p in poses:
     assert list(g) == ['position', 'orientation']
     assert list(g['position']) == ['lat', 'lon', 'h']
     assert list(g['orientation']) == ['yaw', 'pitch', 'roll']
+
+# --------------------------------------------------------------- the tiles ---
+# The GIS worlds as glTF 2.0 binary tiles + one plain-JSON manifest per world
+# (spatial/tiles.py). Written to dist/sneeze/ (a build output, gitignored) with the manifests; the
+# registry spatial/registry/tiles.json is written with the others below.
+SNEEZE_DIR = ROOT / 'dist' / 'sneeze'
+tiles_doc = world_tiles.build(ROOT, SNEEZE_DIR, REF, H_PROV)
 
 # ------------------------------------------------------------------ doors ---
 # A door is the deep link a browser would open for a node: this bundle's own
@@ -1045,6 +1071,140 @@ geopose_doc = {
     'unposed': unposed,
 }
 
+# The stamp covers the three code files and EVERY file the tile build reads
+# (spatial/tiles.py records each one it opens; two declared groups cover the
+# node height script and the geo registry the campus anchors come from).
+TILES_CODE = ['spatial/build.py', 'spatial/tiles.py', 'spatial/wilds_heights.mjs']
+TILES_COVERS = TILES_CODE + tiles_doc['inputs']
+tiles_stamp = hashlib.sha256(b''.join(
+    (ROOT / f).read_bytes() for f in TILES_COVERS)).hexdigest()[:16]
+
+def _span_km(t):
+    b = t['bbox_gltf_m']
+    return max(b['max'][0] - b['min'][0], b['max'][2] - b['min'][2]) / 1000.0
+
+
+_span_big = [_span_km(t) for t in tiles_doc['tiles'] if t['kind'] != 'campus']
+_span_lo, _span_hi = min(_span_big), max(_span_big)
+_span_campus = 1 + max(_span_km(t) for t in tiles_doc['tiles'] if t['kind'] == 'campus')
+
+TILES_HONESTY = {
+    'what_sneeze_loads': 'from the Sneeze project\'s own repository and docs '
+                         '(each fact with its URL in `verified`): a fabric is '
+                         'an MSF manifest fetched by URL - JSON, signed (JWS) '
+                         'or plain - that names WebAssembly modules and a '
+                         'Data block; a node\'s Resource.sReference is fetched '
+                         'by URL and a GLB (magic "glTF") or glTF JSON is '
+                         'parsed as glTF. These tiles are such GLB files and '
+                         'the manifests follow the shape of the project\'s '
+                         'example docs 01 and 02 and no other.',
+    'not_loaded': 'no tile and no manifest here has been opened in Sneeze, '
+                  'Artemis or any other metaverse browser, and nothing was '
+                  'run: this is a reading of documentation and source. The '
+                  'only checks are this bundle\'s own, by the bytes.',
+    'documentation_status': 'the Sneeze docs are the implementer\'s own and '
+                            'say parts are unfinished (the host functions by '
+                            'which a module builds the scene are "partially '
+                            'implemented"); they are not an OMBI or MSF '
+                            'standard, and this pack does not call them one. '
+                            'They also disagree with each other in places: '
+                            'the example manifests spell the lighting block '
+                            '"Primary" while the scene notes read "primary", '
+                            'and the MSF page describes services as a list '
+                            'while the module notes describe a name-keyed '
+                            'object - so the manifests here carry no Primary '
+                            'block and no services.',
+    'map_module': 'a manifest does nothing without a module that reads '
+                  'Data.Scene. The only one the docs name is the stock '
+                  'map.wasm, hosted on RP1\'s CDN in the docs; the manifests '
+                  'point at that URL, which this build could not reach (the '
+                  'egress proxy refused it), so the module is not vendored '
+                  'and no hash is pinned. The docs tell publishers to host '
+                  'their own copy rather than depend on RP1\'s server: '
+                  'whoever deploys these must do that and, if they want the '
+                  'integrity check, add its sha256.',
+    'unsigned': 'the manifests are plain unsigned JSON. The docs call that '
+                'convenient while learning but not the preferred way to '
+                'publish, say a browser may stop accepting it, and say it '
+                'carries no identity at all. Signing needs a private key and '
+                'a certificate chain from a named human operator; none is '
+                'held and none is invented here.',
+    'axes': 'the one axis fact verified: Sneeze converts glTF Y-up to its '
+            'Z-up world with (x, y, z) -> (x, -z, y). Georeferenced tiles are '
+            'built with x = east, y = up, z = -north, so they land east on x '
+            'and north on y IF Sneeze\'s horizontal axes are east and north - '
+            'which no document read says, so it is proposed.',
+    'geopose_is_a_sidecar': 'nothing the Sneeze docs say reads GeoPose or '
+                            'latitude/longitude. Each georeferenced tile has '
+                            'its GeoPose in tiles.json and in the manifest\'s '
+                            'Data.Anchors, a free block the docs say a '
+                            'fabric may fill with anything; no Sneeze '
+                            'component is known to read it. The encoding is '
+                            'the one geopose.json already claims; height is 0 '
+                            'with the UNKNOWN sidecar, and orientation is the '
+                            'identity because the tile frame is east/north/up '
+                            'by construction.',
+    'wilds_not_on_globe': 'the four wilds worlds are authored landscapes with '
+                          'no latitude or longitude (wilds/registry/wilds.json '
+                          'geolocation.on_globe is false), so they have no '
+                          'anchor and none is invented. The campus tiles are '
+                          'SCHEMATIC drawings anchored at the campus pose '
+                          'geopose.json already holds.',
+    'geometry': 'flat map geometry, not a survey: the outlines are the coarse '
+                '1:10,000,000 Census cartographic boundary (hundreds of '
+                'metres of error); streets and water are AUTHORED procedural '
+                'fabrics, not the real ones; the ground is flat at 0 m (no '
+                'elevation is held); layer height offsets are drawing '
+                'conveniences, not heights; local streets, the page-rule '
+                'buildings and the hidden wilds caches are not exported. A '
+                'tile carries the weakest provenance word among its layers.',
+    'scale': f'region and wilds tiles span {_span_lo:.0f} to {_span_hi:.0f} km '
+             f'across and campus tiles under {_span_campus:.0f} km (read from '
+             'each tile\'s bounding box); whether Sneeze\'s camera and '
+             'render-scale handling show them well is unknown and proposed. '
+             'The docs say a browser normally streams nodes from a map '
+             'service by proximity; these are static files, not a map '
+             'service, and no RMAP or SMAP endpoint exists here.',
+    'build_output': 'the tiles and manifests are not committed: python3 '
+                    'spatial/build.py builds them on demand into dist/sneeze/ '
+                    '(deterministically; spatial/registry/tiles.json is the '
+                    'committed record of every byte count and sha256) and the '
+                    'Pages site does not serve them. Whoever deploys them hosts '
+                    'the files, and their own copy of map.wasm, on a server they control.',
+    'rights': 'the Census outline is a public-domain US federal work as '
+              'packaged by us-atlas (ISC); everything else is this '
+              'repository\'s own AUTHORED or SCHEMATIC work. No third-party '
+              'model or texture is in any tile.',
+}
+
+tiles_registry = {
+    'pack': 'smartcitix-trade-craft-academy-spatial-tiles',
+    'product': PRODUCT,
+    'pack_version': PACK_VERSION,
+    'built': BUILT,
+    'source_stamp': tiles_stamp,
+    'source_stamp_covers': TILES_COVERS,
+    'encoding': 'glTF 2.0 binary (.glb); georeferenced tiles carry a GeoPose anchor (' + ENCODING + ')',
+    'shape': 'tile files: standard glTF 2.0. Manifests: the plain-JSON shape of the Sneeze example docs 01-02. '
+             'Everything in `field_status` marked proposed is not documented anywhere read.',
+    **tiles_doc,
+    'honesty': TILES_HONESTY,
+}
+
+world_tiles_block = {
+    'registry': 'spatial/registry/tiles.json',
+    'directory': 'dist/sneeze/',
+    'build_output': 'built on demand by python3 spatial/build.py into dist/sneeze/; not committed, not served by the Pages site; '
+                    'the deployer hosts the tiles and manifests with their own map.wasm',
+    'content_formats': ['glTF 2.0 binary (.glb) world tiles', 'plain-JSON MSF-shaped manifests'],
+    'tiles': len(tiles_doc['tiles']),
+    'manifests': [m['file'] for m in tiles_doc['manifests']],
+    'total_bytes': tiles_doc['budget']['total_bytes'],
+    'status': 'proposed - cut from the world registries and checked by the bytes; not loaded in Sneeze, '
+              'Artemis or any other metaverse browser',
+    'honesty': TILES_HONESTY['not_loaded'],
+}
+
 fabric_doc = {
     **head,
     'fabric': {
@@ -1068,6 +1228,7 @@ fabric_doc = {
     'services': services,
     'export_door': export_door,
     'external_origins': external_origins,
+    'world_tiles': world_tiles_block,
     'honesty': HONESTY,
     'sources': SOURCES,
 }
@@ -1101,7 +1262,7 @@ som_doc = {
 OUT = HERE / 'registry'
 OUT.mkdir(exist_ok=True)
 for name, doc in (('geopose.json', geopose_doc), ('fabric.json', fabric_doc),
-                  ('som.json', som_doc)):
+                  ('som.json', som_doc), ('tiles.json', tiles_registry)):
     (OUT / name).write_text(json.dumps(doc, indent=1) + '\n')
 print(f"spatial fabric: {len(poses)} GeoPoses ({n_campuses} campuses, "
       f"{n_anchors} anchors, {n_sites} sites; {len(unposed)} unposed), "
@@ -1111,4 +1272,6 @@ print(f"spatial fabric: {len(poses)} GeoPoses ({n_campuses} campuses, "
       f"({len(_with_door)} doored, {len(_resolving)} resolving, "
       f"{len(_named_only)} named only), heights {coverage_block['poses_with_height']}"
       f"/{len(poses)}, headings {coverage_block['poses_with_heading']}/{len(poses)} "
-      f"(source stamp {stamp})")
+      f"(source stamp {stamp}); world tiles: {len(tiles_doc['tiles'])} .glb, "
+      f"{len(tiles_doc['manifests'])} manifests, {tiles_doc['budget']['total_bytes']} bytes "
+      f"(tiles stamp {tiles_stamp})")

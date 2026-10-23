@@ -1,6 +1,6 @@
 {
  "pack": "layers",
- "source_stamp": "a7f874d71747d90f",
+ "source_stamp": "9f8d8ea9b156e10d",
  "sources": {
   "parishes/registry/parishes.json": "de34075e54a82b8f",
   "sims/registry/sims.json": "1af48d2eed34ccb2",
@@ -9,7 +9,7 @@
   "schools/registry/schools.json": "f16f95c0a1c639c5",
   "pack/registry/halls.json": "3807e54afe6abfe6",
   "tasks/build.py": "bf868fa9d7bbc318",
-  "web/build_3d.py": "ec645010d48649a3",
+  "web/build_3d.py": "dac4cff422b6cb44",
   "web/build_lessons.py": "fa758b5beb245fde",
   "web/build_schools.py": "37826064907a1643",
   "layers/build.py": "b5790249cf69f67f"
