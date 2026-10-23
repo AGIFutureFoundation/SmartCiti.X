@@ -15,7 +15,7 @@ import { fileURLToPath } from 'node:url';
 import { SwarmAudit, canonical, sha256 } from './audit.mjs';
 import { CELL_RE, bounds, encode } from './geohash.mjs';
 import { pointInPolygon, polygonTouchesRect, area, isSimple } from './geo.mjs';
-import { createGate } from './gate.mjs';
+import { createGate, gateDecision } from './gate.mjs';
 import { createArena } from './dryrun.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -166,9 +166,10 @@ export function createRouter({ root = ROOT, registry, gate, arena, audit } = {})
       else if (cap.gate_targets.length === 0 && consulted.every((c) => c.code === 'unknown-target')) verdict = 'no-record';
       else verdict = 'deny';
       entries.push({ robot: t.id, actor: actor.id, verdict, consulted: consulted.map((c) => ({ target: c.target, allow: c.allow, via: c.via, reasons: [...c.reasons] })) });
-      if (verdict === 'deny') {
+      const gd = gateDecision(verdict, typeof cmd.mode === 'string' ? cmd.mode : 'dry-run');
+      if (!gd.proceed) {
         results.push({ target: t.id, kind: 'robot', hive: t.hive, cell: t.cell, status: 'held-by-gate', gate_verdict: verdict, run: null,
-          why: 'the safety gate refused ' + consulted.filter((c) => !c.allow).length + ' of ' + consulted.length + ' record(s): ' + [...new Set(consulted.filter((c) => !c.allow).map((c) => c.code))].sort().join(', ') });
+          why: gd.reason ?? 'the safety gate refused ' + consulted.filter((c) => !c.allow).length + ' of ' + consulted.length + ' record(s): ' + [...new Set(consulted.filter((c) => !c.allow).map((c) => c.code))].sort().join(', ') });
         continue;
       }
       let run;

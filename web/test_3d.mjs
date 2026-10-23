@@ -3529,14 +3529,18 @@ ok('campus street furniture is SOLID: every lamp standard and bench is recorded 
   const loopAt = builtPage.indexOf('renderer.setAnimationLoop(() => {');
   const loop = builtPage.slice(loopAt, builtPage.indexOf('\n});', loopAt));
   const KEY = 'sim.slowNotice';
-  const SENTENCE = 'This device is running the seat slower than real time; your result is not affected.';
+  const SENTENCE = 'This device is running the seat slower than real time. Movement and pass or fail marks are not affected; the elapsed time shown follows the wall clock.';
 
   /* ---- the notice: words, markup, wiring ---- */
   const I = JSON.parse(builtPage.match(/<script id="data" type="application\/json">([\s\S]*?)<\/script>/)[1]).i18n;
   const locs = Object.keys(I);
-  ok('SLOW-NOTICE: the sentence is a key (sim.slowNotice) in all 8 locales, the English is the owner\'s sentence word for word, and each of the 7 others is a real translation (not the English text, not empty)',
+  ok('SLOW-NOTICE: the sentence is a key (sim.slowNotice) in all 8 locales, the English is the declared sentence word for word, and each of the 7 others is a real translation (not the English text, not empty)',
     locs.length === 8 && I.en.strings[KEY] === SENTENCE
     && locs.filter((l) => l !== 'en').every((l) => typeof I[l].strings[KEY] === 'string' && I[l].strings[KEY].length > 20 && I[l].strings[KEY] !== SENTENCE));
+  ok('SLOW-NOTICE: the sentence makes no unconditional claim about the result: no "result is not affected" in English, and it says what is untouched (movement, pass or fail marks) and what is not (the elapsed time, which is the wall clock: every seat\'s time row is informational and read from performance.now, never a pass gate)',
+    !/result is not affected|your result/i.test(I.en.strings[KEY]) && /Movement and pass or fail marks are not affected/.test(I.en.strings[KEY]) && /wall clock/.test(I.en.strings[KEY])
+    && /time: \{ v: 0, txt: st\.t0 \? \(\(performance\.now\(\) - st\.t0\)/.test(src)
+    && Object.values(JSON.parse(readFileSync(new URL('../sims/registry/sims.json', import.meta.url), 'utf8')).sims).every((d) => d.rubric.filter((r) => r.axis === 'time').every((r) => r.pass === 'informational')));
   ok('SLOW-NOTICE: the key is carried by the locale catalogs themselves (i18n/locales/*.json), which stay machine-drafted, pending native review: nothing claims a review',
     ['en', 'es', 'fr', 'de', 'pt', 'zh', 'hi', 'ar'].every((l) => { const c = JSON.parse(readFileSync(new URL(`../i18n/locales/${l}.json`, import.meta.url), 'utf8')); return c.strings[KEY] === I[l].strings[KEY] && (l === 'en' || c.translation_status === 'machine-drafted, pending native review'); }));
   const mk0 = builtPage.indexOf('<div id="slowNote"');

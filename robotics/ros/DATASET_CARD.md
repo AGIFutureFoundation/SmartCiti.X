@@ -34,6 +34,8 @@ dataset_info:
   trained_models: 0
 ---
 
+> **Not for publication: do not upload or share this dataset until the owner sets its licence.**
+
 # SmartCiti.X SCRIPTED robotics episodes as ROS 2 MCAP (ros-export/1 card, tc-dataset/1 sections)
 
 <!-- section:motivation -->
@@ -43,7 +45,7 @@ dataset_info:
 
 <!-- section:composition -->
 ## Composition
-- 520 files, 543708 messages, 124888 time steps sampled at 5 Hz of simulation time. Total 159871885 bytes uncompressed (152.5 MiB; largest file 391.6 KiB, smallest 103.6 KiB); chunk compression is off by default.
+- 520 files, 543708 messages, 124888 time steps sampled at 5 Hz of simulation time. Total 159908805 bytes uncompressed (152.5 MiB; largest file 391.7 KiB, smallest 103.7 KiB); chunk compression is off by default.
 - By source policy: scripted 260, greedy 260. By task: litter-pickup 120, litter-sort 160, rov-survey 120, gate-drive 120. One file per policy x task x curriculum level x seed.
 - Splits (the model arena's own, robotics/arena/registry/models.json): TRAIN seeds 1-10 = 260 files, TEST seeds 11-20 = 260 files. A file sits in the folder of its seed's split and in no other; a TEST seed never appears in a TRAIN file. The Omega Claw JSONL has its own seed splits (train 1-16, val 17-18, test 19-20); do not mix the two schemes.
 - 257 of 520 episodes met their task's success rule; the rest are kept and labelled in each file's metadata, not filtered.
@@ -76,15 +78,16 @@ dataset_info:
 - NOT real robot data. NOT recorded from any robot, vehicle, ROV or person. NOT learner data. NOT the output of a trained model: trained_models is 0 for this pack.
 - Sim-to-real gap: Large and unmeasured. The simulator is a unicycle on a flat arena with circle obstacles: no wheels, tyres or friction, no mass or inertia, no actuator dynamics (the commanded velocity, clamped to the limits, is applied in full at the next step), no latency, no sensor model or noise (odometry is exact, covariances are 0), no camera, lidar or IMU, no joints for the arm (a gripper flag), no buoyancy, current model or tether for the ROV. A policy fitted to these messages has not been shown to work on any real machine.
 - Nothing in this export sends a command to a real robot or device. /cmd_vel here is a recorded simulated action. Replaying these files into a live ROS graph is outside this repository and would need a named human operator and the repository's safety gate; this export provides no path to hardware.
-- Conformance: Container and encoding follow the MCAP specification and the MCAP ros2 profile text, and the message definitions are the ROS 2 jazzy files byte for byte. Every file was read back, with checksums validated, by four independent open-source readers: the Python packages mcap (with mcap-ros2-support decoding the messages) and rosbags, and the npm package @mcap/core (used for validation only; the repository depends on none of them). No ROS 2 installation was available to the authors, so playback with ros2 bag play is unverified.
+- Conformance: Container and encoding follow the MCAP specification and the MCAP ros2 profile text, and the message definitions are the ROS 2 jazzy files byte for byte. Every file was read back, with checksums validated, by three independent open-source readers: the Python package mcap (with mcap-ros2-support decoding the messages), the Python package rosbags, and the npm package @mcap/core (used for validation only; the repository depends on none of them). No ROS 2 installation was available to the authors, so playback with ros2 bag play is unverified.
 - Not written: The bag directory metadata.yaml of rosbag2 is not written, and the channel metadata key topic_type_hash is omitted (it needs the ROS type-description tooling). offered_qos_profiles holds AUTHORED defaults, not QoS recorded from a live graph.
 
 <!-- section:distribution -->
 ## Distribution
+- Not for publication: do not upload or share this dataset until the owner sets its licence.
 - Licence: to be decided by the owner. Until the owner decides, this card grants no licence; the vendored ROS message definitions stay under their own Apache-2.0 licence (robotics/ros/msgs/LICENSE).
 - Nothing is uploaded or hosted by this repository: robotics/ros/export.mjs writes the files where it is run (`node robotics/ros/export.mjs --out <dir>`, optional `--zstd` chunk compression).
 
 <!-- section:maintenance -->
 ## Maintenance
-- Digest of all file hashes: 05fe0774173d7339. The registry robotics/ros/registry/ros.json stores every file's size and sha256; `python3 robotics/ros/build.py --check` fails when it is stale.
+- Digest of all file hashes: 67bab648bd677090. The registry robotics/ros/registry/ros.json stores every file's size and sha256; `python3 robotics/ros/build.py --check` fails when it is stale.
 - Known gaps: no image, lidar, IMU or point-cloud topics; one embodiment per task; two policies; 520 episodes.

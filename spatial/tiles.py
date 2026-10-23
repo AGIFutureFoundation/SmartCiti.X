@@ -160,6 +160,24 @@ FIELD_STATUS = [
     ('signing (JWS, X.509 chain)', 'proposed', []),
 ]
 
+# ---------------------------------------------------------------- inputs ---
+# Every file the tile build reads is opened through read_json, which records
+# it: the stamp covers exactly that list, derived from what runs, never typed.
+# Two kinds of read are not seen by it and are declared here, and the suite
+# checks both declarations against the code: what spatial/wilds_heights.mjs
+# reads (its own registry and, by import, wilds/core.mjs) and what the campus
+# anchors come from (the GeoPose positions spatial/build.py computes from the
+# geo registry and hands in).
+NODE_INPUTS = ['wilds/registry/wilds.json', 'wilds/core.mjs']
+ANCHOR_INPUTS = ['geo/registry/campuses_geo.json']
+INPUTS_READ = set()
+
+
+def read_json(root, rel):
+    INPUTS_READ.add(rel)
+    return json.load(open(pathlib.Path(root) / rel))
+
+
 # ---------------------------------------------------------------- helpers ---
 def need(obj, key, where):
     """One key, or a named failure. No default arm."""
@@ -531,8 +549,8 @@ COL_SITE = [0.85, 0.45, 0.15]
 def region_tile(root, kind, fips, rec):
     """A parish or county tile. `rec` is the registry record of the region."""
     maps = 'parishes' if kind == 'parish' else 'bayarea'
-    wf = json.load(open(root / f'{maps}/maps/world/{fips}.json'))
-    sf = json.load(open(root / f'{maps}/maps/streets/{fips}.json'))
+    wf = read_json(root, f'{maps}/maps/world/{fips}.json')
+    sf = read_json(root, f'{maps}/maps/streets/{fips}.json')
     where = f'{maps}/registry/{maps}.json#{fips}'
     outline = need(rec, 'outline_local_m', where)
     rings = []
@@ -696,10 +714,11 @@ def build(root, out_dir, geopose_by_ref, h_prov):
         old.unlink()
     tiles_dir.mkdir(parents=True, exist_ok=True)
 
-    parishes = json.load(open(root / 'parishes/registry/parishes.json'))
-    bay = json.load(open(root / 'bayarea/registry/bayarea.json'))
-    wilds = json.load(open(root / 'wilds/registry/wilds.json'))
-    geo3d = json.load(open(root / 'geo3d/registry/geo3d.json'))
+    INPUTS_READ.clear()
+    parishes = read_json(root, 'parishes/registry/parishes.json')
+    bay = read_json(root, 'bayarea/registry/bayarea.json')
+    wilds = read_json(root, 'wilds/registry/wilds.json')
+    geo3d = read_json(root, 'geo3d/registry/geo3d.json')
 
     # wilds heights from the page's own terrain function
     proc = subprocess.run(['node', str(root / 'spatial/wilds_heights.mjs'), str(WILDS_GRID_N)],
@@ -881,6 +900,7 @@ def build(root, out_dir, geopose_by_ref, h_prov):
                    'wilds_grid_n': WILDS_GRID_N, 'sreference_max_bytes': SREFERENCE_MAX_BYTES,
                    'total_bytes': total, 'largest_tile_bytes': max(x['bytes'] for x in tiles),
                    'manifest_bytes': sum(m['bytes'] for m in manifests)},
+        'inputs': sorted(INPUTS_READ | set(NODE_INPUTS) | set(ANCHOR_INPUTS)),
         'map_module_url': MAP_MODULE_URL,
         'verified': VERIFIED,
         'field_status': [{'field': f, 'status': s, 'verified_ids': v} for f, s, v in FIELD_STATUS],

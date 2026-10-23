@@ -39,7 +39,7 @@
   "budget_currencies": 2,
   "budget_agreements": 7,
   "suites_run": 161,
-  "suite_checks_declared": 8693,
+  "suite_checks_declared": 8725,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
@@ -1992,7 +1992,6 @@
     "outdoors/build.py",
     "quests/build.py",
     "seasons/build.py",
-    "spatial/build.py",
     "underwater/build.py"
    ],
    "suites": [
@@ -2461,6 +2460,7 @@
     "roadmap/test.mjs",
     "sky/test.mjs",
     "spatial/test.mjs",
+    "spatial/test_tiles.mjs",
     "terrain/test.mjs",
     "web/test_geomap.mjs",
     "web/test_home.mjs",
@@ -2476,9 +2476,7 @@
     "web/build_geomap.py"
    ],
    "doc_renderers": [],
-   "builders": [
-    "spatial/build.py"
-   ],
+   "builders": [],
    "suites": [
     "spatial/test_tiles.mjs",
     "web/test_geomap.mjs"
@@ -3129,7 +3127,6 @@
     "layers/build.py",
     "npcs/build.py",
     "seasons/build.py",
-    "spatial/build.py",
     "swarm/build.py",
     "underwater/build.py"
    ],
@@ -5705,21 +5702,21 @@
    {
     "suite": "spatial/test_tiles.mjs",
     "pack": "spatial",
-    "readme_checks": 97,
+    "readme_checks": 100,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "geoplay/test.mjs",
     "pack": "geoplay",
-    "readme_checks": 50,
+    "readme_checks": 64,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "swarm/test.mjs",
     "pack": "swarm",
-    "readme_checks": 130,
+    "readme_checks": 139,
     "declared": true,
     "in_readme_table": true
    },
@@ -5894,7 +5891,7 @@
    {
     "suite": "web/test_3d.mjs",
     "pack": "web",
-    "readme_checks": 456,
+    "readme_checks": 457,
     "declared": true,
     "in_readme_table": true
    },
@@ -6370,7 +6367,7 @@
    {
     "suite": "robotics/ros/test.mjs",
     "pack": "robotics",
-    "readme_checks": 52,
+    "readme_checks": 57,
     "declared": true,
     "in_readme_table": true
    },
@@ -6444,12 +6441,12 @@
    "control/soak.mjs",
    "restoration/test_scenarios.mjs"
   ],
-  "declared_total": 8693,
-  "readme_headline": 8728,
+  "declared_total": 8725,
+  "readme_headline": 8760,
   "unaccounted_for": 35,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
-  "max": 456,
+  "max": 457,
   "median": 44,
   "thinnest": [
    {
@@ -6480,7 +6477,7 @@
   "thickest": [
    {
     "suite": "web/test_3d.mjs",
-    "checks": 456
+    "checks": 457
    },
    {
     "suite": "tools/landing/test.mjs",

@@ -2,7 +2,7 @@
  "pack": "geoplay",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
- "source_stamp": "59f985683a10d734",
+ "source_stamp": "b9892f4001eebfba",
  "reads": [
   "geo/registry/campuses_geo.json",
   "restoration/registry/restoration.json",
@@ -21,6 +21,10 @@
   "safety_more": "Use public paths and sidewalks only, keep well back from water edges, rail and construction, and go in daylight. A drop is a game marker: the pin is the registry's map point for the place, not a surveyed entrance, and nothing here asks you to go anywhere. If the pin is not safe to reach, use the manual pick from where you are."
  },
  "safety_line": "Stay aware of your surroundings; do not enter roads or private property.",
+ "takedown": "A place that does not want a stop here can ask for it to be withdrawn by opening an issue at github.com/AGIFutureFoundation/SmartCiti.X; it is removed at the next build.",
+ "unlock_note": "Unlocking opens the task; it is not a credit or a record.",
+ "shoreline_note": "Not yet checked on site - use the manual pick if the pin is at the water's edge",
+ "withdrawn": [],
  "rules": {
   "radius_m": {
    "min": 50,
@@ -100,6 +104,9 @@
   "crs": "WGS84 (EPSG:4326)"
  },
  "counts": {
+  "withdrawn": 0,
+  "stops_not_checked_on_site": 4,
+  "shoreline_stops": 3,
   "stops": 4,
   "drops": 19,
   "stops_by_class": {
@@ -129,6 +136,8 @@
    "source_text": "Locator.X build_data_nola.py pois, Apache-2.0",
    "public_basis": "Public research university on the Lake Pontchartrain shore; home to naval architecture and marine engineering.",
    "radius_m": 120,
+   "site_check": "not checked on site",
+   "shoreline": true,
    "drops": [
     {
      "id": "drop-sim-crane-lift-nola-wharf",
@@ -210,6 +219,8 @@
    "source_text": "Locator.X build_data_nola.py pois, Apache-2.0",
    "public_basis": "Southern University at New Orleans - public historically Black university in Pontchartrain Park.",
    "radius_m": 120,
+   "site_check": "not checked on site",
+   "shoreline": false,
    "drops": [
     {
      "id": "drop-sim-rigging-signals-nola-wind-card",
@@ -291,6 +302,8 @@
    "source_text": "restoration/registry/restoration.json https://www.sfbayrestore.org/projects/herons-head-park-shoreline-resilience-project-phases-1-and-2",
    "public_basis": "operated by Port of San Francisco; Literacy for Environmental Justice; shoreline & green infrastructure",
    "radius_m": 75,
+   "site_check": "not checked on site",
+   "shoreline": true,
    "drops": [
     {
      "id": "drop-crew-herons-head-shoreline-cut",
@@ -363,6 +376,8 @@
    "source_text": "restoration/registry/restoration.json https://www.sfbayrestore.org/projects/candlestick-point-stewardship-project-phase-1-and-2",
    "public_basis": "operated by California State Parks; community stewardship partners; shoreline stewardship",
    "radius_m": 75,
+   "site_check": "not checked on site",
+   "shoreline": true,
    "drops": [
     {
      "id": "drop-resto-candlestick-point",

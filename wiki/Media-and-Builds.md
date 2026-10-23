@@ -8,7 +8,7 @@ wiki is built: the pages themselves, `media/registry/media.json` and
 
 ## The built pages
 
-35 pages (24.2 MB in all; KB and MB are 1,024-based), each linked from here and grouped as
+35 pages (24.3 MB in all; KB and MB are 1,024-based), each linked from here and grouped as
 the front door groups them. The title and the description are the page's own
 `<title>` and meta description.
 
@@ -53,7 +53,7 @@ the front door groups them. The title and the description are the page's own
 | Page | Title | What it says | Size | Published |
 |---|---|---|---|---|
 | [`web/trade_craft_interactive.html`](../web/trade_craft_interactive.html) | SmartCiti.X : Trade Craft Academy — interactive campus map | The interactive layered campus map: districts, pipeline and module layers, training stations and each hall's tool crib, searchable and deep-linkable. | 1.7 MB | [live](https://agifuturefoundation.github.io/SmartCiti.X/web/trade_craft_interactive.html) |
-| [`web/trade_craft_geomap.html`](../web/trade_craft_geomap.html) | SmartCiti.X : Trade Craft Academy — network geomap | The network geomap: every campus, anchor and city frame on a WGS84 globe, with provenance in every popup and no basemap tiles unless you ask. | 436 KB | [live](https://agifuturefoundation.github.io/SmartCiti.X/web/trade_craft_geomap.html) |
+| [`web/trade_craft_geomap.html`](../web/trade_craft_geomap.html) | SmartCiti.X : Trade Craft Academy — network geomap | The network geomap: every campus, anchor and city frame on a WGS84 globe, with provenance in every popup and no basemap tiles unless you ask. | 439 KB | [live](https://agifuturefoundation.github.io/SmartCiti.X/web/trade_craft_geomap.html) |
 | [`web/trade_craft_map.html`](../web/trade_craft_map.html) | Network plan — SmartCiti.X : Trade Craft Academy | The network plan: every union hall drawn by district, with hall and module counts read from the module registry, not typed. | 1.1 MB | [live](https://agifuturefoundation.github.io/SmartCiti.X/web/trade_craft_map.html) |
 | [`web/trade_craft_fabric.html`](../web/trade_craft_fabric.html) | SmartCiti.X : Trade Craft Academy — spatial fabric | The spatial fabric: how the academy's places are anchored and addressed, drawn from its spatial registries. | 568 KB | [live](https://agifuturefoundation.github.io/SmartCiti.X/web/trade_craft_fabric.html) |
 | [`web/trade_craft_progress.html`](../web/trade_craft_progress.html) | Learner progress — SmartCiti.X : Trade Craft Academy | Your lesson progress, kept on this device only: what you have walked, what is left, and why none of it is a credential. | 1.1 MB | [live](https://agifuturefoundation.github.io/SmartCiti.X/web/trade_craft_progress.html) |

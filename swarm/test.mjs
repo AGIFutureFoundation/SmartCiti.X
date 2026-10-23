@@ -9,7 +9,7 @@ import { createRouter, realHardwareSignals, SOURCES, REAL_HARDWARE_REFUSAL } fro
 import { SwarmAudit, verifyRows, canonical, sha256 } from './audit.mjs';
 import { encode, bounds, center, ring } from './geohash.mjs';
 import { pointInPolygon, polygonTouchesRect, haversineKm, isSimple } from './geo.mjs';
-import { createGate } from './gate.mjs';
+import { createGate, gateDecision, NO_RECORD_RULE } from './gate.mjs';
 import { createArena } from './dryrun.mjs';
 import { canEnter, loadIndex } from '../safety_gate/gate.mjs';
 import { loadArena, runOne } from '../robotics/arena/harness.mjs';
@@ -280,6 +280,22 @@ console.log('safety gate');
   ok('software.schedule-tournament reaches the Scheduler in all 9 hives and quotes the Claw registry\'s own queue size ' + CL.tournament.queue_size, row.results.length === 9 && row.results.every((x) => x.result.queue_runs.value === CL.tournament.queue_size && x.role === 'claw:scheduler'));
 }
 
+// the no-record rule
+console.log('no-record rule');
+{
+  ok('the rule is explicit: no record proceeds only in dry-run, otherwise held with "no safety record for this target: held"', NO_RECORD_RULE.proceeds_only_in === 'dry-run' && NO_RECORD_RULE.hold_reason === 'no safety record for this target: held' && Object.isFrozen(NO_RECORD_RULE));
+  ok('no-record in dry-run mode proceeds', gateDecision('no-record', 'dry-run').proceed === true);
+  const others = ['live', 'real', 'execute', 'hardware', 'DRY-RUN', 'dry_run', '', undefined, null, 0, true];
+  ok('no-record in any other mode (' + others.length + ' spellings) holds with the named reason', others.every((m) => { const d = gateDecision('no-record', m); return d.proceed === false && d.reason === 'no safety record for this target: held'; }));
+  ok('a deny holds in every mode, and an allow proceeds in dry-run', ['dry-run', 'live', undefined].every((m) => gateDecision('deny', m).proceed === false) && gateDecision('allow', 'dry-run').proceed === true);
+  ok('an unknown verdict never proceeds', ['', 'maybe', undefined, null].every((v) => gateDecision(v, 'dry-run').proceed === false));
+  const s = spy(), row = createRouter({ gate: s.gate, arena: s.arena }).route(cmd({ id: 'nr1' }));
+  ok('a simulated no-record command runs as a dry run and the row says no-record', row.status === 'routed' && row.results.every((x) => x.gate_verdict === 'no-record' && x.run));
+  const s2 = spy(), live = createRouter({ gate: s2.gate, arena: s2.arena }).route(cmd({ id: 'nr2', mode: 'live' }));
+  ok('the same command in live mode is refused (real hardware) before any gate consult or run', live.status === 'refused' && live.refusal.code === 'real-hardware' && s2.events.length === 0);
+  ok('the router asks gateDecision with the command\'s own mode, and has no other path that lets a no-record target run', /gateDecision\(verdict, typeof cmd\.mode === 'string' \? cmd\.mode : 'dry-run'\)/.test(readFileSync(join(HERE, 'router.mjs'), 'utf8')) && !/verdict === 'no-record'\)\s*\{?\s*run/.test(readFileSync(join(HERE, 'router.mjs'), 'utf8')));
+}
+
 // determinism and audit
 console.log('audit');
 {
@@ -363,6 +379,7 @@ console.log('documentation');
 {
   const doc = existsSync(join(HERE, 'README.md')) ? readFileSync(join(HERE, 'README.md'), 'utf8') : '';
   ok('swarm/README.md exists and states the real-hardware refusal sentence, the dry-run-only rule and that the gate is not a real-world safety system', doc.includes('real hardware needs a named human operator; none is configured') && /dry.run/i.test(doc) && /not a real-world safety system/i.test(doc));
+  ok('swarm/README.md states the no-record rule', doc.includes('no safety record for this target: held') && /only as a dry run/i.test(doc));
   ok('swarm/README.md says SCRIPTED, no AI model, the sim-to-real gap and the cell scheme', /SCRIPTED/.test(doc) && /no AI model/i.test(doc) && /sim-to-real/i.test(doc) && /geohash/i.test(doc));
   ok('swarm/README.md names no buyer, price, partner or demand', !/\b(buyer|customer|price|pricing|licen[cs]e deal|partner(?:s|ship)?\b(?! stay)|demand)\b/i.test(doc.replace(/no buyer, price, partner or demand/gi, '')));
 }

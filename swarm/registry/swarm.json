@@ -3,9 +3,9 @@
  "name": "Omega Swarm",
  "schema": "swarm/1",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
- "source_stamp": "562545e5a039a117",
+ "source_stamp": "b37caabac57ee085",
  "sources": {
-  "geopose": "124cfb1d411db639",
+  "geopose": "3dc8e44dd5f69238",
   "hive": "6b8155ba9b0b5421",
   "claw": "9f05b930d9267755",
   "robotics": "b96fd6e6e209a3d2",

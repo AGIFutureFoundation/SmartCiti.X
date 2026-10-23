@@ -145,7 +145,7 @@
   "learner_data": "No learner data. This export reads no contribution package; learner episodes can reach a dataset only through the datashare consent path, which this export does not use.",
   "trained": "No model is trained or used by this export (trained_models: 0 for this pack). The two small models in robotics/arena are not used here.",
   "sim_to_real": "Large and unmeasured. The simulator is a unicycle on a flat arena with circle obstacles: no wheels, tyres or friction, no mass or inertia, no actuator dynamics (the commanded velocity, clamped to the limits, is applied in full at the next step), no latency, no sensor model or noise (odometry is exact, covariances are 0), no camera, lidar or IMU, no joints for the arm (a gripper flag), no buoyancy, current model or tether for the ROV. A policy fitted to these messages has not been shown to work on any real machine.",
-  "conformance": "Container and encoding follow the MCAP specification and the MCAP ros2 profile text, and the message definitions are the ROS 2 jazzy files byte for byte. Every file was read back, with checksums validated, by four independent open-source readers: the Python packages mcap (with mcap-ros2-support decoding the messages) and rosbags, and the npm package @mcap/core (used for validation only; the repository depends on none of them). No ROS 2 installation was available to the authors, so playback with ros2 bag play is unverified.",
+  "conformance": "Container and encoding follow the MCAP specification and the MCAP ros2 profile text, and the message definitions are the ROS 2 jazzy files byte for byte. Every file was read back, with checksums validated, by three independent open-source readers: the Python package mcap (with mcap-ros2-support decoding the messages), the Python package rosbags, and the npm package @mcap/core (used for validation only; the repository depends on none of them). No ROS 2 installation was available to the authors, so playback with ros2 bag play is unverified.",
   "omitted": "The bag directory metadata.yaml of rosbag2 is not written, and the channel metadata key topic_type_hash is omitted (it needs the ROS type-description tooling). offered_qos_profiles holds AUTHORED defaults, not QoS recorded from a live graph.",
   "robots": "Nothing in this export sends a command to a real robot or device. /cmd_vel here is a recorded simulated action. Replaying these files into a live ROS graph is outside this repository and would need a named human operator and the repository's safety gate; this export provides no path to hardware.",
   "licence": "to be decided by the owner"
@@ -289,5 +289,14 @@
   }
  ],
  "qos_yaml": "- history: keep_last\n  depth: {depth}\n  reliability: {reliability}\n  durability: {durability}\n  deadline:\n    sec: 9223372036854775807\n    nsec: 9223372036854775807\n  lifespan:\n    sec: 9223372036854775807\n    nsec: 9223372036854775807\n  liveliness: automatic\n  liveliness_lease_duration:\n    sec: 9223372036854775807\n    nsec: 9223372036854775807\n  avoid_ros_namespace_conventions: false",
- "licence_field": "to be decided by the owner"
+ "licence_field": "to be decided by the owner",
+ "publication": {
+  "rule": "Not for publication: do not upload or share this dataset until the owner sets its licence.",
+  "metadata": "not for publication until the owner sets the licence"
+ },
+ "validated_by": [
+  "mcap (Python, with mcap-ros2-support as its message decoder)",
+  "rosbags (Python)",
+  "@mcap/core (npm)"
+ ]
 }

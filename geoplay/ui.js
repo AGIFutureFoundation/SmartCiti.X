@@ -7,7 +7,7 @@
    gone when the page is reloaded. */
 const TDG = D.geoplay;
 const TD_BY_ID = Object.fromEntries(TDG.stops.map((s) => [s.id, s]));
-const TD = { open: {}, via: {}, state: {}, dist: {}, status: 'off' };
+const TD = { open: {}, via: {}, state: {}, dist: {}, status: 'off', announce: [] };
 const TD_STATUS = {
   off: 'Location is off. Press the button to let this device compare where it is with the pins, or pick a place by hand.',
   asking: 'Waiting for your device to answer; your browser asks you first.',
@@ -43,25 +43,59 @@ function tdDropLi(s, d) {
     ? '<br><span class="src">lessons it builds on: ' + d.lessons.map((l) => `<a href="trade_craft_lessons.html#lesson-${ESC(l.id)}">${ESC(l.title)}</a>`).join(', ') + '</span>' : '';
   return `<li data-drop="${ESC(d.id)}" data-locked="false"><a class="door" href="${ESC(d.href)}">${ESC(d.title)}</a> <span class="src">${ESC(d.kind_label)}; ${ESC(d.provenance)}</span>${ls}</li>`;
 }
+function tdCheckLine(s) { return s.shoreline ? TDG.shorelineNote : 'Not yet ' + s.site_check.replace(/^not /, '') + '.'; }
+/* The list is drawn once, in the registry's fixed order, and redrawn only when a stop opens or closes.
+   Every other fix patches the distance text in place, so a focused control keeps its focus; an
+   unlock is announced through the polite live region, not by moving anything. */
+let tdSig = null, tdRenders = 0;
+const tdSignature = () => TDG.stops.map((s) => s.id + (TD.open[s.id] ? '1' : '0')).join('|');
+function tdMeta(s) {
+  const open = !!TD.open[s.id];
+  return tdDistText(s) + '; unlock radius ' + s.radius_m + ' m' + (open ? '; open ' + (TD.via[s.id] === 'device' ? 'by this device’s position' : 'by your own pick') : '');
+}
+function tdRow(s) {
+  const open = !!TD.open[s.id];
+  return `<li data-stop="${ESC(s.id)}" data-open="${open}"><b>${ESC(s.name)}</b> <span class="pv">${ESC(s.class_label)}</span>`
+    + `<span class="pv ${s.coordinate_provenance === 'RECORDED' ? 'rec' : 'auth'}">pin ${ESC(s.coordinate_provenance)}</span>`
+    + `<br><span class="src" data-dist>${ESC(tdMeta(s))}</span>`
+    + `<br><span class="src" data-site-check="${ESC(s.site_check)}">${ESC(tdCheckLine(s))}</span>`
+    + `<ul class="tasklist" style="max-height:none">${s.drops.map((d) => tdDropLi(s, d)).join('')}</ul>`
+    + `<button type="button" class="popbtn" data-drop-fly="${ESC(s.id)}">show on the map</button></li>`;
+}
+function tdFocusKey(el) {
+  const row = el && el.closest ? el.closest('[data-stop]') : null;
+  if (!row) return null;
+  return row.dataset.stop + '|' + (el.hasAttribute('data-drop-fly') ? 'fly' : el.getAttribute('href') || '');
+}
+let tdNear = '';
 function tdRender() {
-  const order = TDG.stops.slice().sort((a, b) => {
-    const da = typeof TD.dist[a.id] === 'number' ? TD.dist[a.id] : Infinity, db = typeof TD.dist[b.id] === 'number' ? TD.dist[b.id] : Infinity;
-    return da - db;
-  });
-  tdEl('dropList').innerHTML = order.map((s) => {
-    const open = !!TD.open[s.id];
-    return `<li data-stop="${ESC(s.id)}" data-open="${open}"><b>${ESC(s.name)}</b> <span class="pv">${ESC(s.class_label)}</span>`
-      + `<span class="pv ${s.coordinate_provenance === 'RECORDED' ? 'rec' : 'auth'}">pin ${ESC(s.coordinate_provenance)}</span>`
-      + `<br><span class="src" data-dist>${ESC(tdDistText(s))}; unlock radius ${s.radius_m} m${open ? '; open ' + (TD.via[s.id] === 'device' ? 'by this device’s position' : 'by your own pick') : ''}</span>`
-      + `<ul class="tasklist" style="max-height:none">${s.drops.map((d) => tdDropLi(s, d)).join('')}</ul>`
-      + `<button type="button" class="popbtn" data-drop-fly="${ESC(s.id)}">show on the map</button></li>`;
-  }).join('');
+  const list = tdEl('dropList');
+  const sig = tdSignature();
+  if (sig !== tdSig) {
+    const kept = list.contains(document.activeElement) ? tdFocusKey(document.activeElement) : null;
+    list.innerHTML = TDG.stops.map(tdRow).join('');
+    tdSig = sig; tdRenders++;
+    if (kept) {
+      const again = [...list.querySelectorAll('a, button')].find((el) => tdFocusKey(el) === kept);
+      if (again) again.focus();
+    }
+  }
+  for (const s of TDG.stops) {
+    const row = list.querySelector(`[data-stop="${s.id}"] [data-dist]`);
+    const text = tdMeta(s);
+    if (row && row.textContent !== text) row.textContent = text;
+  }
   tdEl('dropCount').textContent = Object.keys(TD.open).length + ' of ' + TDG.stops.length + ' stops open';
-  tdSyncMap();
+  if (TD.announce.length) { tdEl('dropAnnounce').textContent = TD.announce.join(' '); TD.announce = []; }
+  const near = TDG.stops.filter((s) => TD.state[s.id] === 'in-range' || TD.open[s.id]).map((s) => s.id).join();
+  if (near !== tdNear) { tdNear = near; tdSyncMap(); }
 }
 function tdUnlock(id, via) {
   if (!TD_BY_ID[id]) return;
-  if (!TD.open[id]) TD.via[id] = via;
+  if (!TD.open[id]) {
+    TD.via[id] = via;
+    TD.announce.push('Opened ' + TD_BY_ID[id].name + ': ' + TD_BY_ID[id].drops.length + ' training drops.');
+  }
   TD.open[id] = true;
 }
 function tdStatus(word) {
@@ -101,13 +135,14 @@ tdEl('dropList').addEventListener('click', (e) => {
   const b = e.target.closest('[data-drop-fly]');
   if (b) tdFly(b.dataset.dropFly);
 });
-tdEl('dropForget').addEventListener('click', () => { TD.open = {}; TD.via = {}; tdEl('dropHere').value = ''; tdRender(); });
+tdEl('dropForget').addEventListener('click', () => { TD.open = {}; TD.via = {}; tdEl('dropHere').value = ''; TD.announce.push('All drops closed again.'); tdRender(); });
 function tdPopup(id) {
   const s = TD_BY_ID[id];
   showPopup([s.lng, s.lat],
     `<b>${ESC(s.name)}</b><br><span class="pv">${ESC(s.class_label)}</span><span class="pv ${s.coordinate_provenance === 'RECORDED' ? 'rec' : 'auth'}">pin ${ESC(s.coordinate_provenance)}</span>`
     + `<br>${s.drops.length} training drops here, play only; unlock radius ${s.radius_m} m.`
     + `<br><span class="src">${ESC(s.source_ref)}: ${ESC(s.source_text)}</span>`
+    + `<br><span class="src">${ESC(tdCheckLine(s))}</span>`
     + `<br><b class="td-safety">${ESC(TDG.safetyLine)}</b>`
     + `<br><button type="button" class="popbtn" data-drops-panel="1">open the drops list</button>`);
 }
@@ -119,6 +154,7 @@ document.addEventListener('click', (e) => {
 function tdAddLayers() {
   if (map.getSource('drops')) return;
   map.addSource('drops', { type: 'geojson', data: tdSrc });
+  tdNear = '*'; setTimeout(tdRender, 0);   // the next render sends the current near/open flags to the new source
   map.addLayer({ id: 'env-drops-near', type: 'circle', source: 'drops', filter: ['==', ['get', 'near'], true],
     paint: { 'circle-radius': 15, 'circle-color': '#E8743B', 'circle-opacity': 0.25, 'circle-stroke-color': '#E8743B', 'circle-stroke-width': 2, 'circle-translate': [18, -14] } });
   map.addLayer({ id: 'env-drops', type: 'circle', source: 'drops',
@@ -140,7 +176,7 @@ tdRender();
 /* test hook: ids and words only - never a position */
 window.__geoplay = () => ({
   stops: TDG.stops.map((s) => s.id), open: Object.keys(TD.open), via: { ...TD.via }, states: { ...TD.state },
-  status: TD.status, active: tdLocator.active(), layer: !!map.getLayer('env-drops'),
+  status: TD.status, active: tdLocator.active(), renders: tdRenders, layer: !!map.getLayer('env-drops'),
   safetyShown: !!tdEl('dropSafety') && tdEl('dropSafety').textContent.trim() === TDG.safetyLine,
   locks: [...document.querySelectorAll('#dropList [data-locked="true"]')].length,
   unlocks: [...document.querySelectorAll('#dropList [data-locked="false"] a.door')].map((a) => a.getAttribute('href')),

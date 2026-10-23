@@ -6,6 +6,17 @@
 import { canEnter, loadIndex } from '../safety_gate/gate.mjs';
 import { sha256 } from './audit.mjs';
 
+/* The no-record rule. A target the gate holds no record for (a headless arena world) may proceed ONLY as a dry run in
+ * simulation. In any other mode, and on any future path toward a real target, it HOLDS with this reason. A deny holds
+ * in every mode. Today no other mode is reachable (the router refuses real hardware first); the rule is kept in code so a
+ * later path cannot inherit the dry-run allowance. */
+export const NO_RECORD_RULE = Object.freeze({ proceeds_only_in: 'dry-run', hold_reason: 'no safety record for this target: held' });
+export function gateDecision(verdict, mode) {
+  if (verdict === 'deny') return Object.freeze({ proceed: false, reason: null });
+  if (verdict === 'no-record' && mode !== NO_RECORD_RULE.proceeds_only_in) return Object.freeze({ proceed: false, reason: NO_RECORD_RULE.hold_reason });
+  return Object.freeze({ proceed: verdict === 'allow' || verdict === 'no-record', reason: null });
+}
+
 export function createGate({ root, epochMs, index } = {}) {
   const idx = index ?? loadIndex(root);
   const ctx = Object.freeze({ index: idx, now: epochMs, asOf: epochMs });

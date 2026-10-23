@@ -105,7 +105,7 @@ export function episodeMcap(E, { compression = '', chunkSize = FMT.chunk_size_by
     outcome_done: E.outcome.done, outcome_success: String(E.outcome.success), outcome_return: String(E.outcome.return), outcome_collected: String(E.outcome.collected),
     instruction_source: E.instruction.source, claw_sample_id: E.claw_id ?? 'none', trajectory_sha256: traj(E.steps), time_base: AUTH.time_base,
     frames: `${AUTH.frames.world} / ${AUTH.frames.odom} / ${AUTH.frames.base}: local east-north-up, x = e, y = n, z = -depth (PROPOSED mapping, see the dataset card)`,
-    not_real_robot_data: 'true', learner_data: 'none', trained_models: '0', sim_to_real_gap: H.sim_to_real, licence: AUTH.licence_field };
+    not_real_robot_data: 'true', learner_data: 'none', trained_models: '0', sim_to_real_gap: H.sim_to_real, licence: AUTH.licence_field, publication: AUTH.publication.metadata };
   const scene = Buffer.from(JSON.stringify(E.scene), 'utf8');
   const buf = writeMcap({ profile: FMT.profile, library: FMT.library, schemas, channels, messages, chunkSize, compression,
     metadata: [{ name: 'smartcitix.episode', map: meta }], attachments: [{ logTime: 0, createTime: 0, name: 'scene.json', mediaType: 'application/json', data: scene }] });
@@ -178,6 +178,8 @@ dataset_info:
   trained_models: 0
 ---
 
+> **${AUTH.publication.rule}**
+
 # SmartCiti.X SCRIPTED robotics episodes as ROS 2 MCAP (${AUTH.schema} card, tc-dataset/1 sections)
 
 <!-- section:motivation -->
@@ -225,6 +227,7 @@ dataset_info:
 
 <!-- section:distribution -->
 ## Distribution
+- ${AUTH.publication.rule}
 - Licence: ${AUTH.licence_field}. Until the owner decides, this card grants no licence; the vendored ROS message definitions stay under their own Apache-2.0 licence (robotics/ros/msgs/LICENSE).
 - Nothing is uploaded or hosted by this repository: robotics/ros/export.mjs writes the files where it is run (\`node robotics/ros/export.mjs --out <dir>\`, optional \`--zstd\` chunk compression).
 
@@ -251,6 +254,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     const sum = summarise(rows);
     writeFileSync(join(out, 'manifest.json'), JSON.stringify({ record: AUTH.schema, pack: AUTH.pack, provenance: 'SCRIPTED', trained_models: 0, compression: compression || 'none', summary: sum, files: rows }, null, 1) + '\n');
     writeFileSync(join(out, 'DATASET_CARD.md'), renderCard(rows, sum));
+    console.log(AUTH.publication.rule);
     console.log(`ros dataset: ${sum.files} files, ${sum.messages} messages, ${sum.bytes} bytes (${compression || 'uncompressed'} chunks), train ${sum.by_split.train} / test ${sum.by_split.test} -> ${out}`);
   }
 }

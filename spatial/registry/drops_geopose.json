@@ -2,7 +2,7 @@
  "pack": "smartcitix-trade-craft-academy-spatial-fabric-drops",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
- "source_stamp": "59f985683a10d734",
+ "source_stamp": "b9892f4001eebfba",
  "encoding": "OGC GeoPose 1.0 Basic-YPR, OGC 21-056r11, application/geopose+json",
  "media_type": "application/geopose+json",
  "crs": "WGS84 (EPSG:4326)",

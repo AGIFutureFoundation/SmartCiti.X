@@ -434,8 +434,11 @@ for _s in need(_gp, 'stops', 'geoplay.json'):
         'id': _s['id'], 'name': _s['name'], 'class': _s['class'], 'class_label': _class_label[_s['class']],
         'campus': _s['campus'], 'lat': _s['lat'], 'lng': _s['lng'],
         'coordinate_provenance': _s['coordinate_provenance'], 'source_ref': _s['source_ref'],
-        'source_text': _s['source_text'], 'radius_m': _s['radius_m'], 'geopose_ref': _s['geopose_ref'], 'drops': _drops})
+        'source_text': _s['source_text'], 'radius_m': _s['radius_m'],
+        'site_check': need(_s, 'site_check', f'geoplay.json#{_s["id"]}'), 'shoreline': need(_s, 'shoreline', f'geoplay.json#{_s["id"]}'), 'geopose_ref': _s['geopose_ref'], 'drops': _drops})
 GEOPLAY = {'stops': GEOPLAY_STOPS, 'safetyLine': need(_gp, 'safety_line', 'geoplay.json'),
+           'takedown': need(_gp, 'takedown', 'geoplay.json'), 'unlockNote': need(_gp, 'unlock_note', 'geoplay.json'),
+           'shorelineNote': need(_gp, 'shoreline_note', 'geoplay.json'),
            'honesty': need(_gp, 'honesty', 'geoplay.json'), 'ar': need(_gp, 'ar', 'geoplay.json'),
            'rules': {'accuracy_max_m': need(need(_gp, 'rules', 'geoplay.json'), 'accuracy_max_m', 'geoplay.json'),
                      'radius_m': need(need(_gp, 'rules', 'geoplay.json'), 'radius_m', 'geoplay.json')},
@@ -748,12 +751,15 @@ __SITENAV__<div id="stage">
     <label for="dropHere">or, I am here: <select id="dropHere" class="flysel"></select></label>
     <button type="button" class="popbtn" id="dropForget">Close all drops again</button>
   </div>
+  <p class="src" id="dropUnlockNote">__DROP_UNLOCK__</p>
   <p id="dropStatus" role="status" aria-live="polite"></p>
+  <p class="src" id="dropAnnounce" role="status" aria-live="polite"></p>
   <p class="src" id="dropCount"></p>
   <ul id="dropList"></ul>
   <p class="src">__DROP_SAFETY_MORE__</p>
   <p class="src">__DROP_PLAY__</p>
   <p class="src">__DROP_PRIVACY__</p>
+  <p class="src" id="dropTakedown">__DROP_TAKEDOWN__</p>
   <p class="src">__DROP_UNPINNED__</p>
   <p class="src" data-ar-status="PROPOSED">__DROP_AR__</p>
 </section>
@@ -780,7 +786,7 @@ __SITENAV__<div id="stage">
   <div class="lg-row"><span class="dot" style="background:none;border:1.5px dashed var(--muted)"></span>roadmap candidate — AUTHORED, not built</div>
   <div class="lg-row"><span class="dot" style="background:hsl(210,50%,45%);border-radius:2px"></span>3D hall, coloured by district — <b>SCHEMATIC</b>: the 3D campus stood up north-up about its centroid; <span id="g3dCount"></span></div>
   <div class="lg-row"><span class="dot" style="background:#C98BE0"></span>worksite · <span class="dot" style="background:#F2D16B"></span>K-12 district, <b>PROPOSED</b>, shown at its campus · <span class="dot" style="background:#5CB584;border:2px solid #0C1113"></span>simulated tasks at a campus — open ⛶ Layers for lists</div>
-  <div class="lg-row" data-legend="drops"><span class="dot" style="background:#E8743B;border:2px solid #fff"></span>training drop stop \u2014 a public university campus or park already pinned by the registries, <b>PLAY</b>: __DROP_COUNTS__. __DROP_SAFETY__</div>
+  <div class="lg-row" data-legend="drops"><span class="dot" style="background:#E8743B;border:2px solid #fff"></span>training drop stop \u2014 a public university campus or park already pinned by the registries, <b>PLAY</b>: __DROP_COUNTS__. __DROP_SAFETY__ <span data-legend-takedown>__DROP_TAKEDOWN__</span></div>
   <div class="lg-row"><span class="dot" style="background:var(--good)"></span>Bay Restoration site (habitat-restoration) — real project, not affiliated with this bundle</div>
   <div class="lg-row"><span class="dot" style="background:var(--steel)"></span>Bay Restoration site (environmental-monitoring) — a real federal cleanup site (Hunters Point, NPL-listed and litigated; Treasure Island NSTI, a Navy BRAC cleanup, not NPL-listed); located but never rendered as a walkable scene</div>
   <div class="lg-row"><span class="sw-cluster" aria-hidden="true">n</span>Bay Restoration sites too close to tell apart at this zoom, folded into one counted marker — click it to zoom in; names show where there is room, and on hover or focus</div>
@@ -1852,6 +1858,8 @@ page = (page.replace('__N_FLAGSHIP__', str(_n_flag)).replace('__N_HUB__', str(_n
 page = (page.replace('__DROP_SAFETY_MORE__', html.escape(GEOPLAY['honesty']['safety_more']))
         .replace('__DROP_SAFETY__', html.escape(GEOPLAY['safetyLine']))
         .replace('__DROP_PLAY__', html.escape(GEOPLAY['honesty']['play'] + ' ' + GEOPLAY['honesty']['no_hosting']))
+        .replace('__DROP_TAKEDOWN__', html.escape(GEOPLAY['takedown']))
+        .replace('__DROP_UNLOCK__', html.escape(GEOPLAY['unlockNote']))
         .replace('__DROP_PRIVACY__', html.escape(GEOPLAY['honesty']['privacy']))
         .replace('__DROP_AR__', html.escape('AR is ' + GEOPLAY['ar']['status'] + '. ' + GEOPLAY['ar']['claim']))
         .replace('__DROP_UNPINNED__', html.escape(f"{len(GEOPLAY['unpinned'])} more public campuses pass the rule but have no task on the globe, so they carry no drop; {GEOPLAY['counts']['refused']} registry places were refused (cities, ports, laboratories, stations, cleanup sites, wetlands, private campuses)."))

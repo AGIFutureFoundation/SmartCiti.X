@@ -162,6 +162,7 @@ const parishes = R('../parishes/registry/parishes.json');
 const bay = R('../bayarea/registry/bayarea.json');
 const wilds = R('../wilds/registry/wilds.json');
 const geo3d = R('../geo3d/registry/geo3d.json');
+const geoReg = R('../geo/registry/campuses_geo.json');
 // The tiles are a build output (dist/sneeze/, gitignored): this suite builds them fresh into a temp dir
 // with the same module spatial/build.py uses, and holds those bytes. Nothing is read from a committed .glb
 // because nothing committed is one.
@@ -225,11 +226,34 @@ ok('the registry names its tiles, manifests, budget, verified sources and field 
   && Array.isArray(reg.field_status) && reg.honesty && typeof reg.map_module_url === 'string');
 
 {
-  const inputs = ['spatial/build.py', 'spatial/tiles.py', 'spatial/wilds_heights.mjs',
-    'parishes/registry/parishes.json', 'bayarea/registry/bayarea.json', 'wilds/registry/wilds.json', 'geo3d/registry/geo3d.json'];
-  ok('the registry source_stamp is the sha256 of the builder, the tile module, the height script and the four world registries',
-    JSON.stringify(reg.source_stamp_covers) === JSON.stringify(inputs)
-    && reg.source_stamp === createHash('sha256').update(Buffer.concat(inputs.map((f) => readFileSync(ROOTP + f)))).digest('hex').slice(0, 16));
+  const code = ['spatial/build.py', 'spatial/tiles.py', 'spatial/wilds_heights.mjs'];
+  const covers = reg.source_stamp_covers;
+  ok('the registry source_stamp is the sha256 of every file in source_stamp_covers, in order (code first, then every input)',
+    JSON.stringify(covers.slice(0, 3)) === JSON.stringify(code) && new Set(covers).size === covers.length
+    && covers.every((f) => existsSync(ROOTP + f))
+    && reg.source_stamp === createHash('sha256').update(Buffer.concat(covers.map((f) => readFileSync(ROOTP + f)))).digest('hex').slice(0, 16));
+  // What the tile build really opens, observed: run it under a Python audit hook that records every file
+  // opened for reading inside the repository while tiles.build runs (the pose input is read first, outside it).
+  const opened = (() => {
+    const dir = mkdtempSync(join(tmpdir(), 'tiles-audit-'));
+    try {
+      const py = `import sys,json,pathlib\nsys.path.insert(0,${JSON.stringify(ROOTP + 'spatial')})\nimport tiles\nroot=pathlib.Path(${JSON.stringify(ROOTP)})\n`
+        + `gp=json.load(open(root/'spatial/registry/geopose.json'))\nref={p['subject']['ref']:p for p in gp['poses']}\nseen=set()\n`
+        + `def hook(ev,args):\n  if ev=='open' and isinstance(args[0],str) and (len(args)<2 or args[1] is None or 'r' in str(args[1]) and not any(c in str(args[1]) for c in 'wax+')):\n    seen.add(args[0])\n`
+        + `sys.addaudithook(hook)\ntiles.build(root,pathlib.Path(sys.argv[1]),ref,'x')\n`
+        + `R=str(root)+'/'\nprint(json.dumps(sorted(p[len(R):] for p in seen if p.startswith(R) and '__pycache__' not in p and not p.startswith(R+'dist/'))))`;
+      return JSON.parse(execFileSync('python3', ['-I', '-c', py, dir], { encoding: 'utf8' }));
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  })();
+  ok(`the covers list includes every file the Python tile build opens for reading (observed: ${opened.length} files, from the parish and county map files to the four registries)`,
+    opened.length > 40 && opened.every((f) => covers.includes(f) || f.endsWith('.py') && covers.includes('spatial/tiles.py')));
+  const wh = readFileSync(ROOTP + 'spatial/wilds_heights.mjs', 'utf8');
+  const nodeReads = [...wh.matchAll(/(?:from\s+|new URL\()'(\.\.\/[^']+)'/g)].map((m) => m[1].replace(/^\.\.\//, ''));
+  ok('the covers list includes every file the node height script names (its registry and its import wilds/core.mjs), read from the script itself',
+    nodeReads.length >= 2 && nodeReads.every((f) => covers.includes(f)) && covers.includes('wilds/core.mjs'));
+  ok('the covers list includes the geo registry the campus anchors are computed from, and each campus anchor equals it',
+    covers.includes('geo/registry/campuses_geo.json')
+    && tiles.filter((t) => t.kind === 'campus').every((t) => { const c = geoReg.campuses[t.id.slice(7)]; const p = t.anchor.geopose.position; return p.lat === c.lat && p.lon === c.lng && t.anchor.provenance.position_horizontal === c.provenance; }));
 }
 
 {

@@ -26,6 +26,12 @@
       "tasks_from": "restoration-site"
     }
   },
+  "withdrawn": [],
+  "withdrawn_how": "Each entry is {ref, date, reason}: ref is a record id as listed under refused (anchor:<campus>:<slug> or restoration-site:<id>), date is YYYY-MM-DD. A withdrawn record never becomes a stop and is refused by name at the next build.",
+  "takedown": "A place that does not want a stop here can ask for it to be withdrawn by opening an issue at github.com/AGIFutureFoundation/SmartCiti.X; it is removed at the next build.",
+  "site_check": "not checked on site",
+  "shoreline_note": "Not yet checked on site - use the manual pick if the pin is at the water's edge",
+  "unlock_note": "Unlocking opens the task; it is not a credit or a record.",
   "deny_words": ["port", "laboratory", "station", "pier", "museum", "furnace", "airport", "shipyard", "naval", "superfund", "cleanup", "wetland", "wetlands", "marsh", "pond", "ponds", "levee", "refinery", "plant", "tunnel", "bridge", "highway", "residence", "home"],
   "task_places_on_globe": ["campus", "restoration-site"],
   "safety_line": "Stay aware of your surroundings; do not enter roads or private property.",

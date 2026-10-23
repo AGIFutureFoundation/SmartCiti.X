@@ -39,6 +39,7 @@ for k in ('schema', 'pack', 'format', 'policies', 'split_source', 'time_base', '
     need(k in A, f'robotics/ros/authored/ros.json lacks {k!r}')
 for k in ('provenance', 'not_real', 'learner_data', 'trained', 'sim_to_real', 'conformance', 'omitted', 'robots', 'licence'):
     need(k in A['honesty'], f'honesty lacks {k!r}')
+need(A.get('publication', {}).get('rule', '').startswith('Not for publication:') and A['publication'].get('metadata'), 'authored/ros.json lacks the publication rule')
 need(A['licence_field'] == 'to be decided by the owner' == A['honesty']['licence'], 'the licence field is the owner\'s to decide: it must read "to be decided by the owner"')
 need(A['format']['profile'] == 'ros2' and A['format']['message_encoding'] == 'cdr' and A['format']['schema_encoding'] == 'ros2msg', 'format must be the MCAP ros2 profile with cdr and ros2msg')
 for name in ('common_interfaces', 'rcl_interfaces', 'rosbag2', 'mcap_spec', 'rep_103'):
@@ -75,7 +76,7 @@ reg = {
     'pack': A['pack'], 'name': 'ROS 2 export of the SCRIPTED robotics episodes', 'schema': A['schema'],
     'source_stamp': hashlib.sha256(json.dumps(stamps, sort_keys=True).encode()).hexdigest()[:16],
     'source_stamps': stamps,
-    'honesty': A['honesty'],
+    'honesty': A['honesty'], 'validated_by': A['validated_by'], 'publication': A['publication'],
     'format': A['format'], 'time_base': A['time_base'], 'frames': A['frames'], 'topics': A['topics'], 'joint_names': A['joint_names'], 'mapping': A['mapping'],
     'split_source': A['split_source'], 'sources': A['sources'], 'msgs': A['msgs'],
     'summary': SUM,

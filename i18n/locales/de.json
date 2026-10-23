@@ -114,7 +114,7 @@
   "sim.retry": "Erneut versuchen",
   "sim.sound": "Ton",
   "sim.view": "Ansicht",
-  "sim.slowNotice": "Dieses Gerät lässt den Sitz langsamer als in Echtzeit laufen; Ihr Ergebnis ist davon nicht betroffen.",
+  "sim.slowNotice": "Dieses Gerät lässt den Sitz langsamer als in Echtzeit laufen. Bewegung und Bestanden-oder-nicht-bestanden-Wertung sind davon nicht betroffen; die angezeigte Zeit folgt der Wanduhr.",
   "sim.choose": "Simulator wählen",
   "sim.operator": "Den Bediener fragen",
   "progress.local": "Der Fortschritt wird nur auf diesem Gerät gespeichert.",

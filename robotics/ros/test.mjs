@@ -179,6 +179,19 @@ check('mcap verifier: truncating the file, dropping the summary, or reordering m
   assert.ok(verifyMcap(rev).info.messages.every((m, i, a) => i === 0 || a[i - 1].logTime <= m.logTime));   // ... and comes out in order
 });
 
+check('mcap: Chunk Index message_index_offsets are absolute file offsets ("from the start of the file", spec Chunk Index record): each points at a Message Index record of that channel, and the chunk start at its Chunk', () => {
+  const buf = small({ chunkSize: 200 }), v = verifyMcap(buf); assert.deepEqual(v.issues, []);
+  assert.ok(v.info.summary.chunkIndexes.length > 2);
+  for (const ci of v.info.summary.chunkIndexes) {
+    assert.equal(buf[ci.chunkStart], OP.CHUNK, 'chunk_start_offset is absolute');
+    assert.ok(ci.offsets.length > 0);
+    for (const [channel, off] of ci.offsets) {
+      assert.equal(buf[off], OP.MESSAGE_INDEX, 'offset ' + off + ' for channel ' + channel + ' is not a Message Index record');
+      assert.equal(buf.readUInt16LE(off + 9), channel, 'wrong channel at the offset');
+      assert.ok(off >= ci.chunkStart + ci.chunkLength, 'index lies after its chunk');   // a chunk-relative value would fall inside the chunk
+    }
+  }
+});
 /* ============================= 5. the corpus ============================= */
 const S = splits();
 const frameYaw = (q) => Math.atan2(2 * q.w * q.z, 1 - 2 * q.z * q.z);
@@ -199,6 +212,7 @@ const expectedPaths = [];
 for (const policy of AUTH.policies) for (const t of arenaTasks(REG)) for (const level of t.levels) for (const seed of t.seeds)
   expectedPaths.push(`${seed <= 10 ? 'train' : 'test'}/${policy}/${t.env.replace('world.', '')}/L${level}_s${String(seed).padStart(2, '0')}.mcap`);
 
+let pubBad = 0;
 const rows = [], trajBySplit = { train: new Map(), test: new Map() }, problems = [];
 const totals = { messages: 0, bytes: 0, samples: 0, success: 0 };
 let verified = 0, decoded = 0;
@@ -273,6 +287,7 @@ const inspect = (path, buf, row, E) => {
     if (!/exact|no sensor/.test(md.sim_to_real_gap || '') || !/AUTHORED/.test(md.robots_and_arenas || '')) flag(path, 'metadata gap/authored');
     if (E.policy === 'scripted' ? md.claw_sample_id !== clawBy.get(E.env + '|' + E.level + '|' + E.seed).id : md.claw_sample_id !== 'none') flag(path, 'claw_sample_id');
     if (md.outcome_success !== String(E.outcome.success)) flag(path, 'outcome');
+    if (md.publication !== AUTH.publication.metadata) pubBad++;
   }
   const att = I.attachments[0];
   if (!att || att.name !== 'scene.json' || att.mediaType !== 'application/json') flag(path, 'scene attachment'); else { try { JSON.parse(att.data.toString('utf8')); } catch { flag(path, 'scene.json is not JSON'); } }
@@ -371,6 +386,31 @@ check('registry: pack fields, provenance, honesty and the unset licence are in p
 });
 check('registry: the source stamps match the files on disk (a stale registry would fail here)', () => {
   for (const [rel, st] of Object.entries(reg.source_stamps)) assert.equal(sha(readFileSync(join(ROOT, rel))).slice(0, 16), st, rel + ' changed since the registry was built');
+});
+
+check('publication: the card opens with the rule and repeats it in the licence section', () => {
+  const rule = 'Not for publication: do not upload or share this dataset until the owner sets its licence.';
+  assert.equal(AUTH.publication.rule, rule);
+  assert.ok(card.split('\n---\n')[1].trimStart().startsWith('> **' + rule + '**'), 'rule is not the first line of the card body');
+  const dist = card.slice(card.indexOf('<!-- section:distribution -->'), card.indexOf('<!-- section:maintenance -->'));
+  assert.ok(dist.includes(rule), 'rule missing from the distribution section');
+});
+check('publication: every file\'s metadata record carries "not for publication until the owner sets the licence"', () => {
+  assert.equal(AUTH.publication.metadata, 'not for publication until the owner sets the licence'); assert.equal(pubBad, 0, pubBad + ' file(s) lack it');
+});
+check('publication: the licence field still reads "to be decided by the owner" (card, authored file, registry)', () => {
+  assert.equal(AUTH.licence_field, 'to be decided by the owner'); assert.match(card, /license_name: to be decided by the owner\n/); assert.equal(reg.honesty.licence, 'to be decided by the owner'); assert.deepEqual(reg.publication, AUTH.publication);
+});
+
+check('conformance: the stated reader count equals the readers listed, in the authored file, the registry and the card', () => {
+  const words = { one: 1, two: 2, three: 3, four: 4, five: 5 };
+  for (const text of [AUTH.honesty.conformance, reg.honesty.conformance, card]) {
+    const m = /by (\w+) independent open-source readers/.exec(text); assert.ok(m, 'no reader count stated');
+    assert.equal(words[m[1]], AUTH.validated_by.length, `states ${m[1]}, lists ${AUTH.validated_by.length}`);
+  }
+  assert.equal(AUTH.validated_by.length, 3); assert.equal(new Set(AUTH.validated_by).size, 3);
+  assert.ok(card.includes(AUTH.honesty.conformance), 'the card carries the conformance sentence verbatim');
+  for (const n of ['mcap', 'rosbags', '@mcap/core']) assert.ok(AUTH.honesty.conformance.includes(n), n + ' is named in the text');
 });
 
 /* ============================= 7. honesty and hygiene of the pack's own files ============================= */

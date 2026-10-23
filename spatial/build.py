@@ -1071,12 +1071,13 @@ geopose_doc = {
     'unposed': unposed,
 }
 
-TILES_INPUTS = ['parishes/registry/parishes.json', 'bayarea/registry/bayarea.json',
-                'wilds/registry/wilds.json', 'geo3d/registry/geo3d.json']
+# The stamp covers the three code files and EVERY file the tile build reads
+# (spatial/tiles.py records each one it opens; two declared groups cover the
+# node height script and the geo registry the campus anchors come from).
+TILES_CODE = ['spatial/build.py', 'spatial/tiles.py', 'spatial/wilds_heights.mjs']
+TILES_COVERS = TILES_CODE + tiles_doc['inputs']
 tiles_stamp = hashlib.sha256(b''.join(
-    [pathlib.Path(__file__).read_bytes(), (HERE / 'tiles.py').read_bytes(),
-     (HERE / 'wilds_heights.mjs').read_bytes()]
-    + [(ROOT / f).read_bytes() for f in TILES_INPUTS])).hexdigest()[:16]
+    (ROOT / f).read_bytes() for f in TILES_COVERS)).hexdigest()[:16]
 
 def _span_km(t):
     b = t['bbox_gltf_m']
@@ -1182,7 +1183,7 @@ tiles_registry = {
     'pack_version': PACK_VERSION,
     'built': BUILT,
     'source_stamp': tiles_stamp,
-    'source_stamp_covers': ['spatial/build.py', 'spatial/tiles.py', 'spatial/wilds_heights.mjs'] + TILES_INPUTS,
+    'source_stamp_covers': TILES_COVERS,
     'encoding': 'glTF 2.0 binary (.glb); georeferenced tiles carry a GeoPose anchor (' + ENCODING + ')',
     'shape': 'tile files: standard glTF 2.0. Manifests: the plain-JSON shape of the Sneeze example docs 01-02. '
              'Everything in `field_status` marked proposed is not documented anywhere read.',

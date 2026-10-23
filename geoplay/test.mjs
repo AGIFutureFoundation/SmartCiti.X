@@ -321,6 +321,49 @@ const loadPlay = (traps) => {
   ok('[page] the drops code and words carry no internal reference: no scratch path, no console or memory mention, no team codename (and none anywhere in the built page)', !leak && !/GEOPLAY/.test(page), [leak && leak[0]]);
   ok('[page] the phone layout rule holds: the panel is capped at the viewport width', /\.panel\{[^}]*width:min\(380px,calc\(100vw - 28px\)\)/.test(page));
 }
+/* ---------------------------------------------- takedown, site check, unlock note --- */
+{
+  const TAKEDOWN = 'A place that does not want a stop here can ask for it to be withdrawn by opening an issue at github.com/AGIFutureFoundation/SmartCiti.X; it is removed at the next build.';
+  const SHORE = "Not yet checked on site - use the manual pick if the pin is at the water's edge";
+  const UNLOCK = 'Unlocking opens the task; it is not a credit or a record.';
+  const panelHtml3 = page.match(/<section class="panel tc-panel" id="drops"[\s\S]*?<\/section>/)[0];
+  const legend3 = page.match(/data-legend="drops">[\s\S]*?<\/div>/)[0];
+  const wd = rules.withdrawn;
+  const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  const known = new Set([...Object.entries(geo.anchors).flatMap(([c, l]) => l.map((a) => `anchor:${c}:${slug(a.name)}`)), ...resto.sites.map((s) => 'restoration-site:' + s.id)]);
+  const wbad = [];
+  if (!Array.isArray(wd)) wbad.push('withdrawn is not a list');
+  for (const w of Array.isArray(wd) ? wd : []) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(w.date || '') || !(w.reason || '').trim()) wbad.push(`${w.ref}: needs a YYYY-MM-DD date and a reason`);
+    if (!known.has(w.ref)) wbad.push(`${w.ref}: names no record in geo/ or restoration/`);
+    const r = reg.refused.find((x) => x.ref === w.ref);
+    if (!r || !r.reason.startsWith('withdrawn on ' + w.date) || !r.reason.includes(w.reason)) wbad.push(`${w.ref}: not refused as withdrawn`);
+    if (reg.stops.some((s) => s.source_ref.includes(w.ref.split(':').slice(-1)[0]) && srcOf(s) && (w.ref.startsWith('restoration-site:') ? srcOf(s).rec.id === w.ref.split(':')[1] : `anchor:${srcOf(s).campus}:${slug(srcOf(s).rec.name)}` === w.ref))) wbad.push(`${w.ref}: is still a stop`);
+  }
+  ok(`[takedown] the withdrawn list (${Array.isArray(wd) ? wd.length : '?'} entries) is well formed, each entry names a real record with a date and reason, and a withdrawn record is refused by name and is never a stop`, wbad.length === 0, wbad);
+  ok('[takedown] the registry carries the same withdrawn list as the rules', JSON.stringify(reg.withdrawn) === JSON.stringify(wd) && reg.counts.withdrawn === wd.length);
+  ok('[takedown] the takedown line (issue tracker, removed at the next build) is in the rules, the registry, the drops panel and the legend row, word for word', rules.takedown === TAKEDOWN && reg.takedown === TAKEDOWN && panelHtml3.includes(TAKEDOWN) && legend3.includes(TAKEDOWN));
+  const mail = /[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\.[A-Za-z]{2,}/;
+  ok('[takedown] no email address in the rules, the registry, the drops panel or the legend row', ![JSON.stringify(rules), JSON.stringify(reg), panelHtml3, legend3, uiJs].some((x) => mail.test(x)));
+  const SC = 'not checked on site';
+  ok('[site] every stop carries site_check "not checked on site" (campuses and parks alike) and the count says so', reg.stops.every((s) => s.site_check === SC) && reg.counts.stops_not_checked_on_site === reg.stops.length && rules.site_check === SC);
+  ok("[site] Heron's Head Park and Candlestick Point are marked shoreline and not checked on site", ['stop-herons-head', 'stop-candlestick-point'].every((id) => { const s = reg.stops.find((x) => x.id === id); return s && s.site_check === SC && s.shoreline === true; }));
+  ok('[site] the shoreline line is shown on the stops: the registry, the page data and both the list and the popup render it', reg.shoreline_note === SHORE && rules.shoreline_note === SHORE && page.includes(JSON.stringify(SHORE).slice(1, -1)) && (uiJs.match(/tdCheckLine\(s\)/g) || []).length >= 2 && /TDG\.shorelineNote/.test(uiJs) && /data-site-check/.test(uiJs));
+  ok('[site] a stop still carries the line when it is not on the shore, never a blank (not yet checked)', /'Not yet ' \+ s\.site_check/.test(uiJs));
+  ok('[unlock] the panel says "Unlocking opens the task; it is not a credit or a record." and the registry carries it', panelHtml3.includes(UNLOCK) && reg.unlock_note === UNLOCK && rules.unlock_note === UNLOCK);
+}
+/* ------------------------------------------------------------- focus and live region --- */
+{
+  const fn = uiJs.slice(uiJs.indexOf('function tdRender()'), uiJs.indexOf('function tdUnlock('));
+  const guard = fn.indexOf('if (sig !== tdSig)'), assign = fn.indexOf('list.innerHTML =');
+  const loop = fn.indexOf('for (const s of TDG.stops)');
+  ok('[focus] the list is rewritten only inside a guard that fires when a stop opens or closes (signature changed), never on every fix', guard > -1 && assign > guard && assign < loop && (fn.match(/innerHTML/g) || []).length === 1 && !/dropList'\)\.innerHTML/.test(uiJs));
+  ok('[focus] a fix patches the distance text in place (textContent on the row), and rows keep the registry order, never a distance sort', /row\.textContent = text/.test(fn) && !/\.sort\(/.test(fn) && !/\.sort\(/.test(uiJs.slice(uiJs.indexOf('function tdRow'), uiJs.indexOf('function tdRender()'))));
+  ok('[focus] when the list is rebuilt, the focused control is found again by stop and kind and focused', /tdFocusKey\(document\.activeElement\)/.test(fn) && /again\.focus\(\)/.test(fn) && /function tdFocusKey/.test(uiJs));
+  ok('[focus] the map source is re-sent only when the set of near or open stops changes', /if \(near !== tdNear\)/.test(fn));
+  const panelHtml4 = page.match(/<section class="panel tc-panel" id="drops"[\s\S]*?<\/section>/)[0];
+  ok('[focus] an unlock is announced through a polite live region (role status, aria-live polite) rather than by re-rendering', /id="dropAnnounce" role="status" aria-live="polite"/.test(panelHtml4) && /TD\.announce\.push\('Opened '/.test(uiJs) && /tdEl\('dropAnnounce'\)\.textContent/.test(fn));
+}
 ok('[source] the builder is the only thing that writes the registry (build.py reads, never fetches, and holds no default on a registry field)', (() => {
   const b = read('geoplay/build.py').replace(/#.*$/gm, '');
   return !/urllib|requests|socket|http\.client/.test(b) && !/\.get\(/.test(b) && b.includes('def need(d, k, where):');
@@ -381,6 +424,21 @@ if (WANT_BROWSER) {
       const mid = await p.evaluate(() => window.__geoplay());
       ok(`[browser] with a mocked position ~45 m from "${target.name}", that stop unlocks by the device and the others stay locked`, mid.open.length === 1 && mid.open[0] === target.id && mid.via[target.id] === 'device' && mid.unlocks.length === target.drops.length && mid.locks === reg.counts.drops - target.drops.length && mid.status === 'watching');
       ok('[browser] the unlocked drops are the existing tasks\' own launch links', mid.unlocks.length > 0 && mid.unlocks.every((h) => target.drops.some((d) => { const t = TASK[d.task].launch.href; return h === t.replace(/^web\//, '') || h === '../' + t; })), mid.unlocks);
+      // a moving device: several fixes near the pin; the focused control must stay focused and the list must not be rebuilt
+      await p.focus(`[data-stop="${target.id}"] [data-drop-fly]`);
+      await p.evaluate(() => { document.activeElement.setAttribute('data-test-focus', '1'); });
+      const r0 = (await p.evaluate(() => window.__geoplay())).renders;
+      const d0 = await p.textContent(`[data-stop="${target.id}"] [data-dist]`);
+      const seenDist = new Set([d0]);
+      for (let i = 1; i <= 5; i++) {
+        await ctx.setGeolocation({ latitude: fix.latitude + i * 0.00004, longitude: fix.longitude, accuracy: 18 });
+        await p.waitForTimeout(450);
+        seenDist.add(await p.textContent(`[data-stop="${target.id}"] [data-dist]`));
+      }
+      const foc = await p.evaluate(() => ({ kept: document.activeElement && document.activeElement.getAttribute('data-test-focus') === '1', inList: !!document.activeElement.closest('#dropList'), renders: window.__geoplay().renders, say: document.getElementById('dropAnnounce').textContent }));
+      ok('[browser] after five moving fixes the focused control in the list is still the focused element, and the list was not rebuilt', foc.kept && foc.inList && foc.renders === r0, [JSON.stringify(foc), r0]);
+      ok('[browser] the distance text was patched in place while the position moved (it changed, rounded to 10 m)', seenDist.size > 1 && [...seenDist].every((x) => /\d+ m away \(rounded\)|\d\.\d km away/.test(x)), [...seenDist]);
+      ok('[browser] the unlock was announced in the live region', /^Opened /.test(foc.say), [foc.say]);
       await ctx.setGeolocation(far);
       await p.waitForFunction((id) => window.__geoplay().states[id] === 'out-of-range', target.id, { timeout: 15000 }).catch(() => {});
       const moved = await p.evaluate(() => window.__geoplay());

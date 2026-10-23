@@ -82,6 +82,20 @@ CLASSES = need(rules, 'classes', RULES_PATH)
 DENY = set(need(rules, 'deny_words', RULES_PATH))
 ON_GLOBE = need(rules, 'task_places_on_globe', RULES_PATH)
 SAFETY = need(rules, 'safety_line', RULES_PATH)
+TAKEDOWN = need(rules, 'takedown', RULES_PATH)
+SITE_CHECK = need(rules, 'site_check', RULES_PATH)
+SHORE_NOTE = need(rules, 'shoreline_note', RULES_PATH)
+UNLOCK_NOTE = need(rules, 'unlock_note', RULES_PATH)
+WITHDRAWN = {}
+for _w in need(rules, 'withdrawn', RULES_PATH):
+    for _k in ('ref', 'date', 'reason'):
+        need(_w, _k, RULES_PATH + '#withdrawn[]')
+    assert re.fullmatch(r'\d{4}-\d{2}-\d{2}', _w['date']), f'withdrawn {_w["ref"]}: date is not YYYY-MM-DD'
+    assert _w['reason'].strip(), f'withdrawn {_w["ref"]}: no reason'
+    assert _w['ref'] not in WITHDRAWN, f'withdrawn {_w["ref"]} is listed twice'
+    WITHDRAWN[_w['ref']] = _w
+SEEN_REFS = set()
+assert 'github.com/AGIFutureFoundation/SmartCiti.X' in TAKEDOWN and '@' not in TAKEDOWN, 'the takedown line must name the issue tracker and no email address'
 LESSONS = need(lessons_reg, 'lessons', LESSONS_PATH)
 TASKS = need(tasks_reg, 'tasks', TASKS_PATH)
 assert 0 < R_MIN <= R_MAX, 'rules: radius bounds are not ordered'
@@ -137,6 +151,10 @@ for campus, lst in need(geo, 'anchors', GEO_PATH).items():
         name, blurb, src = need(a, 'name', w), need(a, 'blurb', w), need(a, 'source', w)
         lat, lng, pv = need(a, 'lat', w), need(a, 'lng', w), need(a, 'provenance', w)
         ref = f'anchor:{campus}:{slug(name)}'
+        SEEN_REFS.add(ref)
+        if ref in WITHDRAWN:
+            refuse(ref, name, f'withdrawn on {WITHDRAWN[ref]["date"]}: {WITHDRAWN[ref]["reason"]}')
+            continue
         cls = CLASSES['public-university']
         ws = words(name + ' ' + src)
         hit = sorted(ws & DENY)
@@ -159,7 +177,8 @@ for campus, lst in need(geo, 'anchors', GEO_PATH).items():
             'id': 'stop-' + campus + '-' + slug(name), 'name': name, 'class': 'public-university',
             'campus': campus, 'lat': lat, 'lng': lng, 'coordinate_provenance': pv,
             'source_ref': w, 'source_text': src, 'public_basis': blurb,
-            'radius_m': R_BY['public-university'],
+            'radius_m': R_BY['public-university'], 'site_check': SITE_CHECK,
+            'shoreline': 'shore' in words(blurb),
             'drops': [drop_row(t) for t in picks]})
 
 # ---- 2. pinned restoration sites: public parks ----------------------------
@@ -167,6 +186,10 @@ for s in need(resto, 'sites', RESTO_PATH):
     w = f'{RESTO_PATH}#sites[{need(s, "id", RESTO_PATH + "#sites[]")}]'
     sid, name = need(s, 'id', w), need(s, 'name', w)
     ref = f'restoration-site:{sid}'
+    SEEN_REFS.add(ref)
+    if ref in WITHDRAWN:
+        refuse(ref, name, f'withdrawn on {WITHDRAWN[ref]["date"]}: {WITHDRAWN[ref]["reason"]}')
+        continue
     cls = CLASSES['public-park']
     if not need(s, 'pin', w) or need(s, 'lat', w) is None:
         refuse(ref, name, 'not pinned: the registry holds no single point for it')
@@ -199,10 +222,13 @@ for s in need(resto, 'sites', RESTO_PATH):
         'coordinate_provenance': 'AUTHORED',
         'source_ref': w, 'source_text': 'restoration/registry/restoration.json ' + s['source_url'],
         'public_basis': 'operated by ' + s['org'] + '; ' + s['habitat'],
-        'radius_m': R_BY['public-park'],
+        'radius_m': R_BY['public-park'], 'site_check': SITE_CHECK,
+        'shoreline': any(w.startswith('shore') for w in words(s['habitat'] + ' ' + name)),
         'drops': [drop_row(t) for t in picks]})
 
 # ---- invariants -----------------------------------------------------------
+for _r in WITHDRAWN:
+    assert _r in SEEN_REFS, f'withdrawn {_r!r} names no record in geo/ or restoration/'
 for st in stops:
     assert R_MIN <= st['radius_m'] <= R_MAX, f'{st["id"]}: radius outside bounds'
     assert -90 <= st['lat'] <= 90 and -180 <= st['lng'] <= 180, f'{st["id"]}: coordinate out of range'
@@ -235,7 +261,8 @@ stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()
                        + b''.join((ROOT / r).read_bytes() for r in reads if r != GEOPOSE_PATH)
                        + json.dumps([geopose['encoding'], geopose['media_type'], geopose['crs']]).encode()).hexdigest()[:16]
 by_class = {c: sum(1 for st in stops if st['class'] == c) for c in CLASSES}
-counts = {'stops': len(stops), 'drops': len(dids), 'stops_by_class': by_class,
+counts = {'withdrawn': len(WITHDRAWN), 'stops_not_checked_on_site': sum(1 for st in stops if st['site_check'] == SITE_CHECK),
+          'shoreline_stops': sum(1 for st in stops if st['shoreline']), 'stops': len(stops), 'drops': len(dids), 'stops_by_class': by_class,
           'campuses_with_stops': len({st['campus'] for st in stops}),
           'unpinned_public_places': len(unpinned), 'refused': len(refused),
           'anchors_read': sum(len(v) for v in geo['anchors'].values()), 'restoration_sites_read': len(resto['sites']),
@@ -251,7 +278,8 @@ doc = {
                           'A human must visit and confirm a place before any drop is offered outside this map.',
                 'provenance': 'Each stop keeps the coordinate provenance word of the registry it was read from (RECORDED / DERIVED / AUTHORED); each pairing of a task to a stop is DERIVED by the rule in geoplay/build.py, with no content written here.',
                 'safety_more': rules['safety_more']},
-    'safety_line': SAFETY,
+    'safety_line': SAFETY, 'takedown': TAKEDOWN, 'unlock_note': UNLOCK_NOTE, 'shoreline_note': SHORE_NOTE,
+    'withdrawn': list(WITHDRAWN.values()),
     'rules': {'radius_m': {'min': R_MIN, 'max': R_MAX, 'by_class': R_BY, 'why': RAD['why']},
               'accuracy_max_m': need(rules, 'accuracy_max_m', RULES_PATH), 'max_drops_per_stop': MAX_DROPS,
               'classes': {c: {k: v for k, v in CLASSES[c].items() if k not in ('from',)} for c in CLASSES},

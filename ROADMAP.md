@@ -731,13 +731,20 @@ robot or a real learner.
   rule (ports, labs, piers, wetlands, cleanup sites, non-public campuses). The
   geomap unlocks a stop on the device, opt-in, within 75 to 120 m; nothing is
   stored or sent; a manual pick works without permission. Stops are registry
-  map points, not surveyed entrances. AR is proposed, not built.
+  map points, not surveyed entrances, and every stop says "not checked on
+  site" (three sit on a shoreline). A place that does not want a stop can have
+  it withdrawn by opening an issue on the repository; the build honours a
+  withdrawal list. Unlocking opens the task; it is not a credit or a record.
+  AR is proposed, not built.
 - **Omega Swarm** (`swarm/`): 9 SCRIPTED hives over 132 geohash cells that
   cover all 89 GeoPose poses, and a geo-targeted router that dry-runs
   simulated robots through `safety_gate/` and refuses real hardware ("real
   hardware needs a named human operator; none is configured"). Three of the
   four arena worlds have no gate record, so they run as dry runs logged
-  "no-record". Simulation only; no AI model; not a real-world safety system.
+  "no-record". A target with no safety_gate record may proceed only as a dry
+  run in simulation; in any other mode, or on any future real-target path, it
+  is held with "no safety record for this target: held". Simulation only; no
+  AI model; not a real-world safety system.
 - **The GIS worlds as glTF tiles for RP1's Sneeze engine** (`spatial/tiles.py`):
   29 `.glb` tiles (7.0 MB) and 9 unsigned manifests shaped only after the
   Sneeze docs' examples, built on demand into `dist/sneeze/` and checked
@@ -750,8 +757,9 @@ robot or a real learner.
   on demand (about 152 MiB; 27.6 MB with zstd), CDR messages under the jazzy
   `ros2msg` schemas vendored byte for byte, read back by three independent
   MCAP readers; a dataset card that says SCRIPTED, not real robot data, the
-  sim-to-real gap, and a licence left to the owner. Not replayed in a ROS 2
-  install.
+  sim-to-real gap, and a licence left to the owner. Not for publication until
+  the owner sets the licence (the card, the export and every file's metadata
+  say so). Not replayed in a ROS 2 install.
 - **Every world page loaded in a browser** (wave 24 debug pass): 0 page
   errors, 0 dead links or assets; one defect fixed (a seat link started audio
   before any user gesture).
