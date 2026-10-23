@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "A recorded run of the Sneeze world tiles in Sneeze or Artemis",
+  "description": "One person, one date, one engine version, one machine. Filled in by hand from template.py's output and read by ingest.py, which checks every rule here AND the rules the schema cannot express (see ingest.py). Observations use pass / fail / untested / not_applicable; leave 'untested' for anything you did not look at. Screenshots are referenced by sha256 only; the images are not stored in the repository. An observed run is a statement by a named person; its screenshots stay with that person and are recorded here only by hash, so a reader cannot see them from this repository.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "person", "date", "engine", "os", "build", "preflight", "serve", "manifests", "screenshots"],
+  "properties": {
+    "schema": {"const": "smartcitix-sneeze-run/1"},
+    "person": {
+      "type": "object", "additionalProperties": false, "required": ["name"],
+      "properties": {"name": {"type": "string", "minLength": 2, "maxLength": 80, "description": "your name or public handle; not an email address"}}
+    },
+    "date": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$", "description": "the day you ran it, YYYY-MM-DD"},
+    "engine": {
+      "type": "object", "additionalProperties": false, "required": ["name", "installed_from"],
+      "properties": {
+        "name": {"enum": ["Sneeze", "Artemis"]},
+        "version": {"type": "string", "maxLength": 60, "description": "a release or build number. Sneeze has no published release (when last read), so give the commit too"},
+        "commit": {"type": "string", "pattern": "^[0-9a-f]{7,40}$", "description": "git commit hash of the Sneeze checkout the engine was built from"},
+        "installed_from": {"enum": ["source", "installer", "package", "other"]}
+      }
+    },
+    "os": {
+      "type": "object", "additionalProperties": false, "required": ["name", "version"],
+      "properties": {
+        "name": {"type": "string", "minLength": 2, "maxLength": 60},
+        "version": {"type": "string", "minLength": 1, "maxLength": 60},
+        "arch": {"type": "string", "maxLength": 30},
+        "gpu": {"type": "string", "maxLength": 120}
+      }
+    },
+    "build": {
+      "type": "object", "additionalProperties": false, "required": ["repo_commit", "tiles_source_stamp"],
+      "properties": {
+        "repo_commit": {"type": "string", "pattern": "^[0-9a-f]{7,40}$", "description": "commit of this repository you built the tiles from"},
+        "tiles_source_stamp": {"type": "string", "pattern": "^[0-9a-f]{16}$", "description": "copied from template.py; must equal spatial/registry/tiles.json"}
+      }
+    },
+    "preflight": {
+      "type": "object", "additionalProperties": false, "required": ["passed", "tiles_source_stamp", "manifest_sha256", "tile_sha256"],
+      "properties": {
+        "passed": {"type": "boolean"},
+        "tiles_source_stamp": {"type": "string", "pattern": "^[0-9a-f]{16}$"},
+        "manifest_sha256": {"type": "object", "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+        "tile_sha256": {"type": "object", "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+      }
+    },
+    "serve": {
+      "type": "object", "additionalProperties": false, "required": ["map_module", "manifest_variant"],
+      "properties": {
+        "map_module": {"enum": ["rp1-cdn", "local"], "description": "where map.wasm came from: the address the manifests name, or your own copy served with --map-wasm"},
+        "map_module_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "manifest_variant": {"enum": ["as-built", "local-module"], "description": "as-built = the files exactly as built; local-module = the generated <id>.local.json"}
+      }
+    },
+    "manifests": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["id", "loaded", "geopose_anchor_read", "tiles"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1, "maxLength": 60},
+          "loaded": {"enum": ["yes", "partial", "no", "untested"]},
+          "geopose_anchor_read": {"enum": ["yes", "no", "untested"], "description": "did the engine visibly use Data.Anchors (place the world by latitude/longitude, show it, or log it)? The docs do not say it reads it"},
+          "notes": {"type": "string", "maxLength": 2000},
+          "screenshots": {"type": "array", "items": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+          "tiles": {
+            "type": "array",
+            "items": {
+              "type": "object", "additionalProperties": false,
+              "required": ["tile", "appears", "orientation", "scale", "child_position", "smooth"],
+              "properties": {
+                "tile": {"type": "string", "minLength": 1, "maxLength": 60},
+                "appears": {"enum": ["pass", "fail", "untested", "not_applicable"]},
+                "orientation": {"enum": ["pass", "fail", "untested", "not_applicable"], "description": "lies flat like a map, north-side up on the screen's ground plane, after Sneeze's documented Y-up to Z-up conversion"},
+                "scale": {"enum": ["pass", "fail", "untested", "not_applicable"], "description": "its size matches the extent in the checklist table"},
+                "child_position": {"enum": ["pass", "fail", "untested", "not_applicable"], "description": "this tile sits where the checklist table says relative to the manifest's first tile"},
+                "smooth": {"enum": ["pass", "fail", "untested", "not_applicable"], "description": "moving the camera stays usable"},
+                "notes": {"type": "string", "maxLength": 2000},
+                "screenshots": {"type": "array", "items": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+              }
+            }
+          }
+        }
+      }
+    },
+    "fields": {
+      "type": "array",
+      "description": "Only the registry's PROPOSED fields (spatial/registry/tiles.json#field_status) can be reported here. 'observed' needs written evidence and at least one screenshot hash; ingest also checks the per-tile observations support it.",
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["field", "verdict"],
+        "properties": {
+          "field": {"type": "string", "minLength": 1, "maxLength": 200},
+          "verdict": {"enum": ["observed", "not_observed", "contradicted", "untested"]},
+          "evidence": {"type": "string", "maxLength": 2000},
+          "screenshots": {"type": "array", "items": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+        }
+      }
+    },
+    "screenshots": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["sha256", "caption"],
+        "properties": {
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "caption": {"type": "string", "minLength": 3, "maxLength": 300},
+          "manifest": {"type": "string", "maxLength": 60},
+          "tile": {"type": "string", "maxLength": 60}
+        }
+      }
+    },
+    "screenshots_url": {"type": "string", "pattern": "^https://[^\\s@]+$", "maxLength": 300, "description": "optional: an https address where you published the screenshots, so a reader can open them. Not an email address, no user@ part"},
+    "notes": {"type": "string", "maxLength": 4000}
+  }
+}

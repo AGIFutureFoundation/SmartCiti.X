@@ -119,3 +119,88 @@ Chromium proof that the CSS actually does mirror when `dir="rtl"` is set.
 2. `node i18n/test.mjs` — the parity checks tell you what is missing.
 3. `python3 web/build_languages.py` — the page picks up the new locale by
    discovery; there is no second list to update.
+
+<!-- L10N BEGIN -->
+## Native-speaker review (how a verdict gets back into the catalogs)
+
+All seven non-English catalogs are machine drafts and stay `machine-drafted,
+pending native review` until a person says otherwise, key by key. Nothing is
+marked reviewed today: no reviewer has been named.
+
+```
+python3 i18n/build_review.py          # writes dist/review/<locale>.csv and .html, i18n/review/summary.json
+python3 i18n/build_review.py --check  # fails if summary.json is stale (source_stamp over every file read)
+python3 i18n/ingest_review.py dist/review/de.csv --reviewer "AB"   # take a filled sheet back
+python3 i18n/ingest_review.py --sync de                             # restate a catalog's status from its ledger
+node i18n/test_review.mjs                                           # the contract, with a round-trip fixture
+```
+
+- **The sheet** has one row per catalog key (`strings.*`, district names and
+  taglines, tracks, strands, tiers, bands, modalities, states): `key, english,
+  draft, appears_in, priority, why, status, verdict, corrected, notes`. The CSV
+  is UTF-8 with a BOM and opens in a spreadsheet; the HTML page (right-to-left
+  for Arabic) lets the reviewer fill the same columns in a browser and download
+  the same CSV. Both start with English instructions and the glossary.
+- **Priority** is derived by `i18n/review_rules.json`, never by hand: 1 =
+  safety and honesty lines (key names such as `honesty`, `disclaimer`,
+  `slowNotice`; English that carries a provenance label, says what is not a
+  credential, whether an AI model is involved, what stays on the device, a
+  notice); 2 = interface labels and the Academy vocabulary; 3 = page copy.
+- **`appears_in`** is derived from the built pages and the builder sources: a
+  page is listed when it ships the key in an embedded catalogue or renders the
+  English text; a source file when it names the key as a literal (or as a
+  dynamic prefix/template, marked `dynamic`). A page that embeds the whole
+  catalogue is listed only where it uses the key. A key nothing names says so.
+- **Glossary.** SCRIPTED, AUTHORED, RECORDED, DERIVED, MOCKED, PROPOSED (and
+  SCHEMATIC) are fixed labels shared with the data, the other pages and the
+  tests: they **stay in English, in capitals**; the sentence around them is
+  translated. Ingest refuses a correction that drops one the English carries.
+- **Why the sheets are not committed.** They are views of the catalogs, the
+  built pages and the ledger, stale after the next key anyone adds, and about
+  10 MB for seven locales. They go to `dist/` (gitignored). What is committed
+  is what must survive: the verdicts, in `i18n/review/<locale>.ledger.json`
+  (per key: verdict, `reviewed_by`, `reviewed_at`, sha256 of the English source
+  and of the text), the corrected text in the catalog, and `summary.json`.
+- **Ingest** is all-or-nothing. A row with no verdict, corrected text or notes is
+  untouched (not reviewed). It refuses: an unknown or repeated key; a verdict
+  other than `ok`/`fix`; corrected text or notes without a verdict; `ok` with
+  corrected text; `fix` with no text, text equal to the draft, or text equal to
+  the English; a lost or invented `{placeholder}` or changed `<tag>`; a
+  dropped glossary label; a sheet whose `english`/`draft` no longer match the
+  catalog; a reviewer containing `@` or a link, or a date in the future. The
+  reviewer is a name or initials: no email address is published.
+- **`translation_status` is derived from the ledger**, never typed: no
+  current verdict = `machine-drafted, pending native review`; N of M =
+  `machine-drafted; N of M keys checked by a native speaker, S of P safety and
+  honesty lines` (with `reviewer` and `reviewed_at` in the catalog; P is the
+  number of priority-1 keys under `review_rules.json`, S how many of them hold
+  a current verdict, so a catalog whose interface labels were checked but not
+  its safety lines says `0 of P`); every key = `reviewed`. A verdict counts only
+  while the English source and the reviewed text are unchanged, so a later edit
+  makes it "out of date" and the count drops. When keys are added to a catalog
+  that already holds verdicts, run `ingest_review.py --sync <locale>` so M is
+  restated. The part-checked wording avoids the word "reviewed" on purpose:
+  `rnd/` counts a catalog as a reviewed locale when its status contains it.
+- After an ingest, run the page builders again: the pages embed the catalogs.
+
+### Manual steps today (there is no hosted download)
+
+1. A maintainer runs `python3 i18n/build_review.py` and takes
+   `dist/review/<locale>.csv` (or `.html`) from the working tree: `dist/` is
+   not published, so nothing links to these files.
+2. The maintainer sends the file to the reviewer by hand and gets the filled
+   file back by hand.
+3. The maintainer runs `python3 i18n/ingest_review.py <file> --reviewer "<name or
+   initials the reviewer gave>"`, rebuilds, and commits the corrected catalog,
+   the ledger and `summary.json`.
+
+### Open decision: who confirms a reviewer is a native speaker
+
+Not decided. Before any catalog may read `reviewed`, the project must decide
+who confirms that a reviewer is a native speaker of that language, and how that
+confirmation is recorded. Until then a verdict records only the name or
+initials the reviewer gives and the date: it is not evidence of the reviewer's
+language, qualification or identity, and the wording "checked by a native
+speaker" describes what the reviewer says they are, not something the
+repository has verified.
+<!-- L10N END -->

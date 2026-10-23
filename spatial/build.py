@@ -1102,6 +1102,7 @@ TILES_HONESTY = {
                   'Artemis or any other metaverse browser, and nothing was '
                   'run: this is a reading of documentation and source. The '
                   'only checks are this bundle\'s own, by the bytes.',
+    'observed_runs': 'An observed run is a statement by a named person; its screenshots stay with that person and are recorded here only by hash, so a reader cannot see them from this repository. If a run names where its screenshots are published, that address is shown beside the status.',
     'documentation_status': 'the Sneeze docs are the implementer\'s own and '
                             'say parts are unfinished (the host functions by '
                             'which a module builds the scene are "partially '

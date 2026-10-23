@@ -1602,6 +1602,7 @@ Campuses without halls get no tile, because nothing is stood up there:
 ### What is not claimed
 
 - {up_first(TH["not_loaded"])}
+- {up_first(TH["observed_runs"])}
 - {up_first(TH["build_output"])}
 - {up_first(TH["axes"])}
 - {up_first(TH["geopose_is_a_sidecar"])}
@@ -4439,6 +4440,7 @@ SITE_GROUPS = [
         'trade_craft_quests', 'trade_craft_worksites', 'trade_craft_spaces']),
     ('Maps and records', 'the maps, the learner\'s own record and how it is checked', [
         'trade_craft_interactive', 'trade_craft_geomap', 'trade_craft_map', 'trade_craft_fabric',
+        'trade_craft_swarm',  # SWARM (wave 25)
         'trade_craft_progress', 'trade_craft_verify', 'trade_craft_contribute', 'trade_craft_signin',
         'trade_craft_dashboard']),
     ('About', 'the front door and the pages that explain the project', [

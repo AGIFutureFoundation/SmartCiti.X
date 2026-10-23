@@ -77,6 +77,9 @@ GROUPS = [
         ('web/trade_craft_interactive.html', 'nav.page.interactive'),
         ('web/trade_craft_geomap.html', 'nav.page.geomap'),
         ('web/trade_craft_fabric.html', 'nav.page.fabric'),
+        # SWARM BEGIN (wave 25): the Omega Swarm's hives, cells and router rules on a map
+        ('web/trade_craft_swarm.html', 'nav.page.swarm'),
+        # SWARM END
     ]),
     ('nav.group.records', [
         ('web/trade_craft_progress.html', 'nav.page.progress'),

@@ -1,0 +1,90 @@
+{
+ "files_read": 358,
+ "keys_with_no_derived_location": 34,
+ "locales": {
+  "ar": {
+   "checked_by_native": 0,
+   "keys": 1789,
+   "out_of_date": 0,
+   "p1": 218,
+   "p1_checked_by_native": 0,
+   "p2": 1073,
+   "p3": 498,
+   "status_would_be": "machine-drafted, pending native review",
+   "translation_status": "machine-drafted, pending native review"
+  },
+  "de": {
+   "checked_by_native": 0,
+   "keys": 1789,
+   "out_of_date": 0,
+   "p1": 218,
+   "p1_checked_by_native": 0,
+   "p2": 1073,
+   "p3": 498,
+   "status_would_be": "machine-drafted, pending native review",
+   "translation_status": "machine-drafted, pending native review"
+  },
+  "es": {
+   "checked_by_native": 0,
+   "keys": 1789,
+   "out_of_date": 0,
+   "p1": 218,
+   "p1_checked_by_native": 0,
+   "p2": 1073,
+   "p3": 498,
+   "status_would_be": "machine-drafted, pending native review",
+   "translation_status": "machine-drafted, pending native review"
+  },
+  "fr": {
+   "checked_by_native": 0,
+   "keys": 1789,
+   "out_of_date": 0,
+   "p1": 218,
+   "p1_checked_by_native": 0,
+   "p2": 1073,
+   "p3": 498,
+   "status_would_be": "machine-drafted, pending native review",
+   "translation_status": "machine-drafted, pending native review"
+  },
+  "hi": {
+   "checked_by_native": 0,
+   "keys": 1789,
+   "out_of_date": 0,
+   "p1": 218,
+   "p1_checked_by_native": 0,
+   "p2": 1073,
+   "p3": 498,
+   "status_would_be": "machine-drafted, pending native review",
+   "translation_status": "machine-drafted, pending native review"
+  },
+  "pt": {
+   "checked_by_native": 0,
+   "keys": 1789,
+   "out_of_date": 0,
+   "p1": 218,
+   "p1_checked_by_native": 0,
+   "p2": 1073,
+   "p3": 498,
+   "status_would_be": "machine-drafted, pending native review",
+   "translation_status": "machine-drafted, pending native review"
+  },
+  "zh": {
+   "checked_by_native": 0,
+   "keys": 1789,
+   "out_of_date": 0,
+   "p1": 218,
+   "p1_checked_by_native": 0,
+   "p2": 1073,
+   "p3": 498,
+   "status_would_be": "machine-drafted, pending native review",
+   "translation_status": "machine-drafted, pending native review"
+  }
+ },
+ "pages_carrying_whole_catalogue": [
+  "interactive"
+ ],
+ "pages_scanned": 38,
+ "schema": 1,
+ "source_stamp": "6245c60e4e4cda9fe3a4c4b1423eb7986329c7f80e2165f79fe869429e43659e",
+ "sources_scanned": 309
+}

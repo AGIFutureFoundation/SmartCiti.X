@@ -30,6 +30,16 @@ export const STATUSES = Object.freeze([
   'machine-drafted, pending native review',
   'reviewed',
 ]);
+/* L10N BEGIN: a catalog some of whose keys a native speaker has checked. The status is derived from the
+ * ledger in i18n/review/<locale>.ledger.json by i18n/ingest_review.py ("N of M keys"), never typed by hand.
+ * The wording avoids the substring "reviewed" on purpose: rnd/ counts a catalog as a reviewed locale when its
+ * status contains that word, and a part-checked catalog is not one. */
+export const PARTIAL_STATUS_RE = /^machine-drafted; (\d+) of (\d+) keys checked by a native speaker, (\d+) of (\d+) safety and honesty lines$/;
+export function isKnownStatus(status) {
+  return STATUSES.includes(status) || PARTIAL_STATUS_RE.test(status);
+}
+/* L10N END */
+
 
 /**
  * True for any status that CLAIMS a human reviewed the translation — i.e.
@@ -42,8 +52,8 @@ export const STATUSES = Object.freeze([
  */
 export function claimsReview(status) {
   return typeof status === 'string'
-    && /reviewed/i.test(status)
-    && status !== 'machine-drafted, pending native review';
+    && ((/reviewed/i.test(status) && status !== 'machine-drafted, pending native review')
+      /* L10N BEGIN */ || PARTIAL_STATUS_RE.test(status) /* L10N END */);
 }
 
 /**
@@ -56,13 +66,27 @@ export function claimsReview(status) {
 export function validateCatalog(locale, doc) {
   const problems = [];
   const status = doc?.translation_status;
-  if (!STATUSES.includes(status)) {
+  if (!isKnownStatus(status)) { // L10N: a part-checked status is known too
     problems.push(`${locale}: translation_status ${JSON.stringify(status)} is not one of `
       + `the closed set (${STATUSES.join(' | ')})`);
     // Still worth checking the reviewer rule below even on an unrecognised
     // status — an invented "reviewed-ish" string must not dodge it just
     // because it also fails the closed-set check.
   }
+  /* L10N BEGIN: "N of M keys" must be a real fraction: at least one key checked, and not all of them */
+  const part = PARTIAL_STATUS_RE.exec(typeof status === 'string' ? status : '');
+  if (part) {
+    const [n, m, sc, pc] = part.slice(1).map(Number);
+    if (!(n >= 1 && n < m)) {
+      problems.push(`${locale}: translation_status ${JSON.stringify(status)} must name at least 1 and fewer than all keys`);
+    }
+    // the safety and honesty lines are a subset of the keys: checked ones cannot exceed the checked keys, the lines, or leave
+    // more checked non-safety keys than there are non-safety keys
+    if (!(sc >= 0 && sc <= pc && pc <= m && sc <= n && n - sc <= m - pc)) {
+      problems.push(`${locale}: translation_status ${JSON.stringify(status)} has safety-and-honesty counts that do not fit inside the key counts`);
+    }
+  }
+  /* L10N END */
   if (claimsReview(status)) {
     const reviewer = doc?.reviewer;
     if (typeof reviewer !== 'string' || reviewer.trim().length === 0) {

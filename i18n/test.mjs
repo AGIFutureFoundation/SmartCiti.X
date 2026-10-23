@@ -7,10 +7,11 @@
  * Both failure classes are the bundle's oldest defect shape, so both are
  * checked here rather than trusted.
  */
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import {
   LOCALES, load, t, fmt, STATUSES, claimsReview, validateCatalog,
   hallNameLocales, loadHallNames, validateHallNames,
+  PARTIAL_STATUS_RE, isKnownStatus, // L10N: a part-checked catalog is a known, honest status
 } from './catalog.mjs';
 
 let n = 0;
@@ -30,7 +31,7 @@ ok('every locale file names itself correctly and declares a direction',
 ok('Arabic is right-to-left; every other shipped locale is left-to-right',
   load('ar').dir === 'rtl' && LOCALES.filter((l) => l !== 'ar').every((l) => load(l).dir === 'ltr'));
 ok('every non-source locale declares its review status honestly',
-  LOCALES.filter((l) => l !== 'en').every((l) => /pending .*review/.test(load(l).translation_status))
+  LOCALES.filter((l) => l !== 'en').every((l) => /pending .*review/.test(load(l).translation_status) || PARTIAL_STATUS_RE.test(load(l).translation_status)) /* L10N */
   && en.translation_status === 'source language');
 
 /* ------------------------------------------------- structural parity ----- */
@@ -41,11 +42,11 @@ function keyset(obj, prefix = '') {
   }
   return [prefix];
 }
-const ref = JSON.stringify(keyset({ ...en, locale: 0, language: 0, english_name: 0, dir: 0, translation_status: 0 }));
+const ref = JSON.stringify(keyset({ ...en, locale: 0, language: 0, english_name: 0, dir: 0, translation_status: 0, reviewer: 0, reviewed_at: 0 })); // L10N: reviewer fields come with a review
 ok('every locale carries exactly the source catalog structure — no missing or extra keys',
   LOCALES.every((l) => {
     const c = load(l);
-    return JSON.stringify(keyset({ ...c, locale: 0, language: 0, english_name: 0, dir: 0, translation_status: 0 })) === ref;
+    return JSON.stringify(keyset({ ...c, locale: 0, language: 0, english_name: 0, dir: 0, translation_status: 0, reviewer: 0, reviewed_at: 0 })) === ref; // L10N
   }));
 const leaves = (o) => (o && typeof o === 'object' ? Object.values(o).flatMap(leaves) : [o]);
 ok('no locale ships an empty or non-string value',
@@ -101,11 +102,15 @@ ok('every locale carries all four honesty notes, translated',
 ok('translation_status is drawn from a closed set (no free text, no fourth state)',
   STATUSES.length === 3 && STATUSES.includes('source language')
   && STATUSES.includes('machine-drafted, pending native review') && STATUSES.includes('reviewed')
-  && LOCALES.every((l) => STATUSES.includes(load(l).translation_status)));
+  && LOCALES.every((l) => isKnownStatus(load(l).translation_status))); // L10N
 ok('every non-source locale still declares the honest pending-review caveat today — '
   + 'this run changes no catalog to reviewed',
   LOCALES.filter((l) => l !== 'en')
-    .every((l) => load(l).translation_status === 'machine-drafted, pending native review')
+    .every((l) => load(l).translation_status === 'machine-drafted, pending native review'
+      /* L10N BEGIN: the only other status is a part-checked one, and only with a review ledger behind it
+       * (i18n/test_review.mjs holds the count to the ledger); nothing ever reads as fully reviewed here */
+      || (PARTIAL_STATUS_RE.test(load(l).translation_status) && existsSync(new URL(`review/${l}.ledger.json`, import.meta.url)))
+      /* L10N END */)
   && en.translation_status === 'source language');
 ok('claimsReview() reads "reviewed" as a review claim and the pending-review caveat as honestly not one',
   claimsReview('reviewed') === true

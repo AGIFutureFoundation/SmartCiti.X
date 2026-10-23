@@ -764,6 +764,30 @@ robot or a real learner.
   errors, 0 dead links or assets; one defect fixed (a seat link started audio
   before any user gesture).
 
+### Wave 25 additions
+
+- **The Omega Swarm map (simulated)** (`web/trade_craft_swarm.html`): the 9 SCRIPTED hives,
+  their 132 cells and covered anchors, with the router's rules in plain words.
+  A try-a-region panel embeds the router's region and resolution code byte for
+  byte and previews (does not write) an audit row; the safety gate is not run
+  in the page. Nothing fetched, nothing stored.
+- **Native review loop** (`i18n/`): review sheets for the seven machine-drafted
+  locales, safety and honesty lines first, and a return path that records each
+  verdict per key. No locale has been checked by a native speaker yet; the
+  status reads "machine-drafted; N of M keys checked by a native speaker" once
+  verdicts arrive (with how many of the safety and honesty lines are among
+  them), and "reviewed" only at M of M. A maintainer builds and sends the
+  sheets by hand; there is no hosted download. Open decision: before any
+  catalog may read "reviewed", the project must decide who confirms that a
+  reviewer is a native speaker of the language and how that is recorded; until
+  then a verdict records only the name or initials the reviewer gives.
+- **The Sneeze test kit** (`spatial/sneeze_kit/`): a server, a no-Sneeze
+  pre-flight, a checklist and a results format for whoever can run Sneeze or
+  Artemis; a recorded run can move a proposed field to "observed in Sneeze
+  <version>", never to claimed. An observed run is a statement by a named
+  person; its screenshots stay with that person and are recorded only by hash.
+  Zero runs recorded.
+
 ---
 
 ## Path to v4.0
