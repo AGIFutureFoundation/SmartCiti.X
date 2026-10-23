@@ -114,6 +114,7 @@
   "sim.retry": "Try again",
   "sim.sound": "Sound",
   "sim.view": "View",
+  "sim.slowNotice": "This device is running the seat slower than real time; your result is not affected.",
   "sim.choose": "Choose a simulator",
   "sim.operator": "Ask the operator",
   "progress.local": "Progress is saved on this device only.",

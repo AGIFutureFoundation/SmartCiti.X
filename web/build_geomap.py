@@ -410,7 +410,43 @@ def _hillshade():
 
 HILLSHADE = _hillshade()
 # END GROUND w16 hillshade
+# GEOPLAY BEGIN w24: the training-drop layer (geoplay/registry/geoplay.json): public stops, their drops, the safety line
+GEOPLAY_PATH = ROOT / 'geoplay/registry/geoplay.json'
+if not GEOPLAY_PATH.exists():
+    raise SystemExit('build_geomap: geoplay/registry/geoplay.json is missing - run python3 geoplay/build.py (it runs after tasks/build.py)')
+_gp = json.loads(GEOPLAY_PATH.read_text(encoding='utf-8'))
+_task_by_id = {t['id']: t for t in TASK_ROWS}
+_kind_label = {k: need(v, 'label', f'tasks.json#kinds.{k}') for k, v in need(_TASKS, 'kinds', 'tasks/registry/tasks.json').items()}
+_class_label = {k: need(v, 'label', f'geoplay.json#rules.classes.{k}') for k, v in need(need(_gp, 'rules', 'geoplay.json'), 'classes', 'geoplay.json').items()}
+GEOPLAY_STOPS = []
+for _s in need(_gp, 'stops', 'geoplay.json'):
+    _drops = []
+    for _d in need(_s, 'drops', f'geoplay.json#{_s["id"]}'):
+        if need(_d, 'task', f'geoplay.json#{_s["id"]}.drops[]') not in _task_by_id:
+            raise SystemExit(f'build_geomap: geoplay drop {_d["id"]} names task {_d["task"]!r} that tasks.json does not carry - rebuild geoplay')
+        _t = _task_by_id[_d['task']]
+        if _t['href'] is None:
+            raise SystemExit(f'build_geomap: geoplay drop {_d["id"]} names a task with no launch link')
+        _drops.append({'id': _d['id'], 'task': _t['id'], 'title': _t['title'], 'kind_label': _kind_label[_t['kind']],
+                       'href': _t['href'], 'provenance': _d['provenance'],
+                       'lessons': [{'id': l, 'title': need(LESSONS[l], 'title', f'lessons.json#{l}')} for l in _d['lessons']]})
+    GEOPLAY_STOPS.append({
+        'id': _s['id'], 'name': _s['name'], 'class': _s['class'], 'class_label': _class_label[_s['class']],
+        'campus': _s['campus'], 'lat': _s['lat'], 'lng': _s['lng'],
+        'coordinate_provenance': _s['coordinate_provenance'], 'source_ref': _s['source_ref'],
+        'source_text': _s['source_text'], 'radius_m': _s['radius_m'], 'geopose_ref': _s['geopose_ref'], 'drops': _drops})
+GEOPLAY = {'stops': GEOPLAY_STOPS, 'safetyLine': need(_gp, 'safety_line', 'geoplay.json'),
+           'honesty': need(_gp, 'honesty', 'geoplay.json'), 'ar': need(_gp, 'ar', 'geoplay.json'),
+           'rules': {'accuracy_max_m': need(need(_gp, 'rules', 'geoplay.json'), 'accuracy_max_m', 'geoplay.json'),
+                     'radius_m': need(need(_gp, 'rules', 'geoplay.json'), 'radius_m', 'geoplay.json')},
+           'counts': need(_gp, 'counts', 'geoplay.json'), 'sourceStamp': need(_gp, 'source_stamp', 'geoplay.json'),
+           'geopose': need(_gp, 'geopose', 'geoplay.json'),
+           'unpinned': need(_gp, 'unpinned', 'geoplay.json')}
+GEOPLAY_PLAY_JS = (ROOT / 'geoplay/play.js').read_text(encoding='utf-8')
+GEOPLAY_UI_JS = (ROOT / 'geoplay/ui.js').read_text(encoding='utf-8')
+# GEOPLAY END
 DATA = json.dumps({
+    'geoplay': GEOPLAY,   # GEOPLAY w24
     'hillshade': HILLSHADE,   # GROUND w16
     'network': network,
     'city': geo['city'],
@@ -634,6 +670,11 @@ body{margin:0;background:var(--plate);color:var(--ink);
 .door.walk3d{color:var(--good)}
 .popbtn{font:inherit;font-size:11px;padding:2px 9px;margin-top:5px;background:none;color:var(--ink);
   border:1px solid var(--mark);border-radius:999px;cursor:pointer}
+.td-safety{font-weight:600;color:var(--ink);margin:4px 0}
+.dropctl{display:flex;flex-direction:column;gap:6px;align-items:flex-start;margin:6px 0}
+.dropctl label{flex-wrap:wrap;width:100%}
+.dropctl select{min-width:0;max-width:100%;flex:1 1 140px}
+#dropStatus{margin:4px 0}
 .tasklist{margin:4px 0 0;padding:0;list-style:none;max-height:180px;overflow:auto}
 .tasklist li{padding:3px 0;border-top:1px solid var(--rule);font-size:11.5px}
 .hide-campus .campus-marker{display:none}
@@ -681,6 +722,7 @@ __SITENAV__<div id="stage">
   <button class="barbtn tc-btn tc-btn-ghost" id="parBtn">▦ Footprints</button>
   <button class="barbtn tc-btn tc-btn-ghost" data-panel="campuses" aria-pressed="false" aria-controls="campuses">☰ Campuses</button>
   <button class="barbtn tc-btn tc-btn-ghost" data-panel="sites" aria-pressed="false" aria-controls="sites">🌿 Restoration sites</button>
+  <button class="barbtn tc-btn tc-btn-ghost" data-panel="drops" aria-pressed="false" aria-controls="drops">📍 Training drops</button>
   <button class="barbtn tc-btn tc-btn-ghost" data-panel="layers" aria-pressed="false" aria-controls="layers">⛶ Layers &amp; environments</button>
   <select class="flysel" id="flySel" aria-label="Fly the camera to a campus, pitched, with its 3D halls"><option value="">🎥 Fly to a campus…</option></select>
   <button class="barbtn tc-btn tc-btn-ghost" id="tourBtn" aria-pressed="false" title="Visit every campus in turn; press again or Escape to stop">▶ Tour</button>
@@ -697,6 +739,23 @@ __SITENAV__<div id="stage">
   <h2>Bay Restoration sites</h2>
   <ul id="siteList">__SITE_ROWS__</ul>
   <p class="src">__RESTORATION_NOT_AFFILIATED__</p>
+</section>
+<section class="panel tc-panel" id="drops" aria-label="Training drops">
+  <h2>Training drops <span class="pv">PLAY</span></h2>
+  <p class="td-safety" id="dropSafety">__DROP_SAFETY__</p>
+  <div class="dropctl">
+    <button type="button" class="popbtn" id="dropLocate" aria-pressed="false">Use my location (stays on this device)</button>
+    <label for="dropHere">or, I am here: <select id="dropHere" class="flysel"></select></label>
+    <button type="button" class="popbtn" id="dropForget">Close all drops again</button>
+  </div>
+  <p id="dropStatus" role="status" aria-live="polite"></p>
+  <p class="src" id="dropCount"></p>
+  <ul id="dropList"></ul>
+  <p class="src">__DROP_SAFETY_MORE__</p>
+  <p class="src">__DROP_PLAY__</p>
+  <p class="src">__DROP_PRIVACY__</p>
+  <p class="src">__DROP_UNPINNED__</p>
+  <p class="src" data-ar-status="PROPOSED">__DROP_AR__</p>
 </section>
 <section class="panel tc-panel" id="layers" aria-label="Layers and environments">
   <h2>Layers &amp; environments</h2>
@@ -721,6 +780,7 @@ __SITENAV__<div id="stage">
   <div class="lg-row"><span class="dot" style="background:none;border:1.5px dashed var(--muted)"></span>roadmap candidate — AUTHORED, not built</div>
   <div class="lg-row"><span class="dot" style="background:hsl(210,50%,45%);border-radius:2px"></span>3D hall, coloured by district — <b>SCHEMATIC</b>: the 3D campus stood up north-up about its centroid; <span id="g3dCount"></span></div>
   <div class="lg-row"><span class="dot" style="background:#C98BE0"></span>worksite · <span class="dot" style="background:#F2D16B"></span>K-12 district, <b>PROPOSED</b>, shown at its campus · <span class="dot" style="background:#5CB584;border:2px solid #0C1113"></span>simulated tasks at a campus — open ⛶ Layers for lists</div>
+  <div class="lg-row" data-legend="drops"><span class="dot" style="background:#E8743B;border:2px solid #fff"></span>training drop stop \u2014 a public university campus or park already pinned by the registries, <b>PLAY</b>: __DROP_COUNTS__. __DROP_SAFETY__</div>
   <div class="lg-row"><span class="dot" style="background:var(--good)"></span>Bay Restoration site (habitat-restoration) — real project, not affiliated with this bundle</div>
   <div class="lg-row"><span class="dot" style="background:var(--steel)"></span>Bay Restoration site (environmental-monitoring) — a real federal cleanup site (Hunters Point, NPL-listed and litigated; Treasure Island NSTI, a Navy BRAC cleanup, not NPL-listed); located but never rendered as a walkable scene</div>
   <div class="lg-row"><span class="sw-cluster" aria-hidden="true">n</span>Bay Restoration sites too close to tell apart at this zoom, folded into one counted marker — click it to zoom in; names show where there is room, and on hover or focus</div>
@@ -731,6 +791,8 @@ __SITENAV__<div id="stage">
 </div>
 <script id="data" type="application/json">__DATA__</script>
 <script src="vendor/maplibre/maplibre-gl.js"></script>
+<script id="trainingDropsPlay">
+__DROPS_PLAY_JS__</script>
 <script>
 const D = JSON.parse(document.getElementById('data').textContent);
 // operator overrides: a self-hosted mirror of either source. They also
@@ -1659,6 +1721,7 @@ const LAYERS = [
   { key: 'worksites', label: 'Worksites', map: ['env-worksites'], sw: '#C98BE0' },
   { key: 'k12', label: 'K-12 districts (PROPOSED, at their campus)', map: ['env-k12'], sw: '#F2D16B' },
   { key: 'tasks', label: 'Simulated tasks (counted per campus)', map: ['env-tasks'], sw: '#5CB584' },
+  { key: 'drops', label: 'Training drops (play, at public places)', map: [], sw: '#E8743B' },   // layers added on load by the drops code
   { key: 'hillshade', label: 'Relief shading (USGS 3DEP heights, RECORDED; shading DERIVED)', map: [], sw: 'linear-gradient(135deg,#fff,#555)' },   // layers added on demand by hillshadeSync()
 ];
 const layerOn = Object.fromEntries(LAYERS.map((l) => [l.key, true]));
@@ -1716,6 +1779,9 @@ document.getElementById('offGlobe').innerHTML =
     + `<br>${ESC(w.why)}<br><a class="door" href="${ESC(w.href)}">open the worksite</a></li>`).join('')
   + D.env.tasks.off.map((t) => `<li data-off="task:${ESC(t.id)}">${taskBody(t)}<br><span class="src">${offWhy(t)}</span></li>`).join('');
 
+/* TRAINING-DROPS BEGIN */
+__DROPS_UI_JS__
+/* TRAINING-DROPS END */
 let loaded = false;
 map.on('load', () => { loaded = true; });
 // test hook: state without poking MapLibre internals
@@ -1782,6 +1848,16 @@ page = (page.replace('__N_FLAGSHIP__', str(_n_flag)).replace('__N_HUB__', str(_n
         .replace('__SITE_ROWS__', SITE_ROWS)
         .replace('__RESTORATION_NOT_AFFILIATED__', html.escape(restoration['honesty']['not_affiliated']))
         .replace('__GROUND_TRUTH_JS__', GROUND_TRUTH_JS))
+# GEOPLAY w24: the visible safety line, the privacy and play words, and the on-device code, all from geoplay/
+page = (page.replace('__DROP_SAFETY_MORE__', html.escape(GEOPLAY['honesty']['safety_more']))
+        .replace('__DROP_SAFETY__', html.escape(GEOPLAY['safetyLine']))
+        .replace('__DROP_PLAY__', html.escape(GEOPLAY['honesty']['play'] + ' ' + GEOPLAY['honesty']['no_hosting']))
+        .replace('__DROP_PRIVACY__', html.escape(GEOPLAY['honesty']['privacy']))
+        .replace('__DROP_AR__', html.escape('AR is ' + GEOPLAY['ar']['status'] + '. ' + GEOPLAY['ar']['claim']))
+        .replace('__DROP_UNPINNED__', html.escape(f"{len(GEOPLAY['unpinned'])} more public campuses pass the rule but have no task on the globe, so they carry no drop; {GEOPLAY['counts']['refused']} registry places were refused (cities, ports, laboratories, stations, cleanup sites, wetlands, private campuses)."))
+        .replace('__DROP_COUNTS__', html.escape(f"{GEOPLAY['counts']['stops']} stops, {GEOPLAY['counts']['drops']} drops, {GEOPLAY['counts']['geoposes']} GeoPose anchors"))
+        .replace('__DROPS_PLAY_JS__', GEOPLAY_PLAY_JS).replace('__DROPS_UI_JS__', GEOPLAY_UI_JS))
+assert '__DROP' not in page.replace('__DROPS_', '\0'), 'a training-drop token went unreplaced'
 assert '__N_' not in page, 'a legend count token went unreplaced'
 assert '__GEOPOSE_HONESTY__' not in page, 'the geopose honesty token went unreplaced'
 assert '__SITE_ROWS__' not in page and '__RESTORATION_NOT_AFFILIATED__' not in page, \

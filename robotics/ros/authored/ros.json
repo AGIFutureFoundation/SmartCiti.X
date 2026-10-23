@@ -1,0 +1,293 @@
+{
+ "schema": "ros-export/1",
+ "pack": "smartcitix-robotics-ros",
+ "what": "ROS 2 MCAP export of the SCRIPTED robotics episodes (reference and greedy policies on the four world tasks).",
+ "format": {
+  "container": "MCAP",
+  "profile": "ros2",
+  "message_encoding": "cdr",
+  "schema_encoding": "ros2msg",
+  "distro": "jazzy",
+  "library": "smartcitix-ros-export/1",
+  "chunk_size_bytes": 262144,
+  "chunk_compression_default": "none",
+  "chunk_compression_option": "zstd"
+ },
+ "policies": [
+  "scripted",
+  "greedy"
+ ],
+ "split_source": "robotics/arena/registry/models.json#models[0].split",
+ "time_base": "simulation seconds since the episode start (sample step index x dt_s); not wall-clock time",
+ "frames": {
+  "world": "map",
+  "odom": "odom",
+  "base": "base_link"
+ },
+ "topics": [
+  {
+   "id": "instruction",
+   "name": "/instruction",
+   "type": "std_msgs/msg/String",
+   "qos": {
+    "reliability": "reliable",
+    "durability": "transient_local",
+    "depth": 1
+   },
+   "count": "one message at t=0",
+   "what": "the quoted task instruction (robotics/claw dataset)"
+  },
+  {
+   "id": "cmd_vel",
+   "name": "/cmd_vel",
+   "type": "geometry_msgs/msg/Twist",
+   "qos": {
+    "reliability": "reliable",
+    "durability": "volatile",
+    "depth": 10
+   },
+   "count": "one per sample",
+   "what": "the action: linear.x = v, angular.z = w; for the ROV linear.z = -vz"
+  },
+  {
+   "id": "odom",
+   "name": "/odom",
+   "type": "nav_msgs/msg/Odometry",
+   "qos": {
+    "reliability": "reliable",
+    "durability": "volatile",
+    "depth": 10
+   },
+   "count": "one per sample",
+   "what": "exact simulated pose and body-frame velocity (covariances 0 = exact; there is no sensor noise)"
+  },
+  {
+   "id": "ground_truth_pose",
+   "name": "/sim/ground_truth/pose",
+   "type": "geometry_msgs/msg/PoseStamped",
+   "qos": {
+    "reliability": "reliable",
+    "durability": "volatile",
+    "depth": 10
+   },
+   "count": "one per sample",
+   "what": "the same simulated pose in the map frame"
+  },
+  {
+   "id": "joint_states",
+   "name": "/joint_states",
+   "type": "sensor_msgs/msg/JointState",
+   "qos": {
+    "reliability": "reliable",
+    "durability": "volatile",
+    "depth": 10
+   },
+   "count": "one per sample",
+   "what": "SCHEMATIC drive degrees of freedom: velocity of drive_linear (m/s) and drive_yaw (rad/s); there is no joint model"
+  },
+  {
+   "id": "gripper_command",
+   "name": "/gripper_command",
+   "type": "sensor_msgs/msg/JointState",
+   "qos": {
+    "reliability": "reliable",
+    "durability": "volatile",
+    "depth": 10
+   },
+   "count": "one per sample, litter-sort only",
+   "what": "the commanded gripper value (0 open, 1 close; the simulator closes at 0.5 or more); the arm has no joint model"
+  }
+ ],
+ "joint_names": {
+  "joint_states": [
+   "drive_linear",
+   "drive_yaw"
+  ],
+  "gripper_command": [
+   "gripper"
+  ]
+ },
+ "mapping": [
+  {
+   "sim": "pose e, n (metres from the start point)",
+   "ros": "position x = e, y = n in a local REP 103 east-north-up frame",
+   "status": "PROPOSED"
+  },
+  {
+   "sim": "pose yaw (rad, 0 = facing +n, positive turns toward -e)",
+   "ros": "orientation about z, yaw_ros = yaw + pi/2 (0 = facing +x = east); angular.z = w with the same sign",
+   "status": "PROPOSED, checked against the simulator's own update (e -= v sin(yaw) dt, n += v cos(yaw) dt)"
+  },
+  {
+   "sim": "depth (m, positive down, ROV only)",
+   "ros": "position z = -depth; cmd_vel linear.z = -vz",
+   "status": "PROPOSED"
+  },
+  {
+   "sim": "vel [v, w]",
+   "ros": "twist.linear.x = v, twist.angular.z = w in base_link",
+   "status": "PROPOSED"
+  },
+  {
+   "sim": "near (ids of AUTHORED objects within 6 m)",
+   "ros": "not exported: no common_interfaces message carries it; it stays in the robotics/claw JSONL",
+   "status": "NOT EXPORTED"
+  },
+  {
+   "sim": "scene layout (obstacles, items, gates, bin, targets)",
+   "ros": "one MCAP attachment per file, scene.json (application/json)",
+   "status": "AUTHORED"
+  }
+ ],
+ "honesty": {
+  "provenance": "Every episode is SCRIPTED: the reference policy or the greedy heuristic of robotics/arena/policies.js, run on the page simulator's own SIM_CORE (web/robokit.py). Robots and arenas are AUTHORED and SCHEMATIC.",
+  "not_real": "Not real robot data. Nothing was recorded from a robot, a vehicle, an ROV or a person.",
+  "learner_data": "No learner data. This export reads no contribution package; learner episodes can reach a dataset only through the datashare consent path, which this export does not use.",
+  "trained": "No model is trained or used by this export (trained_models: 0 for this pack). The two small models in robotics/arena are not used here.",
+  "sim_to_real": "Large and unmeasured. The simulator is a unicycle on a flat arena with circle obstacles: no wheels, tyres or friction, no mass or inertia, no actuator dynamics (the commanded velocity, clamped to the limits, is applied in full at the next step), no latency, no sensor model or noise (odometry is exact, covariances are 0), no camera, lidar or IMU, no joints for the arm (a gripper flag), no buoyancy, current model or tether for the ROV. A policy fitted to these messages has not been shown to work on any real machine.",
+  "conformance": "Container and encoding follow the MCAP specification and the MCAP ros2 profile text, and the message definitions are the ROS 2 jazzy files byte for byte. Every file was read back, with checksums validated, by four independent open-source readers: the Python packages mcap (with mcap-ros2-support decoding the messages) and rosbags, and the npm package @mcap/core (used for validation only; the repository depends on none of them). No ROS 2 installation was available to the authors, so playback with ros2 bag play is unverified.",
+  "omitted": "The bag directory metadata.yaml of rosbag2 is not written, and the channel metadata key topic_type_hash is omitted (it needs the ROS type-description tooling). offered_qos_profiles holds AUTHORED defaults, not QoS recorded from a live graph.",
+  "robots": "Nothing in this export sends a command to a real robot or device. /cmd_vel here is a recorded simulated action. Replaying these files into a live ROS graph is outside this repository and would need a named human operator and the repository's safety gate; this export provides no path to hardware.",
+  "licence": "to be decided by the owner"
+ },
+ "sources": {
+  "mcap_spec": {
+   "url": "https://mcap.dev/spec",
+   "repo": "https://github.com/foxglove/mcap",
+   "commit": "6911a08f6bf91a0d43b34005a613ae6f4c74e8f6",
+   "files": {
+    "website/docs/spec/index.md": "cb969b64fb6b7067a18e5d87834ed7784463b050d8f726e4d94bcc51773824c1",
+    "website/docs/spec/registry.md": "2bd4d5d6e7356b7259238c7e54acc4c0bb62545ff0d639b90984ac415d471ef1"
+   },
+   "note": "read, not vendored; the registry entries used are ros2msg, cdr and the ros2 profile"
+  },
+  "rosbag2": {
+   "repo": "https://github.com/ros2/rosbag2",
+   "branch": "jazzy",
+   "commit": "12b5e8ba4eb5665501a16f0d9e050552a1149f56",
+   "files": {
+    "rosbag2_cpp/src/rosbag2_cpp/message_definitions/local_message_definition_source.cpp": "e9b76ee4242ba02b4a565bead10d42bec7e3f18f4b99299dbde078083c0c6aaa",
+    "rosbag2_storage_mcap/src/mcap_storage.cpp": "c84ca81b0799ada3b258e39f74dde45b753fe2a071af65ca95900a1f7663d5e5",
+    "rosbag2_storage/src/rosbag2_storage/qos.cpp": "105a98dabedeb4819ecd7d07861fc9fd9a49e3f04fbc09e4428fce8b48133999"
+   },
+   "note": "read, not vendored: how rosbag2 builds the ros2msg schema text, the profile string ros2 and the offered_qos_profiles key"
+  },
+  "common_interfaces": {
+   "repo": "https://github.com/ros2/common_interfaces",
+   "branch": "jazzy",
+   "commit": "a941f14bb318d8d904505ed935ccbb97f24a70a4",
+   "licence": "Apache-2.0",
+   "licence_file_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+  },
+  "rcl_interfaces": {
+   "repo": "https://github.com/ros2/rcl_interfaces",
+   "branch": "jazzy",
+   "commit": "7aa3caf43377ea6ad615bc1040832e2c7566bfbe",
+   "licence": "Apache-2.0"
+  },
+  "rep_103": {
+   "url": "https://www.ros.org/reps/rep-0103.html",
+   "repo": "https://github.com/ros-infrastructure/rep",
+   "commit": "11ca24a41f31480dfb9562ba99f2a5b93d3ebda5",
+   "files": {
+    "rep-0103.rst": "bf397ddcab96cc1d10d8f5893960cb1d5e50154dd96462433a5ac342237a0c20"
+   },
+   "note": "read, not vendored: ENU (X east, Y north, Z up) for short-range geographic poses; yaw is zero pointing east and increases counter-clockwise"
+  }
+ },
+ "msgs": [
+  {
+   "type": "builtin_interfaces/msg/Time",
+   "repo": "rcl_interfaces",
+   "path": "builtin_interfaces/msg/Time.msg",
+   "sha256": "dc5a01ddde3aecffee21eb24974fe77cc969f873218a2b1811aa0ac8a456b8bd",
+   "git_blob": "03cc83f8622675b1ce70fcc5b6d260b1dd13d860"
+  },
+  {
+   "type": "geometry_msgs/msg/Point",
+   "repo": "common_interfaces",
+   "path": "geometry_msgs/msg/Point.msg",
+   "sha256": "eb4c07e591cf0269ccb17245dcd4f998162feb09cc8add85fa082c8a30bfc91d",
+   "git_blob": "f1d3a71a853c668f066de795ba5e0f4458f3f1c0"
+  },
+  {
+   "type": "geometry_msgs/msg/Pose",
+   "repo": "common_interfaces",
+   "path": "geometry_msgs/msg/Pose.msg",
+   "sha256": "3eceb77c63ebbb544c11d7f991e475e9819e0cf534deb1a879392c1b3dc997de",
+   "git_blob": "277e2f0179a64cd3e17e31502e3d8a074ace7064"
+  },
+  {
+   "type": "geometry_msgs/msg/PoseStamped",
+   "repo": "common_interfaces",
+   "path": "geometry_msgs/msg/PoseStamped.msg",
+   "sha256": "31898ab0eb64a6c44c27ab4959819a32ec3bc3ee847c8fe1b01c897d48e311e5",
+   "git_blob": "2b43935ed33b384937142aaf3aae085cdcb9ea5e"
+  },
+  {
+   "type": "geometry_msgs/msg/PoseWithCovariance",
+   "repo": "common_interfaces",
+   "path": "geometry_msgs/msg/PoseWithCovariance.msg",
+   "sha256": "a22f234e91b9fcd4ba0c5b533496b43c62d7f6ade39082212ac9835679d29f94",
+   "git_blob": "86bc45adbb5d7d64e90556ac1f24ca8f725313cd"
+  },
+  {
+   "type": "geometry_msgs/msg/Quaternion",
+   "repo": "common_interfaces",
+   "path": "geometry_msgs/msg/Quaternion.msg",
+   "sha256": "298495eb67a139642ffd37cc9029eae085e6c39a8789828b7517868a487939ed",
+   "git_blob": "96d392779a286cc3f4c83d80962236f5ea42c884"
+  },
+  {
+   "type": "geometry_msgs/msg/Twist",
+   "repo": "common_interfaces",
+   "path": "geometry_msgs/msg/Twist.msg",
+   "sha256": "ed471ef861f65af991b1f64d66ef941dd41dd4c0702f6222512b1a16c62d58b0",
+   "git_blob": "ede73597b9025238af28f55c275ddb02a8ed2f94"
+  },
+  {
+   "type": "geometry_msgs/msg/TwistWithCovariance",
+   "repo": "common_interfaces",
+   "path": "geometry_msgs/msg/TwistWithCovariance.msg",
+   "sha256": "5690a1f109d4962c73b5ca7f3673c48052d02f37b6a38fe2fb37c899cf555c45",
+   "git_blob": "111a19c5f7da42f846ed9eaff26ffc6a515c9e5f"
+  },
+  {
+   "type": "geometry_msgs/msg/Vector3",
+   "repo": "common_interfaces",
+   "path": "geometry_msgs/msg/Vector3.msg",
+   "sha256": "d8b9ea9aad1f424faf4d2b94dae1e1368af1e5d59de11aeed019399cff7f9e1d",
+   "git_blob": "b54588e117c4632f551c221fbc33df8f958804bf"
+  },
+  {
+   "type": "nav_msgs/msg/Odometry",
+   "repo": "common_interfaces",
+   "path": "nav_msgs/msg/Odometry.msg",
+   "sha256": "bb00547ddf498cdbae46fd991d9d85a59f507e12e7cf01fb18a86f1111524f4f",
+   "git_blob": "7186f064bf6827db2baa4d02041e4fb3304ed5ba"
+  },
+  {
+   "type": "sensor_msgs/msg/JointState",
+   "repo": "common_interfaces",
+   "path": "sensor_msgs/msg/JointState.msg",
+   "sha256": "711d1771a002c7190e5bbe746a163a67477c1e2a45482a64f1fe339815ca6f5d",
+   "git_blob": "ffaa9bfb0059383a6282abee168c72fdc92793ce"
+  },
+  {
+   "type": "std_msgs/msg/Header",
+   "repo": "common_interfaces",
+   "path": "std_msgs/msg/Header.msg",
+   "sha256": "d2cea14630e39ed0fa5b432ba9160a7c38855b9427d3344f99e83e83facb53c2",
+   "git_blob": "6966bb98863c237131a2bd2822298df9511ce948"
+  },
+  {
+   "type": "std_msgs/msg/String",
+   "repo": "common_interfaces",
+   "path": "std_msgs/msg/String.msg",
+   "sha256": "2022b3f1c32b578ff8d54a9948a51a10778761e0ad4ba60e50ae51292ca16884",
+   "git_blob": "82c18e5532626e45d2510a87f4e3ab791fbd0eed"
+  }
+ ],
+ "qos_yaml": "- history: keep_last\n  depth: {depth}\n  reliability: {reliability}\n  durability: {durability}\n  deadline:\n    sec: 9223372036854775807\n    nsec: 9223372036854775807\n  lifespan:\n    sec: 9223372036854775807\n    nsec: 9223372036854775807\n  liveliness: automatic\n  liveliness_lease_duration:\n    sec: 9223372036854775807\n    nsec: 9223372036854775807\n  avoid_ros_namespace_conventions: false",
+ "licence_field": "to be decided by the owner"
+}

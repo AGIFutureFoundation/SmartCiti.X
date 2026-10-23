@@ -114,6 +114,7 @@
   "sim.retry": "Réessayer",
   "sim.sound": "Son",
   "sim.view": "Vue",
+  "sim.slowNotice": "Cet appareil fait tourner le siège plus lentement qu’en temps réel ; votre résultat n’est pas affecté.",
   "sim.choose": "Choisissez un simulateur",
   "sim.operator": "Demander à l'opérateur",
   "progress.local": "La progression est enregistrée uniquement sur cet appareil.",

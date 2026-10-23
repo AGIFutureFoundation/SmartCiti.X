@@ -593,9 +593,20 @@ commit cannot name its own sha.
    `xr/seat_batches.mjs` (overhead crane 45 s against a 47 s reference run;
    boom lift 50 s) are left as committed: a longer cap is a product decision
    about how long a task may take, made by the project owner, not by the
-   harness. Displays above 60 Hz now see the
-   seat step at 60 Hz, which may judder in a headset; not yet measured. No
-   physical headset has run any of it.
+   harness. Wave 24 closed three gates.
+   A seat that falls behind real time (two frames of half a second or more
+   within 5 s) shows a short status line in the HUD and on the headset wrist
+   panel, in 8 locales (7 machine-drafted); it clears 3 s after the last one.
+   The overhead crane's 47 s reference run is the task plus the reference
+   operator's sway gate: 31.2 to 31.9 s with no gate (sway 0.64 m, failing);
+   the gate that holds the peak to 0.38 m costs the rest. No bug was found,
+   the caps are untouched, and the choice (raise the cap, or retune the gate:
+   a 0.20/0.40 gate runs 37.1 s at 0.46 m) stays with the owner. The draw
+   blends the last two physics states by the accumulator's remainder, so 72,
+   90 and 120 Hz displays do not step at 60 Hz: in MOCKED frame-loop runs (no
+   headset) the step-irregularity variance of the hook fell from 50, 100 and
+   200 mm2 to under 0.004 mm2; the physics is untouched (sweep 99/99 rows and
+   33/33 live-frame cases identical). No physical headset has run any of it.
 2. **Crew episodes record seat and muster** — *shipped, `d8094b8`.* The
    crew episode in `training/` records the two fields the completion verifier
    asks for, so the 23 lessons with a crew step can complete. The lessons are
@@ -694,7 +705,7 @@ the suite or eval that proves it; a name marked *proposed* is fixed at landing.
 
 | # | Exit criterion | Proved by | State |
 | --- | --- | --- | --- |
-| 1 | A fake `XRSession` enters and leaves on the 3D page in headless Chromium: the rig moves and the camera does not, `local-floor` falls back to `local`, snap turn and the controller map reach every one of the 11 seats' key state, the wrist panel reads the dash's gauges, ending the session restores the camera and the sky | a mocked-session browser suite (`xr/test_session.mjs --browser`; its browser half is not in `verify_all.sh`), plus `meta/test.mjs` changing its "no session driven" claim to "mocked session driven, no headset", with a mutation that breaks each contract failing by name | partly met: the seat physics and operator step on a fixed 1/60 s (wave 23), and a headless sweep gives 11 of 11 seats identical verdicts at 3 to 120 fps with jitter and stalls; in MOCKED sessions at 8 to 15 fps five seats Passed, the overhead crane Passed only with a longer time cap, the forklift a retry verdict, the boom lift and airless sprayer unfinished, the excavator key state as declared; no physical headset |
+| 1 | A fake `XRSession` enters and leaves on the 3D page in headless Chromium: the rig moves and the camera does not, `local-floor` falls back to `local`, snap turn and the controller map reach every one of the 11 seats' key state, the wrist panel reads the dash's gauges, ending the session restores the camera and the sky | a mocked-session browser suite (`xr/test_session.mjs --browser`; its browser half is not in `verify_all.sh`), plus `meta/test.mjs` changing its "no session driven" claim to "mocked session driven, no headset", with a mutation that breaks each contract failing by name | partly met: the seat physics and operator step on a fixed 1/60 s (wave 23), and a headless sweep gives 11 of 11 seats identical verdicts at 3 to 120 fps with jitter and stalls; in MOCKED sessions at 8 to 15 fps five seats Passed, the overhead crane Passed only with a longer time cap, the forklift a retry verdict, the boom lift and airless sprayer unfinished, the excavator key state as declared; no physical headset; wave 24: a slow-device notice, a 60 Hz-to-display blend measured in MOCKED runs, and the crane's 47 s run explained (owner's decision) |
 | 2 | `lessons_not_completable` is 0 of 139 (23 today) while every crew step still records an episode, and an episode missing seat or muster still fails the verifier | `node completion/test.mjs`, `node training/test.mjs`, `node lessons/test.mjs`, and `evals/registry/evals.json#completion_evidence` | shipped, `d8094b8`: 0 of 139 not completable |
 | 3a | `eval_parishes` part 1 reports 0 rows over a declared limit on 22051, 22071 and 22103, with the load average printed beside every frame row, and the `BASE` table and the three headroom constants in the eval byte-equal to `83db20b` | `node web/eval_parishes.mjs --part=1` (a browser eval; frame rows), and a check pinning the `BASE` table and the headroom constants (*proposed*, added with the change; `web/test_evalparts.mjs` does not pin them today) | not met: 22051 border passes at load 3-4 and fails at 5+; 22103 rows fail at load 3-4, as at `83db20b`; no ceiling moved |
 | 3b | Mean frame luminance of the 3D network view is inside [40, 215] with the clipped and crushed shares no worse than at `83db20b`, and draw calls and triangles equal (204 and 5,254) | a committed browser luminance eval over the four 3D pages (*proposed:* `web/eval_look.mjs`), `web/test_lookkit.mjs` | met on the scene, wave 22, by `web/eval_look.mjs` (overlays hidden, `83db20b` measured in the same harness): network scene mean 23.8 -> 54.4, campus 40.6 -> 57.0, clipped 0 px at both commits, crushed 20.26% -> 0.001% (network); draw calls and triangles 203 and 5,252 at both commits (the 204 and 5,254 above came from the wave 20 method). Whole frame, report only: 120 and 109 px clipped, all of it the top bar's white text, the same at `83db20b`. The wave 20 figures (28.2 -> 52.2) were whole-frame reads by an earlier method; the wave 22 figures are scene-only reads in `web/eval_look.mjs`. They are two baselines, not one series |
@@ -708,6 +719,42 @@ A row is flipped at landing by replacing "pending" in its workstream with
 the commit and changing its State cell to "shipped, `<sha>`". A criterion that
 passes on a mocked or load-bound run says so in its own row; it is never
 reworded to a wider claim.
+
+### Wave 24 additions (outside the v3.7 rows)
+
+Four new lines, each with its own suite. None runs on a real device, a real
+robot or a real learner.
+
+- **Geo-anchored training drops** (`geoplay/`): 19 existing tasks at 4 public
+  stops (2 public campuses, 2 public parks) pinned from the geo and
+  restoration registries, with GeoPose anchors; 67 registry places refused by
+  rule (ports, labs, piers, wetlands, cleanup sites, non-public campuses). The
+  geomap unlocks a stop on the device, opt-in, within 75 to 120 m; nothing is
+  stored or sent; a manual pick works without permission. Stops are registry
+  map points, not surveyed entrances. AR is proposed, not built.
+- **Omega Swarm** (`swarm/`): 9 SCRIPTED hives over 132 geohash cells that
+  cover all 89 GeoPose poses, and a geo-targeted router that dry-runs
+  simulated robots through `safety_gate/` and refuses real hardware ("real
+  hardware needs a named human operator; none is configured"). Three of the
+  four arena worlds have no gate record, so they run as dry runs logged
+  "no-record". Simulation only; no AI model; not a real-world safety system.
+- **The GIS worlds as glTF tiles for RP1's Sneeze engine** (`spatial/tiles.py`):
+  29 `.glb` tiles (7.0 MB) and 9 unsigned manifests shaped only after the
+  Sneeze docs' examples, built on demand into `dist/sneeze/` and checked
+  against the sha256 committed in `spatial/registry/tiles.json`; no `.glb` is
+  committed (the venue rule that no 3D model file sits in the tree holds), and
+  the Pages site does not serve them: a deployer builds and hosts them with
+  their own `map.wasm`. GeoPose and anything the docs do not describe are
+  proposed. Not loaded in Sneeze or Artemis.
+- **ROS 2 MCAP export of the SCRIPTED episodes** (`robotics/ros/`): 520 files
+  on demand (about 152 MiB; 27.6 MB with zstd), CDR messages under the jazzy
+  `ros2msg` schemas vendored byte for byte, read back by three independent
+  MCAP readers; a dataset card that says SCRIPTED, not real robot data, the
+  sim-to-real gap, and a licence left to the owner. Not replayed in a ROS 2
+  install.
+- **Every world page loaded in a browser** (wave 24 debug pass): 0 page
+  errors, 0 dead links or assets; one defect fixed (a seat link started audio
+  before any user gesture).
 
 ---
 

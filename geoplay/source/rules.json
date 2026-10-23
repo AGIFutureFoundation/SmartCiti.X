@@ -1,0 +1,40 @@
+{
+  "_what": "AUTHORED rules for the training-drop layer. Nothing here is a place: every coordinate is read from geo/registry/campuses_geo.json or restoration/registry/restoration.json by geoplay/build.py, and a record that fails a rule is refused by name, never given a default.",
+  "radius_m": {
+    "min": 50,
+    "max": 150,
+    "by_class": { "public-park": 75, "public-university": 120 },
+    "why": "A phone's position is good to tens of metres at best and the registry's pin is a map point, not a surveyed entrance, so a radius under 50 m would be a promise the data cannot keep; over 150 m would unlock a drop from another street."
+  },
+  "accuracy_max_m": 100,
+  "max_drops_per_stop": 5,
+  "classes": {
+    "public-university": {
+      "from": "geo/registry/campuses_geo.json#anchors",
+      "label": "public university or college campus",
+      "must_state": "public",
+      "must_name_one_of": ["university", "college"],
+      "tasks_from": "campus"
+    },
+    "public-park": {
+      "from": "restoration/registry/restoration.json#sites",
+      "label": "public park or state recreation area",
+      "org_must_match": ["Port of San Francisco", "California State Parks"],
+      "name_must_match": ["Park", "Point"],
+      "ground": "upland",
+      "category": "habitat-restoration",
+      "tasks_from": "restoration-site"
+    }
+  },
+  "deny_words": ["port", "laboratory", "station", "pier", "museum", "furnace", "airport", "shipyard", "naval", "superfund", "cleanup", "wetland", "wetlands", "marsh", "pond", "ponds", "levee", "refinery", "plant", "tunnel", "bridge", "highway", "residence", "home"],
+  "task_places_on_globe": ["campus", "restoration-site"],
+  "safety_line": "Stay aware of your surroundings; do not enter roads or private property.",
+  "safety_more": "Use public paths and sidewalks only, keep well back from water edges, rail and construction, and go in daylight. A drop is a game marker: the pin is the registry's map point for the place, not a surveyed entrance, and nothing here asks you to go anywhere. If the pin is not safe to reach, use the manual pick from where you are.",
+  "play": "Training drops are play. Unlocking one, like a coin or a badge, is never evidence of anything and enters no completion record; the tasks and lessons they open are unverified general practice, simulated, and certify nobody.",
+  "no_hosting": "A drop is pinned to a public place by rule. The place hosts nothing, has agreed to nothing and is not a partner: every partner here stays PROPOSED.",
+  "privacy": "The page may ask the device for its position, only after you press the button. The position is read on the device, compared with the pins on the device, shown as a distance on the device and then forgotten: it is not stored, not written to any storage, and not sent anywhere. Reloading the page forgets which drops you opened.",
+  "ar": {
+    "status": "PROPOSED",
+    "claim": "No AR camera view is built. A WebXR immersive-ar view of a drop is PROPOSED only: it needs a device and browser that report support for the session, which this build has not verified on any phone, so no page here asks for the camera."
+  }
+}

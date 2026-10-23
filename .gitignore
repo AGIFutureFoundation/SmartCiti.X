@@ -11,3 +11,6 @@ loop/state/
 loop/media
 /desk*.png
 /phone*.png
+
+# build outputs (the Sneeze world tiles; spatial/build.py writes them on demand)
+/dist/

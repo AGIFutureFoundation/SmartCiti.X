@@ -114,6 +114,7 @@
   "sim.retry": "Intentar de nuevo",
   "sim.sound": "Sonido",
   "sim.view": "Vista",
+  "sim.slowNotice": "Este dispositivo ejecuta el asiento más despacio que el tiempo real; tu resultado no se ve afectado.",
   "sim.choose": "Elige un simulador",
   "sim.operator": "Preguntar al operador",
   "progress.local": "El progreso se guarda solo en este dispositivo.",

@@ -1,0 +1,3032 @@
+{
+ "pack": "smartcitix-trade-craft-academy-spatial-tiles",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-09-26",
+ "source_stamp": "fcc65165166d8f9f",
+ "source_stamp_covers": [
+  "spatial/build.py",
+  "spatial/tiles.py",
+  "spatial/wilds_heights.mjs",
+  "parishes/registry/parishes.json",
+  "bayarea/registry/bayarea.json",
+  "wilds/registry/wilds.json",
+  "geo3d/registry/geo3d.json"
+ ],
+ "encoding": "glTF 2.0 binary (.glb); georeferenced tiles carry a GeoPose anchor (OGC GeoPose 1.0 Basic-YPR, OGC 21-056r11, application/geopose+json)",
+ "shape": "tile files: standard glTF 2.0. Manifests: the plain-JSON shape of the Sneeze example docs 01-02. Everything in `field_status` marked proposed is not documented anywhere read.",
+ "tiles": [
+  {
+   "id": "parish-22005",
+   "world": "parishes",
+   "kind": "parish",
+   "name": "Ascension Parish",
+   "file": "dist/sneeze/tiles/parish-22005.glb",
+   "reference": "tiles/parish-22005.glb",
+   "bytes": 216720,
+   "sha256": "0a9868c6be33bbb65ec4a873b386d7ceee58c689f3e144935e234c0628212be9",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "AUTHORED",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "ground",
+     "provenance": "DERIVED",
+     "source": "RECORDED outline: US Census Bureau 2017 cartographic boundary file (1:10,000,000, coarse) via us-atlas 3.0.1, converted to local metres by the registry",
+     "note": "flat fill of the coarse outline at 0 m; no elevation is held (the ground is flat AUTHORED at 0 m)",
+     "vertices": 18,
+     "triangles": 16
+    },
+    {
+     "name": "water",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural water, NOT the real rivers, bayous or lakes",
+     "note": "channels as ribbons of their authored width, ponds as filled polygons; drawn 1.5 m above the ground plane for depth only",
+     "vertices": 5546,
+     "triangles": 5510
+    },
+    {
+     "name": "streets-collector",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "collector streets as ribbons of the registry width (33.5 m); drawn above the ground plane for depth only",
+     "vertices": 1464,
+     "triangles": 732
+    },
+    {
+     "name": "streets-arterial",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "arterial streets as ribbons of the registry width (51.6 m); drawn above the ground plane for depth only",
+     "vertices": 186,
+     "triangles": 168
+    }
+   ],
+   "vertices": 7214,
+   "triangles": 6426,
+   "bbox_gltf_m": {
+    "min": [
+     -18549.65,
+     0.0,
+     -15848.53
+    ],
+    "max": [
+     26982.54,
+     4.5,
+     15592.89
+    ]
+   },
+   "counts": {
+    "ground_area_km2_triangulated": 771.353,
+    "outline_rings_filled": 1,
+    "outline_degenerate_rings_skipped": 0,
+    "outline_self_crossings_split": 0,
+    "channels": 10,
+    "ponds": 8,
+    "streets_arterial": 9,
+    "streets_collector": 366,
+    "streets_local_not_exported": 5650
+   },
+   "world_m": [
+    -79228.32,
+    25346.47
+   ],
+   "anchor": {
+    "geopose": {
+     "position": {
+      "lat": 30.202946,
+      "lon": -90.912536,
+      "h": 0.0
+     },
+     "orientation": {
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0
+     }
+    },
+    "provenance": {
+     "position_horizontal": "DERIVED",
+     "source": "parishes/registry/parishes.json#22005.frame.origin (area-weighted centroid of the coarse outline)",
+     "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+     "orientation_provenance": "DERIVED - the tile's local frame is east/north/up by construction, so the identity rotation is its true orientation relative to LTP-ENU; the sign convention of GeoPose yaw was not checked against the OGC text, and identity needs none"
+    },
+    "tile_origin_is": "the glb origin (0, 0, 0)"
+   },
+   "no_anchor_because": null,
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "parish-22051",
+   "world": "parishes",
+   "kind": "parish",
+   "name": "Jefferson Parish",
+   "file": "dist/sneeze/tiles/parish-22051.glb",
+   "reference": "tiles/parish-22051.glb",
+   "bytes": 176924,
+   "sha256": "eac00e7dfefbd54d2a15435fad3f1972ce04b71eebb0c5a434a71ffc6e11cf63",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "AUTHORED",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "ground",
+     "provenance": "DERIVED",
+     "source": "RECORDED outline: US Census Bureau 2017 cartographic boundary file (1:10,000,000, coarse) via us-atlas 3.0.1, converted to local metres by the registry",
+     "note": "flat fill of the coarse outline at 0 m; no elevation is held (the ground is flat AUTHORED at 0 m)",
+     "vertices": 38,
+     "triangles": 36
+    },
+    {
+     "name": "water",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural water, NOT the real rivers, bayous or lakes",
+     "note": "channels as ribbons of their authored width, ponds as filled polygons; drawn 1.5 m above the ground plane for depth only",
+     "vertices": 4736,
+     "triangles": 4692
+    },
+    {
+     "name": "streets-collector",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "collector streets as ribbons of the registry width (84.0 m); drawn above the ground plane for depth only",
+     "vertices": 676,
+     "triangles": 338
+    },
+    {
+     "name": "streets-arterial",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "arterial streets as ribbons of the registry width (129.2 m); drawn above the ground plane for depth only",
+     "vertices": 366,
+     "triangles": 318
+    }
+   ],
+   "vertices": 5816,
+   "triangles": 5384,
+   "bbox_gltf_m": {
+    "min": [
+     -16130.63,
+     0.0,
+     -49813.06
+    ],
+    "max": [
+     20255.71,
+     4.5,
+     64241.62
+    ]
+   },
+   "counts": {
+    "ground_area_km2_triangulated": 1470.453,
+    "outline_rings_filled": 1,
+    "outline_degenerate_rings_skipped": 0,
+    "outline_self_crossings_split": 0,
+    "channels": 14,
+    "ponds": 8,
+    "streets_arterial": 24,
+    "streets_collector": 169,
+    "streets_local_not_exported": 2157
+   },
+   "world_m": [
+    -2209.15,
+    -25922.02
+   ],
+   "anchor": {
+    "geopose": {
+     "position": {
+      "lat": 29.741878,
+      "lon": -90.112935,
+      "h": 0.0
+     },
+     "orientation": {
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0
+     }
+    },
+    "provenance": {
+     "position_horizontal": "DERIVED",
+     "source": "parishes/registry/parishes.json#22051.frame.origin (area-weighted centroid of the coarse outline)",
+     "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+     "orientation_provenance": "DERIVED - the tile's local frame is east/north/up by construction, so the identity rotation is its true orientation relative to LTP-ENU; the sign convention of GeoPose yaw was not checked against the OGC text, and identity needs none"
+    },
+    "tile_origin_is": "the glb origin (0, 0, 0)"
+   },
+   "no_anchor_because": null,
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "parish-22057",
+   "world": "parishes",
+   "kind": "parish",
+   "name": "Lafourche Parish",
+   "file": "dist/sneeze/tiles/parish-22057.glb",
+   "reference": "tiles/parish-22057.glb",
+   "bytes": 591532,
+   "sha256": "61ae9bcd7da575bb018188a1439ed36bfadb8e2fff7ad09c3b5fc11f4a5d7d6d",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "AUTHORED",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "ground",
+     "provenance": "DERIVED",
+     "source": "RECORDED outline: US Census Bureau 2017 cartographic boundary file (1:10,000,000, coarse) via us-atlas 3.0.1, converted to local metres by the registry",
+     "note": "flat fill of the coarse outline at 0 m; no elevation is held (the ground is flat AUTHORED at 0 m)",
+     "vertices": 53,
+     "triangles": 49
+    },
+    {
+     "name": "water",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural water, NOT the real rivers, bayous or lakes",
+     "note": "channels as ribbons of their authored width, ponds as filled polygons; drawn 1.5 m above the ground plane for depth only",
+     "vertices": 17390,
+     "triangles": 17354
+    },
+    {
+     "name": "streets-collector",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "collector streets as ribbons of the registry width (71.6 m); drawn above the ground plane for depth only",
+     "vertices": 1960,
+     "triangles": 980
+    },
+    {
+     "name": "streets-arterial",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "arterial streets as ribbons of the registry width (110.1 m); drawn above the ground plane for depth only",
+     "vertices": 358,
+     "triangles": 320
+    }
+   ],
+   "vertices": 19761,
+   "triangles": 18703,
+   "bbox_gltf_m": {
+    "min": [
+     -56700.8,
+     0.0,
+     -40428.2
+    ],
+    "max": [
+     40506.57,
+     4.5,
+     54999.42
+    ]
+   },
+   "counts": {
+    "ground_area_km2_triangulated": 3307.317,
+    "outline_rings_filled": 2,
+    "outline_degenerate_rings_skipped": 1,
+    "outline_self_crossings_split": 0,
+    "channels": 10,
+    "ponds": 8,
+    "streets_arterial": 19,
+    "streets_collector": 490,
+    "streets_local_not_exported": 5799
+   },
+   "world_m": [
+    -31673.76,
+    -46340.44
+   ],
+   "anchor": {
+    "geopose": {
+     "position": {
+      "lat": 29.558251,
+      "lon": -90.418832,
+      "h": 0.0
+     },
+     "orientation": {
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0
+     }
+    },
+    "provenance": {
+     "position_horizontal": "DERIVED",
+     "source": "parishes/registry/parishes.json#22057.frame.origin (area-weighted centroid of the coarse outline)",
+     "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+     "orientation_provenance": "DERIVED - the tile's local frame is east/north/up by construction, so the identity rotation is its true orientation relative to LTP-ENU; the sign convention of GeoPose yaw was not checked against the OGC text, and identity needs none"
+    },
+    "tile_origin_is": "the glb origin (0, 0, 0)"
+   },
+   "no_anchor_because": null,
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "parish-22063",
+   "world": "parishes",
+   "kind": "parish",
+   "name": "Livingston Parish",
+   "file": "dist/sneeze/tiles/parish-22063.glb",
+   "reference": "tiles/parish-22063.glb",
+   "bytes": 356560,
+   "sha256": "9c161695b735c0a292a5315a6d6fb4316c190220aaba0fc948840cc7e31f137d",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "AUTHORED",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "ground",
+     "provenance": "DERIVED",
+     "source": "RECORDED outline: US Census Bureau 2017 cartographic boundary file (1:10,000,000, coarse) via us-atlas 3.0.1, converted to local metres by the registry",
+     "note": "flat fill of the coarse outline at 0 m; no elevation is held (the ground is flat AUTHORED at 0 m)",
+     "vertices": 25,
+     "triangles": 23
+    },
+    {
+     "name": "water",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural water, NOT the real rivers, bayous or lakes",
+     "note": "channels as ribbons of their authored width, ponds as filled polygons; drawn 1.5 m above the ground plane for depth only",
+     "vertices": 8480,
+     "triangles": 8444
+    },
+    {
+     "name": "streets-collector",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "collector streets as ribbons of the registry width (38.9 m); drawn above the ground plane for depth only",
+     "vertices": 3244,
+     "triangles": 1622
+    },
+    {
+     "name": "streets-arterial",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "arterial streets as ribbons of the registry width (59.8 m); drawn above the ground plane for depth only",
+     "vertices": 304,
+     "triangles": 284
+    }
+   ],
+   "vertices": 12053,
+   "triangles": 10373,
+   "bbox_gltf_m": {
+    "min": [
+     -25120.7,
+     0.0,
+     -23439.03
+    ],
+    "max": [
+     23397.36,
+     4.5,
+     29385.3
+    ]
+   },
+   "counts": {
+    "ground_area_km2_triangulated": 1792.655,
+    "outline_rings_filled": 1,
+    "outline_degenerate_rings_skipped": 0,
+    "outline_self_crossings_split": 0,
+    "channels": 10,
+    "ponds": 8,
+    "streets_arterial": 10,
+    "streets_collector": 811,
+    "streets_local_not_exported": 10689
+   },
+   "world_m": [
+    -61516.73,
+    51652.45
+   ],
+   "anchor": {
+    "geopose": {
+     "position": {
+      "lat": 30.439521,
+      "lon": -90.728657,
+      "h": 0.0
+     },
+     "orientation": {
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0
+     }
+    },
+    "provenance": {
+     "position_horizontal": "DERIVED",
+     "source": "parishes/registry/parishes.json#22063.frame.origin (area-weighted centroid of the coarse outline)",
+     "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+     "orientation_provenance": "DERIVED - the tile's local frame is east/north/up by construction, so the identity rotation is its true orientation relative to LTP-ENU; the sign convention of GeoPose yaw was not checked against the OGC text, and identity needs none"
+    },
+    "tile_origin_is": "the glb origin (0, 0, 0)"
+   },
+   "no_anchor_because": null,
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "parish-22071",
+   "world": "parishes",
+   "kind": "parish",
+   "name": "Orleans Parish",
+   "file": "dist/sneeze/tiles/parish-22071.glb",
+   "reference": "tiles/parish-22071.glb",
+   "bytes": 246392,
+   "sha256": "546eefb1f3c9ecab49f2c1975f8d0da1e804e9561c42649e7c7277c78fb8f04b",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "AUTHORED",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "ground",
+     "provenance": "DERIVED",
+     "source": "RECORDED outline: US Census Bureau 2017 cartographic boundary file (1:10,000,000, coarse) via us-atlas 3.0.1, converted to local metres by the registry",
+     "note": "flat fill of the coarse outline at 0 m; no elevation is held (the ground is flat AUTHORED at 0 m)",
+     "vertices": 29,
+     "triangles": 27
+    },
+    {
+     "name": "water",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural water, NOT the real rivers, bayous or lakes",
+     "note": "channels as ribbons of their authored width, ponds as filled polygons; drawn 1.5 m above the ground plane for depth only",
+     "vertices": 6314,
+     "triangles": 6276
+    },
+    {
+     "name": "streets-collector",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "collector streets as ribbons of the registry width (36.6 m); drawn above the ground plane for depth only",
+     "vertices": 1696,
+     "triangles": 848
+    },
+    {
+     "name": "streets-arterial",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "arterial streets as ribbons of the registry width (56.3 m); drawn above the ground plane for depth only",
+     "vertices": 188,
+     "triangles": 164
+    }
+   ],
+   "vertices": 8227,
+   "triangles": 7315,
+   "bbox_gltf_m": {
+    "min": [
+     -20478.06,
+     0.0,
+     -14271.78
+    ],
+    "max": [
+     29259.11,
+     4.5,
+     22504.66
+    ]
+   },
+   "counts": {
+    "ground_area_km2_triangulated": 910.98,
+    "outline_rings_filled": 1,
+    "outline_degenerate_rings_skipped": 0,
+    "outline_self_crossings_split": 0,
+    "channels": 11,
+    "ponds": 8,
+    "streets_arterial": 12,
+    "streets_collector": 424,
+    "streets_local_not_exported": 5982
+   },
+   "world_m": [
+    15678.91,
+    10574.43
+   ],
+   "anchor": {
+    "geopose": {
+     "position": {
+      "lat": 30.070098,
+      "lon": -89.927224,
+      "h": 0.0
+     },
+     "orientation": {
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0
+     }
+    },
+    "provenance": {
+     "position_horizontal": "DERIVED",
+     "source": "parishes/registry/parishes.json#22071.frame.origin (area-weighted centroid of the coarse outline)",
+     "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+     "orientation_provenance": "DERIVED - the tile's local frame is east/north/up by construction, so the identity rotation is its true orientation relative to LTP-ENU; the sign convention of GeoPose yaw was not checked against the OGC text, and identity needs none"
+    },
+    "tile_origin_is": "the glb origin (0, 0, 0)"
+   },
+   "no_anchor_because": null,
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "parish-22075",
+   "world": "parishes",
+   "kind": "parish",
+   "name": "Plaquemines Parish",
+   "file": "dist/sneeze/tiles/parish-22075.glb",
+   "reference": "tiles/parish-22075.glb",
+   "bytes": 513036,
+   "sha256": "1ae6b9c8507e6880f640e11806f3c20e4b95d5f2074c5422490f30bc110db499",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "AUTHORED",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "ground",
+     "provenance": "DERIVED",
+     "source": "RECORDED outline: US Census Bureau 2017 cartographic boundary file (1:10,000,000, coarse) via us-atlas 3.0.1, converted to local metres by the registry",
+     "note": "flat fill of the coarse outline at 0 m; no elevation is held (the ground is flat AUTHORED at 0 m)",
+     "vertices": 83,
+     "triangles": 79
+    },
+    {
+     "name": "water",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural water, NOT the real rivers, bayous or lakes",
+     "note": "channels as ribbons of their authored width, ponds as filled polygons; drawn 1.5 m above the ground plane for depth only",
+     "vertices": 14952,
+     "triangles": 14914
+    },
+    {
+     "name": "streets-collector",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "collector streets as ribbons of the registry width (79.1 m); drawn above the ground plane for depth only",
+     "vertices": 1684,
+     "triangles": 842
+    },
+    {
+     "name": "streets-arterial",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "arterial streets as ribbons of the registry width (121.6 m); drawn above the ground plane for depth only",
+     "vertices": 402,
+     "triangles": 346
+    }
+   ],
+   "vertices": 17121,
+   "triangles": 16181,
+   "bbox_gltf_m": {
+    "min": [
+     -43112.32,
+     0.0,
+     -51340.51
+    ],
+    "max": [
+     60126.14,
+     4.5,
+     56037.54
+    ]
+   },
+   "counts": {
+    "ground_area_km2_triangulated": 3431.804,
+    "outline_rings_filled": 2,
+    "outline_degenerate_rings_skipped": 0,
+    "outline_self_crossings_split": 0,
+    "channels": 11,
+    "ponds": 8,
+    "streets_arterial": 28,
+    "streets_collector": 421,
+    "streets_local_not_exported": 5393
+   },
+   "world_m": [
+    44974.19,
+    -60204.02
+   ],
+   "anchor": {
+    "geopose": {
+     "position": {
+      "lat": 29.433573,
+      "lon": -89.623085,
+      "h": 0.0
+     },
+     "orientation": {
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0
+     }
+    },
+    "provenance": {
+     "position_horizontal": "DERIVED",
+     "source": "parishes/registry/parishes.json#22075.frame.origin (area-weighted centroid of the coarse outline)",
+     "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+     "orientation_provenance": "DERIVED - the tile's local frame is east/north/up by construction, so the identity rotation is its true orientation relative to LTP-ENU; the sign convention of GeoPose yaw was not checked against the OGC text, and identity needs none"
+    },
+    "tile_origin_is": "the glb origin (0, 0, 0)"
+   },
+   "no_anchor_because": null,
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "parish-22087",
+   "world": "parishes",
+   "kind": "parish",
+   "name": "St. Bernard Parish",
+   "file": "dist/sneeze/tiles/parish-22087.glb",
+   "reference": "tiles/parish-22087.glb",
+   "bytes": 309532,
+   "sha256": "c208189664ef99b4a13f98b3c75a720545260bb085ccad93ed4a39ccd9bdc78a",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "AUTHORED",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "ground",
+     "provenance": "DERIVED",
+     "source": "RECORDED outline: US Census Bureau 2017 cartographic boundary file (1:10,000,000, coarse) via us-atlas 3.0.1, converted to local metres by the registry",
+     "note": "flat fill of the coarse outline at 0 m; no elevation is held (the ground is flat AUTHORED at 0 m)",
+     "vertices": 75,
+     "triangles": 69
+    },
+    {
+     "name": "water",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural water, NOT the real rivers, bayous or lakes",
+     "note": "channels as ribbons of their authored width, ponds as filled polygons; drawn 1.5 m above the ground plane for depth only",
+     "vertices": 9136,
+     "triangles": 9096
+    },
+    {
+     "name": "streets-collector",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "collector streets as ribbons of the registry width (84.9 m); drawn above the ground plane for depth only",
+     "vertices": 800,
+     "triangles": 400
+    },
+    {
+     "name": "streets-arterial",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "arterial streets as ribbons of the registry width (130.5 m); drawn above the ground plane for depth only",
+     "vertices": 238,
+     "triangles": 188
+    }
+   ],
+   "vertices": 10249,
+   "triangles": 9753,
+   "bbox_gltf_m": {
+    "min": [
+     -45253.61,
+     0.0,
+     -31767.21
+    ],
+    "max": [
+     69988.6,
+     4.5,
+     24878.12
+    ]
+   },
+   "counts": {
+    "ground_area_km2_triangulated": 1694.207,
+    "outline_rings_filled": 3,
+    "outline_degenerate_rings_skipped": 0,
+    "outline_self_crossings_split": 0,
+    "channels": 12,
+    "ponds": 8,
+    "streets_arterial": 25,
+    "streets_collector": 200,
+    "streets_local_not_exported": 2457
+   },
+   "world_m": [
+    52836.0,
+    -11028.44
+   ],
+   "anchor": {
+    "geopose": {
+     "position": {
+      "lat": 29.875819,
+      "lon": -89.541465,
+      "h": 0.0
+     },
+     "orientation": {
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0
+     }
+    },
+    "provenance": {
+     "position_horizontal": "DERIVED",
+     "source": "parishes/registry/parishes.json#22087.frame.origin (area-weighted centroid of the coarse outline)",
+     "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+     "orientation_provenance": "DERIVED - the tile's local frame is east/north/up by construction, so the identity rotation is its true orientation relative to LTP-ENU; the sign convention of GeoPose yaw was not checked against the OGC text, and identity needs none"
+    },
+    "tile_origin_is": "the glb origin (0, 0, 0)"
+   },
+   "no_anchor_because": null,
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "parish-22089",
+   "world": "parishes",
+   "kind": "parish",
+   "name": "St. Charles Parish",
+   "file": "dist/sneeze/tiles/parish-22089.glb",
+   "reference": "tiles/parish-22089.glb",
+   "bytes": 239804,
+   "sha256": "727fa5baaa133098032d08b0f3bc59ff7ff91bc3f431cf4ac274c5c737e23c6f",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "AUTHORED",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "ground",
+     "provenance": "DERIVED",
+     "source": "RECORDED outline: US Census Bureau 2017 cartographic boundary file (1:10,000,000, coarse) via us-atlas 3.0.1, converted to local metres by the registry",
+     "note": "flat fill of the coarse outline at 0 m; no elevation is held (the ground is flat AUTHORED at 0 m)",
+     "vertices": 22,
+     "triangles": 20
+    },
+    {
+     "name": "water",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural water, NOT the real rivers, bayous or lakes",
+     "note": "channels as ribbons of their authored width, ponds as filled polygons; drawn 1.5 m above the ground plane for depth only",
+     "vertices": 5924,
+     "triangles": 5888
+    },
+    {
+     "name": "streets-collector",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "collector streets as ribbons of the registry width (38.6 m); drawn above the ground plane for depth only",
+     "vertices": 1892,
+     "triangles": 946
+    },
+    {
+     "name": "streets-arterial",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "arterial streets as ribbons of the registry width (59.4 m); drawn above the ground plane for depth only",
+     "vertices": 188,
+     "triangles": 170
+    }
+   ],
+   "vertices": 8026,
+   "triangles": 7024,
+   "bbox_gltf_m": {
+    "min": [
+     -18397.75,
+     0.0,
+     -28668.43
+    ],
+    "max": [
+     18275.05,
+     4.5,
+     23773.84
+    ]
+   },
+   "counts": {
+    "ground_area_km2_triangulated": 1028.145,
+    "outline_rings_filled": 1,
+    "outline_degenerate_rings_skipped": 0,
+    "outline_self_crossings_split": 0,
+    "channels": 10,
+    "ponds": 8,
+    "streets_arterial": 9,
+    "streets_collector": 473,
+    "streets_local_not_exported": 6224
+   },
+   "world_m": [
+    -25846.86,
+    -7738.62
+   ],
+   "anchor": {
+    "geopose": {
+     "position": {
+      "lat": 29.905405,
+      "lon": -90.358338,
+      "h": 0.0
+     },
+     "orientation": {
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0
+     }
+    },
+    "provenance": {
+     "position_horizontal": "DERIVED",
+     "source": "parishes/registry/parishes.json#22089.frame.origin (area-weighted centroid of the coarse outline)",
+     "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+     "orientation_provenance": "DERIVED - the tile's local frame is east/north/up by construction, so the identity rotation is its true orientation relative to LTP-ENU; the sign convention of GeoPose yaw was not checked against the OGC text, and identity needs none"
+    },
+    "tile_origin_is": "the glb origin (0, 0, 0)"
+   },
+   "no_anchor_because": null,
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "parish-22093",
+   "world": "parishes",
+   "kind": "parish",
+   "name": "St. James Parish",
+   "file": "dist/sneeze/tiles/parish-22093.glb",
+   "reference": "tiles/parish-22093.glb",
+   "bytes": 210220,
+   "sha256": "7f27bd2fb085b65de6b388a73d31c0a60d28112e32901229f4d8c1e379e76cd2",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "AUTHORED",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "ground",
+     "provenance": "DERIVED",
+     "source": "RECORDED outline: US Census Bureau 2017 cartographic boundary file (1:10,000,000, coarse) via us-atlas 3.0.1, converted to local metres by the registry",
+     "note": "flat fill of the coarse outline at 0 m; no elevation is held (the ground is flat AUTHORED at 0 m)",
+     "vertices": 17,
+     "triangles": 15
+    },
+    {
+     "name": "water",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural water, NOT the real rivers, bayous or lakes",
+     "note": "channels as ribbons of their authored width, ponds as filled polygons; drawn 1.5 m above the ground plane for depth only",
+     "vertices": 5498,
+     "triangles": 5456
+    },
+    {
+     "name": "streets-collector",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "collector streets as ribbons of the registry width (22.7 m); drawn above the ground plane for depth only",
+     "vertices": 1252,
+     "triangles": 626
+    },
+    {
+     "name": "streets-arterial",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "arterial streets as ribbons of the registry width (35.0 m); drawn above the ground plane for depth only",
+     "vertices": 208,
+     "triangles": 196
+    }
+   ],
+   "vertices": 6975,
+   "triangles": 6293,
+   "bbox_gltf_m": {
+    "min": [
+     -15963.67,
+     0.0,
+     -15543.18
+    ],
+    "max": [
+     14790.02,
+     4.5,
+     15310.78
+    ]
+   },
+   "counts": {
+    "ground_area_km2_triangulated": 670.389,
+    "outline_rings_filled": 1,
+    "outline_degenerate_rings_skipped": 0,
+    "outline_self_crossings_split": 0,
+    "channels": 13,
+    "ponds": 8,
+    "streets_arterial": 6,
+    "streets_collector": 313,
+    "streets_local_not_exported": 4569
+   },
+   "world_m": [
+    -68018.46,
+    5768.69
+   ],
+   "anchor": {
+    "geopose": {
+     "position": {
+      "lat": 30.026879,
+      "lon": -90.796157,
+      "h": 0.0
+     },
+     "orientation": {
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0
+     }
+    },
+    "provenance": {
+     "position_horizontal": "DERIVED",
+     "source": "parishes/registry/parishes.json#22093.frame.origin (area-weighted centroid of the coarse outline)",
+     "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+     "orientation_provenance": "DERIVED - the tile's local frame is east/north/up by construction, so the identity rotation is its true orientation relative to LTP-ENU; the sign convention of GeoPose yaw was not checked against the OGC text, and identity needs none"
+    },
+    "tile_origin_is": "the glb origin (0, 0, 0)"
+   },
+   "no_anchor_because": null,
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "parish-22095",
+   "world": "parishes",
+   "kind": "parish",
+   "name": "St. John the Baptist Parish",
+   "file": "dist/sneeze/tiles/parish-22095.glb",
+   "reference": "tiles/parish-22095.glb",
+   "bytes": 263780,
+   "sha256": "2e24e254363502c113b3e97044b1220eaef5ed84813d853e49bd5c3e96a10129",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "AUTHORED",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "ground",
+     "provenance": "DERIVED",
+     "source": "RECORDED outline: US Census Bureau 2017 cartographic boundary file (1:10,000,000, coarse) via us-atlas 3.0.1, converted to local metres by the registry",
+     "note": "flat fill of the coarse outline at 0 m; no elevation is held (the ground is flat AUTHORED at 0 m)",
+     "vertices": 25,
+     "triangles": 23
+    },
+    {
+     "name": "water",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural water, NOT the real rivers, bayous or lakes",
+     "note": "channels as ribbons of their authored width, ponds as filled polygons; drawn 1.5 m above the ground plane for depth only",
+     "vertices": 6604,
+     "triangles": 6566
+    },
+    {
+     "name": "streets-collector",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "collector streets as ribbons of the registry width (37.6 m); drawn above the ground plane for depth only",
+     "vertices": 1996,
+     "triangles": 998
+    },
+    {
+     "name": "streets-arterial",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "arterial streets as ribbons of the registry width (57.9 m); drawn above the ground plane for depth only",
+     "vertices": 212,
+     "triangles": 190
+    }
+   ],
+   "vertices": 8837,
+   "triangles": 7777,
+   "bbox_gltf_m": {
+    "min": [
+     -21002.08,
+     0.0,
+     -18702.12
+    ],
+    "max": [
+     30087.52,
+     4.5,
+     26862.4
+    ]
+   },
+   "counts": {
+    "ground_area_km2_triangulated": 1062.524,
+    "outline_rings_filled": 1,
+    "outline_degenerate_rings_skipped": 0,
+    "outline_self_crossings_split": 0,
+    "channels": 11,
+    "ponds": 8,
+    "streets_arterial": 11,
+    "streets_collector": 499,
+    "streets_local_not_exported": 6650
+   },
+   "world_m": [
+    -36680.96,
+    16842.72
+   ],
+   "anchor": {
+    "geopose": {
+     "position": {
+      "lat": 30.12647,
+      "lon": -90.470816,
+      "h": 0.0
+     },
+     "orientation": {
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0
+     }
+    },
+    "provenance": {
+     "position_horizontal": "DERIVED",
+     "source": "parishes/registry/parishes.json#22095.frame.origin (area-weighted centroid of the coarse outline)",
+     "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+     "orientation_provenance": "DERIVED - the tile's local frame is east/north/up by construction, so the identity rotation is its true orientation relative to LTP-ENU; the sign convention of GeoPose yaw was not checked against the OGC text, and identity needs none"
+    },
+    "tile_origin_is": "the glb origin (0, 0, 0)"
+   },
+   "no_anchor_because": null,
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "parish-22103",
+   "world": "parishes",
+   "kind": "parish",
+   "name": "St. Tammany Parish",
+   "file": "dist/sneeze/tiles/parish-22103.glb",
+   "reference": "tiles/parish-22103.glb",
+   "bytes": 432288,
+   "sha256": "ae3842510982289620f0271d7ce2df6c536c484b4b27e3f6e1cd338515008e60",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "AUTHORED",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "ground",
+     "provenance": "DERIVED",
+     "source": "RECORDED outline: US Census Bureau 2017 cartographic boundary file (1:10,000,000, coarse) via us-atlas 3.0.1, converted to local metres by the registry",
+     "note": "flat fill of the coarse outline at 0 m; no elevation is held (the ground is flat AUTHORED at 0 m)",
+     "vertices": 29,
+     "triangles": 27
+    },
+    {
+     "name": "water",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural water, NOT the real rivers, bayous or lakes",
+     "note": "channels as ribbons of their authored width, ponds as filled polygons; drawn 1.5 m above the ground plane for depth only",
+     "vertices": 11130,
+     "triangles": 11094
+    },
+    {
+     "name": "streets-collector",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "collector streets as ribbons of the registry width (51.4 m); drawn above the ground plane for depth only",
+     "vertices": 3088,
+     "triangles": 1544
+    },
+    {
+     "name": "streets-arterial",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "arterial streets as ribbons of the registry width (79.2 m); drawn above the ground plane for depth only",
+     "vertices": 316,
+     "triangles": 290
+    }
+   ],
+   "vertices": 14563,
+   "triangles": 12955,
+   "bbox_gltf_m": {
+    "min": [
+     -28529.13,
+     0.0,
+     -33571.02
+    ],
+    "max": [
+     41344.16,
+     4.5,
+     28901.16
+    ]
+   },
+   "counts": {
+    "ground_area_km2_triangulated": 2808.674,
+    "outline_rings_filled": 1,
+    "outline_degenerate_rings_skipped": 0,
+    "outline_self_crossings_split": 0,
+    "channels": 10,
+    "ponds": 8,
+    "streets_arterial": 13,
+    "streets_collector": 772,
+    "streets_local_not_exported": 9816
+   },
+   "world_m": [
+    12773.45,
+    48398.1
+   ],
+   "anchor": {
+    "geopose": {
+     "position": {
+      "lat": 30.410254,
+      "lon": -89.957388,
+      "h": 0.0
+     },
+     "orientation": {
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0
+     }
+    },
+    "provenance": {
+     "position_horizontal": "DERIVED",
+     "source": "parishes/registry/parishes.json#22103.frame.origin (area-weighted centroid of the coarse outline)",
+     "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+     "orientation_provenance": "DERIVED - the tile's local frame is east/north/up by construction, so the identity rotation is its true orientation relative to LTP-ENU; the sign convention of GeoPose yaw was not checked against the OGC text, and identity needs none"
+    },
+    "tile_origin_is": "the glb origin (0, 0, 0)"
+   },
+   "no_anchor_because": null,
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "parish-22105",
+   "world": "parishes",
+   "kind": "parish",
+   "name": "Tangipahoa Parish",
+   "file": "dist/sneeze/tiles/parish-22105.glb",
+   "reference": "tiles/parish-22105.glb",
+   "bytes": 268216,
+   "sha256": "db56cc53f00372e60c460ce9c8e9fcea0829fcbde43377330dd53aa1a2b2dd37",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "AUTHORED",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "ground",
+     "provenance": "DERIVED",
+     "source": "RECORDED outline: US Census Bureau 2017 cartographic boundary file (1:10,000,000, coarse) via us-atlas 3.0.1, converted to local metres by the registry",
+     "note": "flat fill of the coarse outline at 0 m; no elevation is held (the ground is flat AUTHORED at 0 m)",
+     "vertices": 18,
+     "triangles": 16
+    },
+    {
+     "name": "water",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural water, NOT the real rivers, bayous or lakes",
+     "note": "channels as ribbons of their authored width, ponds as filled polygons; drawn 1.5 m above the ground plane for depth only",
+     "vertices": 6986,
+     "triangles": 6950
+    },
+    {
+     "name": "streets-collector",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "collector streets as ribbons of the registry width (62.7 m); drawn above the ground plane for depth only",
+     "vertices": 1628,
+     "triangles": 814
+    },
+    {
+     "name": "streets-arterial",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "arterial streets as ribbons of the registry width (96.4 m); drawn above the ground plane for depth only",
+     "vertices": 316,
+     "triangles": 292
+    }
+   ],
+   "vertices": 8948,
+   "triangles": 8072,
+   "bbox_gltf_m": {
+    "min": [
+     -15547.3,
+     0.0,
+     -41554.25
+    ],
+    "max": [
+     23290.81,
+     4.5,
+     43559.89
+    ]
+   },
+   "counts": {
+    "ground_area_km2_triangulated": 2210.006,
+    "outline_rings_filled": 1,
+    "outline_degenerate_rings_skipped": 0,
+    "outline_self_crossings_split": 0,
+    "channels": 10,
+    "ponds": 8,
+    "streets_arterial": 12,
+    "streets_collector": 407,
+    "streets_local_not_exported": 5350
+   },
+   "world_m": [
+    -30339.12,
+    72418.13
+   ],
+   "anchor": {
+    "geopose": {
+     "position": {
+      "lat": 30.626271,
+      "lon": -90.404976,
+      "h": 0.0
+     },
+     "orientation": {
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0
+     }
+    },
+    "provenance": {
+     "position_horizontal": "DERIVED",
+     "source": "parishes/registry/parishes.json#22105.frame.origin (area-weighted centroid of the coarse outline)",
+     "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+     "orientation_provenance": "DERIVED - the tile's local frame is east/north/up by construction, so the identity rotation is its true orientation relative to LTP-ENU; the sign convention of GeoPose yaw was not checked against the OGC text, and identity needs none"
+    },
+    "tile_origin_is": "the glb origin (0, 0, 0)"
+   },
+   "no_anchor_because": null,
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "parish-22109",
+   "world": "parishes",
+   "kind": "parish",
+   "name": "Terrebonne Parish",
+   "file": "dist/sneeze/tiles/parish-22109.glb",
+   "reference": "tiles/parish-22109.glb",
+   "bytes": 464848,
+   "sha256": "29a497cb8ab586188b48480d46857c038e789b81e0b564cf6b2d093da77c0c85",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "AUTHORED",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "ground",
+     "provenance": "DERIVED",
+     "source": "RECORDED outline: US Census Bureau 2017 cartographic boundary file (1:10,000,000, coarse) via us-atlas 3.0.1, converted to local metres by the registry",
+     "note": "flat fill of the coarse outline at 0 m; no elevation is held (the ground is flat AUTHORED at 0 m)",
+     "vertices": 68,
+     "triangles": 62
+    },
+    {
+     "name": "water",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural water, NOT the real rivers, bayous or lakes",
+     "note": "channels as ribbons of their authored width, ponds as filled polygons; drawn 1.5 m above the ground plane for depth only",
+     "vertices": 12760,
+     "triangles": 12724
+    },
+    {
+     "name": "streets-collector",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "collector streets as ribbons of the registry width (68.4 m); drawn above the ground plane for depth only",
+     "vertices": 2444,
+     "triangles": 1222
+    },
+    {
+     "name": "streets-arterial",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "arterial streets as ribbons of the registry width (105.2 m); drawn above the ground plane for depth only",
+     "vertices": 316,
+     "triangles": 276
+    }
+   ],
+   "vertices": 15588,
+   "triangles": 14284,
+   "bbox_gltf_m": {
+    "min": [
+     -45568.5,
+     0.0,
+     -40657.37
+    ],
+    "max": [
+     47261.22,
+     4.5,
+     41110.49
+    ]
+   },
+   "counts": {
+    "ground_area_km2_triangulated": 3919.855,
+    "outline_rings_filled": 3,
+    "outline_degenerate_rings_skipped": 0,
+    "outline_self_crossings_split": 0,
+    "channels": 10,
+    "ponds": 8,
+    "streets_arterial": 20,
+    "streets_collector": 611,
+    "streets_local_not_exported": 7393
+   },
+   "world_m": [
+    -74633.09,
+    -62808.54
+   ],
+   "anchor": {
+    "geopose": {
+     "position": {
+      "lat": 29.41015,
+      "lon": -90.864829,
+      "h": 0.0
+     },
+     "orientation": {
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0
+     }
+    },
+    "provenance": {
+     "position_horizontal": "DERIVED",
+     "source": "parishes/registry/parishes.json#22109.frame.origin (area-weighted centroid of the coarse outline)",
+     "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+     "orientation_provenance": "DERIVED - the tile's local frame is east/north/up by construction, so the identity rotation is its true orientation relative to LTP-ENU; the sign convention of GeoPose yaw was not checked against the OGC text, and identity needs none"
+    },
+    "tile_origin_is": "the glb origin (0, 0, 0)"
+   },
+   "no_anchor_because": null,
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "county-06001",
+   "world": "bayarea",
+   "kind": "county",
+   "name": "Alameda County",
+   "file": "dist/sneeze/tiles/county-06001.glb",
+   "reference": "tiles/county-06001.glb",
+   "bytes": 190676,
+   "sha256": "e048df2c3c091444e0d9713ca281a77bcb1f88c76f799b3cad0b687bf4398678",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "AUTHORED",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "ground",
+     "provenance": "DERIVED",
+     "source": "RECORDED outline: US Census Bureau 2017 cartographic boundary file (1:10,000,000, coarse) via us-atlas 3.0.1, converted to local metres by the registry",
+     "note": "flat fill of the coarse outline at 0 m; no elevation is held (the ground is flat AUTHORED at 0 m)",
+     "vertices": 29,
+     "triangles": 25
+    },
+    {
+     "name": "water",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural water, NOT the real rivers, bayous or lakes",
+     "note": "channels as ribbons of their authored width, ponds as filled polygons; drawn 1.5 m above the ground plane for depth only",
+     "vertices": 4306,
+     "triangles": 4274
+    },
+    {
+     "name": "streets-collector",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "collector streets as ribbons of the registry width (55.8 m); drawn above the ground plane for depth only",
+     "vertices": 1828,
+     "triangles": 914
+    },
+    {
+     "name": "streets-arterial",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "arterial streets as ribbons of the registry width (85.9 m); drawn above the ground plane for depth only",
+     "vertices": 220,
+     "triangles": 196
+    }
+   ],
+   "vertices": 6383,
+   "triangles": 5409,
+   "bbox_gltf_m": {
+    "min": [
+     -39108.43,
+     0.0,
+     -28937.07
+    ],
+    "max": [
+     36735.81,
+     4.5,
+     21308.09
+    ]
+   },
+   "counts": {
+    "ground_area_km2_triangulated": 1949.951,
+    "outline_rings_filled": 1,
+    "outline_degenerate_rings_skipped": 0,
+    "outline_self_crossings_split": 1,
+    "channels": 8,
+    "ponds": 8,
+    "streets_arterial": 12,
+    "streets_collector": 457,
+    "streets_local_not_exported": 5623
+   },
+   "world_m": [
+    33580.35,
+    -8262.46
+   ],
+   "anchor": {
+    "geopose": {
+     "position": {
+      "lat": 37.645694,
+      "lon": -121.888216,
+      "h": 0.0
+     },
+     "orientation": {
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0
+     }
+    },
+    "provenance": {
+     "position_horizontal": "DERIVED",
+     "source": "bayarea/registry/bayarea.json#06001.frame.origin (area-weighted centroid of the coarse outline)",
+     "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+     "orientation_provenance": "DERIVED - the tile's local frame is east/north/up by construction, so the identity rotation is its true orientation relative to LTP-ENU; the sign convention of GeoPose yaw was not checked against the OGC text, and identity needs none"
+    },
+    "tile_origin_is": "the glb origin (0, 0, 0)"
+   },
+   "no_anchor_because": null,
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "county-06013",
+   "world": "bayarea",
+   "kind": "county",
+   "name": "Contra Costa County",
+   "file": "dist/sneeze/tiles/county-06013.glb",
+   "reference": "tiles/county-06013.glb",
+   "bytes": 177084,
+   "sha256": "96e8746ff7632fca534ef4addc238475d0b8f8cec3bfa50fb53e4d921c8fdb85",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "AUTHORED",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "ground",
+     "provenance": "DERIVED",
+     "source": "RECORDED outline: US Census Bureau 2017 cartographic boundary file (1:10,000,000, coarse) via us-atlas 3.0.1, converted to local metres by the registry",
+     "note": "flat fill of the coarse outline at 0 m; no elevation is held (the ground is flat AUTHORED at 0 m)",
+     "vertices": 35,
+     "triangles": 33
+    },
+    {
+     "name": "water",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural water, NOT the real rivers, bayous or lakes",
+     "note": "channels as ribbons of their authored width, ponds as filled polygons; drawn 1.5 m above the ground plane for depth only",
+     "vertices": 3824,
+     "triangles": 3790
+    },
+    {
+     "name": "streets-collector",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "collector streets as ribbons of the registry width (57.7 m); drawn above the ground plane for depth only",
+     "vertices": 1764,
+     "triangles": 882
+    },
+    {
+     "name": "streets-arterial",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "arterial streets as ribbons of the registry width (88.8 m); drawn above the ground plane for depth only",
+     "vertices": 300,
+     "triangles": 276
+    }
+   ],
+   "vertices": 5923,
+   "triangles": 4981,
+   "bbox_gltf_m": {
+    "min": [
+     -43883.88,
+     0.0,
+     -19598.8
+    ],
+    "max": [
+     34513.56,
+     4.5,
+     22240.35
+    ]
+   },
+   "counts": {
+    "ground_area_km2_triangulated": 1978.178,
+    "outline_rings_filled": 1,
+    "outline_degenerate_rings_skipped": 0,
+    "outline_self_crossings_split": 0,
+    "channels": 9,
+    "ponds": 8,
+    "streets_arterial": 12,
+    "streets_collector": 441,
+    "streets_local_not_exported": 5230
+   },
+   "world_m": [
+    29989.8,
+    22186.42
+   ],
+   "anchor": {
+    "geopose": {
+     "position": {
+      "lat": 37.919527,
+      "lon": -121.929038,
+      "h": 0.0
+     },
+     "orientation": {
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0
+     }
+    },
+    "provenance": {
+     "position_horizontal": "DERIVED",
+     "source": "bayarea/registry/bayarea.json#06013.frame.origin (area-weighted centroid of the coarse outline)",
+     "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+     "orientation_provenance": "DERIVED - the tile's local frame is east/north/up by construction, so the identity rotation is its true orientation relative to LTP-ENU; the sign convention of GeoPose yaw was not checked against the OGC text, and identity needs none"
+    },
+    "tile_origin_is": "the glb origin (0, 0, 0)"
+   },
+   "no_anchor_because": null,
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "county-06041",
+   "world": "bayarea",
+   "kind": "county",
+   "name": "Marin County",
+   "file": "dist/sneeze/tiles/county-06041.glb",
+   "reference": "tiles/county-06041.glb",
+   "bytes": 230984,
+   "sha256": "bfa635414b512143143b037bb79d5376e52fa7c386e8453061e0d1df28e59e81",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "AUTHORED",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "ground",
+     "provenance": "DERIVED",
+     "source": "RECORDED outline: US Census Bureau 2017 cartographic boundary file (1:10,000,000, coarse) via us-atlas 3.0.1, converted to local metres by the registry",
+     "note": "flat fill of the coarse outline at 0 m; no elevation is held (the ground is flat AUTHORED at 0 m)",
+     "vertices": 29,
+     "triangles": 27
+    },
+    {
+     "name": "water",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural water, NOT the real rivers, bayous or lakes",
+     "note": "channels as ribbons of their authored width, ponds as filled polygons; drawn 1.5 m above the ground plane for depth only",
+     "vertices": 5038,
+     "triangles": 5008
+    },
+    {
+     "name": "streets-collector",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "collector streets as ribbons of the registry width (41.1 m); drawn above the ground plane for depth only",
+     "vertices": 2488,
+     "triangles": 1244
+    },
+    {
+     "name": "streets-arterial",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "arterial streets as ribbons of the registry width (63.2 m); drawn above the ground plane for depth only",
+     "vertices": 236,
+     "triangles": 214
+    }
+   ],
+   "vertices": 7791,
+   "triangles": 6493,
+   "bbox_gltf_m": {
+    "min": [
+     -25076.78,
+     0.0,
+     -27335.86
+    ],
+    "max": [
+     25192.41,
+     4.5,
+     28449.71
+    ]
+   },
+   "counts": {
+    "ground_area_km2_triangulated": 1408.721,
+    "outline_rings_filled": 1,
+    "outline_degenerate_rings_skipped": 0,
+    "outline_self_crossings_split": 0,
+    "channels": 7,
+    "ponds": 8,
+    "streets_arterial": 11,
+    "streets_collector": 622,
+    "streets_local_not_exported": 7905
+   },
+   "world_m": [
+    -39958.51,
+    39476.48
+   ],
+   "anchor": {
+    "geopose": {
+     "position": {
+      "lat": 38.07502,
+      "lon": -122.724299,
+      "h": 0.0
+     },
+     "orientation": {
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0
+     }
+    },
+    "provenance": {
+     "position_horizontal": "DERIVED",
+     "source": "bayarea/registry/bayarea.json#06041.frame.origin (area-weighted centroid of the coarse outline)",
+     "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+     "orientation_provenance": "DERIVED - the tile's local frame is east/north/up by construction, so the identity rotation is its true orientation relative to LTP-ENU; the sign convention of GeoPose yaw was not checked against the OGC text, and identity needs none"
+    },
+    "tile_origin_is": "the glb origin (0, 0, 0)"
+   },
+   "no_anchor_because": null,
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "county-06055",
+   "world": "bayarea",
+   "kind": "county",
+   "name": "Napa County",
+   "file": "dist/sneeze/tiles/county-06055.glb",
+   "reference": "tiles/county-06055.glb",
+   "bytes": 199392,
+   "sha256": "f5c8260b6dd8c4962f7c2d8fb1d5679f538605a302931d572ae99bc4bb89c5c6",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "AUTHORED",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "ground",
+     "provenance": "DERIVED",
+     "source": "RECORDED outline: US Census Bureau 2017 cartographic boundary file (1:10,000,000, coarse) via us-atlas 3.0.1, converted to local metres by the registry",
+     "note": "flat fill of the coarse outline at 0 m; no elevation is held (the ground is flat AUTHORED at 0 m)",
+     "vertices": 34,
+     "triangles": 32
+    },
+    {
+     "name": "water",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural water, NOT the real rivers, bayous or lakes",
+     "note": "channels as ribbons of their authored width, ponds as filled polygons; drawn 1.5 m above the ground plane for depth only",
+     "vertices": 4542,
+     "triangles": 4512
+    },
+    {
+     "name": "streets-collector",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "collector streets as ribbons of the registry width (58.1 m); drawn above the ground plane for depth only",
+     "vertices": 1796,
+     "triangles": 898
+    },
+    {
+     "name": "streets-arterial",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "arterial streets as ribbons of the registry width (89.4 m); drawn above the ground plane for depth only",
+     "vertices": 298,
+     "triangles": 274
+    }
+   ],
+   "vertices": 6670,
+   "triangles": 5716,
+   "bbox_gltf_m": {
+    "min": [
+     -27266.06,
+     0.0,
+     -39806.84
+    ],
+    "max": [
+     23329.71,
+     4.5,
+     39104.9
+    ]
+   },
+   "counts": {
+    "ground_area_km2_triangulated": 2044.194,
+    "outline_rings_filled": 1,
+    "outline_degenerate_rings_skipped": 0,
+    "outline_self_crossings_split": 0,
+    "channels": 7,
+    "ponds": 8,
+    "streets_arterial": 12,
+    "streets_collector": 449,
+    "streets_local_not_exported": 5166
+   },
+   "world_m": [
+    -5393.66,
+    87471.72
+   ],
+   "anchor": {
+    "geopose": {
+     "position": {
+      "lat": 38.506651,
+      "lon": -122.331322,
+      "h": 0.0
+     },
+     "orientation": {
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0
+     }
+    },
+    "provenance": {
+     "position_horizontal": "DERIVED",
+     "source": "bayarea/registry/bayarea.json#06055.frame.origin (area-weighted centroid of the coarse outline)",
+     "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+     "orientation_provenance": "DERIVED - the tile's local frame is east/north/up by construction, so the identity rotation is its true orientation relative to LTP-ENU; the sign convention of GeoPose yaw was not checked against the OGC text, and identity needs none"
+    },
+    "tile_origin_is": "the glb origin (0, 0, 0)"
+   },
+   "no_anchor_because": null,
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "county-06075",
+   "world": "bayarea",
+   "kind": "county",
+   "name": "San Francisco County",
+   "file": "dist/sneeze/tiles/county-06075.glb",
+   "reference": "tiles/county-06075.glb",
+   "bytes": 56392,
+   "sha256": "388027bff884f46cfe8b0ee3b6254f5cfdcea6f917b623b49a665db8b2d49fc6",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "AUTHORED",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "ground",
+     "provenance": "DERIVED",
+     "source": "RECORDED outline: US Census Bureau 2017 cartographic boundary file (1:10,000,000, coarse) via us-atlas 3.0.1, converted to local metres by the registry",
+     "note": "flat fill of the coarse outline at 0 m; no elevation is held (the ground is flat AUTHORED at 0 m)",
+     "vertices": 7,
+     "triangles": 5
+    },
+    {
+     "name": "water",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural water, NOT the real rivers, bayous or lakes",
+     "note": "channels as ribbons of their authored width, ponds as filled polygons; drawn 1.5 m above the ground plane for depth only",
+     "vertices": 1344,
+     "triangles": 1314
+    },
+    {
+     "name": "streets-collector",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "collector streets as ribbons of the registry width (22.0 m); drawn above the ground plane for depth only",
+     "vertices": 268,
+     "triangles": 134
+    },
+    {
+     "name": "streets-arterial",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "arterial streets as ribbons of the registry width (32.5 m); drawn above the ground plane for depth only",
+     "vertices": 128,
+     "triangles": 118
+    }
+   ],
+   "vertices": 1747,
+   "triangles": 1571,
+   "bbox_gltf_m": {
+    "min": [
+     -6629.7,
+     0.0,
+     -6321.44
+    ],
+    "max": [
+     6939.07,
+     4.5,
+     5150.44
+    ]
+   },
+   "counts": {
+    "ground_area_km2_triangulated": 121.776,
+    "outline_rings_filled": 1,
+    "outline_degenerate_rings_skipped": 1,
+    "outline_self_crossings_split": 0,
+    "channels": 7,
+    "ponds": 8,
+    "streets_arterial": 5,
+    "streets_collector": 67,
+    "streets_local_not_exported": 865
+   },
+   "world_m": [
+    -14956.9,
+    3845.57
+   ],
+   "anchor": {
+    "geopose": {
+     "position": {
+      "lat": 37.754584,
+      "lon": -122.440049,
+      "h": 0.0
+     },
+     "orientation": {
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0
+     }
+    },
+    "provenance": {
+     "position_horizontal": "DERIVED",
+     "source": "bayarea/registry/bayarea.json#06075.frame.origin (area-weighted centroid of the coarse outline)",
+     "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+     "orientation_provenance": "DERIVED - the tile's local frame is east/north/up by construction, so the identity rotation is its true orientation relative to LTP-ENU; the sign convention of GeoPose yaw was not checked against the OGC text, and identity needs none"
+    },
+    "tile_origin_is": "the glb origin (0, 0, 0)"
+   },
+   "no_anchor_because": null,
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "county-06081",
+   "world": "bayarea",
+   "kind": "county",
+   "name": "San Mateo County",
+   "file": "dist/sneeze/tiles/county-06081.glb",
+   "reference": "tiles/county-06081.glb",
+   "bytes": 161440,
+   "sha256": "b575a7087f5b0cb4463fa679d53871148d7877d5dc26a3b3b048b39f438a3f0a",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "AUTHORED",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "ground",
+     "provenance": "DERIVED",
+     "source": "RECORDED outline: US Census Bureau 2017 cartographic boundary file (1:10,000,000, coarse) via us-atlas 3.0.1, converted to local metres by the registry",
+     "note": "flat fill of the coarse outline at 0 m; no elevation is held (the ground is flat AUTHORED at 0 m)",
+     "vertices": 30,
+     "triangles": 28
+    },
+    {
+     "name": "water",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural water, NOT the real rivers, bayous or lakes",
+     "note": "channels as ribbons of their authored width, ponds as filled polygons; drawn 1.5 m above the ground plane for depth only",
+     "vertices": 3660,
+     "triangles": 3630
+    },
+    {
+     "name": "streets-collector",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "collector streets as ribbons of the registry width (49.2 m); drawn above the ground plane for depth only",
+     "vertices": 1480,
+     "triangles": 740
+    },
+    {
+     "name": "streets-arterial",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "arterial streets as ribbons of the registry width (75.7 m); drawn above the ground plane for depth only",
+     "vertices": 202,
+     "triangles": 178
+    }
+   ],
+   "vertices": 5372,
+   "triangles": 4576,
+   "bbox_gltf_m": {
+    "min": [
+     -16619.55,
+     0.0,
+     -31568.9
+    ],
+    "max": [
+     19513.52,
+     4.5,
+     35309.22
+    ]
+   },
+   "counts": {
+    "ground_area_km2_triangulated": 1201.121,
+    "outline_rings_filled": 1,
+    "outline_degenerate_rings_skipped": 0,
+    "outline_self_crossings_split": 0,
+    "channels": 7,
+    "ponds": 8,
+    "streets_arterial": 12,
+    "streets_collector": 370,
+    "streets_local_not_exported": 4309
+   },
+   "world_m": [
+    -5351.71,
+    -32852.81
+   ],
+   "anchor": {
+    "geopose": {
+     "position": {
+      "lat": 37.424548,
+      "lon": -122.330845,
+      "h": 0.0
+     },
+     "orientation": {
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0
+     }
+    },
+    "provenance": {
+     "position_horizontal": "DERIVED",
+     "source": "bayarea/registry/bayarea.json#06081.frame.origin (area-weighted centroid of the coarse outline)",
+     "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+     "orientation_provenance": "DERIVED - the tile's local frame is east/north/up by construction, so the identity rotation is its true orientation relative to LTP-ENU; the sign convention of GeoPose yaw was not checked against the OGC text, and identity needs none"
+    },
+    "tile_origin_is": "the glb origin (0, 0, 0)"
+   },
+   "no_anchor_because": null,
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "county-06085",
+   "world": "bayarea",
+   "kind": "county",
+   "name": "Santa Clara County",
+   "file": "dist/sneeze/tiles/county-06085.glb",
+   "reference": "tiles/county-06085.glb",
+   "bytes": 266956,
+   "sha256": "d643fe821c5e234452388e37206d2f4b6b9a28cd4d821109ab999f8a71a92d7b",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "AUTHORED",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "ground",
+     "provenance": "DERIVED",
+     "source": "RECORDED outline: US Census Bureau 2017 cartographic boundary file (1:10,000,000, coarse) via us-atlas 3.0.1, converted to local metres by the registry",
+     "note": "flat fill of the coarse outline at 0 m; no elevation is held (the ground is flat AUTHORED at 0 m)",
+     "vertices": 43,
+     "triangles": 41
+    },
+    {
+     "name": "water",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural water, NOT the real rivers, bayous or lakes",
+     "note": "channels as ribbons of their authored width, ponds as filled polygons; drawn 1.5 m above the ground plane for depth only",
+     "vertices": 6268,
+     "triangles": 6234
+    },
+    {
+     "name": "streets-collector",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "collector streets as ribbons of the registry width (64.8 m); drawn above the ground plane for depth only",
+     "vertices": 2292,
+     "triangles": 1146
+    },
+    {
+     "name": "streets-arterial",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "arterial streets as ribbons of the registry width (99.7 m); drawn above the ground plane for depth only",
+     "vertices": 370,
+     "triangles": 338
+    }
+   ],
+   "vertices": 8973,
+   "triangles": 7759,
+   "bbox_gltf_m": {
+    "min": [
+     -44802.7,
+     0.0,
+     -27905.94
+    ],
+    "max": [
+     43218.95,
+     4.5,
+     37263.92
+    ]
+   },
+   "counts": {
+    "ground_area_km2_triangulated": 3366.889,
+    "outline_rings_filled": 1,
+    "outline_degenerate_rings_skipped": 0,
+    "outline_self_crossings_split": 0,
+    "channels": 9,
+    "ponds": 8,
+    "streets_arterial": 16,
+    "streets_collector": 573,
+    "streets_local_not_exported": 7270
+   },
+   "world_m": [
+    50387.68,
+    -54205.71
+   ],
+   "anchor": {
+    "geopose": {
+     "position": {
+      "lat": 37.232517,
+      "lon": -121.697129,
+      "h": 0.0
+     },
+     "orientation": {
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0
+     }
+    },
+    "provenance": {
+     "position_horizontal": "DERIVED",
+     "source": "bayarea/registry/bayarea.json#06085.frame.origin (area-weighted centroid of the coarse outline)",
+     "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+     "orientation_provenance": "DERIVED - the tile's local frame is east/north/up by construction, so the identity rotation is its true orientation relative to LTP-ENU; the sign convention of GeoPose yaw was not checked against the OGC text, and identity needs none"
+    },
+    "tile_origin_is": "the glb origin (0, 0, 0)"
+   },
+   "no_anchor_because": null,
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "county-06095",
+   "world": "bayarea",
+   "kind": "county",
+   "name": "Solano County",
+   "file": "dist/sneeze/tiles/county-06095.glb",
+   "reference": "tiles/county-06095.glb",
+   "bytes": 223576,
+   "sha256": "0a04927136b456e7374c353e9bf95d0c08d81eaf0add0366b82e55ca1abe057b",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "AUTHORED",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "ground",
+     "provenance": "DERIVED",
+     "source": "RECORDED outline: US Census Bureau 2017 cartographic boundary file (1:10,000,000, coarse) via us-atlas 3.0.1, converted to local metres by the registry",
+     "note": "flat fill of the coarse outline at 0 m; no elevation is held (the ground is flat AUTHORED at 0 m)",
+     "vertices": 34,
+     "triangles": 32
+    },
+    {
+     "name": "water",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural water, NOT the real rivers, bayous or lakes",
+     "note": "channels as ribbons of their authored width, ponds as filled polygons; drawn 1.5 m above the ground plane for depth only",
+     "vertices": 4698,
+     "triangles": 4666
+    },
+    {
+     "name": "streets-collector",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "collector streets as ribbons of the registry width (52.4 m); drawn above the ground plane for depth only",
+     "vertices": 2516,
+     "triangles": 1258
+    },
+    {
+     "name": "streets-arterial",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "arterial streets as ribbons of the registry width (80.6 m); drawn above the ground plane for depth only",
+     "vertices": 300,
+     "triangles": 272
+    }
+   ],
+   "vertices": 7548,
+   "triangles": 6228,
+   "bbox_gltf_m": {
+    "min": [
+     -41449.11,
+     0.0,
+     -29753.69
+    ],
+    "max": [
+     29679.17,
+     4.5,
+     26604.98
+    ]
+   },
+   "counts": {
+    "ground_area_km2_triangulated": 2311.381,
+    "outline_rings_filled": 1,
+    "outline_degenerate_rings_skipped": 0,
+    "outline_self_crossings_split": 0,
+    "channels": 8,
+    "ponds": 8,
+    "streets_arterial": 14,
+    "streets_collector": 629,
+    "streets_local_not_exported": 7922
+   },
+   "world_m": [
+    29642.72,
+    61226.01
+   ],
+   "anchor": {
+    "geopose": {
+     "position": {
+      "lat": 38.270618,
+      "lon": -121.932984,
+      "h": 0.0
+     },
+     "orientation": {
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0
+     }
+    },
+    "provenance": {
+     "position_horizontal": "DERIVED",
+     "source": "bayarea/registry/bayarea.json#06095.frame.origin (area-weighted centroid of the coarse outline)",
+     "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+     "orientation_provenance": "DERIVED - the tile's local frame is east/north/up by construction, so the identity rotation is its true orientation relative to LTP-ENU; the sign convention of GeoPose yaw was not checked against the OGC text, and identity needs none"
+    },
+    "tile_origin_is": "the glb origin (0, 0, 0)"
+   },
+   "no_anchor_because": null,
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "county-06097",
+   "world": "bayarea",
+   "kind": "county",
+   "name": "Sonoma County",
+   "file": "dist/sneeze/tiles/county-06097.glb",
+   "reference": "tiles/county-06097.glb",
+   "bytes": 337344,
+   "sha256": "a8648714ec0cff23bcf8ad0e3dafe9fd4f6d371ef546345d28849d5af3152594",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "AUTHORED",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "ground",
+     "provenance": "DERIVED",
+     "source": "RECORDED outline: US Census Bureau 2017 cartographic boundary file (1:10,000,000, coarse) via us-atlas 3.0.1, converted to local metres by the registry",
+     "note": "flat fill of the coarse outline at 0 m; no elevation is held (the ground is flat AUTHORED at 0 m)",
+     "vertices": 42,
+     "triangles": 40
+    },
+    {
+     "name": "water",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural water, NOT the real rivers, bayous or lakes",
+     "note": "channels as ribbons of their authored width, ponds as filled polygons; drawn 1.5 m above the ground plane for depth only",
+     "vertices": 8772,
+     "triangles": 8742
+    },
+    {
+     "name": "streets-collector",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "collector streets as ribbons of the registry width (75.9 m); drawn above the ground plane for depth only",
+     "vertices": 2100,
+     "triangles": 1050
+    },
+    {
+     "name": "streets-arterial",
+     "provenance": "AUTHORED",
+     "source": "AUTHORED procedural street polylines of the map fabric, NOT the real street grid; arterial and collector classes only, local streets are not exported",
+     "note": "arterial streets as ribbons of the registry width (116.7 m); drawn above the ground plane for depth only",
+     "vertices": 386,
+     "triangles": 352
+    }
+   ],
+   "vertices": 11300,
+   "triangles": 10184,
+   "bbox_gltf_m": {
+    "min": [
+     -56247.3,
+     0.0,
+     -36037.55
+    ],
+    "max": [
+     46786.77,
+     4.5,
+     46590.07
+    ]
+   },
+   "counts": {
+    "ground_area_km2_triangulated": 4124.86,
+    "outline_rings_filled": 1,
+    "outline_degenerate_rings_skipped": 0,
+    "outline_self_crossings_split": 0,
+    "channels": 7,
+    "ponds": 8,
+    "streets_arterial": 17,
+    "streets_collector": 525,
+    "streets_local_not_exported": 6497
+   },
+   "world_m": [
+    -54375.28,
+    89903.67
+   ],
+   "anchor": {
+    "geopose": {
+     "position": {
+      "lat": 38.528522,
+      "lon": -122.888207,
+      "h": 0.0
+     },
+     "orientation": {
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0
+     }
+    },
+    "provenance": {
+     "position_horizontal": "DERIVED",
+     "source": "bayarea/registry/bayarea.json#06097.frame.origin (area-weighted centroid of the coarse outline)",
+     "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+     "orientation_provenance": "DERIVED - the tile's local frame is east/north/up by construction, so the identity rotation is its true orientation relative to LTP-ENU; the sign convention of GeoPose yaw was not checked against the OGC text, and identity needs none"
+    },
+    "tile_origin_is": "the glb origin (0, 0, 0)"
+   },
+   "no_anchor_because": null,
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "wild-mountain",
+   "world": "wilds",
+   "kind": "wild",
+   "name": "High Country",
+   "file": "dist/sneeze/tiles/wild-mountain.glb",
+   "reference": "tiles/wild-mountain.glb",
+   "bytes": 208020,
+   "sha256": "df003331c5cb158c98be8f53ad36d5651c93f8181831e3b6c5905523ddd66b08",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "AUTHORED",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "terrain",
+     "provenance": "AUTHORED",
+     "source": "wilds/registry/wilds.json worlds[mountain] seed 81321 via wilds/core.mjs wildsTerrain",
+     "note": "height grid 65x65 at 192.0 m spacing (coarse: site pads of about 40 m are not resolved); AUTHORED terrain from a seed, NOT real elevation; vertex colours banded from the biome palette by height",
+     "vertices": 4225,
+     "triangles": 8192
+    },
+    {
+     "name": "sites",
+     "provenance": "AUTHORED",
+     "source": "wilds/registry/wilds.json sites + trailhead (AUTHORED schematic places)",
+     "note": "a 16 m square, 14 m tall marker at each site and the trailhead; schematic, not a building",
+     "vertices": 140,
+     "triangles": 70
+    }
+   ],
+   "vertices": 4365,
+   "triangles": 8262,
+   "bbox_gltf_m": {
+    "min": [
+     -6144.0,
+     229.1,
+     -6144.0
+    ],
+    "max": [
+     6144.0,
+     1496.8,
+     6144.0
+    ]
+   },
+   "counts": {
+    "grid": 65,
+    "grid_step_m": 192,
+    "extent_m": 12288,
+    "sites_marked": 6,
+    "trailhead_marked": 1,
+    "caches_not_exported": 4
+   },
+   "world_m": null,
+   "anchor": null,
+   "no_anchor_because": "no GeoPose: this world is not on the globe - none: an authored world has no latitude or longitude; its x/z metres are local to the world (wilds/registry/wilds.json geolocation). No latitude or longitude is invented.",
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "wild-forest",
+   "world": "wilds",
+   "kind": "wild",
+   "name": "Deep Timber",
+   "file": "dist/sneeze/tiles/wild-forest.glb",
+   "reference": "tiles/wild-forest.glb",
+   "bytes": 208012,
+   "sha256": "7d1d885b9ed604d32b394b70ad3c985725102cce838d3925e565bf16d6e08b77",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "AUTHORED",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "terrain",
+     "provenance": "AUTHORED",
+     "source": "wilds/registry/wilds.json worlds[forest] seed 44017 via wilds/core.mjs wildsTerrain",
+     "note": "height grid 65x65 at 160.0 m spacing (coarse: site pads of about 40 m are not resolved); AUTHORED terrain from a seed, NOT real elevation; vertex colours banded from the biome palette by height",
+     "vertices": 4225,
+     "triangles": 8192
+    },
+    {
+     "name": "sites",
+     "provenance": "AUTHORED",
+     "source": "wilds/registry/wilds.json sites + trailhead (AUTHORED schematic places)",
+     "note": "a 16 m square, 14 m tall marker at each site and the trailhead; schematic, not a building",
+     "vertices": 140,
+     "triangles": 70
+    }
+   ],
+   "vertices": 4365,
+   "triangles": 8262,
+   "bbox_gltf_m": {
+    "min": [
+     -5120.0,
+     -91.57,
+     -5120.0
+    ],
+    "max": [
+     5120.0,
+     350.8,
+     5120.0
+    ]
+   },
+   "counts": {
+    "grid": 65,
+    "grid_step_m": 160,
+    "extent_m": 10240,
+    "sites_marked": 6,
+    "trailhead_marked": 1,
+    "caches_not_exported": 4
+   },
+   "world_m": null,
+   "anchor": null,
+   "no_anchor_because": "no GeoPose: this world is not on the globe - none: an authored world has no latitude or longitude; its x/z metres are local to the world (wilds/registry/wilds.json geolocation). No latitude or longitude is invented.",
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "wild-canyon",
+   "world": "wilds",
+   "kind": "wild",
+   "name": "Red Rock Canyon",
+   "file": "dist/sneeze/tiles/wild-canyon.glb",
+   "reference": "tiles/wild-canyon.glb",
+   "bytes": 207432,
+   "sha256": "7422edd5d934d858684f3edf2dafb02d0132d668012d2c1def6ace6f4cfe42ee",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "AUTHORED",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "terrain",
+     "provenance": "AUTHORED",
+     "source": "wilds/registry/wilds.json worlds[canyon] seed 70913 via wilds/core.mjs wildsTerrain",
+     "note": "height grid 65x65 at 128.0 m spacing (coarse: site pads of about 40 m are not resolved); AUTHORED terrain from a seed, NOT real elevation; vertex colours banded from the biome palette by height",
+     "vertices": 4225,
+     "triangles": 8192
+    },
+    {
+     "name": "sites",
+     "provenance": "AUTHORED",
+     "source": "wilds/registry/wilds.json sites + trailhead (AUTHORED schematic places)",
+     "note": "a 16 m square, 14 m tall marker at each site and the trailhead; schematic, not a building",
+     "vertices": 120,
+     "triangles": 60
+    }
+   ],
+   "vertices": 4345,
+   "triangles": 8252,
+   "bbox_gltf_m": {
+    "min": [
+     -4096.0,
+     34.0,
+     -4096.0
+    ],
+    "max": [
+     4096.0,
+     472.0,
+     4096.0
+    ]
+   },
+   "counts": {
+    "grid": 65,
+    "grid_step_m": 128,
+    "extent_m": 8192,
+    "sites_marked": 5,
+    "trailhead_marked": 1,
+    "caches_not_exported": 3
+   },
+   "world_m": null,
+   "anchor": null,
+   "no_anchor_because": "no GeoPose: this world is not on the globe - none: an authored world has no latitude or longitude; its x/z metres are local to the world (wilds/registry/wilds.json geolocation). No latitude or longitude is invented.",
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "wild-delta",
+   "world": "wilds",
+   "kind": "wild",
+   "name": "Salt Marsh Delta",
+   "file": "dist/sneeze/tiles/wild-delta.glb",
+   "reference": "tiles/wild-delta.glb",
+   "bytes": 208008,
+   "sha256": "5214b696a1b0037caadcbfca17584ca6c9aab610c1453a199613acc41e659edd",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "AUTHORED",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "terrain",
+     "provenance": "AUTHORED",
+     "source": "wilds/registry/wilds.json worlds[delta] seed 40427 via wilds/core.mjs wildsTerrain",
+     "note": "height grid 65x65 at 160.0 m spacing (coarse: site pads of about 40 m are not resolved); AUTHORED terrain from a seed, NOT real elevation; vertex colours banded from the biome palette by height",
+     "vertices": 4225,
+     "triangles": 8192
+    },
+    {
+     "name": "sites",
+     "provenance": "AUTHORED",
+     "source": "wilds/registry/wilds.json sites + trailhead (AUTHORED schematic places)",
+     "note": "a 16 m square, 14 m tall marker at each site and the trailhead; schematic, not a building",
+     "vertices": 140,
+     "triangles": 70
+    }
+   ],
+   "vertices": 4365,
+   "triangles": 8262,
+   "bbox_gltf_m": {
+    "min": [
+     -5120.0,
+     -11.55,
+     -5120.0
+    ],
+    "max": [
+     5120.0,
+     106.36,
+     5120.0
+    ]
+   },
+   "counts": {
+    "grid": 65,
+    "grid_step_m": 160,
+    "extent_m": 10240,
+    "sites_marked": 6,
+    "trailhead_marked": 1,
+    "caches_not_exported": 3
+   },
+   "world_m": null,
+   "anchor": null,
+   "no_anchor_because": "no GeoPose: this world is not on the globe - none: an authored world has no latitude or longitude; its x/z metres are local to the world (wilds/registry/wilds.json geolocation). No latitude or longitude is invented.",
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "campus-treasure-island",
+   "world": "campus",
+   "kind": "campus",
+   "name": "Treasure Island Campus",
+   "file": "dist/sneeze/tiles/campus-treasure-island.glb",
+   "reference": "tiles/campus-treasure-island.glb",
+   "bytes": 29364,
+   "sha256": "b7e0a5d85611f7218c30e96333d1bd4c25f3042b32b713b47369653b8c44e187",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "SCHEMATIC",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "halls",
+     "provenance": "SCHEMATIC",
+     "source": "geo3d/registry/geo3d.json halls[].corners_m + h (the AUTHORED campus site plan, campusplan/authored/rules.json)",
+     "note": "each hall as an extruded footprint; a 3D drawing of a functional programme, not a building anyone owns or built, not a survey",
+     "vertices": 1020,
+     "triangles": 510
+    }
+   ],
+   "vertices": 1020,
+   "triangles": 510,
+   "bbox_gltf_m": {
+    "min": [
+     -401.0,
+     0.0,
+     -401.0
+    ],
+    "max": [
+     357.0,
+     7.75,
+     121.0
+    ]
+   },
+   "counts": {
+    "halls": 51
+   },
+   "world_m": null,
+   "anchor": {
+    "geopose": {
+     "position": {
+      "lat": 37.8235,
+      "lon": -122.3705,
+      "h": 0.0
+     },
+     "orientation": {
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0
+     }
+    },
+    "provenance": {
+     "position_horizontal": "DERIVED",
+     "source": "Treasure Island centroid, authored (WGS84) (the existing campus pose in geopose.json, copied)",
+     "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+     "orientation_provenance": "SCHEMATIC - the campus drawing is north-up about its centroid (geo3d placement); no heading or site survey is recorded"
+    },
+    "tile_origin_is": "the campus centroid (0, 0, 0)",
+    "pose_ref": "campus:treasure-island"
+   },
+   "no_anchor_because": null,
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "campus-oakland",
+   "world": "campus",
+   "kind": "campus",
+   "name": "Oakland Waterfront Campus",
+   "file": "dist/sneeze/tiles/campus-oakland.glb",
+   "reference": "tiles/campus-oakland.glb",
+   "bytes": 19068,
+   "sha256": "d56bf7d278ba2b28ce54091a4064a84d150442c55073bd734d9a76c593d8b5f3",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "SCHEMATIC",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "halls",
+     "provenance": "SCHEMATIC",
+     "source": "geo3d/registry/geo3d.json halls[].corners_m + h (the AUTHORED campus site plan, campusplan/authored/rules.json)",
+     "note": "each hall as an extruded footprint; a 3D drawing of a functional programme, not a building anyone owns or built, not a survey",
+     "vertices": 640,
+     "triangles": 320
+    }
+   ],
+   "vertices": 640,
+   "triangles": 320,
+   "bbox_gltf_m": {
+    "min": [
+     -375.5,
+     0.0,
+     -331.5
+    ],
+    "max": [
+     331.5,
+     7.75,
+     54.5
+    ]
+   },
+   "counts": {
+    "halls": 32
+   },
+   "world_m": null,
+   "anchor": {
+    "geopose": {
+     "position": {
+      "lat": 37.8044,
+      "lon": -122.2712,
+      "h": 0.0
+     },
+     "orientation": {
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0
+     }
+    },
+    "provenance": {
+     "position_horizontal": "RECORDED",
+     "source": "Locator.X city table (src/app.js CITIES), Apache-2.0 (the existing campus pose in geopose.json, copied)",
+     "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+     "orientation_provenance": "SCHEMATIC - the campus drawing is north-up about its centroid (geo3d placement); no heading or site survey is recorded"
+    },
+    "tile_origin_is": "the campus centroid (0, 0, 0)",
+    "pose_ref": "campus:oakland"
+   },
+   "no_anchor_because": null,
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "campus-new-orleans",
+   "world": "campus",
+   "kind": "campus",
+   "name": "Crescent Works Campus",
+   "file": "dist/sneeze/tiles/campus-new-orleans.glb",
+   "reference": "tiles/campus-new-orleans.glb",
+   "bytes": 16924,
+   "sha256": "29449f938d0bd6325f78690b4758258c0bc2d138165b92a76fef4267f5863763",
+   "format": "glTF 2.0 binary (.glb): magic glTF, version 2, one JSON chunk, one BIN chunk; no extensions, no textures, no animation",
+   "provenance": "SCHEMATIC",
+   "provenance_rule": "the weakest word among the layers: a tile is never more recorded than its least-recorded layer",
+   "layers": [
+    {
+     "name": "halls",
+     "provenance": "SCHEMATIC",
+     "source": "geo3d/registry/geo3d.json halls[].corners_m + h (the AUTHORED campus site plan, campusplan/authored/rules.json)",
+     "note": "each hall as an extruded footprint; a 3D drawing of a functional programme, not a building anyone owns or built, not a survey",
+     "vertices": 560,
+     "triangles": 280
+    }
+   ],
+   "vertices": 560,
+   "triangles": 280,
+   "bbox_gltf_m": {
+    "min": [
+     -374.0,
+     0.0,
+     -124.0
+    ],
+    "max": [
+     286.0,
+     7.75,
+     116.0
+    ]
+   },
+   "counts": {
+    "halls": 28
+   },
+   "world_m": null,
+   "anchor": {
+    "geopose": {
+     "position": {
+      "lat": 29.9511,
+      "lon": -90.0715,
+      "h": 0.0
+     },
+     "orientation": {
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0
+     }
+    },
+    "provenance": {
+     "position_horizontal": "DERIVED",
+     "source": "New Orleans centroid, authored (WGS84) (the existing campus pose in geopose.json, copied)",
+     "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+     "orientation_provenance": "SCHEMATIC - the campus drawing is north-up about its centroid (geo3d placement); no heading or site survey is recorded"
+    },
+    "tile_origin_is": "the campus centroid (0, 0, 0)",
+    "pose_ref": "campus:new-orleans"
+   },
+   "no_anchor_because": null,
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  }
+ ],
+ "manifests": [
+  {
+   "id": "parishes",
+   "file": "dist/sneeze/parishes.json",
+   "title": "Louisiana parishes around New Orleans",
+   "container": "smartcitix-world-parishes",
+   "tiles": [
+    "parish-22005",
+    "parish-22051",
+    "parish-22057",
+    "parish-22063",
+    "parish-22071",
+    "parish-22075",
+    "parish-22087",
+    "parish-22089",
+    "parish-22093",
+    "parish-22095",
+    "parish-22103",
+    "parish-22105",
+    "parish-22109"
+   ],
+   "bytes": 12249,
+   "sha256": "83a1a29eeadd39b76157b25f362272372da23eb5472b03b41a6b01094121c6f4",
+   "envelope": "unsigned plain JSON (the form the Sneeze example docs call convenient but not the preferred way to publish); not signed, no certificate held",
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "bayarea",
+   "file": "dist/sneeze/bayarea.json",
+   "title": "San Francisco Bay Area counties",
+   "container": "smartcitix-world-bayarea",
+   "tiles": [
+    "county-06001",
+    "county-06013",
+    "county-06041",
+    "county-06055",
+    "county-06075",
+    "county-06081",
+    "county-06085",
+    "county-06095",
+    "county-06097"
+   ],
+   "bytes": 8528,
+   "sha256": "7fa9c6c8570af1dc83f10ed2227bae6d1aa9eae262261fdcd5cdfa62a04ddbc4",
+   "envelope": "unsigned plain JSON (the form the Sneeze example docs call convenient but not the preferred way to publish); not signed, no certificate held",
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "wilds-mountain",
+   "file": "dist/sneeze/wilds-mountain.json",
+   "title": "High Country (authored wilds world)",
+   "container": "smartcitix-world-wild-mountain",
+   "tiles": [
+    "wild-mountain"
+   ],
+   "bytes": 514,
+   "sha256": "c23deec5eef8be4607456828f1e1ee5e17c6c590219ac7f67c6e4f7f04bd6216",
+   "envelope": "unsigned plain JSON (the form the Sneeze example docs call convenient but not the preferred way to publish); not signed, no certificate held",
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "wilds-forest",
+   "file": "dist/sneeze/wilds-forest.json",
+   "title": "Deep Timber (authored wilds world)",
+   "container": "smartcitix-world-wild-forest",
+   "tiles": [
+    "wild-forest"
+   ],
+   "bytes": 507,
+   "sha256": "f5e15f0f173f83c4c4a4c2f8161079faa651f05a4db8c5281ad734522912600c",
+   "envelope": "unsigned plain JSON (the form the Sneeze example docs call convenient but not the preferred way to publish); not signed, no certificate held",
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "wilds-canyon",
+   "file": "dist/sneeze/wilds-canyon.json",
+   "title": "Red Rock Canyon (authored wilds world)",
+   "container": "smartcitix-world-wild-canyon",
+   "tiles": [
+    "wild-canyon"
+   ],
+   "bytes": 511,
+   "sha256": "b1947492f2d9651a0325d6ec061eab1af73cc25cf6d3f6491e8f2e9f3dbbcab0",
+   "envelope": "unsigned plain JSON (the form the Sneeze example docs call convenient but not the preferred way to publish); not signed, no certificate held",
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "wilds-delta",
+   "file": "dist/sneeze/wilds-delta.json",
+   "title": "Salt Marsh Delta (authored wilds world)",
+   "container": "smartcitix-world-wild-delta",
+   "tiles": [
+    "wild-delta"
+   ],
+   "bytes": 509,
+   "sha256": "d6a776cfc464a7d7e3e9e51a755eb0937d76dcf30d4f6b69020edc2938c8c081",
+   "envelope": "unsigned plain JSON (the form the Sneeze example docs call convenient but not the preferred way to publish); not signed, no certificate held",
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "campus-treasure-island",
+   "file": "dist/sneeze/campus-treasure-island.json",
+   "title": "Treasure Island Campus (SCHEMATIC hall footprints)",
+   "container": "smartcitix-world-campus-treasure-island",
+   "tiles": [
+    "campus-treasure-island"
+   ],
+   "bytes": 991,
+   "sha256": "fd89f12b6cea25a4ca2b4cd9496b7a204e1bd563a832f346b9a66231153e71ea",
+   "envelope": "unsigned plain JSON (the form the Sneeze example docs call convenient but not the preferred way to publish); not signed, no certificate held",
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "campus-oakland",
+   "file": "dist/sneeze/campus-oakland.json",
+   "title": "Oakland Waterfront Campus (SCHEMATIC hall footprints)",
+   "container": "smartcitix-world-campus-oakland",
+   "tiles": [
+    "campus-oakland"
+   ],
+   "bytes": 963,
+   "sha256": "f616762890f229920cb455417f5c326efb3a893566b8d5e62435e97a2ff5715e",
+   "envelope": "unsigned plain JSON (the form the Sneeze example docs call convenient but not the preferred way to publish); not signed, no certificate held",
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  },
+  {
+   "id": "campus-new-orleans",
+   "file": "dist/sneeze/campus-new-orleans.json",
+   "title": "Crescent Works Campus (SCHEMATIC hall footprints)",
+   "container": "smartcitix-world-campus-new-orleans",
+   "tiles": [
+    "campus-new-orleans"
+   ],
+   "bytes": 973,
+   "sha256": "4601bf3d02d713cc6d98b00ec57fb85be287e9fdf3b8dc2a97fdcc86e257932a",
+   "envelope": "unsigned plain JSON (the form the Sneeze example docs call convenient but not the preferred way to publish); not signed, no certificate held",
+   "status": "proposed - not loaded in Sneeze, Artemis or any other metaverse browser"
+  }
+ ],
+ "campuses_without_tile": [
+  {
+   "campus": "houston",
+   "name": "Bayou Energy Hub",
+   "why": "no halls are listed for this campus in unions/registry/campuses.json, so nothing is stood up here - no building is invented"
+  },
+  {
+   "campus": "chicago",
+   "name": "Loop Rail Hub",
+   "why": "no halls are listed for this campus in unions/registry/campuses.json, so nothing is stood up here - no building is invented"
+  },
+  {
+   "campus": "seattle",
+   "name": "Sound Aerospace Hub",
+   "why": "no halls are listed for this campus in unions/registry/campuses.json, so nothing is stood up here - no building is invented"
+  },
+  {
+   "campus": "pittsburgh",
+   "name": "Three Rivers Steel Hub",
+   "why": "no halls are listed for this campus in unions/registry/campuses.json, so nothing is stood up here - no building is invented"
+  },
+  {
+   "campus": "denver",
+   "name": "Front Range Mining Hub",
+   "why": "no halls are listed for this campus in unions/registry/campuses.json, so nothing is stood up here - no building is invented"
+  },
+  {
+   "campus": "miami",
+   "name": "Biscayne Coastal Hub",
+   "why": "no halls are listed for this campus in unions/registry/campuses.json, so nothing is stood up here - no building is invented"
+  },
+  {
+   "campus": "detroit",
+   "name": "Motor City Hub",
+   "why": "no halls are listed for this campus in unions/registry/campuses.json, so nothing is stood up here - no building is invented"
+  }
+ ],
+ "budget": {
+  "tile_max_bytes": 750000,
+  "total_max_bytes": 8000000,
+  "wilds_grid_n": 65,
+  "sreference_max_bytes": 128,
+  "total_bytes": 7030524,
+  "largest_tile_bytes": 591532,
+  "manifest_bytes": 25745
+ },
+ "map_module_url": "https://cdn.rp1.com/sneeze/examples/wasm/map.wasm",
+ "verified": [
+  {
+   "id": "licence",
+   "fact": "Sneeze is Apache-2.0 licensed (README: \"Apache License 2.0\"); the repository page showed no published release when read, and its GitHub description field was empty",
+   "url": "https://github.com/MetaversalCorp/Sneeze"
+  },
+  {
+   "id": "glb-loaded",
+   "fact": "a node's Resource.sReference is fetched by URL and sniffed by content: the ASCII magic \"glTF\" (binary GLB) or a leading \"{\" (glTF JSON) is parsed as glTF via fastgltf; anything else is decoded as an image texture",
+   "url": "https://raw.githubusercontent.com/MetaversalCorp/Sneeze/main/src/context/scene/Scene.md"
+  },
+  {
+   "id": "glb-axes",
+   "fact": "glTF is right-handed Y-up and Sneeze's world is right-handed Z-up; every imported model is converted at import with glTF (x, y, z) -> world (x, -z, y)",
+   "url": "https://raw.githubusercontent.com/MetaversalCorp/Sneeze/main/src/context/viewport/GltfMesh.cpp"
+  },
+  {
+   "id": "texture-cap",
+   "fact": "imported textures are downscaled to at most 1024 px; these tiles carry no textures",
+   "url": "https://raw.githubusercontent.com/MetaversalCorp/Sneeze/main/src/context/viewport/GltfMesh.cpp"
+  },
+  {
+   "id": "manifest-is-msf",
+   "fact": "a fabric is described by an MSF manifest: JSON, either a JWS compact serialization (signed) or plain unsigned JSON; Parse accepts both and unsigned JSON gets a synthetic fingerprint that is \"100% untrustworthy\"",
+   "url": "https://raw.githubusercontent.com/MetaversalCorp/Sneeze/main/src/context/msf/MsfFile.md"
+  },
+  {
+   "id": "manifest-shape",
+   "fact": "the plain-JSON example manifest has Container, Services (empty list), Modules [{sUrl}] and Data.Scene; a node has Head.Self (\"P-?\"), Name, Resource.sReference, optional Transform {Position [x,y,z] metres, Rotation quaternion [x,y,z,w], Scale} relative to its parent, and aChildren",
+   "url": "https://raw.githubusercontent.com/MetaversalCorp/SneezeDoc/main/docs/examples/02-stool-and-bucket.md"
+  },
+  {
+   "id": "manifest-example-01",
+   "fact": "the smallest working fabric is stool.json: one node whose Resource.sReference is assets/Stool.glb, read by a stock map.wasm module from Data.Scene",
+   "url": "https://raw.githubusercontent.com/MetaversalCorp/SneezeDoc/main/docs/examples/01-stool.md"
+  },
+  {
+   "id": "unsigned-caveat",
+   "fact": "unsigned plain JSON \"works today ... but it is not how a fabric is meant to be published, and it may not always work\"; browsers will expect signed fabrics",
+   "url": "https://raw.githubusercontent.com/MetaversalCorp/SneezeDoc/main/docs/examples/01-stool.md"
+  },
+  {
+   "id": "relative-urls",
+   "fact": "an address without scheme:// is relative to the fabric file; a leading / starts at the host root; .. steps up a folder",
+   "url": "https://raw.githubusercontent.com/MetaversalCorp/SneezeDoc/main/docs/examples/01-stool.md"
+  },
+  {
+   "id": "own-hosting",
+   "fact": "the docs say to host your own copies of the module and assets and not depend on RP1's server",
+   "url": "https://raw.githubusercontent.com/MetaversalCorp/SneezeDoc/main/docs/examples/01-stool.md"
+  },
+  {
+   "id": "load-flow",
+   "fact": "loading a fabric = fetch the MSF by URL, parse, verify signature and chain, open a container, fetch the declared WASM modules; the host-function surface by which a module builds the scene is \"partially implemented\"",
+   "url": "https://raw.githubusercontent.com/MetaversalCorp/SneezeDoc/main/docs/architecture/fabric-loading.md"
+  },
+  {
+   "id": "data-block",
+   "fact": "Data is \"a general block of information the fabric carries for its modules to read; you can put anything you want in it\"; the stock map module reads Data.Scene",
+   "url": "https://raw.githubusercontent.com/MetaversalCorp/SneezeDoc/main/docs/examples/01-stool.md"
+  },
+  {
+   "id": "no-geopose-doc",
+   "fact": "GeoPose, latitude/longitude and a fabric-discovery service do not appear in the Sneeze README, scene, msf or fabric-loading docs read; the standards page names the OGC only as \"relevant to anchoring fabrics to physical locations\"",
+   "url": "https://raw.githubusercontent.com/MetaversalCorp/SneezeDoc/main/docs/overview/standards.md"
+  }
+ ],
+ "field_status": [
+  {
+   "field": "manifest.Container",
+   "status": "documented",
+   "verified_ids": [
+    "manifest-shape"
+   ]
+  },
+  {
+   "field": "manifest.Services",
+   "status": "documented",
+   "verified_ids": [
+    "manifest-shape"
+   ]
+  },
+  {
+   "field": "manifest.Modules[].sUrl",
+   "status": "documented",
+   "verified_ids": [
+    "manifest-shape"
+   ]
+  },
+  {
+   "field": "manifest.Modules[].sHash",
+   "status": "documented",
+   "verified_ids": [
+    "manifest-example-01"
+   ]
+  },
+  {
+   "field": "manifest.Data.Scene",
+   "status": "documented",
+   "verified_ids": [
+    "manifest-example-01",
+    "data-block"
+   ]
+  },
+  {
+   "field": "node.Head.Self",
+   "status": "documented",
+   "verified_ids": [
+    "manifest-shape"
+   ]
+  },
+  {
+   "field": "node.Name",
+   "status": "documented",
+   "verified_ids": [
+    "manifest-shape"
+   ]
+  },
+  {
+   "field": "node.Resource.sReference",
+   "status": "documented",
+   "verified_ids": [
+    "glb-loaded",
+    "manifest-shape"
+   ]
+  },
+  {
+   "field": "node.Transform.Position",
+   "status": "documented",
+   "verified_ids": [
+    "manifest-shape"
+   ]
+  },
+  {
+   "field": "node.aChildren",
+   "status": "documented",
+   "verified_ids": [
+    "manifest-shape"
+   ]
+  },
+  {
+   "field": "tile.glb_2_0_binary",
+   "status": "documented",
+   "verified_ids": [
+    "glb-loaded"
+   ]
+  },
+  {
+   "field": "tile.axes_y_up_to_z_up",
+   "status": "documented",
+   "verified_ids": [
+    "glb-axes"
+   ]
+  },
+  {
+   "field": "manifest.unsigned_plain_json",
+   "status": "documented",
+   "verified_ids": [
+    "manifest-is-msf",
+    "unsigned-caveat"
+   ]
+  },
+  {
+   "field": "manifest.Modules[0].sUrl = the stock map module on the RP1 CDN",
+   "status": "documented",
+   "verified_ids": [
+    "manifest-example-01",
+    "own-hosting"
+   ]
+  },
+  {
+   "field": "manifest.Data.Anchors (GeoPose sidecar)",
+   "status": "proposed",
+   "verified_ids": []
+  },
+  {
+   "field": "manifest.Data.Provenance (sidecar)",
+   "status": "proposed",
+   "verified_ids": []
+  },
+  {
+   "field": "world horizontal axes are east/north (ENU)",
+   "status": "proposed",
+   "verified_ids": []
+  },
+  {
+   "field": "GeoPose anchor consumed by any Sneeze component",
+   "status": "proposed",
+   "verified_ids": []
+  },
+  {
+   "field": "attaching one manifest to another (child fabrics)",
+   "status": "proposed",
+   "verified_ids": []
+  },
+  {
+   "field": "camera / render scale at 10-100 km tile extents",
+   "status": "proposed",
+   "verified_ids": []
+  },
+  {
+   "field": "a tile this size loads inside Sneeze's frame budget",
+   "status": "proposed",
+   "verified_ids": []
+  },
+  {
+   "field": "signing (JWS, X.509 chain)",
+   "status": "proposed",
+   "verified_ids": []
+  }
+ ],
+ "honesty": {
+  "what_sneeze_loads": "from the Sneeze project's own repository and docs (each fact with its URL in `verified`): a fabric is an MSF manifest fetched by URL - JSON, signed (JWS) or plain - that names WebAssembly modules and a Data block; a node's Resource.sReference is fetched by URL and a GLB (magic \"glTF\") or glTF JSON is parsed as glTF. These tiles are such GLB files and the manifests follow the shape of the project's example docs 01 and 02 and no other.",
+  "not_loaded": "no tile and no manifest here has been opened in Sneeze, Artemis or any other metaverse browser, and nothing was run: this is a reading of documentation and source. The only checks are this bundle's own, by the bytes.",
+  "documentation_status": "the Sneeze docs are the implementer's own and say parts are unfinished (the host functions by which a module builds the scene are \"partially implemented\"); they are not an OMBI or MSF standard, and this pack does not call them one. They also disagree with each other in places: the example manifests spell the lighting block \"Primary\" while the scene notes read \"primary\", and the MSF page describes services as a list while the module notes describe a name-keyed object - so the manifests here carry no Primary block and no services.",
+  "map_module": "a manifest does nothing without a module that reads Data.Scene. The only one the docs name is the stock map.wasm, hosted on RP1's CDN in the docs; the manifests point at that URL, which this build could not reach (the egress proxy refused it), so the module is not vendored and no hash is pinned. The docs tell publishers to host their own copy rather than depend on RP1's server: whoever deploys these must do that and, if they want the integrity check, add its sha256.",
+  "unsigned": "the manifests are plain unsigned JSON. The docs call that convenient while learning but not the preferred way to publish, say a browser may stop accepting it, and say it carries no identity at all. Signing needs a private key and a certificate chain from a named human operator; none is held and none is invented here.",
+  "axes": "the one axis fact verified: Sneeze converts glTF Y-up to its Z-up world with (x, y, z) -> (x, -z, y). Georeferenced tiles are built with x = east, y = up, z = -north, so they land east on x and north on y IF Sneeze's horizontal axes are east and north - which no document read says, so it is proposed.",
+  "geopose_is_a_sidecar": "nothing the Sneeze docs say reads GeoPose or latitude/longitude. Each georeferenced tile has its GeoPose in tiles.json and in the manifest's Data.Anchors, a free block the docs say a fabric may fill with anything; no Sneeze component is known to read it. The encoding is the one geopose.json already claims; height is 0 with the UNKNOWN sidecar, and orientation is the identity because the tile frame is east/north/up by construction.",
+  "wilds_not_on_globe": "the four wilds worlds are authored landscapes with no latitude or longitude (wilds/registry/wilds.json geolocation.on_globe is false), so they have no anchor and none is invented. The campus tiles are SCHEMATIC drawings anchored at the campus pose geopose.json already holds.",
+  "geometry": "flat map geometry, not a survey: the outlines are the coarse 1:10,000,000 Census cartographic boundary (hundreds of metres of error); streets and water are AUTHORED procedural fabrics, not the real ones; the ground is flat at 0 m (no elevation is held); layer height offsets are drawing conveniences, not heights; local streets, the page-rule buildings and the hidden wilds caches are not exported. A tile carries the weakest provenance word among its layers.",
+  "scale": "region and wilds tiles span 8 to 115 km across and campus tiles under 2 km (read from each tile's bounding box); whether Sneeze's camera and render-scale handling show them well is unknown and proposed. The docs say a browser normally streams nodes from a map service by proximity; these are static files, not a map service, and no RMAP or SMAP endpoint exists here.",
+  "build_output": "the tiles and manifests are not committed: python3 spatial/build.py builds them on demand into dist/sneeze/ (deterministically; spatial/registry/tiles.json is the committed record of every byte count and sha256) and the Pages site does not serve them. Whoever deploys them hosts the files, and their own copy of map.wasm, on a server they control.",
+  "rights": "the Census outline is a public-domain US federal work as packaged by us-atlas (ISC); everything else is this repository's own AUTHORED or SCHEMATIC work. No third-party model or texture is in any tile."
+ }
+}

@@ -54,7 +54,7 @@ to trust a build that has not been checked. The scripts live in
 
 ## The rebuild order
 
-`rebuild_all.sh` runs these builders in this order (97 entries, read
+`rebuild_all.sh` runs these builders in this order (100 entries, read
 from the script; `web/build_*.py` stands for the loop over every web page
 builder):
 
@@ -124,6 +124,7 @@ wildlife/make_eggs.py
 smiles/build.py
 flora/build.py
 quests/build.py
+geoplay/build.py
 npcs/build.py
 hive/build.py
 unionpaths/build.py
@@ -136,6 +137,8 @@ robotics/build.py
 robotics/arena/build.py
 robotics/claw/build.py
 training/build.py
+robotics/ros/build.py
+swarm/build.py
 modules/build.py
 contrib/build.py
 datashare/build.py
