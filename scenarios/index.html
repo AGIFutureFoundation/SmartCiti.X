@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SmartCiti.X — Training Scenarios</title>
+<style>
+:root{--bg:#0b1220;--panel:#131e33;--panel2:#0f1830;--ink:#e8eefc;--mut:#9fb0d0;--acc:#ffb020;--ok:#2fbf71;--line:#26344f}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5}
+main{max-width:900px;margin:0 auto;padding:0 14px 48px}
+a{color:#7cc4ff}
+h1{font-size:1.6rem;margin:.4rem 0 .2rem}
+h2{font-size:1.25rem;margin:0 0 .5rem}
+p{margin:.4rem 0}
+.banner{border-radius:10px;padding:.8rem 1rem;margin:.7rem 0;font-size:.95rem}
+.banner.demo{background:#3a2f00;border:1px solid #8a6d00;color:#ffe9a8}
+.banner.proposed{background:#2a1414;border:1px solid #7a2b2b;color:#ffc9c9}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:1rem 1.1rem;margin:1rem 0}
+.mut{color:var(--mut);font-size:.92rem}
+.small{font-size:.85rem}
+.pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:.2rem .7rem;margin:.15rem .2rem .15rem 0;font-size:.85rem;background:#0d1730}
+button{font:inherit;cursor:pointer;min-height:44px;border-radius:10px;border:1px solid var(--line);background:#1a2c52;color:var(--ink);padding:.6rem 1rem}
+button:hover{border-color:var(--acc)}
+.bigbtn{display:block;width:100%;text-align:center;background:var(--acc);color:#1a1200;font-weight:800;font-size:1.05rem;border:none;border-radius:12px;padding:1rem .8rem;cursor:pointer;text-decoration:none;min-height:56px;margin:.4rem 0}
+.bigbtn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line);font-size:1rem}
+.scen{width:100%;text-align:left;margin:.4rem 0}
+.scen b{display:block;font-size:1.05rem}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:.6rem}
+.step{border:2px solid var(--line);border-radius:12px;padding:.9rem;background:#0d1730;cursor:pointer;min-height:44px}
+.step.done{border-color:var(--ok)}
+.step .n{display:inline-block;width:2rem;height:2rem;line-height:2rem;text-align:center;border-radius:50%;background:#22345c;font-weight:800;margin-right:.4rem}
+.step.done .n{background:var(--ok);color:#04160b}
+.progress{height:14px;border-radius:7px;background:#22345c;overflow:hidden;margin:.5rem 0}
+.progress>i{display:block;height:100%;background:var(--ok)}
+details{border:1px solid var(--line);border-radius:10px;padding:.6rem .8rem;margin:.5rem 0;background:#0d1730}
+summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
+code{background:#0d1730;padding:.1rem .35rem;border-radius:5px}
+@media(max-width:560px){h1{font-size:1.35rem}}
+</style>
+</head>
+<body>
+<main>
+<h1>SmartCiti.X — Training Scenarios</h1>
+<p class="mut">Six runnable simulation scenarios for the learner platform. Pick one,
+work its five steps in order, and check each step off as you complete it.
+Progress lives only on this page — nothing is stored or sent.</p>
+<div class="banner demo"><strong>Demo mode — Sample data, not real learners.</strong>
+Simulation only — NOT certification, licensure, or clinical training.</div>
+<div class="banner proposed"><strong>SmartCiti.X is proposed, not incorporated /
+funded / offered.</strong> Louisiana + Indiana training sites are
+proposed/planned — no site, city, or address has been named. The 111-hall
+roster in the SmartCiti.X bundle is an in-repo list; 0 of 111 signed off by a
+named practitioner — a named hall is not a partner.</div>
+<div id="list" class="card"><h2>Scenarios</h2><div id="scenarioList"></div></div>
+<div id="detail" class="card" hidden>
+  <button id="backBtn" type="button">&larr; All scenarios</button>
+  <h2 id="dTitle"></h2>
+  <p id="dDesc"></p>
+  <p><span id="dMeta"></span></p>
+  <div class="progress" aria-hidden="true"><i id="dBar" style="width:0%"></i></div>
+  <p id="dCount" class="mut">0 of 5 steps complete</p>
+  <ol id="dSteps" class="steps"></ol>
+  <p>
+    <button id="resetBtn" type="button">Restart this scenario</button>
+  </p>
+  <div id="dLinks"></div>
+  <details><summary>Sources &amp; honesty notes</summary><div id="dSources"></div></details>
+</div>
+<div class="card">
+  <h2>Where this fits</h2>
+  <p><a href="../vr-entry/index.html">Learner VR Entry</a> — skill graph,
+  Holodeck Coach, and the Holodeck link. <a href="../dashboard-v2-demo.html">Cohort Dashboard v2 (demo)</a> — sample learner progress.
+  <a href="../learner-progress-contract.json">LearnerProgressEvent contract</a>.</p>
+  <p class="mut small">TradePath Holodeck deep links run the matching zone
+  in the IWSDK Training Centre (electrical, HVAC, outreach). Scenario data
+  lives in <code>scenarios/*.json</code>; this page embeds the same data so it
+  works from <code>file://</code> with zero network requests.
+  <code>scenarios/verify.mjs</code> checks the embedded copy matches the
+  JSON files.</p>
+</div>
+</main>
+<script>
+"use strict";
+/* Embedded scenario data — MUST match scenarios/*.json exactly.
+   scenarios/verify.mjs deep-compares this block against the JSON files. */
+const SCENARIOS = /*__EMBEDDED_SCENARIOS__*/[
+{"audience":"K-12 learners (AR/VR education)","deep_links":{"tradepath_zone":null,"vr_entry":"../vr-entry/index.html"},"description":"A first AR/VR training lesson for K-12 learners: meet the safety station, learn to measure, identify tools, and follow a procedure in order. Fundamentals tier. Simulation only — not certification and not a school credential.","halls":{"mapped_hall":null,"note":"No hall mapped. Trade halls in the Holodeck player (per vr-entry README): Ironworkers, Welding Trades, Boilermakers, Millwrights. Hall mapping is open (Phase 4)."},"id":"k12-arvr-foundations","mode":["vr-headset","desktop-webgl","mobile-touch"],"sites":{"indiana":"Proposed/planned training site — no site, city, or address named.","louisiana":"Proposed/planned training site — no site, city, or address named."},"sources":["SmartCiti.X skill registry strand names (pack/registry/skills.json, via vr-entry README): coordination, documentation, inspection, layout, leadership, machines, materials, procedure, safety, tools, troubleshooting.","OSHA PPE topic page (osha.gov/personal-protective-equipment): PPE training points (when necessary, what kind, fit, limitations, care)."],"stations":[{"id":"k12-safety-station","title":"Safety station — PPE, first aid, extinguisher"},{"id":"k12-measure-bench","title":"Measure bench — rulers, squares, marking"},{"id":"k12-tool-wall","title":"Tool wall — labelled hand tools"}],"steps":[{"action":"PPE check: pick the right gear for the job and check the fit.","check":"PPE fits; learner can name when it is necessary.","stationId":"k12-safety-station"},{"action":"Measure a length twice and mark it before cutting anything.","check":"Two matching measurements recorded.","stationId":"k12-measure-bench"},{"action":"Identify three tools on the wall and say what each one does.","check":"Three tools named with their jobs.","stationId":"k12-tool-wall"},{"action":"Follow the printed procedure in order — no skipped steps.","check":"Procedure complete in order.","stationId":"k12-measure-bench"},{"action":"Tidy the bench, return every tool, and debrief with the coach.","check":"Bench tidy; debrief complete.","stationId":"k12-tool-wall"}],"strands":["safety","tools","procedure","materials"],"tiers":["fundamentals"],"title":"K-12 AR/VR foundations — measure, tools, safety"},
+{"audience":"Union trades learners (electrical)","deep_links":{"tradepath_zone":"/?zone=electrical","vr_entry":"../vr-entry/index.html"},"description":"Union trades electrical sequence: PPE and verify-dead, read the schematic, bend conduit, land conductors, test and debrief. Mirrors the TradePath Electrical zone (same steps, same stations) so the learner can run it in the Holodeck. Simulation only — not certification, not licensure, not an apprenticeship credential.","halls":{"mapped_hall":null,"note":"No hall mapped. Trade halls in the Holodeck player (per vr-entry README): Ironworkers, Welding Trades, Boilermakers, Millwrights. Hall mapping is open (Phase 4). The 111-hall roster in the SmartCiti.X bundle is an in-repo list; 0 of 111 signed off by a named practitioner — a named hall is not a partner."},"id":"union-trades-electrical","mode":["vr-headset","desktop-webgl","mobile-touch"],"sites":{"indiana":"Proposed/planned training site — no site, city, or address named.","louisiana":"Proposed/planned training site — no site, city, or address named."},"sources":["TradePath centre JSON — Electrical zone session + next-3 skills (Electrical Theory Fundamentals, Conduit Bending, Blueprint & Schematic Reading).","OSHA PPE topic page (osha.gov/personal-protective-equipment)."],"stations":[{"id":"electrical-safety","title":"Safety station — PPE, first aid, extinguisher"},{"id":"electrical-panelboard","title":"Panel board — distribution panel + conduit runs"},{"id":"electrical-workbench","title":"Workbench — conduit bender, tools, measuring"}],"steps":[{"action":"PPE check + verify the panel dead before touching it.","check":"PPE fits, panel verified dead.","stationId":"electrical-safety"},{"action":"Read the schematic and identify each circuit on the panel.","check":"Every circuit named from the schematic.","stationId":"electrical-panelboard"},{"action":"Measure, mark, and bend the conduit to the planned run.","check":"Bend matches the plan; no rework needed.","stationId":"electrical-workbench"},{"action":"Mount the panel and land conductors in schematic order.","check":"Conductors landed in order, torqued.","stationId":"electrical-panelboard"},{"action":"Test, torque-check, and debrief with the coach.","check":"Test passed; debrief complete.","stationId":"electrical-workbench"}],"strands":["procedure","tools","safety","layout"],"tiers":["applied"],"title":"Union trades — electrical: panel & conduit install"},
+{"audience":"Union trades learners (HVAC)","deep_links":{"tradepath_zone":"/?zone=hvac","vr_entry":"../vr-entry/index.html"},"description":"Union trades HVAC sequence: PPE and recovery plan, diagnose from pressures/temperatures/airflow together, braze with nitrogen purge and leak-check, evacuate/charge/commission, record and debrief. Grounded in EPA Section 608: never intentionally vent refrigerant; certification is an external EPA 608 exam. Simulation only — not certification, not licensure.","halls":{"mapped_hall":null,"note":"No hall mapped. Trade halls in the Holodeck player (per vr-entry README): Ironworkers, Welding Trades, Boilermakers, Millwrights. Hall mapping is open (Phase 4)."},"id":"union-trades-hvac","mode":["vr-headset","desktop-webgl","mobile-touch"],"sites":{"indiana":"Proposed/planned training site — no site, city, or address named.","louisiana":"Proposed/planned training site — no site, city, or address named."},"sources":["EPA Section 608 (epa.gov/section608; 40 CFR Part 82, Subpart F, Clean Air Act): prohibits intentionally venting ozone-depleting refrigerants and substitutes (e.g. HFCs) during maintenance, service, repair, or disposal; technician certification programmes exist.","TradePath centre JSON — HVAC zone session + next-3 skills (Refrigeration Cycle & Diagnostics, Brazing & Copper Line Sets, EPA 608 Prep)."],"stations":[{"id":"hvac-safety","title":"Safety station — PPE, first aid, extinguisher"},{"id":"hvac-condenser","title":"Condenser unit — outdoor unit + copper lines"},{"id":"hvac-brazingbench","title":"Brazing bench — torch, manifold gauges, nitrogen"}],"steps":[{"action":"PPE check + recovery plan. Never vent refrigerant (Section 608).","check":"PPE fits; recovery machine ready.","stationId":"hvac-safety"},{"action":"Diagnose: read pressures, temperatures, and airflow together.","check":"Diagnosis named from all three readings.","stationId":"hvac-condenser"},{"action":"Braze the copper line set with a nitrogen purge, then leak-check.","check":"Joint brazed, purge done, no leaks.","stationId":"hvac-brazingbench"},{"action":"Evacuate, charge, and commission the unit.","check":"Charge correct; unit commissioned.","stationId":"hvac-condenser"},{"action":"Record the readings and debrief. EPA 608 certification is an external exam — this run does not certify.","check":"Readings recorded; debrief complete.","stationId":"hvac-brazingbench"}],"strands":["procedure","safety","machines","troubleshooting"],"tiers":["applied"],"title":"Union trades — HVAC: diagnose, braze & commission"},
+
+{"audience":"Learners in robotic + human integration training","deep_links":{"tradepath_zone":null,"vr_entry":"../vr-entry/index.html"},"description":"Robotics training: human-robot integration in a shared cell — safety zone first, controls and hand-guiding, a guided pick-and-place task, a human handover, and a debrief. Grounded in the SmartCiti.X repo's own framing (\"Gamified training to enhance robotic and human integrations\"); the repo describes 11 simulators as part of its bundle — no simulator is named here beyond that repo copy, and no performance figure is claimed. Simulation only — not certification.","halls":{"mapped_hall":null,"note":"No hall mapped. Trade halls in the Holodeck player (per vr-entry README): Ironworkers, Welding Trades, Boilermakers, Millwrights. Hall mapping is open (Phase 4)."},"id":"robotics-integration","mode":["vr-headset","desktop-webgl","mobile-touch"],"sites":{"indiana":"Proposed/planned training site — no site, city, or address named.","louisiana":"Proposed/planned training site — no site, city, or address named."},"sources":["SmartCiti.X repo description (GitHub, verified 2026-11-07): \"Gamified training to enhance robotic and human integrations\". SmartCiti.X README (read 2026-11-05) describes an 11-simulator bundle — cited as repo copy, not verified live here.","OSHA PPE topic page (osha.gov/personal-protective-equipment): PPE selection, fit, limitations, training."],"stations":[{"id":"robotics-safety-zone","title":"Safety zone — cell boundary, e-stop, PPE"},{"id":"robotics-control-panel","title":"Control panel — mode select, hand-guiding controls"},{"id":"robotics-work-cell","title":"Work cell — robot arm, task bench, handover point"}],"steps":[{"action":"Safety zone: PPE check, confirm the cell boundary and the e-stop.","check":"PPE fits; boundary and e-stop confirmed.","stationId":"robotics-safety-zone"},{"action":"Control panel: select the training mode and confirm hand-guiding is on.","check":"Mode confirmed; hand-guiding on.","stationId":"robotics-control-panel"},{"action":"Guided task: hand-guide the arm through the pick-and-place path.","check":"Path complete without boundary breach.","stationId":"robotics-work-cell"},{"action":"Handover: the robot presents the part; the learner takes it at the handover point.","check":"Handover complete; hands clear of the cell.","stationId":"robotics-work-cell"},{"action":"Return the arm to home, log the run, and debrief with the coach.","check":"Arm homed; run logged; debrief complete.","stationId":"robotics-control-panel"}],"strands":["machines","safety","coordination","procedure"],"tiers":["applied"],"title":"Robotics — human-robot integration in a shared cell"},
+{"audience":"All learners, before any trade task (cross-cutting)","deep_links":{"tradepath_zone":null,"vr_entry":"../vr-entry/index.html"},"description":"Safety procedures every learner runs before any trade task: identify the hazards, select PPE, check the fit, work the task, and report. Grounded in the OSHA PPE topic page: PPE is equipment worn to minimise exposure to hazards; employers must provide it and train workers on when it is necessary, what kind, how to put it on / adjust / wear / take it off, its limitations, and its care, maintenance, useful life, and disposal; a PPE programme addresses hazards, selection, maintenance, use, training, and monitoring. Simulation only — not certification.","halls":{"mapped_hall":null,"note":"No hall mapped. Applies in every hall and bay; hall mapping is open (Phase 4)."},"id":"safety-procedures","mode":["vr-headset","desktop-webgl","mobile-touch"],"sites":{"indiana":"Proposed/planned training site — no site, city, or address named.","louisiana":"Proposed/planned training site — no site, city, or address named."},"sources":["OSHA PPE topic page (osha.gov/personal-protective-equipment): PPE definition, training requirements, PPE programme elements."],"stations":[{"id":"safety-hazard-board","title":"Hazard board — hazard list for the bay"},{"id":"safety-ppe-station","title":"Safety station — PPE, first aid, extinguisher"},{"id":"safety-report-desk","title":"Report desk — incident and near-miss log"}],"steps":[{"action":"Hazard board: name the hazards in this bay before touching any tool.","check":"Hazards named; controls noted.","stationId":"safety-hazard-board"},{"action":"Select the PPE the hazards call for (gloves, glasses, ear protection, hard hat, respirator as needed).","check":"PPE selected for every named hazard.","stationId":"safety-ppe-station"},{"action":"Fit check: put PPE on, adjust it, and confirm it fits comfortably.","check":"PPE fits; limitations noted.","stationId":"safety-ppe-station"},{"action":"Work the task with PPE on; keep the floor clear and the first-aid point known.","check":"Task done; area clear.","stationId":"safety-ppe-station"},{"action":"Report: log the run and any near-miss at the report desk.","check":"Log complete; near-misses reported, not hidden.","stationId":"safety-report-desk"}],"strands":["safety","procedure","documentation"],"tiers":["fundamentals"],"title":"Safety procedures — hazards, PPE, fit, report"},
+{"audience":"Outreach learners (prevention & school screening)","deep_links":{"tradepath_zone":"/?zone=outreach-hub","vr_entry":"../vr-entry/index.html"},"description":"Prevention and school screening outreach: PPE and referral path, consent before screening, privacy screens and kit in order, screening steps the same way every time, close and file. Screening is not diagnosis: flag, refer, and record — never diagnose in the field. Demo programme inspired by Unspoken Smiles' public work — not official, not endorsed, not affiliated. Simulation only — not certification and not clinical hours.","halls":{"mapped_hall":null,"note":"No hall mapped. Hall mapping is open (Phase 4)."},"id":"dental-screening-outreach","mode":["vr-headset","desktop-webgl","mobile-touch"],"sites":{"indiana":"Proposed/planned training site — no site, city, or address named.","louisiana":"Proposed/planned training site — no site, city, or address named."},"sources":["CDC Guidelines for Infection Control in Dental Health-Care Settings 2003 (MMWR 52(RR17)), via UnspokenSmiled-VR wiki research notes: Standard Precautions, one-way instrument flow.","TradePath centre JSON — Outreach Hub zone (Prevention & School Screening)."],"stations":[{"id":"outreach-hub-safety","title":"Safety station — PPE, first aid, extinguisher"},{"id":"outreach-hub-checkin","title":"Check-in table — welcome, consent forms, queue"},{"id":"outreach-hub-screening","title":"Screening table — kit case, privacy screens, oversized brush"}],"steps":[{"action":"PPE check + confirm the referral path before screening starts.","check":"PPE fits; referral path known.","stationId":"outreach-hub-safety"},{"action":"Welcome families and confirm consent before any screening.","check":"Consent confirmed for every learner.","stationId":"outreach-hub-checkin"},{"action":"Set the privacy screens, lay the kit out in order.","check":"Screens up; kit in order.","stationId":"outreach-hub-screening"},{"action":"Run the screening steps the same way every time; flag and refer — never diagnose.","check":"Screenings recorded; flags referred.","stationId":"outreach-hub-screening"},{"action":"Close the queue, file the forms, and debrief with the coach.","check":"Forms filed; debrief complete.","stationId":"outreach-hub-checkin"}],"strands":["procedure","safety","documentation","coordination"],"tiers":["applied"],"title":"Outreach — prevention & school screening"}
+]; /*__END_EMBEDDED__*/
+
+const $ = (id) => document.getElementById(id);
+const done = new Set();
+let current = null;
+
+function stationTitle(sc, stationId) {
+  const st = sc.stations.find((s) => s.id === stationId);
+  return st ? st.title : stationId;
+}
+
+function renderList() {
+  $("scenarioList").innerHTML = "";
+  for (const sc of SCENARIOS) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "scen";
+    b.innerHTML = "";
+    const t = document.createElement("b");
+    t.textContent = sc.title;
+    const m = document.createElement("span");
+    m.className = "mut";
+    m.textContent = sc.audience + " · " + sc.tiers.join(", ") + " · strands: " + sc.strands.join(", ");
+    b.appendChild(t);
+    b.appendChild(m);
+    b.addEventListener("click", () => showScenario(sc.id, true));
+    $("scenarioList").appendChild(b);
+  }
+}
+
+function renderDetail(sc) {
+  $("dTitle").textContent = sc.title;
+  $("dDesc").textContent = sc.description;
+  $("dMeta").textContent = sc.audience + " · " + sc.tiers.join(", ") + " · strands: " + sc.strands.join(", ");
+  const list = $("dSteps");
+  list.innerHTML = "";
+  sc.steps.forEach((step, i) => {
+    const li = document.createElement("li");
+    li.className = "step" + (done.has(i) ? " done" : "");
+    li.tabIndex = 0;
+    li.setAttribute("role", "button");
+    const n = document.createElement("span");
+    n.className = "n";
+    n.textContent = String(i + 1);
+    const head = document.createElement("strong");
+    head.textContent = " " + stationTitle(sc, step.stationId) + " — ";
+    const act = document.createElement("span");
+    act.textContent = step.action + " ";
+    const chk = document.createElement("span");
+    chk.className = "mut";
+    chk.textContent = "Check: " + step.check;
+    li.appendChild(n);
+    li.appendChild(head);
+    li.appendChild(act);
+    li.appendChild(chk);
+    const toggle = () => {
+      if (done.has(i)) done.delete(i); else done.add(i);
+      renderDetail(sc);
+    };
+    li.addEventListener("click", toggle);
+    li.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); } });
+    list.appendChild(li);
+  });
+  $("dBar").style.width = Math.round((done.size / sc.steps.length) * 100) + "%";
+  $("dCount").textContent = done.size + " of " + sc.steps.length + " steps complete" +
+    (done.size === sc.steps.length ? " — scenario complete. Simulation only — not a credential." : "");
+  const links = $("dLinks");
+  links.innerHTML = "";
+  if (sc.deep_links.tradepath_zone) {
+    const a = document.createElement("a");
+    a.className = "bigbtn";
+    a.href = sc.deep_links.tradepath_zone;
+    a.textContent = "Run the matching zone in the TradePath Holodeck";
+    links.appendChild(a);
+    const note = document.createElement("p");
+    note.className = "mut small";
+    note.textContent = "TradePath deep link " + sc.deep_links.tradepath_zone +
+      " — opens the IWSDK Training Centre at that zone (relative link; the Holodeck app must be served alongside this folder).";
+    links.appendChild(note);
+  }
+  const v = document.createElement("a");
+  v.className = "bigbtn ghost";
+  v.href = sc.deep_links.vr_entry;
+  v.textContent = "Back to the Learner VR Entry";
+  links.appendChild(v);
+  const src = $("dSources");
+  src.innerHTML = "";
+  for (const s of sc.sources) {
+    const p = document.createElement("p");
+    p.textContent = s;
+    src.appendChild(p);
+  }
+  const hall = document.createElement("p");
+  hall.className = "mut";
+  hall.textContent = sc.halls.note;
+  src.appendChild(hall);
+  const sites = document.createElement("p");
+  sites.className = "mut";
+  sites.textContent = "Training sites — Louisiana: " + sc.sites.louisiana + " Indiana: " + sc.sites.indiana;
+  src.appendChild(sites);
+}
+
+function showScenario(id, push) {
+  const sc = SCENARIOS.find((s) => s.id === id);
+  if (!sc) return;
+  current = sc;
+  done.clear();
+  $("list").hidden = true;
+  $("detail").hidden = false;
+  renderDetail(sc);
+  if (push) {
+    const u = new URL(window.location.href);
+    u.searchParams.set("scenario", id);
+    window.history.replaceState(null, "", u.toString());
+  }
+  window.scrollTo(0, 0);
+}
+
+$("backBtn").addEventListener("click", () => {
+  $("detail").hidden = true;
+  $("list").hidden = false;
+  const u = new URL(window.location.href);
+  u.searchParams.delete("scenario");
+  window.history.replaceState(null, "", u.toString());
+});
+$("resetBtn").addEventListener("click", () => {
+  if (!current) return;
+  done.clear();
+  renderDetail(current);
+});
+
+renderList();
+const initial = new URLSearchParams(window.location.search).get("scenario");
+if (initial) showScenario(initial, false);
+</script>
+</body>
+</html>

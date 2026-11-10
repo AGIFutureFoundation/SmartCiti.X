@@ -1,0 +1,67 @@
+# SmartCiti.X learner platform — llms.txt
+
+> Demo mode — sample data, not real learners.
+> Simulation only — NOT certification, licensure, or clinical training.
+> SmartCiti.X is proposed, not incorporated / funded / offered.
+
+## Start here
+
+- Learner VR Entry: vr-entry/index.html (mode picker, guided first path,
+  skill graph, Holodeck Coach, Holodeck entry)
+- Training scenarios viewer: scenarios/index.html (6 scenarios, works from file://)
+- Scenario index: scenarios/scenarios.json
+- Cohort Dashboard v2 (demo): dashboard-v2-demo.html (sample data, filters)
+- LearnerProgressEvent contract: learner-progress-contract.json (Phase 1)
+- Sample log: sample-log.json (20 anonymised events, 5 learners)
+- Agent catalog: ai-catalog.json
+- Agent skills: .well-known/agent-skills/index.json
+- Access: auth.md (human-gated; no accounts, no OAuth, no tokens)
+- Resources linkset: .well-known/api-catalog (real files only — no API exists)
+
+## Scenarios (6)
+
+- k12-arvr-foundations — K-12 AR/VR foundations: measure, tools, safety
+- union-trades-electrical — Union trades, electrical: panel & conduit install
+- union-trades-hvac — Union trades, HVAC: diagnose, braze & commission
+- robotics-integration — Robotics: human-robot integration in a shared cell
+- safety-procedures — Safety procedures: hazards, PPE, fit, report
+- dental-screening-outreach — Outreach: prevention & school screening
+
+Deep link: scenarios/index.html?scenario=<scenarioId>
+TradePath deep links (e.g. /?zone=hvac) open the matching IWSDK zone.
+
+## Skill graph
+
+11 registry strands (verbatim from pack/registry/skills.json via vr-entry
+README): coordination, documentation, inspection, layout, leadership,
+machines, materials, procedure, safety, tools, troubleshooting.
+ZPD band 0.70–0.85; gate 0.95 + 3 unaided successes. Mastery on the entry
+page uses the dashboard demo rule (passed, mastery ≥ 0.60) and is labelled
+as such; the real gate is shown separately.
+
+## State
+
+No HTTP API exists. Progress is a local sample log + in-page computation
+(dashboard demo, VR entry) and in-memory checklist state (scenario viewer).
+No live data feed. Real mode needs a validated log owner and anonymisation
+rules. VR station → skill mapping (Phase 4) is open — real station IDs are
+needed before a Holodeck station completion can move a skill on the graph.
+
+## Grounding
+
+- OSHA PPE topic page (osha.gov/personal-protective-equipment)
+- EPA Section 608 (epa.gov/section608; 40 CFR Part 82 Subpart F)
+- CDC Guidelines for Infection Control in Dental Health-Care Settings 2003
+  (MMWR 52(RR17)), via the UnspokenSmiled-VR wiki research notes
+- SmartCiti.X wiki (~/workspace/your_files/org-wikis/SmartCiti.X/WIKI.md):
+  111-hall roster is an in-repo list, 0 of 111 signed off; 11 simulators;
+  10 authored campuses (not physical); "nothing here certifies anybody"
+
+## Limits
+
+- Louisiana + Indiana training sites are proposed/planned; no site, city,
+  or address has been named.
+- Never present a named hall as a partner; never quote "66-W3 series"
+  (correct: 33 named W3 sub-series, April 2026 internal list; SmartCiti.X
+  is S10 of those 33).
+- No real Quest / headset / phone run has been done in this environment.

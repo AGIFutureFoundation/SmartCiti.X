@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cohort Dashboard v2 — Demo Mode</title>
+<style>
+body{font-family:system-ui,sans-serif;max-width:900px;margin:2rem auto;padding:0 1rem;color:#111}
+.banner{background:#fff3cd;border:1px solid #e6c200;padding:.75rem 1rem;border-radius:8px}
+.card{border:1px solid #ddd;border-radius:8px;padding:1rem;margin:1rem 0}
+label{margin-right:1rem}
+table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+</style>
+</head>
+<body>
+<div class="banner"><strong>Demo mode — Sample data, not real learners.</strong><br>Source: sample-log.json, cohort-sample-01, 20 events, 5 learners. No personal data.</div>
+<h1>Cohort Dashboard v2 — Demo</h1>
+<p>SmartCiti.X : Trade Craft Academy — branch-ready demo only. Figures are computed in-page from the sample log below, using pure functions. No data leaves this page.</p>
+<div>
+<label>Strand <select id="strand"><option value="">All</option><option>electrical</option><option>plumbing</option></select></label>
+<label>Tier <select id="tier"><option value="">All</option><option>fundamentals</option><option>applied</option></select></label>
+<label>Source <select id="source"><option value="">All</option><option>web</option><option>campus_3d</option><option>vr_yard</option></select></label>
+</div>
+<div class="card" id="overview"></div>
+<div class="card"><h2>Progress by strand</h2><div id="byStrand"></div></div>
+<div class="card"><h2>Progress by tier</h2><div id="byTier"></div></div>
+<div class="card"><h2>Stuck and gated</h2><div id="stuck"></div></div>
+<div class="card"><h2>Per-learner (pseudonymised)</h2><div id="learners"></div></div>
+<script>
+const EVENTS = [
+{"event_id":"evt-001","learner_id":"learner-a01","cohort_id":"cohort-sample-01","timestamp":"2026-10-20T15:00:00Z","hall_id":"hall-sample-01","skill_id":"skill-sample-001","strand":"electrical","tier":"fundamentals","outcome":"passed","attempts":1,"mastery":0.65,"gate_status":"open","zpd_level":3,"hints_used":0,"source":"web","session_id":"sess-01"},
+{"event_id":"evt-002","learner_id":"learner-a01","cohort_id":"cohort-sample-01","timestamp":"2026-10-20T15:20:00Z","hall_id":"hall-sample-01","skill_id":"skill-sample-002","strand":"electrical","tier":"fundamentals","outcome":"passed","attempts":2,"mastery":0.72,"gate_status":"open","zpd_level":3,"hints_used":1,"source":"web","session_id":"sess-01"},
+{"event_id":"evt-003","learner_id":"learner-a01","cohort_id":"cohort-sample-01","timestamp":"2026-10-21T15:00:00Z","hall_id":"hall-sample-01","skill_id":"skill-sample-003","strand":"electrical","tier":"applied","outcome":"failed","attempts":1,"mastery":0.4,"gate_status":"open","zpd_level":3,"hints_used":2,"source":"web","session_id":"sess-02"},
+{"event_id":"evt-004","learner_id":"learner-a01","cohort_id":"cohort-sample-01","timestamp":"2026-10-21T15:30:00Z","hall_id":"hall-sample-01","skill_id":"skill-sample-003","strand":"electrical","tier":"applied","outcome":"passed","attempts":2,"mastery":0.68,"gate_status":"open","zpd_level":4,"hints_used":1,"source":"web","session_id":"sess-02"},
+{"event_id":"evt-005","learner_id":"learner-a01","cohort_id":"cohort-sample-01","timestamp":"2026-10-22T15:00:00Z","hall_id":"hall-sample-02","skill_id":"skill-sample-004","strand":"plumbing","tier":"fundamentals","outcome":"gated","attempts":1,"mastery":0.3,"gate_status":"blocked","zpd_level":3,"hints_used":0,"source":"campus_3d","session_id":"sess-03"},
+{"event_id":"evt-006","learner_id":"learner-a02","cohort_id":"cohort-sample-01","timestamp":"2026-10-20T16:00:00Z","hall_id":"hall-sample-01","skill_id":"skill-sample-001","strand":"electrical","tier":"fundamentals","outcome":"passed","attempts":1,"mastery":0.8,"gate_status":"open","zpd_level":4,"hints_used":0,"source":"web","session_id":"sess-04"},
+{"event_id":"evt-007","learner_id":"learner-a02","cohort_id":"cohort-sample-01","timestamp":"2026-10-20T16:20:00Z","hall_id":"hall-sample-01","skill_id":"skill-sample-002","strand":"electrical","tier":"fundamentals","outcome":"failed","attempts":1,"mastery":0.35,"gate_status":"open","zpd_level":4,"hints_used":2,"source":"web","session_id":"sess-04"},
+{"event_id":"evt-008","learner_id":"learner-a02","cohort_id":"cohort-sample-01","timestamp":"2026-10-21T16:00:00Z","hall_id":"hall-sample-01","skill_id":"skill-sample-002","strand":"electrical","tier":"fundamentals","outcome":"failed","attempts":2,"mastery":0.38,"gate_status":"open","zpd_level":4,"hints_used":2,"source":"web","session_id":"sess-05"},
+{"event_id":"evt-009","learner_id":"learner-a02","cohort_id":"cohort-sample-01","timestamp":"2026-10-21T16:30:00Z","hall_id":"hall-sample-01","skill_id":"skill-sample-002","strand":"electrical","tier":"fundamentals","outcome":"failed","attempts":3,"mastery":0.42,"gate_status":"open","zpd_level":4,"hints_used":3,"source":"web","session_id":"sess-05"},
+{"event_id":"evt-010","learner_id":"learner-a02","cohort_id":"cohort-sample-01","timestamp":"2026-10-22T16:00:00Z","hall_id":"hall-sample-02","skill_id":"skill-sample-004","strand":"plumbing","tier":"fundamentals","outcome":"passed","attempts":1,"mastery":0.7,"gate_status":"open","zpd_level":4,"hints_used":0,"source":"web","session_id":"sess-06"},
+{"event_id":"evt-011","learner_id":"learner-a03","cohort_id":"cohort-sample-01","timestamp":"2026-10-20T14:00:00Z","hall_id":"hall-sample-02","skill_id":"skill-sample-004","strand":"plumbing","tier":"fundamentals","outcome":"passed","attempts":1,"mastery":0.75,"gate_status":"open","zpd_level":2,"hints_used":0,"source":"web","session_id":"sess-07"},
+{"event_id":"evt-012","learner_id":"learner-a03","cohort_id":"cohort-sample-01","timestamp":"2026-10-20T14:30:00Z","hall_id":"hall-sample-02","skill_id":"skill-sample-005","strand":"plumbing","tier":"applied","outcome":"passed","attempts":1,"mastery":0.82,"gate_status":"passed","zpd_level":3,"hints_used":0,"source":"web","session_id":"sess-07"},
+{"event_id":"evt-013","learner_id":"learner-a03","cohort_id":"cohort-sample-01","timestamp":"2026-10-21T14:00:00Z","hall_id":"hall-sample-01","skill_id":"skill-sample-001","strand":"electrical","tier":"fundamentals","outcome":"passed","attempts":1,"mastery":0.66,"gate_status":"open","zpd_level":3,"hints_used":1,"source":"campus_3d","session_id":"sess-08"},
+{"event_id":"evt-014","learner_id":"learner-a04","cohort_id":"cohort-sample-01","timestamp":"2026-10-20T17:00:00Z","hall_id":"hall-sample-01","skill_id":"skill-sample-001","strand":"electrical","tier":"fundamentals","outcome":"failed","attempts":1,"mastery":0.28,"gate_status":"open","zpd_level":2,"hints_used":1,"source":"web","session_id":"sess-09"},
+{"event_id":"evt-015","learner_id":"learner-a04","cohort_id":"cohort-sample-01","timestamp":"2026-10-21T17:00:00Z","hall_id":"hall-sample-01","skill_id":"skill-sample-001","strand":"electrical","tier":"fundamentals","outcome":"passed","attempts":2,"mastery":0.64,"gate_status":"open","zpd_level":2,"hints_used":1,"source":"web","session_id":"sess-10"},
+{"event_id":"evt-016","learner_id":"learner-a04","cohort_id":"cohort-sample-01","timestamp":"2026-10-22T17:00:00Z","hall_id":"hall-sample-02","skill_id":"skill-sample-005","strand":"plumbing","tier":"applied","outcome":"failed","attempts":1,"mastery":0.45,"gate_status":"open","zpd_level":3,"hints_used":2,"source":"vr_yard","session_id":"sess-11"},
+{"event_id":"evt-017","learner_id":"learner-a05","cohort_id":"cohort-sample-01","timestamp":"2026-10-20T13:00:00Z","hall_id":"hall-sample-02","skill_id":"skill-sample-004","strand":"plumbing","tier":"fundamentals","outcome":"passed","attempts":1,"mastery":0.71,"gate_status":"open","zpd_level":3,"hints_used":0,"source":"web","session_id":"sess-12"},
+{"event_id":"evt-018","learner_id":"learner-a05","cohort_id":"cohort-sample-01","timestamp":"2026-10-21T13:00:00Z","hall_id":"hall-sample-02","skill_id":"skill-sample-005","strand":"plumbing","tier":"applied","outcome":"passed","attempts":1,"mastery":0.78,"gate_status":"passed","zpd_level":3,"hints_used":0,"source":"web","session_id":"sess-13"},
+{"event_id":"evt-019","learner_id":"learner-a05","cohort_id":"cohort-sample-01","timestamp":"2026-10-22T13:00:00Z","hall_id":"hall-sample-01","skill_id":"skill-sample-003","strand":"electrical","tier":"applied","outcome":"passed","attempts":1,"mastery":0.74,"gate_status":"open","zpd_level":4,"hints_used":0,"source":"web","session_id":"sess-14"},
+{"event_id":"evt-020","learner_id":"learner-a05","cohort_id":"cohort-sample-01","timestamp":"2026-10-22T13:30:00Z","hall_id":"hall-sample-01","skill_id":"skill-sample-002","strand":"electrical","tier":"fundamentals","outcome":"passed","attempts":1,"mastery":0.69,"gate_status":"open","zpd_level":4,"hints_used":0,"source":"web","session_id":"sess-14"}
+];
+// Pure functions: same input, same output. No clock, file, or random reads.
+function filtered(){
+  const s=document.getElementById('strand').value, t=document.getElementById('tier').value, so=document.getElementById('source').value;
+  return EVENTS.filter(e=>(!s||e.strand===s)&&(!t||e.tier===t)&&(!so||e.source===so));
+}
+function masteredCount(events){
+  const m=new Map();
+  for(const e of events) if(e.outcome==='passed' && e.mastery>=0.6) m.set(e.learner_id+'|'+e.skill_id, true);
+  return m.size;
+}
+function render(){
+  const ev=filtered();
+  const learners=[...new Set(ev.map(e=>e.learner_id))];
+  const passed=ev.filter(e=>e.outcome==='passed').length;
+  document.getElementById('overview').innerHTML = `<h2>Cohort overview</h2><p>${ev.length} events · ${learners.length} learners · ${passed} passed attempts · ${masteredCount(ev)} learner-skill masteries (mastery ≥ 0.6, passed)</p>`;
+  const by=(key)=>{const out={}; for(const e of ev){out[e[key]]=out[e[key]]||{total:0,passed:0}; out[e[key]].total++; if(e.outcome==='passed') out[e[key]].passed++} return out};
+  const table=(obj)=>`<table><tr><th>Group</th><th>Events</th><th>Passed</th></tr>${Object.entries(obj).map(([k,v])=>`<tr><td>${k}</td><td>${v.total}</td><td>${v.passed}</td></tr>`).join('')}</table>`;
+  document.getElementById('byStrand').innerHTML=table(by('strand'));
+  document.getElementById('byTier').innerHTML=table(by('tier'));
+  // Stuck: 3+ failed attempts on same learner+skill with no later pass in filtered set
+  const fails={}; for(const e of ev) if(e.outcome==='failed') fails[e.learner_id+'|'+e.skill_id]=(fails[e.learner_id+'|'+e.skill_id]||0)+1;
+  const stuck=Object.entries(fails).filter(([,n])=>n>=3);
+  const gated=ev.filter(e=>e.gate_status==='blocked');
+  document.getElementById('stuck').innerHTML=`<p>Stuck (3+ fails, same learner+skill): ${stuck.length ? stuck.map(([k,n])=>k+' ('+n+')').join(', ') : 'none in this filter'}</p><p>Gated events: ${gated.length} — ${gated.map(e=>e.learner_id+' / '+e.skill_id).join(', ') || 'none'}</p>`;
+  const per={}; for(const e of ev){per[e.learner_id]=per[e.learner_id]||{events:0,passed:0,skills:new Set()}; per[e.learner_id].events++; if(e.outcome==='passed'){per[e.learner_id].passed++; if(e.mastery>=0.6) per[e.learner_id].skills.add(e.skill_id)}} 
+  document.getElementById('learners').innerHTML=table(Object.fromEntries(Object.entries(per).map(([k,v])=>[k,{total:v.events,passed:v.passed+' (masteries: '+v.skills.size+')'}])));
+}
+['strand','tier','source'].forEach(id=>document.getElementById(id).addEventListener('change',render));
+render();
+</script>
+</body>
+</html>
